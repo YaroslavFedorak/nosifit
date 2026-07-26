@@ -226,4 +226,4 @@ Currently working on:
 Developed by Yaroslav Fedorak.
 
 GitHub:
-https://github.com/your_username
+https://github.com/YaroslavFedorak
