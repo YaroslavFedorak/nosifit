@@ -6,6 +6,8 @@ class RecoveryTrigger(StrEnum):
     AFTER_TRAINING = "after_training"
     LOW_ENERGY = "low_energy"
     SLEEP_DEFICIT = "sleep_deficit"
+    RECOVERY = "recovery"
+    STRESS = "stress"
 
 
 # Sleep scoring
