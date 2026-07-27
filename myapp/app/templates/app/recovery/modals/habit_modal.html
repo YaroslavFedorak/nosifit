@@ -1,23 +1,27 @@
 <div class="recovery-modal-backdrop" id="habit-modal-backdrop">
-  <div class="recovery-modal">
+  <div class="recovery-modal habit-modal-modern">
     <div class="recovery-modal-header">
       <span class="recovery-modal-title">Додати звичку</span>
-      <button
-        id="close-habit-modal"
-        class="cmp-btn-secondary cmp-btn-sm"
-        type="button"
-      >
+      <button id="close-habit-modal" class="cmp-btn-secondary cmp-btn-sm">
         Закрити
       </button>
     </div>
 
-    <div
-      class="recovery-modal-body habit-modal-list"
-      id="habit-modal-list"
-    ></div>
+    <!-- Панель сортувань -->
+    <div class="habit-sort-bar">
+      <button class="habit-sort-btn" data-sort="points">Бали</button>
+      <button class="habit-sort-btn" data-sort="category">Категорія</button>
+      <button class="habit-sort-btn" data-sort="name">Назва</button>
+    </div>
+
+    <div class="habit-modal-list" id="habit-modal-list"></div>
 
     <div class="recovery-modal-footer">
-      <button id="save-habit" class="cmp-btn-primary cmp-btn-sm" type="button">
+      <button id="habit-back-btn" class="cmp-btn-secondary cmp-btn-sm">
+        Назад
+      </button>
+
+      <button id="save-habit" class="cmp-btn-primary cmp-btn-sm">
         Зберегти
       </button>
     </div>
