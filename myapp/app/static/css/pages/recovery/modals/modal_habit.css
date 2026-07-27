@@ -1,14 +1,14 @@
-.recovery-modal {
+.habit-modal-modern {
     background: var(--nf-surface);
     border-radius: var(--nf-radius-lg);
-    padding: 20px 22px;
-    width: 480px;
+    padding: 22px 24px;
+    width: 520px;
     max-width: 92vw;
     box-shadow: 0 6px 22px rgba(0, 0, 0, 0.35);
     border: 1px solid var(--nf-border-soft);
     display: flex;
     flex-direction: column;
-    gap: 18px;
+    gap: 20px;
     animation: habitModalFade .25s ease;
 }
 
@@ -22,12 +22,6 @@
         opacity: 1;
         transform: translateY(0);
     }
-}
-
-.recovery-modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
 }
 
 .recovery-modal-title {
@@ -45,13 +39,44 @@
     height: 18px;
     background: var(--nf-blue);
     border-radius: 4px;
-    display: inline-block;
+}
+
+.habit-sort-bar {
+    display: flex;
+    gap: 10px;
+    padding: 8px;
+    border-radius: var(--nf-radius-md);
+    background: var(--nf-surface-soft);
+    border: 1px solid var(--nf-border-soft);
+}
+
+.habit-sort-btn {
+    flex: 1;
+    padding: 8px 10px;
+    border-radius: var(--nf-radius-sm);
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--nf-text-main);
+    font-size: 14px;
+    cursor: pointer;
+    transition: var(--nf-transition);
+}
+
+.habit-sort-btn:hover {
+    background: var(--nf-blue-soft);
+    border-color: var(--nf-blue);
+}
+
+.habit-sort-btn.active {
+    background: var(--nf-blue-soft);
+    border-color: var(--nf-blue);
+    color: #000;
 }
 
 .habit-modal-list {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 12px;
     max-height: min(55vh, 480px);
     overflow-y: auto;
     padding-right: 4px;
@@ -66,8 +91,8 @@
     cursor: pointer;
     transition: var(--nf-transition);
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    flex-direction: column;
+    gap: 4px;
 }
 
 .habit-modal-item:hover {
@@ -93,8 +118,9 @@
 
 .recovery-modal-footer {
     display: flex;
-    justify-content: flex-end;
-    gap: 10px;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
     padding-top: 12px;
     border-top: 1px solid var(--nf-border-soft);
 }
