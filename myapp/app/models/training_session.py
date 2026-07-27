@@ -36,13 +36,13 @@ class SessionExercise(db.Model):
 
     exercise_id = db.Column(db.String(64), nullable=False)
 
-    sets_planned = db.Column(db.Integer, nullable=False, server_default="0")
+    sets_planned = db.Column(db.Integer, nullable=True)
     sets_done = db.Column(db.Integer, default=0)
 
-    reps_planned = db.Column(db.String(32))
+    reps_planned = db.Column(db.String(32), nullable=True)
     reps_done = db.Column(db.String(32))
 
-    load_planned = db.Column(db.Float)
+    load_planned = db.Column(db.Float, nullable=True)
     load_done = db.Column(db.Float)
 
     rpe = db.Column(db.Float)
