@@ -62,24 +62,18 @@ class SleepService:
     def calculate_sleep_score(self, duration_minutes: int) -> int:
         hours = duration_minutes / 60.0
 
-        if hours < 0.5:
-            return 20
-        if 0.5 <= hours < 1.5:
-            return 40
-        if 1.5 <= hours < 3:
-            return 55
-        if 3 <= hours < 4:
-            return 60
-        if 4 <= hours <= 8:
-            ratio = (hours - 4.0) / 4.0
-            score = MIN_SLEEP_SCORE + ratio * (BASE_SLEEP_SCORE - MIN_SLEEP_SCORE)
-            return int(score)
-        if 8 < hours <= 9:
-            return BASE_SLEEP_SCORE + MAX_SLEEP_BONUS
-        if 9 < hours <= 12:
-            return 80
-        if 12 < hours <= 18:
-            return 60
+        if hours <= 0:
+            return 0
+
+        if hours < 4:
+            return int(10 + (hours / 4) * 50)
+
+        if 4 <= hours <= 9:
+            return int(60 + ((hours - 4) / 5) * 40)
+
+        if 9 < hours <= 18:
+            return int(100 - ((hours - 9) / 9) * 60)
+
         return 40
 
     def calculate_sleep_debt_minutes(self, user_id: int, required_minutes: int) -> int:
