@@ -1,5 +1,7 @@
 import math
 from dataclasses import dataclass
+from datetime import date, datetime
+from myapp.app.models.training_session import TrainingSession
 from myapp.app.training_engine.models.exercise import Exercise
 from myapp.app.training_engine.models.performance_state import PerformanceState
 
@@ -362,3 +364,17 @@ class TrainingLoadService:
         if load < 1200:
             return 60
         return 72
+
+    @staticmethod
+    def get_daily_load(user_id: int) -> int:
+        today = date.today()
+        start = datetime.combine(today, datetime.min.time())
+        end = datetime.combine(today, datetime.max.time())
+
+        sessions = TrainingSession.query.filter(
+            TrainingSession.user_id == user_id,
+            TrainingSession.started_at >= start,
+            TrainingSession.started_at <= end,
+        ).all()
+
+        return sum(s.internal_load or 0 for s in sessions)
