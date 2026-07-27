@@ -6,25 +6,111 @@
         "category": "hydration",
         "points": 5,
         "icon": "droplet",
-        "daily_limit": 6,
+        "daily_log_limit": 6,
         "estimated_minutes": 2,
         "recommended_when": [
             "low_recovery",
-            "after_training"
+            "after_training",
+            "high_load"
+        ]
+    },
+    {
+        "slug": "electrolytes",
+        "name": "Електроліти",
+        "description": "Прийняти електроліти після тренування або у спеку",
+        "category": "hydration",
+        "points": 4,
+        "icon": "electrolytes",
+        "daily_log_limit": 2,
+        "estimated_minutes": 1,
+        "recommended_when": [
+            "after_training",
+            "high_load",
+            "low_energy"
         ]
     },
     {
         "slug": "sleep_8h",
         "name": "Спати не менше 8 годин",
-        "description": "Оптимальна тривалість сну для відновлення",
+        "description": "Оптимальна тривалість нічного сну",
         "category": "sleep",
         "points": 8,
         "icon": "bed",
-        "daily_limit": 1,
+        "daily_log_limit": 1,
         "estimated_minutes": 480,
         "recommended_when": [
             "low_recovery",
             "sleep_deficit"
+        ]
+    },
+    {
+        "slug": "consistent_sleep",
+        "name": "Стабільний час сну",
+        "description": "Лягати спати в один і той самий час",
+        "category": "sleep",
+        "points": 4,
+        "icon": "clock",
+        "daily_log_limit": 1,
+        "estimated_minutes": 5,
+        "recommended_when": [
+            "sleep_deficit",
+            "low_recovery"
+        ]
+    },
+    {
+        "slug": "screen_off_before_sleep",
+        "name": "Вимкнути екран перед сном",
+        "description": "Не користуватися телефоном або комп'ютером за 30 хвилин до сну",
+        "category": "sleep",
+        "points": 3,
+        "icon": "screen_off",
+        "daily_log_limit": 1,
+        "estimated_minutes": 30,
+        "recommended_when": [
+            "sleep_deficit",
+            "low_energy"
+        ]
+    },
+    {
+        "slug": "post_workout_protein",
+        "name": "Протеїн після тренування",
+        "description": "Прийняти білок для відновлення м’язів",
+        "category": "nutrition",
+        "points": 5,
+        "icon": "protein",
+        "daily_log_limit": 1,
+        "estimated_minutes": 5,
+        "recommended_when": [
+            "after_training",
+            "high_load"
+        ]
+    },
+    {
+        "slug": "post_workout_carbs",
+        "name": "Вуглеводи після тренування",
+        "description": "Поповнити запаси глікогену",
+        "category": "nutrition",
+        "points": 4,
+        "icon": "carbs",
+        "daily_log_limit": 1,
+        "estimated_minutes": 5,
+        "recommended_when": [
+            "after_training",
+            "low_energy"
+        ]
+    },
+    {
+        "slug": "balanced_meal",
+        "name": "Збалансований прийом їжі",
+        "description": "Повноцінний прийом їжі з білками, жирами та складними вуглеводами",
+        "category": "nutrition",
+        "points": 3,
+        "icon": "meal",
+        "daily_log_limit": 3,
+        "estimated_minutes": 20,
+        "recommended_when": [
+            "low_energy",
+            "low_recovery"
         ]
     },
     {
@@ -34,7 +120,7 @@
         "category": "activity",
         "points": 3,
         "icon": "walk",
-        "daily_limit": 2,
+        "daily_log_limit": 2,
         "estimated_minutes": 30,
         "recommended_when": [
             "after_training",
@@ -45,10 +131,10 @@
         "slug": "stretching",
         "name": "Розтяжка",
         "description": "5–10 хвилин розтяжки для зняття напруги",
-        "category": "recovery",
+        "category": "activity",
         "points": 4,
         "icon": "stretch",
-        "daily_limit": 2,
+        "daily_log_limit": 2,
         "estimated_minutes": 10,
         "recommended_when": [
             "after_training",
@@ -56,17 +142,114 @@
         ]
     },
     {
+        "slug": "mobility",
+        "name": "Мобільність",
+        "description": "Коротка сесія мобільності для суглобів",
+        "category": "activity",
+        "points": 4,
+        "icon": "mobility",
+        "daily_log_limit": 1,
+        "estimated_minutes": 10,
+        "recommended_when": [
+            "low_recovery",
+            "after_training"
+        ]
+    },
+    {
+        "slug": "foam_roll",
+        "name": "Фоам-ролінг",
+        "description": "Розслаблення м’язів за допомогою ролера",
+        "category": "activity",
+        "points": 4,
+        "icon": "foam_roll",
+        "daily_log_limit": 1,
+        "estimated_minutes": 10,
+        "recommended_when": [
+            "low_recovery",
+            "after_training"
+        ]
+    },
+    {
+        "slug": "breathing_reset",
+        "name": "Дихальна пауза",
+        "description": "1–2 хвилини глибокого дихання",
+        "category": "stress",
+        "points": 2,
+        "icon": "breathing",
+        "daily_log_limit": 3,
+        "estimated_minutes": 2,
+        "recommended_when": [
+            "stress",
+            "low_energy"
+        ]
+    },
+    {
         "slug": "meditation",
         "name": "Медитація",
         "description": "5 хвилин медитації для зниження стресу",
-        "category": "lifestyle",
+        "category": "stress",
         "points": 2,
         "icon": "meditation",
-        "daily_limit": 1,
+        "daily_log_limit": 1,
         "estimated_minutes": 5,
         "recommended_when": [
             "stress",
             "low_energy"
+        ]
+    },
+    {
+        "slug": "journal_stress",
+        "name": "Журнал стресу",
+        "description": "Записати думки або переживання для зниження рівня стресу",
+        "category": "stress",
+        "points": 2,
+        "icon": "journal",
+        "daily_log_limit": 1,
+        "estimated_minutes": 5,
+        "recommended_when": [
+            "stress"
+        ]
+    },
+    {
+        "slug": "full_rest_day",
+        "name": "Повний день відпочинку",
+        "description": "Уникати тренувань для повного відновлення",
+        "category": "recovery",
+        "points": 6,
+        "icon": "rest",
+        "daily_log_limit": 1,
+        "estimated_minutes": 0,
+        "recommended_when": [
+            "low_recovery",
+            "high_load"
+        ]
+    },
+    {
+        "slug": "massage_or_physio",
+        "name": "Масаж або фізіотерапія",
+        "description": "Масаж або фізіотерапія для зменшення м'язової напруги",
+        "category": "recovery",
+        "points": 5,
+        "icon": "massage",
+        "daily_log_limit": 1,
+        "estimated_minutes": 30,
+        "recommended_when": [
+            "low_recovery",
+            "after_training"
+        ]
+    },
+    {
+        "slug": "deload_week",
+        "name": "Тиждень розвантаження",
+        "description": "Зменшити навантаження на 30–50% протягом тижня",
+        "category": "recovery",
+        "points": 8,
+        "icon": "deload",
+        "daily_log_limit": 1,
+        "estimated_minutes": 0,
+        "recommended_when": [
+            "high_load",
+            "low_recovery"
         ]
     }
 ]
