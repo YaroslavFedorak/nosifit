@@ -3,6 +3,7 @@ import { refreshRecoveryDashboard } from "../dashboard.js";
 
 let habitsCache = null;
 let initialized = false;
+let currentSort = "points";
 
 async function loadHabits() {
     if (habitsCache !== null) {
@@ -19,6 +20,19 @@ async function loadHabits() {
     return habitsCache;
 }
 
+function sortHabits(habits, sortKey) {
+    if (sortKey === "points") {
+        return habits.sort((a, b) => b.points - a.points);
+    }
+    if (sortKey === "category") {
+        return habits.sort((a, b) => a.category.localeCompare(b.category));
+    }
+    if (sortKey === "name") {
+        return habits.sort((a, b) => a.name.localeCompare(b.name));
+    }
+    return habits;
+}
+
 function toggleHabit(row) {
     row.classList.toggle("selected");
 }
@@ -33,13 +47,16 @@ export function initHabitModal(userId) {
     const openBtn = document.getElementById("open-habit-modal");
     const closeBtn = document.getElementById("close-habit-modal");
     const saveBtn = document.getElementById("save-habit");
+    const backBtn = document.getElementById("habit-back-btn");
     const listBox = document.getElementById("habit-modal-list");
+    const sortButtons = document.querySelectorAll(".habit-sort-btn");
 
     if (!backdrop || !openBtn || !closeBtn || !saveBtn || !listBox) return;
 
     openBtn.addEventListener("click", open);
     closeBtn.addEventListener("click", close);
     saveBtn.addEventListener("click", save);
+    if (backBtn) backBtn.addEventListener("click", close);
 
     listBox.addEventListener("click", (event) => {
         const row = event.target.closest(".habit-modal-item");
@@ -47,13 +64,22 @@ export function initHabitModal(userId) {
         toggleHabit(row);
     });
 
-    async function open() {
-        backdrop.classList.add("open");
+    sortButtons.forEach(btn => {
+        btn.addEventListener("click", () => {
+            sortButtons.forEach(b => b.classList.remove("active"));
+            btn.classList.add("active");
+            currentSort = btn.dataset.sort;
+            renderList();
+        });
+    });
 
+    async function renderList() {
         const habits = await loadHabits();
+        const sorted = sortHabits([...habits], currentSort);
+
         listBox.innerHTML = "";
 
-        habits.forEach((habit) => {
+        sorted.forEach(habit => {
             const row = document.createElement("div");
             row.className = "habit-modal-item";
             row.dataset.habitId = habit.id;
@@ -71,6 +97,11 @@ export function initHabitModal(userId) {
 
             listBox.appendChild(row);
         });
+    }
+
+    async function open() {
+        backdrop.classList.add("open");
+        renderList();
     }
 
     function close() {
