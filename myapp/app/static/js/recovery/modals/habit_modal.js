@@ -42,7 +42,7 @@ export function initHabitModal(userId) {
     saveBtn.addEventListener("click", save);
 
     listBox.addEventListener("click", (event) => {
-        const row = event.target.closest(".habit-row");
+        const row = event.target.closest(".habit-modal-item");
         if (!row) return;
         toggleHabit(row);
     });
@@ -55,9 +55,20 @@ export function initHabitModal(userId) {
 
         habits.forEach((habit) => {
             const row = document.createElement("div");
-            row.className = "habit-row";
+            row.className = "habit-modal-item";
             row.dataset.habitId = habit.id;
-            row.textContent = `${habit.name} (+${habit.points})`;
+
+            const title = document.createElement("div");
+            title.className = "habit-title";
+            title.textContent = `${habit.name} (+${habit.points})`;
+
+            const meta = document.createElement("div");
+            meta.className = "habit-meta";
+            meta.textContent = habit.category;
+
+            row.appendChild(title);
+            row.appendChild(meta);
+
             listBox.appendChild(row);
         });
     }
@@ -68,7 +79,7 @@ export function initHabitModal(userId) {
     }
 
     async function save() {
-        const selected = [...listBox.querySelectorAll(".habit-row.selected")];
+        const selected = [...listBox.querySelectorAll(".habit-modal-item.selected")];
         if (selected.length === 0) {
             alert("Оберіть хоча б одну звичку");
             return;

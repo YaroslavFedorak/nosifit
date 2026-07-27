@@ -58,15 +58,37 @@ def add_sleep():
     )
 
 
-@recovery_bp.get("/habits")
-def get_habits():
+@recovery_bp.get("/habits/list")
+def get_habits_list():
     habits = (
         RecoveryHabit.query.filter_by(is_active=True, is_archived=False)
         .order_by(RecoveryHabit.sort_order.asc(), RecoveryHabit.id.asc())
         .all()
     )
 
-    return jsonify([h.to_dict() for h in habits])
+    return jsonify(
+        [
+            {
+                "id": h.id,
+                "slug": h.slug,
+                "name": h.name,
+                "description": h.description,
+                "category": h.category,
+                "points": h.points,
+                "icon": h.icon,
+                "recommended_when": h.recommended_when,
+                "premium_only": h.premium_only,
+            }
+            for h in habits
+        ]
+    )
+
+
+@recovery_bp.post("/habits/add/<int:habit_id>")
+def add_habit(habit_id):
+    user_id = request.json.get("user_id")
+    habit, created = habit_service.add_user_habit(user_id, habit_id)
+    return jsonify({"created": created})
 
 
 @recovery_bp.delete("/habits/<int:user_habit_id>")
@@ -92,32 +114,6 @@ def log_habit():
     return jsonify({"logged": log.id}), 200
 
 
-@recovery_bp.get("/habits/list")
-def get_habits_list():
-    habits = (
-        RecoveryHabit.query.filter_by(is_active=True)
-        .order_by(RecoveryHabit.sort_order.asc(), RecoveryHabit.id.asc())
-        .all()
-    )
-
-    return jsonify(
-        [
-            {
-                "id": h.id,
-                "slug": h.slug,
-                "name": h.name,
-                "description": h.description,
-                "category": h.category,
-                "score": h.score,
-                "icon": h.icon,
-                "recommended_when": h.recommended_when,
-                "premium_only": h.premium_only,
-            }
-            for h in habits
-        ]
-    )
-
-
 @recovery_bp.post("/snapshot")
 def generate_snapshot():
     data = request.get_json(silent=True) or {}
@@ -127,13 +123,12 @@ def generate_snapshot():
         return jsonify({"error": "user_id is required"}), 400
 
     last_training_days = data.get("last_training_days", 0)
-
     today = date.today()
     existed_before = stats_service.get_daily_snapshot(user_id, today)
 
     snapshot = snapshot_service.generate_snapshot(user_id, last_training_days)
-
     status = 200 if existed_before else 201
+
     return jsonify({"id": snapshot.id}), status
 
 

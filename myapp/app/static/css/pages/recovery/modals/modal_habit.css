@@ -12,8 +12,26 @@
     color: var(--nf-text-main);
     cursor: pointer;
     transition: var(--nf-transition);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
 }
 
 .habit-modal-item:hover {
     background: var(--nf-surface-soft);
+}
+
+.habit-modal-item.selected {
+    border-color: var(--nf-blue);
+    background: var(--nf-surface-active);
+}
+
+.habit-title {
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.habit-meta {
+    font-size: 14px;
+    color: var(--nf-text-muted);
 }
