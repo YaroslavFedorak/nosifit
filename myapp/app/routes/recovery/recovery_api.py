@@ -189,7 +189,13 @@ def get_recommendations(user_id):
     if snapshot is None:
         return jsonify({"recovery_score": None, "recommendations": []}), 200
 
-    recs = RecommendationService.get_recommendations(snapshot)
+    recs = RecommendationService().build_recommendations(
+        snapshot.sleep_score,
+        snapshot.recovery_score,
+        snapshot.energy_score,
+        snapshot.habit_score,
+        snapshot.training_score,
+    )
 
     return (
         jsonify({"recovery_score": snapshot.recovery_score, "recommendations": recs}),
