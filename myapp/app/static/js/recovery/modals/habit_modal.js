@@ -61,6 +61,7 @@ export function initHabitModal(userId) {
     listBox.addEventListener("click", (event) => {
         const row = event.target.closest(".habit-modal-item");
         if (!row) return;
+        event.stopPropagation();
         toggleHabit(row);
     });
 
@@ -83,6 +84,10 @@ export function initHabitModal(userId) {
             const row = document.createElement("div");
             row.className = "habit-modal-item";
             row.dataset.habitId = habit.id;
+
+            row.addEventListener("click", () => {
+                row.classList.toggle("selected");
+            });
 
             const title = document.createElement("div");
             title.className = "habit-title";
