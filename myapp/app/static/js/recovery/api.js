@@ -124,6 +124,6 @@ export const RecoveryAPI = {
     },
 
     getHabitsList() {
-        return request(`${API_BASE}/habits`);
+        return request(ENDPOINTS.habitsList());
     }
 };
