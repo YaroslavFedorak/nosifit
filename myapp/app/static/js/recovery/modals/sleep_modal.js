@@ -7,8 +7,9 @@ export function initSleepModal(userId) {
     const closeBtn = document.querySelector("[data-close-sleep]");
     const saveBtn = document.querySelector("[data-save-sleep]");
 
-    const startInput = document.querySelector("[data-sleep-start]");
-    const endInput = document.querySelector("[data-sleep-end]");
+    const dateInput = document.querySelector("[data-sleep-date]");
+    const startTimeInput = document.querySelector("[data-sleep-start-time]");
+    const endTimeInput = document.querySelector("[data-sleep-end-time]");
 
     if (!backdrop || !openBtn || !closeBtn || !saveBtn) return;
 
@@ -18,39 +19,33 @@ export function initSleepModal(userId) {
 
     const close = () => {
         backdrop.classList.remove("open");
-        startInput.value = "";
-        endInput.value = "";
+        dateInput.value = "";
+        startTimeInput.value = "";
+        endTimeInput.value = "";
     };
 
     const save = async () => {
-        const start = startInput.value;
-        const end = endInput.value;
+        const date = dateInput.value;
+        const startTime = startTimeInput.value;
+        const endTime = endTimeInput.value;
 
-        if (!start || !end) {
-            alert("Будь ласка, заповніть обидва поля");
+        if (!date || !startTime || !endTime) {
+            alert("Заповніть всі поля");
             return;
+        }
+
+        const start = `${date}T${startTime}`;
+        let end = `${date}T${endTime}`;
+
+        if (endTime < startTime) {
+            const d = new Date(date);
+            d.setDate(d.getDate() + 1);
+            end = `${d.toISOString().slice(0, 10)}T${endTime}`;
         }
 
         const startDt = new Date(start);
         const endDt = new Date(end);
         const now = new Date();
-
-        if (endDt <= startDt) {
-            alert("Кінець сну повинен бути після початку");
-            return;
-        }
-
-        const durationHours = (endDt - startDt) / 1000 / 3600;
-
-        if (durationHours < 2) {
-            alert("Тривалість сну повинна бути не менше 2 годин");
-            return;
-        }
-
-        if (durationHours > 16) {
-            alert("Тривалість сну не може перевищувати 16 годин");
-            return;
-        }
 
         if (endDt > now) {
             alert("Сон не може закінчуватися у майбутньому");

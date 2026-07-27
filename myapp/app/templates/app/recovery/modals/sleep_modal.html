@@ -14,21 +14,32 @@
 
     <div class="recovery-modal-body sleep-modal-inputs">
       <div class="sleep-field">
-        <label for="sleep-start-input">Початок сну</label>
+        <label for="sleep-date-input">Дата</label>
         <input
-          type="datetime-local"
-          id="sleep-start-input"
+          type="date"
+          id="sleep-date-input"
           class="sleep-input"
-          data-sleep-start
+          data-sleep-date
         />
       </div>
+
       <div class="sleep-field">
-        <label for="sleep-end-input">Кінець сну</label>
+        <label for="sleep-start-time-input">Початок</label>
         <input
-          type="datetime-local"
-          id="sleep-end-input"
+          type="time"
+          id="sleep-start-time-input"
           class="sleep-input"
-          data-sleep-end
+          data-sleep-start-time
+        />
+      </div>
+
+      <div class="sleep-field">
+        <label for="sleep-end-time-input">Кінець</label>
+        <input
+          type="time"
+          id="sleep-end-time-input"
+          class="sleep-input"
+          data-sleep-end-time
         />
       </div>
     </div>
