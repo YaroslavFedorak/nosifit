@@ -61,7 +61,8 @@ const ENDPOINTS = {
     addHabit: () => `${API_BASE}/habits`,
     removeHabit: (userHabitId) => `${API_BASE}/habits/${userHabitId}`,
     logHabit: () => `${API_BASE}/habits/logs`,
-    habitsList: () => `${API_BASE}/habits/list`
+    habitsList: () => `${API_BASE}/habits/list`,
+    userHabits: (userId) => `${API_BASE}/habits/user/${userId}`
 };
 
 export const RecoveryAPI = {
@@ -125,5 +126,9 @@ export const RecoveryAPI = {
 
     getHabitsList() {
         return request(ENDPOINTS.habitsList());
+    },
+
+    getUserHabits(userId) {      
+        return request(ENDPOINTS.userHabits(userId));
     }
 };
