@@ -2,26 +2,13 @@
     background: var(--nf-surface);
     border-radius: var(--nf-radius-lg);
     padding: 22px 24px;
-    width: 520px;
+    width: 540px;
     max-width: 92vw;
     box-shadow: 0 6px 22px rgba(0, 0, 0, 0.35);
     border: 1px solid var(--nf-border-soft);
     display: flex;
     flex-direction: column;
     gap: 20px;
-    animation: habitModalFade .25s ease;
-}
-
-@keyframes habitModalFade {
-    from {
-        opacity: 0;
-        transform: translateY(8px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
 }
 
 .recovery-modal-title {
@@ -76,44 +63,112 @@
 .habit-modal-list {
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    max-height: min(55vh, 480px);
+    gap: 14px;
+    max-height: min(60vh, 520px);
     overflow-y: auto;
     padding-right: 4px;
 }
 
-.habit-modal-item {
-    background: var(--nf-surface-soft);
-    border-radius: var(--nf-radius-md);
-    padding: 12px 14px;
-    border: 1px solid var(--nf-border-soft);
-    color: var(--nf-text-main);
-    cursor: pointer;
-    transition: var(--nf-transition);
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
+.habit-section-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--nf-text-muted);
+    margin-top: 6px;
+    margin-bottom: 2px;
 }
 
-.habit-modal-item:hover {
+.habit-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 16px;
+    border-radius: var(--nf-radius-md);
+    border: 1px solid var(--nf-border-soft);
+    background: var(--nf-surface-soft);
+    cursor: pointer;
+    transition: var(--nf-transition);
+}
+
+.habit-row:hover {
     background: var(--nf-blue-soft);
     border-color: var(--nf-blue);
 }
 
-.habit-modal-item.selected {
+.habit-row.selected {
     background: var(--nf-blue-soft);
     border-color: var(--nf-blue);
     box-shadow: 0 0 0 1px rgba(0, 180, 255, 0.35);
 }
 
+.habit-row.habit-disabled {
+    opacity: 0.55;
+    cursor: default;
+    background: var(--nf-surface-soft);
+    border-color: var(--nf-border-soft);
+}
+
+.habit-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.habit-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: var(--nf-radius-sm);
+    background: var(--nf-blue-soft);
+    color: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+}
+
+.habit-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
 .habit-title {
     font-size: 15px;
     font-weight: 500;
+    color: var(--nf-text-main);
 }
 
 .habit-meta {
     font-size: 13px;
     color: var(--nf-text-muted);
+}
+
+.habit-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.habit-points {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--nf-text-main);
+}
+
+.habit-check {
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    border: 2px solid var(--nf-border-soft);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--nf-transition);
+}
+
+.habit-check.checked {
+    border-color: var(--nf-blue);
+    background: var(--nf-blue);
+    color: #000;
 }
 
 .recovery-modal-footer {
