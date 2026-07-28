@@ -16,8 +16,7 @@ const CATEGORY_MAP = Object.freeze({
 });
 
 function localizeCategory(category) {
-    if (!category) return "";
-    return CATEGORY_MAP[category] || category;
+    return CATEGORY_MAP[category] || category || "";
 }
 
 async function loadAllHabits() {
@@ -31,13 +30,14 @@ async function loadUserHabits(userId) {
 }
 
 function sortAvailable(habits, sortKey) {
-    if (sortKey === "points") return habits.sort((a, b) => b.points - a.points);
-    if (sortKey === "category") return habits.sort((a, b) => a.category.localeCompare(b.category));
-    if (sortKey === "name") return habits.sort((a, b) => a.name.localeCompare(b.name));
-    return habits;
+    const sorted = [...habits];
+    if (sortKey === "points") return sorted.sort((a, b) => b.points - a.points);
+    if (sortKey === "category") return sorted.sort((a, b) => a.category.localeCompare(b.category));
+    if (sortKey === "name") return sorted.sort((a, b) => a.name.localeCompare(b.name));
+    return sorted;
 }
 
-function createHabitRow(habit, selectable, added) {
+function createHabitRow(habit, added) {
     const row = document.createElement("div");
     row.className = "habit-row";
     if (added) row.classList.add("habit-added");
@@ -47,11 +47,7 @@ function createHabitRow(habit, selectable, added) {
 
     const icon = document.createElement("div");
     icon.className = "habit-icon";
-    if (habit.icon && ICONS[habit.icon]) {
-        icon.innerHTML = ICONS[habit.icon];
-    } else {
-        icon.textContent = "•";
-    }
+    icon.innerHTML = ICONS[habit.icon] || "•";
 
     const info = document.createElement("div");
     info.className = "habit-info";
@@ -101,7 +97,6 @@ function createHabitRow(habit, selectable, added) {
     row.appendChild(right);
 
     row.dataset.habitId = habit.id;
-    if (!selectable) row.classList.add("habit-added");
 
     return row;
 }
@@ -145,15 +140,20 @@ export function initHabitModal(userId) {
         if (row.classList.contains("habit-added")) return;
 
         row.classList.toggle("selected");
+
         const check = row.querySelector(".habit-check");
         const status = row.querySelector(".habit-status");
+
         if (check) {
-            check.classList.toggle("checked");
-            check.textContent = check.classList.contains("checked") ? "✓" : "";
+            const checked = row.classList.contains("selected");
+            check.classList.toggle("checked", checked);
+            check.textContent = checked ? "✓" : "";
         }
+
         if (status) {
-            status.textContent = check.classList.contains("checked") ? "" : "";
+            status.textContent = "";
         }
+
         updateSaveState();
     });
 
@@ -164,7 +164,7 @@ export function initHabitModal(userId) {
 
         const available = allHabits.filter(h => !userHabitIds.has(h.id));
         const added = allHabits.filter(h => userHabitIds.has(h.id));
-        const sortedAvailable = sortAvailable([...available], currentSort);
+        const sortedAvailable = sortAvailable(available, currentSort);
 
         listBox.innerHTML = "";
 
@@ -180,8 +180,7 @@ export function initHabitModal(userId) {
             listBox.appendChild(empty);
         } else {
             sortedAvailable.forEach(habit => {
-                const row = createHabitRow(habit, true, false);
-                listBox.appendChild(row);
+                listBox.appendChild(createHabitRow(habit, false));
             });
         }
 
@@ -191,8 +190,7 @@ export function initHabitModal(userId) {
         listBox.appendChild(addedHeader);
 
         added.forEach(habit => {
-            const row = createHabitRow(habit, false, true);
-            listBox.appendChild(row);
+            listBox.appendChild(createHabitRow(habit, true));
         });
 
         updateSaveState();
@@ -200,6 +198,7 @@ export function initHabitModal(userId) {
 
     async function open() {
         backdrop.classList.add("open");
+        saveBtn.disabled = true;
         await renderList();
     }
 
@@ -215,19 +214,15 @@ export function initHabitModal(userId) {
 
         saveBtn.disabled = true;
 
-        try {
-            const requests = selected.map(row => {
-                const habitId = Number(row.dataset.habitId);
-                return RecoveryAPI.addHabit(userId, habitId);
-            });
+        const habitIds = selected.map(row => Number(row.dataset.habitId));
+        const requests = habitIds.map(id => RecoveryAPI.addHabit(userId, id));
 
-            await Promise.all(requests);
-            await RecoveryAPI.generateSnapshot(userId);
-            await refreshRecoveryDashboard(userId);
-            showToast("Звички успішно додано");
-            close();
-        } finally {
-            saveBtn.disabled = false;
-        }
+        await Promise.all(requests);
+        await RecoveryAPI.generateSnapshot(userId);
+        await refreshRecoveryDashboard(userId);
+
+        showToast("Звички успішно додано");
+
+        close();
     }
 }
