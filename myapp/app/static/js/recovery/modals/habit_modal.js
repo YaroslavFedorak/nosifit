@@ -37,6 +37,10 @@ function sortAvailable(habits, sortKey) {
     return sorted;
 }
 
+function sortAdded(habits) {
+    return [...habits].sort((a, b) => a.name.localeCompare(b.name));
+}
+
 function createHabitRow(habit, added) {
     const row = document.createElement("div");
     row.className = "habit-row";
@@ -47,7 +51,9 @@ function createHabitRow(habit, added) {
 
     const icon = document.createElement("div");
     icon.className = "habit-icon";
-    icon.innerHTML = ICONS[habit.icon] || "•";
+
+    const svg = ICONS[habit.icon];
+    icon.innerHTML = svg ?? "•";
 
     const info = document.createElement("div");
     info.className = "habit-info";
@@ -78,9 +84,14 @@ function createHabitRow(habit, added) {
     points.className = "habit-points";
     points.textContent = `+${habit.points}`;
 
-    const status = document.createElement("div");
-    status.className = "habit-status";
-    if (added) status.textContent = "Додано";
+    right.appendChild(points);
+
+    if (added) {
+        const status = document.createElement("div");
+        status.className = "habit-status";
+        status.textContent = "Додано";
+        right.appendChild(status);
+    }
 
     const check = document.createElement("div");
     check.className = "habit-check";
@@ -88,9 +99,6 @@ function createHabitRow(habit, added) {
         check.classList.add("checked");
         check.textContent = "✓";
     }
-
-    right.appendChild(points);
-    right.appendChild(status);
     right.appendChild(check);
 
     row.appendChild(left);
@@ -142,16 +150,10 @@ export function initHabitModal(userId) {
         row.classList.toggle("selected");
 
         const check = row.querySelector(".habit-check");
-        const status = row.querySelector(".habit-status");
-
         if (check) {
             const checked = row.classList.contains("selected");
             check.classList.toggle("checked", checked);
             check.textContent = checked ? "✓" : "";
-        }
-
-        if (status) {
-            status.textContent = "";
         }
 
         updateSaveState();
@@ -164,7 +166,9 @@ export function initHabitModal(userId) {
 
         const available = allHabits.filter(h => !userHabitIds.has(h.id));
         const added = allHabits.filter(h => userHabitIds.has(h.id));
+
         const sortedAvailable = sortAvailable(available, currentSort);
+        const sortedAdded = sortAdded(added);
 
         listBox.innerHTML = "";
 
@@ -189,7 +193,7 @@ export function initHabitModal(userId) {
         addedHeader.textContent = "Вже додані";
         listBox.appendChild(addedHeader);
 
-        added.forEach(habit => {
+        sortedAdded.forEach(habit => {
             listBox.appendChild(createHabitRow(habit, true));
         });
 
@@ -214,15 +218,20 @@ export function initHabitModal(userId) {
 
         saveBtn.disabled = true;
 
-        const habitIds = selected.map(row => Number(row.dataset.habitId));
-        const requests = habitIds.map(id => RecoveryAPI.addHabit(userId, id));
+        try {
+            const habitIds = selected.map(row => Number(row.dataset.habitId));
+            const requests = habitIds.map(id => RecoveryAPI.addHabit(userId, id));
 
-        await Promise.all(requests);
-        await RecoveryAPI.generateSnapshot(userId);
-        await refreshRecoveryDashboard(userId);
+            await Promise.all(requests);
+            await RecoveryAPI.generateSnapshot(userId);
+            await refreshRecoveryDashboard(userId);
 
-        showToast("Звички успішно додано");
-
-        close();
+            showToast("Звички успішно додано");
+            close();
+        } catch (e) {
+            showToast("Помилка при збереженні звичок");
+        } finally {
+            saveBtn.disabled = false;
+        }
     }
 }
