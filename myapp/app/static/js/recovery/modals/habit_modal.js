@@ -1,19 +1,19 @@
 import { RecoveryAPI } from "../api.js";
 import { refreshRecoveryDashboard } from "../dashboard.js";
-import { ICONS } from "../icons/icons.js";
-import { showTrainingToast } from "../../training/session.js";
+import { ICONS } from "../../icons/icons.js";
+import { showToast } from "../../shared/toast.js";
 
 let initialized = false;
 let currentSort = "points";
 
-const CATEGORY_MAP = {
+const CATEGORY_MAP = Object.freeze({
     hydration: "Вода",
     sleep: "Сон",
     nutrition: "Харчування",
     activity: "Активність",
     recovery: "Відновлення",
     stress: "Стрес"
-};
+});
 
 function localizeCategory(category) {
     if (!category) return "";
@@ -82,21 +82,26 @@ function createHabitRow(habit, selectable, added) {
     points.className = "habit-points";
     points.textContent = `+${habit.points}`;
 
+    const status = document.createElement("div");
+    status.className = "habit-status";
+    if (added) status.textContent = "Додано";
+
     const check = document.createElement("div");
     check.className = "habit-check";
     if (added) {
-        check.classList.add("habit-check-added");
-        check.textContent = "✓ Додано";
+        check.classList.add("checked");
+        check.textContent = "✓";
     }
 
     right.appendChild(points);
+    right.appendChild(status);
     right.appendChild(check);
 
     row.appendChild(left);
     row.appendChild(right);
 
     row.dataset.habitId = habit.id;
-    row.dataset.selectable = selectable ? "1" : "0";
+    if (!selectable) row.classList.add("habit-added");
 
     return row;
 }
@@ -137,13 +142,17 @@ export function initHabitModal(userId) {
     listBox.addEventListener("click", (event) => {
         const row = event.target.closest(".habit-row");
         if (!row) return;
-        if (row.dataset.selectable !== "1") return;
+        if (row.classList.contains("habit-added")) return;
 
         row.classList.toggle("selected");
         const check = row.querySelector(".habit-check");
+        const status = row.querySelector(".habit-status");
         if (check) {
             check.classList.toggle("checked");
             check.textContent = check.classList.contains("checked") ? "✓" : "";
+        }
+        if (status) {
+            status.textContent = check.classList.contains("checked") ? "" : "";
         }
         updateSaveState();
     });
@@ -215,8 +224,7 @@ export function initHabitModal(userId) {
             await Promise.all(requests);
             await RecoveryAPI.generateSnapshot(userId);
             await refreshRecoveryDashboard(userId);
-            showTrainingToast("Звички успішно додано");
-            await renderList();
+            showToast("Звички успішно додано");
             close();
         } finally {
             saveBtn.disabled = false;
