@@ -1,11 +1,11 @@
 .global-toast {
     position: fixed;
-    bottom: 18px;
-    right: 18px;
+    bottom: 20px;
+    right: 20px;
     padding: 10px 14px;
     border-radius: var(--nf-radius-md);
-    background: var(--nf-blue-soft);
-    color: #000;
+    background: var(--nf-surface-soft);
+    color: var(--nf-text-main);
     font-size: 13px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
     opacity: 0;
@@ -18,4 +18,24 @@
 .global-toast.visible {
     opacity: 1;
     transform: translateY(0);
+}
+
+.global-toast.info {
+    background: var(--nf-blue-soft);
+    color: var(--nf-text-main);
+}
+
+.global-toast.success {
+    background: var(--nf-green-soft);
+    color: var(--nf-text-main);
+}
+
+.global-toast.error {
+    background: var(--nf-red-soft);
+    color: var(--nf-on-red);
+}
+
+.global-toast.warning {
+    background: var(--nf-yellow-soft);
+    color: var(--nf-on-yellow);
 }
