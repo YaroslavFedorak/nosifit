@@ -22,20 +22,16 @@
 
 .global-toast.info {
     background: var(--nf-blue-soft);
-    color: var(--nf-text-main);
 }
 
 .global-toast.success {
     background: var(--nf-green-soft);
-    color: var(--nf-text-main);
 }
 
 .global-toast.error {
     background: var(--nf-red-soft);
-    color: var(--nf-on-red);
 }
 
 .global-toast.warning {
     background: var(--nf-yellow-soft);
-    color: var(--nf-on-yellow);
 }
