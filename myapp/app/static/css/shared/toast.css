@@ -1,0 +1,21 @@
+.global-toast {
+    position: fixed;
+    bottom: 18px;
+    right: 18px;
+    padding: 10px 14px;
+    border-radius: var(--nf-radius-md);
+    background: var(--nf-blue-soft);
+    color: #000;
+    font-size: 13px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+    opacity: 0;
+    transform: translateY(8px);
+    pointer-events: none;
+    transition: opacity .18s ease, transform .18s ease;
+    z-index: 4000;
+}
+
+.global-toast.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
