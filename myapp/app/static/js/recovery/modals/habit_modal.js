@@ -1,69 +1,129 @@
 import { RecoveryAPI } from "../api.js";
 import { refreshRecoveryDashboard } from "../dashboard.js";
+import { ICONS } from "../icons/icons.js";
+import { showTrainingToast } from "../../training/session.js";
 
-let habitsCache = null;
 let initialized = false;
 let currentSort = "points";
 
-async function loadHabits() {
-    if (habitsCache !== null) {
-        return habitsCache;
-    }
+const CATEGORY_MAP = {
+    hydration: "Вода",
+    sleep: "Сон",
+    nutrition: "Харчування",
+    activity: "Активність",
+    recovery: "Відновлення",
+    stress: "Стрес"
+};
 
-    try {
-        const habits = await RecoveryAPI.getHabitsList();
-        habitsCache = Array.isArray(habits) ? habits : [];
-    } catch {
-        habitsCache = [];
-    }
-
-    return habitsCache;
+function localizeCategory(category) {
+    if (!category) return "";
+    return CATEGORY_MAP[category] || category;
 }
 
-function sortHabits(habits, sortKey) {
-    if (sortKey === "points") {
-        return habits.sort((a, b) => b.points - a.points);
-    }
-    if (sortKey === "category") {
-        return habits.sort((a, b) => a.category.localeCompare(b.category));
-    }
-    if (sortKey === "name") {
-        return habits.sort((a, b) => a.name.localeCompare(b.name));
-    }
+async function loadAllHabits() {
+    const habits = await RecoveryAPI.getHabitsList();
+    return Array.isArray(habits) ? habits : [];
+}
+
+async function loadUserHabits(userId) {
+    const userHabits = await RecoveryAPI.getUserHabits(userId);
+    return Array.isArray(userHabits) ? userHabits : [];
+}
+
+function sortAvailable(habits, sortKey) {
+    if (sortKey === "points") return habits.sort((a, b) => b.points - a.points);
+    if (sortKey === "category") return habits.sort((a, b) => a.category.localeCompare(b.category));
+    if (sortKey === "name") return habits.sort((a, b) => a.name.localeCompare(b.name));
     return habits;
 }
 
-function toggleHabit(row) {
-    row.classList.toggle("selected");
+function createHabitRow(habit, selectable, added) {
+    const row = document.createElement("div");
+    row.className = "habit-row";
+    if (added) row.classList.add("habit-added");
+
+    const left = document.createElement("div");
+    left.className = "habit-left";
+
+    const icon = document.createElement("div");
+    icon.className = "habit-icon";
+    if (habit.icon && ICONS[habit.icon]) {
+        icon.innerHTML = ICONS[habit.icon];
+    } else {
+        icon.textContent = "•";
+    }
+
+    const info = document.createElement("div");
+    info.className = "habit-info";
+
+    const title = document.createElement("div");
+    title.className = "habit-title";
+    title.textContent = habit.name;
+
+    const description = document.createElement("div");
+    description.className = "habit-description";
+    description.textContent = habit.description || "";
+
+    const meta = document.createElement("div");
+    meta.className = "habit-meta";
+    meta.textContent = localizeCategory(habit.category);
+
+    info.appendChild(title);
+    if (habit.description) info.appendChild(description);
+    if (habit.category) info.appendChild(meta);
+
+    left.appendChild(icon);
+    left.appendChild(info);
+
+    const right = document.createElement("div");
+    right.className = "habit-right";
+
+    const points = document.createElement("div");
+    points.className = "habit-points";
+    points.textContent = `+${habit.points}`;
+
+    const check = document.createElement("div");
+    check.className = "habit-check";
+    if (added) {
+        check.classList.add("habit-check-added");
+        check.textContent = "✓ Додано";
+    }
+
+    right.appendChild(points);
+    right.appendChild(check);
+
+    row.appendChild(left);
+    row.appendChild(right);
+
+    row.dataset.habitId = habit.id;
+    row.dataset.selectable = selectable ? "1" : "0";
+
+    return row;
 }
 
 export function initHabitModal(userId) {
-    if (initialized) {
-        return;
-    }
+    if (initialized) return;
     initialized = true;
 
     const backdrop = document.getElementById("habit-modal-backdrop");
     const openBtn = document.getElementById("open-habit-modal");
     const closeBtn = document.getElementById("close-habit-modal");
-    const saveBtn = document.getElementById("save-habit");
     const backBtn = document.getElementById("habit-back-btn");
+    const saveBtn = document.getElementById("save-habit");
     const listBox = document.getElementById("habit-modal-list");
     const sortButtons = document.querySelectorAll(".habit-sort-btn");
 
     if (!backdrop || !openBtn || !closeBtn || !saveBtn || !listBox) return;
 
+    function updateSaveState() {
+        const selected = listBox.querySelectorAll(".habit-row.selected");
+        saveBtn.disabled = selected.length === 0;
+    }
+
     openBtn.addEventListener("click", open);
     closeBtn.addEventListener("click", close);
+    backBtn.addEventListener("click", close);
     saveBtn.addEventListener("click", save);
-    if (backBtn) backBtn.addEventListener("click", close);
-
-    listBox.addEventListener("click", (event) => {
-        const row = event.target.closest(".habit-modal-item");
-        if (!row) return;
-        event.stopPropagation();
-        toggleHabit(row);
-    });
 
     sortButtons.forEach(btn => {
         btn.addEventListener("click", () => {
@@ -74,66 +134,89 @@ export function initHabitModal(userId) {
         });
     });
 
+    listBox.addEventListener("click", (event) => {
+        const row = event.target.closest(".habit-row");
+        if (!row) return;
+        if (row.dataset.selectable !== "1") return;
+
+        row.classList.toggle("selected");
+        const check = row.querySelector(".habit-check");
+        if (check) {
+            check.classList.toggle("checked");
+            check.textContent = check.classList.contains("checked") ? "✓" : "";
+        }
+        updateSaveState();
+    });
+
     async function renderList() {
-        const habits = await loadHabits();
-        const sorted = sortHabits([...habits], currentSort);
+        const allHabits = await loadAllHabits();
+        const userHabits = await loadUserHabits(userId);
+        const userHabitIds = new Set(userHabits.map(h => h.habit_id));
+
+        const available = allHabits.filter(h => !userHabitIds.has(h.id));
+        const added = allHabits.filter(h => userHabitIds.has(h.id));
+        const sortedAvailable = sortAvailable([...available], currentSort);
 
         listBox.innerHTML = "";
 
-        sorted.forEach(habit => {
-            const row = document.createElement("div");
-            row.className = "habit-modal-item";
-            row.dataset.habitId = habit.id;
+        const availableHeader = document.createElement("div");
+        availableHeader.className = "habit-section-title";
+        availableHeader.textContent = "Доступні";
+        listBox.appendChild(availableHeader);
 
-            row.addEventListener("click", () => {
-                row.classList.toggle("selected");
+        if (sortedAvailable.length === 0) {
+            const empty = document.createElement("div");
+            empty.className = "habit-empty";
+            empty.textContent = "Усі доступні звички вже додані 🎉";
+            listBox.appendChild(empty);
+        } else {
+            sortedAvailable.forEach(habit => {
+                const row = createHabitRow(habit, true, false);
+                listBox.appendChild(row);
             });
+        }
 
-            const title = document.createElement("div");
-            title.className = "habit-title";
-            title.textContent = `${habit.name} (+${habit.points})`;
+        const addedHeader = document.createElement("div");
+        addedHeader.className = "habit-section-title";
+        addedHeader.textContent = "Вже додані";
+        listBox.appendChild(addedHeader);
 
-            const meta = document.createElement("div");
-            meta.className = "habit-meta";
-            meta.textContent = habit.category;
-
-            row.appendChild(title);
-            row.appendChild(meta);
-
+        added.forEach(habit => {
+            const row = createHabitRow(habit, false, true);
             listBox.appendChild(row);
         });
+
+        updateSaveState();
     }
 
     async function open() {
         backdrop.classList.add("open");
-        renderList();
+        await renderList();
     }
 
     function close() {
         backdrop.classList.remove("open");
         listBox.innerHTML = "";
+        saveBtn.disabled = true;
     }
 
     async function save() {
-        const selected = [...listBox.querySelectorAll(".habit-modal-item.selected")];
-        if (selected.length === 0) {
-            alert("Оберіть хоча б одну звичку");
-            return;
-        }
+        const selected = [...listBox.querySelectorAll(".habit-row.selected")];
+        if (selected.length === 0) return;
 
         saveBtn.disabled = true;
 
         try {
-            for (const row of selected) {
+            const requests = selected.map(row => {
                 const habitId = Number(row.dataset.habitId);
-                if (!Number.isNaN(habitId)) {
-                    await RecoveryAPI.addHabit(userId, habitId);
-                }
-            }
+                return RecoveryAPI.addHabit(userId, habitId);
+            });
 
+            await Promise.all(requests);
             await RecoveryAPI.generateSnapshot(userId);
             await refreshRecoveryDashboard(userId);
-
+            showTrainingToast("Звички успішно додано");
+            await renderList();
             close();
         } finally {
             saveBtn.disabled = false;
