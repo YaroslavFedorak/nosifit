@@ -74,7 +74,16 @@
     font-weight: 600;
     color: var(--nf-text-muted);
     margin-top: 6px;
-    margin-bottom: 2px;
+    margin-bottom: 4px;
+}
+
+.habit-empty {
+    padding: 14px 16px;
+    border-radius: var(--nf-radius-md);
+    border: 1px dashed var(--nf-border-soft);
+    background: var(--nf-surface-soft);
+    font-size: 14px;
+    color: var(--nf-text-main);
 }
 
 .habit-row {
@@ -100,7 +109,7 @@
     box-shadow: 0 0 0 1px rgba(0, 180, 255, 0.35);
 }
 
-.habit-row.habit-disabled {
+.habit-row.habit-added {
     opacity: 0.55;
     cursor: default;
     background: var(--nf-surface-soft);
@@ -116,7 +125,7 @@
 .habit-icon {
     width: 28px;
     height: 28px;
-    border-radius: var(--nf-radius-sm);
+    border-radius: 999px;
     background: var(--nf-blue-soft);
     color: #000;
     display: flex;
@@ -137,15 +146,20 @@
     color: var(--nf-text-main);
 }
 
-.habit-meta {
+.habit-description {
     font-size: 13px;
+    color: var(--nf-text-muted);
+}
+
+.habit-meta {
+    font-size: 12px;
     color: var(--nf-text-muted);
 }
 
 .habit-right {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
 }
 
 .habit-points {
@@ -155,19 +169,27 @@
 }
 
 .habit-check {
-    width: 22px;
-    height: 22px;
+    min-width: 24px;
+    height: 24px;
     border-radius: 6px;
     border: 2px solid var(--nf-border-soft);
     display: flex;
     align-items: center;
     justify-content: center;
+    font-size: 13px;
+    color: var(--nf-text-muted);
     transition: var(--nf-transition);
 }
 
 .habit-check.checked {
     border-color: var(--nf-blue);
     background: var(--nf-blue);
+    color: #000;
+}
+
+.habit-check-added {
+    border-color: var(--nf-green);
+    background: var(--nf-green-soft);
     color: #000;
 }
 
