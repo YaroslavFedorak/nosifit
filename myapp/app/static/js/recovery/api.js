@@ -58,7 +58,7 @@ const ENDPOINTS = {
     heatmap: (userId, year) => `${API_BASE}/heatmap/${userId}?year=${year}`,
     recommendations: (userId) => `${API_BASE}/recommendations/${userId}`,
     sleep: () => `${API_BASE}/sleep`,
-    addHabit: () => `${API_BASE}/habits`,
+    addHabit: () => `${API_BASE}/habits/add`,
     removeHabit: (userHabitId) => `${API_BASE}/habits/${userHabitId}`,
     logHabit: () => `${API_BASE}/habits/logs`,
     habitsList: () => `${API_BASE}/habits/list`,
@@ -90,11 +90,10 @@ export const RecoveryAPI = {
     },
 
     addHabit(userId, habitId) {
-        return request(ENDPOINTS.addHabit(), {
+        return request(`${ENDPOINTS.addHabit()}/${habitId}`, {
             method: "POST",
             body: JSON.stringify({
-                user_id: userId,
-                habit_id: habitId
+                user_id: userId
             })
         });
     },
@@ -128,7 +127,7 @@ export const RecoveryAPI = {
         return request(ENDPOINTS.habitsList());
     },
 
-    getUserHabits(userId) {      
+    getUserHabits(userId) {
         return request(ENDPOINTS.userHabits(userId));
     }
 };
