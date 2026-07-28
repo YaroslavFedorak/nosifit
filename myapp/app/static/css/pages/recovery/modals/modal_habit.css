@@ -114,6 +114,7 @@
     cursor: default;
     background: var(--nf-surface-soft);
     border-color: var(--nf-border-soft);
+    pointer-events: none;
 }
 
 .habit-left {
@@ -168,6 +169,11 @@
     color: var(--nf-text-main);
 }
 
+.habit-status {
+    font-size: 12px;
+    color: var(--nf-text-muted);
+}
+
 .habit-check {
     min-width: 24px;
     height: 24px;
@@ -184,12 +190,6 @@
 .habit-check.checked {
     border-color: var(--nf-blue);
     background: var(--nf-blue);
-    color: #000;
-}
-
-.habit-check-added {
-    border-color: var(--nf-green);
-    background: var(--nf-green-soft);
     color: #000;
 }
 
