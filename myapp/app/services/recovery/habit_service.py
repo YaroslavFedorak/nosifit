@@ -24,6 +24,29 @@ class HabitService:
         habits = RecoveryHabit.query.filter(RecoveryHabit.id.in_(habit_ids)).all()
         return habits
 
+    def get_user_habits_with_status(self, user_id):
+        user_habits = self.get_user_habits(user_id)
+        if not user_habits:
+            return []
+
+        user_habit_ids = [h.id for h in user_habits]
+        logs = RecoveryHabitLog.query.filter(
+            RecoveryHabitLog.user_habit_id.in_(user_habit_ids),
+            RecoveryHabitLog.date == date.today(),
+        ).all()
+        completed_ids = {log.user_habit_id for log in logs if log.completed}
+
+        habit_ids = [h.habit_id for h in user_habits]
+        habits = RecoveryHabit.query.filter(RecoveryHabit.id.in_(habit_ids)).all()
+        habit_by_id = {h.id: h for h in habits}
+
+        result = []
+        for uh in user_habits:
+            habit = habit_by_id.get(uh.habit_id)
+            if habit:
+                result.append((habit, uh.id in completed_ids))
+        return result
+
     def add_user_habit(self, user_id, habit_id):
         existing = UserRecoveryHabit.query.filter_by(
             user_id=user_id, habit_id=habit_id
