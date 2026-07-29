@@ -19,8 +19,7 @@
 }
 
 .habit-item.habit-completed {
-    background: var(--nf-surface-soft);
-    border-color: var(--nf-green-soft);
+    border-color: var(--nf-green);
     opacity: 0.9;
 }
 
@@ -38,16 +37,29 @@
 }
 
 .habit-check.habit-check-completed {
-    background: var(--nf-green-soft);
+    background: var(--nf-green);
     border-color: var(--nf-green);
 }
 
-.habit-title {
-    font-size: 15px;
-    font-weight: 500;
+.habit-actions {
+    display: flex;
+    gap: 8px;
 }
 
-.habit-meta {
-    font-size: 14px;
-    color: var(--nf-text-muted);
+.habit-btn {
+    background: var(--nf-blue);
+    color: white;
+    border: none;
+    padding: 6px 10px;
+    border-radius: var(--nf-radius-sm);
+    cursor: pointer;
+}
+
+.habit-btn-remove {
+    background: var(--nf-red);
+    color: white;
+    border: none;
+    padding: 6px 10px;
+    border-radius: var(--nf-radius-sm);
+    cursor: pointer;
 }
