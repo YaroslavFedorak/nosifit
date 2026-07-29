@@ -9,15 +9,18 @@ import {
 } from "./dom.js";
 
 const MINI_BAR_SEGMENTS = 5;
+const LOW_THRESHOLD = 40;
+const HIGH_THRESHOLD = 70;
 
 function normalize(value) {
-    return Math.max(0, Math.min(value ?? 0, 100));
+    if (typeof value !== "number" || Number.isNaN(value)) return 0;
+    return Math.max(0, Math.min(value, 100));
 }
 
 function getLevel(score) {
     const value = normalize(score);
-    if (value < 40) return "low";
-    if (value < 70) return "medium";
+    if (value < LOW_THRESHOLD) return "low";
+    if (value < HIGH_THRESHOLD) return "medium";
     return "high";
 }
 
