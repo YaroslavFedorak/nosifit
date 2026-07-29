@@ -21,39 +21,33 @@ export function getLevel(value) {
 export function formatMiniBar(value) {
     const v = normalizeScore(value);
     const blocks = Math.round(v / (100 / MINI_BAR_SEGMENTS));
-    const filled = "▰".repeat(blocks);
-    const empty = "▱".repeat(MINI_BAR_SEGMENTS - blocks);
-    return filled + empty;
+    return "▰".repeat(blocks) + "▱".repeat(MINI_BAR_SEGMENTS - blocks);
 }
 
 export function formatDateShort(dateStr) {
     const d = new Date(dateStr);
-    return d.toLocaleDateString("uk-UA", {
-        day: "numeric",
-        month: "short"
-    });
+    return d.toLocaleDateString("uk-UA", { day: "numeric", month: "short" });
 }
 
 export function formatDateLong(dateStr) {
     const d = new Date(dateStr);
-    return d.toLocaleDateString("uk-UA", {
-        day: "numeric",
-        month: "long",
-        year: "numeric"
-    });
+    return d.toLocaleDateString("uk-UA", { day: "numeric", month: "long", year: "numeric" });
 }
 
 export function formatSleep(minutes) {
     if (minutes == null) return null;
     const total = Number(minutes);
     if (Number.isNaN(total) || total < 0) return null;
-    const hours = Math.floor(total / 60);
-    const mins = String(total % 60).padStart(2, "0");
-    return `${hours} год ${mins} хв`;
+    const h = Math.floor(total / 60);
+    const m = String(total % 60).padStart(2, "0");
+    return `${h} год ${m} хв`;
 }
 
-export function formatTooltipDay(dateStr, score) {
-    const date = formatDateShort(dateStr);
-    const v = normalizeScore(score);
-    return `${date} · Відновлення ${v}`;
+export function formatTooltipDayHTML(data) {
+    const date = formatDateShort(data.date);
+    const score = formatScore(data.recovery_score);
+    return `
+        <div class="tt-date">${date}</div>
+        <div class="tt-line">Відновлення: ${score}</div>
+    `;
 }
