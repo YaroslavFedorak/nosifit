@@ -86,8 +86,19 @@ def get_habits_list():
 
 @recovery_bp.get("/habits/user/<int:user_id>")
 def get_user_habits(user_id):
-    habits = habit_service.get_user_habits(user_id)
-    return jsonify([{"id": h.id, "habit_id": h.habit_id} for h in habits])
+    habits = habit_service.get_user_habits_full(user_id)
+    return jsonify(
+        [
+            {
+                "id": h.id,
+                "name": h.name,
+                "category": h.category,
+                "points": h.points,
+                "icon": h.icon,
+            }
+            for h in habits
+        ]
+    )
 
 
 @recovery_bp.post("/habits/add/<int:habit_id>")
