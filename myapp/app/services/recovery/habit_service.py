@@ -86,6 +86,7 @@ class HabitService:
             return None
 
         today = date.today()
+
         log = RecoveryHabitLog.query.filter_by(
             user_habit_id=user_habit_id, date=today
         ).first()
@@ -96,6 +97,7 @@ class HabitService:
         else:
             log = RecoveryHabitLog(
                 user_habit_id=user_habit_id,
+                user_id=habit.user_id,
                 date=today,
                 completed=True,
                 completed_at=db.func.now(),
