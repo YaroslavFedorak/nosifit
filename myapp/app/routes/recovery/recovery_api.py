@@ -164,7 +164,26 @@ def get_snapshot(user_id):
     if snapshot is None:
         return jsonify({"snapshot": None}), 200
 
-    return jsonify(snapshot.to_dict()), 200
+    habits = habit_service.get_user_habits_full(user_id)
+
+    return (
+        jsonify(
+            {
+                **snapshot.to_dict(),
+                "habits": [
+                    {
+                        "id": h.id,
+                        "name": h.name,
+                        "category": h.category,
+                        "points": h.points,
+                        "icon": h.icon,
+                    }
+                    for h in habits
+                ],
+            }
+        ),
+        200,
+    )
 
 
 @recovery_bp.get("/heatmap/<int:user_id>")
