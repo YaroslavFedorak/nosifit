@@ -4,8 +4,6 @@ import { openDayDetailsModal } from "./day_details_modal.js";
 import { renderRecoveryCalendar } from "./calendar.js";
 import { openCalendarModal, initCalendarModalControls } from "./calendar_modal.js";
 
-let HEATMAP_DATA = [];
-
 function getWeekIndex(date) {
     const yearStart = new Date(date.getFullYear(), 0, 1);
     const dayOffset = (yearStart.getDay() + 6) % 7;
@@ -21,7 +19,6 @@ export function renderRecoveryHeatmap(days) {
 
     if (!grid || !tooltip) return;
 
-    HEATMAP_DATA = Array.isArray(days) ? days : [];
     grid.innerHTML = "";
 
     const weeks = [];
@@ -29,7 +26,7 @@ export function renderRecoveryHeatmap(days) {
         weeks.push(new Array(7).fill(null));
     }
 
-    HEATMAP_DATA.forEach(d => {
+    days.forEach(d => {
         if (!d?.date) return;
         const date = new Date(d.date);
         const dayOfWeek = date.getDay();
@@ -53,13 +50,8 @@ export function renderRecoveryHeatmap(days) {
             cell.className = "rc-heatmap-cell";
 
             if (cellData) {
-                if (cellData.level > 0) {
-                    cell.dataset.level = String(cellData.level);
-                }
-
-                if (cellData.date === todayIso) {
-                    cell.classList.add("today");
-                }
+                if (cellData.level > 0) cell.dataset.level = String(cellData.level);
+                if (cellData.date === todayIso) cell.classList.add("today");
 
                 attachTooltip(cell, cellData, tooltip);
                 cell.addEventListener("click", () => openDayDetailsModal(cellData.date));
@@ -94,11 +86,9 @@ export function initRecoveryHeatmap() {
         RecoveryAPI.getHeatmap(userId, year)
             .then(data => {
                 const days = Array.isArray(data?.days) ? data.days : [];
-                HEATMAP_DATA = days;
                 renderRecoveryHeatmap(days);
             })
             .catch(() => {
-                HEATMAP_DATA = [];
                 renderRecoveryHeatmap([]);
             });
     };
@@ -109,8 +99,16 @@ export function initRecoveryHeatmap() {
 
     openCalendarBtn.addEventListener("click", () => {
         const year = Number(yearSelect.value || nowYear);
-        renderRecoveryCalendar(HEATMAP_DATA, year);
-        openCalendarModal();
+        RecoveryAPI.getHeatmap(userId, year)
+            .then(data => {
+                const days = Array.isArray(data?.days) ? data.days : [];
+                renderRecoveryCalendar(days, year);
+                openCalendarModal();
+            })
+            .catch(() => {
+                renderRecoveryCalendar([], year);
+                openCalendarModal();
+            });
     });
 
     initCalendarModalControls();
