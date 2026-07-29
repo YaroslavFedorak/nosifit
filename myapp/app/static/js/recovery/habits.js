@@ -1,10 +1,7 @@
 import { RECOVERY_MESSAGES } from "./messages.js";
-import {
-    clearElement,
-    createCard,
-    createTitle,
-    createEmpty
-} from "./dom.js";
+import { clearElement, createCard, createTitle, createEmpty } from "./dom.js";
+import { RecoveryAPI } from "./api.js";
+import { refreshRecoveryDashboard } from "./dashboard.js";
 
 export function renderHabitsWidget(snapshot, options = {}) {
     const el = document.getElementById("habits-widget");
@@ -36,18 +33,14 @@ export function renderHabitsWidget(snapshot, options = {}) {
     snapshot.habits.forEach(habit => {
         const item = document.createElement("div");
         item.className = "habit-item";
-        if (habit.completed) {
-            item.classList.add("habit-completed");
-        }
+        if (habit.completed) item.classList.add("habit-completed");
 
         const left = document.createElement("div");
         left.className = "habit-left";
 
         const icon = document.createElement("div");
         icon.className = "habit-check";
-        if (habit.completed) {
-            icon.classList.add("habit-check-completed");
-        }
+        if (habit.completed) icon.classList.add("habit-check-completed");
 
         const title = document.createElement("div");
         title.className = "habit-title";
@@ -61,11 +54,32 @@ export function renderHabitsWidget(snapshot, options = {}) {
         left.appendChild(title);
         left.appendChild(meta);
 
-        const points = document.createElement("div");
-        points.textContent = `+${habit.points}`;
+        const actions = document.createElement("div");
+        actions.className = "habit-actions";
+
+        const completeBtn = document.createElement("button");
+        completeBtn.className = "habit-btn";
+        completeBtn.textContent = habit.completed ? "✓" : "Виконати";
+
+        completeBtn.addEventListener("click", async () => {
+            await RecoveryAPI.logHabit(habit.user_habit_id);
+            await refreshRecoveryDashboard(snapshot.user_id);
+        });
+
+        const removeBtn = document.createElement("button");
+        removeBtn.className = "habit-btn-remove";
+        removeBtn.textContent = "✕";
+
+        removeBtn.addEventListener("click", async () => {
+            await RecoveryAPI.removeHabit(habit.user_habit_id);
+            await refreshRecoveryDashboard(snapshot.user_id);
+        });
+
+        actions.appendChild(completeBtn);
+        actions.appendChild(removeBtn);
 
         item.appendChild(left);
-        item.appendChild(points);
+        item.appendChild(actions);
 
         list.appendChild(item);
     });
