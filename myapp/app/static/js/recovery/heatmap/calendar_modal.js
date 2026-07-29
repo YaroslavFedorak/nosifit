@@ -11,10 +11,6 @@ export function closeCalendarModal() {
 }
 
 export function initCalendarModalControls() {
-    const closeButtons = document.querySelectorAll("[data-close-calendar]");
-    closeButtons.forEach(btn =>
-        btn.addEventListener("click", () => {
-            closeCalendarModal();
-        })
-    );
+    const buttons = document.querySelectorAll("[data-close-calendar]");
+    buttons.forEach(btn => btn.addEventListener("click", closeCalendarModal));
 }
