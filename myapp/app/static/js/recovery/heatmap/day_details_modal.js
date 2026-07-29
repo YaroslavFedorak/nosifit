@@ -31,52 +31,45 @@ export function openDayDetailsModal(dateStr) {
                 const container = document.createElement("div");
                 container.className = "rc-day-info";
 
-                const recoveryCard = createDayCard({
+                container.appendChild(createDayCard({
                     kind: "recovery",
                     label: "Відновлення",
                     score: snapshot.recovery_score,
                     extra: null,
                     icon: ICONS.heart_pulse
-                });
+                }));
 
-                const sleepExtra = formatSleep(snapshot.sleep_duration_minutes);
-                const sleepCard = createDayCard({
+                container.appendChild(createDayCard({
                     kind: "sleep",
                     label: "Сон",
                     score: snapshot.sleep_score,
-                    extra: sleepExtra,
+                    extra: formatSleep(snapshot.sleep_duration_minutes),
                     icon: ICONS.moon
-                });
+                }));
 
-                const trainingCard = createDayCard({
+                container.appendChild(createDayCard({
                     kind: "training",
                     label: "Тренування",
                     score: snapshot.training_score,
                     extra: null,
                     icon: ICONS.exercise
-                });
+                }));
 
-                const habitsCard = createDayCard({
+                container.appendChild(createDayCard({
                     kind: "habits",
                     label: "Звички",
                     score: snapshot.habit_score,
                     extra: null,
                     icon: ICONS.habits
-                });
+                }));
 
-                const energyCard = createDayCard({
+                container.appendChild(createDayCard({
                     kind: "energy",
                     label: "Енергія",
                     score: snapshot.energy_score,
                     extra: null,
                     icon: ICONS.energy
-                });
-
-                container.appendChild(recoveryCard);
-                container.appendChild(sleepCard);
-                container.appendChild(trainingCard);
-                container.appendChild(habitsCard);
-                container.appendChild(energyCard);
+                }));
 
                 body.appendChild(container);
             }
@@ -90,4 +83,15 @@ export function openDayDetailsModal(dateStr) {
             body.appendChild(p);
             modal.classList.add("open");
         });
+}
+
+export function closeDayDetailsModal() {
+    const modal = document.getElementById("rc-day-details-modal");
+    if (!modal) return;
+    modal.classList.remove("open");
+}
+
+export function initDayDetailsModalControls() {
+    const buttons = document.querySelectorAll("[data-close-day-details]");
+    buttons.forEach(btn => btn.addEventListener("click", closeDayDetailsModal));
 }
