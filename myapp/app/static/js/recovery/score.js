@@ -24,14 +24,16 @@ function getLevel(score) {
 function miniBar(score) {
     const value = normalize(score);
     const blocks = Math.round(value / (100 / MINI_BAR_SEGMENTS));
+    const level = getLevel(value);
+
     const bar = document.createElement("span");
-    bar.className = `score-mini-bar ${getLevel(value)}`;
+    bar.className = `score-mini-bar ${level}`;
     bar.textContent = "▰".repeat(blocks) + "▱".repeat(MINI_BAR_SEGMENTS - blocks);
     return bar;
 }
 
 function formatSleep(minutes) {
-    if (!minutes) return null;
+    if (minutes == null) return null;
     const h = Math.floor(minutes / 60);
     const m = String(minutes % 60).padStart(2, "0");
     return `${h}h ${m}m`;
@@ -63,7 +65,7 @@ function createRow(iconSvg, label, score, extra = null) {
     const bar = miniBar(score);
     const value = document.createElement("span");
     value.className = "score-value";
-    value.textContent = normalize(score);
+    value.textContent = score ?? "—";
 
     right.appendChild(bar);
     right.appendChild(value);
@@ -119,9 +121,14 @@ export function renderScoreWidget(snapshot, options = {}) {
     header.appendChild(icon);
     header.appendChild(title);
 
+    const totalScore = snapshot.recovery_score;
     const total = document.createElement("div");
-    total.className = `score-total ${getLevel(snapshot.recovery_score)}`;
-    total.textContent = normalize(snapshot.recovery_score);
+    total.className = "score-total";
+    total.textContent = totalScore ?? "—";
+
+    if (totalScore != null) {
+        total.classList.add(getLevel(totalScore));
+    }
 
     card.appendChild(header);
     card.appendChild(total);
