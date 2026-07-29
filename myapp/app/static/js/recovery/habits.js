@@ -36,12 +36,18 @@ export function renderHabitsWidget(snapshot, options = {}) {
     snapshot.habits.forEach(habit => {
         const item = document.createElement("div");
         item.className = "habit-item";
+        if (habit.completed) {
+            item.classList.add("habit-completed");
+        }
 
         const left = document.createElement("div");
         left.className = "habit-left";
 
         const icon = document.createElement("div");
         icon.className = "habit-check";
+        if (habit.completed) {
+            icon.classList.add("habit-check-completed");
+        }
 
         const title = document.createElement("div");
         title.className = "habit-title";
