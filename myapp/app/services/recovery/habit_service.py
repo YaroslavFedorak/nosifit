@@ -16,6 +16,14 @@ class HabitService:
     def get_user_habits(self, user_id):
         return UserRecoveryHabit.query.filter_by(user_id=user_id, is_active=True).all()
 
+    def get_user_habits_full(self, user_id):
+        user_habits = self.get_user_habits(user_id)
+        habit_ids = [h.habit_id for h in user_habits]
+        if not habit_ids:
+            return []
+        habits = RecoveryHabit.query.filter(RecoveryHabit.id.in_(habit_ids)).all()
+        return habits
+
     def add_user_habit(self, user_id, habit_id):
         existing = UserRecoveryHabit.query.filter_by(
             user_id=user_id, habit_id=habit_id
