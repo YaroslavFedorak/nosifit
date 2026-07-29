@@ -73,7 +73,7 @@ class HabitService:
         return habit, True
 
     def remove_user_habit(self, user_habit_id):
-        habit = UserRecoveryHabit.query.get(user_habit_id)
+        habit = db.session.get(UserRecoveryHabit, user_habit_id)
         if not habit:
             return None
         habit.is_active = False
@@ -81,7 +81,7 @@ class HabitService:
         return habit
 
     def log_habit(self, user_habit_id):
-        habit = UserRecoveryHabit.query.get(user_habit_id)
+        habit = db.session.get(UserRecoveryHabit, user_habit_id)
         if not habit:
             return None
 
@@ -106,3 +106,15 @@ class HabitService:
 
         db.session.commit()
         return log
+
+    def get_today_logs(self, user_id):
+        habits = self.get_user_habits(user_id)
+        ids = [h.id for h in habits]
+
+        if not ids:
+            return []
+
+        return RecoveryHabitLog.query.filter(
+            RecoveryHabitLog.user_habit_id.in_(ids),
+            RecoveryHabitLog.date == date.today(),
+        ).all()
