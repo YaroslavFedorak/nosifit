@@ -8,24 +8,41 @@ import {
     createEmpty
 } from "./dom.js";
 
+const MINI_BAR_SEGMENTS = 5;
+
+function normalize(value) {
+    return Math.max(0, Math.min(value ?? 0, 100));
+}
+
 function getLevel(score) {
-    if (score == null) return "neutral";
-    if (score < 40) return "low";
-    if (score < 70) return "medium";
+    const value = normalize(score);
+    if (value < 40) return "low";
+    if (value < 70) return "medium";
     return "high";
 }
 
 function miniBar(score) {
-    const blocks = Math.round((score ?? 0) / 20);
+    const value = normalize(score);
+    const blocks = Math.round(value / (100 / MINI_BAR_SEGMENTS));
     const bar = document.createElement("span");
-    bar.className = `score-mini-bar ${getLevel(score)}`;
-    bar.textContent = "▰".repeat(blocks) + "▱".repeat(5 - blocks);
+    bar.className = `score-mini-bar ${getLevel(value)}`;
+    bar.textContent = "▰".repeat(blocks) + "▱".repeat(MINI_BAR_SEGMENTS - blocks);
     return bar;
+}
+
+function formatSleep(minutes) {
+    if (!minutes) return null;
+    const h = Math.floor(minutes / 60);
+    const m = String(minutes % 60).padStart(2, "0");
+    return `${h}h ${m}m`;
 }
 
 function createRow(iconSvg, label, score, extra = null) {
     const row = document.createElement("div");
     row.className = "score-row";
+
+    const wrapper = document.createElement("div");
+    wrapper.className = "score-row-wrapper";
 
     const left = document.createElement("div");
     left.className = "score-row-left";
@@ -46,16 +63,13 @@ function createRow(iconSvg, label, score, extra = null) {
     const bar = miniBar(score);
     const value = document.createElement("span");
     value.className = "score-value";
-    value.textContent = score ?? "—";
+    value.textContent = normalize(score);
 
     right.appendChild(bar);
     right.appendChild(value);
 
-    const wrapper = document.createElement("div");
-    wrapper.className = "score-row-wrapper";
     wrapper.appendChild(left);
     wrapper.appendChild(right);
-
     row.appendChild(wrapper);
 
     if (extra) {
@@ -107,7 +121,7 @@ export function renderScoreWidget(snapshot, options = {}) {
 
     const total = document.createElement("div");
     total.className = `score-total ${getLevel(snapshot.recovery_score)}`;
-    total.textContent = snapshot.recovery_score ?? "—";
+    total.textContent = normalize(snapshot.recovery_score);
 
     card.appendChild(header);
     card.appendChild(total);
@@ -119,12 +133,8 @@ export function renderScoreWidget(snapshot, options = {}) {
     const content = document.createElement("div");
     content.className = "score-content";
 
-    const sleepExtra = snapshot.sleep_duration_minutes
-        ? `${Math.floor(snapshot.sleep_duration_minutes / 60)}h ${snapshot.sleep_duration_minutes % 60}m`
-        : null;
-
     content.appendChild(
-        createRow(ICONS.moon, "Sleep", snapshot.sleep_score, sleepExtra)
+        createRow(ICONS.moon, "Sleep", snapshot.sleep_score, formatSleep(snapshot.sleep_duration_minutes))
     );
 
     content.appendChild(
