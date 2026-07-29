@@ -18,6 +18,12 @@
     color: var(--nf-text-main);
 }
 
+.habit-item.habit-completed {
+    background: var(--nf-surface-soft);
+    border-color: var(--nf-green-soft);
+    opacity: 0.9;
+}
+
 .habit-left {
     display: flex;
     align-items: center;
@@ -29,6 +35,11 @@
     height: 20px;
     border-radius: var(--nf-radius-sm);
     border: 2px solid var(--nf-blue);
+}
+
+.habit-check.habit-check-completed {
+    background: var(--nf-green-soft);
+    border-color: var(--nf-green);
 }
 
 .habit-title {
