@@ -16,6 +16,18 @@
     color: var(--nf-blue);
 }
 
+.score-total.low {
+    color: var(--nf-red);
+}
+
+.score-total.medium {
+    color: var(--nf-yellow);
+}
+
+.score-total.high {
+    color: var(--nf-green);
+}
+
 .score-divider {
     height: 1px;
     background: var(--nf-border-soft);
