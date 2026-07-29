@@ -12,9 +12,7 @@ export function createDayCard(config) {
 
     const iconBox = document.createElement("span");
     iconBox.className = "rc-day-card-icon";
-    if (icon) {
-        iconBox.innerHTML = icon;
-    }
+    if (icon) iconBox.innerHTML = icon;
 
     const title = document.createElement("span");
     title.className = "rc-day-card-title";
