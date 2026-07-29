@@ -164,7 +164,7 @@ def get_snapshot(user_id):
     if snapshot is None:
         return jsonify({"snapshot": None}), 200
 
-    habits = habit_service.get_user_habits_full(user_id)
+    habits_with_status = habit_service.get_user_habits_with_status(user_id)
 
     return (
         jsonify(
@@ -177,8 +177,9 @@ def get_snapshot(user_id):
                         "category": h.category,
                         "points": h.points,
                         "icon": h.icon,
+                        "completed": completed,
                     }
-                    for h in habits
+                    for h, completed in habits_with_status
                 ],
             }
         ),
