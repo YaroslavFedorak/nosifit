@@ -16,8 +16,7 @@ function buildMonthDays(year, month) {
     }
 
     for (let d = 1; d <= lastDay.getDate(); d++) {
-        const date = new Date(year, month, d);
-        days.push(date);
+        days.push(new Date(year, month, d));
     }
 
     return days;
@@ -37,9 +36,7 @@ export function renderRecoveryCalendar(days, year) {
 
     const byDate = new Map();
     days.forEach(d => {
-        if (d?.date) {
-            byDate.set(d.date, d);
-        }
+        if (d?.date) byDate.set(d.date, d);
     });
 
     for (let month = 0; month < 12; month++) {
@@ -52,8 +49,7 @@ export function renderRecoveryCalendar(days, year) {
 
         const weekHeader = document.createElement("div");
         weekHeader.className = "rc-calendar-week-header";
-        const weekdays = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Нд"];
-        weekdays.forEach(w => {
+        ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Нд"].forEach(w => {
             const wd = document.createElement("div");
             wd.className = "rc-calendar-weekday";
             wd.textContent = w;
@@ -75,19 +71,16 @@ export function renderRecoveryCalendar(days, year) {
                 return;
             }
 
-            const dayNum = date.getDate();
-            btn.textContent = String(dayNum);
-
             const iso = date.toISOString().slice(0, 10);
             const data = byDate.get(iso);
+
+            btn.textContent = String(date.getDate());
 
             if (!data) {
                 btn.classList.add("no-data");
             } else {
                 const level = Number(data.level) || 0;
-                if (level > 0) {
-                    btn.dataset.level = String(level);
-                }
+                if (level > 0) btn.dataset.level = String(level);
                 btn.addEventListener("click", () => openDayDetailsModal(iso));
             }
 
