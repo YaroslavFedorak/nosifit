@@ -1,4 +1,4 @@
-import { formatTooltipDay } from "./formatters.js";
+import { formatTooltipDayHTML } from "./formatters.js";
 
 function positionTooltip(event, tooltipEl) {
     const x = event.clientX + 12;
@@ -11,7 +11,7 @@ export function attachTooltip(cell, data, tooltipEl) {
     if (!cell || !tooltipEl || !data) return;
 
     cell.addEventListener("mouseenter", event => {
-        tooltipEl.textContent = formatTooltipDay(data.date, data.recovery_score);
+        tooltipEl.innerHTML = formatTooltipDayHTML(data);
         tooltipEl.classList.add("visible");
         positionTooltip(event, tooltipEl);
     });
