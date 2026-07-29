@@ -1,7 +1,7 @@
 import { RecoveryAPI } from "./api.js";
 import { renderSleepWidget } from "./sleep.js";
 import { renderHabitsWidget } from "./habits.js";
-import { renderRecoveryHeatmap } from "./heatmap.js";
+import { renderRecoveryHeatmap } from "./heatmap/heatmap.js";
 import { renderRecommendationsWidget } from "./recommendations.js";
 import { renderScoreWidget } from "./score.js";
 
@@ -24,17 +24,16 @@ function resolveUserId() {
 
 function renderHeatmapWidget(data, opts = {}) {
     const grid = document.getElementById("recovery-heatmap");
-    const tooltip = document.getElementById("rc-heatmap-tooltip");
 
     if (opts.loading) {
         if (grid) grid.innerHTML = "<div class='rc-loading'>Завантаження…</div>";
         return;
     }
 
-    if (!grid || !tooltip) return;
+    if (!grid) return;
 
     const days = Array.isArray(data?.days) ? data.days : [];
-    renderRecoveryHeatmap(days, grid, tooltip);
+    renderRecoveryHeatmap(days);
 }
 
 function renderLoading() {

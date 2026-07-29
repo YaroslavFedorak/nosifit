@@ -1,17 +1,18 @@
 <div class="rc-heatmap-container">
   <div class="rc-heatmap-header">
-    <h3>Історія відновлення</h3>
-
+    <h3>Recovery History</h3>
     <div class="rc-heatmap-controls">
-      <label class="sr-only" for="rc-heatmap-year">Рік</label>
-      <select id="rc-heatmap-year" class="rc-select"></select>
-
+      <label class="sr-only" for="rc-heatmap-year">Year</label>
+      <div class="rc-heatmap-year-wrapper">
+        <span class="rc-heatmap-year-label">Year</span>
+        <select id="rc-heatmap-year" class="rc-select"></select>
+      </div>
       <button
         type="button"
         id="rc-open-calendar"
         class="cmp-btn-primary cmp-btn-sm"
       >
-        Календар
+        📅 Calendar
       </button>
     </div>
   </div>
@@ -19,12 +20,12 @@
   <div id="recovery-heatmap" class="rc-heatmap-grid"></div>
 
   <div class="rc-heatmap-legend">
-    <span>Нижчий</span>
+    <span>Less recovered</span>
     <div class="legend-box level-1"></div>
     <div class="legend-box level-2"></div>
     <div class="legend-box level-3"></div>
     <div class="legend-box level-4"></div>
-    <span>Вищий</span>
+    <span>Fully recovered</span>
   </div>
 
   <div id="rc-heatmap-tooltip" class="rc-heatmap-tooltip"></div>
@@ -33,13 +34,13 @@
 <div id="rc-calendar-modal" class="rc-calendar-modal">
   <div class="rc-calendar-dialog">
     <div class="rc-calendar-header">
-      <h3 id="rc-calendar-title">Календар відновлення</h3>
+      <h3 id="rc-calendar-title">Recovery Calendar</h3>
       <button
         type="button"
         class="cmp-btn-secondary cmp-btn-sm"
         data-close-calendar
       >
-        Закрити
+        Close
       </button>
     </div>
     <div id="rc-calendar-body" class="rc-calendar-body"></div>
@@ -55,7 +56,7 @@
         class="cmp-btn-secondary cmp-btn-sm"
         data-close-day-details
       >
-        Закрити
+        Close
       </button>
     </div>
     <div id="rc-day-details-body" class="rc-day-details-body"></div>

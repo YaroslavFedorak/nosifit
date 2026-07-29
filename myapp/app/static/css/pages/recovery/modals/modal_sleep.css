@@ -1,13 +1,31 @@
 .sleep-modal-inputs {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 16px;
+    padding: 12px 0;
 }
 
-.sleep-modal-inputs input {
-    background: var(--nf-surface);
-    border: 1px solid var(--nf-border-soft);
-    border-radius: var(--nf-radius-md);
+.sleep-field {
+    display: flex;
+    flex-direction: column;
+}
+
+.sleep-field label {
+    font-size: 14px;
+    margin-bottom: 6px;
+    color: var(--text-secondary);
+}
+
+.sleep-input {
     padding: 10px 12px;
-    color: var(--nf-text-main);
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    color: var(--text-primary);
+    font-size: 15px;
+}
+
+.sleep-input:focus {
+    outline: none;
+    border-color: var(--accent);
 }
