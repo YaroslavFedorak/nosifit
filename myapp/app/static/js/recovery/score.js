@@ -1,39 +1,62 @@
+import { ICONS } from "../icons/icons.js";
 import { RECOVERY_MESSAGES } from "./messages.js";
 import {
     clearElement,
     createCard,
-    createTitle,
     createLoading,
     createError,
     createEmpty
 } from "./dom.js";
 
-function smallBar(score) {
-    const blocks = Math.round(score / 20);
+function getLevel(score) {
+    if (score == null) return "neutral";
+    if (score < 40) return "low";
+    if (score < 70) return "medium";
+    return "high";
+}
+
+function miniBar(score) {
+    const blocks = Math.round((score ?? 0) / 20);
     const bar = document.createElement("span");
-    bar.className = "score-mini-bar";
-    bar.textContent = "█".repeat(blocks) + "░".repeat(5 - blocks);
+    bar.className = `score-mini-bar ${getLevel(score)}`;
+    bar.textContent = "▰".repeat(blocks) + "▱".repeat(5 - blocks);
     return bar;
 }
 
-function createRow(icon, label, score, extra = null) {
+function createRow(iconSvg, label, score, extra = null) {
     const row = document.createElement("div");
     row.className = "score-row";
 
     const left = document.createElement("div");
     left.className = "score-row-left";
-    left.innerHTML = `${icon} <span>${label}</span>`;
+
+    const icon = document.createElement("span");
+    icon.className = "score-icon";
+    icon.innerHTML = iconSvg;
+
+    const text = document.createElement("span");
+    text.textContent = label;
+
+    left.appendChild(icon);
+    left.appendChild(text);
 
     const right = document.createElement("div");
     right.className = "score-row-right";
 
-    const bar = smallBar(score ?? 0);
+    const bar = miniBar(score);
     const value = document.createElement("span");
     value.className = "score-value";
     value.textContent = score ?? "—";
 
     right.appendChild(bar);
     right.appendChild(value);
+
+    const wrapper = document.createElement("div");
+    wrapper.className = "score-row-wrapper";
+    wrapper.appendChild(left);
+    wrapper.appendChild(right);
+
+    row.appendChild(wrapper);
 
     if (extra) {
         const extraEl = document.createElement("div");
@@ -42,8 +65,6 @@ function createRow(icon, label, score, extra = null) {
         row.appendChild(extraEl);
     }
 
-    row.appendChild(left);
-    row.appendChild(right);
     return row;
 }
 
@@ -70,15 +91,25 @@ export function renderScoreWidget(snapshot, options = {}) {
 
     const card = createCard("score-card");
 
-    const title = document.createElement("div");
+    const header = document.createElement("div");
+    header.className = "score-header";
+
+    const icon = document.createElement("span");
+    icon.className = "score-header-icon";
+    icon.innerHTML = ICONS.heart_pulse;
+
+    const title = document.createElement("span");
     title.className = "score-main-title";
-    title.textContent = "Recovery";
+    title.textContent = "Recovery Score";
+
+    header.appendChild(icon);
+    header.appendChild(title);
 
     const total = document.createElement("div");
-    total.className = "score-total";
+    total.className = `score-total ${getLevel(snapshot.recovery_score)}`;
     total.textContent = snapshot.recovery_score ?? "—";
 
-    card.appendChild(title);
+    card.appendChild(header);
     card.appendChild(total);
 
     const divider = document.createElement("div");
@@ -88,20 +119,24 @@ export function renderScoreWidget(snapshot, options = {}) {
     const content = document.createElement("div");
     content.className = "score-content";
 
+    const sleepExtra = snapshot.sleep_duration_minutes
+        ? `${Math.floor(snapshot.sleep_duration_minutes / 60)}h ${snapshot.sleep_duration_minutes % 60}m`
+        : null;
+
     content.appendChild(
-        createRow("🌙", "Sleep", snapshot.sleep_score, snapshot.sleep_duration_minutes ? `${Math.floor(snapshot.sleep_duration_minutes/60)}h ${snapshot.sleep_duration_minutes%60}m` : null)
+        createRow(ICONS.moon, "Sleep", snapshot.sleep_score, sleepExtra)
     );
 
     content.appendChild(
-        createRow("🟢", "Habits", snapshot.habit_score)
+        createRow(ICONS.habits, "Habits", snapshot.habit_score)
     );
 
     content.appendChild(
-        createRow("💪", "Training", snapshot.training_score)
+        createRow(ICONS.exercise, "Training", snapshot.training_score)
     );
 
     content.appendChild(
-        createRow("⚡", "Energy", snapshot.energy_score)
+        createRow(ICONS.energy, "Energy", snapshot.energy_score)
     );
 
     card.appendChild(content);
