@@ -20,37 +20,19 @@
       rel="stylesheet"
       href="{{ url_for('static', filename='css/core/variables.css') }}"
     />
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='css/core/layout.css') }}"
-    />
 
     <link
       rel="stylesheet"
       href="{{ url_for('static', filename='css/components/navbar.css') }}"
     />
 
-    {% block component_styles %}
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='css/components/buttons.css') }}"
-    />
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='css/components/forms.css') }}"
-    />
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='css/components/cards.css') }}"
-    />
-    {% endblock %} {% block styles %}{% endblock %}
+    {% block styles %}{% endblock %}
   </head>
 
-  <body class="public-page public-layout">
-    <main class="public-wrapper">
-      {% include "components/public_nav.html" %} {% block body %} {% block
-      content %}{% endblock %} {% endblock %}
-    </main>
+  <body class="public-layout">
+    {% include "components/public_nav.html" %}
+
+    <main class="public-wrapper">{% block body %}{% endblock %}</main>
 
     {% block scripts %}{% endblock %}
   </body>
