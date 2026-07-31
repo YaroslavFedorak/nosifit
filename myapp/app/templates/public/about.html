@@ -1,54 +1,367 @@
-{% if current_user.is_authenticated %} {% extends "app/base_app.html" %} {% else
-%} {% extends "public/base_public.html" %} {% endif %} {% block styles %}
+{% extends base_template %} {% block styles %}
 <link
   rel="stylesheet"
-  href="{{ url_for('static', filename='css/public/about.css') }}"
+  href="{{ url_for('static', filename='css/pages/about.css') }}"
 />
 {% endblock %} {% block body %}
 
-<section class="about-hero">
-  <div class="about-container">
-    <h1 class="about-title">Про NosiFit</h1>
-    <p class="about-subtitle">
-      Платформа, створена для тих, хто хоче тренуватися розумніше,
-      відновлюватися швидше і жити здоровіше.
+<section class="hero">
+  <div class="container">
+    <h1 class="hero-title">NosiFit</h1>
+    <p class="hero-subtitle">
+      Усе необхідне для ваших тренувань в одному місці.
     </p>
-  </div>
-</section>
-
-<section class="about-section">
-  <div class="about-container">
-    <h2 class="about-heading">Місія</h2>
-    <p class="about-text">
-      Ми віримо, що кожна людина може досягти своїх цілей, якщо має правильний
-      план, підтримку та інструменти. NosiFit поєднує науку, технології та
-      індивідуальний підхід, щоб допомогти вам ставати кращими щодня.
+    <p class="hero-text">
+      Ведіть тренування, контролюйте відновлення та відстежуйте свій прогрес.
     </p>
+
+    <div class="hero-actions">
+      {% if current_user.is_authenticated %}
+      <a href="{{ url_for('dashboard.dashboard') }}" class="cta-button primary">
+        >Відкрити Dashboard</a
+      >
+      {% else %}
+      <a href="{{ url_for('auth.register') }}" class="hero-btn primary"
+        >Почати зараз</a
+      >
+      <a href="#learn-more" class="hero-btn secondary">Дізнатися більше</a>
+      {% endif %}
+    </div>
   </div>
 </section>
 
-<section class="about-section about-section-alt">
-  <div class="about-container">
-    <h2 class="about-heading">Що ми пропонуємо</h2>
-
-    <ul class="about-list">
-      <li>Персональні тренувальні програми</li>
-      <li>Плани харчування</li>
-      <li>Оцінка фізичної форми</li>
-      <li>Трекінг прогресу</li>
-      <li>Рекомендації з відновлення</li>
-    </ul>
+<section class="section" id="learn-more">
+  <div class="container">
+    <div class="split">
+      <div class="split-text">
+        <h2 class="heading">Проблема</h2>
+        <p class="text">
+          Дані про тренування, сон та харчування часто розкидані між різними
+          застосунками. Через це важко зрозуміти, як усе впливає на ваш стан.
+        </p>
+        <p class="text">
+          NosiFit об’єднує все це в одному місці, щоб вам не доводилося
+          перемикатися між різними сервісами.
+        </p>
+      </div>
+      <div class="split-visual">
+        <div class="blob"></div>
+      </div>
+    </div>
   </div>
 </section>
 
-<section class="about-section">
-  <div class="about-container">
-    <h2 class="about-heading">Чому NosiFit?</h2>
-    <p class="about-text">
-      Ми створюємо не просто поради — ми формуємо систему, яка адаптується під
-      ваш стиль життя. Ваші цілі стають нашими цілями.
+<section class="section alt">
+  <div class="container">
+    <h2 class="heading">Як працює NosiFit</h2>
+
+    <div class="flow-vertical">
+      <div class="flow-node">
+        <span class="flow-dot"></span>
+        <p>Ви вводите дані</p>
+      </div>
+      <div class="flow-connector-vertical"></div>
+      <div class="flow-node">
+        <span class="flow-dot"></span>
+        <p>Аналіз тренувань</p>
+      </div>
+      <div class="flow-connector-vertical"></div>
+      <div class="flow-node">
+        <span class="flow-dot"></span>
+        <p>Оцінка відновлення</p>
+      </div>
+      <div class="flow-connector-vertical"></div>
+      <div class="flow-node">
+        <span class="flow-dot"></span>
+        <p>Recovery Score</p>
+      </div>
+      <div class="flow-connector-vertical"></div>
+      <div class="flow-node">
+        <span class="flow-dot"></span>
+        <p>Поради</p>
+      </div>
+    </div>
+
+    <div class="flow-horizontal">
+      <div class="flow-item">
+        <span class="flow-index">1</span>
+        <p>Дані</p>
+      </div>
+      <div class="flow-line"></div>
+      <div class="flow-item">
+        <span class="flow-index">2</span>
+        <p>Тренування</p>
+      </div>
+      <div class="flow-line"></div>
+      <div class="flow-item">
+        <span class="flow-index">3</span>
+        <p>Відновлення</p>
+      </div>
+      <div class="flow-line"></div>
+      <div class="flow-item">
+        <span class="flow-index">4</span>
+        <p>Score</p>
+      </div>
+      <div class="flow-line"></div>
+      <div class="flow-item">
+        <span class="flow-index">5</span>
+        <p>Поради</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <h2 class="heading">Що аналізує платформа</h2>
+
+    <div class="grid reveal">
+      <div class="card">
+        <span class="icon">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="32"
+            height="32"
+            stroke="currentColor"
+            fill="none"
+            stroke-width="2"
+          >
+            <path
+              d="M17.596 12.768a2 2 0 1 0 2.829-2.829l-1.768-1.767a2 2 0 0 0 2.828-2.829l-2.828-2.828a2 2 0 0 0-2.829 2.828l-1.767-1.768a2 2 0 1 0-2.829 2.829z"
+            />
+            <path d="m2.5 21.5 1.4-1.4" />
+            <path d="m20.1 3.9 1.4-1.4" />
+            <path
+              d="M5.343 21.485a2 2 0 1 0 2.829-2.828l1.767 1.768a2 2 0 1 0 2.829-2.829l-6.364-6.364a2 2 0 1 0-2.829 2.829l1.768 1.767a2 2 0 0 0-2.828 2.829z"
+            />
+            <path d="m9.6 14.4 4.8-4.8" />
+          </svg>
+        </span>
+        <h3>Тренування</h3>
+        <p>Вправи, підходи, повторення, вага.</p>
+      </div>
+
+      <div class="card">
+        <span class="icon">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="32"
+            height="32"
+            stroke="currentColor"
+            fill="none"
+            stroke-width="2"
+          >
+            <path
+              d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"
+            />
+          </svg>
+        </span>
+        <h3>Відновлення</h3>
+        <p>Сон, енергія, втома, звички.</p>
+      </div>
+
+      <div class="card">
+        <span class="icon">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="32"
+            height="32"
+            stroke="currentColor"
+            fill="none"
+            stroke-width="2"
+          >
+            <path
+              d="M7 16.3c2.2 0 4-1.83 4-4.05 0-1.16-.57-2.26-1.71-3.19S7.29 6.75 7 5.3c-.29 1.45-1.14 2.84-2.29 3.76S3 11.1 3 12.25c0 2.22 1.8 4.05 4 4.05z"
+            />
+            <path
+              d="M12.56 6.6A10.97 10.97 0 0 0 14 3.02c.5 2.5 2 4.9 4 6.5s3 3.5 3 5.5a6.98 6.98 0 0 1-11.91 4.97"
+            />
+          </svg>
+        </span>
+        <h3>Харчування</h3>
+        <p>Калорії, макроси, вода, вага.</p>
+      </div>
+
+      <div class="card">
+        <span class="icon">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="32"
+            height="32"
+            stroke="currentColor"
+            fill="none"
+            stroke-width="2.25"
+          >
+            <path
+              d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"
+            />
+            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+            <line x1="12" y1="17" x2="12.01" y2="17" />
+          </svg>
+        </span>
+        <h3>Прогрес</h3>
+        <p>Історія показників та зміни.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section alt">
+  <div class="container">
+    <h2 class="heading">Recovery Score</h2>
+
+    <div class="score-display reveal">
+      <div class="score-number">78%</div>
+      <div class="score-label">Приклад показника</div>
+    </div>
+
+    <div class="timeline reveal">
+      <div class="timeline-item">
+        <span class="timeline-dot"></span>
+        <p>Сон</p>
+      </div>
+      <div class="timeline-line"></div>
+      <div class="timeline-item">
+        <span class="timeline-dot"></span>
+        <p>Енергія</p>
+      </div>
+      <div class="timeline-line"></div>
+      <div class="timeline-item">
+        <span class="timeline-dot"></span>
+        <p>Звички</p>
+      </div>
+      <div class="timeline-line"></div>
+      <div class="timeline-item">
+        <span class="timeline-dot"></span>
+        <p>Втома</p>
+      </div>
+      <div class="timeline-line"></div>
+      <div class="timeline-item main">
+        <span class="timeline-dot main"></span>
+        <p class="timeline-main-text">Recovery Score</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <h2 class="heading">Для кого створений NosiFit</h2>
+
+    <div class="grid reveal">
+      <div class="card">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="32"
+          height="32"
+          stroke="currentColor"
+          fill="none"
+          stroke-width="2"
+        >
+          <path d="m15 10.42 4.8-5.07" />
+          <path d="M19 18h3" />
+          <path
+            d="M9.5 22 21.414 9.415A2 2 0 0 0 21.2 6.4l-5.61-4.208A1 1 0 0 0 14 3v2a2 2 0 0 1-1.394 1.906L8.677 8.053A1 1 0 0 0 8 9c-.155 6.393-2.082 9-4 9a2 2 0 0 0 0 4h14"
+          />
+        </svg>
+        <p>Для тих, хто починає тренуватися системно.</p>
+      </div>
+
+      <div class="card">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="32"
+          height="32"
+          stroke="currentColor"
+          fill="none"
+          stroke-width="2"
+        >
+          <path
+            d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"
+          />
+          <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" />
+        </svg>
+        <p>Для тих, хто хоче уникати перетренованості.</p>
+      </div>
+
+      <div class="card">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="32"
+          height="32"
+          stroke="currentColor"
+          fill="none"
+          stroke-width="2.25"
+        >
+          <path
+            d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"
+          />
+          <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+          <line x1="12" y1="17" x2="12.01" y2="17" />
+        </svg>
+        <p>Для спортсменів-аматорів.</p>
+      </div>
+
+      <div class="card">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="32"
+          height="32"
+          stroke="currentColor"
+          fill="none"
+          stroke-width="2"
+        >
+          <path d="M2 6h4" />
+          <path d="M2 10h4" />
+          <path d="M2 14h4" />
+          <path d="M2 18h4" />
+          <rect width="16" height="16" x="4" y="2" rx="2" />
+          <path d="M16 2v20" />
+        </svg>
+        <p>Для тих, хто любить відстежувати свої результати.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section cta">
+  <div class="container">
+    <h2 class="heading">Спробуйте NosiFit</h2>
+    <p class="text">
+      Зберігайте тренування, відновлення та харчування в одному місці.
     </p>
+
+    <div class="cta-actions">
+      {% if current_user.is_authenticated %}
+      <a href="{{ url_for('dashboard.dashboard') }}" class="cta-button primary">
+        >Відкрити Dashboard</a
+      >
+      {% else %}
+      <a href="{{ url_for('auth.register') }}" class="cta-button primary"
+        >Створити акаунт</a
+      >
+      <a href="{{ url_for('auth.login') }}" class="cta-button secondary"
+        >Увійти</a
+      >
+      {% endif %}
+    </div>
   </div>
 </section>
+
+<script>
+  const revealElements = document.querySelectorAll(".reveal");
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("visible");
+          observer.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.15 },
+  );
+  revealElements.forEach((el) => observer.observe(el));
+</script>
 
 {% endblock %}
