@@ -16,8 +16,6 @@ from myapp.app.services.recovery.constants import (
 
 
 class RecoveryScoreService:
-    """Calculate daily recovery score (0–100)."""
-
     def __init__(self):
         self.sleep_service = SleepService()
         self.habit_service = HabitService()
@@ -38,7 +36,6 @@ class RecoveryScoreService:
 
     def calculate_training_score(self, user_id: int) -> int:
         load = self.training_load.get_daily_load(user_id)
-
         if load <= 40:
             return 30
         if load <= 80:
