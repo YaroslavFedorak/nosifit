@@ -2,6 +2,7 @@ import { RECOVERY_MESSAGES } from "./messages.js";
 import { clearElement, createCard, createTitle, createEmpty } from "./dom.js";
 import { RecoveryAPI } from "./api.js";
 import { refreshRecoveryDashboard } from "./dashboard.js";
+import { showRecoveryToast } from "./toast.js";
 
 export function renderHabitsWidget(snapshot, options = {}) {
     const el = document.getElementById("habits-widget");
@@ -62,8 +63,13 @@ export function renderHabitsWidget(snapshot, options = {}) {
         completeBtn.textContent = habit.completed ? "✓" : "Виконати";
 
         completeBtn.addEventListener("click", async () => {
-            await RecoveryAPI.logHabit(habit.user_habit_id);
-            await refreshRecoveryDashboard(snapshot.user_id);
+            try {
+                await RecoveryAPI.logHabit(habit.user_habit_id);
+                showRecoveryToast("Звичку виконано!");
+                await refreshRecoveryDashboard();
+            } catch (e) {
+                showRecoveryToast("Помилка при збереженні звички");
+            }
         });
 
         const removeBtn = document.createElement("button");
@@ -72,7 +78,8 @@ export function renderHabitsWidget(snapshot, options = {}) {
 
         removeBtn.addEventListener("click", async () => {
             await RecoveryAPI.removeHabit(habit.user_habit_id);
-            await refreshRecoveryDashboard(snapshot.user_id);
+            await refreshRecoveryDashboard();
+            showRecoveryToast("Звичку видалено");
         });
 
         actions.appendChild(completeBtn);
