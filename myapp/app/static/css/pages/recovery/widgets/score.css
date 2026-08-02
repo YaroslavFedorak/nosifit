@@ -1,79 +1,73 @@
 .score-card {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
     gap: 16px;
 }
 
-.score-main-title {
-    font-size: 18px;
-    font-weight: 600;
-    color: var(--nf-text-main);
-}
-
-.score-total {
-    font-size: 48px;
-    font-weight: 700;
-    color: var(--nf-blue);
-}
-
-.score-total.low {
-    color: var(--nf-red);
-}
-
-.score-total.medium {
-    color: var(--nf-yellow);
-}
-
-.score-total.high {
-    color: var(--nf-green);
-}
-
-.score-divider {
-    height: 1px;
-    background: var(--nf-border-soft);
-    width: 100%;
-}
-
-.score-content {
+.score-item {
+    background: var(--nf-surface-soft);
+    border: 1px solid var(--nf-border-soft);
+    border-radius: var(--nf-radius-md);
+    padding: 14px;
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: 10px;
+    transition: transform 0.15s ease, background 0.15s ease;
 }
 
-.score-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+.score-item:hover {
+    background: var(--nf-surface-hover);
+    transform: translateY(-2px);
 }
 
-.score-row-left {
+.score-top {
     display: flex;
     align-items: center;
     gap: 8px;
-    font-size: 15px;
 }
 
-.score-row-right {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.score-mini-bar {
-    font-family: monospace;
-    font-size: 14px;
-    letter-spacing: 1px;
+.score-icon {
+    width: 22px;
+    height: 22px;
     color: var(--nf-blue);
 }
 
-.score-value {
+.score-label {
     font-size: 15px;
     font-weight: 600;
     color: var(--nf-text-main);
+}
+
+.score-circle {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    border: 3px solid var(--nf-border-soft);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--nf-blue);
+    position: relative;
+}
+
+.score-circle[data-level="low"] {
+    border-color: var(--nf-red);
+    color: var(--nf-red);
+}
+
+.score-circle[data-level="medium"] {
+    border-color: var(--nf-yellow);
+    color: var(--nf-yellow);
+}
+
+.score-circle[data-level="high"] {
+    border-color: var(--nf-green);
+    color: var(--nf-green);
 }
 
 .score-extra {
     font-size: 13px;
     color: var(--nf-text-muted);
-    margin-top: 4px;
 }
