@@ -4,6 +4,28 @@
     gap: 14px;
 }
 
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.sleep-add-btn {
+    background: var(--nf-blue);
+    color: white;
+    border: none;
+    padding: 6px 14px;
+    border-radius: var(--nf-radius-md);
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.2s ease, transform 0.1s ease;
+}
+
+.sleep-add-btn:hover {
+    background: var(--nf-blue-soft);
+    transform: translateY(-1px);
+}
+
 .sleep-top {
     display: flex;
     align-items: center;
@@ -43,7 +65,7 @@
 
 .sleep-score-bar {
     flex: 1;
-    height: 8px;
+    height: 6px;
     background: var(--nf-surface-soft);
     border-radius: var(--nf-radius-pill);
     overflow: hidden;
