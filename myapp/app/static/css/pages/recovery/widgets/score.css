@@ -57,15 +57,15 @@
 }
 
 .score-segment.filled.low {
-    background: var(--nf-red);
+    background: #2a7f7f;
 }
 
 .score-segment.filled.medium {
-    background: var(--nf-yellow);
+    background: #33bdbd;
 }
 
 .score-segment.filled.high {
-    background: var(--nf-green);
+    background: #4be3d2;
 }
 
 .score-tooltip {
