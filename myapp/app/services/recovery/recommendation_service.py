@@ -2,6 +2,8 @@ import json
 import os
 from typing import List, Dict
 
+from myapp.app import db
+from myapp.app.models.recovery.habit import RecoveryHabit
 from myapp.app.services.recovery.constants import RecoveryTrigger
 from myapp.app.services.recovery.constants import (
     TRAINING_LOAD_HEAVY,
@@ -106,8 +108,13 @@ class RecommendationService:
         recs = []
 
         for h in habits[:5]:
+            db_habit = RecoveryHabit.query.filter_by(slug=h["slug"]).first()
+            if not db_habit:
+                continue
+
             recs.append(
                 {
+                    "habit_id": db_habit.id,
                     "text": h["name"],
                     "icon": h["icon"],
                     "priority": h.get("priority", "medium"),
