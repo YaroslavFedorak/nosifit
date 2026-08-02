@@ -1,0 +1,21 @@
+#recovery-toast {
+    position: fixed;
+    right: 24px;
+    bottom: 24px;
+    background: #33bdbd;
+    color: white;
+    padding: 14px 18px;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+    z-index: 9999;
+}
+
+#recovery-toast.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
