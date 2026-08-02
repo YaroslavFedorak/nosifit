@@ -1,32 +1,52 @@
 .sleep-content {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: auto auto auto;
-    gap: 10px 14px;
-    align-items: center;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
 }
 
-/* Тривалість */
+.sleep-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--nf-surface-soft);
+    padding: 10px 12px;
+    border-radius: var(--nf-radius-md);
+}
+
+.sleep-top-left {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
 .sleep-duration {
     font-size: 20px;
     font-weight: 600;
     color: var(--nf-blue);
 }
 
-/* Часовий діапазон */
 .sleep-range {
-    font-size: 14px;
+    font-size: 13px;
     color: var(--nf-text-muted);
 }
 
-/* Бар + % в одному рядку */
+.sleep-icon {
+    font-size: 22px;
+    opacity: 0.8;
+}
+
+.sleep-score-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
 .sleep-score-bar {
-    grid-column: span 2;
+    flex: 1;
     height: 8px;
     background: var(--nf-surface-soft);
     border-radius: var(--nf-radius-pill);
     overflow: hidden;
-    position: relative;
 }
 
 .sleep-score-fill {
@@ -36,14 +56,17 @@
 }
 
 .sleep-score-label {
-    grid-column: span 2;
     font-size: 13px;
     font-weight: 600;
     color: var(--nf-text-main);
-    text-align: right;
 }
 
-/* Статус + дата в одному рядку */
+.sleep-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
 .sleep-status {
     font-size: 14px;
     font-weight: 500;

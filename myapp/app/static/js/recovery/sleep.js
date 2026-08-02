@@ -7,6 +7,7 @@ import {
     createError,
     createLoading
 } from "./dom.js";
+import { ICONS } from "../icons/icons.js";
 
 function getSleepStatus(minutes) {
     if (!minutes || minutes <= 0) return "Немає даних";
@@ -97,6 +98,22 @@ export function renderSleepWidget(snapshot, options = {}) {
     rangeEl.className = "sleep-range";
     rangeEl.textContent = `${startStr} → ${endStr}`;
 
+    const top = document.createElement("div");
+    top.className = "sleep-top";
+
+    const topLeft = document.createElement("div");
+    topLeft.className = "sleep-top-left";
+
+    const icon = document.createElement("div");
+    icon.className = "sleep-icon";
+    icon.innerHTML = ICONS.moon;
+
+    topLeft.appendChild(durationEl);
+    topLeft.appendChild(rangeEl);
+
+    top.appendChild(topLeft);
+    top.appendChild(icon);
+
     const bar = document.createElement("div");
     bar.className = "sleep-score-bar";
 
@@ -105,11 +122,16 @@ export function renderSleepWidget(snapshot, options = {}) {
     fill.style.width = `${snapshot.sleep_score}%`;
     fill.style.background = getScoreColor(snapshot.sleep_score);
 
+    bar.appendChild(fill);
+
     const scoreLabel = document.createElement("div");
     scoreLabel.className = "sleep-score-label";
     scoreLabel.textContent = `${snapshot.sleep_score}%`;
 
-    bar.appendChild(fill);
+    const scoreRow = document.createElement("div");
+    scoreRow.className = "sleep-score-row";
+    scoreRow.appendChild(bar);
+    scoreRow.appendChild(scoreLabel);
 
     const statusEl = document.createElement("div");
     statusEl.className = "sleep-status";
@@ -119,12 +141,14 @@ export function renderSleepWidget(snapshot, options = {}) {
     metaEl.className = "sleep-meta";
     metaEl.textContent = recencyText;
 
-    content.appendChild(durationEl);
-    content.appendChild(rangeEl);
-    content.appendChild(bar);
-    content.appendChild(scoreLabel);
-    content.appendChild(statusEl);
-    content.appendChild(metaEl);
+    const bottom = document.createElement("div");
+    bottom.className = "sleep-bottom";
+    bottom.appendChild(statusEl);
+    bottom.appendChild(metaEl);
+
+    content.appendChild(top);
+    content.appendChild(scoreRow);
+    content.appendChild(bottom);
 
     card.appendChild(content);
     el.appendChild(card);
