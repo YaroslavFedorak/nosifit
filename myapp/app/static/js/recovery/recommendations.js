@@ -15,6 +15,23 @@ const PRIORITY_ORDER = {
     low: 3
 };
 
+const ICON_MAP = {
+    sleep: "moon",
+    water: "water",
+    rest: "rest",
+    energy: "energy",
+    habits: "habits",
+    caution: "caution",
+    balance: "balance",
+    overloaded: "overloaded",
+    weak: "weak",
+    recommended: "recommended",
+    exercise: "exercise",
+    plan: "plan",
+    heart_pulse: "heart_pulse",
+    hend_heart: "hend_heart"
+};
+
 export function renderRecommendationsWidget(data, options = {}) {
     const el = document.getElementById("recommendations-widget");
     if (!el) return;
@@ -56,7 +73,7 @@ export function renderRecommendationsWidget(data, options = {}) {
 
         const iconWrap = document.createElement("div");
         iconWrap.className = "recommendation-icon";
-        iconWrap.innerHTML = ICONS[rec.icon] || "";
+        iconWrap.innerHTML = ICONS[ICON_MAP[rec.icon]] || ICONS.rest;
 
         const textWrap = document.createElement("div");
         textWrap.className = "recommendation-text";
