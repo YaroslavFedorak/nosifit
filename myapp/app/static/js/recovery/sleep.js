@@ -2,7 +2,6 @@ import { RECOVERY_MESSAGES } from "./messages.js";
 import {
     clearElement,
     createCard,
-    createTitle,
     createEmpty,
     createError,
     createLoading
@@ -26,18 +25,13 @@ function getScoreColor(score) {
 
 function getRecencyLabel(snapshotDateIso) {
     if (!snapshotDateIso) return "";
-
     const snap = new Date(snapshotDateIso);
     const today = new Date();
-
     const s = new Date(snap.getFullYear(), snap.getMonth(), snap.getDate());
     const t = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-
     const diff = Math.round((t - s) / (1000 * 60 * 60 * 24));
-
     if (diff === 0) return "Останній запис: сьогодні";
     if (diff === 1) return "Останній запис: вчора";
-
     return `Останній запис: ${snap.toLocaleDateString("uk-UA", {
         day: "numeric",
         month: "long",
@@ -73,7 +67,6 @@ export function renderSleepWidget(snapshot, options = {}) {
     }
 
     const card = createCard("sleep-card");
-    card.appendChild(createTitle(RECOVERY_MESSAGES.sleep.title));
 
     const content = document.createElement("div");
     content.className = "sleep-content";
@@ -90,6 +83,12 @@ export function renderSleepWidget(snapshot, options = {}) {
     const statusText = getSleepStatus(snapshot.sleep_duration_minutes);
     const recencyText = getRecencyLabel(snapshot.date);
 
+    const top = document.createElement("div");
+    top.className = "sleep-top";
+
+    const left = document.createElement("div");
+    left.className = "sleep-top-left";
+
     const durationEl = document.createElement("div");
     durationEl.className = "sleep-duration";
     durationEl.textContent = `${durationHours} год ${durationMinutes} хв`;
@@ -98,21 +97,18 @@ export function renderSleepWidget(snapshot, options = {}) {
     rangeEl.className = "sleep-range";
     rangeEl.textContent = `${startStr} → ${endStr}`;
 
-    const top = document.createElement("div");
-    top.className = "sleep-top";
-
-    const topLeft = document.createElement("div");
-    topLeft.className = "sleep-top-left";
+    left.appendChild(durationEl);
+    left.appendChild(rangeEl);
 
     const icon = document.createElement("div");
     icon.className = "sleep-icon";
     icon.innerHTML = ICONS.moon;
 
-    topLeft.appendChild(durationEl);
-    topLeft.appendChild(rangeEl);
-
-    top.appendChild(topLeft);
+    top.appendChild(left);
     top.appendChild(icon);
+
+    const barRow = document.createElement("div");
+    barRow.className = "sleep-score-row";
 
     const bar = document.createElement("div");
     bar.className = "sleep-score-bar";
@@ -128,10 +124,11 @@ export function renderSleepWidget(snapshot, options = {}) {
     scoreLabel.className = "sleep-score-label";
     scoreLabel.textContent = `${snapshot.sleep_score}%`;
 
-    const scoreRow = document.createElement("div");
-    scoreRow.className = "sleep-score-row";
-    scoreRow.appendChild(bar);
-    scoreRow.appendChild(scoreLabel);
+    barRow.appendChild(bar);
+    barRow.appendChild(scoreLabel);
+
+    const bottom = document.createElement("div");
+    bottom.className = "sleep-bottom";
 
     const statusEl = document.createElement("div");
     statusEl.className = "sleep-status";
@@ -141,13 +138,11 @@ export function renderSleepWidget(snapshot, options = {}) {
     metaEl.className = "sleep-meta";
     metaEl.textContent = recencyText;
 
-    const bottom = document.createElement("div");
-    bottom.className = "sleep-bottom";
     bottom.appendChild(statusEl);
     bottom.appendChild(metaEl);
 
     content.appendChild(top);
-    content.appendChild(scoreRow);
+    content.appendChild(barRow);
     content.appendChild(bottom);
 
     card.appendChild(content);
