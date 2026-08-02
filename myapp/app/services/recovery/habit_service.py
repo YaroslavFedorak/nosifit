@@ -57,6 +57,22 @@ class HabitService:
                 )
         return result
 
+    def ensure_user_has_habit(self, user_id, habit_id):
+        existing = UserRecoveryHabit.query.filter_by(
+            user_id=user_id, habit_id=habit_id
+        ).first()
+
+        if existing:
+            if not existing.is_active:
+                existing.is_active = True
+                db.session.commit()
+            return existing
+
+        habit = UserRecoveryHabit(user_id=user_id, habit_id=habit_id)
+        db.session.add(habit)
+        db.session.commit()
+        return habit
+
     def add_user_habit(self, user_id, habit_id):
         existing = UserRecoveryHabit.query.filter_by(
             user_id=user_id, habit_id=habit_id
