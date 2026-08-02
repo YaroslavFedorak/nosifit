@@ -166,7 +166,24 @@ def get_snapshot(user_id):
 
     habits = habit_service.get_user_habits_with_status(user_id)
 
-    return jsonify({**snapshot.to_dict(), "habits": habits}), 200
+    recs = RecommendationService().build_recommendations(
+        snapshot.sleep_score,
+        snapshot.recovery_score,
+        snapshot.energy_score,
+        snapshot.habit_score,
+        snapshot.training_score,
+    )
+
+    return (
+        jsonify(
+            {
+                **snapshot.to_dict(),
+                "habits": habits,
+                "recommendations": recs,
+            }
+        ),
+        200,
+    )
 
 
 @recovery_bp.get("/heatmap/<int:user_id>")
