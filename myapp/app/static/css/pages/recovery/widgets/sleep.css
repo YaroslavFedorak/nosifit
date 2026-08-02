@@ -64,13 +64,15 @@
 }
 
 .sleep-status {
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--nf-text-main);
+    background: var(--nf-green-soft);
+    color: var(--nf-green);
+    padding: 4px 10px;
+    border-radius: var(--nf-radius-pill);
+    font-size: 13px;
+    font-weight: 600;
 }
 
 .sleep-meta {
     font-size: 13px;
     color: var(--nf-text-muted);
-    text-align: right;
 }
