@@ -128,25 +128,10 @@ def log_habit():
     if log is None:
         return jsonify({"error": "user_habit not found"}), 404
 
-    return jsonify({"logged": log.id}), 200
+    user_id = log.user_id
+    snapshot = snapshot_service.generate_snapshot(user_id)
 
-
-@recovery_bp.post("/snapshot")
-def generate_snapshot():
-    data = request.get_json(silent=True) or {}
-    user_id = data.get("user_id")
-
-    if user_id is None:
-        return jsonify({"error": "user_id is required"}), 400
-
-    last_training_days = data.get("last_training_days", 0)
-    today = date.today()
-    existed_before = stats_service.get_daily_snapshot(user_id, today)
-
-    snapshot = snapshot_service.generate_snapshot(user_id, last_training_days)
-    status = 200 if existed_before else 201
-
-    return jsonify({"id": snapshot.id}), status
+    return jsonify({"logged": log.id, "snapshot": snapshot.to_dict()}), 200
 
 
 @recovery_bp.get("/snapshot/<int:user_id>")
@@ -178,6 +163,11 @@ def get_snapshot(user_id):
         jsonify(
             {
                 **snapshot.to_dict(),
+                "sleep_score": int(snapshot.sleep_score or 0),
+                "habit_score": int(snapshot.habit_score or 0),
+                "training_score": int(snapshot.training_score or 0),
+                "energy_score": int(snapshot.energy_score or 0),
+                "recovery_score": int(snapshot.recovery_score or 0),
                 "habits": habits,
                 "recommendations": recs,
             }
@@ -227,6 +217,9 @@ def get_recommendations(user_id):
         snapshot.habit_score,
         snapshot.training_score,
     )
+
+    for r in recs:
+        habit_service.ensure_user_has_habit(user_id, r["habit_id"])
 
     return (
         jsonify({"recovery_score": snapshot.recovery_score, "recommendations": recs}),
