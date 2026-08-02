@@ -20,8 +20,6 @@ HABITS_PATH = os.path.join(
 
 
 class RecommendationService:
-    """Generate recovery recommendations based on habits.json."""
-
     def __init__(self):
         with open(HABITS_PATH, "r", encoding="utf-8") as f:
             self.habits = json.load(f)
@@ -67,10 +65,6 @@ class RecommendationService:
         return matched
 
     def sort_habits(self, habits: List[Dict]) -> List[Dict]:
-        # priority: high → medium → low
-        # points: більше краще
-        # category: hydration → sleep → nutrition → activity → stress → recovery
-
         category_order = {
             "hydration": 0,
             "sleep": 1,
@@ -82,7 +76,7 @@ class RecommendationService:
 
         def sort_key(h):
             return (
-                -h["points"],  # більше балів → вище
+                -h["points"],
                 category_order.get(h["category"], 99),
                 h["slug"],
             )
@@ -109,5 +103,15 @@ class RecommendationService:
         habits = self.filter_habits_by_triggers(triggers)
         habits = self.sort_habits(habits)
 
-        # повертаємо тільки 5 найкращих
-        return habits[:5]
+        recs = []
+
+        for h in habits[:5]:
+            recs.append(
+                {
+                    "text": h["name"],
+                    "icon": h["icon"],
+                    "priority": h.get("priority", "medium"),
+                }
+            )
+
+        return recs
