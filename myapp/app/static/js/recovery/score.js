@@ -9,8 +9,10 @@ import {
 } from "./dom.js";
 
 function normalize(v) {
-    if (typeof v !== "number") return 0;
-    return Math.max(0, Math.min(v, 100));
+    const num = Number(v);
+    if (Number.isNaN(num)) return 0;
+    if (num <= 5) return num * 20;
+    return Math.max(0, Math.min(num, 100));
 }
 
 function getLevel(v) {
