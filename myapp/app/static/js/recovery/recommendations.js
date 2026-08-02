@@ -3,7 +3,6 @@ import { ICONS } from "../icons/icons.js";
 import {
     clearElement,
     createCard,
-    createTitle,
     createLoading,
     createError,
     createEmpty
@@ -17,19 +16,12 @@ const PRIORITY_ORDER = {
 
 const ICON_MAP = {
     sleep: "moon",
-    water: "water",
-    rest: "rest",
-    energy: "energy",
-    habits: "habits",
-    caution: "caution",
-    balance: "balance",
-    overloaded: "overloaded",
-    weak: "weak",
-    recommended: "recommended",
-    exercise: "exercise",
-    plan: "plan",
-    heart_pulse: "heart_pulse",
-    hend_heart: "hend_heart"
+    hydration: "water",
+    recovery: "rest",
+    activity: "exercise",
+    stress: "caution",
+    nutrition: "plan",
+    massage: "hend_heart"
 };
 
 export function renderRecommendationsWidget(data, options = {}) {
@@ -49,16 +41,15 @@ export function renderRecommendationsWidget(data, options = {}) {
     }
 
     const recommendations = Array.isArray(data?.recommendations)
-        ? data.recommendations
+        ? data.recommendations.filter(r => r.text && r.text.trim() !== "")
         : [];
 
     if (recommendations.length === 0) {
-        el.appendChild(createEmpty(RECOVERY_MESSAGES.recommendations.empty));
+        el.appendChild(createEmpty("Немає рекомендацій"));
         return;
     }
 
     const card = createCard("recommendations-card");
-    card.appendChild(createTitle(RECOVERY_MESSAGES.recommendations.title));
 
     const container = document.createElement("div");
     container.className = "recommendations-content";
