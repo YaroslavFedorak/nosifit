@@ -1,22 +1,28 @@
 .sleep-content {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto auto;
+    gap: 10px 14px;
+    align-items: center;
 }
 
+/* Тривалість */
 .sleep-duration {
-    font-size: 26px;
-    font-weight: 700;
+    font-size: 20px;
+    font-weight: 600;
     color: var(--nf-blue);
 }
 
+/* Часовий діапазон */
 .sleep-range {
-    font-size: 15px;
+    font-size: 14px;
     color: var(--nf-text-muted);
 }
 
+/* Бар + % в одному рядку */
 .sleep-score-bar {
-    height: 10px;
+    grid-column: span 2;
+    height: 8px;
     background: var(--nf-surface-soft);
     border-radius: var(--nf-radius-pill);
     overflow: hidden;
@@ -30,13 +36,16 @@
 }
 
 .sleep-score-label {
-    font-size: 14px;
+    grid-column: span 2;
+    font-size: 13px;
     font-weight: 600;
     color: var(--nf-text-main);
+    text-align: right;
 }
 
+/* Статус + дата в одному рядку */
 .sleep-status {
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 500;
     color: var(--nf-text-main);
 }
@@ -44,4 +53,5 @@
 .sleep-meta {
     font-size: 13px;
     color: var(--nf-text-muted);
+    text-align: right;
 }
