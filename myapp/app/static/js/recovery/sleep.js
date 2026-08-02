@@ -16,13 +16,6 @@ function getSleepStatus(minutes) {
     return "Недосип";
 }
 
-function getScoreColor(score) {
-    if (score >= 90) return "var(--nf-green)";
-    if (score >= 75) return "var(--nf-blue)";
-    if (score >= 60) return "var(--nf-yellow)";
-    return "var(--nf-red)";
-}
-
 function getRecencyLabel(snapshotDateIso) {
     if (!snapshotDateIso) return "";
     const snap = new Date(snapshotDateIso);
@@ -57,7 +50,6 @@ export function renderSleepWidget(snapshot, options = {}) {
 
     if (
         !snapshot ||
-        snapshot.sleep_score == null ||
         snapshot.sleep_duration_minutes == null ||
         !snapshot.sleep_start ||
         !snapshot.sleep_end
@@ -107,26 +99,6 @@ export function renderSleepWidget(snapshot, options = {}) {
     top.appendChild(left);
     top.appendChild(icon);
 
-    const barRow = document.createElement("div");
-    barRow.className = "sleep-score-row";
-
-    const bar = document.createElement("div");
-    bar.className = "sleep-score-bar";
-
-    const fill = document.createElement("div");
-    fill.className = "sleep-score-fill";
-    fill.style.width = `${snapshot.sleep_score}%`;
-    fill.style.background = getScoreColor(snapshot.sleep_score);
-
-    bar.appendChild(fill);
-
-    const scoreLabel = document.createElement("div");
-    scoreLabel.className = "sleep-score-label";
-    scoreLabel.textContent = `${snapshot.sleep_score}%`;
-
-    barRow.appendChild(bar);
-    barRow.appendChild(scoreLabel);
-
     const bottom = document.createElement("div");
     bottom.className = "sleep-bottom";
 
@@ -142,7 +114,6 @@ export function renderSleepWidget(snapshot, options = {}) {
     bottom.appendChild(metaEl);
 
     content.appendChild(top);
-    content.appendChild(barRow);
     content.appendChild(bottom);
 
     card.appendChild(content);
