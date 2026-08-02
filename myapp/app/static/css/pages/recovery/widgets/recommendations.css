@@ -7,13 +7,34 @@
 .recommendation-item {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
+    padding: 14px;
     background: var(--nf-surface-soft);
-    padding: 12px;
     border-radius: var(--nf-radius-md);
     border: 1px solid var(--nf-border-soft);
     font-size: 15px;
     color: var(--nf-text-main);
+    transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+    opacity: 0;
+    animation: recFadeIn 0.3s ease forwards;
+}
+
+@keyframes recFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(4px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.recommendation-item:hover {
+    background: var(--nf-surface-hover);
+    border-color: var(--nf-blue);
+    transform: translateY(-2px);
 }
 
 .recommendation-item:nth-last-child(1):nth-child(odd) {
@@ -23,11 +44,14 @@
 }
 
 .recommendation-icon {
-    font-size: 20px;
+    width: 24px;
+    height: 24px;
+    color: var(--nf-blue);
     display: flex;
     align-items: center;
 }
 
 .recommendation-text {
     font-size: 15px;
+    font-weight: 500;
 }
