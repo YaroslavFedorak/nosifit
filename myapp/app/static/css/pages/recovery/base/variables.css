@@ -1,0 +1,28 @@
+:root {
+    --bg: #0b0e13;
+
+    --card: #11141c;
+    --card-soft: #1a1f27;
+    --card-deep: #0f1218;
+
+    --surface: #141414;
+    --surface-hover: #181818;
+    --surface-input: #1f1f1f;
+
+    --border: #1f232d;
+    --border-soft: #252a33;
+    --border-input: #353942;
+
+    --text: #ffffff;
+    --text-muted: #8b8fa3;
+
+    --accent: #ffd43b;
+    --accent-soft: #ffe58f;
+
+    --radius-lg: 14px;
+    --radius-md: 10px;
+    --radius-sm: 6px;
+
+    --transition: 0.25s ease;
+    --transition-fast: 0.18s ease;
+}
