@@ -44,12 +44,16 @@ export function renderHabitsWidget(snapshot, options = {}) {
         if (habit.completed) check.classList.add("habit-check-completed");
 
         check.addEventListener("click", async () => {
+            check.classList.toggle("habit-check-completed");
+            item.classList.toggle("habit-completed");
+
             try {
                 await RecoveryAPI.logHabit(habit.user_habit_id);
             } catch {
                 showRecoveryToast("Помилка при збереженні звички");
                 return;
             }
+
             showRecoveryToast("Звичку виконано");
             await refreshRecoveryDashboard();
         });
@@ -62,14 +66,8 @@ export function renderHabitsWidget(snapshot, options = {}) {
 
         removeBtn.addEventListener("click", async () => {
             if (!confirm) {
-                removeBtn.classList.add("habit-remove-confirm");
-                removeBtn.innerHTML = "Видалити?";
                 confirm = true;
-                setTimeout(() => {
-                    confirm = false;
-                    removeBtn.classList.remove("habit-remove-confirm");
-                    removeBtn.innerHTML = ICONS.delete;
-                }, 2000);
+                removeBtn.classList.add("habit-remove-confirm");
                 return;
             }
 
