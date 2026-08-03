@@ -3,6 +3,7 @@ import { clearElement, createCard, createTitle, createEmpty } from "./dom.js";
 import { RecoveryAPI } from "./api.js";
 import { refreshRecoveryDashboard } from "./dashboard.js";
 import { showRecoveryToast } from "./toast.js";
+import { ICONS } from "../icons/icons.js";
 
 export function renderHabitsWidget(snapshot, options = {}) {
     const el = document.getElementById("habits-widget");
@@ -39,10 +40,6 @@ export function renderHabitsWidget(snapshot, options = {}) {
         const left = document.createElement("div");
         left.className = "habit-left";
 
-        const icon = document.createElement("div");
-        icon.className = "habit-check";
-        if (habit.completed) icon.classList.add("habit-check-completed");
-
         const title = document.createElement("div");
         title.className = "habit-title";
         title.textContent = habit.name;
@@ -51,30 +48,26 @@ export function renderHabitsWidget(snapshot, options = {}) {
         meta.className = "habit-meta";
         meta.textContent = habit.category;
 
-        left.appendChild(icon);
         left.appendChild(title);
         left.appendChild(meta);
 
-        const actions = document.createElement("div");
-        actions.className = "habit-actions";
+        const check = document.createElement("div");
+        check.className = "habit-check";
+        if (habit.completed) check.classList.add("habit-check-completed");
 
-        const completeBtn = document.createElement("button");
-        completeBtn.className = "habit-btn";
-        completeBtn.textContent = habit.completed ? "✓" : "Виконати";
-
-        completeBtn.addEventListener("click", async () => {
+        check.addEventListener("click", async () => {
             try {
                 await RecoveryAPI.logHabit(habit.user_habit_id);
-                showRecoveryToast("Звичку виконано!");
+                showRecoveryToast("Звичку виконано");
                 await refreshRecoveryDashboard();
-            } catch (e) {
+            } catch {
                 showRecoveryToast("Помилка при збереженні звички");
             }
         });
 
         const removeBtn = document.createElement("button");
         removeBtn.className = "habit-btn-remove";
-        removeBtn.textContent = "✕";
+        removeBtn.innerHTML = ICONS.delete;
 
         removeBtn.addEventListener("click", async () => {
             await RecoveryAPI.removeHabit(habit.user_habit_id);
@@ -82,11 +75,9 @@ export function renderHabitsWidget(snapshot, options = {}) {
             showRecoveryToast("Звичку видалено");
         });
 
-        actions.appendChild(completeBtn);
-        actions.appendChild(removeBtn);
-
         item.appendChild(left);
-        item.appendChild(actions);
+        item.appendChild(check);
+        item.appendChild(removeBtn);
 
         list.appendChild(item);
     });
