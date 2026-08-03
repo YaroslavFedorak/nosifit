@@ -45,13 +45,13 @@
 
 .habit-item {
     display: grid;
-    grid-template-columns: 1fr auto auto;
+    grid-template-columns: 1fr auto auto auto;
     align-items: center;
     background: var(--surface);
     border: 1px solid var(--border-soft);
     padding: 14px 18px;
     border-radius: var(--radius-md);
-    min-height: 64px;
+    min-height: 58px;
     gap: 10px;
     transition: var(--transition-fast);
 }
@@ -65,27 +65,22 @@
     background: var(--surface-hover);
 }
 
-.habit-left {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
 .habit-title {
     font-size: 16px;
     font-weight: 600;
     color: var(--text);
 }
 
-.habit-meta {
-    font-size: 12px;
+.habit-category {
+    font-size: 13px;
     color: var(--text-muted);
-    margin-top: 2px;
+    text-align: right;
+    white-space: nowrap;
 }
 
 .habit-check {
-    width: 28px;
-    height: 28px;
+    width: 26px;
+    height: 26px;
     border: 2px solid var(--border-input);
     border-radius: var(--radius-sm);
     cursor: pointer;
@@ -105,18 +100,18 @@
 .habit-check.habit-check-completed::after {
     content: "";
     position: absolute;
-    width: 12px;
+    width: 11px;
     height: 6px;
     border-left: 3px solid #000;
     border-bottom: 3px solid #000;
     transform: rotate(-45deg);
-    top: 8px;
-    left: 7px;
+    top: 7px;
+    left: 6px;
 }
 
 .habit-btn-remove {
-    width: 28px;
-    height: 28px;
+    width: 26px;
+    height: 26px;
     background: transparent;
     border: none;
     color: var(--text-muted);
@@ -129,4 +124,10 @@
 
 .habit-btn-remove:hover {
     color: var(--accent);
+}
+
+.habit-remove-confirm {
+    color: var(--accent);
+    font-size: 12px;
+    font-weight: 600;
 }

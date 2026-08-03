@@ -31,19 +31,13 @@ export function renderHabitsWidget(snapshot, options = {}) {
         item.className = "habit-item";
         if (habit.completed) item.classList.add("habit-completed");
 
-        const left = document.createElement("div");
-        left.className = "habit-left";
-
         const title = document.createElement("div");
         title.className = "habit-title";
         title.textContent = habit.name;
 
-        const meta = document.createElement("div");
-        meta.className = "habit-meta";
-        meta.textContent = habit.category;
-
-        left.appendChild(title);
-        left.appendChild(meta);
+        const category = document.createElement("div");
+        category.className = "habit-category";
+        category.textContent = habit.category;
 
         const check = document.createElement("div");
         check.className = "habit-check";
@@ -64,13 +58,28 @@ export function renderHabitsWidget(snapshot, options = {}) {
         removeBtn.className = "habit-btn-remove";
         removeBtn.innerHTML = ICONS.delete;
 
+        let confirm = false;
+
         removeBtn.addEventListener("click", async () => {
+            if (!confirm) {
+                removeBtn.classList.add("habit-remove-confirm");
+                removeBtn.innerHTML = "Видалити?";
+                confirm = true;
+                setTimeout(() => {
+                    confirm = false;
+                    removeBtn.classList.remove("habit-remove-confirm");
+                    removeBtn.innerHTML = ICONS.delete;
+                }, 2000);
+                return;
+            }
+
             await RecoveryAPI.removeHabit(habit.user_habit_id);
             await refreshRecoveryDashboard();
             showRecoveryToast("Звичку видалено");
         });
 
-        item.appendChild(left);
+        item.appendChild(title);
+        item.appendChild(category);
         item.appendChild(check);
         item.appendChild(removeBtn);
 
