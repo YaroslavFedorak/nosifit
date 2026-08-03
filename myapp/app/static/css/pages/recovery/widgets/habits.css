@@ -2,66 +2,94 @@
     display: flex;
     flex-direction: column;
     gap: 12px;
-    max-height: 360px;
+    max-height: 420px;
     overflow-y: auto;
+    padding-right: 6px;
 }
 
-
-
 .habit-item {
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr 40px 40px;
     align-items: center;
-    justify-content: space-between;
-    background: var(--nf-surface-soft);
-    padding: 12px;
-    border-radius: var(--nf-radius-md);
-    border: 1px solid var(--nf-border-soft);
-    font-size: 15px;
-    color: var(--nf-text-main);
+    background: var(--surface);
+    border: 1px solid var(--border-soft);
+    padding: 14px 18px;
+    border-radius: var(--radius-lg);
+    min-height: 64px;
+    gap: 12px;
+    transition: var(--transition);
+}
+
+.habit-item:hover {
+    background: var(--surface-hover);
+    transform: translateY(-2px);
 }
 
 .habit-item.habit-completed {
-    border-color: var(--nf-green);
-    opacity: 0.9;
+    background: var(--surface-hover);
+    border-color: var(--accent);
 }
 
 .habit-left {
     display: flex;
-    align-items: center;
-    gap: 10px;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.habit-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text);
+}
+
+.habit-meta {
+    font-size: 13px;
+    color: var(--text-muted);
 }
 
 .habit-check {
-    width: 20px;
-    height: 20px;
-    border-radius: var(--nf-radius-sm);
-    border: 2px solid var(--nf-blue);
+    width: 28px;
+    height: 28px;
+    border: 2px solid var(--accent);
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    transition: var(--transition-fast);
+}
+
+.habit-check:hover {
+    background: var(--accent-soft);
 }
 
 .habit-check.habit-check-completed {
-    background: var(--nf-green);
-    border-color: var(--nf-green);
+    background: var(--accent);
 }
 
-.habit-actions {
-    display: flex;
-    gap: 8px;
-}
-
-.habit-btn {
-    background: var(--nf-blue);
-    color: white;
-    border: none;
-    padding: 6px 10px;
-    border-radius: var(--nf-radius-sm);
-    cursor: pointer;
+.habit-check.habit-check-completed::after {
+    content: "";
+    position: absolute;
+    width: 12px;
+    height: 6px;
+    border-left: 3px solid #000;
+    border-bottom: 3px solid #000;
+    transform: rotate(-45deg);
+    top: 8px;
+    left: 7px;
 }
 
 .habit-btn-remove {
-    background: var(--nf-red);
-    color: white;
+    width: 28px;
+    height: 28px;
+    background: transparent;
     border: none;
-    padding: 6px 10px;
-    border-radius: var(--nf-radius-sm);
+    color: var(--text-muted);
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition-fast);
+}
+
+.habit-btn-remove:hover {
+    color: var(--accent);
 }
