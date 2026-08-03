@@ -1,5 +1,5 @@
 import { RECOVERY_MESSAGES } from "./messages.js";
-import { clearElement, createCard, createTitle, createEmpty } from "./dom.js";
+import { clearElement, createEmpty } from "./dom.js";
 import { RecoveryAPI } from "./api.js";
 import { refreshRecoveryDashboard } from "./dashboard.js";
 import { showRecoveryToast } from "./toast.js";
@@ -25,12 +25,6 @@ export function renderHabitsWidget(snapshot, options = {}) {
         el.appendChild(createEmpty(RECOVERY_MESSAGES.habits.empty));
         return;
     }
-
-    const card = createCard("habits-card");
-    card.appendChild(createTitle(RECOVERY_MESSAGES.habits.title));
-
-    const list = document.createElement("div");
-    list.className = "habits-content";
 
     snapshot.habits.forEach(habit => {
         const item = document.createElement("div");
@@ -58,11 +52,12 @@ export function renderHabitsWidget(snapshot, options = {}) {
         check.addEventListener("click", async () => {
             try {
                 await RecoveryAPI.logHabit(habit.user_habit_id);
-                showRecoveryToast("Звичку виконано");
-                await refreshRecoveryDashboard();
             } catch {
                 showRecoveryToast("Помилка при збереженні звички");
+                return;
             }
+            showRecoveryToast("Звичку виконано");
+            await refreshRecoveryDashboard();
         });
 
         const removeBtn = document.createElement("button");
@@ -79,9 +74,6 @@ export function renderHabitsWidget(snapshot, options = {}) {
         item.appendChild(check);
         item.appendChild(removeBtn);
 
-        list.appendChild(item);
+        el.appendChild(item);
     });
-
-    card.appendChild(list);
-    el.appendChild(card);
 }
