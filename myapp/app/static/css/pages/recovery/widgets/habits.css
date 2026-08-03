@@ -120,6 +120,7 @@
     align-items: center;
     justify-content: center;
     transition: var(--transition-fast);
+    position: relative;
 }
 
 .habit-btn-remove:hover {
@@ -128,6 +129,17 @@
 
 .habit-remove-confirm {
     color: var(--accent);
+}
+
+.habit-remove-confirm::after {
+    content: "Видалити?";
+    position: absolute;
+    top: -28px;
+    right: -4px;
+    background: rgba(0, 194, 255, 0.25);
+    padding: 4px 8px;
+    border-radius: var(--radius-sm);
     font-size: 12px;
-    font-weight: 600;
+    color: var(--accent);
+    white-space: nowrap;
 }

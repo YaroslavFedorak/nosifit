@@ -63,13 +63,22 @@ export function renderHabitsWidget(snapshot, options = {}) {
         removeBtn.innerHTML = ICONS.delete;
 
         let confirm = false;
+        let timeoutId = null;
 
         removeBtn.addEventListener("click", async () => {
             if (!confirm) {
                 confirm = true;
                 removeBtn.classList.add("habit-remove-confirm");
+
+                timeoutId = setTimeout(() => {
+                    confirm = false;
+                    removeBtn.classList.remove("habit-remove-confirm");
+                }, 2000);
+
                 return;
             }
+
+            clearTimeout(timeoutId);
 
             await RecoveryAPI.removeHabit(habit.user_habit_id);
             await refreshRecoveryDashboard();
