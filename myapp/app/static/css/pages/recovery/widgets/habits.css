@@ -1,8 +1,17 @@
+.habits-header {
+    padding-bottom: 18px;
+    margin-bottom: 18px;
+}
+
+.habits-header h2 {
+    margin: 0;
+}
+
 .habits-add-btn {
     background: var(--accent);
     color: #000;
     border: none;
-    padding: 8px 16px;
+    padding: 6px 14px;
     border-radius: var(--radius-md);
     font-size: 14px;
     font-weight: 600;
@@ -15,10 +24,10 @@
 }
 
 .habits-box {
-    background: var(--surface-hover);
+    background: var(--card-soft);
     border: 1px solid var(--border-soft);
     border-radius: var(--radius-lg);
-    padding: 16px;
+    padding: 12px;
     display: flex;
     flex-direction: column;
     flex: 1;
@@ -36,14 +45,14 @@
 
 .habit-item {
     display: grid;
-    grid-template-columns: 1fr 40px 40px;
+    grid-template-columns: 1fr auto auto;
     align-items: center;
     background: var(--surface);
     border: 1px solid var(--border-soft);
     padding: 14px 18px;
     border-radius: var(--radius-md);
     min-height: 64px;
-    gap: 12px;
+    gap: 10px;
     transition: var(--transition-fast);
 }
 
@@ -52,8 +61,8 @@
 }
 
 .habit-item.habit-completed {
-    background: var(--surface-hover);
     border-color: var(--accent);
+    background: var(--surface-hover);
 }
 
 .habit-left {
@@ -69,14 +78,15 @@
 }
 
 .habit-meta {
-    font-size: 13px;
+    font-size: 12px;
     color: var(--text-muted);
+    margin-top: 2px;
 }
 
 .habit-check {
     width: 28px;
     height: 28px;
-    border: 2px solid var(--accent);
+    border: 2px solid var(--border-input);
     border-radius: var(--radius-sm);
     cursor: pointer;
     position: relative;
@@ -84,11 +94,12 @@
 }
 
 .habit-check:hover {
-    background: var(--accent-soft);
+    border-color: var(--accent);
 }
 
 .habit-check.habit-check-completed {
     background: var(--accent);
+    border-color: var(--accent);
 }
 
 .habit-check.habit-check-completed::after {
