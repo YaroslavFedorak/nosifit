@@ -68,11 +68,11 @@ export function renderHabitsWidget(snapshot, options = {}) {
         removeBtn.addEventListener("click", async () => {
             if (!confirm) {
                 confirm = true;
-                removeBtn.classList.add("habit-remove-confirm");
+                removeBtn.classList.add("habit-remove-pending");
 
                 timeoutId = setTimeout(() => {
                     confirm = false;
-                    removeBtn.classList.remove("habit-remove-confirm");
+                    removeBtn.classList.remove("habit-remove-pending");
                 }, 2000);
 
                 return;
