@@ -1,5 +1,5 @@
 import { RECOVERY_MESSAGES } from "./messages.js";
-import { ICONS } from "../icons/icons.js";
+import { ICONS } from "../icons/index.js";
 import {
     clearElement,
     createCard,

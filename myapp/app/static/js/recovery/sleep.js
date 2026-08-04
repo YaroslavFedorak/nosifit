@@ -6,7 +6,7 @@ import {
     createError,
     createLoading
 } from "./dom.js";
-import { ICONS } from "../icons/icons.js";
+import { ICONS } from "../icons/index.js";
 
 function getSleepStatus(minutes) {
     if (!minutes || minutes <= 0) return "Немає даних";

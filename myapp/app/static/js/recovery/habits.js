@@ -3,7 +3,7 @@ import { clearElement, createEmpty } from "./dom.js";
 import { RecoveryAPI } from "./api.js";
 import { refreshRecoveryDashboard } from "./dashboard.js";
 import { showRecoveryToast } from "./toast.js";
-import { ICONS } from "../icons/icons.js";
+import { ICONS } from "../icons/index.js";
 
 export function renderHabitsWidget(snapshot, options = {}) {
     const el = document.getElementById("habits-widget");
@@ -30,6 +30,10 @@ export function renderHabitsWidget(snapshot, options = {}) {
         const item = document.createElement("div");
         item.className = "habit-item";
         if (habit.completed) item.classList.add("habit-completed");
+
+        const icon = document.createElement("div");
+        icon.className = "habit-icon";
+        icon.innerHTML = ICONS[habit.icon] || ICONS.droplet;
 
         const title = document.createElement("div");
         title.className = "habit-title";
@@ -85,6 +89,7 @@ export function renderHabitsWidget(snapshot, options = {}) {
             showRecoveryToast("Звичку видалено");
         });
 
+        item.appendChild(icon);
         item.appendChild(title);
         item.appendChild(category);
         item.appendChild(check);
