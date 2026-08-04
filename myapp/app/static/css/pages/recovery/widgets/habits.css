@@ -66,15 +66,15 @@
 }
 
 .habit-title {
-    font-size: 16px;
-    font-weight: 600;
-    line-height: 1.25;
-    color: var(--text);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    font-family: inherit;
-    letter-spacing: 0;
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    line-height: 1.25 !important;
+    font-family: 'Inter', sans-serif !important;
+    color: var(--text) !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    letter-spacing: 0 !important;
 }
 
 .habit-category {

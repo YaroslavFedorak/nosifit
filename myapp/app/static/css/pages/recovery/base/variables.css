@@ -1,4 +1,6 @@
 :root {
+    font-family: 'Inter', sans-serif;
+
     --surface: #141414;
     --surface-hover: #181818;
     --surface-input: #1f1f1f;
