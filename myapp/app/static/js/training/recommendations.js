@@ -1,4 +1,4 @@
-import { ICONS } from "/static/js/icons/icons.js";
+import { ICONS } from "/static/js/icons/index.js";
 
 const safeArr = v => Array.isArray(v) ? v : (v ? [v] : []);
 

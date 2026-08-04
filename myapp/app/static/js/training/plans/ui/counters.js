@@ -1,4 +1,4 @@
-import { ICONS } from "../../../icons/icons.js";
+import { ICONS } from "../../../icons/index.js";
 
 export function createCounterField(label, iconSvg, value, onChange) {
     const field = document.createElement("div");

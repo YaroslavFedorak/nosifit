@@ -5,6 +5,16 @@ import { refreshRecoveryDashboard } from "./dashboard.js";
 import { showRecoveryToast } from "./toast.js";
 import { ICONS } from "../icons/index.js";
 
+const CATEGORY_ICON_MAP = {
+    sleep: "moon",
+    hydration: "water",
+    recovery: "rest",
+    activity: "exercise",
+    stress: "caution",
+    nutrition: "plan",
+    massage: "hend_heart"
+};
+
 export function renderHabitsWidget(snapshot, options = {}) {
     const el = document.getElementById("habits-widget");
     if (!el) return;
@@ -33,7 +43,9 @@ export function renderHabitsWidget(snapshot, options = {}) {
 
         const icon = document.createElement("div");
         icon.className = "habit-icon";
-        icon.innerHTML = ICONS[habit.icon] || ICONS.droplet;
+
+        const iconKey = CATEGORY_ICON_MAP[habit.category] || "rest";
+        icon.innerHTML = ICONS[iconKey];
 
         const title = document.createElement("div");
         title.className = "habit-title";

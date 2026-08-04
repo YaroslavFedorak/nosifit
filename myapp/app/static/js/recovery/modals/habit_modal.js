@@ -1,19 +1,29 @@
 import { RecoveryAPI } from "../api.js";
 import { refreshRecoveryDashboard } from "../dashboard.js";
-import { ICONS } from "../../icons/icons.js";
+import { ICONS } from "../../icons/index.js";
 import { showToast } from "../../shared/toast.js";
 
 let initialized = false;
 let currentSort = "points";
 
-const CATEGORY_MAP = Object.freeze({
+const CATEGORY_MAP = {
     hydration: "Вода",
     sleep: "Сон",
     nutrition: "Харчування",
     activity: "Активність",
     recovery: "Відновлення",
     stress: "Стрес"
-});
+};
+
+const CATEGORY_ICON_MAP = {
+    sleep: "moon",
+    hydration: "water",
+    recovery: "rest",
+    activity: "exercise",
+    stress: "caution",
+    nutrition: "plan",
+    massage: "hend_heart"
+};
 
 function localizeCategory(category) {
     return CATEGORY_MAP[category] || category || "";
@@ -52,8 +62,8 @@ function createHabitRow(habit, added) {
     const icon = document.createElement("div");
     icon.className = "habit-icon";
 
-    const svg = ICONS[habit.icon];
-    icon.innerHTML = svg ?? "•";
+    const iconKey = CATEGORY_ICON_MAP[habit.category] || "rest";
+    icon.innerHTML = ICONS[iconKey];
 
     const info = document.createElement("div");
     info.className = "habit-info";

@@ -1,6 +1,6 @@
 import { createCounterField, createRepsField } from "./counters.js";
 import { enableDrag } from "../interactions/dragdrop.js";
-import { ICONS } from "../../../icons/icons.js";
+import { ICONS } from "../../../icons/index.js";
 
 export function createExerciseCard(ex, index, list, rerender, openPicker) {
     const card = document.createElement("div");
@@ -25,8 +25,8 @@ export function createExerciseCard(ex, index, list, rerender, openPicker) {
     const body = card.querySelector(".tr-plan-card-body");
 
     const reps = createRepsField(ex.reps, v => ex.reps = v);
-    const sets = createCounterField("Підходи", `<svg width="18" height="18"></svg>`, ex.sets, v => ex.sets = v);
-    const load = createCounterField("Вага (кг)", `<svg width="18" height="18"></svg>`, ex.load, v => ex.load = v);
+    const sets = createCounterField("Підходи", ICONS.exercise, ex.sets, v => ex.sets = v);
+    const load = createCounterField("Вага (кг)", ICONS.exercise, ex.load, v => ex.load = v);
 
     body.appendChild(reps);
     body.appendChild(sets);

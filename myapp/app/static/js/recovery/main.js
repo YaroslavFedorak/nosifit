@@ -2,7 +2,7 @@ import { initRecoveryDashboard } from "./dashboard.js";
 import { initSleepModal } from "./modals/sleep_modal.js";
 import { initHabitModal } from "./modals/habit_modal.js";
 import { initRecoveryHeatmap } from "./heatmap/heatmap.js";
-import { ICONS } from "../icons/icons.js";
+import { ICONS } from "../icons/index.js";
 
 document.addEventListener("DOMContentLoaded", () => {
     const root = document.getElementById("recovery-app");

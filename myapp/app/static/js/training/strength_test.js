@@ -1,7 +1,7 @@
 import { TrainingAPI } from "./api.js";
 import { renderStrengthTestResults } from "./dashboard.js";
 import { getLevel, getProgress } from "./utils/strength_levels.js";
-import { ICONS } from "../icons/icons.js";
+import { ICONS } from "../icons/index.js";
 
 function getNumber(id) {
     return Number(document.getElementById(id)?.value) || 0;

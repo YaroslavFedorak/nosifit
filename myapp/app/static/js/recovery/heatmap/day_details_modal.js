@@ -1,5 +1,5 @@
 import { RecoveryAPI } from "../api.js";
-import { ICONS } from "../../icons/icons.js";
+import { ICONS } from "../../icons/index.js";
 import { createDayCard } from "./day_card.js";
 import { formatDateLong, formatSleep } from "./formatters.js";
 

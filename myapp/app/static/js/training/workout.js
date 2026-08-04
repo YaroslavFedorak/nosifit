@@ -1,5 +1,5 @@
 import { trainingStore } from "./store.js";
-import { ICONS } from "../icons/icons.js";
+import { ICONS } from "../icons/index.js";
 
 export function renderWorkoutList() {
     const box = document.getElementById("tr-workout-exercise-list");

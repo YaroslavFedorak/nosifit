@@ -150,10 +150,8 @@ endblock %} {% block styles %} {{ super() }}
 "app/training/modals/training_day_details_modal.html" %} {% include
 "app/training/modals/plan/modal.html" %}
 
-<script type="module" src="/static/js/icons/icons.js"></script>
-
 <script type="module">
-  import { ICONS } from "/static/js/icons/icons.js";
+  import { ICONS } from "/static/js/icons/index.js";
   document.getElementById("tr-icon-weak").innerHTML = ICONS.weak;
   document.getElementById("tr-icon-recommended").innerHTML = ICONS.recommended;
   document.getElementById("tr-icon-balance").innerHTML = ICONS.balance;
