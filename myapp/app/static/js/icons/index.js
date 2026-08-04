@@ -1,7 +1,7 @@
 import { COMMON_ICONS } from "./common.js";
 import { RECOVERY_ICONS } from "./recovery.js";
 import { TRAINING_ICONS } from "./training.js";
-import { HABIT_ICONS } from "./habits.js";
+import { HABIT_ICONS } from "./habit_icons.js";
 
 export const ICONS = {
     ...COMMON_ICONS,
