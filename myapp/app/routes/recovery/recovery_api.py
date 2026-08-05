@@ -227,9 +227,6 @@ def get_recommendations(user_id):
         snapshot.training_score,
     )
 
-    for r in recs:
-        habit_service.ensure_user_has_habit(user_id, r["habit_id"])
-
     return (
         jsonify({"recovery_score": snapshot.recovery_score, "recommendations": recs}),
         200,
