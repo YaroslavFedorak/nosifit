@@ -172,7 +172,7 @@ export function initHabitModal(userId) {
     async function renderList() {
         const allHabits = await loadAllHabits();
         const userHabits = await loadUserHabits(userId);
-        const userHabitIds = new Set(userHabits.map(h => h.habit_id));
+        const userHabitIds = new Set(userHabits.map(h => h.id));
 
         const available = allHabits.filter(h => !userHabitIds.has(h.id));
         const added = allHabits.filter(h => userHabitIds.has(h.id));
@@ -233,7 +233,6 @@ export function initHabitModal(userId) {
             const requests = habitIds.map(id => RecoveryAPI.addHabit(userId, id));
 
             await Promise.all(requests);
-            await RecoveryAPI.generateSnapshot(userId);
             await refreshRecoveryDashboard(userId);
 
             showToast("Звички успішно додано");
