@@ -62,10 +62,10 @@ const ENDPOINTS = {
 
     sleep: () => `${API_BASE}/sleep`,
 
-    addHabit: () => `${API_BASE}/habits`,
+    addHabit: (habitId) => `${API_BASE}/habits/add/${habitId}`,
     removeHabit: (userHabitId) => `${API_BASE}/habits/${userHabitId}`,
     logHabit: () => `${API_BASE}/habits/logs`,
-    habitsList: () => `${API_BASE}/habits`,
+    habitsList: () => `${API_BASE}/habits/list`,
     userHabits: (userId) => `${API_BASE}/habits/user/${userId}`
 };
 
@@ -94,28 +94,15 @@ export const RecoveryAPI = {
     },
 
     addHabit(userId, habitId) {
-        return request(ENDPOINTS.addHabit(), {
+        return request(ENDPOINTS.addHabit(habitId), {
             method: "POST",
-            body: JSON.stringify({
-                user_id: userId,
-                habit_id: habitId
-            })
+            body: JSON.stringify({ user_id: userId })
         });
     },
 
     removeHabit(userHabitId) {
         return request(ENDPOINTS.removeHabit(userHabitId), {
             method: "DELETE"
-        });
-    },
-
-    generateSnapshot(userId, lastTrainingDays = 0) {
-        return request(`${API_BASE}/snapshot`, {
-            method: "POST",
-            body: JSON.stringify({
-                user_id: userId,
-                last_training_days: lastTrainingDays
-            })
         });
     },
 
