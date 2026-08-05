@@ -15,8 +15,7 @@
 .recovery-header-icon-box {
     width: 48px;
     height: 48px;
-    background: var(--card-soft);
-    border: 1px solid var(--border-soft);
+    background: #2a2a2a;
     border-radius: 12px;
     display: flex;
     align-items: center;
