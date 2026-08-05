@@ -1,7 +1,7 @@
 import { RecoveryAPI } from "../api.js";
 import { refreshRecoveryDashboard } from "../dashboard.js";
 import { ICONS } from "../../icons/index.js";
-import { showToast } from "../../shared/toast.js";
+import { showRecoveryToast } from "../toast.js";
 
 let initialized = false;
 let currentSort = "points";
@@ -235,10 +235,10 @@ export function initHabitModal(userId) {
             await Promise.all(requests);
             await refreshRecoveryDashboard(userId);
 
-            showToast("Звички успішно додано");
+            showRecoveryToast("Звички успішно додано");
             close();
         } catch (e) {
-            showToast("Помилка при збереженні звичок");
+            showRecoveryToast("Помилка при збереженні звичок");
         } finally {
             saveBtn.disabled = false;
         }
