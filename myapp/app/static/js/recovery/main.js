@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!rawUserId || Number.isNaN(userId)) return;
 
     const iconBox = document.getElementById("recovery-header-icon");
-    if (iconBox) iconBox.innerHTML = ICONS.bed_single;
+    if (iconBox) iconBox.innerHTML = ICONS.heart_handshake;
 
     const dateEl = document.getElementById("recovery-header-date");
     if (dateEl) {
