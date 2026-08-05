@@ -46,6 +46,8 @@ def add_sleep():
         return jsonify({"error": "sleep_end must be after sleep_start"}), 400
 
     entry = sleep_service.add_sleep(user_id, start_dt, end_dt)
+    snapshot_service.generate_snapshot(user_id)
+
     return (
         jsonify(
             {
@@ -105,6 +107,10 @@ def get_user_habits(user_id):
 def add_habit(habit_id):
     user_id = request.json.get("user_id")
     habit, created = habit_service.add_user_habit(user_id, habit_id)
+
+    if created:
+        snapshot_service.generate_snapshot(user_id)
+
     return jsonify({"created": created})
 
 
@@ -113,6 +119,9 @@ def remove_habit(user_habit_id):
     habit = habit_service.remove_user_habit(user_habit_id)
     if habit is None:
         return jsonify({"error": "habit not found"}), 404
+
+    snapshot_service.generate_snapshot(habit.user_id)
+
     return jsonify({"removed": user_habit_id}), 200
 
 

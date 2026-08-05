@@ -66,7 +66,6 @@ export function initSleepModal(userId) {
                 return;
             }
 
-            await RecoveryAPI.generateSnapshot(userId);
             await refreshRecoveryDashboard(userId);
 
             close();
