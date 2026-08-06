@@ -15,6 +15,41 @@ const CATEGORY_ICON_MAP = {
     massage: "hend_heart"
 };
 
+const CATEGORY_LABELS = {
+    sleep: "Сон",
+    hydration: "Вода",
+    nutrition: "Харчування",
+    activity: "Активність",
+    recovery: "Відновлення",
+    stress: "Стрес",
+    massage: "Масаж"
+};
+
+function label(category) {
+    return CATEGORY_LABELS[category] || category;
+}
+
+function buildReason(habit) {
+    switch (habit.category) {
+        case "sleep":
+            return "Рекомендовано через якість сну";
+        case "hydration":
+            return "Рекомендовано через рівень гідратації";
+        case "nutrition":
+            return "Рекомендовано для підтримки харчування";
+        case "activity":
+            return "Рекомендовано після навантаження";
+        case "recovery":
+            return "Рекомендовано для покращення відновлення";
+        case "stress":
+            return "Рекомендовано через рівень стресу";
+        case "massage":
+            return "Рекомендовано для розслаблення м'язів";
+        default:
+            return "Рекомендовано для балансу відновлення";
+    }
+}
+
 export function renderHabitsWidget(snapshot, options = {}) {
     const el = document.getElementById("habits-widget");
     if (!el) return;
@@ -38,30 +73,61 @@ export function renderHabitsWidget(snapshot, options = {}) {
 
     snapshot.habits.forEach(habit => {
         const item = document.createElement("div");
-        item.className = "habit-item";
+        const categoryClass = `habit-cat-${habit.category}`;
+        item.className = `habit-item ${categoryClass}`;
         if (habit.completed) item.classList.add("habit-completed");
 
-        const icon = document.createElement("div");
-        icon.className = "habit-icon";
+        const main = document.createElement("div");
+        main.className = "habit-main";
 
-        const iconKey = CATEGORY_ICON_MAP[habit.category] || "rest";
-        icon.innerHTML = ICONS[iconKey];
+        const iconBox = document.createElement("div");
+        iconBox.className = "habit-icon";
+        iconBox.innerHTML = ICONS[CATEGORY_ICON_MAP[habit.category] || "rest"];
+
+        const textBox = document.createElement("div");
+        textBox.className = "habit-text";
 
         const title = document.createElement("div");
         title.className = "habit-title";
         title.textContent = habit.name;
 
-        const category = document.createElement("div");
-        category.className = "habit-category";
-        category.textContent = habit.category;
+        const metaRow = document.createElement("div");
+        metaRow.className = "habit-meta-row";
 
-        const check = document.createElement("div");
+        const category = document.createElement("div");
+        category.className = "habit-category-badge";
+        category.textContent = label(habit.category);
+
+        const reason = document.createElement("div");
+        reason.className = "habit-reason";
+        reason.textContent = buildReason(habit);
+
+        metaRow.appendChild(category);
+
+        textBox.appendChild(title);
+        textBox.appendChild(metaRow);
+        textBox.appendChild(reason);
+
+        main.appendChild(iconBox);
+        main.appendChild(textBox);
+
+        const actions = document.createElement("div");
+        actions.className = "habit-actions";
+
+        const impact = document.createElement("div");
+        impact.className = "habit-recovery-impact";
+        impact.textContent = `Recovery +${habit.points}`;
+
+        const check = document.createElement("button");
+        check.type = "button";
         check.className = "habit-check";
         if (habit.completed) check.classList.add("habit-check-completed");
 
         check.addEventListener("click", async () => {
             check.classList.toggle("habit-check-completed");
             item.classList.toggle("habit-completed");
+            item.classList.add("habit-animate");
+            setTimeout(() => item.classList.remove("habit-animate"), 160);
 
             try {
                 await RecoveryAPI.logHabit(habit.user_habit_id);
@@ -75,6 +141,7 @@ export function renderHabitsWidget(snapshot, options = {}) {
         });
 
         const removeBtn = document.createElement("button");
+        removeBtn.type = "button";
         removeBtn.className = "habit-btn-remove";
         removeBtn.innerHTML = ICONS.delete;
 
@@ -85,27 +152,33 @@ export function renderHabitsWidget(snapshot, options = {}) {
             if (!confirm) {
                 confirm = true;
                 removeBtn.classList.add("habit-remove-pending");
-
                 timeoutId = setTimeout(() => {
                     confirm = false;
                     removeBtn.classList.remove("habit-remove-pending");
                 }, 2000);
-
                 return;
             }
 
             clearTimeout(timeoutId);
 
-            await RecoveryAPI.removeHabit(habit.user_habit_id);
-            await refreshRecoveryDashboard();
-            showRecoveryToast("Звичку видалено");
+            try {
+                await RecoveryAPI.removeHabit(habit.user_habit_id);
+                await refreshRecoveryDashboard();
+                showRecoveryToast("Звичку видалено");
+            } catch {
+                showRecoveryToast("Помилка при видаленні звички");
+            } finally {
+                confirm = false;
+                removeBtn.classList.remove("habit-remove-pending");
+            }
         });
 
-        item.appendChild(icon);
-        item.appendChild(title);
-        item.appendChild(category);
-        item.appendChild(check);
-        item.appendChild(removeBtn);
+        actions.appendChild(impact);
+        actions.appendChild(check);
+        actions.appendChild(removeBtn);
+
+        item.appendChild(main);
+        item.appendChild(actions);
 
         el.appendChild(item);
     });

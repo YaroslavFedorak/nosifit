@@ -39,80 +39,153 @@
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: 18px;
     padding-right: 6px;
+    box-sizing: border-box;
 }
 
 .habit-item {
-    display: grid;
-    grid-template-columns: 48px 1fr auto auto auto;
+    display: flex;
+    justify-content: space-between;
     align-items: center;
     background: var(--surface);
-    border-radius: 16px;
-    padding: 16px 18px;
-    gap: 16px;
-    border: 1px solid var(--border-soft);
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.22);
-    transition: transform .15s ease, box-shadow .15s ease;
-    min-height: 72px;
+    border-radius: 18px;
+    padding: 20px 22px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    transition:
+        transform .18s cubic-bezier(0.16, 1, 0.3, 1),
+        background-color .18s ease,
+        border-color .18s ease;
+    box-sizing: border-box;
 }
 
 .habit-item:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 16px rgba(0, 0, 0, 0.28);
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(255, 255, 255, 0.14);
+    transform: translateY(-1px);
 }
 
 .habit-item.habit-completed {
-    border-color: var(--accent);
-    box-shadow: 0 5px 16px rgba(0, 0, 0, 0.28);
+    background: rgba(94, 220, 140, 0.08);
+    border-color: rgba(94, 220, 140, 0.4);
+}
+
+.habit-item.habit-completed .habit-icon {
+    opacity: 0.9;
+}
+
+.habit-item.habit-animate {
+    transform: scale(1.015);
+}
+
+.habit-main {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    min-width: 0;
 }
 
 .habit-icon {
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     border-radius: 14px;
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--cat-color);
+    background: var(--cat-color-bg);
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--accent);
+    flex-shrink: 0;
+    color: var(--cat-color);
+    transition:
+        background-color .18s ease,
+        border-color .18s ease,
+        opacity .18s ease;
+}
+
+.habit-item:hover .habit-icon {
+    opacity: 1;
 }
 
 .habit-icon svg {
-    width: 26px;
-    height: 26px;
+    width: 28px;
+    height: 28px;
+    color: currentColor;
+}
+
+.habit-text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
 }
 
 .habit-title {
-    font-size: 16px;
+    font-size: 18px;
     font-weight: 600;
     color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     letter-spacing: 0;
 }
 
-.habit-category {
-    font-size: 13px;
+.habit-meta-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.habit-category-badge {
+    font-size: 11px;
     font-weight: 500;
-    padding: 4px 10px;
-    border-radius: 8px;
-    background: rgba(255, 255, 255, 0.08);
-    color: var(--text-muted);
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: var(--cat-color-bg);
+    color: var(--cat-color);
     text-transform: capitalize;
 }
 
+.habit-reason {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.habit-actions {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.habit-recovery-impact {
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--text-muted);
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+}
+
 .habit-check {
-    width: 32px;
-    height: 32px;
+    width: 34px;
+    height: 34px;
     border-radius: 10px;
     border: 2px solid var(--border-input);
     cursor: pointer;
-    transition: .15s ease;
+    transition:
+        transform .18s cubic-bezier(0.16, 1, 0.3, 1),
+        border-color .18s ease,
+        background-color .18s ease;
     position: relative;
+    background: transparent;
 }
 
 .habit-check:hover {
     border-color: var(--accent);
+}
+
+.habit-check:active {
+    transform: scale(0.96);
 }
 
 .habit-check.habit-check-completed {
@@ -133,42 +206,70 @@
 }
 
 .habit-btn-remove {
-    width: 32px;
-    height: 32px;
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
     background: transparent;
-    border: none;
+    border: 1px solid rgba(255, 255, 255, 0.08);
     color: var(--text-muted);
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: .15s ease;
+    transition:
+        transform .18s cubic-bezier(0.16, 1, 0.3, 1),
+        background-color .18s ease,
+        border-color .18s ease,
+        color .18s ease;
 }
 
 .habit-btn-remove:hover {
-    color: var(--accent);
+    background: #ff5c5c22;
+    border-color: #ff5c5c55;
+    color: #ff5c5c;
+}
+
+.habit-btn-remove:active {
+    transform: scale(0.96);
 }
 
 .habit-remove-pending {
-    color: var(--accent);
+    background: #ff5c5c22;
+    border-color: #ff5c5c55;
+    color: #ff5c5c;
 }
 
-.habit-title {
-    font-size: 16px !important;
-    font-weight: 600 !important;
-    line-height: 1.25 !important;
-    font-family: 'Inter', sans-serif !important;
-    color: var(--text) !important;
-    white-space: nowrap !important;
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
-    letter-spacing: 0 !important;
+.habit-cat-sleep {
+    --cat-color: #7C8CFF;
+    --cat-color-bg: #7C8CFF22;
 }
 
-.habit-category {
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--text-muted);
-    white-space: nowrap;
-    text-align: right;
+.habit-cat-hydration {
+    --cat-color: #4CC9F0;
+    --cat-color-bg: #4CC9F022;
+}
+
+.habit-cat-nutrition {
+    --cat-color: #F4B860;
+    --cat-color-bg: #F4B86022;
+}
+
+.habit-cat-activity {
+    --cat-color: #5EDC8C;
+    --cat-color-bg: #5EDC8C22;
+}
+
+.habit-cat-recovery {
+    --cat-color: #C084FC;
+    --cat-color-bg: #C084FC22;
+}
+
+.habit-cat-stress {
+    --cat-color: #FF8A65;
+    --cat-color-bg: #FF8A6522;
+}
+
+.habit-cat-massage {
+    --cat-color: #FF9EC9;
+    --cat-color-bg: #FF9EC922;
 }
