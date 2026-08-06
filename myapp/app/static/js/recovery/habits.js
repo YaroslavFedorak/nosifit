@@ -6,13 +6,13 @@ import { showRecoveryToast } from "./toast.js";
 import { ICONS } from "../icons/index.js";
 
 const CATEGORY_ICON_MAP = {
-    sleep: "moon",
-    hydration: "water",
+    sleep: "bed",
+    hydration: "droplet",
+    nutrition: "meal",
+    activity: "walk",
+    stress: "breathing",
     recovery: "rest",
-    activity: "exercise",
-    stress: "caution",
-    nutrition: "plan",
-    massage: "hend_heart"
+    massage: "massage"
 };
 
 const CATEGORY_LABELS = {
@@ -31,22 +31,14 @@ function label(category) {
 
 function buildReason(habit) {
     switch (habit.category) {
-        case "sleep":
-            return "Рекомендовано через якість сну";
-        case "hydration":
-            return "Рекомендовано через рівень гідратації";
-        case "nutrition":
-            return "Рекомендовано для підтримки харчування";
-        case "activity":
-            return "Рекомендовано після навантаження";
-        case "recovery":
-            return "Рекомендовано для покращення відновлення";
-        case "stress":
-            return "Рекомендовано через рівень стресу";
-        case "massage":
-            return "Рекомендовано для розслаблення м'язів";
-        default:
-            return "Рекомендовано для балансу відновлення";
+        case "sleep": return "Рекомендовано через якість сну";
+        case "hydration": return "Рекомендовано через рівень гідратації";
+        case "nutrition": return "Рекомендовано для підтримки харчування";
+        case "activity": return "Рекомендовано після навантаження";
+        case "recovery": return "Рекомендовано для покращення відновлення";
+        case "stress": return "Рекомендовано через рівень стресу";
+        case "massage": return "Рекомендовано для розслаблення м'язів";
+        default: return "Рекомендовано для балансу відновлення";
     }
 }
 
@@ -82,7 +74,8 @@ export function renderHabitsWidget(snapshot, options = {}) {
 
         const iconBox = document.createElement("div");
         iconBox.className = "habit-icon";
-        iconBox.innerHTML = ICONS[CATEGORY_ICON_MAP[habit.category] || "rest"];
+        const iconKey = CATEGORY_ICON_MAP[habit.category] || "rest";
+        iconBox.innerHTML = ICONS[iconKey];
 
         const textBox = document.createElement("div");
         textBox.className = "habit-text";

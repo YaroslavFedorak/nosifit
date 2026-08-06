@@ -86,11 +86,11 @@
 }
 
 .habit-icon {
-    width: 52px;
-    height: 52px;
-    border-radius: 14px;
-    border: 1px solid var(--cat-color);
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
     background: var(--cat-color-bg);
+    border: 1px solid var(--cat-color);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -107,8 +107,10 @@
 }
 
 .habit-icon svg {
-    width: 28px;
-    height: 28px;
+    width: 22px;
+    height: 22px;
+    stroke-linecap: round;
+    stroke-linejoin: round;
     color: currentColor;
 }
 
@@ -126,7 +128,6 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    letter-spacing: 0;
 }
 
 .habit-meta-row {
