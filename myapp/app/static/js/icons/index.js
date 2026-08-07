@@ -10,8 +10,8 @@ export const ICONS = {
     ...COMMON_ICONS,
     ...TRAINING_ICONS,
     ...RECOVERY_ICONS,
-    ...HABIT_ICONS,
     ...NUTRITION_ICONS,
     ...TRACKER_ICONS,
-    ...PROFILE_ICONS
+    ...PROFILE_ICONS,
+    ...HABIT_ICONS
 };
