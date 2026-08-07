@@ -12,7 +12,8 @@ const CATEGORY_MAP = {
     nutrition: "Харчування",
     activity: "Активність",
     recovery: "Відновлення",
-    stress: "Стрес"
+    stress: "Стрес",
+    massage: "Масаж"
 };
 
 function localizeCategory(category) {
@@ -43,7 +44,8 @@ function sortAdded(habits) {
 
 function createHabitRow(habit, added) {
     const row = document.createElement("div");
-    row.className = "habit-row";
+    const categoryClass = `habit-cat-${habit.category}`;
+    row.className = `habit-row ${categoryClass}`;
     if (added) row.classList.add("habit-added");
 
     const left = document.createElement("div");
@@ -66,13 +68,8 @@ function createHabitRow(habit, added) {
     description.className = "habit-description";
     description.textContent = habit.description || "";
 
-    const meta = document.createElement("div");
-    meta.className = "habit-meta";
-    meta.textContent = localizeCategory(habit.category);
-
     info.appendChild(title);
     if (habit.description) info.appendChild(description);
-    if (habit.category) info.appendChild(meta);
 
     left.appendChild(icon);
     left.appendChild(info);
@@ -84,14 +81,12 @@ function createHabitRow(habit, added) {
     points.className = "habit-points";
     points.textContent = `Recovery +${habit.points}`;
 
-    right.appendChild(points);
+    const meta = document.createElement("div");
+    meta.className = "habit-meta";
+    meta.textContent = localizeCategory(habit.category);
 
-    if (added) {
-        const status = document.createElement("div");
-        status.className = "habit-status";
-        status.textContent = "Додано";
-        right.appendChild(status);
-    }
+    right.appendChild(points);
+    right.appendChild(meta);
 
     const check = document.createElement("div");
     check.className = "habit-check";
@@ -110,19 +105,16 @@ function createHabitRow(habit, added) {
 }
 
 export function initHabitModal(userId) {
+    if (initialized) return;
+
     const backdrop = document.getElementById("habit-modal-backdrop");
     const openBtn = document.getElementById("open-habit-modal");
-    const closeBtn = document.getElementById("close-habit-modal");
     const backBtn = document.getElementById("habit-back-btn");
     const saveBtn = document.getElementById("save-habit");
     const listBox = document.getElementById("habit-modal-list");
     const sortButtons = document.querySelectorAll(".habit-sort-btn");
 
-    if (initialized) return;
-
-    if (!backdrop || !openBtn || !closeBtn || !backBtn || !saveBtn || !listBox) {
-        return;
-    }
+    if (!backdrop || !openBtn || !backBtn || !saveBtn || !listBox) return;
 
     initialized = true;
 
@@ -132,7 +124,6 @@ export function initHabitModal(userId) {
     }
 
     openBtn.addEventListener("click", open);
-    closeBtn.addEventListener("click", close);
     backBtn.addEventListener("click", close);
     saveBtn.addEventListener("click", save);
 
