@@ -5,16 +5,6 @@ import { refreshRecoveryDashboard } from "./dashboard.js";
 import { showRecoveryToast } from "./toast.js";
 import { ICONS } from "../icons/index.js";
 
-const CATEGORY_ICON_MAP = {
-    sleep: "bed",
-    hydration: "droplet",
-    nutrition: "meal",
-    activity: "walk",
-    stress: "breathing",
-    recovery: "rest",
-    massage: "massage"
-};
-
 const CATEGORY_LABELS = {
     sleep: "Сон",
     hydration: "Вода",
@@ -74,8 +64,8 @@ export function renderHabitsWidget(snapshot, options = {}) {
 
         const iconBox = document.createElement("div");
         iconBox.className = "habit-icon";
-        const iconKey = CATEGORY_ICON_MAP[habit.category] || "rest";
-        iconBox.innerHTML = ICONS[iconKey];
+        const iconKey = habit.icon || "rest";
+        iconBox.innerHTML = ICONS[iconKey] || ICONS.rest;
 
         const textBox = document.createElement("div");
         textBox.className = "habit-text";
