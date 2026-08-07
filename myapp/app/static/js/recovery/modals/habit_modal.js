@@ -15,16 +15,6 @@ const CATEGORY_MAP = {
     stress: "Стрес"
 };
 
-const CATEGORY_ICON_MAP = {
-    sleep: "moon",
-    hydration: "water",
-    recovery: "rest",
-    activity: "exercise",
-    stress: "caution",
-    nutrition: "plan",
-    massage: "hend_heart"
-};
-
 function localizeCategory(category) {
     return CATEGORY_MAP[category] || category || "";
 }
@@ -60,10 +50,10 @@ function createHabitRow(habit, added) {
     left.className = "habit-left";
 
     const icon = document.createElement("div");
-    icon.className = "habit-icon";
+    icon.className = "habit-modal-icon";
 
-    const iconKey = CATEGORY_ICON_MAP[habit.category] || "rest";
-    icon.innerHTML = ICONS[iconKey];
+    const iconKey = habit.icon || "rest";
+    icon.innerHTML = ICONS[iconKey] || ICONS.rest;
 
     const info = document.createElement("div");
     info.className = "habit-info";
@@ -92,7 +82,7 @@ function createHabitRow(habit, added) {
 
     const points = document.createElement("div");
     points.className = "habit-points";
-    points.textContent = `+${habit.points}`;
+    points.textContent = `Recovery +${habit.points}`;
 
     right.appendChild(points);
 
@@ -120,9 +110,6 @@ function createHabitRow(habit, added) {
 }
 
 export function initHabitModal(userId) {
-    if (initialized) return;
-    initialized = true;
-
     const backdrop = document.getElementById("habit-modal-backdrop");
     const openBtn = document.getElementById("open-habit-modal");
     const closeBtn = document.getElementById("close-habit-modal");
@@ -131,7 +118,13 @@ export function initHabitModal(userId) {
     const listBox = document.getElementById("habit-modal-list");
     const sortButtons = document.querySelectorAll(".habit-sort-btn");
 
-    if (!backdrop || !openBtn || !closeBtn || !saveBtn || !listBox) return;
+    if (initialized) return;
+
+    if (!backdrop || !openBtn || !closeBtn || !backBtn || !saveBtn || !listBox) {
+        return;
+    }
+
+    initialized = true;
 
     function updateSaveState() {
         const selected = listBox.querySelectorAll(".habit-row.selected");
