@@ -89,21 +89,15 @@
     width: 44px;
     height: 44px;
     border-radius: 12px;
-    background: var(--cat-color-bg);
+    background: linear-gradient(145deg, var(--cat-color-bg), rgba(255, 255, 255, 0.06));
     border: 1px solid var(--cat-color);
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-shrink: 0;
     color: var(--cat-color);
-    transition:
-        background-color .18s ease,
-        border-color .18s ease,
-        opacity .18s ease;
-}
-
-.habit-item:hover .habit-icon {
-    opacity: 1;
+    box-shadow:
+        inset 0 0 6px rgba(0, 0, 0, 0.25),
+        0 2px 4px rgba(0, 0, 0, 0.25);
 }
 
 .habit-icon svg {
@@ -112,6 +106,12 @@
     stroke-linecap: round;
     stroke-linejoin: round;
     color: currentColor;
+    filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.35));
+}
+
+.habit-item:hover .habit-icon {
+    opacity: 1;
+    transform: translateY(-1px);
 }
 
 .habit-text {
