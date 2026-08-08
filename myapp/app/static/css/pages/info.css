@@ -1,0 +1,122 @@
+:root {
+    --page-max-width: 980px;
+}
+
+.info-root {
+    max-width: var(--page-max-width);
+    margin: 36px auto;
+    padding: 0 18px;
+    color: var(--nf-text-main);
+    font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+}
+
+.info-header {
+    margin-bottom: 18px;
+}
+
+.info-title {
+    font-size: 26px;
+    margin: 0 0 6px 0;
+    font-weight: 700;
+    color: var(--nf-text-main);
+}
+
+.info-lead {
+    margin: 0;
+    color: var(--nf-text-muted);
+    font-size: 14px;
+}
+
+.info-nav {
+    margin-top: 8px;
+}
+
+.link-back {
+    color: var(--nf-text-muted);
+    text-decoration: none;
+    font-size: 13px;
+}
+
+.info-actions {
+    margin: 18px 0;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+}
+
+.info-card {
+    background: var(--nf-surface-soft);
+    border: 1px solid var(--nf-border-soft);
+    border-radius: var(--nf-radius-md);
+    padding: 14px;
+    color: var(--nf-text-main);
+    transition: transform .18s cubic-bezier(0.16, 1, 0.3, 1), border-color .18s ease;
+}
+
+.info-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--nf-border-soft-hover);
+}
+
+.info-card h3 {
+    margin: 0 0 6px 0;
+    font-size: 14px;
+    color: var(--nf-text-main);
+    font-weight: 600;
+}
+
+.info-flow {
+    margin: 20px 0;
+    padding: 14px;
+    background: var(--nf-surface-soft);
+    border-radius: var(--nf-radius-md);
+    border: 1px solid var(--nf-border-soft);
+}
+
+.info-steps {
+    margin: 0;
+    padding-left: 18px;
+    color: var(--nf-text-muted);
+}
+
+.info-sections {
+    margin: 20px 0;
+}
+
+.info-list {
+    margin: 0;
+    padding-left: 18px;
+    color: var(--nf-text-muted);
+}
+
+.info-purpose {
+    margin: 20px 0;
+    padding: 12px;
+    background: var(--nf-surface-soft);
+    border-radius: var(--nf-radius-md);
+    border: 1px solid var(--nf-border-soft);
+    color: var(--nf-text-muted);
+}
+
+.info-footer {
+    margin-top: 18px;
+    display: flex;
+    gap: 12px;
+}
+
+.info-actions-cta .btn {
+    margin-right: 8px;
+}
+
+@media (max-width: 880px) {
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .info-footer {
+        flex-direction: column;
+    }
+}
