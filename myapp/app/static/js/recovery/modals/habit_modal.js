@@ -32,20 +32,42 @@ async function loadUserHabits(userId) {
 
 function sortAvailable(habits, sortKey) {
     const sorted = [...habits];
-    if (sortKey === "points") return sorted.sort((a, b) => b.points - a.points);
-    if (sortKey === "category") return sorted.sort((a, b) => a.category.localeCompare(b.category));
-    if (sortKey === "name") return sorted.sort((a, b) => a.name.localeCompare(b.name));
+
+    if (sortKey === "points") {
+        return sorted.sort((a, b) =>
+            Number(b.points || 0) - Number(a.points || 0)
+        );
+    }
+
+    if (sortKey === "category") {
+        return sorted.sort((a, b) =>
+            localizeCategory(a.category).localeCompare(
+                localizeCategory(b.category),
+                "uk"
+            )
+        );
+    }
+
+    if (sortKey === "name") {
+        return sorted.sort((a, b) =>
+            a.name.localeCompare(b.name, "uk")
+        );
+    }
+
     return sorted;
 }
 
 function sortAdded(habits) {
-    return [...habits].sort((a, b) => a.name.localeCompare(b.name));
+    return [...habits].sort((a, b) =>
+        a.name.localeCompare(b.name, "uk")
+    );
 }
 
 function createHabitRow(habit, added) {
+    const category = habit.category || "recovery";
+
     const row = document.createElement("div");
-    const categoryClass = `habit-cat-${habit.category}`;
-    row.className = `habit-row ${categoryClass}`;
+    row.className = `habit-row habit-cat-${category}`;
     if (added) row.classList.add("habit-added");
 
     const left = document.createElement("div");
@@ -53,9 +75,7 @@ function createHabitRow(habit, added) {
 
     const icon = document.createElement("div");
     icon.className = "habit-modal-icon";
-
-    const iconKey = habit.icon || "rest";
-    icon.innerHTML = ICONS[iconKey] || ICONS.rest;
+    icon.innerHTML = ICONS[habit.icon || "rest"] || ICONS.rest;
 
     const info = document.createElement("div");
     info.className = "habit-info";
@@ -79,14 +99,11 @@ function createHabitRow(habit, added) {
 
     const points = document.createElement("div");
     points.className = "habit-points";
-    points.textContent = `Recovery +${habit.points}`;
+    points.textContent = `Recovery +${Number(habit.points || 0)}`;
 
     const meta = document.createElement("div");
     meta.className = "habit-meta";
-    meta.textContent = localizeCategory(habit.category);
-
-    right.appendChild(points);
-    right.appendChild(meta);
+    meta.textContent = localizeCategory(category);
 
     const check = document.createElement("div");
     check.className = "habit-check";
@@ -94,6 +111,9 @@ function createHabitRow(habit, added) {
         check.classList.add("checked");
         check.textContent = "✓";
     }
+
+    right.appendChild(points);
+    right.appendChild(meta);
     right.appendChild(check);
 
     row.appendChild(left);
@@ -125,14 +145,17 @@ export function initHabitModal(userId) {
 
     openBtn.addEventListener("click", open);
     backBtn.addEventListener("click", close);
+
     saveBtn.addEventListener("click", save);
 
     sortButtons.forEach(btn => {
-        btn.addEventListener("click", () => {
+        btn.addEventListener("click", async () => {
             sortButtons.forEach(b => b.classList.remove("active"));
             btn.classList.add("active");
+
             currentSort = btn.dataset.sort;
-            renderList();
+
+            await renderList();
         });
     });
 
@@ -217,14 +240,18 @@ export function initHabitModal(userId) {
             const requests = habitIds.map(id => RecoveryAPI.addHabit(userId, id));
 
             await Promise.all(requests);
+
             await refreshRecoveryDashboard(userId);
 
             showRecoveryToast("Звички успішно додано");
             close();
         } catch (e) {
+            console.error("Failed to save habits:", e);
             showRecoveryToast("Помилка при збереженні звичок");
         } finally {
-            saveBtn.disabled = false;
+            if (backdrop.classList.contains("open")) {
+                saveBtn.disabled = false;
+            }
         }
     }
 }
