@@ -1,57 +1,53 @@
 <div class="recovery-modal-backdrop" id="sleep-modal-backdrop" hidden>
-  <div class="recovery-modal">
-    <div class="recovery-modal-header">
-      <span class="recovery-modal-title">Додати сон</span>
-      <button
-        id="close-sleep-modal"
-        class="cmp-btn-secondary cmp-btn-sm"
-        type="button"
-        data-close-sleep
-      >
-        Закрити
+  <div class="recovery-modal sleep-modal">
+    <div class="sleep-header">
+      <div class="sleep-header-icon" id="sleep-header-icon"></div>
+      <div class="sleep-header-text">
+        <div class="sleep-title">Додати сон</div>
+        <div class="sleep-subtitle">
+          Запиши період сну для розрахунку відновлення
+        </div>
+      </div>
+    </div>
+
+    <div class="sleep-body">
+      <div class="sleep-field-card">
+        <label class="sleep-label">Дата сну</label>
+        <div class="sleep-input-wrapper">
+          <input type="date" class="sleep-input-date" data-sleep-date />
+        </div>
+      </div>
+
+      <div class="sleep-time-section">
+        <label class="sleep-label">Час сну</label>
+
+        <div class="sleep-time-row">
+          <div class="sleep-time-field">
+            <div class="sleep-time-label">Початок</div>
+            <input type="time" class="sleep-input-time" data-sleep-start-time />
+          </div>
+
+          <div class="sleep-time-arrow">→</div>
+
+          <div class="sleep-time-field">
+            <div class="sleep-time-label">Кінець</div>
+            <input type="time" class="sleep-input-time" data-sleep-end-time />
+          </div>
+        </div>
+
+        <div class="sleep-hint">
+          Сон через опівніч буде визначено автоматично.
+        </div>
+      </div>
+    </div>
+
+    <div class="sleep-footer">
+      <button class="sleep-btn-cancel" type="button" data-close-sleep>
+        Скасувати
       </button>
-    </div>
 
-    <div class="recovery-modal-body sleep-modal-inputs">
-      <div class="sleep-field">
-        <label for="sleep-date-input">Дата</label>
-        <input
-          type="date"
-          id="sleep-date-input"
-          class="sleep-input"
-          data-sleep-date
-        />
-      </div>
-
-      <div class="sleep-field">
-        <label for="sleep-start-time-input">Початок</label>
-        <input
-          type="time"
-          id="sleep-start-time-input"
-          class="sleep-input"
-          data-sleep-start-time
-        />
-      </div>
-
-      <div class="sleep-field">
-        <label for="sleep-end-time-input">Кінець</label>
-        <input
-          type="time"
-          id="sleep-end-time-input"
-          class="sleep-input"
-          data-sleep-end-time
-        />
-      </div>
-    </div>
-
-    <div class="recovery-modal-footer">
-      <button
-        id="save-sleep"
-        class="cmp-btn-primary cmp-btn-sm"
-        type="button"
-        data-save-sleep
-      >
-        Зберегти
+      <button class="sleep-btn-save" type="button" data-save-sleep>
+        Зберегти сон
       </button>
     </div>
   </div>

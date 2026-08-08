@@ -1,31 +1,213 @@
-.sleep-modal-inputs {
+.sleep-modal {
+    background: var(--surface);
+    border-radius: 22px;
+    padding: 28px 30px;
     display: flex;
     flex-direction: column;
+    gap: 26px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow:
+        0 20px 50px rgba(0, 0, 0, 0.35),
+        0 4px 12px rgba(0, 0, 0, 0.18);
+}
+
+.sleep-header {
+    display: flex;
+    align-items: center;
     gap: 16px;
-    padding: 12px 0;
 }
 
-.sleep-field {
+.sleep-header-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    background: var(--accent-soft);
+    border: 1px solid var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent);
+}
+
+.sleep-title {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--text);
+}
+
+.sleep-subtitle {
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+.sleep-body {
     display: flex;
     flex-direction: column;
+    gap: 26px;
 }
 
-.sleep-field label {
-    font-size: 14px;
-    margin-bottom: 6px;
-    color: var(--text-secondary);
+.sleep-field-card {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
-.sleep-input {
-    padding: 10px 12px;
+.sleep-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
+.sleep-input-wrapper {
     background: var(--bg-secondary);
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
-    color: var(--text-primary);
-    font-size: 15px;
+    border: 1px solid var(--border-input);
+    border-radius: 12px;
+    padding: 10px 14px;
 }
 
-.sleep-input:focus {
+.sleep-input-date {
+    width: 100%;
+    background: transparent;
+    border: none;
+    color: var(--text);
+    font-size: 16px;
     outline: none;
+    color-scheme: dark;
+}
+
+.sleep-input-date:focus {
     border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.sleep-time-section {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.sleep-time-row {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 12px;
+    align-items: end;
+}
+
+.sleep-time-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.sleep-time-label {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.sleep-input-time {
+    height: 48px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-input);
+    border-radius: 12px;
+    padding: 0 14px;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text);
+    outline: none;
+    color-scheme: dark;
+}
+
+.sleep-input-time:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.sleep-time-arrow {
+    font-size: 20px;
+    color: var(--text-muted);
+    padding-bottom: 6px;
+}
+
+.sleep-hint {
+    background: var(--accent-soft);
+    border: 1px solid var(--accent);
+    border-radius: 12px;
+    padding: 12px 14px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #000;
+}
+
+.sleep-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 14px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* CUSTOM BUTTONS — NO GLOBAL OVERRIDE POSSIBLE */
+.sleep-btn-save {
+    background: var(--accent);
+    color: #000;
+    border: 1px solid var(--accent);
+    border-radius: 12px;
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition:
+        transform .18s cubic-bezier(0.16, 1, 0.3, 1),
+        background-color .18s ease,
+        opacity .18s ease;
+}
+
+.sleep-btn-save:hover:not(:disabled) {
+    background: var(--accent-soft);
+    transform: translateY(-2px);
+}
+
+.sleep-btn-save:active:not(:disabled) {
+    transform: scale(0.97);
+}
+
+.sleep-btn-save:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+.sleep-btn-cancel {
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--text);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition:
+        transform .18s cubic-bezier(0.16, 1, 0.3, 1),
+        background-color .18s ease,
+        border-color .18s ease;
+}
+
+.sleep-btn-cancel:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.18);
+    transform: translateY(-2px);
+}
+
+.sleep-btn-cancel:active {
+    transform: scale(0.97);
+}
+
+@media (max-width: 540px) {
+    .sleep-time-row {
+        grid-template-columns: 1fr;
+    }
+
+    .sleep-time-arrow {
+        display: none;
+    }
 }
