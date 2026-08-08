@@ -38,15 +38,15 @@
       </div>
       <div class="info-card">
         <h3>Water</h3>
-        <p>Відстежуйте споживання води для повнішого аналізу відновлення.</p>
+        <p>Відстежуйте споживання води.</p>
       </div>
       <div class="info-card">
         <h3>Habits</h3>
-        <p>Додавайте регулярні дії, що впливають на відновлення.</p>
+        <p>Регулярні дії, що впливають на відновлення.</p>
       </div>
       <div class="info-card">
         <h3>Recommendations</h3>
-        <p>Короткі підказки на основі ваших останніх записів і показників.</p>
+        <p>Короткі поради на основі ваших записів.</p>
       </div>
     </div>
   </section>
@@ -55,19 +55,12 @@
     <h2>Як NosiFit використовує дані</h2>
     <ol class="info-steps">
       <li>
-        <strong>Дані</strong> — ви додаєте тренування, сон, харчування, воду,
-        звички.
+        <strong>Дані</strong> — тренування, сон, харчування, вода, звички.
       </li>
+      <li><strong>Аналіз</strong> — обробка та порівняння записів.</li>
+      <li><strong>Показники</strong> — Recovery Score та інші метрики.</li>
       <li>
-        <strong>Аналіз</strong> — прості правила і метрики обробляють ці дані.
-      </li>
-      <li>
-        <strong>Показники</strong> — Recovery Score та інші метрики показують
-        стан.
-      </li>
-      <li>
-        <strong>Рекомендації</strong> — короткі поради залежно від стану та
-        змін.
+        <strong>Рекомендації</strong> — короткі підказки залежно від стану.
       </li>
     </ol>
   </section>
@@ -75,32 +68,27 @@
   <section class="info-section info-sections">
     <h2>Основні розділи</h2>
     <ul class="info-list">
-      <li><strong>Dashboard</strong> — огляд показників і останніх записів.</li>
-      <li>
-        <strong>Training</strong> — деталі тренувань і історія навантажень.
-      </li>
-      <li>
-        <strong>Recovery</strong> — сон, енергія, звички і Recovery Score.
-      </li>
-      <li><strong>Nutrition</strong> — харчування, калорії і макроси.</li>
-      <li><strong>Progress / Tracker</strong> — історія змін і графіки.</li>
+      <li><strong>Dashboard</strong> — огляд показників.</li>
+      <li><strong>Training</strong> — історія тренувань.</li>
+      <li><strong>Recovery</strong> — сон, енергія, звички.</li>
+      <li><strong>Nutrition</strong> — харчування та вода.</li>
+      <li><strong>Progress / Tracker</strong> — зміни з часом.</li>
     </ul>
   </section>
 
   <section class="info-section info-purpose">
     <h2>Для чого це потрібно</h2>
     <p>
-      Мета NosiFit — зібрати основні дані про тренування та відновлення в одному
-      місці, щоб було простіше бачити зв'язок між навантаженням і станом. Це
-      допомагає приймати прості рішення: коли тренуватися інтенсивніше, а коли
-      дати організму відпочити.
+      NosiFit збирає основні дані про тренування та відновлення в одному місці.
+      Це допомагає бачити зв’язок між навантаженням і станом та приймати прості
+      рішення.
     </p>
   </section>
 
   <footer class="info-footer">
     <div class="info-actions-cta">
       {% if current_user.is_authenticated %}
-      <a class="btn btn-primary" href="{{ url_for('app.index') }}"
+      <a class="btn btn-primary" href="{{ url_for('dashboard.dashboard') }}"
         >Відкрити NosiFit</a
       >
       {% else %}

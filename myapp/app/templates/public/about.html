@@ -15,7 +15,7 @@ block styles %}
       </p>
       <div class="about-cta">
         {% if current_user.is_authenticated %}
-        <a class="btn btn-primary" href="{{ url_for('app.index') }}"
+        <a class="btn btn-primary" href="{{ url_for('dashboard.dashboard') }}"
           >Відкрити NosiFit</a
         >
         {% else %}
@@ -23,7 +23,7 @@ block styles %}
           >Створити акаунт</a
         >
         {% endif %}
-        <a class="btn btn-ghost" href="{{ url_for('public.info') }}"
+        <a class="btn btn-ghost" href="{{ url_for('info.info_page') }}"
           >Як це працює</a
         >
       </div>
@@ -97,7 +97,7 @@ block styles %}
   <footer class="about-footer">
     <div class="about-cta">
       {% if current_user.is_authenticated %}
-      <a class="btn btn-primary" href="{{ url_for('app.index') }}"
+      <a class="btn btn-primary" href="{{ url_for('dashboard.dashboard') }}"
         >Відкрити NosiFit</a
       >
       {% else %}
@@ -105,7 +105,7 @@ block styles %}
         >Створити акаунт</a
       >
       {% endif %}
-      <a class="btn btn-ghost" href="{{ url_for('public.info') }}"
+      <a class="btn btn-ghost" href="{{ url_for('info.info_page') }}"
         >Як це працює</a
       >
     </div>
