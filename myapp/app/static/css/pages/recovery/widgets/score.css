@@ -8,22 +8,32 @@
     background: var(--nf-surface-soft);
     border: 1px solid var(--nf-border-soft);
     border-radius: var(--nf-radius-md);
-    padding: 14px;
+    padding: 16px;
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    transition: transform 0.15s ease, background 0.15s ease;
+    gap: 14px;
+    transition:
+        transform .18s cubic-bezier(0.16, 1, 0.3, 1),
+        background-color .18s ease,
+        border-color .18s ease;
 }
 
 .score-item:hover {
     background: var(--nf-surface-hover);
+    border-color: var(--nf-border-soft-hover);
     transform: translateY(-2px);
 }
 
 .score-top {
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    gap: 8px;
+}
+
+.score-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
 .score-icon {
@@ -38,22 +48,24 @@
     color: var(--nf-text-main);
 }
 
+.score-value {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--nf-text-main);
+}
+
 .score-bar {
     display: flex;
     gap: 6px;
+    width: 100%;
 }
 
 .score-segment {
-    width: 20px;
-    height: 20px;
-    border-radius: 6px;
+    flex: 1;
+    height: 6px;
+    border-radius: 999px;
     background: var(--nf-border-soft);
-    position: relative;
-    transition: background 0.25s ease, transform 0.15s ease;
-}
-
-.score-segment:hover {
-    transform: translateY(-2px);
+    transition: background .25s ease;
 }
 
 .score-segment.filled.low {
@@ -68,22 +80,13 @@
     background: #4be3d2;
 }
 
-.score-tooltip {
-    position: absolute;
-    bottom: 28px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: var(--nf-surface-soft);
-    padding: 4px 8px;
-    border-radius: var(--nf-radius-sm);
+.score-status {
     font-size: 12px;
-    color: var(--nf-text-main);
-    border: 1px solid var(--nf-border-soft);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.15s ease;
+    color: var(--nf-text-muted);
 }
 
-.score-segment:hover .score-tooltip {
-    opacity: 1;
+@media (max-width: 540px) {
+    .score-card {
+        grid-template-columns: 1fr;
+    }
 }
