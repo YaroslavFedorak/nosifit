@@ -1,18 +1,13 @@
 <div class="rc-heatmap-container">
   <div class="rc-heatmap-header">
-    <h3>Recovery History</h3>
+    <h3>Історія відновлення</h3>
+
     <div class="rc-heatmap-controls">
-      <label class="sr-only" for="rc-heatmap-year">Year</label>
-      <div class="rc-heatmap-year-wrapper">
-        <span class="rc-heatmap-year-label">Year</span>
-        <select id="rc-heatmap-year" class="rc-select"></select>
-      </div>
-      <button
-        type="button"
-        id="rc-open-calendar"
-        class="cmp-btn-primary cmp-btn-sm"
-      >
-        📅 Calendar
+      <label class="sr-only" for="rc-heatmap-year">Рік</label>
+      <select id="rc-heatmap-year" class="rc-select"></select>
+
+      <button type="button" id="rc-open-calendar" class="rc-btn rc-btn-sm">
+        Календар
       </button>
     </div>
   </div>
@@ -20,43 +15,47 @@
   <div id="recovery-heatmap" class="rc-heatmap-grid"></div>
 
   <div class="rc-heatmap-legend">
-    <span>Less recovered</span>
+    <span>Менш</span>
     <div class="legend-box level-1"></div>
     <div class="legend-box level-2"></div>
     <div class="legend-box level-3"></div>
     <div class="legend-box level-4"></div>
-    <span>Fully recovered</span>
+    <span>Більш</span>
   </div>
-
-  <div id="rc-heatmap-tooltip" class="rc-heatmap-tooltip"></div>
 </div>
 
-<div id="rc-calendar-modal" class="rc-calendar-modal">
+<div id="rc-calendar-modal" class="rc-calendar-modal" aria-hidden="true">
   <div class="rc-calendar-dialog">
     <div class="rc-calendar-header">
-      <h3 id="rc-calendar-title">Recovery Calendar</h3>
+      <h3 id="rc-calendar-title">Календар відновлення</h3>
       <button
         type="button"
-        class="cmp-btn-secondary cmp-btn-sm"
+        class="rc-btn-secondary rc-btn-sm"
         data-close-calendar
       >
-        Close
+        Закрити
       </button>
     </div>
+
+    <div class="rc-calendar-controls">
+      <label class="sr-only" for="rc-cal-year-select">Рік</label>
+      <select id="rc-cal-year-select" class="rc-select"></select>
+    </div>
+
     <div id="rc-calendar-body" class="rc-calendar-body"></div>
   </div>
 </div>
 
-<div id="rc-day-details-modal" class="rc-day-details-modal">
+<div id="rc-day-details-modal" class="rc-day-details-modal" aria-hidden="true">
   <div class="rc-day-details-dialog">
     <div class="rc-day-details-header">
       <h3 id="rc-day-details-title"></h3>
       <button
         type="button"
-        class="cmp-btn-secondary cmp-btn-sm"
+        class="rc-btn-secondary rc-btn-sm"
         data-close-day-details
       >
-        Close
+        Закрити
       </button>
     </div>
     <div id="rc-day-details-body" class="rc-day-details-body"></div>
