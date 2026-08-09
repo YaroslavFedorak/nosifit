@@ -1,5 +1,6 @@
 import { RECOVERY_MESSAGES } from "./messages.js";
-import { ICONS } from "../icons/index.js";
+import { RECOVERY_ICONS } from "../icons/recovery.js";
+import { TRAINING_ICONS } from "../icons/training.js";
 import {
     clearElement,
     createCard,
@@ -8,11 +9,7 @@ import {
     createEmpty
 } from "./dom.js";
 
-const PRIORITY_ORDER = {
-    high: 1,
-    medium: 2,
-    low: 3
-};
+const PRIORITY_ORDER = { high: 1, medium: 2, low: 3 };
 
 const ICON_MAP = {
     sleep: "moon",
@@ -21,8 +18,41 @@ const ICON_MAP = {
     activity: "exercise",
     stress: "caution",
     nutrition: "plan",
-    massage: "hend_heart"
+    massage: "hand_heart"
 };
+
+const MAX_RECOMMENDATIONS = 4;
+
+function getIcon(name) {
+    if (TRAINING_ICONS[name]) return TRAINING_ICONS[name];
+    return RECOVERY_ICONS[name] || RECOVERY_ICONS.rest;
+}
+
+function sortRecommendations(list) {
+    return [...list].sort(
+        (a, b) =>
+            (PRIORITY_ORDER[a.priority] ?? 99) -
+            (PRIORITY_ORDER[b.priority] ?? 99)
+    );
+}
+
+function createRecommendation(rec) {
+    const item = document.createElement("div");
+    item.className = "rec-item";
+
+    const icon = document.createElement("div");
+    icon.className = "rec-icon";
+    icon.innerHTML = getIcon(ICON_MAP[rec.icon] || "rest");
+
+    const title = document.createElement("div");
+    title.className = "rec-title";
+    title.textContent = rec.text;
+
+    item.appendChild(icon);
+    item.appendChild(title);
+
+    return item;
+}
 
 export function renderRecommendationsWidget(data, options = {}) {
     const el = document.getElementById("recommendations-widget");
@@ -45,37 +75,18 @@ export function renderRecommendationsWidget(data, options = {}) {
         : [];
 
     if (recommendations.length === 0) {
-        el.appendChild(createEmpty("Немає рекомендацій"));
+        el.appendChild(createEmpty("Поки все добре"));
         return;
     }
 
     const card = createCard("recommendations-card");
+    const content = document.createElement("div");
+    content.className = "rec-grid";
 
-    const container = document.createElement("div");
-    container.className = "recommendations-content";
+    sortRecommendations(recommendations)
+        .slice(0, MAX_RECOMMENDATIONS)
+        .forEach(rec => content.appendChild(createRecommendation(rec)));
 
-    const sorted = recommendations.sort(
-        (a, b) => PRIORITY_ORDER[a.priority] - PRIORITY_ORDER[b.priority]
-    );
-
-    sorted.forEach(rec => {
-        const item = document.createElement("div");
-        item.className = "recommendation-item";
-
-        const iconWrap = document.createElement("div");
-        iconWrap.className = "recommendation-icon";
-        iconWrap.innerHTML = ICONS[ICON_MAP[rec.icon]] || ICONS.rest;
-
-        const textWrap = document.createElement("div");
-        textWrap.className = "recommendation-text";
-        textWrap.textContent = rec.text;
-
-        item.appendChild(iconWrap);
-        item.appendChild(textWrap);
-
-        container.appendChild(item);
-    });
-
-    card.appendChild(container);
+    card.appendChild(content);
     el.appendChild(card);
 }
