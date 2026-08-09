@@ -1,26 +1,38 @@
 import { formatTooltipDayHTML } from "./formatters.js";
 
-function positionTooltip(event, tooltipEl) {
-    const x = event.clientX + 12;
-    const y = event.clientY - 12;
-    tooltipEl.style.left = `${x}px`;
-    tooltipEl.style.top = `${y}px`;
-}
+export function attachTooltip(cell, data) {
+  if (!cell) return;
 
-export function attachTooltip(cell, data, tooltipEl) {
-    if (!cell || !tooltipEl || !data) return;
+  let localTooltip = cell.querySelector(".rc-heatmap-tooltip");
+  if (!localTooltip) {
+    localTooltip = document.createElement("div");
+    localTooltip.className = "rc-heatmap-tooltip";
+    localTooltip.setAttribute("role", "tooltip");
+    localTooltip.setAttribute("aria-hidden", "true");
+    cell.appendChild(localTooltip);
+  }
 
-    cell.addEventListener("mouseenter", event => {
-        tooltipEl.innerHTML = formatTooltipDayHTML(data);
-        tooltipEl.classList.add("visible");
-        positionTooltip(event, tooltipEl);
-    });
+  function renderContent(d) {
+    const payload = {
+      date: d?.date || null,
+      recovery_score: d?.recovery_score != null ? d.recovery_score : 0
+    };
+    localTooltip.innerHTML = formatTooltipDayHTML(payload);
+  }
 
-    cell.addEventListener("mousemove", event => {
-        positionTooltip(event, tooltipEl);
-    });
+  function show() {
+    renderContent(data);
+    localTooltip.classList.add("visible");
+    localTooltip.setAttribute("aria-hidden", "false");
+  }
 
-    cell.addEventListener("mouseleave", () => {
-        tooltipEl.classList.remove("visible");
-    });
+  function hide() {
+    localTooltip.classList.remove("visible");
+    localTooltip.setAttribute("aria-hidden", "true");
+  }
+
+  cell.addEventListener("mouseenter", show);
+  cell.addEventListener("mouseleave", hide);
+  cell.addEventListener("focus", show);
+  cell.addEventListener("blur", hide);
 }
