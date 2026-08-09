@@ -23,7 +23,7 @@
 
 .recovery-right {
     display: grid;
-    grid-template-rows: 200px 325px auto;
+    grid-template-rows: 200px 325px 240px;
     gap: 16px;
 }
 
