@@ -1,19 +1,16 @@
 .rc-card-heatmap {
     padding: 0;
-    margin-top: 20px;
+    margin-top: auto;
 }
 
 .rc-heatmap-container {
-    background: var(--nf-surface);
-    border: 1px solid var(--nf-border-soft);
-    border-radius: var(--nf-radius-lg);
-    padding: 14px 16px;
+    background: var(--card);
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius-lg);
+    padding: 10px 14px;
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    overflow-x: auto;
-    height: 100%;
-    margin-bottom: 6px;
+    gap: 8px;
 }
 
 .rc-heatmap-header {
@@ -28,127 +25,381 @@
     gap: 8px;
 }
 
-.rc-heatmap-year-wrapper {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 12px;
-    color: var(--nf-text-muted);
-}
-
-.rc-heatmap-year-label {
-    font-size: 12px;
-}
-
 .rc-select {
     padding: 5px 9px;
-    border-radius: var(--nf-radius-sm);
-    border: 1px solid var(--nf-border-soft);
-    background: var(--nf-surface-soft);
-    color: var(--nf-text-main);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-input);
+    background: var(--surface-input);
+    color: var(--text);
     font-size: 12px;
+}
+
+.rc-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 10px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-soft);
+    background: var(--surface-input);
+    color: var(--text);
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.rc-btn-sm {
+    padding: 4px 8px;
+    font-size: 12px;
+}
+
+:root {
+    --rc-cell-size: 13px;
+    --rc-gap: 3px;
+    --rc-max-width: 680px;
+    --rc-t1: #05343a;
+    --rc-t2: #0aa3bf;
+    --rc-t3: var(--accent);
+    --rc-t4: var(--accent-soft);
+    --legend-text: rgba(255, 255, 255, 0.92);
+    --legend-muted: rgba(255, 255, 255, 0.65);
 }
 
 .rc-heatmap-grid {
     display: grid;
-    grid-template-columns: repeat(53, 13px);
-    grid-template-rows: repeat(7, 13px);
+    grid-template-columns: repeat(53, var(--rc-cell-size));
+    grid-template-rows: repeat(7, var(--rc-cell-size));
     grid-auto-flow: column;
-    gap: 3px;
+    gap: var(--rc-gap);
     padding: 6px 0;
     justify-content: center;
     align-items: start;
-    max-width: 560px;
+    max-width: var(--rc-max-width);
     margin: 0 auto;
+    box-sizing: border-box;
 }
 
 .rc-heatmap-cell {
-    width: 13px;
-    height: 13px;
+    width: var(--rc-cell-size);
+    height: var(--rc-cell-size);
     border-radius: 3px;
-    background: #0b0f18;
+    background: #1a1f27;
     position: relative;
-    transition: transform 120ms ease, box-shadow 120ms ease;
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
     cursor: pointer;
+    box-sizing: border-box;
 }
 
 .rc-heatmap-cell[data-level="0"] {
-    background: #0b0f18;
+    background: #1a1f27;
 }
 
 .rc-heatmap-cell[data-level="1"] {
-    background: #1E293B;
+    background: var(--rc-t1);
 }
 
 .rc-heatmap-cell[data-level="2"] {
-    background: #2563EB;
+    background: var(--rc-t2);
 }
 
 .rc-heatmap-cell[data-level="3"] {
-    background: #3B82F6;
+    background: var(--rc-t3);
 }
 
 .rc-heatmap-cell[data-level="4"] {
-    background: #60A5FA;
+    background: var(--rc-t4);
 }
 
 .rc-heatmap-cell.today {
-    outline: 2px solid var(--nf-yellow);
+    outline: 2px solid var(--accent);
     outline-offset: -2px;
 }
 
 .rc-heatmap-cell:hover {
-    transform: scale(1.1);
-    z-index: 5;
-    box-shadow: 0 0 0 1px rgba(148, 163, 184, 0.6);
+    transform: scale(1.2);
+    z-index: 6;
+    box-shadow: 0 6px 18px rgba(2, 6, 23, 0.6);
 }
 
-.rc-heatmap-tooltip {
-    position: fixed;
-    background: var(--nf-surface-deep);
-    border: 1px solid var(--nf-border-soft);
-    padding: 4px 8px;
-    border-radius: var(--nf-radius-sm);
-    font-size: 11px;
-    color: var(--nf-text-main);
+.rc-heatmap-cell .rc-heatmap-tooltip {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%) translateY(-8px);
+    bottom: calc(100% + 6px);
+    background: rgba(6, 10, 15, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    padding: 8px 10px;
+    border-radius: var(--radius-sm);
+    font-size: 12px;
+    color: var(--text);
     white-space: nowrap;
     pointer-events: none;
     opacity: 0;
-    transition: opacity 120ms ease;
-    z-index: 50;
+    transition: opacity var(--transition-fast), transform var(--transition-fast);
+    z-index: 70;
     will-change: transform, opacity;
+    box-shadow: 0 6px 18px rgba(2, 6, 23, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 96px;
+    line-height: 1;
 }
 
-.rc-heatmap-tooltip.visible {
+.rc-heatmap-cell .rc-heatmap-tooltip.visible {
     opacity: 1;
+    transform: translateX(-50%) translateY(-12px);
+}
+
+.rc-heatmap-cell .rc-heatmap-tooltip::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%) rotate(45deg);
+    bottom: -5px;
+    width: 10px;
+    height: 10px;
+    background: rgba(6, 10, 15, 0.95);
+    border-left: 1px solid rgba(255, 255, 255, 0.06);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    z-index: 69;
 }
 
 .rc-heatmap-legend {
     display: flex;
     align-items: center;
+    gap: 12px;
+    font-size: 12px;
+    color: var(--legend-muted);
+    padding-top: 6px;
+    width: 100%;
+    box-sizing: border-box;
+    justify-content: flex-end;
+}
+
+.rc-heatmap-legend::before {
+    content: "Рівень відновлення";
+    font-size: 12px;
+    color: var(--legend-text);
+    font-weight: 600;
+    white-space: nowrap;
+    margin-right: auto;
+    padding-left: 4px;
+}
+
+.rc-heatmap-legend .legend-scale {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: transparent;
+    padding: 6px 8px;
+    border-radius: 8px;
+    white-space: nowrap;
+    align-items: center;
+}
+
+.rc-heatmap-legend .legend-scale .legend-label {
+    font-size: 12px;
+    color: var(--legend-text);
+    font-weight: 700;
+    letter-spacing: 0.2px;
+    white-space: nowrap;
+}
+
+.rc-heatmap-legend .legend-scale .legend-label.left {
+    margin-right: 8px;
+}
+
+.rc-heatmap-legend .legend-scale .legend-label.right {
+    margin-left: 8px;
+}
+
+.rc-heatmap-legend .legend-scale .legend-box-wrap {
+    display: inline-flex;
     gap: 6px;
-    font-size: 11px;
-    color: var(--nf-text-muted);
+    align-items: center;
+    padding: 4px 6px;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 6px;
 }
 
 .legend-box {
     width: 14px;
     height: 14px;
     border-radius: 3px;
+    position: relative;
+    display: inline-block;
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.25) inset;
+    flex: none;
 }
 
 .legend-box.level-1 {
-    background: #1E293B;
+    background: var(--rc-t1);
 }
 
 .legend-box.level-2 {
-    background: #2563EB;
+    background: var(--rc-t2);
 }
 
 .legend-box.level-3 {
-    background: #3B82F6;
+    background: var(--rc-t3);
 }
 
 .legend-box.level-4 {
-    background: #60A5FA;
+    background: var(--rc-t4);
+}
+
+.rc-calendar-modal {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.65);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    backdrop-filter: blur(4px);
+}
+
+.rc-calendar-modal.open {
+    display: flex !important;
+}
+
+.rc-calendar-dialog {
+    background: var(--card);
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius-lg);
+    width: 90%;
+    max-width: 520px;
+    padding: 20px;
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.rc-calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.rc-calendar-body {
+    max-height: 480px;
+    overflow-y: auto;
+}
+
+.rc-calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 10px;
+}
+
+.rc-calendar-item {
+    background: var(--card-soft);
+    border-radius: var(--radius-sm);
+    padding: 6px 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 12px;
+    cursor: pointer;
+    border: 1px solid var(--border-soft);
+}
+
+.rc-calendar-item:hover {
+    border-color: var(--accent);
+}
+
+.rc-calendar-date {
+    font-weight: 600;
+}
+
+.rc-calendar-load {
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+.rc-level-0 {
+    background: #1a1f27;
+}
+
+.rc-level-1 {
+    background: var(--rc-t1);
+}
+
+.rc-level-2 {
+    background: var(--rc-t2);
+}
+
+.rc-level-3 {
+    background: var(--rc-t3);
+}
+
+.rc-level-4 {
+    background: var(--rc-t4);
+}
+
+.rc-day-details-body {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    font-size: 13px;
+}
+
+.rc-day-session {
+    background: var(--card-soft);
+    border-radius: var(--radius-sm);
+    padding: 8px 10px;
+}
+
+.rc-day-session-title {
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.tt-single-line {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.tt-single-line .tt-score {
+    margin-right: 8px;
+    font-weight: 600;
+}
+
+@media (max-width: 900px) {
+    .rc-heatmap-container {
+        padding: 12px;
+    }
+
+    .rc-heatmap-grid {
+        max-width: 100%;
+        transform: scale(0.95);
+        transform-origin: center;
+    }
+
+    .rc-calendar-dialog {
+        max-width: 95%;
+    }
+}
+
+@media (max-width: 600px) {
+    .rc-heatmap-container {
+        padding: 8px 10px;
+    }
+
+    .rc-heatmap-grid {
+        grid-template-columns: repeat(53, 12px);
+        gap: 3px;
+        max-width: 100%;
+        overflow-x: auto;
+    }
+
+    .rc-heatmap-legend {
+        gap: 6px;
+        font-size: 11px;
+    }
 }
