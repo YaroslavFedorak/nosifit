@@ -1,0 +1,123 @@
+.rc-day-details-modal {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.65);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    backdrop-filter: blur(4px);
+}
+
+.rc-day-details-modal.open {
+    display: flex;
+}
+
+.rc-day-details-dialog {
+    width: 90%;
+    max-width: 520px;
+    max-height: 85vh;
+    overflow-y: auto;
+    background: var(--card);
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.rc-day-details-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.rc-day-details-title {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text);
+}
+
+.rc-day-details-close {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius-sm);
+    background: var(--card-soft);
+    color: var(--text-muted);
+    font-size: 22px;
+    line-height: 1;
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+.rc-day-details-close:hover {
+    color: var(--text);
+    border-color: var(--accent);
+}
+
+.rc-day-details-body {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    font-size: 13px;
+    color: var(--text);
+}
+
+.rc-day-card {
+    background: var(--card-soft);
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius-sm);
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.rc-day-card-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+}
+
+.rc-day-card-value {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+}
+
+.rc-day-card-bar {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.rc-day-card-extra {
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+@media (max-width: 600px) {
+    .rc-day-details-dialog {
+        width: 94%;
+        max-height: 90vh;
+        padding: 16px;
+    }
+
+    .rc-day-details-title {
+        font-size: 16px;
+    }
+
+    .rc-day-card {
+        padding: 10px;
+    }
+}
