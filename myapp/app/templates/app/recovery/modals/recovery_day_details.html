@@ -1,12 +1,52 @@
-<div id="rc-day-details-modal" class="rc-day-details-modal">
-  <div class="rc-day-details-dialog">
-    <div class="rc-day-details-top">
-      <h3 id="rc-day-details-title" class="rc-day-details-title"></h3>
+<div id="rc-day-details-modal" class="rc-day-details-modal" aria-hidden="true">
+  <div
+    class="rc-day-details-dialog"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="rc-day-details-title"
+  >
+    <div class="rc-day-details-header">
+      <div class="rc-day-details-title-block">
+        <h3 id="rc-day-details-title" class="rc-day-details-title"></h3>
+        <div id="rc-day-details-subtitle" class="rc-day-details-subtitle"></div>
+      </div>
+      <div class="rc-day-details-actions">
+        <button
+          type="button"
+          class="rc-btn-secondary rc-btn-sm"
+          data-close-day-details
+        >
+          Закрити
+        </button>
+      </div>
     </div>
 
-    <div id="rc-day-details-grid" class="rc-day-details-grid"></div>
+    <div id="rc-day-details-body" class="rc-day-details-body">
+      <div id="rc-day-details-summary" class="rc-day-details-summary">
+        <div id="rc-day-summary-grid" class="rc-day-summary-grid"></div>
+        <div id="rc-day-daily-summary" class="rc-day-daily-summary"></div>
+      </div>
 
-    <div id="rc-day-details-lists" class="rc-day-details-lists"></div>
+      <div id="rc-day-habits" class="rc-day-habits">
+        <div class="rc-section-header">
+          <div class="rc-section-title">Звички</div>
+          <div id="rc-habits-count" class="rc-section-meta"></div>
+        </div>
+        <div id="rc-habits-list" class="rc-habits-list"></div>
+        <div class="rc-habits-footer">
+          <button id="rc-habits-toggle" type="button" class="rc-btn rc-btn-sm">
+            Показати всі
+          </button>
+        </div>
+      </div>
+
+      <div id="rc-day-recommendations" class="rc-day-recommendations">
+        <div class="rc-section-header">
+          <div class="rc-section-title">Рекомендації</div>
+        </div>
+        <div id="rc-recommendations-list" class="rc-recommendations-list"></div>
+      </div>
+    </div>
 
     <div class="rc-day-details-footer">
       <button type="button" class="rc-close-btn" data-close-day-details>
