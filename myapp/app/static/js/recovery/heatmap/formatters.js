@@ -2,10 +2,8 @@ const MINI_BAR_SEGMENTS = 5;
 export const LOW_THRESHOLD = 40;
 export const HIGH_THRESHOLD = 70;
 
-const MONTH_SHORT_UA = [
-  "січ", "лют", "бер", "квіт", "трав", "черв",
-  "лип", "серп", "вер", "жовт", "лист", "груд"
-];
+const MONTH_SHORT_UA = ["січ","лют","бер","квіт","трав","черв","лип","серп","вер","жовт","лист","груд"];
+const WEEKDAY_UA = ["Неділя","Понеділок","Вівторок","Середа","Четвер","П'ятниця","Субота"];
 
 export function normalizeScore(value) {
   if (typeof value !== "number" || Number.isNaN(value)) return 0;
@@ -42,6 +40,11 @@ export function formatDateLong(dateStr) {
   return d.toLocaleDateString("uk-UA", { day: "numeric", month: "long", year: "numeric" });
 }
 
+export function formatWeekday(dateStr) {
+  const d = new Date(dateStr);
+  return WEEKDAY_UA[d.getDay()] || "";
+}
+
 export function formatSleep(minutes) {
   if (minutes == null) return null;
   const total = Number(minutes);
@@ -55,4 +58,15 @@ export function formatTooltipDayHTML(data) {
   const date = data?.date ? formatDateShort(data.date) : "";
   const score = data?.recovery_score != null ? normalizeScore(data.recovery_score) : 0;
   return `<div class="tt-single-line"><span class="tt-score">${score} відновлення</span><span class="tt-date">${date}</span></div>`;
+}
+
+export function formatDailySummary(data) {
+  const trainingCount = data.training?.sessions ?? 0;
+  const sleepText = data.sleep?.duration_minutes ? formatSleep(data.sleep.duration_minutes) : null;
+  const habitsText = `${data.habits?.completed ?? 0}/${data.habits?.total ?? 0}`;
+  const parts = [];
+  if (trainingCount) parts.push(`Тренування: ${trainingCount} сесій`);
+  if (sleepText) parts.push(`Сон: ${sleepText}`);
+  parts.push(`Звички: ${habitsText} виконано`);
+  return parts.join(" · ");
 }
