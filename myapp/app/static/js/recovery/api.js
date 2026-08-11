@@ -29,7 +29,7 @@ async function request(url, options = {}, timeoutMs = DEFAULT_TIMEOUT_MS) {
                 } else {
                     const text = await res.text();
                     if (text) message = text;
-                }
+                    }
             } catch (_) {}
             throw new Error(message);
         }
@@ -55,15 +55,17 @@ const ENDPOINTS = {
             : `${API_BASE}/snapshot/${userId}`,
 
     heatmap: (userId, year) => `${API_BASE}/heatmap/${userId}?year=${year}`,
+
     recommendations: (userId) => `${API_BASE}/recommendations/${userId}`,
+
     sleep: () => `${API_BASE}/sleep`,
+
     addHabit: (habitId) => `${API_BASE}/habits/add/${habitId}`,
     removeHabit: (userHabitId) => `${API_BASE}/habits/${userHabitId}`,
     logHabit: () => `${API_BASE}/habits/logs`,
     habitsList: () => `${API_BASE}/habits/list`,
     userHabits: (userId) => `${API_BASE}/habits/user/${userId}`,
 
-    // 🔥 ДЕНЬ ДЕТАЛІ
     dayDetails: (userId, date) =>
         `${API_BASE}/day-details/${userId}?date=${encodeURIComponent(date)}`
 };
@@ -108,7 +110,9 @@ export const RecoveryAPI = {
     logHabit(userHabitId) {
         return request(ENDPOINTS.logHabit(), {
             method: "POST",
-            body: JSON.stringify({ user_habit_id: userHabitId })
+            body: JSON.stringify({
+                user_habit_id: userHabitId
+            })
         });
     },
 
