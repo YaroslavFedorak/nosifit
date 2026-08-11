@@ -3,43 +3,87 @@
     inset: 0;
     width: 100vw;
     height: 100vh;
-    background: rgba(0, 0, 0, 0.65);
+    background: rgba(0, 0, 0, 0.55);
     display: none;
     align-items: center;
     justify-content: center;
     z-index: 10000;
     backdrop-filter: blur(4px);
+    padding: 20px;
+    box-sizing: border-box;
 }
 
 .rc-day-details-modal.open {
     display: flex;
+    animation: rc-modal-in 220ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes rc-modal-in {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .rc-day-details-dialog {
     width: 92%;
-    max-width: 620px;
+    max-width: 720px;
     background: var(--surface);
     border: 1px solid var(--border-soft);
     border-radius: var(--radius-lg);
-    padding: 20px;
+    padding: 18px;
     display: flex;
     flex-direction: column;
-    gap: 18px;
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.55);
+    gap: 14px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+    box-sizing: border-box;
 }
 
-.rc-day-details-top {
-    text-align: left;
+.rc-day-details-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+}
+
+.rc-day-details-title-block {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
 }
 
 .rc-day-details-title {
     margin: 0;
     font-size: 18px;
-    font-weight: 600;
+    font-weight: 700;
     color: var(--text);
 }
 
-.rc-day-details-grid {
+.rc-day-details-subtitle {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.rc-day-details-body {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-height: calc(100vh - 240px);
+    overflow: hidden;
+}
+
+.rc-day-details-summary {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.rc-day-summary-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 12px;
@@ -49,17 +93,18 @@
     background: var(--surface-input);
     border: 1px solid var(--border-soft);
     border-radius: var(--radius-md);
-    padding: 12px;
+    padding: 10px;
     display: flex;
     flex-direction: column;
     gap: 8px;
-    min-height: 84px;
+    min-height: 78px;
     box-sizing: border-box;
+    transition: transform 180ms cubic-bezier(0.16, 1, 0.3, 1), opacity 180ms;
 }
 
 .rc-mini-title {
     font-size: 12px;
-    font-weight: 600;
+    font-weight: 700;
     color: var(--text-muted);
     text-transform: uppercase;
     letter-spacing: 0.6px;
@@ -74,7 +119,7 @@
 
 .rc-mini-value {
     font-size: 16px;
-    font-weight: 700;
+    font-weight: 800;
     color: var(--text);
 }
 
@@ -82,11 +127,6 @@
     font-size: 12px;
     font-weight: 600;
     color: var(--accent);
-}
-
-.rc-mini-status.rc-empty {
-    color: var(--text-muted);
-    font-weight: 600;
 }
 
 .rc-mini-bar {
@@ -105,50 +145,150 @@
     top: 0;
     bottom: 0;
     background: linear-gradient(90deg, var(--accent), var(--accent-soft));
-    width: var(--bar-fill, 0%);
-    transition: width 0.35s var(--transition);
+    width: 0%;
+    transition: width 350ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.rc-day-details-lists {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.rc-list-block {
+.rc-day-daily-summary {
+    font-size: 13px;
+    color: var(--text);
     background: var(--surface-input);
     border: 1px solid var(--border-soft);
     border-radius: var(--radius-md);
-    padding: 12px;
+    padding: 10px;
+}
+
+.rc-day-habits {
     display: flex;
     flex-direction: column;
     gap: 8px;
 }
 
-.rc-list-title {
+.rc-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.rc-section-title {
     font-size: 13px;
-    font-weight: 600;
+    font-weight: 700;
+    color: var(--text);
+}
+
+.rc-section-meta {
+    font-size: 12px;
     color: var(--text-muted);
 }
 
-.rc-list-item {
-    font-size: 13px;
-    color: var(--text);
+.rc-habits-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 220px;
+    overflow: hidden;
+    transition: max-height 220ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.rc-habits-list.expanded {
+    max-height: 420px;
+    overflow-y: auto;
+}
+
+.rc-habit-row {
     display: flex;
     align-items: center;
+    gap: 10px;
+    background: var(--surface-input);
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius-sm);
+    padding: 8px;
+    font-size: 13px;
+}
+
+.rc-habit-icon {
+    width: 28px;
+    height: 28px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent);
+    flex: none;
+}
+
+.rc-habit-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1 1 auto;
+}
+
+.rc-habit-name {
+    font-weight: 600;
+    color: var(--text);
+}
+
+.rc-habit-category {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.rc-habit-status {
+    font-weight: 700;
+    color: var(--accent);
+    flex: none;
+}
+
+.rc-habits-footer {
+    display: flex;
+    justify-content: center;
+    padding-top: 6px;
+}
+
+.rc-recommendations-list {
+    display: flex;
+    flex-direction: column;
     gap: 8px;
 }
 
-.rc-list-item::before {
-    content: "•";
-    color: var(--accent);
-    font-size: 14px;
-    line-height: 1;
+.rc-recommendation {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    background: var(--surface-input);
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius-sm);
+    padding: 10px;
+}
+
+.rc-rec-icon {
+    width: 28px;
+    height: 28px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+}
+
+.rc-rec-body {
+    flex: 1 1 auto;
+}
+
+.rc-rec-text {
+    font-size: 13px;
+    color: var(--text);
+    font-weight: 600;
+}
+
+.rc-rec-sub {
+    font-size: 12px;
+    color: var(--text-muted);
 }
 
 .rc-day-details-footer {
     display: flex;
-    justify-content: flex-start;
+    justify-content: flex-end;
+    gap: 8px;
     padding-top: 6px;
 }
 
@@ -161,24 +301,19 @@
     font-size: 14px;
     font-weight: 700;
     cursor: pointer;
-    transition: var(--transition-fast);
-}
-
-.rc-close-btn:hover {
-    background: var(--accent-soft);
 }
 
 @media (max-width: 520px) {
     .rc-day-details-dialog {
-        padding: 16px;
+        padding: 12px;
     }
 
-    .rc-day-details-grid {
+    .rc-day-summary-grid {
         grid-template-columns: 1fr 1fr;
-        gap: 10px;
+        gap: 8px;
     }
 
-    .rc-mini-value {
-        font-size: 15px;
+    .rc-habits-list {
+        max-height: 180px;
     }
 }
