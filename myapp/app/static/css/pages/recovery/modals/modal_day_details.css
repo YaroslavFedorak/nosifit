@@ -16,25 +16,20 @@
 }
 
 .rc-day-details-dialog {
-    width: 90%;
-    max-width: 520px;
-    max-height: 85vh;
-    overflow-y: auto;
-    background: var(--card);
+    width: 92%;
+    max-width: 620px;
+    background: var(--surface);
     border: 1px solid var(--border-soft);
     border-radius: var(--radius-lg);
     padding: 20px;
-    box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 18px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.55);
 }
 
-.rc-day-details-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
+.rc-day-details-top {
+    text-align: left;
 }
 
 .rc-day-details-title {
@@ -44,80 +39,146 @@
     color: var(--text);
 }
 
-.rc-day-details-close {
-    width: 32px;
-    height: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
+.rc-day-details-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+.rc-mini-card {
+    background: var(--surface-input);
     border: 1px solid var(--border-soft);
-    border-radius: var(--radius-sm);
-    background: var(--card-soft);
+    border-radius: var(--radius-md);
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-height: 84px;
+    box-sizing: border-box;
+}
+
+.rc-mini-title {
+    font-size: 12px;
+    font-weight: 600;
     color: var(--text-muted);
-    font-size: 22px;
-    line-height: 1;
-    cursor: pointer;
-    transition: var(--transition-fast);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
 }
 
-.rc-day-details-close:hover {
+.rc-mini-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+}
+
+.rc-mini-value {
+    font-size: 16px;
+    font-weight: 700;
     color: var(--text);
-    border-color: var(--accent);
 }
 
-.rc-day-details-body {
+.rc-mini-status {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent);
+}
+
+.rc-mini-status.rc-empty {
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
+.rc-mini-bar {
+    width: 100%;
+    height: 8px;
+    border-radius: 999px;
+    background: var(--border-soft);
+    overflow: hidden;
+    position: relative;
+    margin-top: 6px;
+}
+
+.rc-mini-bar-fill {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, var(--accent), var(--accent-soft));
+    width: var(--bar-fill, 0%);
+    transition: width 0.35s var(--transition);
+}
+
+.rc-day-details-lists {
     display: flex;
     flex-direction: column;
     gap: 12px;
-    font-size: 13px;
-    color: var(--text);
 }
 
-.rc-day-card {
-    background: var(--card-soft);
+.rc-list-block {
+    background: var(--surface-input);
     border: 1px solid var(--border-soft);
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius-md);
     padding: 12px;
     display: flex;
     flex-direction: column;
     gap: 8px;
 }
 
-.rc-day-card-title {
+.rc-list-title {
     font-size: 13px;
     font-weight: 600;
-    color: var(--text);
-}
-
-.rc-day-card-value {
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text);
-}
-
-.rc-day-card-bar {
-    font-size: 12px;
     color: var(--text-muted);
 }
 
-.rc-day-card-extra {
-    font-size: 11px;
-    color: var(--text-muted);
+.rc-list-item {
+    font-size: 13px;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
-@media (max-width: 600px) {
+.rc-list-item::before {
+    content: "•";
+    color: var(--accent);
+    font-size: 14px;
+    line-height: 1;
+}
+
+.rc-day-details-footer {
+    display: flex;
+    justify-content: flex-start;
+    padding-top: 6px;
+}
+
+.rc-close-btn {
+    background: var(--accent);
+    color: #000;
+    border: none;
+    padding: 10px 16px;
+    border-radius: var(--radius-md);
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+.rc-close-btn:hover {
+    background: var(--accent-soft);
+}
+
+@media (max-width: 520px) {
     .rc-day-details-dialog {
-        width: 94%;
-        max-height: 90vh;
         padding: 16px;
     }
 
-    .rc-day-details-title {
-        font-size: 16px;
+    .rc-day-details-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
     }
 
-    .rc-day-card {
-        padding: 10px;
+    .rc-mini-value {
+        font-size: 15px;
     }
 }
