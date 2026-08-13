@@ -1,5 +1,9 @@
 import { ICONS } from "/static/js/icons/index.js";
-import { formatMiniBar, normalizeScore, formatSleep, formatDailySummary } from "../formatters.js";
+import { formatDailySummary } from "../formatters.js";
+
+function safeIcon(name) {
+  return ICONS[name] || ICONS["balanced"] || "";
+}
 
 export function createSummaryCard(title, value, status, score) {
   const card = document.createElement("div");
@@ -45,10 +49,6 @@ export function createDailySummary(data) {
   return el;
 }
 
-function safeIcon(name) {
-  return ICONS[name] || ICONS["balanced"] || "";
-}
-
 export function createHabitRow(h) {
   const row = document.createElement("div");
   row.className = "rc-habit-row";
@@ -80,6 +80,28 @@ export function createHabitRow(h) {
   row.appendChild(status);
 
   return row;
+}
+
+export function createHabitsGrid(items, previewCount = 8) {
+  const grid = document.createElement("div");
+  grid.className = "rc-habits-grid";
+
+  const leftCol = document.createElement("div");
+  leftCol.className = "rc-habits-col";
+
+  const rightCol = document.createElement("div");
+  rightCol.className = "rc-habits-col";
+
+  const list = items.slice(0, previewCount);
+  for (let i = 0; i < list.length; i++) {
+    const col = i % 2 === 0 ? leftCol : rightCol;
+    col.appendChild(createHabitRow(list[i]));
+  }
+
+  grid.appendChild(leftCol);
+  grid.appendChild(rightCol);
+
+  return grid;
 }
 
 export function createRecommendationRow(r) {
