@@ -1,4 +1,4 @@
-import { createSummaryCard, createDailySummary, createHabitRow, createRecommendationRow } from "./day_details_components.js";
+import { createSummaryCard, createDailySummary, createHabitsGrid, createHabitRow, createRecommendationRow } from "./day_details_components.js";
 import { formatSleep } from "../formatters.js";
 
 export function renderDayDetailsBody(container, data) {
@@ -24,6 +24,9 @@ export function renderDayDetailsBody(container, data) {
 
   container.appendChild(summaryWrap);
 
+  const itemsRaw = Array.isArray(habits.items) ? habits.items : [];
+  const items = itemsRaw.filter(h => !!h.user_habit_id);
+
   const habitsSection = document.createElement("div");
   habitsSection.className = "rc-day-habits";
 
@@ -43,9 +46,10 @@ export function renderDayDetailsBody(container, data) {
   habitsList.id = "rc-habits-list";
   habitsList.className = "rc-habits-list";
 
-  const items = Array.isArray(habits.items) ? habits.items : [];
-  const preview = items.slice(0, 5);
-  preview.forEach(h => habitsList.appendChild(createHabitRow(h)));
+  const previewCount = 8;
+  const previewItems = items.slice(0, previewCount);
+  const grid = createHabitsGrid(items, previewCount);
+  habitsList.appendChild(grid);
 
   habitsSection.appendChild(habitsList);
 
@@ -54,7 +58,7 @@ export function renderDayDetailsBody(container, data) {
   const toggleBtn = document.createElement("button");
   toggleBtn.id = "rc-habits-toggle";
   toggleBtn.className = "rc-btn rc-btn-sm";
-  toggleBtn.textContent = items.length > 5 ? `Показати всі (${items.length})` : "Показати всі";
+  toggleBtn.textContent = items.length > previewCount ? `Показати всі (${items.length})` : "Показати всі";
   habitsFooter.appendChild(toggleBtn);
   habitsSection.appendChild(habitsFooter);
 
@@ -75,21 +79,48 @@ export function renderDayDetailsBody(container, data) {
   recList.className = "rc-recommendations-list";
 
   const recItems = Array.isArray(data.recommendations?.items) ? data.recommendations.items : [];
-  recItems.slice(0, 3).forEach(r => recList.appendChild(createRecommendationRow(r)));
 
-  if ((data.recommendations?.total ?? recItems.length) > 3) {
+  const recGrid = document.createElement("div");
+  recGrid.className = "rc-recommendations-grid";
+  const recLeft = document.createElement("div");
+  recLeft.className = "rc-recommendations-col";
+  const recRight = document.createElement("div");
+  recRight.className = "rc-recommendations-col";
+
+  const recPreview = recItems.slice(0, 6);
+  recPreview.forEach((r, i) => {
+    const col = i % 2 === 0 ? recLeft : recRight;
+    col.appendChild(createRecommendationRow(r));
+  });
+
+  recGrid.appendChild(recLeft);
+  recGrid.appendChild(recRight);
+  recList.appendChild(recGrid);
+
+  recSection.appendChild(recList);
+
+  if ((data.recommendations?.total ?? recItems.length) > 6) {
     const moreBtn = document.createElement("button");
     moreBtn.className = "rc-btn rc-btn-sm";
-    moreBtn.textContent = `Показати ще ${(data.recommendations?.total ?? recItems.length) - 3}`;
+    moreBtn.textContent = `Показати ще ${(data.recommendations?.total ?? recItems.length) - 6}`;
     moreBtn.addEventListener("click", () => {
       recList.innerHTML = "";
-      recItems.forEach(r => recList.appendChild(createRecommendationRow(r)));
+      const fullGrid = document.createElement("div");
+      fullGrid.className = "rc-recommendations-grid";
+      const left = document.createElement("div");
+      left.className = "rc-recommendations-col";
+      const right = document.createElement("div");
+      right.className = "rc-recommendations-col";
+      recItems.forEach((r, i) => {
+        const col = i % 2 === 0 ? left : right;
+        col.appendChild(createRecommendationRow(r));
+      });
+      fullGrid.appendChild(left);
+      fullGrid.appendChild(right);
+      recList.appendChild(fullGrid);
       moreBtn.remove();
     });
-    recSection.appendChild(recList);
     recSection.appendChild(moreBtn);
-  } else {
-    recSection.appendChild(recList);
   }
 
   container.appendChild(recSection);
@@ -100,13 +131,26 @@ export function renderDayDetailsBody(container, data) {
     if (!expanded) {
       list.classList.add("expanded");
       list.innerHTML = "";
-      items.forEach(h => list.appendChild(createHabitRow(h)));
+      const fullGrid = document.createElement("div");
+      fullGrid.className = "rc-habits-grid";
+      const leftCol = document.createElement("div");
+      leftCol.className = "rc-habits-col";
+      const rightCol = document.createElement("div");
+      rightCol.className = "rc-habits-col";
+      items.forEach((h, i) => {
+        const col = i % 2 === 0 ? leftCol : rightCol;
+        col.appendChild(createHabitRow(h));
+      });
+      fullGrid.appendChild(leftCol);
+      fullGrid.appendChild(rightCol);
+      list.appendChild(fullGrid);
       toggleBtn.textContent = "Показати менше";
     } else {
       list.classList.remove("expanded");
       list.innerHTML = "";
-      items.slice(0,5).forEach(h => list.appendChild(createHabitRow(h)));
-      toggleBtn.textContent = items.length > 5 ? `Показати всі (${items.length})` : "Показати всі";
+      const smallGrid = createHabitsGrid(items, previewCount);
+      list.appendChild(smallGrid);
+      toggleBtn.textContent = items.length > previewCount ? `Показати всі (${items.length})` : "Показати всі";
     }
   });
 }
