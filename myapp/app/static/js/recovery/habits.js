@@ -32,6 +32,124 @@ function buildReason(habit) {
     }
 }
 
+function createHabitItem(habit) {
+    const item = document.createElement("div");
+    item.className = `habit-item ${habit.completed ? "habit-completed" : ""} habit-user`;
+    if (habit.category) item.classList.add(`habit-cat-${habit.category}`);
+
+    const main = document.createElement("div");
+    main.className = "habit-main";
+
+    const iconBox = document.createElement("div");
+    iconBox.className = "habit-icon";
+    const iconKey = habit.icon || "rest";
+    iconBox.innerHTML = ICONS[iconKey] || ICONS.rest;
+
+    const textBox = document.createElement("div");
+    textBox.className = "habit-text";
+
+    const title = document.createElement("div");
+    title.className = "habit-title";
+    title.textContent = habit.name || "";
+
+    const metaRow = document.createElement("div");
+    metaRow.className = "habit-meta-row";
+
+    const category = document.createElement("div");
+    category.className = "habit-category-badge";
+    category.textContent = label(habit.category);
+
+    const reason = document.createElement("div");
+    reason.className = "habit-reason";
+    reason.textContent = buildReason(habit);
+
+    metaRow.appendChild(category);
+
+    textBox.appendChild(title);
+    textBox.appendChild(metaRow);
+    textBox.appendChild(reason);
+
+    main.appendChild(iconBox);
+    main.appendChild(textBox);
+
+    const actions = document.createElement("div");
+    actions.className = "habit-actions";
+
+    const impact = document.createElement("div");
+    impact.className = "habit-recovery-impact";
+    impact.textContent = habit.points != null ? `Recovery +${habit.points}` : "";
+
+    const check = document.createElement("button");
+    check.type = "button";
+    check.className = "habit-check";
+    check.dataset.userHabitId = habit.user_habit_id || "";
+    if (habit.completed) check.classList.add("habit-check-completed");
+
+    check.addEventListener("click", async () => {
+        check.disabled = true;
+        const wasCompleted = check.classList.contains("habit-check-completed");
+        check.classList.toggle("habit-check-completed");
+        item.classList.toggle("habit-completed");
+        item.classList.add("habit-animate");
+        setTimeout(() => item.classList.remove("habit-animate"), 160);
+        try {
+            await RecoveryAPI.logHabit(habit.user_habit_id);
+            showRecoveryToast(wasCompleted ? "Скасовано" : "Звичку виконано");
+            await refreshRecoveryDashboard();
+        } catch {
+            check.classList.toggle("habit-check-completed");
+            item.classList.toggle("habit-completed");
+            showRecoveryToast("Помилка при збереженні звички");
+        } finally {
+            check.disabled = false;
+        }
+    });
+
+    const removeBtn = document.createElement("button");
+    removeBtn.type = "button";
+    removeBtn.className = "habit-btn-remove";
+    removeBtn.innerHTML = ICONS.delete;
+    removeBtn.dataset.userHabitId = habit.user_habit_id || "";
+
+    let confirm = false;
+    let timeoutId = null;
+
+    removeBtn.addEventListener("click", async () => {
+        if (!confirm) {
+            confirm = true;
+            removeBtn.classList.add("habit-remove-pending");
+            timeoutId = setTimeout(() => {
+                confirm = false;
+                removeBtn.classList.remove("habit-remove-pending");
+            }, 2000);
+            return;
+        }
+
+        clearTimeout(timeoutId);
+        removeBtn.disabled = true;
+        try {
+            await RecoveryAPI.removeHabit(habit.user_habit_id);
+            showRecoveryToast("Звичку видалено");
+            await refreshRecoveryDashboard();
+        } catch {
+            showRecoveryToast("Помилка при видаленні звички");
+        } finally {
+            confirm = false;
+            removeBtn.classList.remove("habit-remove-pending");
+            removeBtn.disabled = false;
+        }
+    });
+
+    actions.appendChild(impact);
+    actions.appendChild(check);
+    actions.appendChild(removeBtn);
+
+    item.appendChild(main);
+    item.appendChild(actions);
+
+    return item;
+}
+
 export function renderHabitsWidget(snapshot, options = {}) {
     const el = document.getElementById("habits-widget");
     if (!el) return;
@@ -48,121 +166,70 @@ export function renderHabitsWidget(snapshot, options = {}) {
         return;
     }
 
-    if (!snapshot || !snapshot.habits || snapshot.habits.length === 0) {
+    if (!snapshot || !Array.isArray(snapshot.habits) || snapshot.habits.length === 0) {
         el.appendChild(createEmpty(RECOVERY_MESSAGES.habits.empty));
         return;
     }
 
-    snapshot.habits.forEach(habit => {
-        const item = document.createElement("div");
-        const categoryClass = `habit-cat-${habit.category}`;
-        item.className = `habit-item ${categoryClass}`;
-        if (habit.completed) item.classList.add("habit-completed");
+    const userAdded = snapshot.habits.filter(h => h.user_habit_id);
+    if (userAdded.length === 0) {
+        el.appendChild(createEmpty(RECOVERY_MESSAGES.habits.empty));
+        return;
+    }
 
-        const main = document.createElement("div");
-        main.className = "habit-main";
+    const previewCount = 8;
+    const preview = userAdded.slice(0, previewCount);
 
-        const iconBox = document.createElement("div");
-        iconBox.className = "habit-icon";
-        const iconKey = habit.icon || "rest";
-        iconBox.innerHTML = ICONS[iconKey] || ICONS.rest;
+    const grid = document.createElement("div");
+    grid.className = "habits-grid two-col";
 
-        const textBox = document.createElement("div");
-        textBox.className = "habit-text";
+    const left = document.createElement("div");
+    left.className = "habits-col";
+    const right = document.createElement("div");
+    right.className = "habits-col";
 
-        const title = document.createElement("div");
-        title.className = "habit-title";
-        title.textContent = habit.name;
-
-        const metaRow = document.createElement("div");
-        metaRow.className = "habit-meta-row";
-
-        const category = document.createElement("div");
-        category.className = "habit-category-badge";
-        category.textContent = label(habit.category);
-
-        const reason = document.createElement("div");
-        reason.className = "habit-reason";
-        reason.textContent = buildReason(habit);
-
-        metaRow.appendChild(category);
-
-        textBox.appendChild(title);
-        textBox.appendChild(metaRow);
-        textBox.appendChild(reason);
-
-        main.appendChild(iconBox);
-        main.appendChild(textBox);
-
-        const actions = document.createElement("div");
-        actions.className = "habit-actions";
-
-        const impact = document.createElement("div");
-        impact.className = "habit-recovery-impact";
-        impact.textContent = `Recovery +${habit.points}`;
-
-        const check = document.createElement("button");
-        check.type = "button";
-        check.className = "habit-check";
-        if (habit.completed) check.classList.add("habit-check-completed");
-
-        check.addEventListener("click", async () => {
-            check.classList.toggle("habit-check-completed");
-            item.classList.toggle("habit-completed");
-            item.classList.add("habit-animate");
-            setTimeout(() => item.classList.remove("habit-animate"), 160);
-
-            try {
-                await RecoveryAPI.logHabit(habit.user_habit_id);
-            } catch {
-                showRecoveryToast("Помилка при збереженні звички");
-                return;
-            }
-
-            showRecoveryToast("Звичку виконано");
-            await refreshRecoveryDashboard();
-        });
-
-        const removeBtn = document.createElement("button");
-        removeBtn.type = "button";
-        removeBtn.className = "habit-btn-remove";
-        removeBtn.innerHTML = ICONS.delete;
-
-        let confirm = false;
-        let timeoutId = null;
-
-        removeBtn.addEventListener("click", async () => {
-            if (!confirm) {
-                confirm = true;
-                removeBtn.classList.add("habit-remove-pending");
-                timeoutId = setTimeout(() => {
-                    confirm = false;
-                    removeBtn.classList.remove("habit-remove-pending");
-                }, 2000);
-                return;
-            }
-
-            clearTimeout(timeoutId);
-
-            try {
-                await RecoveryAPI.removeHabit(habit.user_habit_id);
-                await refreshRecoveryDashboard();
-                showRecoveryToast("Звичку видалено");
-            } catch {
-                showRecoveryToast("Помилка при видаленні звички");
-            } finally {
-                confirm = false;
-                removeBtn.classList.remove("habit-remove-pending");
-            }
-        });
-
-        actions.appendChild(impact);
-        actions.appendChild(check);
-        actions.appendChild(removeBtn);
-
-        item.appendChild(main);
-        item.appendChild(actions);
-
-        el.appendChild(item);
+    preview.forEach((h, i) => {
+        const col = i % 2 === 0 ? left : right;
+        col.appendChild(createHabitItem(h));
     });
+
+    grid.appendChild(left);
+    grid.appendChild(right);
+    el.appendChild(grid);
+
+    if (userAdded.length > previewCount) {
+        const footer = document.createElement("div");
+        footer.className = "habits-widget-footer";
+        const moreBtn = document.createElement("button");
+        moreBtn.type = "button";
+        moreBtn.className = "rc-btn rc-btn-sm";
+        moreBtn.textContent = `Показати всі (${userAdded.length})`;
+        moreBtn.addEventListener("click", () => {
+            clearElement(el);
+            const fullGrid = document.createElement("div");
+            fullGrid.className = "habits-grid two-col";
+            const l = document.createElement("div");
+            l.className = "habits-col";
+            const r = document.createElement("div");
+            r.className = "habits-col";
+            userAdded.forEach((h, idx) => {
+                const col = idx % 2 === 0 ? l : r;
+                col.appendChild(createHabitItem(h));
+            });
+            fullGrid.appendChild(l);
+            fullGrid.appendChild(r);
+            el.appendChild(fullGrid);
+            const back = document.createElement("div");
+            back.className = "habits-widget-footer";
+            const backBtn = document.createElement("button");
+            backBtn.type = "button";
+            backBtn.className = "rc-btn rc-btn-sm";
+            backBtn.textContent = "Показати менше";
+            backBtn.addEventListener("click", () => renderHabitsWidget(snapshot));
+            back.appendChild(backBtn);
+            el.appendChild(back);
+        });
+        footer.appendChild(moreBtn);
+        el.appendChild(footer);
+    }
 }
