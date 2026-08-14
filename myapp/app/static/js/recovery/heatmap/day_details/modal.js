@@ -4,12 +4,12 @@ import { renderDayDetailsBody } from "./renderer.js";
 
 export async function openDayDetailsModal(dateIso) {
   const modal = document.getElementById("rc-day-details-modal");
-  const title = document.getElementById("rc-day-details-title");
-  const subtitle = document.getElementById("rc-day-details-subtitle");
-  const dialog = document.querySelector(".rc-day-details-dialog");
-  const body = dialog.querySelector("#rc-day-details-body");
+  const dialog = modal?.querySelector(".rc-day-details-dialog");
+  const title = dialog?.querySelector("#rc-day-details-title");
+  const subtitle = dialog?.querySelector("#rc-day-details-subtitle");
+  const body = dialog?.querySelector("#rc-day-details-body");
 
-  if (!modal || !title || !subtitle || !body) return;
+  if (!modal || !dialog || !title || !subtitle || !body) return;
 
   title.textContent = formatDateLong(dateIso);
   subtitle.textContent = formatWeekday(dateIso);
@@ -29,7 +29,7 @@ export async function openDayDetailsModal(dateIso) {
   let raw = null;
   try {
     raw = await RecoveryAPI.getDayDetails(userId, dateIso);
-  } catch (e) {
+  } catch {
     raw = null;
   }
 
