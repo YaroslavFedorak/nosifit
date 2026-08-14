@@ -1,8 +1,6 @@
 import { RecoveryAPI } from "../api.js";
 import { attachTooltip } from "./tooltip.js";
 import { openDayDetailsModal } from "./day_details/modal.js";
-import { renderRecoveryCalendar } from "./calendar.js";
-import { openCalendarModal, initCalendarModalControls } from "./calendar_modal.js";
 
 const DAYS = 7;
 const MS_DAY = 1000 * 60 * 60 * 24;
@@ -71,7 +69,9 @@ export function renderRecoveryHeatmap(days, yearOverride) {
     const cell = document.createElement("div");
     cell.className = "rc-heatmap-cell";
     cell.dataset.level = String(entry.level ?? 0);
-    if ((entry.date && localIso(entry.date) === todayIso) || entry.is_today) cell.classList.add("today");
+    if ((entry.date && localIso(entry.date) === todayIso) || entry.is_today) {
+      cell.classList.add("today");
+    }
     attachTooltip(cell, entry);
     cell.addEventListener("click", () => openDayDetailsModal(entry.date));
     grid.appendChild(cell);
@@ -81,28 +81,20 @@ export function renderRecoveryHeatmap(days, yearOverride) {
 export function initRecoveryHeatmap() {
   const root = document.getElementById("recovery-app");
   const yearSelect = document.getElementById("rc-heatmap-year");
-  const openCalendarBtn = document.getElementById("rc-open-calendar");
-  const calYearSelect = document.getElementById("rc-cal-year-select");
 
-  if (!root || !yearSelect || !openCalendarBtn) return;
+  if (!root || !yearSelect) return;
 
   const userId = Number(root.dataset.userId || 0);
   if (!userId) return;
 
   const nowYear = new Date().getFullYear();
   yearSelect.innerHTML = "";
-  if (calYearSelect) calYearSelect.innerHTML = "";
+
   for (let y = nowYear; y >= 2020; y--) {
     const opt = document.createElement("option");
     opt.value = String(y);
     opt.textContent = String(y);
     yearSelect.appendChild(opt);
-    if (calYearSelect) {
-      const opt2 = document.createElement("option");
-      opt2.value = String(y);
-      opt2.textContent = String(y);
-      calYearSelect.appendChild(opt2);
-    }
   }
 
   const load = () => {
@@ -118,42 +110,5 @@ export function initRecoveryHeatmap() {
   };
 
   load();
-
   yearSelect.addEventListener("change", load);
-
-  openCalendarBtn.addEventListener("click", () => {
-    const year = Number(yearSelect.value || nowYear);
-    RecoveryAPI.getHeatmap(userId, year)
-      .then(data => {
-        const days = Array.isArray(data?.days) ? data.days : [];
-        renderRecoveryCalendar(days, year);
-        openCalendarModal();
-      })
-      .catch(() => {
-        renderRecoveryCalendar([], year);
-        openCalendarModal();
-      });
-  });
-
-  const closeCalendarBtns = document.querySelectorAll("[data-close-calendar]");
-  closeCalendarBtns.forEach(btn => btn.addEventListener("click", () => {
-    const modal = document.getElementById("rc-calendar-modal");
-    if (modal) modal.classList.remove("open");
-  }));
-
-  const closeDayDetailsBtns = document.querySelectorAll("[data-close-day-details]");
-  closeDayDetailsBtns.forEach(btn => btn.addEventListener("click", () => {
-    const m = document.getElementById("rc-day-details-modal");
-    if (m) m.classList.remove("open");
-  }));
-
-  if (calYearSelect) {
-    calYearSelect.addEventListener("change", () => {
-      const selYear = Number(calYearSelect.value);
-      yearSelect.value = selYear;
-      yearSelect.dispatchEvent(new Event("change"));
-    });
-  }
-
-  initCalendarModalControls();
 }
