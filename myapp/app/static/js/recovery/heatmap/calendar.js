@@ -1,4 +1,4 @@
-import { openDayDetailsModal } from "./day_details/day_details_modal.js";
+import { openDayDetailsModal } from "./day_details/modal.js";
 
 function getMonthName(monthIndex, year) {
     const date = new Date(year, monthIndex, 1);

@@ -1,6 +1,6 @@
 import { RecoveryAPI } from "../../api.js";
 import { formatDateLong, formatWeekday } from "../formatters.js";
-import { renderDayDetailsBody } from "./day_details_renderer.js";
+import { renderDayDetailsBody } from "./renderer.js";
 
 export async function openDayDetailsModal(dateIso) {
   const modal = document.getElementById("rc-day-details-modal");

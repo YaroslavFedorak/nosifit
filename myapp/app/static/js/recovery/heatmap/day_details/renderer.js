@@ -1,4 +1,4 @@
-import { createSummaryCard, createDailySummary, createHabitsGrid, createHabitRow, createRecommendationRow } from "./day_details_components.js";
+import { createSummaryCard, createDailySummary, createHabitsGrid, createHabitRow, createRecommendationRow } from "./components.js";
 import { formatSleep } from "../formatters.js";
 
 export function renderDayDetailsBody(container, data) {

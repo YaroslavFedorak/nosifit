@@ -1,6 +1,6 @@
 import { RecoveryAPI } from "../api.js";
 import { attachTooltip } from "./tooltip.js";
-import { openDayDetailsModal } from "./day_details/day_details_modal.js";
+import { openDayDetailsModal } from "./day_details/modal.js";
 import { renderRecoveryCalendar } from "./calendar.js";
 import { openCalendarModal, initCalendarModalControls } from "./calendar_modal.js";
 
