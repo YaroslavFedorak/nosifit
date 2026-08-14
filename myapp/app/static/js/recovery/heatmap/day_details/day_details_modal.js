@@ -6,7 +6,8 @@ export async function openDayDetailsModal(dateIso) {
   const modal = document.getElementById("rc-day-details-modal");
   const title = document.getElementById("rc-day-details-title");
   const subtitle = document.getElementById("rc-day-details-subtitle");
-  const body = document.getElementById("rc-day-details-body");
+  const dialog = document.querySelector(".rc-day-details-dialog");
+  const body = dialog.querySelector("#rc-day-details-body");
 
   if (!modal || !title || !subtitle || !body) return;
 
