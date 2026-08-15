@@ -1,6 +1,6 @@
 import math
 from dataclasses import dataclass
-from datetime import date, datetime
+from datetime import date, datetime, time
 from myapp.app.models.training_session import TrainingSession
 from myapp.app.training_engine.models.exercise import Exercise
 from myapp.app.training_engine.models.performance_state import PerformanceState
@@ -20,38 +20,34 @@ class UserCapacity:
 
 
 class TrainingLoadService:
-    # basic clamp
     @staticmethod
     def clamp(v, mn, mx):
         return max(mn, min(v, mx))
 
-    # reps parser (simple)
     @staticmethod
     def parse_reps(v):
         if v is None:
             return 0
-        if isinstance(v, int):
-            return v
-        t = str(v)
+        if isinstance(v, int) or isinstance(v, float):
+            return float(v)
+        t = str(v).strip().replace("–", "-").replace("—", "-").replace("/", "-")
         if "-" in t:
             try:
                 a, b = t.split("-")
-                return (int(a) + int(b)) / 2
+                return (float(a) + float(b)) / 2
             except:
                 return 0
         try:
-            return float(t)
+            return float(t.split()[0])
         except:
             return 0
 
-    # BMI (WHO standard)
     @staticmethod
     def bmi(w, h):
         if not w or not h:
             return 22.0
         return w / ((h / 100) ** 2)
 
-    # body fat (Deurenberg et al.)
     @staticmethod
     def body_fat(w, h, age, sex):
         bmi = TrainingLoadService.bmi(w, h)
@@ -61,7 +57,6 @@ class TrainingLoadService:
             bf = 1.20 * bmi + 0.23 * age - 5.4
         return TrainingLoadService.clamp(bf, 4, 50)
 
-    # FFMI (Kouri et al.)
     @staticmethod
     def ffmi(w, h, age, sex):
         bf = TrainingLoadService.body_fat(w, h, age, sex)
@@ -71,14 +66,12 @@ class TrainingLoadService:
         ffmi += 6.1 * (1.8 - hh)
         return ffmi
 
-    # BMR (Mifflin-St Jeor)
     @staticmethod
     def bmr(w, h, age, sex):
         if sex == "female":
             return 10 * w + 6.25 * h - 5 * age - 161
         return 10 * w + 6.25 * h - 5 * age + 5
 
-    # simple endurance strength index
     @staticmethod
     def estimated_strength(push, squat, sit):
         p = min(push / 60, 1.0)
@@ -86,24 +79,21 @@ class TrainingLoadService:
         si = min(sit / 80, 1.0)
         return p * 0.40 + s * 0.35 + si * 0.25
 
-    # 1RM estimate (Epley/Brzycki)
     @staticmethod
     def estimate_1rm(w, reps):
         if w <= 0:
             return 0
-        reps = max(1, reps)
+        reps = max(1, int(reps))
         if reps <= 10:
             return w * (1 + reps / 30.0)
         return w * 36.0 / (37.0 - reps)
 
-    # relative intensity (%1RM concept)
     @staticmethod
     def relative_intensity(load, rm):
         if rm <= 0:
             return 0.55
         return TrainingLoadService.clamp(load / rm, 0.0, 1.25)
 
-    # build user capacity (simple multiplicative model)
     @staticmethod
     def build_capacity(user):
         age = user.age or 25
@@ -124,7 +114,6 @@ class TrainingLoadService:
 
         strength_index = TrainingLoadService.estimated_strength(push, squat, sit)
 
-        # age factor (basic decline curve)
         if age < 18:
             age_f = 0.90
         elif age <= 35:
@@ -136,7 +125,6 @@ class TrainingLoadService:
         else:
             age_f = 0.80
 
-        # bmi factor (optimal range 18.5–25)
         if bmi < 18.5:
             bmi_f = 0.92
         elif bmi <= 25:
@@ -146,10 +134,8 @@ class TrainingLoadService:
         else:
             bmi_f = 0.95
 
-        # ffmi factor (higher ffmi → more capacity)
         ffmi_f = TrainingLoadService.clamp(ffmi / 20.0, 0.80, 1.30)
 
-        # strength factor
         if strength_index < 0.20:
             str_f = 0.80
         elif strength_index < 0.40:
@@ -161,7 +147,6 @@ class TrainingLoadService:
         else:
             str_f = 1.20
 
-        # experience
         exp = (user.experience or "beginner").lower()
         exp_f = {
             "beginner": 0.90,
@@ -171,7 +156,6 @@ class TrainingLoadService:
             "elite": 1.20,
         }.get(exp, 1.00)
 
-        # activity
         act = (user.activity or "moderate").lower()
         act_f = {
             "sedentary": 0.90,
@@ -181,7 +165,6 @@ class TrainingLoadService:
             "very_high": 1.10,
         }.get(act, 1.00)
 
-        # goal
         goal = (user.goal or "maintenance").lower()
         goal_f = {
             "fat_loss": 1.05,
@@ -191,7 +174,6 @@ class TrainingLoadService:
             "performance": 1.15,
         }.get(goal, 1.00)
 
-        # frequency
         freq = user.workouts_per_week or 3
         if freq <= 2:
             freq_f = 0.95
@@ -216,14 +198,12 @@ class TrainingLoadService:
             capacity=capacity,
         )
 
-    # volume load (classic training science)
     @staticmethod
     def exercise_volume(sets, reps, load):
-        if load <= 0:
+        if load is None or load <= 0:
             load = 0.4
         return sets * reps * load
 
-    # intensity factor (%1RM zones)
     @staticmethod
     def intensity_factor(load, rm):
         ri = TrainingLoadService.relative_intensity(load, rm)
@@ -239,7 +219,6 @@ class TrainingLoadService:
             return 1.35
         return 1.55
 
-    # movement pattern cost (basic EMG/biomech logic)
     @staticmethod
     def movement_factor(ex):
         mp = (ex.movement_pattern or "").lower()
@@ -252,17 +231,14 @@ class TrainingLoadService:
         }
         return vals.get(mp, 1.00)
 
-    # difficulty factor (skill complexity)
     @staticmethod
     def difficulty_factor(ex):
         return 1.0 + ((ex.difficulty or 1) - 1) * 0.12
 
-    # risk factor (injury risk multiplier)
     @staticmethod
     def risk_factor(ex):
         return 1.0 + (ex.risk_level or 1) * 0.05
 
-    # sRPE (Foster et al.)
     @staticmethod
     def rpe_factor(rpe):
         if rpe is None:
@@ -280,17 +256,26 @@ class TrainingLoadService:
             10: 1.40,
         }.get(int(rpe), 1.0)
 
-    # main load calc
     @staticmethod
     def compute_exercise_load(se, ex: Exercise, cap: UserCapacity):
-        sets = se.sets_done or se.sets_planned or 0
-        reps = TrainingLoadService.parse_reps(se.reps_done or se.reps_planned)
-        load = se.load_done or se.load_planned or 0
-        rpe = se.rpe or 7
+        sets = se.sets_done if se.sets_done is not None else se.sets_planned or 0
+        reps = TrainingLoadService.parse_reps(
+            se.reps_done if se.reps_done is not None else se.reps_planned
+        )
+        load = se.load_done if se.load_done is not None else se.load_planned or 0
+        rpe = se.rpe if se.rpe is not None else 7
 
-        rm = TrainingLoadService.estimate_1rm(load, reps)
-        vol = TrainingLoadService.exercise_volume(sets, reps, max(load, 0.4))
-        inten = TrainingLoadService.intensity_factor(load, rm)
+        effective_load = load
+        if load == 0:
+            user_weight = getattr(se.session.user, "weight", None)
+            if user_weight:
+                effective_load = user_weight * 0.5
+            else:
+                effective_load = 0.4
+
+        rm = TrainingLoadService.estimate_1rm(effective_load, reps)
+        vol = TrainingLoadService.exercise_volume(sets, reps, max(effective_load, 0.4))
+        inten = TrainingLoadService.intensity_factor(effective_load, rm)
         move = TrainingLoadService.movement_factor(ex)
         diff = TrainingLoadService.difficulty_factor(ex)
         risk = TrainingLoadService.risk_factor(ex)
@@ -302,14 +287,13 @@ class TrainingLoadService:
         return {
             "sets": sets,
             "reps": reps,
-            "load": load,
+            "load": effective_load,
             "estimated_1rm": rm,
             "volume": vol,
             "external_load": external,
             "internal_load": internal,
         }
 
-    # muscle load distribution (simple EMG-like split)
     @staticmethod
     def compute_muscle_load(ex: Exercise, load, muscles):
         prof = ex.muscle_load_profile or {}
@@ -331,7 +315,6 @@ class TrainingLoadService:
             for m in secondary:
                 muscles[m] = muscles.get(m, 0) + v
 
-    # CNS stress (basic workload model)
     @staticmethod
     def compute_cns_stress(total):
         if total < 150:
@@ -348,7 +331,6 @@ class TrainingLoadService:
             return 80
         return 95
 
-    # recovery hours (simple load - hours curve)
     @staticmethod
     def compute_recovery_hours(load):
         if load < 150:
@@ -366,10 +348,10 @@ class TrainingLoadService:
         return 72
 
     @staticmethod
-    def get_daily_load(user_id: int) -> int:
-        today = date.today()
-        start = datetime.combine(today, datetime.min.time())
-        end = datetime.combine(today, datetime.max.time())
+    def get_daily_load(user_id: int, target_date: date = None) -> float:
+        target_date = target_date or date.today()
+        start = datetime.combine(target_date, time.min)
+        end = datetime.combine(target_date, time.max)
 
         sessions = TrainingSession.query.filter(
             TrainingSession.user_id == user_id,
@@ -377,4 +359,5 @@ class TrainingLoadService:
             TrainingSession.started_at <= end,
         ).all()
 
-        return sum(s.internal_load or 0 for s in sessions)
+        total = sum((s.internal_load or 0) for s in sessions)
+        return round(total, 2)
