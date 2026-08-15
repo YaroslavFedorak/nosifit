@@ -1,6 +1,6 @@
 import { RecoveryAPI } from "../api.js";
 import { attachTooltip } from "./tooltip.js";
-import { openDayDetailsModal } from "./day_details/modal.js";
+import { openDayDetailsModal, initDayDetailsModalControls } from "./day_details/modal.js";
 
 const DAYS = 7;
 const MS_DAY = 1000 * 60 * 60 * 24;
@@ -69,9 +69,7 @@ export function renderRecoveryHeatmap(days, yearOverride) {
     const cell = document.createElement("div");
     cell.className = "rc-heatmap-cell";
     cell.dataset.level = String(entry.level ?? 0);
-    if ((entry.date && localIso(entry.date) === todayIso) || entry.is_today) {
-      cell.classList.add("today");
-    }
+    if ((entry.date && localIso(entry.date) === todayIso) || entry.is_today) cell.classList.add("today");
     attachTooltip(cell, entry);
     cell.addEventListener("click", () => openDayDetailsModal(entry.date));
     grid.appendChild(cell);
@@ -111,4 +109,5 @@ export function initRecoveryHeatmap() {
 
   load();
   yearSelect.addEventListener("change", load);
+  initDayDetailsModalControls();
 }
