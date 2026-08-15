@@ -24,7 +24,8 @@ class HabitService:
         habits = RecoveryHabit.query.filter(RecoveryHabit.id.in_(habit_ids)).all()
         return habits
 
-    def get_user_habits_with_status(self, user_id):
+    def get_user_habits_with_status(self, user_id, target_date: date = None):
+        target_date = target_date or date.today()
         user_habits = self.get_user_habits(user_id)
         if not user_habits:
             return []
@@ -32,7 +33,7 @@ class HabitService:
         ids = [h.id for h in user_habits]
         logs = RecoveryHabitLog.query.filter(
             RecoveryHabitLog.user_habit_id.in_(ids),
-            RecoveryHabitLog.date == date.today(),
+            RecoveryHabitLog.date == target_date,
         ).all()
         completed_ids = {log.user_habit_id for log in logs if log.completed}
 
@@ -123,7 +124,8 @@ class HabitService:
         db.session.commit()
         return log
 
-    def get_today_logs(self, user_id):
+    def get_today_logs(self, user_id, target_date: date = None):
+        target_date = target_date or date.today()
         habits = self.get_user_habits(user_id)
         ids = [h.id for h in habits]
 
@@ -132,5 +134,5 @@ class HabitService:
 
         return RecoveryHabitLog.query.filter(
             RecoveryHabitLog.user_habit_id.in_(ids),
-            RecoveryHabitLog.date == date.today(),
+            RecoveryHabitLog.date == target_date,
         ).all()
