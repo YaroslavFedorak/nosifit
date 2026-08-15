@@ -1,12 +1,10 @@
-from datetime import datetime, timedelta, date
+from datetime import datetime, timedelta, time, date
 from typing import Optional, List
 
 from myapp.app import db
 from myapp.app.models.recovery.sleep_entry import SleepEntry
 from myapp.app.models.user import User
 from myapp.app.services.recovery.constants import (
-    MIN_SLEEP_SCORE,
-    MAX_SLEEP_SCORE,
     SLEEP_DEBT_DAYS,
 )
 
@@ -47,13 +45,13 @@ class SleepService:
     def get_sleep_for_date(
         self, user_id: int, target_date: date
     ) -> Optional[SleepEntry]:
-        start = datetime.combine(target_date, datetime.min.time())
-        end = datetime.combine(target_date + timedelta(days=1), datetime.min.time())
+        start = datetime.combine(target_date, time.min)
+        end = datetime.combine(target_date, time.max)
         return (
             SleepEntry.query.filter(
                 SleepEntry.user_id == user_id,
                 SleepEntry.sleep_end >= start,
-                SleepEntry.sleep_end < end,
+                SleepEntry.sleep_end <= end,
             )
             .order_by(SleepEntry.sleep_end.desc())
             .first()
@@ -79,16 +77,15 @@ class SleepService:
             return 0
 
         if hours < 4:
-            score = int(10 + (hours / 4) * 50)
-        elif 4 <= hours <= 9:
-            score = int(60 + ((hours - 4) / 5) * 40)
-        elif 9 < hours <= 18:
-            score = int(100 - ((hours - 9) / 9) * 60)
-        else:
-            score = 40
+            return int(10 + (hours / 4) * 50)
 
-        score = max(MIN_SLEEP_SCORE, min(score, MAX_SLEEP_SCORE))
-        return score
+        if 4 <= hours <= 9:
+            return int(60 + ((hours - 4) / 5) * 40)
+
+        if 9 < hours <= 18:
+            return int(100 - ((hours - 9) / 9) * 60)
+
+        return 40
 
     def calculate_sleep_debt_minutes(self, user_id: int, required_minutes: int) -> int:
         entries = self.get_last_days(user_id)

@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import Tuple, Optional
 
 from myapp.app.services.recovery.sleep_service import SleepService
 from myapp.app.services.recovery.habit_service import HabitService
@@ -21,21 +21,20 @@ class RecoveryScoreService:
         self.habit_service = HabitService()
         self.training_load = TrainingLoadService()
 
-    def calculate_sleep_score(self, user_id: int) -> int:
-        entry = self.sleep_service.get_last_sleep(user_id)
-        if not entry:
-            return 0
-        return self.sleep_service.calculate_sleep_score(entry.duration_minutes)
+    def calculate_sleep_score(self, duration_minutes: int) -> int:
+        return self.sleep_service.calculate_sleep_score(duration_minutes)
 
-    def calculate_habit_score(self, user_id: int) -> int:
-        logs = self.habit_service.get_today_logs(user_id)
-        if not logs:
+    def calculate_habit_score(self, user_id: int, target_date=None) -> int:
+        logs = self.habit_service.get_today_logs(user_id, target_date=target_date)
+        habits = self.habit_service.get_user_habits(user_id)
+        if not habits:
             return 0
-        completed = sum(1 for log in logs if log.completed)
-        return int((completed / len(logs)) * 100)
+        completed_ids = {log.user_habit_id for log in logs if log.completed}
+        completed = sum(1 for h in habits if h.id in completed_ids)
+        return int((completed / len(habits)) * 100)
 
-    def calculate_training_score(self, user_id: int) -> int:
-        load = self.training_load.get_daily_load(user_id)
+    def calculate_training_score(self, user_id: int, target_date=None) -> int:
+        load = self.training_load.get_daily_load(user_id, target_date=target_date)
         if load <= 40:
             return 30
         if load <= 80:
@@ -48,20 +47,24 @@ class RecoveryScoreService:
             return 70
         return 50
 
-    def calculate_energy_score(self, sleep_score: int, habit_score: int) -> int:
+    def calculate_energy_score(
+        self, sleep_score: Optional[int], habit_score: int
+    ) -> int:
         from myapp.app.services.recovery.constants import (
             ENERGY_SLEEP_WEIGHT,
             ENERGY_HABIT_WEIGHT,
         )
 
+        if sleep_score is None:
+            sleep_score = 0
         return int(
             sleep_score * ENERGY_SLEEP_WEIGHT + habit_score * ENERGY_HABIT_WEIGHT
         )
 
     def _compute_penalties(
-        self, user_id: int, required_minutes: int
+        self, user_id: int, required_minutes: int, target_date=None
     ) -> Tuple[int, int]:
-        load = self.training_load.get_daily_load(user_id)
+        load = self.training_load.get_daily_load(user_id, target_date=target_date)
         debt_minutes = self.sleep_service.calculate_sleep_debt_minutes(
             user_id, required_minutes
         )
@@ -82,15 +85,16 @@ class RecoveryScoreService:
         sleep_score: int,
         habit_score: int,
         training_score: int,
+        target_date=None,
     ) -> int:
         load_penalty, debt_penalty = self._compute_penalties(
-            user_id, required_sleep_minutes
+            user_id, required_sleep_minutes, target_date=target_date
         )
 
         base = int(
-            sleep_score * SLEEP_WEIGHT
-            + training_score * TRAINING_WEIGHT
-            + habit_score * HABIT_WEIGHT
+            (sleep_score or 0) * SLEEP_WEIGHT
+            + (training_score or 0) * TRAINING_WEIGHT
+            + (habit_score or 0) * HABIT_WEIGHT
         )
 
         final = base - (load_penalty + debt_penalty)
