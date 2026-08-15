@@ -18,7 +18,10 @@ const ICON_MAP = {
     activity: "exercise",
     stress: "caution",
     nutrition: "plan",
-    massage: "hand_heart"
+    massage: "hand_heart",
+    habit: "calendar_cog",
+    exercise: "exercise",
+    muscle: "exercise"
 };
 
 const MAX_RECOMMENDATIONS = 4;
@@ -42,7 +45,9 @@ function createRecommendation(rec) {
 
     const icon = document.createElement("div");
     icon.className = "rec-icon";
-    icon.innerHTML = getIcon(ICON_MAP[rec.icon] || "rest");
+
+    const iconName = ICON_MAP[rec.type] || "rest";
+    icon.innerHTML = getIcon(iconName);
 
     const title = document.createElement("div");
     title.className = "rec-title";
@@ -70,9 +75,11 @@ export function renderRecommendationsWidget(data, options = {}) {
         return;
     }
 
-    const recommendations = Array.isArray(data?.recommendations)
-        ? data.recommendations.filter(r => r.text && r.text.trim() !== "")
-        : [];
+    const recommendations = Array.isArray(data?.recommendations?.items)
+        ? data.recommendations.items.filter(r => r && r.text && r.text.trim() !== "")
+        : Array.isArray(data?.recommendations)
+            ? data.recommendations.filter(r => r && r.text && r.text.trim() !== "")
+            : [];
 
     if (recommendations.length === 0) {
         el.appendChild(createEmpty("Поки все добре"));

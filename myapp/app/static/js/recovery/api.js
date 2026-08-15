@@ -15,8 +15,6 @@ async function request(url, options = {}, timeoutMs = DEFAULT_TIMEOUT_MS) {
             ...options
         });
 
-        clearTimeout(timeoutId);
-
         if (!res.ok) {
             let message = `HTTP ${res.status}`;
             try {
@@ -29,22 +27,24 @@ async function request(url, options = {}, timeoutMs = DEFAULT_TIMEOUT_MS) {
                 } else {
                     const text = await res.text();
                     if (text) message = text;
-                    }
+                }
             } catch (_) {}
             throw new Error(message);
         }
 
         const contentType = res.headers.get("content-type") || "";
         if (contentType.includes("application/json")) {
-            return res.json();
+            return await res.json();
         }
 
         return null;
     } catch (err) {
-        if (err.name === "AbortError") {
+        if (err && err.name === "AbortError") {
             throw new Error("Request timeout");
         }
         throw err;
+    } finally {
+        clearTimeout(timeoutId);
     }
 }
 

@@ -1,3 +1,4 @@
+import { RECOVERY_MESSAGES } from "./messages.js";
 import { RecoveryAPI } from "./api.js";
 import { renderSleepWidget } from "./sleep.js";
 import { renderHabitsWidget } from "./habits.js";
@@ -12,7 +13,12 @@ const state = {
     heatmap: null,
     recommendations: null,
     firstLoad: true,
-    userId: null
+    userId: null,
+    errors: {
+        snapshot: null,
+        heatmap: null,
+        recommendations: null
+    }
 };
 
 function resolveUserId() {
@@ -32,6 +38,12 @@ function renderHeatmapWidget(data, opts = {}) {
 
     if (!grid) return;
 
+    if (opts.error) {
+        grid.innerHTML = "";
+        grid.textContent = RECOVERY_MESSAGES.error;
+        return;
+    }
+
     const days = Array.isArray(data?.days) ? data.days : [];
     renderRecoveryHeatmap(days);
 }
@@ -45,11 +57,11 @@ function renderLoading() {
 }
 
 function renderAll() {
-    renderSleepWidget(state.snapshot);
-    renderHabitsWidget(state.snapshot);
-    renderScoreWidget(state.snapshot);
-    renderHeatmapWidget(state.heatmap);
-    renderRecommendationsWidget(state.recommendations);
+    renderSleepWidget(state.snapshot, { error: state.errors.snapshot });
+    renderHabitsWidget(state.snapshot, { error: state.errors.snapshot });
+    renderScoreWidget(state.snapshot, { error: state.errors.snapshot });
+    renderHeatmapWidget(state.heatmap, { error: state.errors.heatmap });
+    renderRecommendationsWidget(state.recommendations, { error: state.errors.recommendations });
 }
 
 export async function refreshRecoveryDashboard() {
@@ -67,10 +79,29 @@ export async function refreshRecoveryDashboard() {
             RecoveryAPI.getRecommendations(userId)
         ]);
 
-    state.snapshot = snapshotRes.status === "fulfilled" ? snapshotRes.value : null;
-    state.heatmap = heatmapRes.status === "fulfilled" ? heatmapRes.value : null;
-    state.recommendations =
-        recommendationsRes.status === "fulfilled" ? recommendationsRes.value : null;
+    if (snapshotRes.status === "fulfilled") {
+        state.snapshot = snapshotRes.value;
+        state.errors.snapshot = null;
+    } else {
+        state.snapshot = null;
+        state.errors.snapshot = snapshotRes.reason?.message || "Failed to load snapshot";
+    }
+
+    if (heatmapRes.status === "fulfilled") {
+        state.heatmap = heatmapRes.value;
+        state.errors.heatmap = null;
+    } else {
+        state.heatmap = null;
+        state.errors.heatmap = heatmapRes.reason?.message || "Failed to load heatmap";
+    }
+
+    if (recommendationsRes.status === "fulfilled") {
+        state.recommendations = recommendationsRes.value;
+        state.errors.recommendations = null;
+    } else {
+        state.recommendations = null;
+        state.errors.recommendations = recommendationsRes.reason?.message || "Failed to load recommendations";
+    }
 
     state.firstLoad = false;
 
@@ -87,4 +118,5 @@ export function destroyRecoveryDashboard() {
     state.heatmap = null;
     state.recommendations = null;
     state.firstLoad = true;
+    state.errors = { snapshot: null, heatmap: null, recommendations: null };
 }

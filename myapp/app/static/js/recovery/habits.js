@@ -16,19 +16,27 @@ const CATEGORY_LABELS = {
 };
 
 function label(category) {
-    return CATEGORY_LABELS[category] || category;
+    return CATEGORY_LABELS[category] || category || "";
 }
 
 function buildReason(habit) {
     switch (habit.category) {
-        case "sleep": return "Рекомендовано через якість сну";
-        case "hydration": return "Рекомендовано через рівень гідратації";
-        case "nutrition": return "Рекомендовано для підтримки харчування";
-        case "activity": return "Рекомендовано після навантаження";
-        case "recovery": return "Рекомендовано для покращення відновлення";
-        case "stress": return "Рекомендовано через рівень стресу";
-        case "massage": return "Рекомендовано для розслаблення м'язів";
-        default: return "Рекомендовано для балансу відновлення";
+        case "sleep":
+            return "Рекомендовано через якість сну";
+        case "hydration":
+            return "Рекомендовано через рівень гідратації";
+        case "nutrition":
+            return "Рекомендовано для підтримки харчування";
+        case "activity":
+            return "Рекомендовано після навантаження";
+        case "recovery":
+            return "Рекомендовано для покращення відновлення";
+        case "stress":
+            return "Рекомендовано через рівень стресу";
+        case "massage":
+            return "Рекомендовано для розслаблення м'язів";
+        default:
+            return "Рекомендовано для балансу відновлення";
     }
 }
 
@@ -84,21 +92,34 @@ function createHabitItem(habit) {
     check.className = "habit-check";
     check.dataset.userHabitId = habit.user_habit_id || "";
     if (habit.completed) check.classList.add("habit-check-completed");
+    check.title = habit.completed ? "Відмінити" : "Позначити як виконано";
 
     check.addEventListener("click", async () => {
+        const userHabitId = check.dataset.userHabitId;
+        if (!userHabitId) {
+            showRecoveryToast("Невідомий ідентифікатор звички");
+            return;
+        }
+
         check.disabled = true;
         const wasCompleted = check.classList.contains("habit-check-completed");
         check.classList.toggle("habit-check-completed");
         item.classList.toggle("habit-completed");
         item.classList.add("habit-animate");
         setTimeout(() => item.classList.remove("habit-animate"), 160);
+
         try {
-            await RecoveryAPI.logHabit(habit.user_habit_id);
+            await RecoveryAPI.logHabit(userHabitId);
             showRecoveryToast(wasCompleted ? "Скасовано" : "Звичку виконано");
             await refreshRecoveryDashboard();
-        } catch {
-            check.classList.toggle("habit-check-completed");
-            item.classList.toggle("habit-completed");
+        } catch (err) {
+            if (wasCompleted) {
+                check.classList.remove("habit-check-completed");
+                item.classList.remove("habit-completed");
+            } else {
+                check.classList.add("habit-check-completed");
+                item.classList.add("habit-completed");
+            }
             showRecoveryToast("Помилка при збереженні звички");
         } finally {
             check.disabled = false;
@@ -115,6 +136,12 @@ function createHabitItem(habit) {
     let timeoutId = null;
 
     removeBtn.addEventListener("click", async () => {
+        const userHabitId = removeBtn.dataset.userHabitId;
+        if (!userHabitId) {
+            showRecoveryToast("Невідомий ідентифікатор звички");
+            return;
+        }
+
         if (!confirm) {
             confirm = true;
             removeBtn.classList.add("habit-remove-pending");
@@ -128,10 +155,10 @@ function createHabitItem(habit) {
         clearTimeout(timeoutId);
         removeBtn.disabled = true;
         try {
-            await RecoveryAPI.removeHabit(habit.user_habit_id);
+            await RecoveryAPI.removeHabit(userHabitId);
             showRecoveryToast("Звичку видалено");
             await refreshRecoveryDashboard();
-        } catch {
+        } catch (err) {
             showRecoveryToast("Помилка при видаленні звички");
         } finally {
             confirm = false;
@@ -171,8 +198,8 @@ export function renderHabitsWidget(snapshot, options = {}) {
         return;
     }
 
-    const userAdded = snapshot.habits.filter(h => h.user_habit_id);
-    if (userAdded.length === 0) {
+    const userAdded = snapshot.habits.filter(h => h && (h.user_habit_id || h.user_habit_id === 0));
+    if (!userAdded || userAdded.length === 0) {
         el.appendChild(createEmpty(RECOVERY_MESSAGES.habits.empty));
         return;
     }
