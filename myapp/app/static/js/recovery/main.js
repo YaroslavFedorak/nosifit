@@ -2,6 +2,7 @@ import { initRecoveryDashboard } from "./dashboard.js";
 import { initSleepModal } from "./modals/sleep_modal.js";
 import { initHabitModal } from "./modals/habit_modal.js";
 import { initRecoveryHeatmap } from "./heatmap/heatmap.js";
+import { initDayDetailsModalControls } from "./heatmap/day_details/modal.js";
 import { ICONS } from "../icons/index.js";
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -28,5 +29,6 @@ document.addEventListener("DOMContentLoaded", () => {
     initSleepModal(userId);
     initHabitModal(userId);
     initRecoveryHeatmap();
+    initDayDetailsModalControls();
     initRecoveryDashboard();
 });
