@@ -8,6 +8,7 @@ from myapp.app.services.recovery import (
     RecommendationService,
 )
 from myapp.app.models.recovery.habit import RecoveryHabit
+from myapp.app.services.training_load_service import TrainingLoadService
 
 recovery_bp = Blueprint("recovery", __name__, url_prefix="/api/recovery")
 
@@ -15,6 +16,8 @@ sleep_service = SleepService()
 habit_service = HabitService()
 snapshot_service = SnapshotService()
 stats_service = StatsService()
+training_load_service = TrainingLoadService()
+recommendation_service = RecommendationService()
 
 
 def parse_iso(dt: str) -> datetime:
@@ -46,14 +49,14 @@ def add_sleep():
         return jsonify({"error": "sleep_end must be after sleep_start"}), 400
 
     entry = sleep_service.add_sleep(user_id, start_dt, end_dt)
-    snapshot_service.generate_snapshot(user_id)
+    snapshot = snapshot_service.generate_snapshot(user_id, target_date=end_dt.date())
 
     return (
         jsonify(
             {
                 "id": entry.id,
                 "duration_minutes": entry.duration_minutes,
-                "quality_score": entry.quality_score,
+                "quality_score": snapshot.sleep_score if snapshot else 0,
             }
         ),
         201,
@@ -105,11 +108,15 @@ def get_user_habits(user_id):
 
 @recovery_bp.post("/habits/add/<int:habit_id>")
 def add_habit(habit_id):
-    user_id = request.json.get("user_id")
+    data = request.get_json(silent=True) or {}
+    user_id = data.get("user_id")
+    if user_id is None:
+        return jsonify({"error": "user_id is required"}), 400
+
     habit, created = habit_service.add_user_habit(user_id, habit_id)
 
     if created:
-        snapshot_service.generate_snapshot(user_id)
+        snapshot_service.generate_snapshot(user_id, target_date=date.today())
 
     return jsonify({"created": created})
 
@@ -120,7 +127,7 @@ def remove_habit(user_habit_id):
     if habit is None:
         return jsonify({"error": "habit not found"}), 404
 
-    snapshot_service.generate_snapshot(habit.user_id)
+    snapshot_service.generate_snapshot(habit.user_id, target_date=date.today())
 
     return jsonify({"removed": user_habit_id}), 200
 
@@ -138,7 +145,7 @@ def log_habit():
         return jsonify({"error": "user_habit not found"}), 404
 
     user_id = log.user_id
-    snapshot = snapshot_service.generate_snapshot(user_id)
+    snapshot = snapshot_service.generate_snapshot(user_id, target_date=date.today())
 
     return jsonify({"logged": log.id, "snapshot": snapshot.to_dict()}), 200
 
@@ -158,14 +165,20 @@ def get_snapshot(user_id):
     if snapshot is None:
         return jsonify({"snapshot": None}), 200
 
-    habits = habit_service.get_user_habits_with_status(user_id)
+    habits = habit_service.get_user_habits_with_status(user_id, snapshot.date)
 
-    recs = RecommendationService().build_recommendations(
-        snapshot.sleep_score,
-        snapshot.recovery_score,
-        snapshot.energy_score,
-        snapshot.habit_score,
-        snapshot.training_score,
+    daily_load = training_load_service.get_daily_load(
+        user_id, target_date=snapshot.date
+    )
+
+    recs = recommendation_service.build_recommendations(
+        user_id=user_id,
+        sleep_score=snapshot.sleep_score,
+        recovery_score=snapshot.recovery_score,
+        energy_score=snapshot.energy_score,
+        habit_score=snapshot.habit_score,
+        daily_load=daily_load,
+        target_date=snapshot.date,
     )
 
     return (
@@ -178,7 +191,10 @@ def get_snapshot(user_id):
                 "energy_score": int(snapshot.energy_score or 0),
                 "recovery_score": int(snapshot.recovery_score or 0),
                 "habits": habits,
-                "recommendations": recs,
+                "recommendations": {
+                    "total": len(recs),
+                    "items": recs,
+                },
             }
         ),
         200,
@@ -202,7 +218,6 @@ def get_heatmap(user_id):
                     {
                         "date": s.date.isoformat(),
                         "recovery_score": s.recovery_score,
-                        "energy_score": s.energy_score,
                         "level": getattr(s, "level", 0),
                     }
                     for s in heatmap
@@ -215,20 +230,38 @@ def get_heatmap(user_id):
 
 @recovery_bp.get("/recommendations/<int:user_id>")
 def get_recommendations(user_id):
-    snapshot = stats_service.get_last_snapshot(user_id)
-    if snapshot is None:
-        return jsonify({"recovery_score": None, "recommendations": []}), 200
+    raw_date = request.args.get("date")
+    if raw_date:
+        try:
+            target_date = datetime.fromisoformat(raw_date).date()
+        except ValueError:
+            return jsonify({"error": "Invalid date format"}), 400
+    else:
+        target_date = date.today()
 
-    recs = RecommendationService().build_recommendations(
-        snapshot.sleep_score,
-        snapshot.recovery_score,
-        snapshot.energy_score,
-        snapshot.habit_score,
-        snapshot.training_score,
+    snapshot = stats_service.get_daily_snapshot(user_id, target_date)
+    if snapshot is None:
+        snapshot = snapshot_service.generate_snapshot(user_id, target_date=target_date)
+
+    daily_load = training_load_service.get_daily_load(user_id, target_date=target_date)
+
+    recs = recommendation_service.build_recommendations(
+        user_id=user_id,
+        sleep_score=snapshot.sleep_score,
+        recovery_score=snapshot.recovery_score,
+        energy_score=snapshot.energy_score,
+        habit_score=snapshot.habit_score,
+        daily_load=daily_load,
+        target_date=target_date,
     )
 
     return (
-        jsonify({"recovery_score": snapshot.recovery_score, "recommendations": recs}),
+        jsonify(
+            {
+                "recovery_score": snapshot.recovery_score,
+                "recommendations": {"total": len(recs), "items": recs},
+            }
+        ),
         200,
     )
 
@@ -255,7 +288,7 @@ def get_day_details(user_id):
     try:
         if snapshot is not None:
             try:
-                habits = habit_service.get_user_habits_with_status(user_id)
+                habits = habit_service.get_user_habits_with_status(user_id, dt)
             except Exception:
                 current_app.logger.exception(
                     "Error while fetching user habits for user %s", user_id
@@ -263,12 +296,26 @@ def get_day_details(user_id):
                 habits = []
 
             try:
-                recs = RecommendationService().build_recommendations(
-                    snapshot.sleep_score,
-                    snapshot.recovery_score,
-                    snapshot.energy_score,
-                    snapshot.habit_score,
-                    snapshot.training_score,
+                daily_load = training_load_service.get_daily_load(
+                    user_id, target_date=dt
+                )
+            except Exception:
+                current_app.logger.exception(
+                    "Error while fetching daily load for user %s date %s",
+                    user_id,
+                    raw_date,
+                )
+                daily_load = None
+
+            try:
+                recs = recommendation_service.build_recommendations(
+                    user_id=user_id,
+                    sleep_score=snapshot.sleep_score,
+                    recovery_score=snapshot.recovery_score,
+                    energy_score=snapshot.energy_score,
+                    habit_score=snapshot.habit_score,
+                    daily_load=daily_load,
+                    target_date=dt,
                 )
             except Exception:
                 current_app.logger.exception(
@@ -321,13 +368,6 @@ def get_day_details(user_id):
                             "items": base.get("habits", []),
                         },
                         "recommendations": {
-                            "completed": len(
-                                [
-                                    r
-                                    for r in base.get("recommendations", [])
-                                    if r.get("followed")
-                                ]
-                            ),
                             "total": len(base.get("recommendations", [])),
                             "items": base.get("recommendations", []),
                         },
@@ -336,9 +376,8 @@ def get_day_details(user_id):
                 200,
             )
 
-        # snapshot is None — try to collect data safely
         try:
-            habits = habit_service.get_user_habits_with_status(user_id)
+            habits = habit_service.get_user_habits_with_status(user_id, dt)
         except Exception:
             current_app.logger.exception(
                 "Error while fetching user habits (fallback) for user %s", user_id
@@ -346,7 +385,17 @@ def get_day_details(user_id):
             habits = []
 
         try:
-            recs = RecommendationService().build_recommendations(0, 0, 0, 0, 0)
+            recs = recommendation_service.build_recommendations(
+                user_id=user_id,
+                sleep_score=0,
+                recovery_score=0,
+                energy_score=0,
+                habit_score=0,
+                daily_load=training_load_service.get_daily_load(
+                    user_id, target_date=dt
+                ),
+                target_date=dt,
+            )
         except Exception:
             current_app.logger.exception(
                 "Error while building recommendations (fallback) for user %s", user_id
@@ -367,9 +416,46 @@ def get_day_details(user_id):
             )
             sleep_entry = None
 
+        from myapp.app.models.training_session import TrainingSession
+
+        sessions = (
+            TrainingSession.query.filter(
+                TrainingSession.user_id == user_id,
+                TrainingSession.started_at >= datetime.combine(dt, datetime.min.time()),
+                TrainingSession.started_at <= datetime.combine(dt, datetime.max.time()),
+            )
+            .order_by(TrainingSession.started_at.asc())
+            .all()
+        )
+
         training_exercises = []
-        training_load = None
-        training_sessions = 0
+        training_load = training_load_service.get_daily_load(user_id, target_date=dt)
+        training_sessions = len(sessions)
+
+        for s in sessions:
+            for se in s.exercises:
+                training_exercises.append(
+                    {
+                        "session_id": s.id,
+                        "exercise_id": se.exercise_id,
+                        "sets": (
+                            se.sets_done
+                            if se.sets_done is not None
+                            else se.sets_planned
+                        ),
+                        "reps": (
+                            se.reps_done
+                            if se.reps_done is not None
+                            else se.reps_planned
+                        ),
+                        "load": (
+                            se.load_done
+                            if se.load_done is not None
+                            else se.load_planned
+                        ),
+                        "rpe": se.rpe,
+                    }
+                )
 
         has_any = bool(
             (sleep_entry is not None)
@@ -396,12 +482,12 @@ def get_day_details(user_id):
                             else None
                         ),
                         "bedtime": (
-                            getattr(sleep_entry, "start_iso", None)
+                            getattr(sleep_entry, "sleep_start", None)
                             if sleep_entry
                             else None
                         ),
                         "wake_time": (
-                            getattr(sleep_entry, "end_iso", None)
+                            getattr(sleep_entry, "sleep_end", None)
                             if sleep_entry
                             else None
                         ),
@@ -422,9 +508,6 @@ def get_day_details(user_id):
                         "items": habits or [],
                     },
                     "recommendations": {
-                        "completed": (
-                            len([r for r in recs if r.get("followed")]) if recs else 0
-                        ),
                         "total": len(recs) if recs else 0,
                         "items": recs or [],
                     },
@@ -452,7 +535,7 @@ def get_day_details(user_id):
                     },
                     "training": {"load": None, "sessions": 0, "exercises": []},
                     "habits": {"completed": 0, "total": 0, "score": None, "items": []},
-                    "recommendations": {"completed": 0, "total": 0, "items": []},
+                    "recommendations": {"total": 0, "items": []},
                 }
             ),
             200,
