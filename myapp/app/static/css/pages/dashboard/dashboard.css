@@ -1,0 +1,9 @@
+.dashboard {
+    width: 100%;
+    padding: 40px;
+}
+
+.dashboard-widget {
+    width: 100%;
+    margin-bottom: 20px;
+}
