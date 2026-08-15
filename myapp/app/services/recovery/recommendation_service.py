@@ -1,160 +1,214 @@
-import json
-import os
-from typing import List, Dict
+from datetime import date, datetime, timedelta
+from typing import List, Dict, Any, Optional
 
+from myapp.app import db
 from myapp.app.models.recovery.habit import RecoveryHabit
-from myapp.app.services.recovery.constants import RecoveryTrigger
+from myapp.app.models.recovery.user_habit import UserRecoveryHabit
+from myapp.app.models.recovery.habit_log import RecoveryHabitLog
+from myapp.app.models.training_session import TrainingSession
 from myapp.app.services.recovery.constants import (
-    TRAINING_LOAD_HEAVY,
+    MUSCLE_LOW_LOAD,
+    MUSCLE_HIGH_LOAD,
+    MUSCLE_TRAINING_GAP_DAYS,
+    MUSCLE_TRAINING_RECOVERY_DAYS,
+    MAX_RECOMMENDATIONS,
 )
-
-HABITS_PATH = os.path.join(
-    os.path.dirname(__file__),
-    "..",
-    "..",
-    "recovery_engine",
-    "data",
-    "habits",
-    "habits.json",
-)
-
-SHORT_TEXTS = {
-    "sleep_8h": "Спати 8 годин",
-    "consistent_sleep": "Лягай в один час",
-    "screen_off_before_sleep": "Без екранів перед сном",
-    "drink_water": "Випий воду",
-    "electrolytes": "Електроліти після навантаження",
-    "balanced_meal": "Збалансований прийом їжі",
-    "post_workout_protein": "Протеїн після тренування",
-    "post_workout_carbs": "Вуглеводи після тренування",
-    "walk_30m": "Прогулянка 30 хв",
-    "stretching": "Розтяжка",
-    "mobility": "Мобільність",
-    "foam_roll": "Фоам рол",
-    "breathing_reset": "Дихальна пауза",
-    "meditation": "Медитація",
-    "journal_stress": "Записати стрес",
-    "full_rest_day": "День відпочинку",
-    "deload_week": "Тиждень розвантаження",
-    "massage_or_physio": "Масаж або фізіо",
-}
-
-ICON_MAP = {
-    "sleep": "sleep",
-    "sleep_deficit": "sleep",
-    "weak": "sleep",
-    "hydration": "hydration",
-    "hydration_low": "hydration",
-    "recovery": "recovery",
-    "rest": "recovery",
-    "recommended": "recovery",
-    "activity": "activity",
-    "after_training": "activity",
-    "balance": "activity",
-    "stress": "stress",
-    "low_energy": "stress",
-    "nutrition": "nutrition",
-    "habit_missing": "nutrition",
-    "massage": "massage",
-    "massage_needed": "massage",
-    "hand_heart": "massage",
-}
 
 
 class RecommendationService:
     def __init__(self):
-        with open(HABITS_PATH, "r", encoding="utf-8") as f:
-            self.habits = json.load(f)
+        pass
 
-    def detect_triggers(
-        self,
-        sleep_score: int,
-        recovery_score: int,
-        energy_score: int,
-        habit_score: int,
-        daily_load: float,
-    ) -> List[str]:
+    def _build_context(
+        self, user_id: int, window_days: int = 7, target_date: Optional[date] = None
+    ):
+        target_date = target_date if target_date is not None else date.today()
+        start = target_date - timedelta(days=window_days - 1)
 
-        triggers = []
+        sessions = (
+            TrainingSession.query.filter(
+                TrainingSession.user_id == user_id,
+                TrainingSession.started_at
+                >= datetime.combine(start, datetime.min.time()),
+                TrainingSession.started_at
+                <= datetime.combine(target_date, datetime.max.time()),
+            )
+            .order_by(TrainingSession.started_at.asc())
+            .all()
+        )
 
-        if sleep_score < 70:
-            triggers.append(RecoveryTrigger.SLEEP_DEFICIT.value)
+        muscle_stats = {}
+        last_trained = {}
+
+        for s in sessions:
+            s_date = s.started_at.date() if s.started_at else None
+            for m, load in (s.muscle_loads or {}).items():
+                muscle_stats[m] = muscle_stats.get(m, 0) + (load or 0)
+                if s_date:
+                    last_trained[m] = max(last_trained.get(m, date.min), s_date)
+
+        avg = {}
+        for m, total in muscle_stats.items():
+            avg[m] = total / window_days
+
+        return {
+            "sessions": sessions,
+            "muscle_stats": muscle_stats,
+            "muscle_avg": avg,
+            "last_trained": last_trained,
+            "target_date": target_date,
+        }
+
+    def _recovery_recommendations(
+        self, recovery_score: Optional[int], energy_score: Optional[int]
+    ) -> List[Dict[str, Any]]:
+        recs = []
+        if recovery_score is None:
+            return recs
 
         if recovery_score < 40:
-            triggers.append(RecoveryTrigger.LOW_RECOVERY.value)
-
-        if energy_score < 60:
-            triggers.append(RecoveryTrigger.LOW_ENERGY.value)
-
-        if habit_score < 50:
-            triggers.append(RecoveryTrigger.RECOVERY.value)
-
-        if daily_load > TRAINING_LOAD_HEAVY:
-            triggers.append(RecoveryTrigger.AFTER_TRAINING.value)
-
-        return triggers
-
-    def filter_habits_by_triggers(self, triggers: List[str]) -> List[Dict]:
-        matched = []
-        for habit in self.habits:
-            if any(t in habit.get("recommended_when", []) for t in triggers):
-                matched.append(habit)
-        return matched
-
-    def sort_habits(self, habits: List[Dict]) -> List[Dict]:
-        category_order = {
-            "hydration": 0,
-            "sleep": 1,
-            "nutrition": 2,
-            "activity": 3,
-            "stress": 4,
-            "recovery": 5,
-        }
-        return sorted(
-            habits,
-            key=lambda h: (
-                -h["points"],
-                category_order.get(h["category"], 99),
-                h["slug"],
-            ),
-        )
-
-    def build_recommendations(
-        self,
-        sleep_score: int,
-        recovery_score: int,
-        energy_score: int,
-        habit_score: int,
-        daily_load: float,
-    ) -> List[Dict]:
-
-        triggers = self.detect_triggers(
-            sleep_score,
-            recovery_score,
-            energy_score,
-            habit_score,
-            daily_load,
-        )
-
-        habits = self.sort_habits(self.filter_habits_by_triggers(triggers))
-
-        recs = []
-
-        for h in habits[:5]:
-            db_habit = RecoveryHabit.query.filter_by(slug=h["slug"]).first()
-            if not db_habit:
-                continue
-
-            mapped_icon = ICON_MAP.get(db_habit.icon, "recovery")
-            short_text = SHORT_TEXTS.get(db_habit.slug, h["name"])
-
             recs.append(
                 {
-                    "habit_id": db_habit.id,
-                    "text": short_text,
-                    "icon": mapped_icon,
-                    "priority": h.get("priority", "medium"),
+                    "type": "recovery",
+                    "id": "full_recovery",
+                    "priority": "high",
+                    "text": "Focus on recovery today and avoid high-intensity training",
+                    "reason": {"recovery_score": recovery_score},
+                }
+            )
+        elif recovery_score < 60:
+            recs.append(
+                {
+                    "type": "recovery",
+                    "id": "light_training",
+                    "priority": "medium",
+                    "text": "Keep today's training light and focus on technique",
+                    "reason": {"recovery_score": recovery_score},
+                }
+            )
+
+        if energy_score is not None and energy_score < 40:
+            recs.append(
+                {
+                    "type": "recovery",
+                    "id": "low_energy",
+                    "priority": "medium",
+                    "text": "Energy is low — prefer light activity or active recovery",
+                    "reason": {"energy_score": energy_score},
                 }
             )
 
         return recs
+
+    def _habit_recommendations(
+        self, habit_score: Optional[int]
+    ) -> List[Dict[str, Any]]:
+        recs = []
+        if habit_score is None:
+            return recs
+        if habit_score < 50:
+            recs.append(
+                {
+                    "type": "habit",
+                    "id": "complete_habits",
+                    "priority": "medium",
+                    "text": "Complete your recovery habits to improve recovery",
+                    "reason": {"habit_score": habit_score},
+                }
+            )
+        return recs
+
+    def _muscle_recommendations(
+        self,
+        muscle_stats: Dict[str, float],
+        muscle_avg: Dict[str, float],
+        last_trained: Dict[str, date],
+        recovery_score: Optional[int],
+        target_date: date,
+    ) -> List[Dict[str, Any]]:
+        recs = []
+        for m, recent in muscle_stats.items():
+            avg = muscle_avg.get(m, 0) or 1.0
+            rel = recent / avg if avg else 0.0
+            last = last_trained.get(m)
+            days_since = (target_date - last).days if last else 999
+            recovery_hours = None
+            if (
+                recent >= MUSCLE_HIGH_LOAD
+                and days_since <= MUSCLE_TRAINING_RECOVERY_DAYS
+            ):
+                recs.append(
+                    {
+                        "type": "muscle",
+                        "id": f"rest_{m}",
+                        "muscle": m,
+                        "priority": "high",
+                        "text": f"Give {m} more recovery after heavy recent load",
+                        "reason": {
+                            "recent_load": recent,
+                            "days_since": days_since,
+                            "relative": rel,
+                        },
+                    }
+                )
+                continue
+
+            if (
+                recent < MUSCLE_LOW_LOAD
+                or rel < 0.6
+                or days_since >= MUSCLE_TRAINING_GAP_DAYS
+            ):
+                if recovery_score is not None and recovery_score < 45:
+                    continue
+                recs.append(
+                    {
+                        "type": "exercise",
+                        "id": f"train_{m}",
+                        "muscle": m,
+                        "priority": "medium",
+                        "text": f"Consider training {m} (lower recent volume)",
+                        "reason": {
+                            "recent_load": recent,
+                            "days_since": days_since,
+                            "relative": rel,
+                        },
+                        "suggested_sets": 3,
+                        "suggested_reps": "8-12",
+                        "suggested_rpe": 7,
+                    }
+                )
+        return recs
+
+    def build_recommendations(
+        self,
+        user_id: int,
+        sleep_score: Optional[int],
+        recovery_score: Optional[int],
+        energy_score: Optional[int],
+        habit_score: Optional[int],
+        daily_load: Optional[float],
+        target_date: Optional[date] = None,
+    ) -> List[Dict[str, Any]]:
+        ctx = self._build_context(user_id, window_days=7, target_date=target_date)
+        muscle_stats = ctx["muscle_stats"]
+        muscle_avg = ctx["muscle_avg"]
+        last_trained = ctx["last_trained"]
+        td = ctx["target_date"]
+
+        recs: List[Dict[str, Any]] = []
+        recs.extend(self._recovery_recommendations(recovery_score, energy_score))
+        recs.extend(self._habit_recommendations(habit_score))
+        recs.extend(
+            self._muscle_recommendations(
+                muscle_stats, muscle_avg, last_trained, recovery_score, td
+            )
+        )
+
+        recs_sorted = sorted(
+            recs,
+            key=lambda r: {"high": 0, "medium": 1, "low": 2}.get(
+                r.get("priority", "low")
+            ),
+        )
+
+        return recs_sorted[:MAX_RECOMMENDATIONS]
