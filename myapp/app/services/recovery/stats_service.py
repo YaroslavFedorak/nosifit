@@ -5,8 +5,6 @@ from myapp.app.models.recovery.daily_recovery_snapshot import DailyRecoverySnaps
 
 
 class StatsService:
-    """Recovery statistics: last snapshot, heatmap, weekly stats."""
-
     def get_daily_snapshot(
         self, user_id: int, day: date
     ) -> Optional[DailyRecoverySnapshot]:
