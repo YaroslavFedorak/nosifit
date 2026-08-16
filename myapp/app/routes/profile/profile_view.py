@@ -3,11 +3,13 @@ from flask_login import login_required, current_user
 
 profile_view_bp = Blueprint("profile_view", __name__)
 
-@profile_view_bp.route("/profile")
+
+@profile_view_bp.route("/")
 @login_required
-def profile():
+def profile_page():
     return render_template(
         "app/profile/profile.html",
         user=current_user,
-        profile=current_user.profile
+        profile=current_user.profile,
+        active="profile",
     )

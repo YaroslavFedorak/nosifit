@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template
 from flask_login import current_user
 
-public_bp = Blueprint("public", __name__, url_prefix="")
+public_bp = Blueprint("public", __name__)
 
 
 def get_base():

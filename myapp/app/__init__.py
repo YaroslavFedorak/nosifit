@@ -58,65 +58,82 @@ def create_app():
         client_kwargs={"scope": "user:email"},
     )
 
-    from myapp.app.routes.auth.oauth_google import google_bp
-    from myapp.app.routes.auth.oauth_github import github_bp
-    from myapp.app.routes.auth.email_verification import email_verification_bp
-    from myapp.app.routes.auth.complete_profile import complete_profile_bp
-    from myapp.app.routes.auth_main import auth_bp
+    from myapp.app.routes import (
+        auth_bp,
+        google_bp,
+        github_bp,
+        email_verification_bp,
+        complete_profile_bp,
+        root_bp,
+        public_bp,
+        info_bp,
+        dashboard_bp,
+        dashboard_api_bp,
+        training_pages_bp,
+        training_explanation_bp,
+        training_api_bp,
+        nutrition_pages_bp,
+        nutrition_api,
+        recovery_pages_bp,
+        recovery_bp,
+        assessment_pages_bp,
+        assessment_bp,
+        equipment_pages_bp,
+        equipment_api,
+        training_plan_pages_bp,
+        plan_bp,
+        premium_bp,
+        profile_pages_bp,
+        profile_view_bp,
+        profile_update_bp,
+        password_change_bp,
+        email_change_bp,
+        delete_request_bp,
+        delete_confirm_bp,
+        delete_final_bp,
+        oauth_disconnect_bp,
+        questionnaire_pages_bp,
+        questionnaire_bp,
+        tracker_pages_bp,
+        onboarding_api,
+        injury_api,
+    )
 
-    from myapp.app.routes.root import root_bp
-    from myapp.app.routes.public import public_bp
-    from myapp.app.routes.public_info import info_bp
-
-    from myapp.app.routes.dashboard import dashboard_page_bp, dashboard_api_bp
-    from myapp.app.routes.dashboard_pages import dashboard_pages_bp
-
-    from myapp.app.routes.plan import plan_bp
-    from myapp.app.routes.assessment import assessment_bp
-    from myapp.app.routes.equipment import equipment_bp
-    from myapp.app.routes.questionnaire import questionnaire_bp
-
-    from myapp.app.routes.nutrition.nutrition_api import nutrition_api
-    from myapp.app.routes.premium import premium_bp
-
-    from myapp.app.routes.profile.profile_view import profile_view_bp
-    from myapp.app.routes.profile.profile_update import profile_update_bp
-    from myapp.app.routes.profile.password_change import password_change_bp
-    from myapp.app.routes.profile.email_change import email_change_bp
-    from myapp.app.routes.profile.delete_account_request import delete_request_bp
-    from myapp.app.routes.profile.delete_account_confirm import delete_confirm_bp
-    from myapp.app.routes.profile.delete_account_final import delete_final_bp
-    from myapp.app.routes.profile.oauth_disconnect import oauth_disconnect_bp
-
-    from myapp.app.routes.training.api_training import bp as training_api_bp
-    from myapp.app.routes.onboarding_api import onboarding_api
-    from myapp.app.routes.equipment_api import equipment_api
-    from myapp.app.routes.injury_api import injury_api
-
-    from myapp.app.routes.recovery.recovery_api import recovery_bp
-
+    app.register_blueprint(auth_bp)
     app.register_blueprint(google_bp)
     app.register_blueprint(github_bp)
     app.register_blueprint(email_verification_bp)
     app.register_blueprint(complete_profile_bp)
-    app.register_blueprint(auth_bp)
 
     app.register_blueprint(root_bp)
     app.register_blueprint(public_bp)
     app.register_blueprint(info_bp)
 
-    app.register_blueprint(dashboard_page_bp)
+    app.register_blueprint(dashboard_bp)
     app.register_blueprint(dashboard_api_bp)
-    app.register_blueprint(dashboard_pages_bp)
 
-    app.register_blueprint(plan_bp)
-    app.register_blueprint(assessment_bp)
-    app.register_blueprint(equipment_bp)
-    app.register_blueprint(questionnaire_bp)
+    app.register_blueprint(training_pages_bp)
+    app.register_blueprint(training_explanation_bp)
+    app.register_blueprint(training_api_bp)
 
+    app.register_blueprint(nutrition_pages_bp)
     app.register_blueprint(nutrition_api)
+
+    app.register_blueprint(recovery_pages_bp)
+    app.register_blueprint(recovery_bp)
+
+    app.register_blueprint(assessment_pages_bp)
+    app.register_blueprint(assessment_bp)
+
+    app.register_blueprint(equipment_pages_bp)
+    app.register_blueprint(equipment_api)
+
+    app.register_blueprint(training_plan_pages_bp)
+    app.register_blueprint(plan_bp)
+
     app.register_blueprint(premium_bp)
 
+    app.register_blueprint(profile_pages_bp)
     app.register_blueprint(profile_view_bp)
     app.register_blueprint(profile_update_bp)
     app.register_blueprint(password_change_bp)
@@ -126,11 +143,12 @@ def create_app():
     app.register_blueprint(delete_final_bp)
     app.register_blueprint(oauth_disconnect_bp)
 
-    app.register_blueprint(training_api_bp)
-    app.register_blueprint(onboarding_api)
-    app.register_blueprint(equipment_api)
-    app.register_blueprint(injury_api)
+    app.register_blueprint(questionnaire_pages_bp)
+    app.register_blueprint(questionnaire_bp)
 
-    app.register_blueprint(recovery_bp)
+    app.register_blueprint(tracker_pages_bp)
+
+    app.register_blueprint(onboarding_api)
+    app.register_blueprint(injury_api)
 
     return app

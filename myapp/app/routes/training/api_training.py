@@ -15,7 +15,7 @@ from myapp.app.training_engine.models.training_plan import TrainingPlan
 from myapp.app.training_engine.models.performance_state import PerformanceState
 import datetime as dt
 
-bp = Blueprint("api_training", __name__, url_prefix="/api/training")
+training_api_bp = Blueprint("training_api", __name__, url_prefix="/api/training")
 
 
 def _error(e):
@@ -63,7 +63,7 @@ def _plan_days_struct(raw):
     return result
 
 
-@bp.route("/muscles")
+@training_api_bp.route("/muscles")
 @login_required
 def muscles():
     try:
@@ -72,7 +72,7 @@ def muscles():
         return _error(e)
 
 
-@bp.route("/equipment")
+@training_api_bp.route("/equipment")
 @login_required
 def equipment():
     try:
@@ -83,7 +83,7 @@ def equipment():
         return _error(e)
 
 
-@bp.route("/exercises")
+@training_api_bp.route("/exercises")
 @login_required
 def exercises():
     try:
@@ -122,7 +122,7 @@ def exercises():
         return _error(e)
 
 
-@bp.route("/today")
+@training_api_bp.route("/today")
 @login_required
 def today():
     try:
@@ -228,7 +228,7 @@ def today():
         return _error(e)
 
 
-@bp.route("/today-session")
+@training_api_bp.route("/today-session")
 @login_required
 def today_session():
     try:
@@ -279,7 +279,7 @@ def today_session():
         return _error(e)
 
 
-@bp.route("/heatmap")
+@training_api_bp.route("/heatmap")
 @login_required
 def heatmap():
     try:
@@ -337,7 +337,7 @@ def heatmap():
         return _error(e)
 
 
-@bp.route("/plans", methods=["GET"])
+@training_api_bp.route("/plans", methods=["GET"])
 @login_required
 def plans():
     try:
@@ -348,7 +348,7 @@ def plans():
         return _error(e)
 
 
-@bp.route("/plans", methods=["POST"])
+@training_api_bp.route("/plans", methods=["POST"])
 @login_required
 def create_plan():
     try:
@@ -372,7 +372,7 @@ def create_plan():
         return _error(e)
 
 
-@bp.route("/plans/<int:plan_id>", methods=["PUT"])
+@training_api_bp.route("/plans/<int:plan_id>", methods=["PUT"])
 @login_required
 def update_plan(plan_id):
     try:
@@ -398,7 +398,7 @@ def update_plan(plan_id):
         return _error(e)
 
 
-@bp.route("/plans/<int:plan_id>", methods=["DELETE"])
+@training_api_bp.route("/plans/<int:plan_id>", methods=["DELETE"])
 @login_required
 def delete_plan(plan_id):
     try:
@@ -412,7 +412,7 @@ def delete_plan(plan_id):
         return _error(e)
 
 
-@bp.route("/sessions/complete", methods=["POST"])
+@training_api_bp.route("/sessions/complete", methods=["POST"])
 @login_required
 def complete_session():
     try:
@@ -464,7 +464,9 @@ def complete_session():
         return _error(e)
 
 
-@bp.route("/sessions/<int:session_id>/exercise/<exercise_id>", methods=["POST"])
+@training_api_bp.route(
+    "/sessions/<int:session_id>/exercise/<exercise_id>", methods=["POST"]
+)
 @login_required
 def update_session_exercise(session_id, exercise_id):
     try:
@@ -492,7 +494,7 @@ def update_session_exercise(session_id, exercise_id):
         return _error(e)
 
 
-@bp.route("/sessions/start", methods=["POST"])
+@training_api_bp.route("/sessions/start", methods=["POST"])
 @login_required
 def start_session():
     try:
@@ -516,7 +518,7 @@ def start_session():
         return _error(e)
 
 
-@bp.route("/sessions/<int:session_id>/finish", methods=["POST"])
+@training_api_bp.route("/sessions/<int:session_id>/finish", methods=["POST"])
 @login_required
 def finish_session(session_id):
     try:
@@ -536,7 +538,7 @@ def finish_session(session_id):
         return _error(e)
 
 
-@bp.route("/day/<date>")
+@training_api_bp.route("/day/<date>")
 @login_required
 def day_details(date):
     try:
@@ -578,7 +580,7 @@ def day_details(date):
         return _error(e)
 
 
-@bp.route("/analytics")
+@training_api_bp.route("/analytics")
 @login_required
 def analytics():
     try:
@@ -623,7 +625,7 @@ def analytics():
         return _error(e)
 
 
-@bp.route("/recommendations")
+@training_api_bp.route("/recommendations")
 @login_required
 def recommendations():
     try:
@@ -644,7 +646,7 @@ def recommendations():
         return _error(e)
 
 
-@bp.route("/strength-test", methods=["POST"])
+@training_api_bp.route("/strength-test", methods=["POST"])
 @login_required
 def strength_test():
     try:

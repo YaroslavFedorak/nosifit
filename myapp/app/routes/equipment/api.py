@@ -2,14 +2,10 @@ from flask import Blueprint, request, jsonify
 from flask_login import login_required, current_user
 from myapp.app.services.equipment_service import EquipmentService
 
-equipment_api = Blueprint(
-    "equipment_api",
-    __name__,
-    url_prefix="/api/user/equipment"
-)
+equipment_api = Blueprint("equipment_api", __name__, url_prefix="/api/user/equipment")
 
 
-@equipment_api.get("")
+@equipment_api.get("/")
 @login_required
 def get_equipment():
     items = EquipmentService.get_user_equipment(current_user)

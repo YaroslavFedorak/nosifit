@@ -1,10 +1,14 @@
 from flask import Blueprint, render_template
-from flask_login import login_required
+from flask_login import login_required, current_user
 
-dashboard_page_bp = Blueprint("dashboard_page", __name__, url_prefix="/dashboard")
+dashboard_bp = Blueprint("dashboard", __name__, url_prefix="/dashboard")
 
 
-@dashboard_page_bp.get("")
+@dashboard_bp.get("/")
 @login_required
-def dashboard_page():
-    return render_template("app/dashboard/dashboard.html")
+def dashboard():
+    return render_template(
+        "app/dashboard/dashboard.html",
+        user=current_user,
+        active="dashboard",
+    )
