@@ -1,0 +1,28 @@
+from flask import Blueprint, jsonify, request
+from flask_login import login_required, current_user
+from myapp.app.services.dashboard.service import DashboardService
+
+dashboard_api_bp = Blueprint("dashboard_api", __name__, url_prefix="/api/dashboard")
+
+
+@dashboard_api_bp.get("/today")
+@login_required
+def today():
+    data = DashboardService.get_today(current_user.id)
+    return jsonify(data)
+
+
+@dashboard_api_bp.get("/heatmap")
+@login_required
+def heatmap():
+    data = DashboardService.get_heatmap(current_user.id)
+    return jsonify(data)
+
+
+@dashboard_api_bp.get("/day/<date_iso>")
+@login_required
+def day(date_iso):
+    data = DashboardService.get_day(current_user.id, date_iso)
+    if data is None:
+        return jsonify({"error": "invalid_date_or_no_data"}), 404
+    return jsonify(data)

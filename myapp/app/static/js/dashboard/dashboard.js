@@ -1,29 +1,42 @@
 import { DashboardAPI } from "./api.js";
-
-const state = {
-    data: null,
-    userId: null
-};
-
-function resolveUserId() {
-    const root = document.getElementById("dashboard-app");
-    state.userId = root?.dataset?.userId || null;
-    return state.userId;
-}
-
-export async function refreshDashboard() {
-    const userId = resolveUserId();
-    if (!userId) return;
-
-    state.data = await DashboardAPI.getDashboard(userId);
-    console.log("Dashboard data:", state.data);
-}
+import { DashboardState } from "./state.js";
+import { renderDailyScore } from "./widgets/daily_score.js";
+import { renderCheckin } from "./widgets/checkin.js";
+import { renderCategories } from "./widgets/categories.js";
+import { renderHeatmap } from "./heatmap/render.js";
+import { openDayModal } from "./heatmap/modal.js";
 
 export async function initDashboard() {
-    await refreshDashboard();
-}
+    const todayEl = document.getElementById("nf-daily-score");
+    const checkinEl = document.getElementById("nf-checkin");
+    const categoriesEl = document.getElementById("nf-categories");
+    const heatmapEl = document.getElementById("nf-heatmap");
 
-export function destroyDashboard() {
-    state.data = null;
-    state.userId = null;
+    try {
+        const today = await DashboardAPI.today();
+        DashboardState.setToday(today);
+        renderDailyScore(todayEl, today);
+        renderCheckin(checkinEl, today);
+        renderCategories(categoriesEl, today);
+    } catch (e) {
+        console.error(e);
+    }
+
+    try {
+        const heatmap = await DashboardAPI.heatmap();
+        DashboardState.setHeatmap(heatmap);
+        renderHeatmap(heatmapEl, heatmap);
+    } catch (e) {
+        console.error(e);
+    }
+
+    window.addEventListener("dashboard:dayclick", async (ev) => {
+        const date = ev.detail.date;
+        try {
+            const data = await DashboardAPI.day(date);
+            openDayModal(data);
+        } catch (e) {
+            console.error(e);
+        }
+    });
 }

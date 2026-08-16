@@ -6,4 +6,4 @@ from .equipment import equipment_bp
 from .questionnaire import questionnaire_bp
 
 from .dashboard_pages import dashboard_pages_bp
-from .dashboard import dashboard_api_bp
+from .dashboard import dashboard_api_bp, dashboard_page_bp

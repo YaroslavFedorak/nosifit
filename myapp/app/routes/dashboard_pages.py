@@ -7,7 +7,9 @@ dashboard_pages_bp = Blueprint("dashboard_pages", __name__)
 @dashboard_pages_bp.route("/dashboard")
 @login_required
 def dashboard():
-    return render_template("app/dashboard.html", user=current_user, active="dashboard")
+    return render_template(
+        "app/dashboard/dashboard.html", user=current_user, active="dashboard"
+    )
 
 
 @dashboard_pages_bp.route("/training")

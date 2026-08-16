@@ -1,23 +1,17 @@
-const API_BASE = "/api/dashboard";
-
-async function request(url, options = {}) {
-    const response = await fetch(url, {
-        headers: {
-            "Content-Type": "application/json",
-            ...(options.headers || {})
-        },
-        ...options
-    });
-
-    if (!response.ok) {
-        throw new Error(`HTTP ${response.status}`);
-    }
-
-    return response.json();
-}
-
 export const DashboardAPI = {
-    getDashboard(userId) {
-        return request(`${API_BASE}/${userId}`);
+    async today() {
+        const r = await fetch("/api/dashboard/today", { credentials: "same-origin" });
+        if (!r.ok) throw new Error("Failed to load dashboard today");
+        return r.json();
+    },
+    async heatmap() {
+        const r = await fetch("/api/dashboard/heatmap", { credentials: "same-origin" });
+        if (!r.ok) throw new Error("Failed to load dashboard heatmap");
+        return r.json();
+    },
+    async day(dateIso) {
+        const r = await fetch(`/api/dashboard/day/${dateIso}`, { credentials: "same-origin" });
+        if (!r.ok) throw new Error("Failed to load dashboard day");
+        return r.json();
     }
 };

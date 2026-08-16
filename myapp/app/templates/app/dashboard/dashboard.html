@@ -1,0 +1,33 @@
+{% extends "app/base_app.html" %} {% block content %}
+<div class="u-shell">
+  <div class="dashboard-grid">
+    <div id="nf-daily-score"></div>
+    <div id="nf-checkin"></div>
+    <div id="nf-categories"></div>
+    <div id="nf-heatmap"></div>
+  </div>
+</div>
+
+<div id="nf-day-modal" class="nf-modal">
+  <div class="nf-modal-inner">
+    <div class="modal-date"></div>
+    <div class="modal-daily-score"></div>
+    <div class="modal-breakdown">
+      <div>Training: <span class="modal-training-score"></span></div>
+      <div>Nutrition: <span class="modal-nutrition-score"></span></div>
+      <div>Recovery: <span class="modal-recovery-score"></span></div>
+    </div>
+    <button
+      class="nf-modal-close"
+      onclick="document.getElementById('nf-day-modal').classList.remove('open')"
+    >
+      Close
+    </button>
+  </div>
+</div>
+
+<script type="module">
+  import { initDashboard } from "/static/js/dashboard/dashboard.js";
+  initDashboard();
+</script>
+{% endblock %}

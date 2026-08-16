@@ -68,8 +68,8 @@ def create_app():
     from myapp.app.routes.public import public_bp
     from myapp.app.routes.public_info import info_bp
 
+    from myapp.app.routes.dashboard import dashboard_page_bp, dashboard_api_bp
     from myapp.app.routes.dashboard_pages import dashboard_pages_bp
-    from myapp.app.routes.dashboard import dashboard_api_bp
 
     from myapp.app.routes.plan import plan_bp
     from myapp.app.routes.assessment import assessment_bp
@@ -105,8 +105,9 @@ def create_app():
     app.register_blueprint(public_bp)
     app.register_blueprint(info_bp)
 
-    app.register_blueprint(dashboard_pages_bp)
+    app.register_blueprint(dashboard_page_bp)
     app.register_blueprint(dashboard_api_bp)
+    app.register_blueprint(dashboard_pages_bp)
 
     app.register_blueprint(plan_bp)
     app.register_blueprint(assessment_bp)

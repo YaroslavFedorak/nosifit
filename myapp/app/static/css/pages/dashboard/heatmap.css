@@ -1,0 +1,56 @@
+.nf-heatmap-grid {
+    display: grid;
+    grid-template-columns: repeat(14, 1fr);
+    gap: 6px;
+}
+
+.nf-heatmap-day {
+    position: relative;
+    padding-top: 100%;
+    border-radius: var(--nf-radius-sm);
+    background: rgba(255, 255, 255, 0.04);
+    overflow: hidden;
+}
+
+.nf-heatmap-day[data-level="high"] {
+    background: rgba(0, 194, 255, 0.18);
+    box-shadow: var(--nf-shadow-blue);
+}
+
+.nf-heatmap-day[data-level="medium"] {
+    background: rgba(155, 93, 229, 0.14);
+    box-shadow: var(--nf-shadow-violet);
+}
+
+.nf-heatmap-day[data-level="low"] {
+    background: rgba(255, 212, 59, 0.12);
+    box-shadow: var(--nf-shadow-yellow);
+}
+
+.nf-heatmap-day-number {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--nf-text-main);
+    font-size: 12px;
+}
+
+.nf-heatmap-tooltip {
+    position: absolute;
+    background: var(--nf-surface);
+    color: var(--nf-text-main);
+    padding: 8px;
+    border-radius: var(--nf-radius-sm);
+    border: 1px solid var(--nf-border-subtle);
+    pointer-events: none;
+    transform: translateY(-8px);
+    opacity: 0;
+    transition: opacity 0.12s ease;
+    z-index: 80;
+}
+
+.nf-heatmap-tooltip.visible {
+    opacity: 1;
+}

@@ -1,0 +1,27 @@
+<div class="day-details">
+  <div class="day-details-header">
+    <div class="day-details-date">{{ date }}</div>
+    <div class="day-details-score">{{ daily_score }}</div>
+  </div>
+  <div class="day-details-section">
+    <h4>Training</h4>
+    <div>Score: {{ training.score }}</div>
+    <div>Duration: {{ training.duration }} min</div>
+    <div>Exercises: {{ training.exercise_count }}</div>
+  </div>
+  <div class="day-details-section">
+    <h4>Nutrition</h4>
+    <div>Score: {{ nutrition.score }}</div>
+    <div>Calories: {{ nutrition.calories }}</div>
+    <div>Protein: {{ nutrition.protein }}g</div>
+    <div>Water: {{ nutrition.water }}L</div>
+  </div>
+  <div class="day-details-section">
+    <h4>Recovery</h4>
+    <div>Score: {{ recovery.score }}</div>
+    <div>Sleep: {{ recovery.sleep_hours }}h</div>
+    <div>
+      Habits: {{ recovery.habits_completed }}/{{ recovery.habits_total }}
+    </div>
+  </div>
+</div>

@@ -1,0 +1,20 @@
+.nf-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    align-items: center;
+    justify-content: center;
+    z-index: 60;
+}
+
+.nf-modal.open {
+    display: flex;
+}
+
+.nf-modal-inner {
+    background: var(--nf-surface);
+    padding: 20px;
+    border-radius: var(--nf-radius-md);
+    border: 1px solid var(--nf-border-subtle);
+    width: 420px;
+}

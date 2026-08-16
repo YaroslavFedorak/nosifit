@@ -1,0 +1,24 @@
+.nf-daily-score {
+    background: var(--nf-surface-soft);
+    padding: 20px;
+    border-radius: var(--nf-radius-md);
+    border: 1px solid var(--nf-border-subtle);
+}
+
+.nf-daily-score-main {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.nf-daily-score-value {
+    font-size: 48px;
+    font-weight: 700;
+    color: var(--nf-blue);
+}
+
+.nf-daily-score-breakdown {
+    display: flex;
+    gap: 12px;
+    margin-top: 12px;
+}

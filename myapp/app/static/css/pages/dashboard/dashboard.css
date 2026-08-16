@@ -1,9 +1,12 @@
-.dashboard {
-    width: 100%;
-    padding: 40px;
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    align-items: start;
 }
 
-.dashboard-widget {
-    width: 100%;
-    margin-bottom: 20px;
+@media (max-width: 900px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
 }
