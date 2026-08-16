@@ -16,7 +16,6 @@ export async function refreshDashboard() {
     if (!userId) return;
 
     state.data = await DashboardAPI.getDashboard(userId);
-
     console.log("Dashboard data:", state.data);
 }
 
