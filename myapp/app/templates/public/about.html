@@ -15,7 +15,9 @@ block styles %}
       </p>
       <div class="about-cta">
         {% if current_user.is_authenticated %}
-        <a class="btn btn-primary" href="{{ url_for('dashboard.dashboard') }}"
+        <a
+          class="btn btn-primary"
+          href="{{ url_for('dashboard_pages.dashboard') }}"
           >Відкрити NosiFit</a
         >
         {% else %}
@@ -97,7 +99,9 @@ block styles %}
   <footer class="about-footer">
     <div class="about-cta">
       {% if current_user.is_authenticated %}
-      <a class="btn btn-primary" href="{{ url_for('dashboard.dashboard') }}"
+      <a
+        class="btn btn-primary"
+        href="{{ url_for('dashboard_pages.dashboard') }}"
         >Відкрити NosiFit</a
       >
       {% else %}

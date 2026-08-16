@@ -88,7 +88,9 @@
   <footer class="info-footer">
     <div class="info-actions-cta">
       {% if current_user.is_authenticated %}
-      <a class="btn btn-primary" href="{{ url_for('dashboard.dashboard') }}"
+      <a
+        class="btn btn-primary"
+        href="{{ url_for('dashboard_pages.dashboard') }}"
         >Відкрити NosiFit</a
       >
       {% else %}
