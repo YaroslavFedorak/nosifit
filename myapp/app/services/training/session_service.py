@@ -2,7 +2,7 @@ from datetime import datetime
 
 from myapp.app import db
 from myapp.app.models.training_session import TrainingSession, SessionExercise
-from myapp.app.services.training_load_service import TrainingLoadService
+from myapp.app.services.training.load_service import TrainingLoadService
 from myapp.app.training_engine.models.exercise import Exercise
 from myapp.app.training_engine.models.performance_state import PerformanceState
 

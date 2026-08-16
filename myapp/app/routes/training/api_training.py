@@ -5,8 +5,8 @@ from myapp.app.training_engine.models.exercise import Exercise
 from myapp.app.training_engine.models.muscle import Muscle
 from myapp.app.training_engine.models.equipment import TEEquipment
 from myapp.app.training_engine.models.user_pref import UserPreference
-from myapp.app.services.training_session_service import TrainingSessionService
-from myapp.app.services.training_load_index_service import compute_daily_load_index
+from myapp.app.services.training.session_service import TrainingSessionService
+from myapp.app.services.training.load_index_service import compute_daily_load_index
 from myapp.app.training_engine.training_analysis.recommendations_engine import (
     build_recommendations,
 )

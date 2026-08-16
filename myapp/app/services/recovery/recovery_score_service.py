@@ -2,7 +2,7 @@ from typing import Tuple, Optional
 
 from myapp.app.services.recovery.sleep_service import SleepService
 from myapp.app.services.recovery.habit_service import HabitService
-from myapp.app.services.training_load_service import TrainingLoadService
+from myapp.app.services.training.load_service import TrainingLoadService
 from myapp.app.services.recovery.constants import (
     SLEEP_WEIGHT,
     TRAINING_WEIGHT,

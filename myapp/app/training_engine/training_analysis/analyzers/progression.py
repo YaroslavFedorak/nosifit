@@ -10,7 +10,7 @@ from myapp.app.training_engine.training_analysis.constants import (
     PROGRESSION_REGRESSION_THRESHOLD,
     PROGRESSION_PLATEAU_THRESHOLD,
 )
-from myapp.app.services.training_load_index_service import _compute_exercise_load
+from myapp.app.services.training.load_index_service import _compute_exercise_load
 
 
 def analyse_progression(

@@ -6,7 +6,7 @@ from myapp.app.training_engine.training_analysis.constants import (
     PATTERN_HIGH_THRESHOLD,
 )
 from myapp.app.training_engine.training_analysis.analyzers.utils import movement_pattern
-from myapp.app.services.training_load_index_service import _compute_exercise_load
+from myapp.app.services.training.load_index_service import _compute_exercise_load
 
 
 def analyse_patterns(

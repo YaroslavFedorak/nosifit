@@ -8,7 +8,7 @@ from myapp.app.services.recovery import (
     RecommendationService,
 )
 from myapp.app.models.recovery.habit import RecoveryHabit
-from myapp.app.services.training_load_service import TrainingLoadService
+from myapp.app.services.training.load_service import TrainingLoadService
 
 recovery_bp = Blueprint("recovery", __name__, url_prefix="/api/recovery")
 
