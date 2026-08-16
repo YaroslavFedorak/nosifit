@@ -29,15 +29,13 @@ def login():
 
         if not user.profile:
             profile = UserProfile(
-                user_id=user.id,
-                training_location="home",
-                onboarding_completed=False
+                user_id=user.id, training_location="home", onboarding_completed=False
             )
             db.session.add(profile)
             db.session.commit()
 
         login_user(user, remember=True)
-        return redirect(url_for("dashboard.dashboard"))
+        return redirect(url_for("dashboard_pages.dashboard"))
 
     return render_template("auth/login.html")
 
@@ -47,7 +45,9 @@ def register():
     return render_template("auth/register.html")
 
 
-@auth_bp.route("/register_complete", methods=["GET", "POST"], endpoint="register_complete")
+@auth_bp.route(
+    "/register_complete", methods=["GET", "POST"], endpoint="register_complete"
+)
 def register_complete():
     reg_data = session.get("reg_data")
     verified_email = session.get("verified_email")
@@ -74,7 +74,6 @@ def register_complete():
             wants_nutrition=True,
             wants_recovery=False,
             onboarding_completed=False,
-
             weight=float(reg_data.get("weight", 0)) if reg_data.get("weight") else None,
             height=float(reg_data.get("height", 0)) if reg_data.get("height") else None,
             age=int(reg_data.get("age", 0)) if reg_data.get("age") else None,
@@ -82,7 +81,11 @@ def register_complete():
             activity=reg_data.get("activity"),
             goal=reg_data.get("goal"),
             experience=reg_data.get("experience"),
-            workouts_per_week=int(reg_data.get("workouts_per_week", 0)) if reg_data.get("workouts_per_week") else None,
+            workouts_per_week=(
+                int(reg_data.get("workouts_per_week", 0))
+                if reg_data.get("workouts_per_week")
+                else None
+            ),
         )
 
         db.session.add(profile)
@@ -92,7 +95,7 @@ def register_complete():
         session.pop("verified_email", None)
 
         login_user(user, remember=True)
-        return redirect(url_for("dashboard.dashboard"))
+        return redirect(url_for("dashboard_pages.dashboard"))
 
     return render_template("auth/register_complete.html")
 
@@ -141,7 +144,7 @@ def reset_with_token(token):
         db.session.commit()
 
         login_user(user, remember=True)
-        return redirect(url_for("dashboard.dashboard"))
+        return redirect(url_for("dashboard_pages.dashboard"))
 
     return render_template("auth/new_password.html")
 
