@@ -18,7 +18,7 @@ def get_day_details(user_id, day_iso):
     r = None
 
     try:
-        tmod = _import("myapp.app.services.training_load_service")
+        tmod = _import("myapp.app.services.training.load_service")
         tsvc = getattr(tmod, "TrainingLoadService", None)
         if tsvc and hasattr(tsvc, "get_day_summary"):
             t = tsvc.get_day_summary(user_id, day_iso)

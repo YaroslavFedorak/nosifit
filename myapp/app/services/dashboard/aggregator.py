@@ -18,7 +18,7 @@ def get_today_overview(user_id):
     recovery = {}
 
     try:
-        mod = _import("myapp.app.services.training_load_service")
+        mod = _import("myapp.app.services.training.load_service")
         svc = getattr(mod, "TrainingLoadService", None)
         if svc and hasattr(svc, "get_daily_summary"):
             training = _call(svc.get_daily_summary, user_id) or {}
@@ -89,7 +89,7 @@ def get_today_overview(user_id):
 
 def get_heatmap(user_id):
     try:
-        tmod = _import("myapp.app.services.training_load_service")
+        tmod = _import("myapp.app.services.training.load_service")
         tsvc = getattr(tmod, "TrainingLoadService", None)
     except Exception:
         raise
