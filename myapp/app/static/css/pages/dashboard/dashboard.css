@@ -1,12 +1,19 @@
-.dashboard-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-    align-items: start;
-}
+@import "./base/layout.css";
+@import "./base/cards.css";
+@import "./base/metrics.css";
 
-@media (max-width: 900px) {
-    .dashboard-grid {
-        grid-template-columns: 1fr;
-    }
-}
+@import "./widgets/categories.css";
+@import "./widgets/checkin.css";
+@import "./widgets/daily_score.css";
+@import "./widgets/recommendations.css";
+@import "./widgets/recent_sessions.css";
+@import "./widgets/quick_actions.css";
+@import "./widgets/trends.css";
+
+@import "./heatmap/heatmap.css";
+@import "./heatmap/legend.css";
+@import "./heatmap/tooltip.css";
+
+@import "./modals/modal.css";
+
+@import "./header.css";

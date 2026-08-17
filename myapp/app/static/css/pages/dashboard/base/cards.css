@@ -1,0 +1,25 @@
+.cmp-card.dashboard-overview,
+.cmp-card.dashboard-trends,
+.cmp-card.dashboard-heatmap-card,
+.cmp-card.dashboard-legend,
+.cmp-card.dashboard-quick-actions,
+.cmp-card.dashboard-recommendations,
+.cmp-card.dashboard-recent-sessions,
+.cmp-card.dashboard-habits {
+    background: var(--nf-surface);
+    border: 1px solid var(--nf-border-subtle);
+    border-radius: var(--nf-radius-md);
+    box-shadow: var(--nf-shadow-soft);
+}
+
+.cmp-card .cmp-card-header .cmp-card-title {
+    color: var(--nf-text-main);
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.cmp-card .cmp-card-body {
+    padding: 12px;
+    color: var(--nf-text-muted);
+    font-size: 13px;
+}

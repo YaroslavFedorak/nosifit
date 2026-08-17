@@ -1,0 +1,9 @@
+#dashboard-modals .dashboard-modal {
+    background: var(--nf-surface);
+    border: 1px solid var(--nf-border-subtle);
+    border-radius: var(--nf-radius-md);
+    box-shadow: var(--nf-shadow-soft);
+    padding: 16px;
+    max-width: 720px;
+    width: 100%;
+}

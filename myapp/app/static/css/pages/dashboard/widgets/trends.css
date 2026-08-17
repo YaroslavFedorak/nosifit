@@ -1,0 +1,23 @@
+.dashboard-trends-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.dashboard-chart {
+    height: 180px;
+    background: linear-gradient(180deg, var(--nf-surface-soft), transparent);
+    border-radius: var(--nf-radius-sm);
+    border: 1px solid var(--nf-border-soft);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--nf-text-muted);
+    font-size: 13px;
+}
+
+@media (max-width: 700px) {
+    .dashboard-trends-body {
+        grid-template-columns: 1fr;
+    }
+}

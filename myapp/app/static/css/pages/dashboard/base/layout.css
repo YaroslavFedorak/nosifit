@@ -1,0 +1,55 @@
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 20px;
+    align-items: start;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.dashboard-main {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.dashboard-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-width: 280px;
+    max-width: 320px;
+}
+
+.dashboard-heatmap-row {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+}
+
+.dashboard-heatmap-card {
+    flex: 1 1 67%;
+    min-width: 0;
+}
+
+.dashboard-heatmap-side {
+    width: 33%;
+    min-width: 220px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+@media (max-width: 1000px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard-heatmap-row {
+        flex-direction: column;
+    }
+
+    .dashboard-heatmap-side {
+        width: 100%;
+    }
+}

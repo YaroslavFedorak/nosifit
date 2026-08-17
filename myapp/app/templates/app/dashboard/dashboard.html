@@ -1,33 +1,185 @@
-{% extends "app/base_app.html" %} {% block content %}
-<div class="u-shell">
-  <div class="dashboard-grid">
-    <div id="nf-daily-score"></div>
-    <div id="nf-checkin"></div>
-    <div id="nf-categories"></div>
-    <div id="nf-heatmap"></div>
-  </div>
-</div>
-
-<div id="nf-day-modal" class="nf-modal">
-  <div class="nf-modal-inner">
-    <div class="modal-date"></div>
-    <div class="modal-daily-score"></div>
-    <div class="modal-breakdown">
-      <div>Training: <span class="modal-training-score"></span></div>
-      <div>Nutrition: <span class="modal-nutrition-score"></span></div>
-      <div>Recovery: <span class="modal-recovery-score"></span></div>
+{% extends "app/base_app.html" %} {% block title %}Панель — NosiFit{% endblock
+%} {% block styles %}
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/pages/dashboard/dashboard.css') }}"
+/>
+{% endblock %} {% block content %}
+<div class="dashboard-page" role="document">
+  <header class="dashboard-header" role="banner">
+    <div class="dashboard-header-left">
+      <img
+        src="{{ url_for('static', filename='img/Nosi_Logo.png') }}"
+        alt=""
+        aria-hidden="true"
+        class="dashboard-header-logo"
+      />
+      <div class="dashboard-header-titles">
+        <h1 class="dashboard-header-title">Панель</h1>
+        <div class="dashboard-header-subtitle">
+          Огляд тренувань, відновлення та показників
+        </div>
+      </div>
     </div>
-    <button
-      class="nf-modal-close"
-      onclick="document.getElementById('nf-day-modal').classList.remove('open')"
-    >
-      Close
-    </button>
-  </div>
-</div>
+    <div class="dashboard-header-right">
+      <div class="dashboard-date" aria-live="polite">
+        {{ current_date.strftime('%d.%m.%Y') }}
+      </div>
+    </div>
+  </header>
 
-<script type="module">
-  import { initDashboard } from "/static/js/dashboard/dashboard.js";
-  initDashboard();
-</script>
+  <section class="dashboard-grid">
+    <main class="dashboard-main" role="main">
+      <section
+        class="cmp-card dashboard-overview"
+        aria-labelledby="overview-title"
+      >
+        <div class="cmp-card-header">
+          <div id="overview-title" class="cmp-card-title">Огляд</div>
+        </div>
+        <div
+          class="cmp-card-body dashboard-metrics"
+          role="region"
+          aria-label="Ключові показники"
+        >
+          <div class="dashboard-metric" id="daily-score">
+            <div class="dashboard-metric-label">Щоденний бал</div>
+            <div class="dashboard-metric-value">—</div>
+          </div>
+          <div class="dashboard-metric" id="training-load">
+            <div class="dashboard-metric-label">Тренувальне навантаження</div>
+            <div class="dashboard-metric-value">—</div>
+          </div>
+          <div class="dashboard-metric" id="recovery-score">
+            <div class="dashboard-metric-label">Відновлення</div>
+            <div class="dashboard-metric-value">—</div>
+          </div>
+          <div class="dashboard-metric" id="sleep-score">
+            <div class="dashboard-metric-label">Сон</div>
+            <div class="dashboard-metric-value">—</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="cmp-card dashboard-trends" aria-labelledby="trends-title">
+        <div class="cmp-card-header">
+          <div id="trends-title" class="cmp-card-title">Трендові графіки</div>
+        </div>
+        <div class="cmp-card-body dashboard-trends-body">
+          <div
+            class="dashboard-chart"
+            id="chart-training"
+            role="img"
+            aria-label="Графік тренувань"
+          ></div>
+          <div
+            class="dashboard-chart"
+            id="chart-recovery"
+            role="img"
+            aria-label="Графік відновлення"
+          ></div>
+        </div>
+      </section>
+
+      <div class="dashboard-heatmap-row">
+        <section
+          class="cmp-card dashboard-heatmap-card"
+          aria-labelledby="heatmap-title"
+        >
+          <div class="cmp-card-header">
+            <div id="heatmap-title" class="cmp-card-title">
+              Календар навантаження
+            </div>
+          </div>
+          <div class="cmp-card-body">
+            <div
+              id="dashboard-heatmap"
+              class="dashboard-heatmap"
+              role="grid"
+              aria-label="Календар навантаження"
+            ></div>
+          </div>
+        </section>
+
+        <aside
+          class="dashboard-heatmap-side"
+          aria-label="Легенда та швидкі дії"
+        >
+          <section
+            class="cmp-card dashboard-legend"
+            aria-labelledby="legend-title"
+          >
+            <div class="cmp-card-header">
+              <div id="legend-title" class="cmp-card-title">Легенда</div>
+            </div>
+            <div class="cmp-card-body" id="legend-container"></div>
+          </section>
+
+          <section
+            class="cmp-card dashboard-quick-actions"
+            aria-labelledby="quick-actions-title"
+          >
+            <div class="cmp-card-header">
+              <div id="quick-actions-title" class="cmp-card-title">
+                Швидкі дії
+              </div>
+            </div>
+            <div class="cmp-card-body dashboard-quick-actions-body">
+              <button
+                id="open-checkin"
+                class="cmp-btn cmp-btn-primary"
+                type="button"
+              >
+                Відмітити тренування
+              </button>
+              <button
+                id="open-day-details"
+                class="cmp-btn cmp-btn-ghost"
+                type="button"
+              >
+                Деталі дня
+              </button>
+            </div>
+          </section>
+        </aside>
+      </div>
+    </main>
+
+    <aside class="dashboard-sidebar" role="complementary">
+      <section
+        class="cmp-card dashboard-recommendations"
+        aria-labelledby="rec-title"
+      >
+        <div class="cmp-card-header">
+          <div id="rec-title" class="cmp-card-title">Рекомендації</div>
+        </div>
+        <div class="cmp-card-body" id="recommendations-list"></div>
+      </section>
+
+      <section
+        class="cmp-card dashboard-recent-sessions"
+        aria-labelledby="sessions-title"
+      >
+        <div class="cmp-card-header">
+          <div id="sessions-title" class="cmp-card-title">Останні сесії</div>
+        </div>
+        <div class="cmp-card-body" id="recent-sessions"></div>
+      </section>
+
+      <section class="cmp-card dashboard-habits" aria-labelledby="habits-title">
+        <div class="cmp-card-header">
+          <div id="habits-title" class="cmp-card-title">Звички</div>
+        </div>
+        <div class="cmp-card-body" id="sidebar-habits">Немає даних</div>
+      </section>
+    </aside>
+  </section>
+
+  <div id="dashboard-modals" aria-hidden="true"></div>
+</div>
+{% endblock %} {% block scripts %}
+<script
+  type="module"
+  src="{{ url_for('static', filename='js/dashboard/dashboard.js') }}"
+></script>
 {% endblock %}

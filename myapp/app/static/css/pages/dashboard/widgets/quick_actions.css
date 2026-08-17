@@ -1,0 +1,21 @@
+.dashboard-quick-actions-body {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.cmp-btn {
+    padding: 8px 12px;
+    border-radius: var(--nf-radius-sm);
+    font-size: 13px;
+}
+
+.cmp-btn+.cmp-btn {
+    margin-left: 0;
+}
+
+@media (min-width: 1001px) {
+    .dashboard-quick-actions-body .cmp-btn {
+        width: 100%;
+    }
+}

@@ -1,17 +1,39 @@
-export const DashboardAPI = {
-    async today() {
-        const r = await fetch("/api/dashboard/today", { credentials: "same-origin" });
-        if (!r.ok) throw new Error("Failed to load dashboard today");
-        return r.json();
-    },
-    async heatmap() {
-        const r = await fetch("/api/dashboard/heatmap", { credentials: "same-origin" });
-        if (!r.ok) throw new Error("Failed to load dashboard heatmap");
-        return r.json();
-    },
-    async day(dateIso) {
-        const r = await fetch(`/api/dashboard/day/${dateIso}`, { credentials: "same-origin" });
-        if (!r.ok) throw new Error("Failed to load dashboard day");
-        return r.json();
+export async function fetchOverview() {
+    try {
+        const res = await fetch("/api/dashboard/today");
+        if (!res.ok) return null;
+        return await res.json();
+    } catch {
+        return null;
     }
-};
+}
+
+export async function fetchHeatmap() {
+    try {
+        const res = await fetch("/api/dashboard/heatmap");
+        if (!res.ok) return null;
+        return await res.json();
+    } catch {
+        return null;
+    }
+}
+
+export async function fetchRecommendations() {
+    try {
+        const res = await fetch("/api/recovery/recommendations");
+        if (!res.ok) return null;
+        return await res.json();
+    } catch {
+        return null;
+    }
+}
+
+export async function fetchRecentSessions(limit = 6) {
+    try {
+        const res = await fetch(`/api/training/sessions?limit=${encodeURIComponent(limit)}`);
+        if (!res.ok) return null;
+        return await res.json();
+    } catch {
+        return null;
+    }
+}

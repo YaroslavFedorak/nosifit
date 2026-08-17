@@ -1,0 +1,26 @@
+#recommendations-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.dashboard-recommendation-item {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 8px;
+    background: var(--nf-surface-soft);
+    border-radius: var(--nf-radius-sm);
+    border: 1px solid var(--nf-border-soft);
+}
+
+.dashboard-recommendation-title {
+    color: var(--nf-text-main);
+    font-weight: 600;
+    font-size: 13px;
+}
+
+.dashboard-recommendation-reason {
+    color: var(--nf-text-muted);
+    font-size: 12px;
+}

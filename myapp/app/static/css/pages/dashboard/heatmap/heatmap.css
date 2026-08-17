@@ -1,0 +1,42 @@
+.dashboard-heatmap {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+    align-items: center;
+}
+
+.dashboard-heatmap-cell {
+    width: 100%;
+    padding-top: 100%;
+    position: relative;
+    border-radius: var(--nf-radius-xs);
+    overflow: hidden;
+    background: var(--nf-surface-soft);
+    border: 1px solid var(--nf-border-soft);
+}
+
+.dashboard-heatmap-cell-inner {
+    position: absolute;
+    inset: 6%;
+    border-radius: calc(var(--nf-radius-xs) - 2px);
+}
+
+.dashboard-heatmap-cell--level-0 .dashboard-heatmap-cell-inner {
+    background: transparent;
+}
+
+.dashboard-heatmap-cell--level-1 .dashboard-heatmap-cell-inner {
+    background: var(--nf-blue-soft);
+}
+
+.dashboard-heatmap-cell--level-2 .dashboard-heatmap-cell-inner {
+    background: var(--nf-blue);
+}
+
+.dashboard-heatmap-cell--level-3 .dashboard-heatmap-cell-inner {
+    background: var(--nf-violet-soft);
+}
+
+.dashboard-heatmap-cell--level-4 .dashboard-heatmap-cell-inner {
+    background: var(--nf-violet);
+}

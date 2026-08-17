@@ -1,42 +1,81 @@
-import { DashboardAPI } from "./api.js";
-import { DashboardState } from "./state.js";
-import { renderDailyScore } from "./widgets/daily_score.js";
-import { renderCheckin } from "./widgets/checkin.js";
-import { renderCategories } from "./widgets/categories.js";
+import * as api from "./api.js";
+import * as state from "./state.js";
+import { renderRecommendations } from "./widgets/recommendations.js";
+import { renderRecentSessions } from "./widgets/recent_sessions.js";
+import { initQuickActions } from "./widgets/quick_actions.js";
 import { renderHeatmap } from "./heatmap/render.js";
-import { openDayModal } from "./heatmap/modal.js";
 
-export async function initDashboard() {
-    const todayEl = document.getElementById("nf-daily-score");
-    const checkinEl = document.getElementById("nf-checkin");
-    const categoriesEl = document.getElementById("nf-categories");
-    const heatmapEl = document.getElementById("nf-heatmap");
-
-    try {
-        const today = await DashboardAPI.today();
-        DashboardState.setToday(today);
-        renderDailyScore(todayEl, today);
-        renderCheckin(checkinEl, today);
-        renderCategories(categoriesEl, today);
-    } catch (e) {
-        console.error(e);
+function bindOverview(overview) {
+    const daily = document.getElementById("daily-score");
+    const training = document.getElementById("training-load");
+    const recovery = document.getElementById("recovery-score");
+    const sleep = document.getElementById("sleep-score");
+    if (daily) {
+        const v = overview && overview.daily_score != null ? String(overview.daily_score) : "—";
+        const elv = daily.querySelector(".dashboard-metric-value");
+        if (elv) elv.textContent = v;
     }
-
-    try {
-        const heatmap = await DashboardAPI.heatmap();
-        DashboardState.setHeatmap(heatmap);
-        renderHeatmap(heatmapEl, heatmap);
-    } catch (e) {
-        console.error(e);
+    if (training) {
+        const v = overview && overview.training && overview.training.score != null ? String(overview.training.score) : "—";
+        const elv = training.querySelector(".dashboard-metric-value");
+        if (elv) elv.textContent = v;
     }
+    if (recovery) {
+        const v = overview && overview.recovery && overview.recovery.score != null ? String(overview.recovery.score) : "—";
+        const elv = recovery.querySelector(".dashboard-metric-value");
+        if (elv) elv.textContent = v;
+    }
+    if (sleep) {
+        const v = overview && overview.recovery && overview.recovery.sleep_hours != null ? String(overview.recovery.sleep_hours) : "—";
+        const elv = sleep.querySelector(".dashboard-metric-value");
+        if (elv) elv.textContent = v;
+    }
+}
 
-    window.addEventListener("dashboard:dayclick", async (ev) => {
-        const date = ev.detail.date;
-        try {
-            const data = await DashboardAPI.day(date);
-            openDayModal(data);
-        } catch (e) {
-            console.error(e);
-        }
+function bindHeatmap(data) {
+    const container = document.getElementById("dashboard-heatmap");
+    if (!container) return;
+    renderHeatmap(container, data);
+}
+
+function bindRecommendations(data) {
+    const container = document.getElementById("recommendations-list");
+    if (!container) return;
+    renderRecommendations(container, data);
+}
+
+function bindRecentSessions(data) {
+    const container = document.getElementById("recent-sessions");
+    if (!container) return;
+    renderRecentSessions(container, data);
+}
+
+async function loadAll() {
+    const [overview, heatmap, recs, sessions] = await Promise.all([
+        api.fetchOverview(),
+        api.fetchHeatmap(),
+        api.fetchRecommendations(),
+        api.fetchRecentSessions()
+    ]);
+    state.setOverview(overview);
+    state.setHeatmap(heatmap);
+    state.setRecommendations(recs);
+    state.setRecentSessions(sessions);
+}
+
+function init() {
+    state.subscribe("overview", bindOverview);
+    state.subscribe("heatmap", bindHeatmap);
+    state.subscribe("recommendations", bindRecommendations);
+    state.subscribe("recentSessions", bindRecentSessions);
+
+    initQuickActions();
+
+    loadAll();
+
+    window.addEventListener("dashboard:refresh", () => {
+        loadAll();
     });
 }
+
+document.addEventListener("DOMContentLoaded", init);
