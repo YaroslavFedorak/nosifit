@@ -2,7 +2,6 @@ const state = {
     overview: null,
     heatmap: null,
     recommendations: null,
-    recentSessions: null,
     subscribers: new Map()
 };
 
@@ -31,16 +30,10 @@ export function setRecommendations(data) {
     notify("recommendations");
 }
 
-export function setRecentSessions(data) {
-    state.recentSessions = data;
-    notify("recentSessions");
-}
-
 export function getState() {
     return {
         overview: state.overview,
         heatmap: state.heatmap,
-        recommendations: state.recommendations,
-        recentSessions: state.recentSessions
+        recommendations: state.recommendations
     };
 }

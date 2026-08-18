@@ -18,21 +18,14 @@ export async function fetchHeatmap() {
     }
 }
 
-export async function fetchRecommendations() {
+export async function fetchRecommendation() {
     try {
-        const res = await fetch("/api/recovery/recommendations");
+        const res = await fetch("/api/dashboard/recommendation");
         if (!res.ok) return null;
-        return await res.json();
-    } catch {
-        return null;
-    }
-}
-
-export async function fetchRecentSessions(limit = 6) {
-    try {
-        const res = await fetch(`/api/training/sessions?limit=${encodeURIComponent(limit)}`);
-        if (!res.ok) return null;
-        return await res.json();
+        const json = await res.json();
+        return json && Object.prototype.hasOwnProperty.call(json, "recommendation")
+            ? json.recommendation
+            : null;
     } catch {
         return null;
     }

@@ -2,6 +2,7 @@ from flask import Blueprint, jsonify
 from flask_login import current_user, login_required
 
 from myapp.app.services.dashboard.service import DashboardService
+from myapp.app.services.recovery.recommendation_service import RecommendationService
 
 dashboard_api_bp = Blueprint(
     "dashboard_api",
@@ -33,3 +34,25 @@ def day(date_iso):
         return jsonify({"error": "invalid_date_or_no_data"}), 404
 
     return jsonify(data)
+
+
+@dashboard_api_bp.get("/recommendation")
+@login_required
+def recommendation():
+    try:
+        data = RecommendationService.build_recommendations(current_user.id) or []
+    except Exception:
+        return jsonify({"recommendation": None})
+
+    top = None
+    if isinstance(data, list) and data:
+        try:
+            top = sorted(
+                data,
+                key=lambda x: x.get("priority", 0),
+                reverse=True,
+            )[0]
+        except Exception:
+            top = data[0]
+
+    return jsonify({"recommendation": top})
