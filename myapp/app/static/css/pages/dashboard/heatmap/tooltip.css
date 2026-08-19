@@ -1,0 +1,13 @@
+.db-heatmap-tooltip {
+    position: absolute;
+    background: var(--nf-surface);
+    padding: 8px 12px;
+    border-radius: var(--nf-radius-sm);
+    border: 1px solid var(--nf-border-subtle);
+    color: var(--nf-text-main);
+    font-size: 13px;
+    box-shadow: var(--nf-shadow-soft);
+    pointer-events: none;
+    opacity: 0;
+    transition: var(--nf-transition-fast);
+}

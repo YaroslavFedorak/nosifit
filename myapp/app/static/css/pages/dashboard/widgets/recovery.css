@@ -1,0 +1,16 @@
+.db-recovery-score {
+    font-size: 18px;
+    color: var(--nf-blue);
+}
+
+.db-recovery-metrics {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.db-recovery-item {
+    display: flex;
+    justify-content: space-between;
+    color: var(--nf-text-main);
+}

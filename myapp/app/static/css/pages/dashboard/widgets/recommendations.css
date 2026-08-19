@@ -1,26 +1,23 @@
-#recommendations-list {
+.db-recommendations-content {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 12px;
 }
 
 .dashboard-recommendation-item {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    padding: 8px;
     background: var(--nf-surface-soft);
+    padding: 12px;
     border-radius: var(--nf-radius-sm);
     border: 1px solid var(--nf-border-soft);
 }
 
 .dashboard-recommendation-title {
-    color: var(--nf-text-main);
+    font-size: 15px;
     font-weight: 600;
-    font-size: 13px;
+    color: var(--nf-text-main);
 }
 
 .dashboard-recommendation-reason {
+    font-size: 13px;
     color: var(--nf-text-muted);
-    font-size: 12px;
 }

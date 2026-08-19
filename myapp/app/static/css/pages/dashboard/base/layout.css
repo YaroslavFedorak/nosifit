@@ -1,55 +1,39 @@
-.dashboard-grid {
+.dashboard-page-wrapper {
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.dashboard-main-grid {
     display: grid;
-    grid-template-columns: 1fr 320px;
-    gap: 20px;
+    grid-template-columns: 58% 42%;
+    gap: 24px;
     align-items: start;
-    width: 100%;
-    box-sizing: border-box;
 }
 
-.dashboard-main {
+.dashboard-left {
     display: flex;
     flex-direction: column;
     gap: 20px;
 }
 
-.dashboard-sidebar {
+.dashboard-right {
     display: flex;
     flex-direction: column;
-    gap: 16px;
-    min-width: 280px;
-    max-width: 320px;
+    gap: 20px;
 }
 
-.dashboard-heatmap-row {
-    display: flex;
-    gap: 16px;
-    align-items: flex-start;
-}
-
-.dashboard-heatmap-card {
-    flex: 1 1 67%;
-    min-width: 0;
-}
-
-.dashboard-heatmap-side {
-    width: 33%;
-    min-width: 220px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-@media (max-width: 1000px) {
-    .dashboard-grid {
+@media (max-width: 1400px) {
+    .dashboard-main-grid {
         grid-template-columns: 1fr;
     }
+}
 
-    .dashboard-heatmap-row {
-        flex-direction: column;
-    }
-
-    .dashboard-heatmap-side {
-        width: 100%;
+@media (max-width: 900px) {
+    .dashboard-main-grid {
+        grid-template-columns: 1fr;
     }
 }

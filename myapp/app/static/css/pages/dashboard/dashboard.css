@@ -1,19 +1,17 @@
 @import "./base/layout.css";
 @import "./base/cards.css";
-@import "./base/metrics.css";
 
-@import "./widgets/categories.css";
-@import "./widgets/checkin.css";
-@import "./widgets/daily_score.css";
+@import "./widgets/session.css";
+@import "./widgets/nutrition.css";
+@import "./widgets/recovery.css";
 @import "./widgets/recommendations.css";
-@import "./widgets/recent_sessions.css";
-@import "./widgets/quick_actions.css";
-@import "./widgets/trends.css";
 
 @import "./heatmap/heatmap.css";
-@import "./heatmap/legend.css";
 @import "./heatmap/tooltip.css";
 
-@import "./modals/modal.css";
+@import "./modals/session.css";
+@import "./modals/nutrition.css";
+@import "./modals/recovery.css";
+@import "./modals/day_details.css";
 
 @import "./header.css";

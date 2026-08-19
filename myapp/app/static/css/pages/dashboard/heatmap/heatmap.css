@@ -1,42 +1,63 @@
-.dashboard-heatmap {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 6px;
+.db-heatmap-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.db-heatmap-header {
+    display: flex;
+    justify-content: space-between;
     align-items: center;
 }
 
-.dashboard-heatmap-cell {
+.db-heatmap-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--nf-text-main);
+}
+
+.db-heatmap-subtitle {
+    font-size: 13px;
+    color: var(--nf-text-muted);
+}
+
+.db-heatmap-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+}
+
+.db-heatmap-cell {
     width: 100%;
     padding-top: 100%;
     position: relative;
     border-radius: var(--nf-radius-xs);
-    overflow: hidden;
     background: var(--nf-surface-soft);
     border: 1px solid var(--nf-border-soft);
 }
 
-.dashboard-heatmap-cell-inner {
+.db-heatmap-cell-inner {
     position: absolute;
     inset: 6%;
-    border-radius: calc(var(--nf-radius-xs) - 2px);
+    border-radius: var(--nf-radius-xs);
 }
 
-.dashboard-heatmap-cell--level-0 .dashboard-heatmap-cell-inner {
+.db-heatmap-level-0 .db-heatmap-cell-inner {
     background: transparent;
 }
 
-.dashboard-heatmap-cell--level-1 .dashboard-heatmap-cell-inner {
+.db-heatmap-level-1 .db-heatmap-cell-inner {
     background: var(--nf-blue-soft);
 }
 
-.dashboard-heatmap-cell--level-2 .dashboard-heatmap-cell-inner {
+.db-heatmap-level-2 .db-heatmap-cell-inner {
     background: var(--nf-blue);
 }
 
-.dashboard-heatmap-cell--level-3 .dashboard-heatmap-cell-inner {
+.db-heatmap-level-3 .db-heatmap-cell-inner {
     background: var(--nf-violet-soft);
 }
 
-.dashboard-heatmap-cell--level-4 .dashboard-heatmap-cell-inner {
+.db-heatmap-level-4 .db-heatmap-cell-inner {
     background: var(--nf-violet);
 }

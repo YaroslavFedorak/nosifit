@@ -1,25 +1,41 @@
-.cmp-card.dashboard-overview,
-.cmp-card.dashboard-trends,
-.cmp-card.dashboard-heatmap-card,
-.cmp-card.dashboard-legend,
-.cmp-card.dashboard-quick-actions,
-.cmp-card.dashboard-recommendations,
-.cmp-card.dashboard-recent-sessions,
-.cmp-card.dashboard-habits {
+.db-card {
     background: var(--nf-surface);
     border: 1px solid var(--nf-border-subtle);
     border-radius: var(--nf-radius-md);
     box-shadow: var(--nf-shadow-soft);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
 }
 
-.cmp-card .cmp-card-header .cmp-card-title {
-    color: var(--nf-text-main);
+.db-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.db-card-title {
+    font-size: 18px;
     font-weight: 600;
-    font-size: 14px;
+    color: var(--nf-text-main);
 }
 
-.cmp-card .cmp-card-body {
-    padding: 12px;
-    color: var(--nf-text-muted);
-    font-size: 13px;
+.db-btn {
+    padding: 8px 14px;
+    border-radius: var(--nf-radius-sm);
+    font-size: 14px;
+    cursor: pointer;
+    transition: var(--nf-transition-fast);
+}
+
+.db-btn-primary {
+    background: var(--nf-yellow);
+    color: #000;
+}
+
+.db-btn-secondary {
+    background: var(--nf-surface-soft);
+    color: var(--nf-text-main);
+    border: 1px solid var(--nf-border-soft);
 }

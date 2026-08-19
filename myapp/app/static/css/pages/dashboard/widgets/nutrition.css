@@ -1,0 +1,15 @@
+.db-nutrition-metrics {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.db-nutrition-item {
+    display: flex;
+    justify-content: space-between;
+    color: var(--nf-violet);
+}
+
+.db-nutrition-label {
+    color: var(--nf-text-muted);
+}

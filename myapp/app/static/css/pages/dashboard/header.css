@@ -1,47 +1,62 @@
 .dashboard-header {
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    gap: 16px;
-    width: 100%;
-    box-sizing: border-box;
+    align-items: center;
+    padding: 24px 0;
 }
 
 .dashboard-header-left {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 16px;
 }
 
-.dashboard-header-logo {
-    width: 40px;
-    height: 40px;
-    object-fit: contain;
+.dashboard-header-icon-box {
+    width: 48px;
+    height: 48px;
+    background: var(--nf-surface-soft);
+    border-radius: var(--nf-radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.dashboard-header-titles {
+.dashboard-header-icon {
+    width: 28px;
+    height: 28px;
+    background: var(--nf-yellow);
+    border-radius: var(--nf-radius-sm);
+}
+
+.dashboard-header-text {
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 4px;
 }
 
-.dashboard-header-title {
-    font-size: 20px;
+.dashboard-title {
+    font-size: 32px;
+    font-weight: 700;
     color: var(--nf-text-main);
-    margin: 0;
-    line-height: 1;
 }
 
-.dashboard-header-subtitle {
-    font-size: 13px;
+.dashboard-subtitle {
+    font-size: 14px;
     color: var(--nf-text-muted);
 }
 
 .dashboard-header-right {
-    color: var(--nf-text-muted);
-    font-size: 13px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
 }
 
-.dashboard-date {
+.dashboard-header-label {
+    font-size: 13px;
+    color: var(--nf-text-muted);
+}
+
+.dashboard-header-value {
+    font-size: 16px;
     color: var(--nf-text-main);
 }
