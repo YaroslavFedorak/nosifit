@@ -1,6 +1,11 @@
 import { ICONS } from "/static/js/icons/index.js";
 
-const safeArr = v => Array.isArray(v) ? v : (v ? [v] : []);
+const safeArr = value =>
+    Array.isArray(value)
+        ? value
+        : value
+          ? [value]
+          : [];
 
 const MUSCLE_NAMES = {
     spine: "Хребет",
@@ -14,51 +19,94 @@ const MUSCLE_NAMES = {
     quads: "Квадрицепси",
     shoulders: "Плечі",
     triceps: "Трицепс",
+    biceps: "Біцепс",
     core: "Кор",
-    legs: "Ноги"
+    legs: "Ноги",
+    "lower-back": "Поперек"
 };
 
-const capitalize = s => s.charAt(0).toUpperCase() + s.slice(1);
+const capitalize = value => {
+    const text = String(value || "");
 
-const translateMuscle = m => {
-    const key = String(m).toLowerCase();
-    return MUSCLE_NAMES[key] || capitalize(m);
+    return text
+        ? text.charAt(0).toUpperCase() + text.slice(1)
+        : "";
+};
+
+const translateMuscle = muscle => {
+    const key = String(muscle || "").toLowerCase();
+
+    return MUSCLE_NAMES[key] || capitalize(key);
+};
+
+const translateReason = reason => {
+    const map = {
+        "improves weak muscle group": "Розвиває слабку групу",
+        "improves weak movement pattern": "Покращує слабкий рух",
+        "helps reverse regression": "Допомагає відновити прогрес",
+        "helps break plateau": "Допомагає подолати плато",
+        "supports an undertrained muscle": "Підсилює недостатньо треновану групу",
+        "adds exercise variety": "Додає різноманітність"
+    };
+
+    return map[String(reason || "").toLowerCase()]
+        || capitalize(reason);
 };
 
 export function renderRecommendations(data) {
-    renderWeakPoints(data.muscles || {});
-    renderRecommendedExercises(data.recommended_exercises || []);
-    renderBalance(data.muscles || {});
+    const muscles = data?.muscles || {};
+    const recommendations = safeArr(
+        data?.recommended_exercises
+    );
+
+    renderWeakPoints(muscles);
+    renderRecommendedExercises(recommendations);
+    renderBalance(muscles);
 }
 
 function renderWeakPoints(muscles) {
     const box = document.getElementById("tr-weak-points");
+
     if (!box) return;
 
-    const items = safeArr(muscles.weak).slice(0, 6);
+    const items = safeArr(muscles.weak)
+        .slice(0, 6);
 
     box.innerHTML = items
-        .map(m => `<div class="tr-weak-item">${translateMuscle(m)}</div>`)
+        .map(
+            muscle =>
+                `<div class="tr-weak-item">${translateMuscle(
+                    muscle
+                )}</div>`
+        )
         .join("");
 }
 
 function renderRecommendedExercises(list) {
     const box = document.getElementById("tr-rec-grid");
+
     if (!box) return;
 
-    const items = safeArr(list).slice(0, 3);
+    const items = list.slice(0, 3);
 
     box.innerHTML = items
         .map(item => {
-            const reason = safeArr(item.reasons)[0] || "";
-            const reasonText = capitalize(reason);
+            const reasons = safeArr(item?.reasons);
+            const reason = reasons[0] || "";
+
             return `
                 <div class="tr-rec-line-item">
                     <div class="tr-rec-line-item-top">
                         ${ICONS.exercise}
-                        <span>${item.exercise}</span>
+                        <span>${item?.exercise || ""}</span>
                     </div>
-                    <div class="tr-rec-item-tag">${reasonText}</div>
+                    ${
+                        reason
+                            ? `<div class="tr-rec-item-tag">${translateReason(
+                                  reason
+                              )}</div>`
+                            : ""
+                    }
                 </div>
             `;
         })
@@ -66,28 +114,45 @@ function renderRecommendedExercises(list) {
 }
 
 function renderBalance(muscles) {
-    const balancedBox = document.getElementById("tr-balance-balanced");
-    const overloadedBox = document.getElementById("tr-balance-overloaded");
+    const balancedBox = document.getElementById(
+        "tr-balance-balanced"
+    );
+
+    const overloadedBox = document.getElementById(
+        "tr-balance-overloaded"
+    );
 
     if (!balancedBox || !overloadedBox) return;
 
-    balancedBox.innerHTML = safeArr(muscles.balanced)
-        .slice(0, 3)
+    const balanced = safeArr(
+        muscles.balanced
+    ).slice(0, 3);
+
+    const overloaded = safeArr(
+        muscles.overloaded
+    ).slice(0, 3);
+
+    balancedBox.innerHTML = balanced
         .map(
-            m =>
-                `<div class="tr-balance-item tr-balance-item-balanced">${ICONS.balanced}<span>${translateMuscle(
-                    m
-                )}</span></div>`
+            muscle =>
+                `
+                <div class="tr-balance-item tr-balance-item-balanced">
+                    ${ICONS.balanced}
+                    <span>${translateMuscle(muscle)}</span>
+                </div>
+                `
         )
         .join("");
 
-    overloadedBox.innerHTML = safeArr(muscles.overloaded)
-        .slice(0, 3)
+    overloadedBox.innerHTML = overloaded
         .map(
-            m =>
-                `<div class="tr-balance-item tr-balance-item-overloaded">${ICONS.overloaded}<span>${translateMuscle(
-                    m
-                )}</span></div>`
+            muscle =>
+                `
+                <div class="tr-balance-item tr-balance-item-overloaded">
+                    ${ICONS.overloaded}
+                    <span>${translateMuscle(muscle)}</span>
+                </div>
+                `
         )
         .join("");
 }
