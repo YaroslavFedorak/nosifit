@@ -40,6 +40,8 @@ class RecoveryResult(TypedDict):
     status: str
     sleep_hours_avg: float
     fatigue_avg: float
+    stress_avg: float
+    soreness_avg: float
     message: str
 
 
