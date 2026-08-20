@@ -1,12 +1,17 @@
 from typing import Mapping, List, Dict
 from datetime import date, timedelta
+
 from myapp.app.training_engine.training_analysis.dto import PatternResult
 from myapp.app.training_engine.training_analysis.constants import (
     PATTERN_LOW_THRESHOLD,
     PATTERN_HIGH_THRESHOLD,
 )
-from myapp.app.training_engine.training_analysis.analyzers.utils import movement_pattern
-from myapp.app.services.training.load_index_service import _compute_exercise_load
+from myapp.app.training_engine.training_analysis.analyzers.utils import (
+    movement_pattern,
+)
+from myapp.app.services.training.load_index_service import (
+    _compute_exercise_load,
+)
 
 
 def analyse_patterns(
@@ -17,43 +22,62 @@ def analyse_patterns(
     days: int = 14,
 ) -> PatternResult:
     start = target_day - timedelta(days=days)
+
     window = [
-        s
-        for s in sessions
-        if s.started_at and start <= s.started_at.date() <= target_day
+        session
+        for session in sessions
+        if session.started_at and start <= session.started_at.date() <= target_day
     ]
 
     pattern_loads: Dict[str, float] = {}
 
-    for s in window:
-        internal = float(getattr(s, "internal_load", 1.0) or 1.0)
-        total_session_load = 0.0
-        per_exercise: Dict[object, float] = {}
+    for session in window:
+        internal = float(getattr(session, "internal_load", 0.0) or 0.0)
 
-        for se in s.exercises or []:
-            ex = exercise_map.get(se.exercise_id)
-            if not ex:
+        if internal <= 0:
+            internal = 1.0
+
+        total_exercise_load = 0.0
+        exercise_loads = []
+
+        for session_exercise in session.exercises or []:
+            exercise = exercise_map.get(session_exercise.exercise_id)
+
+            if not exercise:
                 continue
 
-            sets = se.sets_done or se.sets_planned or 0
-            reps = se.reps_done or se.reps_planned or "0"
-            load = se.load_done or se.load_planned or 0
+            sets = session_exercise.sets_done or session_exercise.sets_planned or 0
 
-            ex_load = _compute_exercise_load(ex, sets, reps, load, user_weight)
-            per_exercise[se.exercise_id] = ex_load
-            total_session_load += ex_load
+            reps = session_exercise.reps_done or session_exercise.reps_planned or "0"
 
-        if total_session_load <= 0:
+            load = (
+                session_exercise.load_done
+                if session_exercise.load_done is not None
+                else session_exercise.load_planned or 0
+            )
+
+            exercise_load = _compute_exercise_load(
+                exercise,
+                sets,
+                reps,
+                load,
+                user_weight,
+            )
+
+            if exercise_load <= 0:
+                continue
+
+            exercise_loads.append((exercise, exercise_load))
+            total_exercise_load += exercise_load
+
+        if total_exercise_load <= 0:
             continue
 
-        for ex_id, ex_load in per_exercise.items():
-            ex = exercise_map.get(ex_id)
-            if not ex:
-                continue
+        for exercise, exercise_load in exercise_loads:
+            share = exercise_load / total_exercise_load
+            pattern = movement_pattern(exercise)
 
-            share = ex_load / total_session_load
-            mp = movement_pattern(ex)
-            pattern_loads[mp] = pattern_loads.get(mp, 0.0) + share * internal
+            pattern_loads[pattern] = pattern_loads.get(pattern, 0.0) + share * internal
 
     if not pattern_loads:
         return {
@@ -64,15 +88,17 @@ def analyse_patterns(
         }
 
     total = sum(pattern_loads.values())
+
     weak_patterns: List[str] = []
     overloaded_patterns: List[str] = []
 
-    for p, v in pattern_loads.items():
-        r = v / total if total > 0 else 0.0
-        if r < PATTERN_LOW_THRESHOLD:
-            weak_patterns.append(p)
-        elif r > PATTERN_HIGH_THRESHOLD:
-            overloaded_patterns.append(p)
+    for pattern, value in pattern_loads.items():
+        ratio = value / total if total > 0 else 0.0
+
+        if ratio < PATTERN_LOW_THRESHOLD:
+            weak_patterns.append(pattern)
+        elif ratio > PATTERN_HIGH_THRESHOLD:
+            overloaded_patterns.append(pattern)
 
     return {
         "weak_patterns": weak_patterns,

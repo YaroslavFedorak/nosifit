@@ -1,8 +1,11 @@
 from typing import Mapping, Dict, List
 from datetime import date, timedelta
-from myapp.app.training_engine.training_analysis.dto import FrequencyResult
-from myapp.app.training_engine.training_analysis.analyzers.utils import primary_muscles
+
 from myapp.app.training_engine.models.exercise import Exercise
+from myapp.app.training_engine.training_analysis.dto import FrequencyResult
+from myapp.app.training_engine.training_analysis.analyzers.utils import (
+    primary_muscles,
+)
 
 
 def analyse_frequency(
@@ -12,30 +15,31 @@ def analyse_frequency(
     days: int = 28,
 ) -> FrequencyResult:
     start = target_day - timedelta(days=days)
+
     window = [
-        s
-        for s in sessions
-        if s.started_at and start <= s.started_at.date() <= target_day
+        session
+        for session in sessions
+        if session.started_at and start <= session.started_at.date() <= target_day
     ]
 
-    names: List[str] = []
+    counts: Dict[str, int] = {}
 
-    for s in window:
-        for se in s.exercises or []:
-            ex = exercise_map.get(se.exercise_id)
-            if ex:
-                names.append(ex.name)
+    for session in window:
+        session_muscles = set()
 
-    total = len(names)
-    unique = len(set(names))
+        for session_exercise in session.exercises or []:
+            exercise = exercise_map.get(session_exercise.exercise_id)
 
-    counts = {}
-    for name in names:
-        counts[name] = counts.get(name, 0) + 1
+            if not exercise:
+                continue
+
+            for muscle in primary_muscles(exercise):
+                session_muscles.add(muscle)
+
+        for muscle in session_muscles:
+            counts[muscle] = counts.get(muscle, 0) + 1
 
     return {
-        "total": total,
-        "unique": unique,
-        "counts": counts,  # ← додано
-        "message": "frequency analysed",
+        "counts": counts,
+        "message": "muscle frequency analysed",
     }
