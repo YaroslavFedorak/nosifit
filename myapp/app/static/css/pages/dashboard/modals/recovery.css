@@ -1,0 +1,6 @@
+#dashboard-recovery-modal {
+    background: var(--nf-surface);
+    border-radius: var(--nf-radius-lg);
+    padding: 24px;
+    box-shadow: var(--nf-shadow-blue);
+}
