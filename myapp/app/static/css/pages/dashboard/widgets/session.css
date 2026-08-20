@@ -1,15 +1,219 @@
 .db-session-content {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 14px;
+    min-height: 0;
 }
 
-.db-session-empty-title {
-    font-size: 16px;
+.db-session-info {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.db-session-title-input {
+    width: 100%;
+    box-sizing: border-box;
+    background: var(--nf-surface-soft);
+    border: 1px solid var(--nf-border-soft);
+    padding: 10px 14px;
+    border-radius: var(--nf-radius-md);
     color: var(--nf-text-main);
+    font-size: 15px;
+    outline: none;
+    transition: var(--nf-transition-fast);
 }
 
-.db-session-empty-text {
-    font-size: 13px;
+.db-session-title-input::placeholder {
     color: var(--nf-text-muted);
+}
+
+.db-session-title-input:focus {
+    border-color: var(--nf-yellow);
+}
+
+.db-session-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.db-session-actions .db-btn {
+    padding: 8px 12px;
+    font-size: 14px;
+}
+
+.db-session-exercise-box {
+    background: var(--nf-surface-soft);
+    border: 1px solid var(--nf-border-soft);
+    border-radius: var(--nf-radius-lg);
+    padding: 16px;
+    min-height: 180px;
+    max-height: 420px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.db-session-exercise-list {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding-right: 6px;
+}
+
+.db-session-empty {
+    text-align: center;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--nf-text-muted);
+    padding: 40px 0;
+    cursor: pointer;
+}
+
+.db-session-ex-row {
+    display: grid;
+    grid-template-columns: minmax(140px, 1fr) 90px 90px 90px 40px;
+    align-items: center;
+    background: var(--nf-surface);
+    border: 1px solid var(--nf-border-soft);
+    padding: 12px 14px;
+    border-radius: var(--nf-radius-lg);
+    min-height: 60px;
+    gap: 8px;
+}
+
+.db-session-ex-row.db-ex-done {
+    opacity: 0.65;
+}
+
+.db-session-ex-name-wrap {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+}
+
+.db-session-ex-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--nf-text-main);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.db-session-ex-plan-icon {
+    width: 18px;
+    height: 18px;
+    color: var(--nf-yellow);
+    flex-shrink: 0;
+}
+
+.db-input-inline {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    background: var(--nf-surface-soft);
+    border: 1px solid var(--nf-border-soft);
+    border-radius: var(--nf-radius-md);
+    padding: 4px 6px;
+}
+
+.db-input-inline-disabled {
+    opacity: 0.5;
+}
+
+.db-input-field {
+    width: 36px;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--nf-text-main);
+    font-size: 13px;
+    font-weight: 600;
+    text-align: center;
+}
+
+.db-input-inline-label {
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--nf-text-muted);
+    white-space: nowrap;
+}
+
+.db-input-arrows {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.db-arrow {
+    width: 13px;
+    height: 13px;
+    border-radius: 4px;
+    background: var(--nf-surface);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.db-arrow-up::before,
+.db-arrow-down::before {
+    content: "";
+    border: 4px solid transparent;
+}
+
+.db-arrow-up::before {
+    border-bottom-color: var(--nf-yellow);
+}
+
+.db-arrow-down::before {
+    border-top-color: var(--nf-yellow);
+}
+
+.db-arrow:hover {
+    background: var(--nf-surface-soft);
+}
+
+.db-ex-check {
+    width: 26px;
+    height: 26px;
+    border: 2px solid var(--nf-yellow);
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    flex-shrink: 0;
+}
+
+.db-ex-check.checked {
+    background: var(--nf-yellow);
+}
+
+.db-ex-check.checked::after {
+    content: "";
+    position: absolute;
+    width: 11px;
+    height: 6px;
+    border-left: 3px solid #000;
+    border-bottom: 3px solid #000;
+    transform: rotate(-45deg);
+    top: 7px;
+    left: 6px;
+}
+
+@media (max-width: 800px) {
+    .db-session-ex-row {
+        grid-template-columns: 1fr 80px 80px 80px 34px;
+        gap: 6px;
+        padding: 10px;
+    }
+
+    .db-input-inline-label {
+        display: none;
+    }
 }

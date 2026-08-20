@@ -36,24 +36,47 @@
     <div class="dashboard-left">
       <section class="db-card db-card-session">
         <div class="db-card-header">
-          <h3 class="db-card-title">Сесія тренування</h3>
+          <h3 class="db-card-title">Сьогоднішнє тренування</h3>
           <button
             id="dashboard-open-training"
             class="db-btn db-btn-primary"
             type="button"
           >
-            Тренування
+            План тренувань
           </button>
         </div>
 
         <div class="db-session-content" id="dashboard-training-session">
-          <div class="db-session-empty">
-            <div class="db-session-empty-title">
-              Сьогодні тренування ще не розпочато
-            </div>
-            <div class="db-session-empty-text">
-              Почніть сесію, щоб відстежувати навантаження та прогрес
-            </div>
+          <div class="db-session-info">
+            <input
+              id="dashboard-workout-title"
+              class="db-session-title-input"
+              type="text"
+              placeholder="Назва тренування"
+              autocomplete="off"
+            />
+          </div>
+          <div class="db-session-actions">
+            <button
+              id="dashboard-add-exercise"
+              class="db-btn db-btn-secondary"
+              type="button"
+            >
+              + Додати вправу
+            </button>
+            <button
+              id="dashboard-save-workout"
+              class="db-btn db-btn-primary"
+              type="button"
+            >
+              Зберегти тренування
+            </button>
+          </div>
+          <div class="db-session-exercise-box">
+            <div
+              id="dashboard-workout-exercise-list"
+              class="db-session-exercise-list"
+            ></div>
           </div>
         </div>
       </section>
@@ -116,13 +139,11 @@
 
           <div class="db-recovery-metrics">
             <div class="db-recovery-item">
-              <span>Сон</span>
-              <strong id="dashboard-sleep">—</strong>
+              <span>Сон</span> <strong id="dashboard-sleep">—</strong>
             </div>
 
             <div class="db-recovery-item">
-              <span>Звички</span>
-              <strong id="dashboard-habits">—</strong>
+              <span>Звички</span> <strong id="dashboard-habits">—</strong>
             </div>
           </div>
         </div>
