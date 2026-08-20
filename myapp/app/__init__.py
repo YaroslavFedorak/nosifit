@@ -69,6 +69,7 @@ def create_app():
         info_bp,
         dashboard_bp,
         dashboard_api_bp,
+        training_dashboard_api_bp,
         training_pages_bp,
         training_explanation_bp,
         training_api_bp,
@@ -111,6 +112,7 @@ def create_app():
 
     app.register_blueprint(dashboard_bp)
     app.register_blueprint(dashboard_api_bp)
+    app.register_blueprint(training_dashboard_api_bp)
 
     app.register_blueprint(training_pages_bp)
     app.register_blueprint(training_explanation_bp)
