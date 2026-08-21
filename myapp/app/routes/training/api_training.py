@@ -416,49 +416,76 @@ def delete_plan(plan_id):
 @login_required
 def complete_session():
     try:
-        existing = TrainingSession.query.filter_by(
-            user_id=current_user.id, status="active"
-        ).first()
+        existing = (
+            TrainingSession.query.filter_by(
+                user_id=current_user.id,
+                status="active",
+            )
+            .order_by(TrainingSession.started_at.desc())
+            .first()
+        )
 
         if existing:
-            existing.status = "finished"
-            existing.finished_at = dt.datetime.utcnow()
-            db.session.commit()
+            TrainingSessionService.finish_session(
+                existing,
+                (request.get_json() or {}).get("fatigue_after"),
+            )
 
         data = request.get_json() or {}
+
         raw = data.get("exercises", [])
+
         exercises = (
-            raw if isinstance(raw, list) else [i for v in raw.values() for i in v]
+            raw
+            if isinstance(raw, list)
+            else [item for values in raw.values() for item in values]
         )
 
         session = TrainingSession(
             user_id=current_user.id,
             started_at=dt.datetime.utcnow(),
-            status="finished",
+            status="active",
         )
+
         db.session.add(session)
         db.session.flush()
 
         for ex in exercises:
+            exercise_data = ex.get("exercise", {})
+
+            exercise_id = exercise_data.get("id")
+
+            if not exercise_id:
+                continue
+
             db.session.add(
                 SessionExercise(
                     session_id=session.id,
-                    exercise_id=ex["exercise"]["id"],
+                    exercise_id=exercise_id,
                     sets_done=ex.get("sets"),
                     reps_done=ex.get("reps"),
                     load_done=ex.get("load"),
+                    rpe=ex.get("rpe"),
                 )
             )
 
         db.session.commit()
 
-        db.session.refresh(session)
+        fatigue_after = data.get("fatigue_after")
 
-        TrainingSessionService._compute_session_load(session)
-        db.session.commit()
+        TrainingSessionService.finish_session(
+            session,
+            fatigue_after,
+        )
 
-        TrainingSessionService.update_training_load_from_session(session, current_user)
-        return jsonify({"id": session.id})
+        return jsonify(
+            {
+                "id": session.id,
+                "rpe_avg": session.rpe_avg,
+                "internal_load": session.internal_load,
+                "muscle_loads": session.muscle_loads or {},
+            }
+        )
 
     except Exception as e:
         return _error(e)
