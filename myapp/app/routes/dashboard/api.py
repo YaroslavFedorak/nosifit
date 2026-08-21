@@ -39,20 +39,31 @@ def day(date_iso):
 @dashboard_api_bp.get("/recommendation")
 @login_required
 def recommendation():
-    try:
-        data = RecommendationService.build_recommendations(current_user.id) or []
-    except Exception:
+    recommendations = RecommendationService.build_recommendations(current_user.id)
+
+    if not recommendations:
         return jsonify({"recommendation": None})
 
-    top = None
-    if isinstance(data, list) and data:
-        try:
-            top = sorted(
-                data,
-                key=lambda x: x.get("priority", 0),
-                reverse=True,
-            )[0]
-        except Exception:
-            top = data[0]
+    priority_order = {
+        "high": 0,
+        "medium": 1,
+        "low": 2,
+    }
 
-    return jsonify({"recommendation": top})
+    recommendation = min(
+        recommendations,
+        key=lambda item: (
+            priority_order.get(
+                item.get("priority"),
+                3,
+            )
+            if isinstance(item, dict)
+            else 3
+        ),
+    )
+
+    return jsonify(
+        {
+            "recommendation": recommendation,
+        }
+    )

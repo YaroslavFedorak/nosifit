@@ -13,7 +13,9 @@ training_dashboard_api_bp = Blueprint(
 @training_dashboard_api_bp.get("")
 @login_required
 def today():
-    return jsonify(TrainingDashboardService.get_today(current_user.id))
+    data = TrainingDashboardService.get_today(current_user.id)
+
+    return jsonify(data)
 
 
 @training_dashboard_api_bp.get("/session/<int:session_id>")
@@ -25,7 +27,14 @@ def session(session_id):
     )
 
     if data is None:
-        return jsonify({"error": "session_not_found"}), 404
+        return (
+            jsonify(
+                {
+                    "error": "session_not_found",
+                }
+            ),
+            404,
+        )
 
     return jsonify(data)
 
@@ -57,18 +66,25 @@ def start_session():
 
     fatigue_before = payload.get("fatigue_before")
 
-    session = TrainingDashboardService.start(
+    session_data = TrainingDashboardService.start(
         current_user.id,
         fatigue_before=fatigue_before,
     )
 
-    if session is None:
-        return jsonify({"error": "user_not_found"}), 404
+    if session_data is None:
+        return (
+            jsonify(
+                {
+                    "error": "user_not_found",
+                }
+            ),
+            404,
+        )
 
     return (
         jsonify(
             {
-                "session": session,
+                "session": session_data,
             }
         ),
         201,
@@ -83,7 +99,14 @@ def add_exercise(session_id):
     exercise_id = payload.get("exercise_id")
 
     if not exercise_id:
-        return jsonify({"error": "exercise_id_required"}), 400
+        return (
+            jsonify(
+                {
+                    "error": "exercise_id_required",
+                }
+            ),
+            400,
+        )
 
     data = TrainingDashboardService.add_exercise(
         current_user.id,

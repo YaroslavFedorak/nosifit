@@ -1,5 +1,5 @@
-from .page import dashboard_bp
 from .api import dashboard_api_bp
+from .page import dashboard_bp
 from .training import training_dashboard_api_bp
 
 __all__ = [

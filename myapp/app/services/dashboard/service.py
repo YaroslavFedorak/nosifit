@@ -1,4 +1,4 @@
-from .aggregator import get_today_overview, get_heatmap
+from .aggregator import get_heatmap, get_today_overview
 from .day import get_day_details
 
 
