@@ -89,10 +89,20 @@ function renderRecommendedExercises(list) {
 
     const items = list.slice(0, 3);
 
+    if (items.length === 0) {
+        box.innerHTML = `
+            <div class="tr-rec-empty">
+                Недостатньо даних для персональних рекомендацій
+            </div>
+        `;
+        return;
+    }
+
     box.innerHTML = items
         .map(item => {
-            const reasons = safeArr(item?.reasons);
-            const reason = reasons[0] || "";
+            const reasons = safeArr(item?.reasons)
+                .filter(Boolean)
+                .slice(0, 2);
 
             return `
                 <div class="tr-rec-line-item">
@@ -100,11 +110,18 @@ function renderRecommendedExercises(list) {
                         ${ICONS.exercise}
                         <span>${item?.exercise || ""}</span>
                     </div>
+
                     ${
-                        reason
-                            ? `<div class="tr-rec-item-tag">${translateReason(
-                                  reason
-                              )}</div>`
+                        reasons.length
+                            ? reasons
+                                  .map(
+                                      reason => `
+                                        <div class="tr-rec-item-tag">
+                                            ${translateReason(reason)}
+                                        </div>
+                                    `
+                                  )
+                                  .join("")
                             : ""
                     }
                 </div>

@@ -153,3 +153,13 @@
 .tr-balance-item-overloaded svg {
     color: #F5C451;
 }
+
+.tr-rec-empty {
+    grid-column: 1 / -1;
+    padding: 18px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 12px;
+    color: var(--text-muted);
+    font-size: 13px;
+    text-align: center;
+}
