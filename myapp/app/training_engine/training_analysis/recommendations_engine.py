@@ -1,5 +1,5 @@
 from datetime import date
-from typing import List, Mapping, Any
+from typing import List, Mapping, Any, Set
 
 from myapp.app.training_engine.models.exercise import Exercise
 
@@ -66,10 +66,53 @@ from myapp.app.training_engine.training_analysis.constants import (
     RECOVERY_PENALTY,
     RECOVERY_MODERATE_PENALTY,
     USER_LEVEL_BEGINNER,
+    USER_LEVEL_INTERMEDIATE,
     USER_LEVEL_ADVANCED,
+    PROFILE_WEAK_SCORE,
+    PROFILE_STRONG_PENALTY,
+    MIN_RECOMMENDATION_SCORE,
+    MAX_RECOMMENDATIONS,
     SUMMARY_PRIORITY,
     PROGRESSION_PLATEAU_THRESHOLD,
 )
+
+
+def _normalize_user_level(user: Any) -> str:
+    raw = (
+        getattr(user, "experience", None)
+        or getattr(user, "level", None)
+        or USER_LEVEL_INTERMEDIATE
+    )
+
+    value = str(raw).strip().lower()
+
+    mapping = {
+        "beginner": USER_LEVEL_BEGINNER,
+        "початківець": USER_LEVEL_BEGINNER,
+        "початковий": USER_LEVEL_BEGINNER,
+        "intermediate": USER_LEVEL_INTERMEDIATE,
+        "середній": USER_LEVEL_INTERMEDIATE,
+        "advanced": USER_LEVEL_ADVANCED,
+        "досвідчений": USER_LEVEL_ADVANCED,
+        "просунутий": USER_LEVEL_ADVANCED,
+    }
+
+    return mapping.get(value, USER_LEVEL_INTERMEDIATE)
+
+
+def _profile_points(user: Any, key: str) -> Set[str]:
+    raw = getattr(user, key, None)
+
+    if not raw:
+        return set()
+
+    if isinstance(raw, str):
+        raw = raw.split(",")
+
+    if not isinstance(raw, (list, tuple, set)):
+        return set()
+
+    return {str(value).strip().lower() for value in raw if str(value).strip()}
 
 
 def _exercise_history_count(
@@ -93,11 +136,22 @@ def _reason_muscles(
     reasons: List[str] = []
     primary = set(primary_muscles(ex))
 
-    for muscle in muscles["weak"]:
-        if muscle in primary:
-            reasons.append("improves weak muscle group")
+    if primary.intersection(muscles["weak"]):
+        reasons.append("improves weak muscle group")
 
     return reasons
+
+
+def _reason_profile(
+    ex: Exercise,
+    weak_points: Set[str],
+) -> List[str]:
+    primary = set(primary_muscles(ex))
+
+    if primary.intersection(weak_points):
+        return ["targets your weak point"]
+
+    return []
 
 
 def _reason_patterns(
@@ -138,6 +192,9 @@ def _reason_frequency(
 ) -> List[str]:
     counts = frequency["counts"]
 
+    if not counts:
+        return []
+
     for muscle in primary_muscles(ex):
         if counts.get(muscle, 0) <= FREQUENCY_LOW:
             return ["supports an undertrained muscle"]
@@ -161,9 +218,11 @@ def _reasons(
     progression: ProgressionResult,
     frequency: FrequencyResult,
     diversity: DiversityResult,
+    weak_points: Set[str],
 ) -> List[str]:
     reasons: List[str] = []
 
+    reasons.extend(_reason_profile(ex, weak_points))
     reasons.extend(_reason_muscles(ex, muscles))
     reasons.extend(_reason_patterns(ex, patterns))
     reasons.extend(_reason_progression(ex, progression))
@@ -189,6 +248,24 @@ def _score_muscles(
     return score
 
 
+def _score_profile(
+    ex: Exercise,
+    weak_points: Set[str],
+    strong_points: Set[str],
+) -> float:
+    primary = set(primary_muscles(ex))
+
+    weak_matches = primary.intersection(weak_points)
+    strong_matches = primary.intersection(strong_points)
+
+    score = 0.0
+
+    score += len(weak_matches) * PROFILE_WEAK_SCORE
+    score -= len(strong_matches) * PROFILE_STRONG_PENALTY
+
+    return score
+
+
 def _score_patterns(
     ex: Exercise,
     patterns: PatternResult,
@@ -208,6 +285,9 @@ def _score_frequency(
     ex: Exercise,
     frequency: FrequencyResult,
 ) -> float:
+    if not frequency["counts"]:
+        return 0.0
+
     score = 0.0
 
     for muscle in primary_muscles(ex):
@@ -215,6 +295,7 @@ def _score_frequency(
 
         if count >= FREQUENCY_HIGH:
             score -= FREQUENCY_PENALTY
+
         elif count <= FREQUENCY_LOW:
             score += FREQUENCY_BONUS
 
@@ -310,23 +391,61 @@ def _score_exercise(
     recovery_status: str,
     user_level: str,
     sessions: List,
+    weak_points: Set[str],
+    strong_points: Set[str],
 ) -> float:
     score = 0.0
 
-    score += _score_muscles(ex, muscles)
-    score += _score_patterns(ex, patterns)
-    score += _score_frequency(ex, frequency)
-    score += _score_progression(ex, progression)
-    score += _score_difficulty(ex, user_level)
-    score += _score_risk(ex, user_level)
+    score += _score_profile(
+        ex,
+        weak_points,
+        strong_points,
+    )
+
+    score += _score_muscles(
+        ex,
+        muscles,
+    )
+
+    score += _score_patterns(
+        ex,
+        patterns,
+    )
+
+    score += _score_frequency(
+        ex,
+        frequency,
+    )
+
+    score += _score_progression(
+        ex,
+        progression,
+    )
+
+    score += _score_difficulty(
+        ex,
+        user_level,
+    )
+
+    score += _score_risk(
+        ex,
+        user_level,
+    )
+
     score += _score_recovery(
         recovery_status,
         ex,
         muscles,
     )
-    score += _score_diversity(diversity)
 
-    history_count = _exercise_history_count(ex, sessions)
+    score += _score_diversity(
+        diversity,
+    )
+
+    history_count = _exercise_history_count(
+        ex,
+        sessions,
+    )
 
     if history_count >= FREQUENCY_HIGH:
         score -= REPEATED_EXERCISE_PENALTY
@@ -404,7 +523,17 @@ def build_recommendations(
 
     weight = float(getattr(user, "weight", 70) or 70)
 
-    user_level = str(getattr(user, "level", "intermediate") or "intermediate").lower()
+    user_level = _normalize_user_level(user)
+
+    weak_points = _profile_points(
+        user,
+        "weak_points",
+    )
+
+    strong_points = _profile_points(
+        user,
+        "strong_points",
+    )
 
     muscles = analyse_muscles(
         sessions,
@@ -473,9 +602,11 @@ def build_recommendations(
             recovery["status"],
             user_level,
             sessions,
+            weak_points,
+            strong_points,
         )
 
-        if score > 0:
+        if score >= MIN_RECOMMENDATION_SCORE:
             scored.append((score, exercise))
 
     scored.sort(
@@ -506,6 +637,7 @@ def build_recommendations(
             progression,
             frequency,
             diversity,
+            weak_points,
         )
 
         if not reasons:
@@ -522,7 +654,7 @@ def build_recommendations(
         used_patterns.add(movement)
         used_muscles.update(primary)
 
-        if len(recommended) >= 3:
+        if len(recommended) >= MAX_RECOMMENDATIONS:
             break
 
     summary = _build_summary(
