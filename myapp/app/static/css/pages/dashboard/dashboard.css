@@ -9,7 +9,11 @@
 @import "./heatmap/heatmap.css";
 @import "./heatmap/tooltip.css";
 
-@import "./modals/session.css";
+@import "./modals/training/variables.css";
+@import "./modals/training/modal.css";
+@import "./modals/training/exercise.css";
+@import "./modals/training/plan.css";
+
 @import "./modals/nutrition.css";
 @import "./modals/recovery.css";
 @import "./modals/day_details.css";
