@@ -1,6 +1,9 @@
 #dashboard-day-details-modal {
-    background: var(--nf-surface);
-    border-radius: var(--nf-radius-lg);
-    padding: 24px;
-    box-shadow: var(--nf-shadow-soft);
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 22px;
+    width: 100%;
+    max-width: 420px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22);
 }
