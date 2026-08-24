@@ -101,10 +101,12 @@
     padding: 20px 22px;
     overflow-y: auto;
     color: var(--db-modal-text);
+    scrollbar-width: thin;
+    scrollbar-color: var(--db-modal-border-soft) transparent;
 }
 
 .db-modal-body::-webkit-scrollbar {
-    width: 6px;
+    width: 4px;
 }
 
 .db-modal-body::-webkit-scrollbar-track {

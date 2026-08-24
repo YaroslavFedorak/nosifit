@@ -1,5 +1,6 @@
 {% extends "app/base_app.html" %} {% block title %}Дашборд — Nosi Fit{% endblock
 %} {% block styles %} {{ super() }}
+
 <link
   rel="stylesheet"
   href="{{ url_for('static', filename='css/pages/dashboard/dashboard.css') }}"
@@ -8,35 +9,84 @@
 %}
 
 <div class="dashboard-page-wrapper">
-  <div class="dashboard-header">
+  <header class="dashboard-header">
     <div class="dashboard-header-left">
       <div class="dashboard-header-icon-box">
-        <span class="dashboard-header-icon" id="dashboard-header-icon"></span>
+        <span
+          class="dashboard-header-icon"
+          id="dashboard-header-icon"
+          aria-hidden="true"
+        ></span>
       </div>
 
       <div class="dashboard-header-text">
         <h1 class="dashboard-title">Дашборд</h1>
-        <div class="dashboard-subtitle">
+
+        <p class="dashboard-subtitle">
           Керуйте навантаженням • Контролюйте відновлення • Аналізуйте прогрес
-        </div>
+        </p>
       </div>
     </div>
 
     <div class="dashboard-header-right">
       <div class="dashboard-header-info">
-        <div class="dashboard-header-label">Сьогодні</div>
-        <div id="current-date" class="dashboard-header-value">
+        <span class="dashboard-header-label"> Сьогодні </span>
+
+        <time
+          id="current-date"
+          class="dashboard-header-value"
+          datetime="{{ current_date.isoformat() }}"
+        >
           {{ current_date.strftime('%A, %d %B') }}
-        </div>
+        </time>
       </div>
     </div>
-  </div>
+  </header>
 
-  <div class="dashboard-main-grid">
+  <section class="dashboard-overview" aria-label="Основні показники">
+    <article id="daily-score" class="dashboard-overview-card">
+      <span class="dashboard-overview-label"> Денний стан </span>
+
+      <strong class="dashboard-metric-value"> — </strong>
+
+      <span class="dashboard-overview-meta"> Загальний показник </span>
+    </article>
+
+    <article id="training-load" class="dashboard-overview-card">
+      <span class="dashboard-overview-label"> Навантаження </span>
+
+      <strong class="dashboard-metric-value"> — </strong>
+
+      <span class="dashboard-overview-meta"> Тренувальний стан </span>
+    </article>
+
+    <article id="recovery-score" class="dashboard-overview-card">
+      <span class="dashboard-overview-label"> Відновлення </span>
+
+      <strong class="dashboard-metric-value"> — </strong>
+
+      <span class="dashboard-overview-meta"> Готовність організму </span>
+    </article>
+
+    <article id="sleep-score" class="dashboard-overview-card">
+      <span class="dashboard-overview-label"> Сон </span>
+
+      <strong class="dashboard-metric-value"> — </strong>
+
+      <span class="dashboard-overview-meta"> Останній запис </span>
+    </article>
+  </section>
+
+  <main class="dashboard-main-grid">
     <div class="dashboard-left">
       <section class="db-card db-card-session">
         <div class="db-card-header">
-          <h3 class="db-card-title">Сьогоднішнє тренування</h3>
+          <div class="db-card-heading">
+            <span class="db-card-eyebrow"> Training </span>
+
+            <h2 class="db-card-title">Сьогоднішнє тренування</h2>
+          </div>
+
           <button
             id="dashboard-open-training"
             class="db-btn db-btn-primary"
@@ -47,43 +97,55 @@
         </div>
 
         <div class="db-session-content" id="dashboard-training-session">
-          <div class="db-session-info">
-            <input
-              id="dashboard-workout-title"
-              class="db-session-title-input"
-              type="text"
-              placeholder="Назва тренування"
-              autocomplete="off"
-            />
+          <div class="db-session-editor">
+            <div class="db-session-info">
+              <input
+                id="dashboard-workout-title"
+                class="db-session-title-input"
+                type="text"
+                placeholder="Назва тренування"
+                autocomplete="off"
+              />
+            </div>
+
+            <div class="db-session-actions">
+              <button
+                id="dashboard-add-exercise"
+                class="db-btn db-btn-secondary"
+                type="button"
+              >
+                + Додати вправу
+              </button>
+
+              <button
+                id="dashboard-save-workout"
+                class="db-btn db-btn-primary"
+                type="button"
+              >
+                Зберегти тренування
+              </button>
+            </div>
           </div>
-          <div class="db-session-actions">
-            <button
-              id="dashboard-add-exercise"
-              class="db-btn db-btn-secondary"
-              type="button"
-            >
-              + Додати вправу
-            </button>
-            <button
-              id="dashboard-save-workout"
-              class="db-btn db-btn-primary"
-              type="button"
-            >
-              Зберегти тренування
-            </button>
-          </div>
+
           <div class="db-session-exercise-box">
             <div
               id="dashboard-workout-exercise-list"
               class="db-session-exercise-list"
             ></div>
           </div>
+
+          <div id="dashboard-session-summary" class="db-session-summary"></div>
         </div>
       </section>
 
       <section class="db-card db-card-nutrition">
         <div class="db-card-header">
-          <h3 class="db-card-title">Харчування</h3>
+          <div class="db-card-heading">
+            <span class="db-card-eyebrow"> Nutrition </span>
+
+            <h2 class="db-card-title">Харчування</h2>
+          </div>
+
           <button
             id="dashboard-open-nutrition"
             class="db-btn db-btn-secondary"
@@ -96,18 +158,21 @@
         <div class="db-nutrition-content" id="dashboard-nutrition">
           <div class="db-nutrition-metrics">
             <div class="db-nutrition-item">
-              <span class="db-nutrition-label">Калорії</span>
-              <strong id="dashboard-calories">—</strong>
+              <span class="db-nutrition-label"> Калорії </span>
+
+              <strong id="dashboard-calories"> — </strong>
             </div>
 
             <div class="db-nutrition-item">
-              <span class="db-nutrition-label">Білок</span>
-              <strong id="dashboard-protein">—</strong>
+              <span class="db-nutrition-label"> Білок </span>
+
+              <strong id="dashboard-protein"> — </strong>
             </div>
 
             <div class="db-nutrition-item">
-              <span class="db-nutrition-label">Вода</span>
-              <strong id="dashboard-water">—</strong>
+              <span class="db-nutrition-label"> Вода </span>
+
+              <strong id="dashboard-water"> — </strong>
             </div>
           </div>
         </div>
@@ -121,7 +186,12 @@
     <div class="dashboard-right">
       <section class="db-card db-card-recovery">
         <div class="db-card-header">
-          <h3 class="db-card-title">Відновлення</h3>
+          <div class="db-card-heading">
+            <span class="db-card-eyebrow"> Recovery </span>
+
+            <h2 class="db-card-title">Відновлення</h2>
+          </div>
+
           <button
             id="dashboard-open-recovery"
             class="db-btn db-btn-secondary"
@@ -133,17 +203,22 @@
 
         <div class="db-recovery-content" id="dashboard-recovery">
           <div class="db-recovery-score">
-            <span class="db-recovery-label">Стан відновлення</span>
-            <strong id="dashboard-recovery-score">—</strong>
+            <span class="db-recovery-label"> Стан відновлення </span>
+
+            <strong id="dashboard-recovery-score"> — </strong>
           </div>
 
           <div class="db-recovery-metrics">
             <div class="db-recovery-item">
-              <span>Сон</span> <strong id="dashboard-sleep">—</strong>
+              <span>Сон</span>
+
+              <strong id="dashboard-sleep"> — </strong>
             </div>
 
             <div class="db-recovery-item">
-              <span>Звички</span> <strong id="dashboard-habits">—</strong>
+              <span>Звички</span>
+
+              <strong id="dashboard-habits"> — </strong>
             </div>
           </div>
         </div>
@@ -151,21 +226,28 @@
 
       <section class="db-card db-card-recommendations">
         <div class="db-card-header">
-          <h3 class="db-card-title">Рекомендації</h3>
+          <div class="db-card-heading">
+            <span class="db-card-eyebrow"> Analysis </span>
+
+            <h2 class="db-card-title">Рекомендації</h2>
+          </div>
         </div>
 
         <div class="db-recommendations-content" id="recommendations-list"></div>
       </section>
     </div>
-  </div>
+  </main>
 </div>
 
-{% include "app/dashboard/modals/session_modal.html" %} {% include
+{% include "app/dashboard/modals/exercise/modal.html" %} {% include
+"app/dashboard/modals/plan/modal.html" %} {% include
 "app/dashboard/modals/nutrition_modal.html" %} {% include
 "app/dashboard/modals/recovery_modal.html" %} {% include
 "app/dashboard/modals/day_details.html" %} {% endblock %} {% block scripts %}
+
 <script
   type="module"
   src="{{ url_for('static', filename='js/dashboard/dashboard.js') }}"
 ></script>
+
 {% endblock %}
