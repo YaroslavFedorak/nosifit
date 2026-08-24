@@ -1,0 +1,188 @@
+#db-exercise-modal {
+    --db-modal-width: 420px;
+}
+
+#db-exercise-modal .db-modal-panel {
+    max-width: var(--db-modal-width);
+}
+
+#db-exercise-modal .db-modal-body {
+    display: flex;
+    flex-direction: column;
+}
+
+#db-exercise-modal .db-session-content {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+#db-exercise-modal .db-session-section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+#db-exercise-modal .db-session-search {
+    width: 100%;
+    min-height: 42px;
+    padding: 10px 12px;
+    border-radius: var(--db-modal-radius-sm);
+    border: 1px solid var(--db-modal-border-input);
+    background: var(--db-modal-surface-input);
+    color: var(--db-modal-text);
+    font-size: 14px;
+    font-family: inherit;
+    transition: var(--db-modal-transition-fast);
+    box-sizing: border-box;
+}
+
+#db-exercise-modal .db-session-search::placeholder {
+    color: var(--db-modal-text-muted);
+}
+
+#db-exercise-modal .db-session-search:focus {
+    border-color: var(--db-modal-accent);
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(255, 212, 59, 0.25);
+}
+
+#db-exercise-modal .db-session-filter-row {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+}
+
+#db-exercise-modal .db-session-filter {
+    min-width: 0;
+    min-height: 36px;
+    padding: 8px 10px;
+    border-radius: var(--db-modal-radius-sm);
+    border: 1px solid var(--db-modal-border-soft);
+    background: var(--db-modal-card-soft);
+    color: var(--db-modal-text);
+    font-family: inherit;
+    font-size: 13px;
+    line-height: 1.2;
+    cursor: pointer;
+    text-align: center;
+    white-space: nowrap;
+    transition: var(--db-modal-transition);
+}
+
+#db-exercise-modal .db-session-filter:hover {
+    background: var(--db-modal-accent-soft);
+    border-color: var(--db-modal-accent);
+    color: #000;
+    transform: translateY(-1px);
+}
+
+#db-exercise-modal .db-session-filter.active {
+    background: var(--db-modal-accent);
+    border-color: var(--db-modal-accent);
+    color: #000;
+    box-shadow: 0 0 0 1px rgba(255, 212, 59, 0.35);
+}
+
+#db-exercise-modal .db-session-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-height: 350px;
+    overflow-y: auto;
+    padding-right: 4px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--db-modal-border-soft) transparent;
+}
+
+#db-exercise-modal .db-session-list::-webkit-scrollbar {
+    width: 4px;
+}
+
+#db-exercise-modal .db-session-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+#db-exercise-modal .db-session-list::-webkit-scrollbar-thumb {
+    background: var(--db-modal-border-soft);
+    border-radius: 999px;
+}
+
+#db-exercise-modal .db-session-list::-webkit-scrollbar-thumb:hover {
+    background: var(--db-modal-border-input);
+}
+
+#db-exercise-modal .db-session-item {
+    width: 100%;
+    min-height: 46px;
+    padding: 10px 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border: 1px solid var(--db-modal-border-soft);
+    border-radius: var(--db-modal-radius-sm);
+    background: var(--db-modal-card-soft);
+    color: var(--db-modal-text);
+    font-family: inherit;
+    font-size: 14px;
+    line-height: 1.35;
+    text-align: left;
+    cursor: pointer;
+    transition: var(--db-modal-transition);
+    box-sizing: border-box;
+}
+
+#db-exercise-modal .db-session-item:hover {
+    background: var(--db-modal-accent);
+    border-color: var(--db-modal-accent);
+    color: #000;
+    transform: translateY(-1px);
+}
+
+#db-exercise-modal .db-session-item:focus-visible {
+    outline: none;
+    border-color: var(--db-modal-accent);
+    box-shadow: 0 0 0 2px rgba(255, 212, 59, 0.25);
+}
+
+#db-exercise-modal .db-session-item-main {
+    min-width: 0;
+    flex: 1 1 auto;
+    display: flex;
+    align-items: center;
+}
+
+#db-exercise-modal .db-session-item-name {
+    min-width: 0;
+    width: 100%;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.35;
+    color: inherit;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+#db-exercise-modal .db-session-empty {
+    padding: 18px 16px;
+    border-radius: var(--db-modal-radius-md);
+    border: 1px dashed var(--db-modal-border);
+    background: var(--db-modal-card-soft);
+    color: var(--db-modal-text-muted);
+    font-family: inherit;
+    font-size: 13px;
+    line-height: 1.45;
+    text-align: center;
+}
+
+@media (max-width: 500px) {
+    #db-exercise-modal .db-session-filter-row {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    #db-exercise-modal .db-session-filter {
+        white-space: normal;
+        min-height: 38px;
+    }
+}

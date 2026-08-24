@@ -1,0 +1,47 @@
+<div id="db-plan-modal" class="db-modal" aria-hidden="true">
+  <div
+    class="db-modal-panel"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="db-plan-modal-title"
+  >
+    <div class="db-modal-header">
+      <div class="db-modal-heading">
+        <h2 id="db-plan-modal-title" class="db-modal-title">План тренування</h2>
+
+        <p class="db-modal-subtitle">
+          Перегляньте вправи запланованого тренування
+        </p>
+      </div>
+
+      <button
+        type="button"
+        class="db-modal-close"
+        data-close-plan-modal
+        aria-label="Закрити"
+      >
+        ×
+      </button>
+    </div>
+
+    <div class="db-modal-body">
+      <div id="db-plan-content" class="db-session-content">
+        <div class="db-session-empty">План тренування ще не завантажений.</div>
+      </div>
+    </div>
+
+    <div class="db-modal-footer">
+      <button
+        type="button"
+        class="db-btn db-btn-secondary"
+        data-close-plan-modal
+      >
+        Закрити
+      </button>
+
+      <button type="button" class="db-btn db-btn-primary" id="db-plan-start">
+        Почати тренування
+      </button>
+    </div>
+  </div>
+</div>

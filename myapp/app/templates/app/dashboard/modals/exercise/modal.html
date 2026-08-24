@@ -1,0 +1,107 @@
+<div id="db-exercise-modal" class="db-modal" aria-hidden="true">
+  <div
+    class="db-modal-panel"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="db-exercise-modal-title"
+  >
+    <div class="db-modal-header">
+      <div class="db-modal-heading">
+        <h2 id="db-exercise-modal-title" class="db-modal-title">
+          Додати вправу
+        </h2>
+
+        <p class="db-modal-subtitle">Оберіть вправу для поточного тренування</p>
+      </div>
+
+      <button
+        type="button"
+        class="db-modal-close"
+        data-close-exercise-modal
+        aria-label="Закрити"
+      >
+        ×
+      </button>
+    </div>
+
+    <div class="db-modal-body">
+      <div class="db-session-content">
+        <div class="db-session-section">
+          <input
+            id="db-exercise-search"
+            class="db-session-search"
+            type="search"
+            placeholder="Пошук вправи..."
+            autocomplete="off"
+          />
+        </div>
+
+        <div class="db-session-section">
+          <div class="db-session-filter-row">
+            <button
+              type="button"
+              class="db-session-filter active"
+              data-exercise-category="all"
+            >
+              Усі
+            </button>
+
+            <button
+              type="button"
+              class="db-session-filter"
+              data-exercise-category="push"
+            >
+              Push
+            </button>
+
+            <button
+              type="button"
+              class="db-session-filter"
+              data-exercise-category="pull"
+            >
+              Pull
+            </button>
+
+            <button
+              type="button"
+              class="db-session-filter"
+              data-exercise-category="legs"
+            >
+              Ноги
+            </button>
+
+            <button
+              type="button"
+              class="db-session-filter"
+              data-exercise-category="core"
+            >
+              Core
+            </button>
+
+            <button
+              type="button"
+              class="db-session-filter"
+              data-exercise-category="mobility"
+            >
+              Mobility
+            </button>
+          </div>
+        </div>
+
+        <div class="db-session-section">
+          <div id="db-exercise-list" class="db-session-list"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="db-modal-footer">
+      <button
+        type="button"
+        class="db-btn db-btn-secondary"
+        data-close-exercise-modal
+      >
+        Закрити
+      </button>
+    </div>
+  </div>
+</div>
