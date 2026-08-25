@@ -1,392 +1,314 @@
-#db-plan-modal {
-    --db-modal-width: 780px;
+#db-plan-modal .db-modal-content {
+    max-width: 780px;
+    padding: 22px 24px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    background: var(--nf-surface);
+    border-radius: var(--nf-radius-md);
+    box-shadow: var(--nf-shadow-soft);
 }
 
-#db-plan-modal .db-modal-panel {
-    max-width: var(--db-modal-width);
+.db-plan-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
 }
 
-#db-plan-modal .db-modal-body {
+.db-plan-title-block {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.db-plan-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--nf-text-main);
+}
+
+.db-plan-title-icon svg {
+    color: var(--nf-yellow);
+}
+
+.db-plan-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.db-plan-help-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 999px;
+    border: 1px solid var(--nf-border-subtle);
+    background: var(--nf-surface-soft);
+    color: var(--nf-text-muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--nf-transition-fast);
+}
+
+.db-plan-help-btn:hover {
+    background: var(--nf-yellow-soft);
+    color: #000;
+    border-color: var(--nf-yellow);
+}
+
+.db-plan-help-popover {
+    margin-top: 4px;
+    padding: 12px 14px;
+    border-radius: var(--nf-radius-sm);
+    border: 1px solid var(--nf-border-soft);
+    background: var(--nf-surface-soft);
+    font-size: 13px;
+    color: var(--nf-text-muted);
+    display: none;
+}
+
+.db-plan-help-popover.open {
+    display: block;
+}
+
+.db-plan-help-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding-left: 18px;
+}
+
+.db-plan-body {
     display: flex;
     flex-direction: column;
     gap: 18px;
 }
 
-#db-plan-modal #db-plan-content {
+.db-plan-name-block {
     display: flex;
     flex-direction: column;
-    gap: 18px;
+    gap: 6px;
 }
 
-#db-plan-modal .db-plan-days {
+.db-plan-name-label {
+    font-size: 13px;
+    color: var(--nf-text-muted);
+}
+
+.db-plan-title {
+    background: var(--nf-surface-soft);
+    border: 1px solid var(--nf-border-soft);
+    border-radius: var(--nf-radius-sm);
+    padding: 8px 10px;
+    color: var(--nf-text-main);
+}
+
+.db-plan-days {
     display: flex;
     gap: 8px;
     padding: 6px;
-    border-radius: var(--db-modal-radius-md);
-    background: var(--db-modal-card-soft);
-    border: 1px solid var(--db-modal-border);
+    border-radius: var(--nf-radius-md);
+    background: var(--nf-surface-soft);
+    border: 1px solid var(--nf-border-soft);
     position: sticky;
     top: 0;
     z-index: 3;
 }
 
-#db-plan-modal .db-plan-day {
+.db-plan-day {
     flex: 1;
     padding: 8px 10px;
-    border-radius: var(--db-modal-radius-sm);
+    border-radius: var(--nf-radius-sm);
     border: 1px solid transparent;
     background: transparent;
-    color: var(--db-modal-text);
+    color: var(--nf-text-main);
     font-size: 13px;
     cursor: pointer;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    transition: var(--db-modal-transition);
+    transition: var(--nf-transition-fast);
 }
 
-#db-plan-modal .db-plan-day:hover {
-    background: var(--db-modal-card);
-    border-color: var(--db-modal-border);
+.db-plan-day span:first-child {
+    font-weight: 500;
 }
 
-#db-plan-modal .db-plan-day.active {
-    background: var(--db-modal-accent-soft);
-    border-color: var(--db-modal-accent);
+.db-plan-day-badge {
+    min-width: 18px;
+    height: 18px;
+    border-radius: 999px;
+    background: var(--nf-yellow-soft);
+    color: #000;
+    font-size: 11px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+.db-plan-day-badge.visible {
+    display: flex;
+}
+
+.db-plan-day:hover {
+    background: var(--nf-surface);
+    border-color: var(--nf-border-soft);
+}
+
+.db-plan-day.active {
+    background: var(--nf-yellow-soft);
+    border-color: var(--nf-yellow);
     color: #000;
     box-shadow: 0 0 0 1px rgba(255, 212, 59, 0.35);
 }
 
-#db-plan-modal .db-plan-toolbar {
+.db-plan-column {
+    margin-top: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.db-plan-toolbar {
+    position: sticky;
+    top: 48px;
+    z-index: 2;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 12px;
     padding: 12px 14px;
-    border-radius: var(--db-modal-radius-md);
-    background: var(--db-modal-card-soft);
-    border: 1px solid var(--db-modal-border);
+    border-radius: var(--nf-radius-md);
+    background: var(--nf-surface-soft);
+    border: 1px solid var(--nf-border-soft);
 }
 
-#db-plan-modal .db-plan-toolbar-left {
+.db-plan-toolbar-left {
     display: flex;
     flex-direction: column;
     gap: 2px;
-    min-width: 0;
 }
 
-#db-plan-modal .db-plan-toolbar-title {
+.db-plan-toolbar-title {
     font-size: 14px;
     font-weight: 500;
-    color: var(--db-modal-text);
+    color: var(--nf-text-main);
 }
 
-#db-plan-modal .db-plan-toolbar-subtitle {
+.db-plan-toolbar-subtitle {
     font-size: 12px;
-    color: var(--db-modal-text-muted);
+    color: var(--nf-text-muted);
 }
 
-#db-plan-modal .db-plan-exercises {
+.db-plan-exercises {
+    margin-top: 6px;
     display: flex;
     flex-direction: column;
     gap: 14px;
     max-height: min(55vh, 540px);
     overflow-y: auto;
     padding-right: 4px;
-    scrollbar-width: thin;
-    scrollbar-color: var(--db-modal-border-soft) transparent;
 }
 
-#db-plan-modal .db-plan-exercises::-webkit-scrollbar {
-    width: 4px;
-}
-
-#db-plan-modal .db-plan-exercises::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-#db-plan-modal .db-plan-exercises::-webkit-scrollbar-thumb {
-    background: var(--db-modal-border-soft);
-    border-radius: 999px;
-}
-
-#db-plan-modal .db-plan-exercises::-webkit-scrollbar-thumb:hover {
-    background: var(--db-modal-border-input);
-}
-
-#db-plan-modal .db-plan-card {
-    position: relative;
-    border-radius: var(--db-modal-radius-md);
-    border: 1px solid var(--db-modal-border);
-    background: var(--db-modal-card);
-    padding: 14px 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
-    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
-    overflow: hidden;
-}
-
-#db-plan-modal .db-plan-card::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 4px;
-    border-radius: var(--db-modal-radius-md) 0 0 var(--db-modal-radius-md);
-    background: var(--db-modal-accent);
-}
-
-#db-plan-modal .db-plan-card:hover {
-    border-color: var(--db-modal-accent);
-    transform: translateY(-2px);
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.18);
-}
-
-#db-plan-modal .db-plan-card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 10px;
-}
-
-#db-plan-modal .db-plan-card-header-left {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    min-width: 0;
-}
-
-#db-plan-modal .db-plan-ex-name {
-    background: transparent;
-    border: none;
-    padding: 0;
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--db-modal-text);
-    cursor: pointer;
-    text-align: left;
-    transition: var(--db-modal-transition);
-}
-
-#db-plan-modal .db-plan-ex-name:hover {
-    color: var(--db-modal-accent);
-}
-
-#db-plan-modal .db-plan-card-header-right {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
-#db-plan-modal .db-plan-card-drag,
-#db-plan-modal .db-plan-card-delete {
-    width: 34px;
-    height: 34px;
-    border-radius: 999px;
-    border: 1px solid var(--db-modal-border);
-    background: var(--db-modal-card-soft);
-    color: var(--db-modal-text-muted);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: var(--db-modal-transition);
-}
-
-#db-plan-modal .db-plan-card-drag {
-    cursor: grab;
-}
-
-#db-plan-modal .db-plan-card-drag:hover {
-    background: var(--db-modal-accent-soft);
-    color: #000;
-    border-color: var(--db-modal-accent);
-}
-
-#db-plan-modal .db-plan-card-delete:hover {
-    background: #ffefef;
-    border-color: #ff7070;
-    color: #d11;
-}
-
-#db-plan-modal .db-plan-card-body {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 14px;
-}
-
-#db-plan-modal .db-plan-field {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-}
-
-#db-plan-modal .db-plan-field-label-row {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
-#db-plan-modal .db-plan-field-label {
-    font-size: 12px;
-    color: var(--db-modal-text-muted);
-}
-
-#db-plan-modal .db-plan-field-icon svg {
-    width: 16px;
-    height: 16px;
-    color: var(--db-modal-text-muted);
-}
-
-#db-plan-modal .db-input-inline {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    background: var(--db-modal-surface-input);
-    border: 1px solid var(--db-modal-border-input);
-    border-radius: var(--db-modal-radius-md);
-    padding: 4px 6px;
-}
-
-#db-plan-modal .db-input-field {
-    width: 40px;
-    background: transparent;
-    border: none;
-    color: var(--db-modal-text);
-    font-size: 14px;
-    font-weight: 600;
-    text-align: center;
-    outline: none;
-    box-shadow: none;
-    padding: 4px;
-}
-
-#db-plan-modal .db-input-field:focus {
-    border: none;
-    box-shadow: none;
-}
-
-#db-plan-modal .db-input-field[type="number"]::-webkit-outer-spin-button,
-#db-plan-modal .db-input-field[type="number"]::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-}
-
-#db-plan-modal .db-input-arrows {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-}
-
-#db-plan-modal .db-arrow {
-    width: 14px;
-    height: 14px;
-    border-radius: 4px;
-    background: var(--db-modal-surface-hover);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: var(--db-modal-transition-fast);
-}
-
-#db-plan-modal .db-arrow-up::before,
-#db-plan-modal .db-arrow-down::before {
-    content: "";
-    border: 5px solid transparent;
-}
-
-#db-plan-modal .db-arrow-up::before {
-    border-bottom-color: var(--db-modal-accent);
-}
-
-#db-plan-modal .db-arrow-down::before {
-    border-top-color: var(--db-modal-accent);
-}
-
-#db-plan-modal .db-arrow:hover {
-    background: var(--db-modal-accent-soft);
-}
-
-#db-plan-modal .db-plan-empty {
+.db-plan-empty {
+    margin-top: 10px;
     padding: 18px 16px;
-    border-radius: var(--db-modal-radius-md);
-    border: 1px dashed var(--db-modal-border);
-    background: var(--db-modal-card-soft);
-    display: flex;
+    border-radius: var(--nf-radius-md);
+    border: 1px dashed var(--nf-border-soft);
+    background: var(--nf-surface-soft);
+    display: none;
     flex-direction: column;
     align-items: center;
     gap: 8px;
     text-align: center;
 }
 
-#db-plan-modal .db-plan-empty-icon svg {
-    color: var(--db-modal-accent);
+.db-plan-empty.visible {
+    display: flex;
 }
 
-#db-plan-modal .db-plan-empty-text-main {
+.db-plan-empty-icon svg {
+    color: var(--nf-yellow);
+}
+
+.db-plan-empty-text-main {
     font-size: 14px;
     font-weight: 500;
-    color: var(--db-modal-text);
+    color: var(--nf-text-main);
 }
 
-#db-plan-modal .db-plan-empty-text-sub {
+.db-plan-empty-text-sub {
     font-size: 12px;
-    color: var(--db-modal-text-muted);
+    color: var(--nf-text-muted);
 }
 
-#db-plan-modal .db-plan-footer-summary {
+.db-plan-footer {
+    margin-top: 4px;
+    padding-top: 14px;
+    border-top: 1px solid var(--nf-border-soft);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+
+.db-plan-footer-summary {
     display: flex;
     flex-direction: column;
     gap: 2px;
     font-size: 12px;
-    color: var(--db-modal-text-muted);
+    color: var(--nf-text-muted);
 }
 
-#db-plan-modal .db-plan-card-dragging {
-    opacity: 0.6;
-    cursor: grabbing;
+.db-plan-footer-actions {
+    display: flex;
+    gap: 8px;
 }
 
-#db-plan-modal .db-plan-card-drag-over {
-    border-color: var(--db-modal-accent);
-    box-shadow: 0 0 0 1px rgba(255, 212, 59, 0.35);
+#db-plan-save {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
 }
 
-#db-plan-modal .db-plan-counter-input[type="number"]::-webkit-inner-spin-button,
-#db-plan-modal .db-plan-counter-input[type="number"]::-webkit-outer-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
+#db-plan-save .btn-loader {
+    width: 16px;
+    height: 16px;
+    border-radius: 999px;
+    border: 2px solid #000;
+    border-top-color: transparent;
+    animation: dbPlanSpinner 0.7s linear infinite;
 }
 
-#db-plan-modal .db-plan-counter-input[type="number"] {
-    appearance: textfield;
-    -moz-appearance: textfield;
+.db-plan-toast {
+    position: fixed;
+    bottom: 18px;
+    right: 18px;
+    padding: 10px 14px;
+    border-radius: var(--nf-radius-md);
+    background: var(--nf-yellow-soft);
+    color: #000;
+    font-size: 13px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+    opacity: 0;
+    transform: translateY(8px);
+    pointer-events: none;
+    transition: opacity .18s ease, transform .18s ease;
+    z-index: 4000;
 }
 
-@media (max-width: 700px) {
-    #db-plan-modal .db-plan-card-body {
-        grid-template-columns: 1fr;
+.db-plan-toast.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+@keyframes dbPlanSpinner {
+    from {
+        transform: rotate(0deg);
     }
 
-    #db-plan-modal .db-plan-days {
-        overflow-x: auto;
-    }
-
-    #db-plan-modal .db-plan-day {
-        min-width: 90px;
-    }
-
-    #db-plan-modal .db-modal-footer {
-        flex-wrap: wrap;
-    }
-
-    #db-plan-modal .db-plan-toolbar {
-        align-items: stretch;
-        flex-direction: column;
+    to {
+        transform: rotate(360deg);
     }
 }
