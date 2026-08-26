@@ -3,7 +3,9 @@ from datetime import date, datetime
 from myapp.app import db
 from myapp.app.models.training_session import TrainingSession
 from myapp.app.training_engine.models.exercise import Exercise
-from myapp.app.services.training.session_service import TrainingSessionService
+from myapp.app.services.training.session_service import (
+    TrainingSessionService,
+)
 
 from .analyzer import TrainingDashboardAnalyzer
 from .dto import (
@@ -17,8 +19,15 @@ class TrainingDashboardService:
 
     @staticmethod
     def get_today(user_id):
-        start = datetime.combine(date.today(), datetime.min.time())
-        end = datetime.combine(date.today(), datetime.max.time())
+        start = datetime.combine(
+            date.today(),
+            datetime.min.time(),
+        )
+
+        end = datetime.combine(
+            date.today(),
+            datetime.max.time(),
+        )
 
         session = (
             TrainingSession.query.filter(
@@ -88,7 +97,10 @@ class TrainingDashboardService:
         return [exercise_to_dict(exercise) for exercise in exercises]
 
     @staticmethod
-    def start(user_id, fatigue_before=None):
+    def start(
+        user_id,
+        fatigue_before=None,
+    ):
         from myapp.app.models.user import User
 
         user = User.query.get(user_id)
@@ -116,7 +128,11 @@ class TrainingDashboardService:
         return training_session_to_dict(session)
 
     @staticmethod
-    def add_exercise(user_id, session_id, exercise_id):
+    def add_exercise(
+        user_id,
+        session_id,
+        exercise_id,
+    ):
         session = TrainingSession.query.filter_by(
             id=session_id,
             user_id=user_id,

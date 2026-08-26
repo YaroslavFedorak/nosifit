@@ -16,25 +16,43 @@ def session_exercise_to_dict(
     return {
         "id": session_exercise.id,
         "exercise_id": session_exercise.exercise_id,
-        "exercise": exercise.name if exercise else None,
-        "sets": (session_exercise.sets_done or session_exercise.sets_planned or 0),
-        "reps": (session_exercise.reps_done or session_exercise.reps_planned or ""),
+        "exercise": (exercise.name if exercise else None),
+        "sets": (
+            session_exercise.sets_done
+            if session_exercise.sets_done is not None
+            else session_exercise.sets_planned or 0
+        ),
+        "reps": (
+            session_exercise.reps_done
+            if session_exercise.reps_done is not None
+            else session_exercise.reps_planned or ""
+        ),
         "load": session_exercise.load_done,
         "rpe": session_exercise.rpe,
     }
 
 
 def training_session_to_dict(session):
-    exercises = []
+    from myapp.app.training_engine.models.exercise import Exercise
+
+    exercise_ids = {
+        session_exercise.exercise_id for session_exercise in session.exercises
+    }
+
+    exercises = (
+        Exercise.query.filter(Exercise.id.in_(exercise_ids)).all()
+        if exercise_ids
+        else []
+    )
+
+    exercise_map = {exercise.id: exercise for exercise in exercises}
+
+    session_exercises = []
 
     for session_exercise in session.exercises:
-        exercise = getattr(
-            session_exercise,
-            "exercise",
-            None,
-        )
+        exercise = exercise_map.get(session_exercise.exercise_id)
 
-        exercises.append(
+        session_exercises.append(
             session_exercise_to_dict(
                 session_exercise,
                 exercise,
@@ -51,10 +69,11 @@ def training_session_to_dict(session):
         "fatigue_before": session.fatigue_before,
         "fatigue_after": session.fatigue_after,
         "duration": _duration_minutes(session),
-        "exercise_count": len(exercises),
+        "exercise_count": len(session_exercises),
         "rpe_avg": session.rpe_avg,
         "internal_load": session.internal_load or 0,
-        "exercises": exercises,
+        "muscle_loads": session.muscle_loads or {},
+        "exercises": session_exercises,
     }
 
 
