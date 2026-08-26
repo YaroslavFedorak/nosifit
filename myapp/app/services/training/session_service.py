@@ -2,16 +2,14 @@ from datetime import datetime
 
 from myapp.app import db
 from myapp.app.models.training_session import (
-    TrainingSession,
     SessionExercise,
+    TrainingSession,
 )
-from myapp.app.services.training.load_service import (
+from myapp.app.services.training.load import (
     TrainingLoadService,
+    calculate_session_load,
 )
-from myapp.app.training_engine.models.exercise import Exercise
-from myapp.app.training_engine.models.performance_state import (
-    PerformanceState,
-)
+from myapp.app.training_engine.models.performance_state import PerformanceState
 
 
 class TrainingSessionService:
@@ -22,11 +20,11 @@ class TrainingSessionService:
             user_id=user.id,
             fatigue_before=fatigue_before,
             status="active",
+            started_at=datetime.utcnow(),
         )
 
         db.session.add(session)
         db.session.commit()
-
         return session
 
     @staticmethod
@@ -48,7 +46,6 @@ class TrainingSessionService:
 
         db.session.add(session_exercise)
         db.session.commit()
-
         return session_exercise
 
     @staticmethod
@@ -77,72 +74,34 @@ class TrainingSessionService:
             session_exercise.rpe = data["rpe"]
 
         db.session.commit()
-
         return session_exercise
 
-    # LOAD CALCULATION
+    @staticmethod
+    def _compute_muscle_loads(session):
+        loads = {}
+        for exercise in session.exercises:
+            if exercise.load_done and exercise.rpe:
+                loads[str(exercise.exercise_id)] = float(exercise.load_done) * float(
+                    exercise.rpe
+                )
+        return loads
 
     @staticmethod
-    def _compute_session_load(session):
-        user = session.user
+    def _compute_session_load(session, user):
+        internal_load = calculate_session_load(session, user)
+        session.internal_load = internal_load
+        session.muscle_loads = TrainingSessionService._compute_muscle_loads(session)
+        return internal_load
 
-        capacity = TrainingLoadService.build_capacity(user)
+    @staticmethod
+    def update_training_load_from_session(session, user):
+        total_load = TrainingSessionService._compute_session_load(session, user)
 
-        total_internal_load = 0.0
-        muscle_loads = {}
-
-        exercises = Exercise.query.all()
-
-        exercise_map = {exercise.id: exercise for exercise in exercises}
-
-        for session_exercise in session.exercises:
-            exercise = exercise_map.get(session_exercise.exercise_id)
-
-            if not exercise:
-                continue
-
-            result = TrainingLoadService.compute_exercise_load(
-                session_exercise,
-                exercise,
-                capacity,
-            )
-
-            internal_load = result["internal_load"]
-
-            total_internal_load += internal_load
-
-            TrainingLoadService.compute_muscle_load(
-                exercise,
-                internal_load,
-                muscle_loads,
-            )
-
-        # Avoid floating-point noise in JSON/database.
-        muscle_loads = {
-            muscle: round(value, 2)
-            for muscle, value in muscle_loads.items()
-            if value > 0
-        }
-
-        session.internal_load = round(
-            total_internal_load,
-            2,
+        performance = (
+            PerformanceState.query.filter_by(user_id=user.id)
+            .order_by(PerformanceState.created_at.desc())
+            .first()
         )
-
-        session.muscle_loads = muscle_loads
-
-        return session.internal_load
-
-    @staticmethod
-    def update_training_load_from_session(
-        session,
-        user,
-    ):
-        total_load = TrainingSessionService._compute_session_load(session)
-
-        performance = user.performance_states.order_by(
-            PerformanceState.created_at.desc()
-        ).first()
 
         if not performance:
             performance = PerformanceState(
@@ -150,41 +109,25 @@ class TrainingSessionService:
                 training_load=total_load,
                 weight=user.weight,
             )
-
             db.session.add(performance)
-
         else:
             performance.training_load = (performance.training_load or 0) + total_load
 
         db.session.commit()
 
-    # FINISH SESSION
-
     @staticmethod
-    def finish_session(
-        session,
-        fatigue_after=None,
-    ):
+    def finish_session(session, fatigue_after=None):
         session.status = "finished"
         session.finished_at = datetime.utcnow()
         session.fatigue_after = fatigue_after
 
-        rpes = [
-            exercise.rpe for exercise in session.exercises if exercise.rpe is not None
-        ]
+        rpes = [ex.rpe for ex in session.exercises if ex.rpe is not None]
+        session.rpe_avg = sum(rpes) / len(rpes) if rpes else None
 
-        if rpes:
-            session.rpe_avg = sum(rpes) / len(rpes)
-        else:
-            session.rpe_avg = None
-
-        # Calculate internal_load + muscle_loads
-        # before committing the finished session.
-        TrainingSessionService._compute_session_load(session)
+        TrainingSessionService._compute_session_load(session, session.user)
 
         db.session.commit()
 
-        # Update user's cumulative training load.
         TrainingSessionService.update_training_load_from_session(
             session,
             session.user,
