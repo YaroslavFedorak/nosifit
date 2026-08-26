@@ -544,14 +544,14 @@ def build_recommendations(
         sessions,
         target_day,
         exercise_map,
-        user_weight=weight,
+        user=user,
     )
 
     progression = analyse_progression(
         sessions,
         target_day,
         exercise_map,
-        user_weight=weight,
+        user=user,
     )
 
     load = analyse_load(
