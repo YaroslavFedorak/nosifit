@@ -1,29 +1,29 @@
-from typing import Dict, List, Mapping
 from datetime import date, timedelta
+from typing import Any, Dict, List, Mapping
 
-from myapp.app.training_engine.training_analysis.dto import (
-    ProgressionResult,
-    ProgressionDetails,
-)
 from myapp.app.training_engine.training_analysis.constants import (
-    PROGRESSION_MIN_WEEKS,
     PROGRESSION_GOOD_THRESHOLD,
-    PROGRESSION_REGRESSION_THRESHOLD,
+    PROGRESSION_MIN_WEEKS,
     PROGRESSION_PLATEAU_THRESHOLD,
+    PROGRESSION_REGRESSION_THRESHOLD,
 )
-from myapp.app.services.training.load_index_service import (
-    _compute_exercise_load,
+from myapp.app.training_engine.training_analysis.dto import (
+    ProgressionDetails,
+    ProgressionResult,
 )
+from myapp.app.services.training.load.service import TrainingLoadService
 
 
 def analyse_progression(
     sessions: List,
     target_day: date,
     exercise_map: Mapping[object, object],
-    user_weight: float,
+    user: Any,
     weeks: int = 6,
 ) -> ProgressionResult:
     start = target_day - timedelta(days=weeks * 7)
+
+    user_weight = float(getattr(user, "weight", 70) or 70)
 
     window = [
         session
@@ -45,34 +45,22 @@ def analyse_progression(
 
         for session_exercise in session.exercises or []:
             exercise = exercise_map.get(session_exercise.exercise_id)
-
             if not exercise:
                 continue
 
-            sets = session_exercise.sets_done or session_exercise.sets_planned or 0
-
-            reps = session_exercise.reps_done or session_exercise.reps_planned or "0"
-
-            load = (
-                session_exercise.load_done
-                if session_exercise.load_done is not None
-                else session_exercise.load_planned or 0
+            exercise_load_data = TrainingLoadService.compute_exercise_load(
+                session_exercise=session_exercise,
+                exercise=exercise,
+                capacity={"weight": user_weight},
             )
 
-            exercise_load = _compute_exercise_load(
-                exercise,
-                sets,
-                reps,
-                load,
-                user_weight,
-            )
-
-            if exercise_load <= 0:
+            internal_load = float(exercise_load_data.get("internal_load", 0))
+            if internal_load <= 0:
                 continue
 
             weekly.setdefault(session_exercise.exercise_id, {})
             weekly[session_exercise.exercise_id][week] = (
-                weekly[session_exercise.exercise_id].get(week, 0.0) + exercise_load
+                weekly[session_exercise.exercise_id].get(week, 0.0) + internal_load
             )
 
     details: Dict[str, ProgressionDetails] = {}
@@ -88,7 +76,6 @@ def analyse_progression(
         sorted_weeks = sorted(weeks_data.items())
 
         current_values = [value for _, value in sorted_weeks[:2]]
-
         baseline_values = [value for _, value in sorted_weeks[-2:]]
 
         current_avg = sum(current_values) / len(current_values)
