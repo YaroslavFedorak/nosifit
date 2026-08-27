@@ -92,29 +92,72 @@ export function initHeatmap() {
 
 function renderHeatmap(days) {
     const grid = document.getElementById("training-heatmap");
+
     if (!grid) return;
 
     grid.innerHTML = "";
 
-    days.forEach(d => {
-        const level = Number(d.level) || 0;
+    const data = new Map(
+        days.map(day => [
+            day.date,
+            day,
+        ])
+    );
+
+    const start = new Date(CURRENT_YEAR, 0, 1);
+    const end = new Date(CURRENT_YEAR, 11, 31);
+
+    const current = new Date(start);
+
+    while (current <= end) {
+        const date = new Date(current);
+        const dateString = date.toISOString().slice(0, 10);
+
+        const day = data.get(dateString) || {
+            date: dateString,
+            level: 0,
+            percent: 0,
+            load: 0,
+            is_today: false,
+        };
+
+        let level = Number(day.level);
+
+        if (!Number.isFinite(level)) {
+            level = 0;
+        }
+
+        level = Math.max(0, Math.min(6, Math.round(level)));
 
         const cell = document.createElement("div");
-        cell.className = "heatmap-cell";
-        cell.dataset.level = level;
 
-        if (d.is_today) cell.classList.add("today");
+        cell.className = "heatmap-cell";
+        cell.dataset.level = String(level);
+
+        if (day.is_today) {
+            cell.classList.add("today");
+        }
 
         const tooltip = document.createElement("div");
+
         tooltip.className = "heatmap-tooltip";
-        tooltip.textContent = `${d.percent || 0}% навантаження (${Number(d.load) || 0} од.)`;
+
+        tooltip.textContent =
+            `${Number(day.percent) || 0}% навантаження (${Number(day.load) || 0} од.)`;
 
         cell.appendChild(tooltip);
+
+        cell.addEventListener(
+            "click",
+            () => openDayDetails(dateString)
+        );
+
         grid.appendChild(cell);
 
-        cell.addEventListener("click", () => openDayDetails(d.date));
-    });
+        current.setDate(current.getDate() + 1);
+    }
 }
+
 
 function renderCalendarMonth() {
     const grid = document.getElementById("tr-calendar-grid");
