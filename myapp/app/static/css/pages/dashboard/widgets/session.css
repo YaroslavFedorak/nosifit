@@ -206,6 +206,24 @@
     left: 6px;
 }
 
+.db-session-ex-row.db-ex-done {
+    opacity: 0.6;
+}
+
+.db-session-ex-row.db-ex-done .db-session-ex-name {
+    text-decoration: line-through;
+    text-decoration-thickness: 1.5px;
+    text-decoration-color: var(--nf-text-muted);
+}
+
+.db-session-ex-row.db-ex-done .db-input-field {
+    cursor: not-allowed;
+}
+
+.db-session-ex-row.db-ex-done .db-input-inline {
+    opacity: 0.55;
+}
+
 @media (max-width: 800px) {
     .db-session-ex-row {
         grid-template-columns: 1fr 80px 80px 80px 34px;
