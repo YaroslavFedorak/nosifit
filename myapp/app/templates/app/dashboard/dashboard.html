@@ -1,47 +1,53 @@
-{% extends "app/base_app.html" %} {% block title %}Дашборд — Nosi Fit{% endblock
-%} {% block styles %} {{ super() }}
+{% extends "app/base_app.html" %} {% block title %} Дашборд — Nosi Fit {%
+endblock %} {% block styles %} {{ super() }}
 
 <link
   rel="stylesheet"
   href="{{ url_for('static', filename='css/pages/dashboard/dashboard.css') }}"
 />
-{% endblock %} {% block body_class %}dashboard-page{% endblock %} {% block body
-%}
+{% endblock %} {% block body_class %} dashboard-page {% endblock %} {% block
+body %}
 
 <div class="dashboard-page-wrapper">
-  <header class="dashboard-header">
+  <div class="dashboard-header">
     <div class="dashboard-header-left">
       <div class="dashboard-header-icon-box">
-        <span
-          class="dashboard-header-icon"
-          id="dashboard-header-icon"
-          aria-hidden="true"
-        ></span>
+        <span class="dashboard-header-icon" id="dashboard-header-icon">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="22"
+            height="22"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="white"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path
+              d="M12 3v17a1 1 0 0 1-1 1H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6a1 1 0 0 1-1 1H3"
+            />
+            <path d="M16 19h6" />
+            <path d="M19 22v-6" />
+          </svg>
+        </span>
       </div>
 
       <div class="dashboard-header-text">
         <h1 class="dashboard-title">Дашборд</h1>
-
-        <p class="dashboard-subtitle">
+        <div class="dashboard-subtitle">
           Керуйте навантаженням • Контролюйте відновлення • Аналізуйте прогрес
-        </p>
+        </div>
       </div>
     </div>
 
     <div class="dashboard-header-right">
       <div class="dashboard-header-info">
-        <span class="dashboard-header-label"> Сьогодні </span>
-
-        <time
-          id="current-date"
-          class="dashboard-header-value"
-          datetime="{{ current_date.isoformat() }}"
-        >
-          {{ current_date.strftime('%A, %d %B') }}
-        </time>
+        <div class="dashboard-header-label">Сьогодні</div>
+        <div id="dashboard-header-date" class="dashboard-header-value"></div>
       </div>
     </div>
-  </header>
+  </div>
 
   <section class="dashboard-overview" aria-label="Основні показники">
     <article id="daily-score" class="dashboard-overview-card">
@@ -133,8 +139,6 @@
               class="db-session-exercise-list"
             ></div>
           </div>
-
-          <div id="dashboard-session-summary" class="db-session-summary"></div>
         </div>
       </section>
 
@@ -210,13 +214,13 @@
 
           <div class="db-recovery-metrics">
             <div class="db-recovery-item">
-              <span>Сон</span>
+              <span> Сон </span>
 
               <strong id="dashboard-sleep"> — </strong>
             </div>
 
             <div class="db-recovery-item">
-              <span>Звички</span>
+              <span> Звички </span>
 
               <strong id="dashboard-habits"> — </strong>
             </div>
