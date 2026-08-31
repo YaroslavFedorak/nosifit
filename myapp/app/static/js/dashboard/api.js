@@ -1,220 +1,82 @@
-async function request(url, options = {}) {
+async function jsonFetch(
+    url,
+    options = {}
+) {
+    const response =
+        await fetch(
+            url,
+            {
+                credentials: "same-origin",
+
+                headers: {
+                    Accept: "application/json",
+
+                    ...(options.body
+                        ? {
+                            "Content-Type":
+                                "application/json"
+                        }
+                        : {}),
+
+                    ...(options.headers || {})
+                },
+
+                cache: "no-store",
+
+                ...options
+            }
+        );
+
+    let data = null;
+
     try {
-        const response = await fetch(url, {
-            ...options,
-            headers: {
-                Accept: "application/json",
-                ...(options.headers || {})
-            },
-            cache: "no-store"
-        });
+        data = await response.json();
+    } catch (_) {
+        data = null;
+    }
 
-        if (!response.ok) {
-            const errorText = await response.text();
-
-            console.error(
-                `Dashboard API error: ${response.status} ${url}`,
-                errorText
-            );
-
-            return null;
-        }
-
-        const contentType =
-            response.headers.get("content-type") || "";
-
-        if (!contentType.includes("application/json")) {
-            return null;
-        }
-
-        return await response.json();
-    } catch (error) {
+    if (!response.ok) {
         console.error(
-            `Dashboard API error: ${url}`,
-            error
+            `Dashboard API error: ${response.status} ${url}`,
+            data
         );
 
-        return null;
-    }
-}
-
-
-export async function fetchOverview() {
-    return request("/api/dashboard/today");
-}
-
-
-export async function fetchHeatmap() {
-    return request("/api/dashboard/heatmap");
-}
-
-
-export async function fetchRecommendation() {
-    const data =
-        await request(
-            "/api/dashboard/recommendation"
+        throw new Error(
+            data?.message ||
+            data?.error ||
+            `HTTP ${response.status}`
         );
-
-    if (!data) {
-        return null;
     }
 
-    return data.recommendation ?? data;
+    return data;
 }
 
-
-export async function fetchTraining() {
-    return request(
-        "/api/dashboard/training"
-    );
+export function getToday() {
+    return jsonFetch("/api/dashboard/today");
 }
 
-
-export async function fetchExercises() {
-    return request(
-        "/api/dashboard/training/exercises"
-    );
+export function getHeatmap() {
+    return jsonFetch("/api/dashboard/heatmap");
 }
 
-
-export async function startTrainingSession(
-    payload = {}
-) {
-    return request(
-        "/api/dashboard/training/session",
-        {
-            method: "POST",
-            headers: {
-                "Content-Type":
-                    "application/json"
-            },
-            body: JSON.stringify(payload)
-        }
-    );
+export function getDay(date) {
+    return jsonFetch(`/api/dashboard/day/${date}`);
 }
 
-
-export async function addExerciseToSession(
-    sessionId,
-    exerciseId
-) {
-    if (
-        sessionId == null ||
-        exerciseId == null
-    ) {
-        return null;
-    }
-
-    return request(
-        `/api/dashboard/training/session/${sessionId}/exercise`,
-        {
-            method: "POST",
-            headers: {
-                "Content-Type":
-                    "application/json"
-            },
-            body: JSON.stringify({
-                exercise_id: exerciseId
-            })
-        }
-    );
+export function getRecommendation() {
+    return jsonFetch("/api/dashboard/recommendation");
 }
 
+import { TrainingAPI } from "../training/api.js";
 
-export async function updateSessionExercise(
-    sessionId,
-    exerciseId,
-    payload = {}
-) {
-    if (
-        sessionId == null ||
-        exerciseId == null
-    ) {
-        return null;
-    }
-
-    const normalizedPayload = {
-        ...payload
-    };
-
-    if (
-        normalizedPayload.load_done === "" ||
-        normalizedPayload.load_done == null
-    ) {
-        normalizedPayload.load_done = null;
-    }
-
-    if (
-        normalizedPayload.sets_done === "" ||
-        normalizedPayload.sets_done == null
-    ) {
-        normalizedPayload.sets_done = null;
-    }
-
-    if (
-        normalizedPayload.reps_done === "" ||
-        normalizedPayload.reps_done == null
-    ) {
-        normalizedPayload.reps_done = null;
-    }
-
-    if (
-        normalizedPayload.rpe === "" ||
-        normalizedPayload.rpe == null
-    ) {
-        normalizedPayload.rpe = null;
-    }
-
-    return request(
-        `/api/dashboard/training/session/${sessionId}/exercise/${exerciseId}`,
-        {
-            method: "PATCH",
-            headers: {
-                "Content-Type":
-                    "application/json"
-            },
-            body: JSON.stringify(
-                normalizedPayload
-            )
-        }
-    );
+export function getExercises(params = {}) {
+    return TrainingAPI.getExercises(params);
 }
 
-
-export async function finishTrainingSession(
-    sessionId,
-    payload = {}
-) {
-    if (sessionId == null) {
-        return null;
-    }
-
-    return request(
-        `/api/dashboard/training/session/${sessionId}/finish`,
-        {
-            method: "POST",
-            headers: {
-                "Content-Type":
-                    "application/json"
-            },
-            body: JSON.stringify(payload)
-        }
-    );
-}
-
-
-export async function saveWorkout(
-    payload
-) {
-    return request(
-        "/api/dashboard/training",
-        {
-            method: "POST",
-            headers: {
-                "Content-Type":
-                    "application/json"
-            },
-            body: JSON.stringify(payload)
-        }
-    );
-}
+export const DashboardAPI = {
+    getToday,
+    getHeatmap,
+    getDay,
+    getRecommendation,
+    getExercises
+};
