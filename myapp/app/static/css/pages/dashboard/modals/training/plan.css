@@ -1,146 +1,203 @@
-#db-plan-modal .db-modal-content {
+#db-plan-modal {
+    --db-plan-bg: #0b0e13;
+    --db-plan-card: #11141c;
+    --db-plan-card-soft: #1a1f27;
+    --db-plan-surface: #141414;
+    --db-plan-surface-hover: #181818;
+    --db-plan-surface-input: #1f1f1f;
+    --db-plan-border: #1f232d;
+    --db-plan-border-soft: #252a33;
+    --db-plan-border-input: #353942;
+    --db-plan-text: #ffffff;
+    --db-plan-text-muted: #8b8fa3;
+    --db-plan-accent: #ffd43b;
+    --db-plan-accent-soft: #ffe58f;
+    --db-plan-radius-lg: 14px;
+    --db-plan-radius-md: 10px;
+    --db-plan-radius-sm: 6px;
+    --db-plan-transition: 0.25s ease;
+    --db-plan-transition-fast: 0.18s ease;
+    padding: 0;
+    background: rgba(0, 0, 0, 0.55);
+    z-index: 3000;
+}
+
+#db-plan-modal .db-modal-panel.db-plan-modern {
+    width: 100%;
     max-width: 780px;
+    max-height: none;
     padding: 22px 24px 20px;
+    overflow: visible;
+    border: 1px solid var(--db-plan-border);
+    border-radius: var(--db-plan-radius-lg);
+    background: var(--db-plan-card);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22);
+    color: var(--db-plan-text);
     display: flex;
     flex-direction: column;
     gap: 20px;
-    background: var(--nf-surface);
-    border-radius: var(--nf-radius-md);
-    box-shadow: var(--nf-shadow-soft);
+    transform: none;
+    animation: none;
 }
 
-.db-plan-header {
+#db-plan-modal .db-plan-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     gap: 12px;
 }
 
-.db-plan-title-block {
+#db-plan-modal .db-plan-title-block {
     display: flex;
     align-items: center;
     gap: 10px;
 }
 
-.db-plan-title {
+#db-plan-modal .db-plan-title-block h3 {
+    margin: 0;
     font-size: 20px;
     font-weight: 600;
-    color: var(--nf-text-main);
+    color: var(--db-plan-text);
 }
 
-.db-plan-title-icon svg {
-    color: var(--nf-yellow);
+#db-plan-modal .db-plan-title-icon svg {
+    color: var(--db-plan-accent);
 }
 
-.db-plan-header-actions {
+#db-plan-modal .db-plan-header-actions {
     display: flex;
     align-items: center;
     gap: 8px;
 }
 
-.db-plan-help-btn {
+#db-plan-modal .db-plan-help-btn {
     width: 28px;
     height: 28px;
     border-radius: 999px;
-    border: 1px solid var(--nf-border-subtle);
-    background: var(--nf-surface-soft);
-    color: var(--nf-text-muted);
+    border: 1px solid var(--db-plan-border);
+    background: var(--db-plan-card-soft);
+    color: var(--db-plan-text-muted);
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: var(--nf-transition-fast);
+    transition: var(--db-plan-transition);
 }
 
-.db-plan-help-btn:hover {
-    background: var(--nf-yellow-soft);
+#db-plan-modal .db-plan-help-btn:hover {
+    background: var(--db-plan-accent-soft);
     color: #000;
-    border-color: var(--nf-yellow);
+    border-color: var(--db-plan-accent);
 }
 
-.db-plan-help-popover {
+#db-plan-modal .db-plan-close {
+    background: transparent;
+    border: none;
+    padding: 0;
+    font-size: 22px;
+    color: var(--db-plan-text-muted);
+    cursor: pointer;
+    transition: var(--db-plan-transition);
+}
+
+#db-plan-modal .db-plan-close:hover {
+    color: var(--db-plan-accent);
+}
+
+#db-plan-modal .db-plan-help-popover {
     margin-top: 4px;
     padding: 12px 14px;
-    border-radius: var(--nf-radius-sm);
-    border: 1px solid var(--nf-border-soft);
-    background: var(--nf-surface-soft);
+    border-radius: var(--db-plan-radius-sm);
+    border: 1px solid var(--db-plan-border);
+    background: var(--db-plan-card-soft);
     font-size: 13px;
-    color: var(--nf-text-muted);
+    color: var(--db-plan-text-muted);
     display: none;
 }
 
-.db-plan-help-popover.open {
+#db-plan-modal .db-plan-help-popover.open {
     display: block;
 }
 
-.db-plan-help-list {
+#db-plan-modal .db-plan-help-list {
     display: flex;
     flex-direction: column;
     gap: 6px;
     padding-left: 18px;
 }
 
-.db-plan-body {
+#db-plan-modal .db-plan-body {
     display: flex;
     flex-direction: column;
     gap: 18px;
 }
 
-.db-plan-name-block {
+#db-plan-modal .db-plan-name-block {
     display: flex;
     flex-direction: column;
     gap: 6px;
 }
 
-.db-plan-name-label {
+#db-plan-modal .db-plan-name-label {
     font-size: 13px;
-    color: var(--nf-text-muted);
+    color: var(--db-plan-text-muted);
 }
 
-.db-plan-title {
-    background: var(--nf-surface-soft);
-    border: 1px solid var(--nf-border-soft);
-    border-radius: var(--nf-radius-sm);
-    padding: 8px 10px;
-    color: var(--nf-text-main);
+#db-plan-modal .db-plan-title {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: var(--db-plan-radius-sm);
+    border: 1px solid var(--db-plan-border-input);
+    background: var(--db-plan-surface-input);
+    color: var(--db-plan-text);
+    font-size: 14px;
+    font-family: inherit;
+    transition: var(--db-plan-transition-fast);
 }
 
-.db-plan-days {
+#db-plan-modal .db-plan-title:focus {
+    border-color: var(--db-plan-accent);
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(255, 212, 59, 0.25);
+}
+
+#db-plan-modal .db-plan-days {
     display: flex;
     gap: 8px;
     padding: 6px;
-    border-radius: var(--nf-radius-md);
-    background: var(--nf-surface-soft);
-    border: 1px solid var(--nf-border-soft);
+    border-radius: var(--db-plan-radius-md);
+    background: var(--db-plan-card-soft);
+    border: 1px solid var(--db-plan-border);
     position: sticky;
     top: 0;
     z-index: 3;
 }
 
-.db-plan-day {
+#db-plan-modal .db-plan-day {
     flex: 1;
     padding: 8px 10px;
-    border-radius: var(--nf-radius-sm);
+    border-radius: var(--db-plan-radius-sm);
     border: 1px solid transparent;
     background: transparent;
-    color: var(--nf-text-main);
+    color: var(--db-plan-text);
     font-size: 13px;
+    font-family: inherit;
     cursor: pointer;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    transition: var(--nf-transition-fast);
+    transition: var(--db-plan-transition);
 }
 
-.db-plan-day span:first-child {
+#db-plan-modal .db-plan-day span:first-child {
     font-weight: 500;
 }
 
-.db-plan-day-badge {
+#db-plan-modal .db-plan-day-badge {
     min-width: 18px;
     height: 18px;
     border-radius: 999px;
-    background: var(--nf-yellow-soft);
+    background: var(--db-plan-accent-soft);
     color: #000;
     font-size: 11px;
     display: none;
@@ -148,30 +205,30 @@
     justify-content: center;
 }
 
-.db-plan-day-badge.visible {
+#db-plan-modal .db-plan-day-badge.visible {
     display: flex;
 }
 
-.db-plan-day:hover {
-    background: var(--nf-surface);
-    border-color: var(--nf-border-soft);
+#db-plan-modal .db-plan-day:hover {
+    background: var(--db-plan-card);
+    border-color: var(--db-plan-border);
 }
 
-.db-plan-day.active {
-    background: var(--nf-yellow-soft);
-    border-color: var(--nf-yellow);
+#db-plan-modal .db-plan-day.active {
+    background: var(--db-plan-accent-soft);
+    border-color: var(--db-plan-accent);
     color: #000;
     box-shadow: 0 0 0 1px rgba(255, 212, 59, 0.35);
 }
 
-.db-plan-column {
+#db-plan-modal .db-plan-column {
     margin-top: 8px;
     display: flex;
     flex-direction: column;
     gap: 14px;
 }
 
-.db-plan-toolbar {
+#db-plan-modal .db-plan-toolbar {
     position: sticky;
     top: 48px;
     z-index: 2;
@@ -179,29 +236,29 @@
     justify-content: space-between;
     align-items: center;
     padding: 12px 14px;
-    border-radius: var(--nf-radius-md);
-    background: var(--nf-surface-soft);
-    border: 1px solid var(--nf-border-soft);
+    border-radius: var(--db-plan-radius-md);
+    background: var(--db-plan-card-soft);
+    border: 1px solid var(--db-plan-border);
 }
 
-.db-plan-toolbar-left {
+#db-plan-modal .db-plan-toolbar-left {
     display: flex;
     flex-direction: column;
     gap: 2px;
 }
 
-.db-plan-toolbar-title {
+#db-plan-modal .db-plan-toolbar-title {
     font-size: 14px;
     font-weight: 500;
-    color: var(--nf-text-main);
+    color: var(--db-plan-text);
 }
 
-.db-plan-toolbar-subtitle {
+#db-plan-modal .db-plan-toolbar-subtitle {
     font-size: 12px;
-    color: var(--nf-text-muted);
+    color: var(--db-plan-text-muted);
 }
 
-.db-plan-exercises {
+#db-plan-modal .db-plan-exercises {
     margin-top: 6px;
     display: flex;
     flex-direction: column;
@@ -211,12 +268,12 @@
     padding-right: 4px;
 }
 
-.db-plan-empty {
+#db-plan-modal .db-plan-empty {
     margin-top: 10px;
     padding: 18px 16px;
-    border-radius: var(--nf-radius-md);
-    border: 1px dashed var(--nf-border-soft);
-    background: var(--nf-surface-soft);
+    border-radius: var(--db-plan-radius-md);
+    border: 1px dashed var(--db-plan-border);
+    background: var(--db-plan-card-soft);
     display: none;
     flex-direction: column;
     align-items: center;
@@ -224,55 +281,85 @@
     text-align: center;
 }
 
-.db-plan-empty.visible {
+#db-plan-modal .db-plan-empty.visible {
     display: flex;
 }
 
-.db-plan-empty-icon svg {
-    color: var(--nf-yellow);
+#db-plan-modal .db-plan-empty-icon svg {
+    color: var(--db-plan-accent);
 }
 
-.db-plan-empty-text-main {
+#db-plan-modal .db-plan-empty-text-main {
     font-size: 14px;
     font-weight: 500;
-    color: var(--nf-text-main);
+    color: var(--db-plan-text);
 }
 
-.db-plan-empty-text-sub {
+#db-plan-modal .db-plan-empty-text-sub {
     font-size: 12px;
-    color: var(--nf-text-muted);
+    color: var(--db-plan-text-muted);
 }
 
-.db-plan-footer {
+#db-plan-modal .db-plan-footer {
     margin-top: 4px;
     padding-top: 14px;
-    border-top: 1px solid var(--nf-border-soft);
+    border-top: 1px solid var(--db-plan-border);
     display: flex;
     justify-content: space-between;
     align-items: center;
     gap: 10px;
 }
 
-.db-plan-footer-summary {
+#db-plan-modal .db-plan-footer-summary {
     display: flex;
     flex-direction: column;
     gap: 2px;
     font-size: 12px;
-    color: var(--nf-text-muted);
+    color: var(--db-plan-text-muted);
 }
 
-.db-plan-footer-actions {
+#db-plan-modal .db-plan-footer-actions {
     display: flex;
     gap: 8px;
 }
 
-#db-plan-save {
+#db-plan-modal .db-plan-button {
+    padding: 10px 16px;
+    border-radius: var(--db-plan-radius-sm);
+    border: 1px solid var(--db-plan-border-soft);
+    background: var(--db-plan-card-soft);
+    color: var(--db-plan-text);
+    font-size: 14px;
+    font-family: inherit;
+    cursor: pointer;
+    transition: var(--db-plan-transition);
+}
+
+#db-plan-modal .db-plan-button:hover {
+    background: var(--db-plan-accent);
+    border-color: var(--db-plan-accent);
+    color: #000;
+    transform: translateY(-2px);
+}
+
+#db-plan-modal .db-plan-button-primary {
+    background: var(--db-plan-accent);
+    border-color: var(--db-plan-accent);
+    color: #000;
+    font-weight: 600;
+}
+
+#db-plan-modal .db-plan-button-primary:hover {
+    background: var(--db-plan-accent-soft);
+}
+
+#db-plan-modal #db-plan-save {
     display: inline-flex;
     align-items: center;
     gap: 8px;
 }
 
-#db-plan-save .btn-loader {
+#db-plan-modal #db-plan-save .btn-loader {
     width: 16px;
     height: 16px;
     border-radius: 999px;
@@ -286,15 +373,15 @@
     bottom: 18px;
     right: 18px;
     padding: 10px 14px;
-    border-radius: var(--nf-radius-md);
-    background: var(--nf-yellow-soft);
+    border-radius: 10px;
+    background: #ffe58f;
     color: #000;
     font-size: 13px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
     opacity: 0;
     transform: translateY(8px);
     pointer-events: none;
-    transition: opacity .18s ease, transform .18s ease;
+    transition: opacity 0.18s ease, transform 0.18s ease;
     z-index: 4000;
 }
 
@@ -304,11 +391,6 @@
 }
 
 @keyframes dbPlanSpinner {
-    from {
-        transform: rotate(0deg);
-    }
-
-    to {
-        transform: rotate(360deg);
-    }
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
 }

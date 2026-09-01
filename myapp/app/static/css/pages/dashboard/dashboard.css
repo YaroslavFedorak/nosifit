@@ -13,6 +13,7 @@
 @import "./modals/training/modal.css";
 @import "./modals/training/exercise.css";
 @import "./modals/training/plan.css";
+@import "./modals/training/plan-card.css";
 
 @import "./modals/nutrition.css";
 @import "./modals/recovery.css";
