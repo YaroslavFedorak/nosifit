@@ -72,7 +72,10 @@ function prepareExercises(exercises) {
 function persistExercises(exercises) {
     try {
         const serialized = JSON.stringify(exercises);
+        const today = new Date().toISOString().slice(0, 10);
+
         window.localStorage.setItem("dashboard_training_exercises", serialized);
+        window.localStorage.setItem("dashboard_training_date", today);
     } catch (_) {}
 }
 

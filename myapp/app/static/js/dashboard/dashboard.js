@@ -112,8 +112,18 @@ function applyPlanToWorkout(plan) {
 
 function loadPersistedExercises() {
     try {
+        const savedDate = window.localStorage.getItem("dashboard_training_date");
+        const today = new Date().toISOString().slice(0, 10);
+
+        if (savedDate !== today) {
+            window.localStorage.removeItem("dashboard_training_exercises");
+            window.localStorage.removeItem("dashboard_training_date");
+            return [];
+        }
+
         const raw = window.localStorage.getItem("dashboard_training_exercises");
         if (!raw) return [];
+
         const parsed = JSON.parse(raw);
         return Array.isArray(parsed) ? parsed : [];
     } catch (_) {
