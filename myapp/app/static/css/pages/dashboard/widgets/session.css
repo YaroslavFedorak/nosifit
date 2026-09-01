@@ -48,11 +48,10 @@
     border: 1px solid var(--nf-border-soft);
     border-radius: var(--nf-radius-lg);
     padding: 16px;
-    min-height: 180px;
-    max-height: 420px;
+    height: 220px;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
+    overflow-y: auto;
 }
 
 .db-session-exercise-list {

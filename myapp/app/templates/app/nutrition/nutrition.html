@@ -139,5 +139,8 @@ endblock %} {% block styles %}
   </div>
 </div>
 
-<script src="{{ url_for('static', filename='js/nutrition/nutrition.js') }}"></script>
+<script
+  type="module"
+  src="{{ url_for('static', filename='js/nutrition/nutrition.js') }}"
+></script>
 {% endblock %}
