@@ -215,7 +215,11 @@ def today():
         payload["muscles"] = {k: round(v / total, 3) for k, v in muscles.items()}
         payload["exercises"] = [
             {
-                "name": item["exercise"].name,
+                "exercise": {
+                    "id": item["exercise"].id,
+                    "name": item["exercise"].name,
+                    "slug": item["exercise"].slug,
+                },
                 "sets": item["sets"],
                 "reps": item["reps"],
                 "load": item["load"],
@@ -247,7 +251,11 @@ def today_session():
                     continue
                 result["exercises"].append(
                     {
-                        "name": ex.name,
+                        "exercise": {
+                            "id": ex.id,
+                            "name": ex.name,
+                            "slug": ex.slug,
+                        },
                         "sets": se.sets_done or se.sets_planned or 0,
                         "reps": se.reps_done or se.reps_planned or "8-12",
                         "load": se.load_done or se.load_planned or 0,
@@ -267,7 +275,11 @@ def today_session():
                 continue
             result["exercises"].append(
                 {
-                    "name": ex.name,
+                    "exercise": {
+                        "id": ex.id,
+                        "name": ex.name,
+                        "slug": ex.slug,
+                    },
                     "sets": item.get("sets") or 3,
                     "reps": item.get("reps") or "8-12",
                     "load": item.get("load") or 0,
