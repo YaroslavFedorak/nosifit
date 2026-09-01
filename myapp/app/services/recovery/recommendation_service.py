@@ -4,7 +4,9 @@ from typing import Any, Dict, List, Optional
 from myapp.app.models.recovery.daily_recovery_snapshot import (
     DailyRecoverySnapshot,
 )
+from myapp.app.models.user import User
 from myapp.app.models.training_session import TrainingSession
+from myapp.app.services.training.load.session import build_daily_loads
 from myapp.app.services.recovery.constants import (
     MAX_RECOMMENDATIONS,
     MUSCLE_HIGH_LOAD,
@@ -38,19 +40,22 @@ class RecommendationService:
         }
 
     @staticmethod
-    def _get_daily_load(
-        user_id: int,
-        target_date: date,
-    ) -> Optional[float]:
+    def _get_daily_load(user_id: int, target_date: date) -> Optional[float]:
         try:
-            service = TrainingLoadService()
-            load = service.get_daily_load(
-                user_id,
-                target_date=target_date,
-            )
+            user = User.query.get(user_id)
+            if user is None:
+                return None
 
-            return float(load) if load is not None else None
-        except (TypeError, ValueError):
+            sessions = TrainingSession.query.filter(
+                TrainingSession.user_id == user_id,
+                TrainingSession.started_at >= target_date,
+                TrainingSession.started_at < target_date + timedelta(days=1),
+            ).all()
+
+            daily_loads = build_daily_loads(sessions, user)
+            return float(daily_loads.get(target_date, 0.0))
+
+        except Exception:
             return None
 
     @staticmethod
