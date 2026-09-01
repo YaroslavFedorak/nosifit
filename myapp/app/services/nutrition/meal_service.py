@@ -1,86 +1,148 @@
-from datetime import date, datetime
+from datetime import date, datetime, time
 
 from myapp.app import db
 from myapp.app.models import Meal
 
-def recalc_meal_totals(meal: Meal):
-    meal.total_calories = sum(i.calories for i in meal.items)
-    meal.total_protein = sum(i.protein for i in meal.items)
-    meal.total_fat = sum(i.fat for i in meal.items)
-    meal.total_carbs = sum(i.carbs for i in meal.items)
+
+def _parse_time(value):
+    if value in (None, ""):
+        return None
+
+    if isinstance(value, time):
+        return value
+
+    try:
+        return datetime.strptime(
+            value,
+            "%H:%M",
+        ).time()
+    except (TypeError, ValueError):
+        return None
 
 
-def add_meal_service(user_id, form):
-    from myapp.app.models import MealItem
+def recalc_meal_totals(meal):
+    meal.total_calories = sum(item.calories or 0 for item in meal.items)
+
+    meal.total_protein = sum(item.protein or 0 for item in meal.items)
+
+    meal.total_fat = sum(item.fat or 0 for item in meal.items)
+
+    meal.total_carbs = sum(item.carbs or 0 for item in meal.items)
+
+
+def add_meal_service(user_id, data):
     meal = Meal(
         user_id=user_id,
-        date=date.today(),
-        time=form.get("time"),
-        name=form["name"],
-        category=form["category"],
+        date=data.get("date") or date.today(),
+        time=_parse_time(data.get("time")),
+        name=data["name"],
+        category=data["category"],
     )
+
     db.session.add(meal)
-    db.session.flush()
-
-    if form.get("kcal") or form.get("protein") or form.get("fat") or form.get("carb"):
-        item = MealItem(
-            meal_id=meal.id,
-            name=meal.name,
-            calories=int(form.get("kcal", 0)),
-            protein=int(form.get("protein", 0)),
-            fat=int(form.get("fat", 0)),
-            carbs=int(form.get("carb", 0)),
-        )
-        db.session.add(item)
-
-    recalc_meal_totals(meal)
     db.session.commit()
 
+    return meal
+
+
+def update_meal_service(user_id, meal_id, data):
+    meal = Meal.query.filter_by(
+        id=meal_id,
+        user_id=user_id,
+    ).first()
+
+    if meal is None:
+        return None
+
+    if "name" in data:
+        name = (data["name"] or "").strip()
+
+        if name:
+            meal.name = name
+
+    if "category" in data:
+        category = (data["category"] or "").strip()
+
+        if category:
+            meal.category = category
+
+    if "date" in data and data["date"]:
+        try:
+            meal.date = datetime.strptime(
+                data["date"],
+                "%Y-%m-%d",
+            ).date()
+        except (TypeError, ValueError):
+            pass
+
+    if "time" in data:
+        meal.time = _parse_time(data["time"])
+
+    db.session.commit()
+
+    return meal
 
 
 def delete_meal_service(user_id, meal_id):
-    meal = Meal.query.filter_by(id=meal_id, user_id=user_id).first()
-    if meal:
-        db.session.delete(meal)
-        db.session.commit()
+    meal = Meal.query.filter_by(
+        id=meal_id,
+        user_id=user_id,
+    ).first()
+
+    if meal is None:
+        return False
+
+    db.session.delete(meal)
+    db.session.commit()
+
+    return True
 
 
 def copy_meal_service(user_id, meal_id):
-    from myapp.app.models import MealItem
+    source_meal = Meal.query.filter_by(
+        id=meal_id,
+        user_id=user_id,
+    ).first()
 
-    source = Meal.query.filter_by(id=meal_id, user_id=user_id).first()
-    if not source:
-        return
+    if source_meal is None:
+        return None
 
     new_meal = Meal(
         user_id=user_id,
         date=date.today(),
-        time=datetime.now().time(),
+        time=source_meal.time,
+        name=source_meal.name,
+        category=source_meal.category,
         total_calories=0,
         total_protein=0,
         total_fat=0,
         total_carbs=0,
-        name=source.name,
-        category=source.category,
     )
 
     db.session.add(new_meal)
     db.session.flush()
 
-    for item in source.items:
-        db.session.add(
-            MealItem(
-                meal_id=new_meal.id,
-                name=item.name,
-                calories=item.calories,
-                protein=item.protein,
-                fat=item.fat,
-                carbs=item.carbs,
-            )
+    for source_item in source_meal.items:
+        from myapp.app.models import MealItem
+
+        new_item = MealItem(
+            meal_id=new_meal.id,
+            name=source_item.name,
+            weight=source_item.weight,
+            calories=source_item.calories,
+            protein=source_item.protein,
+            fat=source_item.fat,
+            carbs=source_item.carbs,
+            fiber=source_item.fiber,
+            category_id=source_item.category_id,
         )
+
+        db.session.add(new_item)
 
     db.session.flush()
 
     recalc_meal_totals(new_meal)
 
     db.session.commit()
+
+    return new_meal

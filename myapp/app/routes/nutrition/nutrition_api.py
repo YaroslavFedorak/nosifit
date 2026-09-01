@@ -1,259 +1,421 @@
-from flask import Blueprint, request, jsonify
-from flask_login import login_required, current_user
-from datetime import date, datetime, timedelta
+from datetime import date, timedelta
 
-from myapp.app import db
-from myapp.app.models import Meal, MealItem, UserWeight
-from myapp.app.models.user_profile import UserProfile
-from myapp.app.services.nutrition.day_service import get_daily_nutrition_data
-from myapp.app.services.nutrition.meal_service import (
-    add_meal_service,
-    delete_meal_service,
-    copy_meal_service
+from flask import Blueprint, jsonify, request
+from flask_login import current_user, login_required
+
+from myapp.app.models import Meal
+
+from myapp.app.services.nutrition.day_service import (
+    get_daily_nutrition_data,
 )
+
 from myapp.app.services.nutrition.item_service import (
     add_item_service,
-    delete_item_service
+    delete_item_service,
+    update_item_service,
 )
-from myapp.app.services.nutrition.stats_service import get_stats, get_year_heatmap
-from myapp.app.models.nutrition.user_water import UserWater
 
+from myapp.app.services.nutrition.meal_service import (
+    add_meal_service,
+    copy_meal_service,
+    delete_meal_service,
+    update_meal_service,
+)
 
-nutrition_api = Blueprint("nutrition_api", __name__, url_prefix="/api/nutrition")
+from myapp.app.services.nutrition.stats_service import (
+    get_stats,
+    get_year_heatmap,
+)
 
+from myapp.app.services.nutrition.water_service import (
+    add_water_service,
+)
 
-def parse_date():
-    d = request.args.get("date")
-    if not d:
-        return date.today()
-    try:
-        return datetime.strptime(d, "%Y-%m-%d").date()
-    except:
-        return date.today()
+from myapp.app.services.nutrition.weight_service import (
+    update_user_weight,
+)
+
+nutrition_api = Blueprint(
+    "nutrition_api",
+    __name__,
+    url_prefix="/api/nutrition",
+)
 
 
 @nutrition_api.get("/day")
 @login_required
 def api_day():
-    data = get_daily_nutrition_data(current_user.id)
+    data = get_daily_nutrition_data(
+        current_user.id,
+    )
+
     return jsonify(data)
 
 
 @nutrition_api.post("/meals")
 @login_required
 def api_add_meal():
-    form = request.json or {}
-    add_meal_service(current_user.id, {
-        "name": form["name"],
-        "category": form["category"],
-        "time": form.get("time"),
-        "kcal": form.get("calories", 0),
-        "protein": form.get("protein", 0),
-        "fat": form.get("fat", 0),
-        "carb": form.get("carbs", 0),
-    })
-    return jsonify({"status": "ok"})
+    data = request.get_json() or {}
+
+    name = (data.get("name") or "").strip()
+    category = (data.get("category") or "").strip()
+
+    if not name or not category:
+        return (
+            jsonify(
+                {
+                    "error": "Name and category are required",
+                }
+            ),
+            400,
+        )
+
+    meal = add_meal_service(
+        current_user.id,
+        {
+            "name": name,
+            "category": category,
+            "time": data.get("time"),
+        },
+    )
+
+    return (
+        jsonify(
+            {
+                "status": "ok",
+                "meal_id": meal.id,
+            }
+        ),
+        201,
+    )
 
 
 @nutrition_api.put("/meals/<int:meal_id>")
 @login_required
 def api_edit_meal(meal_id):
-    form = request.json or {}
+    data = request.get_json() or {}
 
-    meal = Meal.query.filter_by(id=meal_id, user_id=current_user.id).first()
-    if not meal:
-        return jsonify({"error": "Not found"}), 404
+    meal = update_meal_service(
+        current_user.id,
+        meal_id,
+        data,
+    )
 
-    meal.name = form.get("name", meal.name)
-    meal.category = form.get("category", meal.category)
-    meal.time = form.get("time", meal.time)
+    if meal is None:
+        return (
+            jsonify(
+                {
+                    "error": "Meal not found",
+                }
+            ),
+            404,
+        )
 
-    db.session.add(meal)
-    db.session.commit()
-
-    return jsonify({"status": "ok"})
+    return jsonify(
+        {
+            "status": "ok",
+        }
+    )
 
 
 @nutrition_api.delete("/meals/<int:meal_id>")
 @login_required
 def api_delete_meal(meal_id):
-    delete_meal_service(current_user.id, meal_id)
-    return jsonify({"status": "ok"})
+    deleted = delete_meal_service(
+        current_user.id,
+        meal_id,
+    )
+
+    if not deleted:
+        return (
+            jsonify(
+                {
+                    "error": "Meal not found",
+                }
+            ),
+            404,
+        )
+
+    return jsonify(
+        {
+            "status": "ok",
+        }
+    )
 
 
 @nutrition_api.post("/items")
 @login_required
 def api_add_item():
-    form = request.json or {}
+    data = request.get_json() or {}
 
-    if "meal_id" not in form or "name" not in form:
-        return jsonify({"error": "Missing fields"}), 400
+    meal_id = data.get("meal_id")
+    name = (data.get("name") or "").strip()
 
-    add_item_service(current_user.id, {
-        "meal_id": form["meal_id"],
-        "name": form["name"],
-        "calories": form.get("calories", 0),
-        "protein": form.get("protein", 0),
-        "fat": form.get("fat", 0),
-        "carbs": form.get("carbs", 0),
-    })
+    if not meal_id or not name:
+        return (
+            jsonify(
+                {
+                    "error": "meal_id and name are required",
+                }
+            ),
+            400,
+        )
 
-    return jsonify({"status": "ok"})
+    item = add_item_service(
+        current_user.id,
+        {
+            "meal_id": meal_id,
+            "name": name,
+            "weight": data.get("weight"),
+            "calories": data.get("calories", 0),
+            "protein": data.get("protein", 0),
+            "fat": data.get("fat", 0),
+            "carbs": data.get("carbs", 0),
+            "fiber": data.get("fiber", 0),
+            "category_label": data.get("category_label"),
+            "category_id": data.get("category_id"),
+        },
+    )
+
+    if item is None:
+        return (
+            jsonify(
+                {
+                    "error": "Meal not found",
+                }
+            ),
+            404,
+        )
+
+    return (
+        jsonify(
+            {
+                "status": "ok",
+                "item_id": item.id,
+            }
+        ),
+        201,
+    )
 
 
 @nutrition_api.put("/items/<int:item_id>")
 @login_required
 def api_edit_item(item_id):
-    form = request.json or {}
+    data = request.get_json() or {}
 
-    item = (
-        MealItem.query.join(Meal)
-        .filter(MealItem.id == item_id, Meal.user_id == current_user.id)
-        .first()
+    item = update_item_service(
+        current_user.id,
+        item_id,
+        data,
     )
-    if not item:
-        return jsonify({"error": "Not found"}), 404
 
-    item.name = form.get("name", item.name)
-    item.calories = form.get("calories", item.calories)
-    item.protein = form.get("protein", item.protein)
-    item.fat = form.get("fat", item.fat)
-    item.carbs = form.get("carbs", item.carbs)
+    if item is None:
+        return (
+            jsonify(
+                {
+                    "error": "Item not found",
+                }
+            ),
+            404,
+        )
 
-    db.session.add(item)
-    db.session.commit()
-
-    return jsonify({"status": "ok"})
+    return jsonify(
+        {
+            "status": "ok",
+        }
+    )
 
 
 @nutrition_api.delete("/items/<int:item_id>")
 @login_required
 def api_delete_item(item_id):
-    delete_item_service(current_user.id, item_id)
-    return jsonify({"status": "ok"})
+    deleted = delete_item_service(
+        current_user.id,
+        item_id,
+    )
+
+    if not deleted:
+        return (
+            jsonify(
+                {
+                    "error": "Item not found",
+                }
+            ),
+            404,
+        )
+
+    return jsonify(
+        {
+            "status": "ok",
+        }
+    )
 
 
-@nutrition_api.post("/copy_yesterday")
+@nutrition_api.post("/copy-yesterday")
 @login_required
 def api_copy_yesterday():
-    today = date.today()
-    yesterday = today - timedelta(days=1)
+    yesterday = date.today() - timedelta(days=1)
 
-    meals = Meal.query.filter_by(user_id=current_user.id, date=yesterday).all()
+    meals = Meal.query.filter_by(
+        user_id=current_user.id,
+        date=yesterday,
+    ).all()
+
     if not meals:
-        return jsonify({"error": "No meals yesterday"}), 400
+        return (
+            jsonify(
+                {
+                    "error": "No meals found yesterday",
+                }
+            ),
+            400,
+        )
 
-    for m in meals:
-        copy_meal_service(current_user.id, m.id)
+    copied = []
 
-    return jsonify({"status": "ok"})
+    for meal in meals:
+        new_meal = copy_meal_service(
+            current_user.id,
+            meal.id,
+        )
+
+        if new_meal:
+            copied.append(new_meal.id)
+
+    return jsonify(
+        {
+            "status": "ok",
+            "copied": len(copied),
+        }
+    )
 
 
 @nutrition_api.post("/weight")
 @login_required
 def api_update_weight():
-    form = request.json or {}
-    w = form.get("weight")
+    data = request.get_json() or {}
 
-    if not w:
-        return jsonify({"error": "Missing weight"}), 400
+    try:
+        weight = float(data.get("weight"))
 
-    entry = UserWeight(
-        user_id=current_user.id,
-        date=date.today(),
-        weight=float(w)
+    except (TypeError, ValueError):
+        return (
+            jsonify(
+                {
+                    "error": "Invalid weight",
+                }
+            ),
+            400,
+        )
+
+    if weight <= 0:
+        return (
+            jsonify(
+                {
+                    "error": "Weight must be positive",
+                }
+            ),
+            400,
+        )
+
+    entry = update_user_weight(
+        current_user,
+        weight,
     )
-    db.session.add(entry)
 
-    profile = current_user.profile
-    if profile is None:
-        profile = UserProfile(user_id=current_user.id, training_location="home")
-        db.session.add(profile)
-
-    profile.weight = float(w)
-    db.session.add(profile)
-
-    db.session.commit()
-
-    return jsonify({"status": "ok"})
+    return jsonify(
+        {
+            "status": "ok",
+            "weight": entry.weight,
+        }
+    )
 
 
 @nutrition_api.get("/stats")
 @login_required
 def api_stats():
-    days = int(request.args.get("days", 7))
-    data = get_stats(current_user.id, days)
+    try:
+        days = int(
+            request.args.get(
+                "days",
+                7,
+            )
+        )
+
+    except ValueError:
+        days = 7
+
+    days = max(
+        1,
+        min(days, 365),
+    )
+
+    data = get_stats(
+        current_user.id,
+        days,
+    )
+
     return jsonify(data)
 
 
 @nutrition_api.get("/heatmap")
 @login_required
 def api_heatmap():
-    year = int(request.args.get("year", date.today().year))
-    user_id = current_user.id
+    try:
+        year = int(
+            request.args.get(
+                "year",
+                date.today().year,
+            )
+        )
 
-    start = date(year, 1, 1)
-    end = date(year, 12, 31)
+    except ValueError:
+        year = date.today().year
 
-    meals = Meal.query.filter(
-        Meal.user_id == user_id,
-        Meal.date >= start,
-        Meal.date <= end
-    ).all()
+    data = get_year_heatmap(
+        current_user.id,
+        year,
+    )
 
-    days = {}
-
-    for m in meals:
-        if m.date not in days:
-            days[m.date] = 0
-        days[m.date] += m.total_calories
-
-    result = []
-    for d in range(365):
-        day = start + timedelta(days=d)
-        if day > end:
-            break
-
-        kcal = days.get(day, 0)
-
-        if kcal == 0:
-            level = 0
-        elif kcal < 800:
-            level = 1
-        elif kcal < 1600:
-            level = 2
-        elif kcal < 2400:
-            level = 3
-        else:
-            level = 4
-
-        result.append({
-            "date": day.strftime("%Y-%m-%d"),
-            "kcal": kcal,
-            "level": level,
-            "is_today": (day == date.today())
-        })
-
-    return jsonify({"days": result})
+    return jsonify(data)
 
 
 @nutrition_api.post("/water")
 @login_required
 def api_add_water():
-    form = request.json or {}
-    amount = form.get("amount")
+    data = request.get_json() or {}
 
-    if not amount:
-        return jsonify({"error": "Missing amount"}), 400
+    try:
+        amount = float(data.get("amount"))
 
-    today = date.today()
+    except (TypeError, ValueError):
+        return (
+            jsonify(
+                {
+                    "error": "Invalid amount",
+                }
+            ),
+            400,
+        )
 
-    entry = UserWater.query.filter_by(user_id=current_user.id, date=today).first()
-    if not entry:
-        entry = UserWater(user_id=current_user.id, date=today, amount=0)
-        db.session.add(entry)
+    if amount <= 0:
+        return (
+            jsonify(
+                {
+                    "error": "Amount must be positive",
+                }
+            ),
+            400,
+        )
 
-    entry.amount += float(amount)
-    db.session.commit()
+    entry = add_water_service(
+        current_user.id,
+        amount,
+    )
 
-    return jsonify({"status": "ok"})
+    return jsonify(
+        {
+            "status": "ok",
+            "amount": entry.amount,
+        }
+    )
