@@ -92,6 +92,24 @@ function getTrainingPlan(training) {
     return training.plan ?? training.training_plan ?? training.program ?? null;
 }
 
+function getCurrentPlanExercises(plan) {
+    const dayKeys = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
+    const currentDay = dayKeys[new Date().getDay()];
+    const day = plan?.days?.[currentDay];
+
+    if (Array.isArray(day)) return day;
+    if (Array.isArray(day?.exercises)) return day.exercises;
+    return [];
+}
+
+function applyPlanToWorkout(plan) {
+    const exercises = getCurrentPlanExercises(plan);
+    trainingEditor.replaceExercises(exercises);
+
+    const titleInput = document.getElementById("dashboard-workout-title");
+    if (titleInput) titleInput.value = plan?.name ?? "Тренування";
+}
+
 function loadPersistedExercises() {
     try {
         const raw = window.localStorage.getItem("dashboard_training_exercises");
@@ -128,15 +146,6 @@ function handleExerciseSelected(exercise) {
     const added = trainingEditor.addExercise(exercise);
     if (!added) {
         console.error("Failed to add exercise:", exercise);
-    }
-}
-
-function handleStartPlan(plan) {
-    if (!plan || !Array.isArray(plan.exercises)) return;
-    trainingEditor.replaceExercises(plan.exercises);
-    const titleInput = document.getElementById("dashboard-workout-title");
-    if (titleInput) {
-        titleInput.value = plan.title ?? plan.name ?? "Тренування";
     }
 }
 
@@ -181,9 +190,18 @@ function bindNavigation() {
     const trainingButton = document.getElementById("dashboard-open-training");
     if (!trainingButton) return;
     trainingButton.addEventListener("click", () => {
-        const currentState = state.getState();
-        const plan = getTrainingPlan(currentState.training);
-        openPlanModal(plan, handleStartPlan);
+        const overview = state.getState().overview;
+        const plan = getTrainingPlan(overview?.training);
+        openPlanModal(plan, savedPlan => {
+            applyPlanToWorkout(savedPlan);
+            state.setOverview({
+                ...overview,
+                training: {
+                    ...overview?.training,
+                    plan: savedPlan
+                }
+            });
+        });
     });
 }
 

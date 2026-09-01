@@ -39,3 +39,57 @@
     color: var(--nf-text-main);
     border: 1px solid var(--nf-border-soft);
 }
+
+.db-card-session .db-btn {
+    padding: 10px 16px;
+    border-radius: var(--nf-radius-sm);
+    background: var(--nf-surface-soft);
+    border: 1px solid var(--nf-border-soft);
+    color: var(--nf-text-main);
+    font-size: 14px;
+    font-weight: 500;
+    transition: var(--nf-transition-fast);
+}
+
+.db-card-session .db-btn:hover {
+    background: var(--nf-yellow);
+    border-color: var(--nf-yellow);
+    color: #000;
+    transform: translateY(-2px);
+}
+
+.db-card-session .db-btn-primary {
+    background: var(--nf-yellow);
+    border-color: var(--nf-yellow);
+    color: #000;
+    font-weight: 600;
+}
+
+.db-card-session .db-btn-primary:hover {
+    background: var(--nf-yellow-soft);
+}
+
+.db-card-session .db-btn-secondary {
+    background: var(--nf-surface);
+    border-color: var(--nf-border-soft);
+    color: var(--nf-text-main);
+}
+
+.db-card-session .db-btn-secondary:hover {
+    background: var(--nf-yellow);
+    border-color: var(--nf-yellow);
+    color: #000;
+}
+
+.db-card-session .db-btn-danger {
+    background: #ff4444;
+    border-color: #ff4444;
+    color: #fff;
+    border-radius: var(--nf-radius-sm);
+    padding: 10px 16px;
+    transition: var(--nf-transition-fast);
+}
+
+.db-card-session .db-btn-danger:hover {
+    background: #ff6666;
+}

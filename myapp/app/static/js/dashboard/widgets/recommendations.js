@@ -1,20 +1,28 @@
-import { el } from "../utils/dom.js";
-
-export function renderRecommendations(container, recommendation) {
+export function renderRecommendations(container, recommendations) {
+    if (!container) return;
     container.innerHTML = "";
-
-    if (!recommendation || typeof recommendation !== "object") {
-        container.textContent = "Немає рекомендацій";
+    if (!recommendations) {
+        const empty = document.createElement("div");
+        empty.className = "db-recommendation-empty";
+        empty.textContent = "Немає рекомендацій";
+        container.appendChild(empty);
         return;
     }
-
-    const title = recommendation.title || "Без назви";
-    const reason = recommendation.reason || recommendation.message || "";
-
-    const node = el("div", { class: "dashboard-recommendation-item" }, [
-        el("div", { class: "dashboard-recommendation-title", text: title }),
-        el("div", { class: "dashboard-recommendation-reason", text: reason })
-    ]);
-
-    container.appendChild(node);
+    const list = document.createElement("div");
+    list.className = "db-recommendation-list";
+    const items = Array.isArray(recommendations) ? recommendations : [recommendations];
+    items.forEach(item => {
+        const row = document.createElement("div");
+        row.className = "db-recommendation-item";
+        const title = document.createElement("div");
+        title.className = "db-recommendation-title";
+        title.textContent = item.title || item.name || (item.recommendation || "Рекомендація");
+        const meta = document.createElement("div");
+        meta.className = "db-recommendation-meta";
+        meta.textContent = item.description || item.summary || "";
+        row.appendChild(title);
+        row.appendChild(meta);
+        list.appendChild(row);
+    });
+    container.appendChild(list);
 }
