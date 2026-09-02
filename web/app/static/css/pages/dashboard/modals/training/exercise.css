@@ -1,5 +1,6 @@
 #db-exercise-modal {
     --db-modal-width: 420px;
+    z-index: 999999;
 }
 
 #db-exercise-modal .db-modal-panel {

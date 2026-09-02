@@ -34,7 +34,7 @@ class RecoveryScoreService:
         return int((completed / len(habits)) * 100)
 
     def calculate_training_score(self, user_id: int, target_date=None) -> int:
-        load = self.training_load.get_daily_load(user_id, target_date=target_date)
+        load = self.training_load.get_daily_load(user_id, target_day=target_date)
         if load <= 40:
             return 30
         if load <= 80:
@@ -64,7 +64,7 @@ class RecoveryScoreService:
     def _compute_penalties(
         self, user_id: int, required_minutes: int, target_date=None
     ) -> Tuple[int, int]:
-        load = self.training_load.get_daily_load(user_id, target_date=target_date)
+        load = self.training_load.get_daily_load(user_id, target_day=target_date)
         debt_minutes = self.sleep_service.calculate_sleep_debt_minutes(
             user_id, required_minutes
         )

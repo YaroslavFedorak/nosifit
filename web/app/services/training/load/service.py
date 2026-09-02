@@ -1,13 +1,28 @@
 from .exercise import calculate_exercise_load
 from .index import compute_daily_load_index
 from .session import calculate_session_load
+from web.app.models.training_session import TrainingSession
+from datetime import datetime, time
 
 
 class TrainingLoadService:
 
     @staticmethod
-    def get_daily_load(user, sessions, target_day):
-        idx = compute_daily_load_index(user, sessions, target_day)
+    def get_daily_load(user_id, target_day):
+        start_dt = datetime.combine(target_day, time.min)
+        end_dt = datetime.combine(target_day, time.max)
+
+        sessions = (
+            TrainingSession.query.filter(
+                TrainingSession.user_id == user_id,
+                TrainingSession.started_at >= start_dt,
+                TrainingSession.started_at <= end_dt,
+            )
+            .order_by(TrainingSession.started_at.asc())
+            .all()
+        )
+
+        idx = compute_daily_load_index(user_id, sessions, target_day)
         return idx["load_today"]
 
     @staticmethod

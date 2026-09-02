@@ -140,6 +140,11 @@ def log_habit():
     if user_habit_id is None:
         return jsonify({"error": "user_habit_id is required"}), 400
 
+    try:
+        user_habit_id = int(user_habit_id)
+    except (TypeError, ValueError):
+        return jsonify({"error": "user_habit_id must be integer"}), 400
+
     log = habit_service.log_habit(user_habit_id)
     if log is None:
         return jsonify({"error": "user_habit not found"}), 404
@@ -167,9 +172,7 @@ def get_snapshot(user_id):
 
     habits = habit_service.get_user_habits_with_status(user_id, snapshot.date)
 
-    daily_load = training_load_service.get_daily_load(
-        user_id, target_date=snapshot.date
-    )
+    daily_load = training_load_service.get_daily_load(user_id, target_day=snapshot.date)
 
     recs = recommendation_service.build_recommendations(
         user_id=user_id,
@@ -243,7 +246,7 @@ def get_recommendations(user_id):
     if snapshot is None:
         snapshot = snapshot_service.generate_snapshot(user_id, target_date=target_date)
 
-    daily_load = training_load_service.get_daily_load(user_id, target_date=target_date)
+    daily_load = training_load_service.get_daily_load(user_id, target_day=target_date)
 
     recs = recommendation_service.build_recommendations(
         user_id=user_id,
@@ -297,7 +300,7 @@ def get_day_details(user_id):
 
             try:
                 daily_load = training_load_service.get_daily_load(
-                    user_id, target_date=dt
+                    user_id, target_day=dt
                 )
             except Exception:
                 current_app.logger.exception(
@@ -391,9 +394,7 @@ def get_day_details(user_id):
                 recovery_score=0,
                 energy_score=0,
                 habit_score=0,
-                daily_load=training_load_service.get_daily_load(
-                    user_id, target_date=dt
-                ),
+                daily_load=training_load_service.get_daily_load(user_id, target_day=dt),
                 target_date=dt,
             )
         except Exception:
