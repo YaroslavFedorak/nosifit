@@ -84,7 +84,7 @@ Other
 ## Project Structure
 
 ```
-myapp/
+web/
 │
 ├── app/
 │   ├── models/
