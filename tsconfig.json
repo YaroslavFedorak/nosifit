@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+        "target": "ES2020",
+        "module": "ES2020",
+        "moduleResolution": "Bundler",
+        "strict": true,
+        "outDir": "./web/app/static/js",
+        "rootDir": "./web/app/static/ts",
+        "esModuleInterop": true,
+        "forceConsistentCasingInFileNames": true,
+        "skipLibCheck": true
+    },
+    "include": [
+        "web/app/static/ts/**/*.ts"
+    ]
+}
