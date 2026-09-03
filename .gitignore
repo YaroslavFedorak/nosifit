@@ -41,3 +41,9 @@ instance/
 # --- COMPILED ASSETS ---
 dist/
 build/
+
+# --- NODE / TYPESCRIPT ---
+node_modules/
+*.js.map
+*.d.ts
+tsconfig.tsbuildinfo
