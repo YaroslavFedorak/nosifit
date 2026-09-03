@@ -22,6 +22,10 @@ from web.app.services.nutrition.meal_service import (
     update_meal_service,
 )
 
+from web.app.services.nutrition.recommendation_service import (
+    get_nutrition_recommendations,
+)
+
 from web.app.services.nutrition.stats_service import (
     get_stats,
     get_year_heatmap,
@@ -46,6 +50,16 @@ nutrition_api = Blueprint(
 @login_required
 def api_day():
     data = get_daily_nutrition_data(
+        current_user.id,
+    )
+
+    return jsonify(data)
+
+
+@nutrition_api.get("/recommendations")
+@login_required
+def api_recommendations():
+    data = get_nutrition_recommendations(
         current_user.id,
     )
 
