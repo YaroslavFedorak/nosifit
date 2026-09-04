@@ -26,6 +26,10 @@ import {
     setupWeightModal,
 } from "./modals/weight.js";
 
+import {
+    loadNutritionRecommendations,
+} from "./recommendations.js";
+
 
 function setTodayDate() {
     const element =
@@ -62,6 +66,8 @@ async function loadNutritionDay() {
             data.meals,
             loadNutritionDay,
         );
+
+        await loadNutritionRecommendations();
 
     } catch (error) {
         console.error(

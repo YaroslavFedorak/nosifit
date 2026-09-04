@@ -29,6 +29,12 @@ export const NutritionAPI = {
         );
     },
 
+    getRecommendations() {
+        return request(
+            `${BASE_URL}/recommendations`
+        );
+    },
+
     createMeal(data) {
         return request(
             `${BASE_URL}/meals`,

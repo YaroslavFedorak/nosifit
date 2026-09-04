@@ -10,112 +10,171 @@ endblock %} {% block styles %}
 />
 {% endblock %} {% block body_class %}nutrition-page{% endblock %} {% block body
 %}
-
 <div class="nutrition-page-wrapper">
-  <div class="nutrition-header-row">
+  <div class="nutrition-header">
     <div class="nutrition-header-left">
-      <h1 class="page-title">Харчування</h1>
-      <div class="page-subtitle">Щоденний раціон, вода, вага та прогрес</div>
+      <div class="nutrition-header-icon-box">
+        <span class="nutrition-header-icon">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="lucide lucide-grape-icon lucide-grape"
+          >
+            <path d="M22 5V2l-5.89 5.89" />
+            <circle cx="16.6" cy="15.89" r="3" />
+            <circle cx="8.11" cy="7.4" r="3" />
+            <circle cx="12.35" cy="11.65" r="3" />
+            <circle cx="13.91" cy="5.85" r="3" />
+            <circle cx="18.15" cy="10.09" r="3" />
+            <circle cx="6.56" cy="13.2" r="3" />
+            <circle cx="10.8" cy="17.44" r="3" />
+            <circle cx="5" cy="19" r="3" />
+          </svg>
+        </span>
+      </div>
+
+      <div class="nutrition-header-text">
+        <h1 class="nutrition-title">Харчування</h1>
+        <div class="nutrition-subtitle">
+          Відстежуйте раціон • Контролюйте баланс • Покращуйте звички
+        </div>
+      </div>
     </div>
 
     <div class="nutrition-header-right">
-      <div class="date-display" id="current-date"></div>
+      <div class="nutrition-header-info">
+        <div class="nutrition-header-label">Сьогодні</div>
+        <div id="current-date" class="nutrition-header-value"></div>
+      </div>
     </div>
   </div>
 
   <div class="nutrition-main-grid">
     <div class="nutrition-left">
-      <div class="balance-row">
-        <section class="card balance-card-large">
-          <div class="balance-main">
-            <div class="balance-kcal-ring">
-              <div class="balance-kcal-value" id="kcal-main-value">0</div>
-              <div class="balance-kcal-label">ккал сьогодні</div>
-              <div class="balance-kcal-goal" id="kcal-main-goal">з 0 ккал</div>
-            </div>
-
-            <div class="balance-macros">
-              <div class="macro-row">
-                <span class="macro-label">Білки</span>
-                <span class="macro-value" id="macro-protein-value"
-                  >0 / 0 г</span
-                >
-                <span class="macro-percent" id="macro-protein-percent">0%</span>
-              </div>
-
-              <div class="macro-row">
-                <span class="macro-label">Жири</span>
-                <span class="macro-value" id="macro-fat-value">0 / 0 г</span>
-                <span class="macro-percent" id="macro-fat-percent">0%</span>
-              </div>
-
-              <div class="macro-row">
-                <span class="macro-label">Вуглеводи</span>
-                <span class="macro-value" id="macro-carb-value">0 / 0 г</span>
-                <span class="macro-percent" id="macro-carb-percent">0%</span>
-              </div>
-            </div>
+      <section class="cmp-card meals-widget">
+        <div class="meals-widget-header">
+          <div>
+            <div class="widget-eyebrow">Сьогоднішній прийом їжі</div>
           </div>
 
-          <div class="balance-secondary">
-            <div class="balance-secondary-block">
-              <div class="secondary-label">Баланс калорій</div>
-              <div class="secondary-value" id="kcal-balance-label">0 ккал</div>
-              <div class="secondary-tag" id="kcal-balance-status">Норма</div>
-            </div>
+          <button class="cmp-btn cmp-btn-primary" id="open-add-meal">
+            Новий прийом
+          </button>
+        </div>
 
-            <div class="balance-secondary-block">
-              <div class="secondary-label">Порівняно з вчора</div>
-              <div class="secondary-diffs">
-                <span id="kcal-diff">0 ккал</span>
-                <span id="protein-diff">0 Б</span>
-                <span id="fat-diff">0 Ж</span>
-                <span id="carb-diff">0 В</span>
-              </div>
-            </div>
+        <div class="meals-box">
+          <div id="meals-list" class="meals-list"></div>
+        </div>
+      </section>
+
+      <section class="cmp-card heatmap-widget">
+        <div class="heatmap-widget-header">
+          <div>
+            <div class="widget-eyebrow">ІСТОРІЯ</div>
+            <h2 class="widget-title">Баланс харчування</h2>
           </div>
-        </section>
 
-        <div class="side-mini-cards">
-          <section class="card small-card water-card">
-            <h2>Вода</h2>
-            <div class="water-info">
-              <div class="water-value">
-                <span id="water-today">—</span>
-                <span class="goal">з <span id="water-goal">—</span></span>
-              </div>
-              <button class="btn" id="open-water-modal">Додати воду</button>
-            </div>
-          </section>
-
-          <section class="card small-card weight-card">
-            <h2>Вага</h2>
-            <div class="weight-info">
-              <div class="weight-value">
-                <span id="weight-current">— кг</span>
-              </div>
-              <button class="btn" id="open-update-weight">Оновити</button>
-            </div>
-          </section>
+          <div class="heatmap-controls">
+            <select id="heatmap-year" class="heatmap-select">
+              <option value="2026">2026</option>
+              <option value="2025">2025</option>
+              <option value="2024">2024</option>
+            </select>
+          </div>
         </div>
-      </div>
 
-      <section class="card heatmap-card-full">
-        <div class="heatmap-header-inline">
-          <h2>Баланс за рік</h2>
-        </div>
         {% include "app/nutrition/nutrition_heatmap.html" %}
       </section>
     </div>
 
     <div class="nutrition-right">
-      <section class="card meals-card-large">
-        <div class="section-header">
-          <h2>Прийоми їжі сьогодні</h2>
-          <button class="btn primary" id="open-add-meal">Новий прийом</button>
+      <section class="nutrition-quick-stats">
+        <div class="cmp-card quick-stat-card">
+          <div class="quick-stat-top">
+            <div class="quick-stat-label">Вода</div>
+            <div class="quick-stat-icon">💧</div>
+          </div>
+
+          <div class="quick-stat-value">
+            <span id="water-today">—</span>
+            <span class="quick-stat-unit">л</span>
+          </div>
+
+          <div class="quick-stat-meta">
+            Ціль: <span id="water-goal">—</span>
+          </div>
+
+          <button
+            class="cmp-btn cmp-btn-ghost cmp-btn-sm"
+            id="open-water-modal"
+          >
+            Додати
+          </button>
         </div>
 
-        <div id="meals-list" class="meals-list large-meals-list"></div>
+        <div class="cmp-card quick-stat-card">
+          <div class="quick-stat-top">
+            <div class="quick-stat-label">Вага</div>
+            <div class="quick-stat-icon">⚖</div>
+          </div>
+
+          <div class="quick-stat-value">
+            <span id="weight-current">—</span>
+            <span class="quick-stat-unit">кг</span>
+          </div>
+
+          <div class="quick-stat-meta">Поточне значення</div>
+
+          <button
+            class="cmp-btn cmp-btn-ghost cmp-btn-sm"
+            id="open-update-weight"
+          >
+            Оновити
+          </button>
+        </div>
+      </section>
+
+      <section class="cmp-card nutrition-recommendations">
+        <div class="recommendations-header">
+          <div>
+            <div class="widget-eyebrow">РЕКОМЕНДАЦІЇ</div>
+            <h2 class="widget-title">Що варто врахувати</h2>
+            <p class="widget-subtitle">
+              Персональні підказки на основі вашого харчування
+            </p>
+          </div>
+        </div>
+
+        <div
+          class="recommendations-list"
+          id="nutrition-recommendations-list"
+          data-nutrition-recommendations
+        >
+          <div class="recommendation-item">
+            <div class="recommendation-marker"></div>
+
+            <div class="recommendation-content">
+              <div class="recommendation-title">Аналізуємо ваш раціон</div>
+
+              <div class="recommendation-text">
+                Додавайте прийоми їжі, щоб отримувати персональні рекомендації.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="recommendations-summary"
+          id="nutrition-recommendations-summary"
+          data-nutrition-recommendations-summary
+        ></div>
       </section>
     </div>
   </div>
@@ -132,6 +191,7 @@ endblock %} {% block styles %}
     <h2>Додати воду</h2>
     <label>Обʼєм (л)</label>
     <input type="number" id="water-amount" step="0.1" min="0" />
+
     <div class="modal-actions">
       <button class="btn" id="close-water-modal">Скасувати</button>
       <button class="btn primary" id="save-water">Додати</button>
