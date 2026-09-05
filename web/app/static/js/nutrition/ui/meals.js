@@ -1,400 +1,265 @@
-import {
-    openModal,
-} from "../modals/modal.js";
-
-import {
-    NutritionAPI,
-} from "../api.js";
-
-
-export function renderMeals(
-    meals,
-    onRefresh,
-) {
-    const list = document.getElementById(
-        "meals-list"
-    );
-
+import { openModal, } from "../modals/modal.js";
+import { NutritionAPI, } from "../api.js";
+const ICONS = {
+    pencil: `
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+        >
+            <path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/>
+            <path d="m15 5 4 4"/>
+        </svg>
+    `,
+    delete: `
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+        >
+            <path d="M10 11v6"/>
+            <path d="M14 11v6"/>
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/>
+            <path d="M3 6h18"/>
+            <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+        </svg>
+    `,
+    chevron: `
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+        >
+            <path d="m6 9 6 6 6-6"/>
+        </svg>
+    `,
+};
+export function renderMeals(meals, onRefresh) {
+    const list = document.getElementById("meals-list");
     if (!list) {
         return;
     }
-
     list.innerHTML = "";
-
     if (!meals?.length) {
         const empty = document.createElement("div");
-
         empty.className = "meals-empty";
-
         empty.textContent =
             "Ще немає прийомів за сьогодні.";
-
         list.appendChild(empty);
-
         return;
     }
-
     meals.forEach((meal) => {
-        const card = createMealCard(
-            meal,
-            onRefresh,
-        );
-
-        list.appendChild(card);
+        list.appendChild(createMealCard(meal, onRefresh));
     });
 }
-
-
-function createMealCard(
-    meal,
-    onRefresh,
-) {
-    const card = document.createElement("div");
-
-    card.className =
-        "meal-card-large";
-
+function createMealCard(meal, onRefresh) {
+    const card = document.createElement("article");
+    card.className = "meal-card-large";
     const header = document.createElement("div");
-
-    header.className =
-        "meal-header-large";
-
-    header.append(
-        createMealInfo(meal),
-        createMealActions(
-            meal,
-            onRefresh,
-        ),
-    );
-
-    const items = createMealItems(
-        meal,
-        onRefresh,
-    );
-
-    card.append(
-        header,
-        items,
-    );
-
+    header.className = "meal-header-large";
+    const content = document.createElement("div");
+    content.className = "meal-content-large";
+    content.appendChild(createMealItems(meal, onRefresh));
+    header.append(createMealInfo(meal, card, content), createMealActions(meal, onRefresh));
+    card.append(header, content);
     return card;
 }
-
-
-function createMealInfo(meal) {
-    const wrapper = document.createElement("div");
-
-    wrapper.className =
-        "meal-title-block";
-
-    const title = document.createElement("div");
-
-    title.className =
-        "meal-title";
-
+function createMealInfo(meal, card, content) {
+    const wrapper = document.createElement("button");
+    wrapper.type = "button";
+    wrapper.className = "meal-title-block";
+    const titleRow = document.createElement("div");
+    titleRow.className = "meal-title-row";
+    const title = document.createElement("span");
+    title.className = "meal-title";
     title.textContent = meal.name;
-
+    const icon = document.createElement("span");
+    icon.className = "meal-expand-icon";
+    icon.innerHTML = ICONS.chevron;
+    titleRow.append(title, icon);
     const meta = document.createElement("div");
-
-    meta.className =
-        "meal-meta-large";
-
+    meta.className = "meal-meta-large";
     meta.textContent = [
-        meal.category || "—",
-        meal.time || "—",
-        `${meal.total_calories || 0} ккал`,
+        `${meal.total_calories ?? 0} ккал`,
+        `Б ${meal.total_protein ?? 0}`,
+        `Ж ${meal.total_fat ?? 0}`,
+        `В ${meal.total_carbs ?? 0}`,
     ].join(" · ");
-
-    wrapper.append(
-        title,
-        meta,
-    );
-
+    wrapper.append(titleRow, meta);
+    wrapper.addEventListener("click", () => {
+        const isExpanded = card.classList.toggle("meal-expanded");
+        content.setAttribute("aria-hidden", String(!isExpanded));
+    });
     return wrapper;
 }
-
-
-function createMealActions(
-    meal,
-    onRefresh,
-) {
+function createMealActions(meal, onRefresh) {
     const actions = document.createElement("div");
-
     actions.className =
         "meal-actions-large";
-
-    const addItem = document.createElement(
-        "button"
-    );
-
+    const addItem = document.createElement("button");
+    addItem.type = "button";
     addItem.className =
-        "btn small";
-
+        "meal-action-add";
     addItem.textContent =
-        "Додати продукт";
-
-    addItem.addEventListener(
-        "click",
-        () => {
-            document.getElementById(
-                "add-item-meal-id"
-            ).value = meal.id;
-
-            document.getElementById(
-                "add-item-name"
-            ).value = "";
-
-            document.getElementById(
-                "add-item-kcal"
-            ).value = 0;
-
-            document.getElementById(
-                "add-item-protein"
-            ).value = 0;
-
-            document.getElementById(
-                "add-item-fat"
-            ).value = 0;
-
-            document.getElementById(
-                "add-item-carb"
-            ).value = 0;
-
-            openModal(
-                "modal-add-item"
-            );
+        "+ Продукт";
+    addItem.addEventListener("click", () => {
+        const mealId = document.getElementById("add-item-meal-id");
+        const name = document.getElementById("add-item-name");
+        const kcal = document.getElementById("add-item-kcal");
+        const protein = document.getElementById("add-item-protein");
+        const fat = document.getElementById("add-item-fat");
+        const carb = document.getElementById("add-item-carb");
+        if (!mealId
+            || !name
+            || !kcal
+            || !protein
+            || !fat
+            || !carb) {
+            return;
         }
-    );
-
-    const edit = document.createElement(
-        "button"
-    );
-
-    edit.className =
-        "btn small";
-
-    edit.textContent =
-        "Редагувати";
-
-    edit.addEventListener(
-        "click",
-        () => {
-            document.getElementById(
-                "edit-meal-id"
-            ).value = meal.id;
-
-            document.getElementById(
-                "edit-meal-name"
-            ).value = meal.name || "";
-
-            document.getElementById(
-                "edit-meal-category"
-            ).value =
-                meal.category
+        mealId.value = String(meal.id);
+        name.value = "";
+        kcal.value = "0";
+        protein.value = "0";
+        fat.value = "0";
+        carb.value = "0";
+        openModal("modal-add-item");
+    });
+    const edit = createIconButton("meal-action-icon", ICONS.pencil, "Редагувати прийом");
+    edit.addEventListener("click", () => {
+        const id = document.getElementById("edit-meal-id");
+        const name = document.getElementById("edit-meal-name");
+        const category = document.getElementById("edit-meal-category");
+        const time = document.getElementById("edit-meal-time");
+        if (!id
+            || !name
+            || !category
+            || !time) {
+            return;
+        }
+        id.value = String(meal.id);
+        name.value = meal.name || "";
+        category.value =
+            meal.category
                 || "Сніданок";
-
-            document.getElementById(
-                "edit-meal-time"
-            ).value =
-                meal.time || "";
-
-            openModal(
-                "modal-edit-meal"
-            );
-        }
-    );
-
-    const remove = document.createElement(
-        "button"
-    );
-
-    remove.className =
-        "btn small danger";
-
-    remove.textContent =
-        "Видалити";
-
-    remove.addEventListener(
-        "click",
-        async () => {
-            const confirmed = confirm(
-                "Видалити цей прийом?"
-            );
-
-            if (!confirmed) {
-                return;
-            }
-
-            await NutritionAPI.deleteMeal(
-                meal.id
-            );
-
-            onRefresh();
-        }
-    );
-
-    actions.append(
-        addItem,
-        edit,
-        remove,
-    );
-
+        time.value =
+            meal.time || "";
+        openModal("modal-edit-meal");
+    });
+    const remove = createIconButton("meal-action-icon meal-action-delete", ICONS.delete, "Подвійний клік для видалення");
+    remove.addEventListener("dblclick", async () => {
+        await NutritionAPI.deleteMeal(meal.id);
+        await onRefresh();
+    });
+    actions.append(addItem, edit, remove);
     return actions;
 }
-
-
-function createMealItems(
-    meal,
-    onRefresh,
-) {
-    const container =
-        document.createElement("div");
-
+function createMealItems(meal, onRefresh) {
+    const container = document.createElement("div");
     container.className =
         "meal-items-large";
-
     if (!meal.items?.length) {
-        const empty =
-            document.createElement("div");
-
+        const empty = document.createElement("div");
         empty.className =
             "meal-items-empty";
-
         empty.textContent =
             "Продукти ще не додані.";
-
         container.appendChild(empty);
-
         return container;
     }
-
     meal.items.forEach((item) => {
-        container.appendChild(
-            createItemRow(
-                item,
-                onRefresh,
-            )
-        );
+        container.appendChild(createItemRow(item, onRefresh));
     });
-
     return container;
 }
-
-
-function createItemRow(
-    item,
-    onRefresh,
-) {
-    const row =
-        document.createElement("div");
-
+function createItemRow(item, onRefresh) {
+    const row = document.createElement("div");
     row.className =
         "meal-item-row-large";
-
-    const name =
-        document.createElement("div");
-
+    const info = document.createElement("div");
+    info.className =
+        "meal-item-info-large";
+    const name = document.createElement("div");
     name.className =
         "meal-item-name-large";
-
     name.textContent =
         item.name;
-
-    const macros =
-        document.createElement("div");
-
+    const macros = document.createElement("div");
     macros.className =
         "meal-item-macros-large";
-
     macros.textContent = [
-        `${item.calories || 0} ккал`,
-        `${item.protein || 0} Б`,
-        `${item.fat || 0} Ж`,
-        `${item.carbs || 0} В`,
+        `${item.calories ?? 0} ккал`,
+        `Б ${item.protein ?? 0}`,
+        `Ж ${item.fat ?? 0}`,
+        `В ${item.carbs ?? 0}`,
     ].join(" · ");
-
-    const actions =
-        document.createElement("div");
-
+    info.append(name, macros);
+    const actions = document.createElement("div");
     actions.className =
         "meal-item-actions-large";
-
-    const edit =
-        document.createElement("button");
-
-    edit.className =
-        "btn tiny";
-
-    edit.textContent =
-        "Ред.";
-
-    edit.addEventListener(
-        "click",
-        () => {
-            document.getElementById(
-                "edit-item-id"
-            ).value = item.id;
-
-            document.getElementById(
-                "edit-item-name"
-            ).value = item.name || "";
-
-            document.getElementById(
-                "edit-item-kcal"
-            ).value =
-                item.calories || 0;
-
-            document.getElementById(
-                "edit-item-protein"
-            ).value =
-                item.protein || 0;
-
-            document.getElementById(
-                "edit-item-fat"
-            ).value =
-                item.fat || 0;
-
-            document.getElementById(
-                "edit-item-carb"
-            ).value =
-                item.carbs || 0;
-
-            openModal(
-                "modal-edit-item"
-            );
+    const edit = createIconButton("meal-item-action", ICONS.pencil, "Редагувати продукт");
+    edit.addEventListener("click", () => {
+        const id = document.getElementById("edit-item-id");
+        const name = document.getElementById("edit-item-name");
+        const kcal = document.getElementById("edit-item-kcal");
+        const protein = document.getElementById("edit-item-protein");
+        const fat = document.getElementById("edit-item-fat");
+        const carb = document.getElementById("edit-item-carb");
+        if (!id
+            || !name
+            || !kcal
+            || !protein
+            || !fat
+            || !carb) {
+            return;
         }
-    );
-
-    const remove =
-        document.createElement("button");
-
-    remove.className =
-        "btn tiny danger";
-
-    remove.textContent =
-        "×";
-
-    remove.addEventListener(
-        "click",
-        async () => {
-            await NutritionAPI.deleteItem(
-                item.id
-            );
-
-            onRefresh();
-        }
-    );
-
-    actions.append(
-        edit,
-        remove,
-    );
-
-    row.append(
-        name,
-        macros,
-        actions,
-    );
-
+        id.value =
+            String(item.id);
+        name.value =
+            item.name || "";
+        kcal.value =
+            String(item.calories ?? 0);
+        protein.value =
+            String(item.protein ?? 0);
+        fat.value =
+            String(item.fat ?? 0);
+        carb.value =
+            String(item.carbs ?? 0);
+        openModal("modal-edit-item");
+    });
+    const remove = createIconButton("meal-item-action meal-item-delete", ICONS.delete, "Подвійний клік для видалення");
+    remove.addEventListener("dblclick", async () => {
+        await NutritionAPI.deleteItem(item.id);
+        await onRefresh();
+    });
+    actions.append(edit, remove);
+    row.append(info, actions);
     return row;
+}
+function createIconButton(className, icon, label) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className =
+        className;
+    button.innerHTML =
+        icon;
+    button.setAttribute("aria-label", label);
+    button.title =
+        label;
+    return button;
 }

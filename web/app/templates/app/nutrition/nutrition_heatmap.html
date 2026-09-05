@@ -1,22 +1,17 @@
-<div class="heatmap-container">
-  <div class="heatmap-header">
-    <h3>Баланс харчування</h3>
-
-    <div class="heatmap-controls">
-      <select id="heatmap-year">
-        <option value="2026">2026</option>
-        <option value="2025">2025</option>
-        <option value="2024">2024</option>
-      </select>
-
-      <button class="btn small" id="open-calendar">Календар</button>
-    </div>
-  </div>
-
+<div class="nutrition-heatmap-content">
   <div class="heatmap-months">
-    <span>Січ</span><span>Лют</span><span>Бер</span><span>Кві</span>
-    <span>Тра</span><span>Чер</span><span>Лип</span><span>Сер</span>
-    <span>Вер</span><span>Жов</span><span>Лис</span><span>Гру</span>
+    <span>Січ</span>
+    <span>Лют</span>
+    <span>Бер</span>
+    <span>Кві</span>
+    <span>Тра</span>
+    <span>Чер</span>
+    <span>Лип</span>
+    <span>Сер</span>
+    <span>Вер</span>
+    <span>Жов</span>
+    <span>Лис</span>
+    <span>Гру</span>
   </div>
 
   <div id="heatmap-grid" class="heatmap-grid"></div>
@@ -44,14 +39,16 @@
 
     days.forEach((d) => {
       const cell = document.createElement("div");
+
       cell.className = "heatmap-cell";
       cell.dataset.level = d.level;
 
-      if (d.is_today) cell.classList.add("today");
-
-      cell.addEventListener("click", () => openDayHistory(d.date));
+      if (d.is_today) {
+        cell.classList.add("today");
+      }
 
       const tooltip = document.createElement("div");
+
       tooltip.className = "heatmap-tooltip";
       tooltip.textContent = `${d.kcal} ккал`;
 
@@ -60,18 +57,13 @@
     });
   }
 
-  function openDayHistory(date) {
-    document.getElementById("history-date").textContent = date;
-    openModal("modal-day-history");
-  }
-
   document.addEventListener("DOMContentLoaded", () => {
     const yearSelect = document.getElementById("heatmap-year");
-    yearSelect.addEventListener("change", () => loadHeatmap(yearSelect.value));
-    loadHeatmap(yearSelect.value);
 
-    document.getElementById("open-calendar").addEventListener("click", () => {
-      openModal("modal-calendar");
+    yearSelect.addEventListener("change", () => {
+      loadHeatmap(yearSelect.value);
     });
+
+    loadHeatmap(yearSelect.value);
   });
 </script>

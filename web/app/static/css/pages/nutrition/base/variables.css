@@ -1,0 +1,23 @@
+:root {
+    --nutrition-surface: #141414;
+    --nutrition-surface-hover: #181818;
+    --nutrition-surface-soft: #161616;
+    --nutrition-surface-input: #191b20;
+
+    --nutrition-border: #1f232d;
+    --nutrition-border-soft: #252a33;
+    --nutrition-border-input: #353942;
+
+    --nutrition-text: #ffffff;
+    --nutrition-text-muted: #8b8fa3;
+
+    --nutrition-accent: #9b5de5;
+    --nutrition-accent-soft: #c79bff;
+
+    --nutrition-radius-lg: 14px;
+    --nutrition-radius-md: 10px;
+    --nutrition-radius-sm: 6px;
+
+    --nutrition-transition-fast: 0.18s cubic-bezier(0.22, 1, 0.36, 1);
+    --nutrition-transition: 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
