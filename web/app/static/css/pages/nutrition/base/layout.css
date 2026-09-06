@@ -11,7 +11,7 @@
     display: grid;
     grid-template-columns: 60% 40%;
     gap: 24px;
-    align-items: start;
+    align-items: stretch;
 }
 
 .nutrition-left {
@@ -26,6 +26,7 @@
     flex-direction: column;
     gap: 20px;
     min-width: 0;
+    height: 100%;
 }
 
 .nutrition-main-grid>* {
