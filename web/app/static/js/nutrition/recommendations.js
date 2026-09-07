@@ -70,7 +70,6 @@ function renderSummary(summary) {
     }
     const calorieRemaining = Math.max(summary.calories_goal - summary.calories, 0);
     const proteinRemaining = Math.max(summary.protein_goal - summary.protein, 0);
-    const fiberRemaining = Math.max(summary.fiber_goal - summary.fiber, 0);
     container.innerHTML = `
     <div class="recommendations-summary-row">
       <span>Калорії</span>
@@ -89,10 +88,18 @@ function renderSummary(summary) {
     </div>
 
     <div class="recommendations-summary-row">
-      <span>Клітковина</span>
+      <span>Жири</span>
       <span>
-        ${summary.fiber.toFixed(1)}
-        / ${Math.round(summary.fiber_goal)} г
+        ${summary.fat.toFixed(1)}
+        / ${summary.fat_goal.toFixed(1)} г
+      </span>
+    </div>
+
+    <div class="recommendations-summary-row">
+      <span>Вуглеводи</span>
+      <span>
+        ${summary.carbs.toFixed(1)}
+        / ${summary.carbs_goal.toFixed(1)} г
       </span>
     </div>
 
@@ -103,10 +110,6 @@ function renderSummary(summary) {
 
       ${proteinRemaining > 0
         ? ` • ${Math.round(proteinRemaining)} г білка`
-        : ""}
-
-      ${fiberRemaining > 0
-        ? ` • ${Math.round(fiberRemaining)} г клітковини`
         : ""}
     </div>
   `;

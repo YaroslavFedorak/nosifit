@@ -3,7 +3,6 @@ type RecommendationType =
   | "protein"
   | "fat"
   | "carbs"
-  | "fiber"
   | "quality"
   | "balance"
   | "protein_progress"
@@ -30,8 +29,6 @@ interface NutritionRecommendationSummary {
   fat_goal: number;
   carbs: number;
   carbs_goal: number;
-  fiber: number;
-  fiber_goal: number;
   quality_score: number;
   day_progress: "morning" | "day" | "evening" | "late";
 }
@@ -158,11 +155,6 @@ function renderSummary(
     0,
   );
 
-  const fiberRemaining = Math.max(
-    summary.fiber_goal - summary.fiber,
-    0,
-  );
-
   container.innerHTML = `
     <div class="recommendations-summary-row">
       <span>Калорії</span>
@@ -181,10 +173,18 @@ function renderSummary(
     </div>
 
     <div class="recommendations-summary-row">
-      <span>Клітковина</span>
+      <span>Жири</span>
       <span>
-        ${summary.fiber.toFixed(1)}
-        / ${Math.round(summary.fiber_goal)} г
+        ${summary.fat.toFixed(1)}
+        / ${summary.fat_goal.toFixed(1)} г
+      </span>
+    </div>
+
+    <div class="recommendations-summary-row">
+      <span>Вуглеводи</span>
+      <span>
+        ${summary.carbs.toFixed(1)}
+        / ${summary.carbs_goal.toFixed(1)} г
       </span>
     </div>
 
@@ -198,12 +198,6 @@ function renderSummary(
       ${
         proteinRemaining > 0
           ? ` • ${Math.round(proteinRemaining)} г білка`
-          : ""
-      }
-
-      ${
-        fiberRemaining > 0
-          ? ` • ${Math.round(fiberRemaining)} г клітковини`
           : ""
       }
     </div>
