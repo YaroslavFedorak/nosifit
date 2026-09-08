@@ -2,13 +2,17 @@ from web.app import db
 from web.app.models.user_profile import UserProfile
 from web.app.models.user_goals import UserTrainingGoals
 from web.app.models.user_injury import UserInjury
-from web.app.models.injury import Injury
 
 
 class OnboardingService:
 
     @staticmethod
-    def save_profile(user, training_location, wants_nutrition, wants_recovery):
+    def save_profile(
+        user,
+        training_location,
+        wants_nutrition,
+        wants_recovery,
+    ):
         profile = UserProfile.query.filter_by(user_id=user.id).first()
 
         if not profile:
@@ -20,10 +24,17 @@ class OnboardingService:
         profile.wants_recovery = wants_recovery
 
         db.session.commit()
+
         return profile
 
     @staticmethod
-    def save_goals(user, primary_goal, focus_upper, focus_lower, focus_core):
+    def save_goals(
+        user,
+        primary_goal,
+        focus_upper,
+        focus_lower,
+        focus_core,
+    ):
         goals = UserTrainingGoals.query.filter_by(user_id=user.id).first()
 
         if not goals:
@@ -36,6 +47,7 @@ class OnboardingService:
         goals.focus_core = focus_core
 
         db.session.commit()
+
         return goals
 
     @staticmethod
@@ -43,7 +55,12 @@ class OnboardingService:
         UserInjury.query.filter_by(user_id=user.id).delete()
 
         for injury_id in injury_ids:
-            db.session.add(UserInjury(user_id=user.id, injury_id=injury_id))
+            db.session.add(
+                UserInjury(
+                    user_id=user.id,
+                    injury_id=injury_id,
+                )
+            )
 
         db.session.commit()
 
@@ -56,4 +73,7 @@ class OnboardingService:
             db.session.add(profile)
 
         profile.onboarding_completed = True
+
         db.session.commit()
+
+        return profile

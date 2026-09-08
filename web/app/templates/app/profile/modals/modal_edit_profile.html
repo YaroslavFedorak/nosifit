@@ -1,143 +1,421 @@
 <div class="nf-modal-backdrop" data-modal="modal-edit-profile">
   <div class="nf-modal nf-modal-wide">
+
     <div class="nf-modal-header">
       <h3 class="nf-modal-title">Редагувати профіль</h3>
-      <button type="button" class="nf-modal-close" data-modal-close>&times;</button>
+
+      <button type="button" class="nf-modal-close" data-modal-close">
+        &times;
+      </button>
     </div>
 
     <form method="post" action="{{ url_for('profile_update.update_full') }}">
+
       <div class="nf-modal-body">
 
         <h4 class="nf-section-title">Основні дані</h4>
+
         <div class="nf-modal-grid-2col">
+
           <div class="nf-field-group">
             <label class="nf-field-label">Ім’я користувача</label>
-            <input class="nf-input" type="text" name="username" value="{{ user.username }}" required>
+
+            <input
+              class="nf-input"
+              type="text"
+              name="username"
+              value="{{ user.username }}"
+              required
+            />
           </div>
 
           <div class="nf-field-group">
             <label class="nf-field-label">Email</label>
-            <input class="nf-input" type="email" name="email" value="{{ user.email }}" required>
+
+            <input
+              class="nf-input"
+              type="email"
+              name="email"
+              value="{{ user.email }}"
+              required
+            />
           </div>
+
         </div>
 
+
         <h4 class="nf-section-title">Параметри тіла</h4>
+
         <div class="nf-modal-grid-2col">
+
           <div class="nf-field-group">
             <label class="nf-field-label">Вік</label>
-            <input class="nf-input" type="number" name="age" value="{{ user.age }}">
+
+            <input
+              class="nf-input"
+              type="number"
+              name="age"
+              value="{{ profile.age or '' }}"
+              min="1"
+              max="120"
+            />
           </div>
 
           <div class="nf-field-group">
             <label class="nf-field-label">Зріст (см)</label>
-            <input class="nf-input" type="number" step="0.1" name="height" value="{{ user.height }}">
+
+            <input
+              class="nf-input"
+              type="number"
+              step="0.1"
+              name="height"
+              value="{{ profile.height or '' }}"
+              min="50"
+              max="250"
+            />
           </div>
 
           <div class="nf-field-group">
             <label class="nf-field-label">Вага (кг)</label>
-            <input class="nf-input" type="number" step="0.1" name="weight" value="{{ user.weight }}">
+
+            <input
+              class="nf-input"
+              type="number"
+              step="0.1"
+              name="weight"
+              value="{{ profile.weight or '' }}"
+              min="20"
+              max="300"
+            />
           </div>
 
           <div class="nf-field-group">
             <label class="nf-field-label">Стать</label>
+
             <select class="nf-input" name="gender">
-              <option value="" {% if not user.gender %}selected{% endif %}>Не вказано</option>
-              <option value="male" {% if user.gender == "male" %}selected{% endif %}>Чоловіча</option>
-              <option value="female" {% if user.gender == "female" %}selected{% endif %}>Жіноча</option>
-              <option value="other" {% if user.gender == "other" %}selected{% endif %}>Інше</option>
+
+              <option value="">
+                Не вказано
+              </option>
+
+              <option
+                value="male"
+                {% if profile.gender == "male" %}selected{% endif %}
+              >
+                Чоловіча
+              </option>
+
+              <option
+                value="female"
+                {% if profile.gender == "female" %}selected{% endif %}
+              >
+                Жіноча
+              </option>
+
+              <option
+                value="other"
+                {% if profile.gender == "other" %}selected{% endif %}
+              >
+                Інше
+              </option>
+
             </select>
           </div>
+
         </div>
 
+
         <h4 class="nf-section-title">Цілі та активність</h4>
+
         <div class="nf-modal-grid-2col">
+
           <div class="nf-field-group">
-            <label class="nf-field-label">Фітнес‑вектор</label>
+            <label class="nf-field-label">Фітнес-вектор</label>
+
             <select class="nf-input" name="goal">
-              <option value="" {% if not user.goal %}selected{% endif %}>Не вказано</option>
-              <option value="fat_loss" {% if user.goal == "fat_loss" %}selected{% endif %}>fat_loss</option>
-              <option value="muscle_gain" {% if user.goal == "muscle_gain" %}selected{% endif %}>muscle_gain</option>
-              <option value="recomposition" {% if user.goal == "recomposition" %}selected{% endif %}>recomposition</option>
-              <option value="strength" {% if user.goal == "strength" %}selected{% endif %}>strength</option>
+
+              <option value="">
+                Не вказано
+              </option>
+
+              <option
+                value="fat_loss"
+                {% if profile.goal == "fat_loss" %}selected{% endif %}
+              >
+                fat_loss
+              </option>
+
+              <option
+                value="muscle_gain"
+                {% if profile.goal == "muscle_gain" %}selected{% endif %}
+              >
+                muscle_gain
+              </option>
+
+              <option
+                value="recomposition"
+                {% if profile.goal == "recomposition" %}selected{% endif %}
+              >
+                recomposition
+              </option>
+
+              <option
+                value="strength"
+                {% if profile.goal == "strength" %}selected{% endif %}
+              >
+                strength
+              </option>
+
             </select>
           </div>
+
 
           <div class="nf-field-group">
             <label class="nf-field-label">Активність</label>
+
             <select class="nf-input" name="activity">
-              <option value="" {% if not user.activity %}selected{% endif %}>Не вказано</option>
-              <option value="1.2" {% if user.activity == 1.2 %}selected{% endif %}>1.2 — низька</option>
-              <option value="1.375" {% if user.activity == 1.375 %}selected{% endif %}>1.375 — легка</option>
-              <option value="1.55" {% if user.activity == 1.55 %}selected{% endif %}>1.55 — середня</option>
-              <option value="1.725" {% if user.activity == 1.725 %}selected{% endif %}>1.725 — висока</option>
-              <option value="1.9" {% if user.activity == 1.9 %}selected{% endif %}>1.9 — дуже висока</option>
+
+              <option value="">
+                Не вказано
+              </option>
+
+              <option
+                value="1.2"
+                {% if profile.activity == "1.2" %}selected{% endif %}
+              >
+                1.2 — низька
+              </option>
+
+              <option
+                value="1.375"
+                {% if profile.activity == "1.375" %}selected{% endif %}
+              >
+                1.375 — легка
+              </option>
+
+              <option
+                value="1.55"
+                {% if profile.activity == "1.55" %}selected{% endif %}
+              >
+                1.55 — середня
+              </option>
+
+              <option
+                value="1.725"
+                {% if profile.activity == "1.725" %}selected{% endif %}
+              >
+                1.725 — висока
+              </option>
+
+              <option
+                value="1.9"
+                {% if profile.activity == "1.9" %}selected{% endif %}
+              >
+                1.9 — дуже висока
+              </option>
+
             </select>
           </div>
+
 
           <div class="nf-field-group">
             <label class="nf-field-label">Досвід</label>
+
             <select class="nf-input" name="experience">
-              <option value="" {% if not user.experience %}selected{% endif %}>Не вказано</option>
-              <option value="beginner" {% if user.experience == "beginner" %}selected{% endif %}>beginner</option>
-              <option value="intermediate" {% if user.experience == "intermediate" %}selected{% endif %}>intermediate</option>
-              <option value="advanced" {% if user.experience == "advanced" %}selected{% endif %}>advanced</option>
+
+              <option value="">
+                Не вказано
+              </option>
+
+              <option
+                value="beginner"
+                {% if profile.experience == "beginner" %}selected{% endif %}
+              >
+                beginner
+              </option>
+
+              <option
+                value="intermediate"
+                {% if profile.experience == "intermediate" %}selected{% endif %}
+              >
+                intermediate
+              </option>
+
+              <option
+                value="advanced"
+                {% if profile.experience == "advanced" %}selected{% endif %}
+              >
+                advanced
+              </option>
+
             </select>
           </div>
+
 
           <div class="nf-field-group">
             <label class="nf-field-label">Тренувань на тиждень</label>
+
             <select class="nf-input" name="workouts_per_week">
-              <option value="" {% if not user.workouts_per_week %}selected{% endif %}>Не вказано</option>
+
+              <option value="">
+                Не вказано
+              </option>
+
               {% for i in range(1, 8) %}
-              <option value="{{ i }}" {% if user.workouts_per_week == i %}selected{% endif %}>{{ i }}</option>
+
+                <option
+                  value="{{ i }}"
+                  {% if profile.workouts_per_week == i %}selected{% endif %}
+                >
+                  {{ i }}
+                </option>
+
               {% endfor %}
+
             </select>
           </div>
+
         </div>
 
+
         <h4 class="nf-section-title">Профіль тренувань</h4>
+
         <div class="nf-modal-grid-2col">
+
           <div class="nf-field-group">
             <label class="nf-field-label">Локація тренувань</label>
+
             <select class="nf-input" name="training_location">
-              <option value="" {% if not user.profile or not user.profile.training_location %}selected{% endif %}>Не вказано</option>
-              <option value="home" {% if user.profile and user.profile.training_location == "home" %}selected{% endif %}>Дім</option>
-              <option value="gym" {% if user.profile and user.profile.training_location == "gym" %}selected{% endif %}>Зал</option>
-              <option value="outdoor" {% if user.profile and user.profile.training_location == "outdoor" %}selected{% endif %}>Вулиця</option>
+
+              <option value="">
+                Не вказано
+              </option>
+
+              <option
+                value="home"
+                {% if profile.training_location == "home" %}selected{% endif %}
+              >
+                Дім
+              </option>
+
+              <option
+                value="gym"
+                {% if profile.training_location == "gym" %}selected{% endif %}
+              >
+                Зал
+              </option>
+
+              <option
+                value="outdoor"
+                {% if profile.training_location == "outdoor" %}selected{% endif %}
+              >
+                Вулиця
+              </option>
+
             </select>
           </div>
+
 
           <div class="nf-field-group">
             <label class="nf-field-label">Харчування</label>
+
             <select class="nf-input" name="wants_nutrition">
-              <option value="0" {% if not user.profile or not user.profile.wants_nutrition %}selected{% endif %}>Не активовано</option>
-              <option value="1" {% if user.profile and user.profile.wants_nutrition %}selected{% endif %}>Активовано</option>
+
+              <option
+                value="0"
+                {% if not profile.wants_nutrition %}selected{% endif %}
+              >
+                Не активовано
+              </option>
+
+              <option
+                value="1"
+                {% if profile.wants_nutrition %}selected{% endif %}
+              >
+                Активовано
+              </option>
+
             </select>
           </div>
+
 
           <div class="nf-field-group">
             <label class="nf-field-label">Відновлення</label>
+
             <select class="nf-input" name="wants_recovery">
-              <option value="0" {% if not user.profile or not user.profile.wants_recovery %}selected{% endif %}>Не активовано</option>
-              <option value="1" {% if user.profile and user.profile.wants_recovery %}selected{% endif %}>Активовано</option>
+
+              <option
+                value="0"
+                {% if not profile.wants_recovery %}selected{% endif %}
+              >
+                Не активовано
+              </option>
+
+              <option
+                value="1"
+                {% if profile.wants_recovery %}selected{% endif %}
+              >
+                Не активовано
+              </option>
+
+              <option
+                value="1"
+                {% if profile.wants_recovery %}selected{% endif %}
+              >
+                Активовано
+              </option>
+
             </select>
           </div>
 
+
           <div class="nf-field-group">
             <label class="nf-field-label">Онбординг</label>
+
             <select class="nf-input" name="onboarding_completed">
-              <option value="0" {% if not user.profile or not user.profile.onboarding_completed %}selected{% endif %}>Не завершено</option>
-              <option value="1" {% if user.profile and user.profile.onboarding_completed %}selected{% endif %}>Завершено</option>
+
+              <option
+                value="0"
+                {% if not profile.onboarding_completed %}selected{% endif %}
+              >
+                Не завершено
+              </option>
+
+              <option
+                value="1"
+                {% if profile.onboarding_completed %}selected{% endif %}
+              >
+                Завершено
+              </option>
+
             </select>
           </div>
+
         </div>
 
       </div>
 
+
       <div class="nf-modal-footer">
-        <button type="button" class="nf-btn nf-btn-ghost" data-modal-close>Скасувати</button>
-        <button type="submit" class="nf-btn nf-btn-soft-primary">Зберегти зміни</button>
+
+        <button
+          type="button"
+          class="nf-btn nf-btn-ghost"
+          data-modal-close
+        >
+          Скасувати
+        </button>
+
+        <button
+          type="submit"
+          class="nf-btn nf-btn-soft-primary"
+        >
+          Зберегти зміни
+        </button>
+
       </div>
+
     </form>
+
   </div>
 </div>
