@@ -92,6 +92,13 @@ export interface WeightPayload {
 }
 
 
+export interface WeightResponse {
+    status?: string;
+    weight: number | null;
+    bmi: number | null;
+}
+
+
 export interface WaterPayload {
     amount: number;
 }

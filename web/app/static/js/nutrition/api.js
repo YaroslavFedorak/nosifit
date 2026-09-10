@@ -1,4 +1,3 @@
-const BASE_URL = "/api/nutrition";
 async function request(url, options = {}) {
     const response = await fetch(url, {
         headers: {
@@ -13,12 +12,19 @@ async function request(url, options = {}) {
     }
     return data;
 }
+const BASE_URL = "/api/nutrition";
 export const NutritionAPI = {
     getDay() {
         return request(`${BASE_URL}/day`);
     },
     getRecommendations() {
         return request(`${BASE_URL}/recommendations`);
+    },
+    getWater() {
+        return request(`${BASE_URL}/water`);
+    },
+    getWeight() {
+        return request(`${BASE_URL}/weight`);
     },
     createMeal(data) {
         return request(`${BASE_URL}/meals`, {

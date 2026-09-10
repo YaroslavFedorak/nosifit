@@ -8,6 +8,7 @@ import type {
     WaterPayload,
     WaterResponse,
     WeightPayload,
+    WeightResponse,
 } from "./types.js";
 
 
@@ -59,6 +60,13 @@ export const NutritionAPI = {
     getWater(): Promise<WaterResponse> {
         return request<WaterResponse>(
             `${BASE_URL}/water`,
+        );
+    },
+
+
+    getWeight(): Promise<WeightResponse> {
+        return request<WeightResponse>(
+            `${BASE_URL}/weight`,
         );
     },
 
