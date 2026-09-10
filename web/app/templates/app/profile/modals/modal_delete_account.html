@@ -2,122 +2,189 @@
   <div class="nf-modal nf-modal-danger nf-modal-wide">
     <div class="nf-modal-header">
       <h3 class="nf-modal-title">Видалити акаунт</h3>
-      <button type="button" class="nf-modal-close" data-modal-close>&times;</button>
+
+      <button type="button" class="nf-modal-close" data-modal-close>
+        &times;
+      </button>
     </div>
 
     <div class="nf-modal-body">
-
       <div id="delete-step-1" class="delete-step active">
         <p class="nf-modal-warning">
-          Ця дія незворотна. Всі дані тренувань, харчування та прогресу будуть видалені.
+          Ця дія незворотна. Всі дані тренувань, харчування та прогресу будуть
+          видалені.
         </p>
 
-        <button id="delete-send-code" class="nf-btn nf-btn-soft-danger" type="button">
+        <button
+          id="delete-send-code"
+          class="nf-btn nf-btn-soft-danger"
+          type="button"
+        >
           Надіслати код підтвердження
         </button>
 
-        <p class="nf-hint">Код буде надіслано на email: <b>{{ current_user.email }}</b></p>
+        <p class="nf-hint">
+          Код буде надіслано на email:
+          <b>{{ current_user.email }}</b>
+        </p>
       </div>
 
       <div id="delete-step-2" class="delete-step">
         <div class="nf-field-group">
           <label class="nf-field-label">Код підтвердження</label>
-          <input class="nf-input" type="text" id="delete-confirm-code" placeholder="6‑значний код">
+
+          <input
+            class="nf-input"
+            type="text"
+            id="delete-confirm-code"
+            placeholder="6-значний код"
+          />
         </div>
 
-        <button id="delete-confirm-btn" class="nf-btn nf-btn-soft-danger" type="button">
+        <button
+          id="delete-confirm-btn"
+          class="nf-btn nf-btn-soft-danger"
+          type="button"
+        >
           Підтвердити код
         </button>
 
-        <p class="nf-hint">Перевір пошту — код має прийти протягом 10 секунд.</p>
+        <p class="nf-hint">
+          Перевір пошту — код має прийти протягом 10 секунд.
+        </p>
       </div>
 
       <div id="delete-step-3" class="delete-step">
         <div class="nf-field-group">
           <label class="nf-field-label">Підтвердіть email</label>
-          <input class="nf-input" type="email" id="delete-final-email" value="{{ current_user.email }}">
+
+          <input
+            class="nf-input"
+            type="email"
+            id="delete-final-email"
+            value="{{ current_user.email }}"
+          />
         </div>
 
         <div class="nf-field-group nf-field-with-toggle">
           <label class="nf-field-label">Пароль</label>
+
           <div class="nf-input-wrapper">
-            <input class="nf-input nf-input-password" type="password" id="delete-final-password">
+            <input
+              class="nf-input nf-input-password"
+              type="password"
+              id="delete-final-password"
+            />
+
             <button type="button" class="nf-password-toggle">показати</button>
           </div>
         </div>
 
-        <button id="delete-final-btn" class="nf-btn nf-btn-danger" type="button">
+        <button
+          id="delete-final-btn"
+          class="nf-btn nf-btn-danger"
+          type="button"
+        >
           Видалити акаунт назавжди
         </button>
       </div>
-
     </div>
 
     <div class="nf-modal-footer">
-      <button type="button" class="nf-btn nf-btn-ghost" data-modal-close>Скасувати</button>
+      <button type="button" class="nf-btn nf-btn-ghost" data-modal-close>
+        Скасувати
+      </button>
     </div>
   </div>
 </div>
 
 <script>
-document.addEventListener("DOMContentLoaded", () => {
+  document.addEventListener("DOMContentLoaded", () => {
+    const step1 = document.getElementById("delete-step-1");
+    const step2 = document.getElementById("delete-step-2");
+    const step3 = document.getElementById("delete-step-3");
 
-  const step1 = document.getElementById("delete-step-1");
-  const step2 = document.getElementById("delete-step-2");
-  const step3 = document.getElementById("delete-step-3");
+    function showStep(step) {
+      [step1, step2, step3].forEach((item) => {
+        item.classList.remove("active");
+      });
 
-  function showStep(step) {
-    [step1, step2, step3].forEach(s => s.classList.remove("active"));
-    step.classList.add("active");
-  }
-
-  document.getElementById("delete-send-code").addEventListener("click", async () => {
-    const res = await fetch("/profile/delete/request", { method: "POST" });
-    const data = await res.json();
-
-    if (data.status === "sent") {
-      showStep(step2);
+      step.classList.add("active");
     }
+
+    document
+      .getElementById("delete-send-code")
+      .addEventListener("click", async () => {
+        const res = await fetch("/profile/delete/request", {
+          method: "POST",
+        });
+
+        const data = await res.json();
+
+        if (data.status === "sent") {
+          showStep(step2);
+        }
+      });
+
+    document
+      .getElementById("delete-confirm-btn")
+      .addEventListener("click", async () => {
+        const code = document.getElementById("delete-confirm-code").value;
+
+        const res = await fetch("/profile/delete/confirm", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ code }),
+        });
+
+        const data = await res.json();
+
+        if (data.status === "ok") {
+          showStep(step3);
+        }
+      });
+
+    document
+      .getElementById("delete-final-btn")
+      .addEventListener("click", async () => {
+        const email = document.getElementById("delete-final-email").value;
+
+        const password = document.getElementById("delete-final-password").value;
+
+        const res = await fetch("/profile/delete/final", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email,
+            password,
+          }),
+        });
+
+        const data = await res.json();
+
+        if (data.status === "deleted") {
+          window.location.href = "/login";
+        }
+      });
   });
-
-  document.getElementById("delete-confirm-btn").addEventListener("click", async () => {
-    const code = document.getElementById("delete-confirm-code").value;
-
-    const res = await fetch("/profile/delete/confirm", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ code })
-    });
-
-    const data = await res.json();
-
-    if (data.status === "ok") {
-      showStep(step3);
-    }
-  });
-
-  document.getElementById("delete-final-btn").addEventListener("click", async () => {
-    const email = document.getElementById("delete-final-email").value;
-    const password = document.getElementById("delete-final-password").value;
-
-    const res = await fetch("/profile/delete/final", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password })
-    });
-
-    const data = await res.json();
-
-    if (data.status === "deleted") {
-      window.location.href = "/login";
-    }
-  });
-
-});
 </script>
 
 <style>
-.delete-step { display: none; }
-.delete-step.active { display: block; }
-.nf-hint { font-size: 13px; opacity: 0.7; margin-top: 6px; }
+  .delete-step {
+    display: none;
+  }
+
+  .delete-step.active {
+    display: block;
+  }
+
+  .nf-hint {
+    font-size: 13px;
+    opacity: 0.7;
+    margin-top: 6px;
+  }
 </style>

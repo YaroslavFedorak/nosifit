@@ -1,22 +1,18 @@
 <div class="nf-modal-backdrop" data-modal="modal-edit-profile">
   <div class="nf-modal nf-modal-wide">
-
     <div class="nf-modal-header">
       <h3 class="nf-modal-title">Редагувати профіль</h3>
 
-      <button type="button" class="nf-modal-close" data-modal-close">
+      <button type="button" class="nf-modal-close" data-modal-close>
         &times;
       </button>
     </div>
 
     <form method="post" action="{{ url_for('profile_update.update_full') }}">
-
       <div class="nf-modal-body">
-
         <h4 class="nf-section-title">Основні дані</h4>
 
         <div class="nf-modal-grid-2col">
-
           <div class="nf-field-group">
             <label class="nf-field-label">Ім’я користувача</label>
 
@@ -40,14 +36,11 @@
               required
             />
           </div>
-
         </div>
-
 
         <h4 class="nf-section-title">Параметри тіла</h4>
 
         <div class="nf-modal-grid-2col">
-
           <div class="nf-field-group">
             <label class="nf-field-label">Вік</label>
 
@@ -93,10 +86,7 @@
             <label class="nf-field-label">Стать</label>
 
             <select class="nf-input" name="gender">
-
-              <option value="">
-                Не вказано
-              </option>
+              <option value="">Не вказано</option>
 
               <option
                 value="male"
@@ -118,25 +108,18 @@
               >
                 Інше
               </option>
-
             </select>
           </div>
-
         </div>
-
 
         <h4 class="nf-section-title">Цілі та активність</h4>
 
         <div class="nf-modal-grid-2col">
-
           <div class="nf-field-group">
             <label class="nf-field-label">Фітнес-вектор</label>
 
             <select class="nf-input" name="goal">
-
-              <option value="">
-                Не вказано
-              </option>
+              <option value="">Не вказано</option>
 
               <option
                 value="fat_loss"
@@ -165,19 +148,14 @@
               >
                 strength
               </option>
-
             </select>
           </div>
-
 
           <div class="nf-field-group">
             <label class="nf-field-label">Активність</label>
 
             <select class="nf-input" name="activity">
-
-              <option value="">
-                Не вказано
-              </option>
+              <option value="">Не вказано</option>
 
               <option
                 value="1.2"
@@ -213,19 +191,14 @@
               >
                 1.9 — дуже висока
               </option>
-
             </select>
           </div>
-
 
           <div class="nf-field-group">
             <label class="nf-field-label">Досвід</label>
 
             <select class="nf-input" name="experience">
-
-              <option value="">
-                Не вказано
-              </option>
+              <option value="">Не вказано</option>
 
               <option
                 value="beginner"
@@ -247,49 +220,35 @@
               >
                 advanced
               </option>
-
             </select>
           </div>
-
 
           <div class="nf-field-group">
             <label class="nf-field-label">Тренувань на тиждень</label>
 
             <select class="nf-input" name="workouts_per_week">
-
-              <option value="">
-                Не вказано
-              </option>
+              <option value="">Не вказано</option>
 
               {% for i in range(1, 8) %}
-
-                <option
-                  value="{{ i }}"
-                  {% if profile.workouts_per_week == i %}selected{% endif %}
-                >
-                  {{ i }}
-                </option>
-
+              <option
+                value="{{ i }}"
+                {% if profile.workouts_per_week == i %}selected{% endif %}
+              >
+                {{ i }}
+              </option>
               {% endfor %}
-
             </select>
           </div>
-
         </div>
-
 
         <h4 class="nf-section-title">Профіль тренувань</h4>
 
         <div class="nf-modal-grid-2col">
-
           <div class="nf-field-group">
             <label class="nf-field-label">Локація тренувань</label>
 
             <select class="nf-input" name="training_location">
-
-              <option value="">
-                Не вказано
-              </option>
+              <option value="">Не вказано</option>
 
               <option
                 value="home"
@@ -311,16 +270,13 @@
               >
                 Вулиця
               </option>
-
             </select>
           </div>
-
 
           <div class="nf-field-group">
             <label class="nf-field-label">Харчування</label>
 
             <select class="nf-input" name="wants_nutrition">
-
               <option
                 value="0"
                 {% if not profile.wants_nutrition %}selected{% endif %}
@@ -334,16 +290,13 @@
               >
                 Активовано
               </option>
-
             </select>
           </div>
-
 
           <div class="nf-field-group">
             <label class="nf-field-label">Відновлення</label>
 
             <select class="nf-input" name="wants_recovery">
-
               <option
                 value="0"
                 {% if not profile.wants_recovery %}selected{% endif %}
@@ -355,25 +308,15 @@
                 value="1"
                 {% if profile.wants_recovery %}selected{% endif %}
               >
-                Не активовано
-              </option>
-
-              <option
-                value="1"
-                {% if profile.wants_recovery %}selected{% endif %}
-              >
                 Активовано
               </option>
-
             </select>
           </div>
-
 
           <div class="nf-field-group">
             <label class="nf-field-label">Онбординг</label>
 
             <select class="nf-input" name="onboarding_completed">
-
               <option
                 value="0"
                 {% if not profile.onboarding_completed %}selected{% endif %}
@@ -387,35 +330,20 @@
               >
                 Завершено
               </option>
-
             </select>
           </div>
-
         </div>
-
       </div>
 
-
       <div class="nf-modal-footer">
-
-        <button
-          type="button"
-          class="nf-btn nf-btn-ghost"
-          data-modal-close
-        >
+        <button type="button" class="nf-btn nf-btn-ghost" data-modal-close>
           Скасувати
         </button>
 
-        <button
-          type="submit"
-          class="nf-btn nf-btn-soft-primary"
-        >
+        <button type="submit" class="nf-btn nf-btn-soft-primary">
           Зберегти зміни
         </button>
-
       </div>
-
     </form>
-
   </div>
 </div>
