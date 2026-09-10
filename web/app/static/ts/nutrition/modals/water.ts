@@ -8,11 +8,17 @@ import {
 } from "./modal.js";
 
 
-type RefreshCallback = () => void | Promise<void>;
+type RefreshCallback =
+    () => void | Promise<void>;
 
 
-function getInputValue(id: string): string {
-    const element = document.getElementById(id) as HTMLInputElement | null;
+function getInputValue(
+    id: string,
+): string {
+    const element =
+        document.getElementById(
+            id,
+        ) as HTMLInputElement | null;
 
     return element?.value ?? "";
 }
@@ -22,7 +28,10 @@ function setInputValue(
     id: string,
     value: string,
 ): void {
-    const element = document.getElementById(id) as HTMLInputElement | null;
+    const element =
+        document.getElementById(
+            id,
+        ) as HTMLInputElement | null;
 
     if (element) {
         element.value = value;
@@ -34,56 +43,90 @@ export function setupWaterModal(
     onRefresh: RefreshCallback,
 ): void {
     document.getElementById(
-        "open-water-modal"
+        "add-water",
     )?.addEventListener(
         "click",
         () => {
             setInputValue(
                 "water-amount",
-                ""
+                "",
             );
 
             openModal(
-                "modal-water"
+                "modal-water",
             );
-        }
+        },
     );
 
+
     document.getElementById(
-        "close-water-modal"
+        "close-water-modal",
     )?.addEventListener(
         "click",
         () => {
             closeModal(
-                "modal-water"
+                "modal-water",
             );
-        }
+        },
     );
 
+
     document.getElementById(
-        "save-water"
+        "save-water",
     )?.addEventListener(
         "click",
         async () => {
-            const amount = Number(
-                getInputValue(
-                    "water-amount"
-                ) || 0
-            );
+            const amount =
+                Number(
+                    getInputValue(
+                        "water-amount",
+                    ),
+                );
 
-            if (!amount || amount <= 0) {
+            if (
+                !Number.isFinite(amount) ||
+                amount <= 0
+            ) {
                 return;
             }
 
-            await NutritionAPI.addWater(
-                amount
-            );
+            const saveButton =
+                document.getElementById(
+                    "save-water",
+                ) as HTMLButtonElement | null;
 
-            closeModal(
-                "modal-water"
-            );
+            if (saveButton) {
+                saveButton.disabled = true;
+            }
 
-            await onRefresh();
-        }
+            try {
+                await NutritionAPI.addWater(
+                    amount,
+                );
+
+                closeModal(
+                    "modal-water",
+                );
+
+                document.dispatchEvent(
+                    new CustomEvent(
+                        "nutrition:water-updated",
+                    ),
+                );
+
+                await onRefresh();
+
+            } catch (error) {
+                console.error(
+                    "Failed to save water:",
+                    error,
+                );
+
+            } finally {
+                if (saveButton) {
+                    saveButton.disabled = false;
+                }
+            }
+        },
     );
 }
