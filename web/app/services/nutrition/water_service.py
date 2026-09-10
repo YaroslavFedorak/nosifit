@@ -1,6 +1,7 @@
 from datetime import date
 
 from web.app import db
+from web.app.models import User
 from web.app.models.nutrition.user_water import UserWater
 
 
@@ -29,6 +30,39 @@ def ml_per_kg_by_age(age):
     )
 
 
+def _apply_activity_adjustment(water, activity):
+    activity_multipliers = {
+        "low": 1.0,
+        "moderate": 1.05,
+        "high": 1.10,
+        "very_high": 1.15,
+    }
+
+    if isinstance(activity, str):
+        normalized_activity = activity.strip().lower()
+
+        if normalized_activity in activity_multipliers:
+            return water * activity_multipliers[normalized_activity]
+
+        try:
+            activity = float(normalized_activity)
+        except (TypeError, ValueError):
+            return water
+
+    try:
+        activity_value = float(activity)
+
+        activity_value = max(
+            1.0,
+            min(activity_value, 2.0),
+        )
+
+        return water * (1 + (activity_value - 1.2) * 0.07)
+
+    except (TypeError, ValueError):
+        return water
+
+
 def calculate_water(
     weight,
     height,
@@ -47,32 +81,10 @@ def calculate_water(
     if gender == "male":
         water *= 1.03
 
-    activity_multipliers = {
-        "low": 1.0,
-        "moderate": 1.05,
-        "high": 1.10,
-        "very_high": 1.15,
-    }
-
-    if isinstance(activity, str):
-        water *= activity_multipliers.get(
-            activity,
-            1.0,
-        )
-
-    else:
-        try:
-            activity_value = float(activity)
-
-            activity_value = max(
-                1.0,
-                min(activity_value, 2.0),
-            )
-
-            water *= 1 + (activity_value - 1.2) * 0.07
-
-        except (TypeError, ValueError):
-            pass
+    water = _apply_activity_adjustment(
+        water,
+        activity,
+    )
 
     if goal in (
         "lose",
@@ -94,6 +106,47 @@ def calculate_water(
     )
 
     return round(water, 2)
+
+
+def get_water_data(user_id):
+    user = User.query.get(user_id)
+
+    if user is None:
+        return {
+            "amount": 0.0,
+            "recommended": 0.0,
+        }
+
+    profile = getattr(user, "profile", None)
+
+    if profile is None:
+        return {
+            "amount": 0.0,
+            "recommended": 0.0,
+        }
+
+    today = date.today()
+
+    entry = UserWater.query.filter_by(
+        user_id=user_id,
+        date=today,
+    ).first()
+
+    current_amount = float(entry.amount) if entry is not None else 0.0
+
+    recommended = calculate_water(
+        weight=getattr(profile, "weight", None),
+        height=getattr(profile, "height", None),
+        age=getattr(profile, "age", None),
+        gender=getattr(profile, "gender", None),
+        activity=getattr(profile, "activity", None),
+        goal=getattr(profile, "goal", None),
+    )
+
+    return {
+        "amount": round(current_amount, 2),
+        "recommended": recommended,
+    }
 
 
 def add_water_service(user_id, amount):

@@ -33,6 +33,7 @@ from web.app.services.nutrition.stats_service import (
 
 from web.app.services.nutrition.water_service import (
     add_water_service,
+    get_water_data,
 )
 
 from web.app.services.nutrition.weight_service import (
@@ -394,6 +395,12 @@ def api_heatmap():
     return jsonify(data)
 
 
+@nutrition_api.get("/water")
+@login_required
+def api_get_water():
+    return jsonify(get_water_data(current_user.id))
+
+
 @nutrition_api.post("/water")
 @login_required
 def api_add_water():
@@ -427,9 +434,14 @@ def api_add_water():
         amount,
     )
 
+    water_data = get_water_data(
+        current_user.id,
+    )
+
     return jsonify(
         {
             "status": "ok",
-            "amount": entry.amount,
+            "amount": water_data["amount"],
+            "recommended": water_data["recommended"],
         }
     )
