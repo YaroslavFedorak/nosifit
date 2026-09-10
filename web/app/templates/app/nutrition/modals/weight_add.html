@@ -1,0 +1,32 @@
+<div class="modal" id="modal-update-weight">
+  <div class="modal-content">
+    <h2>Оновити вагу</h2>
+
+    <label for="update-weight-value"> Вага </label>
+
+    <div class="water-input-wrapper">
+      <input
+        type="number"
+        id="update-weight-value"
+        min="1"
+        max="500"
+        step="0.1"
+        inputmode="decimal"
+        placeholder="78.5"
+        autocomplete="off"
+      />
+
+      <span class="water-input-unit"> кг </span>
+    </div>
+
+    <div class="modal-actions">
+      <button type="button" class="btn" id="close-update-weight">
+        Скасувати
+      </button>
+
+      <button type="button" class="btn primary" id="save-update-weight">
+        Оновити
+      </button>
+    </div>
+  </div>
+</div>

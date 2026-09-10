@@ -109,7 +109,7 @@ body %}
 
     <div class="nutrition-right">
       <section class="nutrition-quick-stats">
-        <div class="cmp-card quick-stat-card">
+        <div class="cmp-card quick-stat-card weight-widget" id="weight-widget">
           <div class="quick-stat-top">
             <div class="quick-stat-label">Вага</div>
 
@@ -118,21 +118,47 @@ body %}
             </div>
           </div>
 
-          <div class="quick-stat-value">
-            <span id="weight-current"> — </span>
+          <div class="weight-visual">
+            <div class="weight-scale">
+              <div class="weight-gauge">
+                <div class="weight-gauge-ring"></div>
 
-            <span class="quick-stat-unit"> кг </span>
+                <div class="weight-gauge-face">
+                  <div class="weight-gauge-needle"></div>
+
+                  <div class="weight-gauge-pivot"></div>
+                </div>
+              </div>
+
+              <div class="weight-gauge-base"></div>
+            </div>
           </div>
 
-          <div class="quick-stat-meta">Поточне значення</div>
+          <div class="weight-info">
+            <div class="weight-info-main">
+              <div class="weight-amount" id="weight-current">—</div>
 
-          <button
-            type="button"
-            class="cmp-btn cmp-btn-ghost cmp-btn-sm"
-            id="open-update-weight"
-          >
-            Оновити
-          </button>
+              <div class="weight-unit">кг</div>
+            </div>
+
+            <div class="weight-bottom-row">
+              <div class="weight-bmi">
+                <span class="weight-bmi-label"> BMI </span>
+
+                <span class="weight-bmi-value" id="weight-bmi"> — </span>
+              </div>
+
+              <button
+                type="button"
+                class="weight-update-button"
+                id="open-update-weight"
+              >
+                <span class="weight-update-icon"> + </span>
+
+                <span> Оновити </span>
+              </button>
+            </div>
+          </div>
         </div>
 
         <div class="cmp-card quick-stat-card water-widget" id="water-widget">
@@ -227,12 +253,17 @@ body %}
 "app/nutrition/modals/modal_edit_meal.html" %} {% include
 "app/nutrition/modals/modal_add_item.html" %} {% include
 "app/nutrition/modals/modal_edit_item.html" %} {% include
-"app/nutrition/modals/modal_update_weight.html" %} {% include
+"app/nutrition/modals/weight_add.html" %} {% include
 "app/nutrition/modals/water_add.html" %}
 
 <script
   type="module"
   src="{{ url_for('static', filename='js/nutrition/water.js') }}"
+></script>
+
+<script
+  type="module"
+  src="{{ url_for('static', filename='js/nutrition/weight.js') }}"
 ></script>
 
 <script

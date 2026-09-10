@@ -1,0 +1,407 @@
+.weight-widget {
+    position: relative;
+
+    --weight-surface:
+        rgba(255, 255, 255, 0.035);
+
+    --weight-surface-light:
+        rgba(255, 255, 255, 0.07);
+
+    --weight-border:
+        rgba(255, 255, 255, 0.09);
+
+    --weight-border-light:
+        rgba(255, 255, 255, 0.16);
+
+    --weight-tick:
+        rgba(255, 255, 255, 0.18);
+
+    --weight-tick-dim:
+        rgba(255, 255, 255, 0.06);
+}
+
+
+.weight-visual {
+    position: relative;
+
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+
+    min-height: 96px;
+
+    padding: 6px 0 10px;
+}
+
+
+.weight-scale {
+    position: relative;
+
+    width: 84px;
+    height: 64px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+
+    transform: scale(1.5);
+}
+
+
+.weight-gauge {
+    position: relative;
+
+    width: 56px;
+    height: 56px;
+
+    border-radius: 50%;
+}
+
+
+.weight-gauge::after {
+    content: "";
+
+    position: absolute;
+
+    inset: -8px;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(circle,
+            rgba(155, 93, 229, 0.18),
+            transparent 70%);
+
+    filter: blur(2px);
+
+    z-index: -1;
+}
+
+
+.weight-gauge-ring {
+    position: absolute;
+
+    inset: 0;
+
+    border-radius: 50%;
+
+    background:
+        repeating-conic-gradient(from -90deg,
+            var(--weight-tick) 0deg 3deg,
+            var(--weight-tick-dim) 3deg 12deg);
+
+    box-shadow:
+        inset 0 0 0 1px var(--weight-border);
+}
+
+
+.weight-gauge-face {
+    position: absolute;
+
+    inset: 7px;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(circle at 35% 28%,
+            var(--weight-surface-light),
+            var(--weight-surface) 72%);
+
+    border:
+        1px solid var(--weight-border);
+
+    box-shadow:
+        inset 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+
+.weight-gauge-face::before {
+    content: "";
+
+    position: absolute;
+
+    top: 10%;
+    left: 16%;
+
+    width: 34%;
+    height: 16%;
+
+    border-radius: 50%;
+
+    background:
+        rgba(255, 255, 255, 0.07);
+
+    filter: blur(1px);
+}
+
+
+.weight-gauge-needle {
+    position: absolute;
+
+    left: 50%;
+    bottom: 50%;
+
+    width: 2px;
+    height: 15px;
+
+    background:
+        linear-gradient(to top,
+            var(--nutrition-accent),
+            var(--nutrition-accent-soft));
+
+    border-radius: 2px;
+
+    transform-origin:
+        bottom center;
+
+    transform:
+        translateX(-50%) rotate(-26deg);
+
+    box-shadow:
+        0 0 6px rgba(155, 93, 229, 0.55);
+
+    animation:
+        needle-idle 6s ease-in-out infinite;
+}
+
+
+.weight-gauge-pivot {
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    width: 6px;
+    height: 6px;
+
+    transform:
+        translate(-50%, -50%);
+
+    border-radius: 50%;
+
+    background:
+        var(--nutrition-accent);
+
+    box-shadow:
+        0 0 6px rgba(155, 93, 229, 0.6);
+}
+
+
+.weight-gauge-base {
+    width: 46px;
+    height: 8px;
+
+    margin-top: -3px;
+
+    border-radius: 50%;
+
+    background:
+        linear-gradient(180deg,
+            var(--weight-surface-light),
+            var(--weight-surface));
+
+    border:
+        1px solid var(--weight-border);
+
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+
+.weight-info {
+    width: 100%;
+
+    text-align: center;
+}
+
+
+.weight-info-main {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+
+    gap: 4px;
+}
+
+
+.weight-amount {
+    font-size: 22px;
+    font-weight: 650;
+
+    line-height: 1;
+
+    color:
+        var(--nutrition-text);
+}
+
+
+.weight-unit {
+    font-size: 12px;
+    font-weight: 500;
+
+    color:
+        var(--nutrition-text-muted);
+}
+
+
+.weight-bottom-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 10px;
+
+    margin-top: 7px;
+}
+
+
+.weight-bmi {
+    display: inline-flex;
+    align-items: baseline;
+
+    gap: 4px;
+
+    font-size: 11px;
+    line-height: 1.35;
+
+    white-space: nowrap;
+}
+
+
+.weight-bmi-label {
+    color:
+        var(--nutrition-text-muted);
+
+    font-weight: 500;
+}
+
+
+.weight-bmi-value {
+    color:
+        var(--nutrition-text);
+
+    font-weight: 600;
+}
+
+
+.weight-update-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 5px;
+
+    min-height: 28px;
+
+    padding:
+        5px 10px;
+
+    border:
+        1px solid rgba(139, 92, 246, 0.35);
+
+    border-radius: 8px;
+
+    background:
+        rgba(139, 92, 246, 0.12);
+
+    color:
+        #a78bfa;
+
+    font: inherit;
+    font-size: 11px;
+    font-weight: 600;
+
+    line-height: 1;
+
+    cursor: pointer;
+
+    transition:
+        background var(--nutrition-transition-fast),
+        border-color var(--nutrition-transition-fast),
+        color var(--nutrition-transition-fast),
+        transform var(--nutrition-transition-fast);
+}
+
+
+.weight-update-button:hover {
+    background:
+        rgba(139, 92, 246, 0.2);
+
+    border-color:
+        rgba(139, 92, 246, 0.55);
+
+    color:
+        #c4b5fd;
+
+    transform:
+        translateY(-1px);
+}
+
+
+.weight-update-button:active {
+    transform:
+        translateY(0);
+}
+
+
+.weight-update-button:focus-visible {
+    outline:
+        2px solid rgba(139, 92, 246, 0.55);
+
+    outline-offset: 2px;
+}
+
+
+.weight-update-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 15px;
+    height: 15px;
+
+    font-size: 14px;
+    font-weight: 500;
+
+    line-height: 1;
+}
+
+
+@keyframes needle-idle {
+
+    0%,
+    100% {
+        transform:
+            translateX(-50%) rotate(-26deg);
+    }
+
+    50% {
+        transform:
+            translateX(-50%) rotate(-18deg);
+    }
+}
+
+
+@media (max-width: 480px) {
+    .weight-bottom-row {
+        flex-direction: column;
+
+        gap: 8px;
+    }
+
+    .weight-bmi {
+        white-space: normal;
+    }
+
+    .weight-update-button {
+        width: 100%;
+    }
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+    .weight-gauge-needle {
+        animation: none;
+    }
+}
