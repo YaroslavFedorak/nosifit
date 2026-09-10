@@ -97,6 +97,13 @@ export interface WaterPayload {
 }
 
 
+export interface WaterResponse {
+    status?: string;
+    amount: number;
+    recommended: number;
+}
+
+
 export type RecommendationType =
     | "calories"
     | "protein"

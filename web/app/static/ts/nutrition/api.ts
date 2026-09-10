@@ -6,22 +6,28 @@ import type {
     NutritionDay,
     NutritionRecommendationResponse,
     WaterPayload,
+    WaterResponse,
     WeightPayload,
 } from "./types.js";
 
+
 const BASE_URL = "/api/nutrition";
+
 
 async function request<T>(
     url: string,
     options: RequestInit = {},
 ): Promise<T> {
-    const response = await fetch(url, {
-        headers: {
-            "Content-Type": "application/json",
-            ...(options.headers || {}),
+    const response = await fetch(
+        url,
+        {
+            headers: {
+                "Content-Type": "application/json",
+                ...(options.headers || {}),
+            },
+            ...options,
         },
-        ...options,
-    });
+    );
 
     const data = await response.json();
 
@@ -34,6 +40,7 @@ async function request<T>(
     return data as T;
 }
 
+
 export const NutritionAPI = {
     getDay(): Promise<NutritionDay> {
         return request<NutritionDay>(
@@ -41,13 +48,24 @@ export const NutritionAPI = {
         );
     },
 
+
     getRecommendations(): Promise<NutritionRecommendationResponse> {
         return request<NutritionRecommendationResponse>(
             `${BASE_URL}/recommendations`,
         );
     },
 
-    createMeal(data: MealPayload): Promise<Meal> {
+
+    getWater(): Promise<WaterResponse> {
+        return request<WaterResponse>(
+            `${BASE_URL}/water`,
+        );
+    },
+
+
+    createMeal(
+        data: MealPayload,
+    ): Promise<Meal> {
         return request<Meal>(
             `${BASE_URL}/meals`,
             {
@@ -56,6 +74,7 @@ export const NutritionAPI = {
             },
         );
     },
+
 
     updateMeal(
         id: number,
@@ -70,7 +89,10 @@ export const NutritionAPI = {
         );
     },
 
-    deleteMeal(id: number): Promise<void> {
+
+    deleteMeal(
+        id: number,
+    ): Promise<void> {
         return request<void>(
             `${BASE_URL}/meals/${id}`,
             {
@@ -78,6 +100,7 @@ export const NutritionAPI = {
             },
         );
     },
+
 
     createItem(
         data: MealItemPayload,
@@ -90,6 +113,7 @@ export const NutritionAPI = {
             },
         );
     },
+
 
     updateItem(
         id: number,
@@ -104,7 +128,10 @@ export const NutritionAPI = {
         );
     },
 
-    deleteItem(id: number): Promise<void> {
+
+    deleteItem(
+        id: number,
+    ): Promise<void> {
         return request<void>(
             `${BASE_URL}/items/${id}`,
             {
@@ -112,6 +139,7 @@ export const NutritionAPI = {
             },
         );
     },
+
 
     updateWeight(
         weight: number,
@@ -129,14 +157,15 @@ export const NutritionAPI = {
         );
     },
 
+
     addWater(
         amount: number,
-    ): Promise<void> {
+    ): Promise<WaterResponse> {
         const data: WaterPayload = {
             amount,
         };
 
-        return request<void>(
+        return request<WaterResponse>(
             `${BASE_URL}/water`,
             {
                 method: "POST",
@@ -144,6 +173,7 @@ export const NutritionAPI = {
             },
         );
     },
+
 
     copyYesterday(): Promise<void> {
         return request<void>(
@@ -153,6 +183,7 @@ export const NutritionAPI = {
             },
         );
     },
+
 
     getHeatmap(
         year: number,
