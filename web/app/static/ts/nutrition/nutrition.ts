@@ -30,6 +30,7 @@ import {
     loadNutritionRecommendations,
 } from "./recommendations.js";
 
+
 function setTodayDate(): void {
     const element =
         document.getElementById(
@@ -53,6 +54,7 @@ function setTodayDate(): void {
         );
 }
 
+
 async function loadNutritionDay(): Promise<void> {
     try {
         const data =
@@ -75,6 +77,7 @@ async function loadNutritionDay(): Promise<void> {
     }
 }
 
+
 function initializeNutritionPage(): void {
     setTodayDate();
 
@@ -96,6 +99,7 @@ function initializeNutritionPage(): void {
 
     void loadNutritionDay();
 }
+
 
 document.addEventListener(
     "DOMContentLoaded",

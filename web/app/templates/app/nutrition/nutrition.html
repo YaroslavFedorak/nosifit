@@ -1,15 +1,19 @@
-{% extends "app/base_app.html" %} {% block title %}Харчування — Nosi Fit{%
+{% extends "app/base_app.html" %} {% block title %} Харчування — Nosi Fit {%
 endblock %} {% block styles %}
+
 <link
   rel="stylesheet"
   href="{{ url_for('static', filename='css/pages/nutrition/nutrition.css') }}"
 />
+
 <link
   rel="stylesheet"
   href="{{ url_for('static', filename='css/pages/nutrition/modals_nutr.css') }}"
 />
-{% endblock %} {% block body_class %}nutrition-page{% endblock %} {% block body
-%}
+
+{% endblock %} {% block body_class %} nutrition-page {% endblock %} {% block
+body %}
+
 <div class="nutrition-page-wrapper">
   <div class="nutrition-header">
     <div class="nutrition-header-left">
@@ -42,6 +46,7 @@ endblock %} {% block styles %}
 
       <div class="nutrition-header-text">
         <h1 class="nutrition-title">Харчування</h1>
+
         <div class="nutrition-subtitle">
           Відстежуйте раціон • Контролюйте баланс • Покращуйте звички
         </div>
@@ -51,6 +56,7 @@ endblock %} {% block styles %}
     <div class="nutrition-header-right">
       <div class="nutrition-header-info">
         <div class="nutrition-header-label">Сьогодні</div>
+
         <div id="current-date" class="nutrition-header-value"></div>
       </div>
     </div>
@@ -64,7 +70,11 @@ endblock %} {% block styles %}
             <div class="widget-eyebrow">Сьогоднішній прийом їжі</div>
           </div>
 
-          <button class="cmp-btn cmp-btn-primary" id="open-add-meal">
+          <button
+            type="button"
+            class="cmp-btn cmp-btn-primary"
+            id="open-add-meal"
+          >
             Новий прийом
           </button>
         </div>
@@ -78,13 +88,16 @@ endblock %} {% block styles %}
         <div class="heatmap-widget-header">
           <div>
             <div class="widget-eyebrow">ІСТОРІЯ</div>
+
             <h2 class="widget-title">Баланс харчування</h2>
           </div>
 
           <div class="heatmap-controls">
             <select id="heatmap-year" class="heatmap-select">
               <option value="2026">2026</option>
+
               <option value="2025">2025</option>
+
               <option value="2024">2024</option>
             </select>
           </div>
@@ -98,46 +111,74 @@ endblock %} {% block styles %}
       <section class="nutrition-quick-stats">
         <div class="cmp-card quick-stat-card">
           <div class="quick-stat-top">
-            <div class="quick-stat-label">Вода</div>
-            <div class="quick-stat-icon">💧</div>
-          </div>
-
-          <div class="quick-stat-value">
-            <span id="water-today">—</span>
-            <span class="quick-stat-unit">л</span>
-          </div>
-
-          <div class="quick-stat-meta">
-            Ціль: <span id="water-goal">—</span>
-          </div>
-
-          <button
-            class="cmp-btn cmp-btn-ghost cmp-btn-sm"
-            id="open-water-modal"
-          >
-            Додати
-          </button>
-        </div>
-
-        <div class="cmp-card quick-stat-card">
-          <div class="quick-stat-top">
             <div class="quick-stat-label">Вага</div>
-            <div class="quick-stat-icon">⚖</div>
+
+            <div class="quick-stat-icon">
+              <i data-icon="scale"></i>
+            </div>
           </div>
 
           <div class="quick-stat-value">
-            <span id="weight-current">—</span>
-            <span class="quick-stat-unit">кг</span>
+            <span id="weight-current"> — </span>
+
+            <span class="quick-stat-unit"> кг </span>
           </div>
 
           <div class="quick-stat-meta">Поточне значення</div>
 
           <button
+            type="button"
             class="cmp-btn cmp-btn-ghost cmp-btn-sm"
             id="open-update-weight"
           >
             Оновити
           </button>
+        </div>
+
+        <div class="cmp-card quick-stat-card water-widget" id="water-widget">
+          <div class="quick-stat-top">
+            <div class="quick-stat-label">Вода</div>
+
+            <div class="quick-stat-icon">
+              <i data-icon="glass-water"></i>
+            </div>
+          </div>
+
+          <div class="water-visual">
+            <div class="water-pool"></div>
+
+            <div class="water-cup">
+              <div class="water-cup-glass">
+                <div class="water-fill" id="water-fill"></div>
+
+                <div class="water-highlight"></div>
+              </div>
+
+              <div class="water-cup-rim"></div>
+
+              <div class="water-stream"></div>
+            </div>
+          </div>
+
+          <div class="water-info">
+            <div class="water-info-main">
+              <div class="water-amount" id="water-current">0.0</div>
+
+              <div class="water-unit">л</div>
+            </div>
+
+            <div class="water-bottom-row">
+              <div class="water-progress" id="water-progress">
+                0% від рекомендованого
+              </div>
+
+              <button type="button" class="water-add-button" id="add-water">
+                <span class="water-add-icon"> + </span>
+
+                <span> Додати воду </span>
+              </button>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -145,7 +186,9 @@ endblock %} {% block styles %}
         <div class="recommendations-header">
           <div>
             <div class="widget-eyebrow">РЕКОМЕНДАЦІЇ</div>
+
             <h2 class="widget-title">Що варто врахувати</h2>
+
             <p class="widget-subtitle">
               Персональні підказки на основі вашого харчування
             </p>
@@ -184,23 +227,17 @@ endblock %} {% block styles %}
 "app/nutrition/modals/modal_edit_meal.html" %} {% include
 "app/nutrition/modals/modal_add_item.html" %} {% include
 "app/nutrition/modals/modal_edit_item.html" %} {% include
-"app/nutrition/modals/modal_update_weight.html" %}
+"app/nutrition/modals/modal_update_weight.html" %} {% include
+"app/nutrition/modals/water_add.html" %}
 
-<div class="modal" id="modal-water">
-  <div class="modal-content">
-    <h2>Додати воду</h2>
-    <label>Обʼєм (л)</label>
-    <input type="number" id="water-amount" step="0.1" min="0" />
-
-    <div class="modal-actions">
-      <button class="btn" id="close-water-modal">Скасувати</button>
-      <button class="btn primary" id="save-water">Додати</button>
-    </div>
-  </div>
-</div>
+<script
+  type="module"
+  src="{{ url_for('static', filename='js/nutrition/water.js') }}"
+></script>
 
 <script
   type="module"
   src="{{ url_for('static', filename='js/nutrition/nutrition.js') }}"
 ></script>
+
 {% endblock %}
