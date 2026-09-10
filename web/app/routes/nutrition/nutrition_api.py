@@ -37,6 +37,7 @@ from web.app.services.nutrition.water_service import (
 )
 
 from web.app.services.nutrition.weight_service import (
+    get_weight_data,
     update_user_weight,
 )
 
@@ -343,6 +344,16 @@ def api_update_weight():
             "status": "ok",
             "weight": entry.weight,
         }
+    )
+
+
+@nutrition_api.get("/weight")
+@login_required
+def api_get_weight():
+    return jsonify(
+        get_weight_data(
+            current_user.id,
+        )
     )
 
 
