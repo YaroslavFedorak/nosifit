@@ -1,4 +1,4 @@
-import { NutritionAPI } from "./api.js";
+import { NutritionAPI, } from "./api.js";
 const widget = document.getElementById("weight-widget");
 const currentElement = document.getElementById("weight-current");
 const bmiElement = document.getElementById("weight-bmi");
@@ -11,7 +11,8 @@ function renderWeight(data) {
         currentElement.textContent = "—";
     }
     else {
-        currentElement.textContent = data.weight.toFixed(1);
+        currentElement.textContent =
+            data.weight.toFixed(1);
     }
     if (!bmiElement) {
         return;
@@ -21,7 +22,8 @@ function renderWeight(data) {
         bmiElement.textContent = "—";
         return;
     }
-    bmiElement.textContent = data.bmi.toFixed(1);
+    bmiElement.textContent =
+        data.bmi.toFixed(1);
 }
 async function loadWeight() {
     if (!widget) {
