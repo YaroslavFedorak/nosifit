@@ -1,69 +1,53 @@
 <div class="nutrition-heatmap-content">
-  <div class="heatmap-months">
-    <span>Січ</span>
-    <span>Лют</span>
-    <span>Бер</span>
-    <span>Кві</span>
-    <span>Тра</span>
-    <span>Чер</span>
-    <span>Лип</span>
-    <span>Сер</span>
-    <span>Вер</span>
-    <span>Жов</span>
-    <span>Лис</span>
-    <span>Гру</span>
-  </div>
+    <div
+        class="heatmap-months"
+        id="nutrition-heatmap-months"
+    ></div>
 
-  <div id="heatmap-grid" class="heatmap-grid"></div>
+    <div
+        id="nutrition-heatmap-grid"
+        class="heatmap-grid"
+        aria-label="Heatmap харчування"
+    ></div>
 
-  <div class="heatmap-legend">
-    <span>Менше</span>
-    <div class="legend-box l1"></div>
-    <div class="legend-box l2"></div>
-    <div class="legend-box l3"></div>
-    <div class="legend-box l4"></div>
-    <span>Більше</span>
-  </div>
+    <div class="heatmap-legend">
+        <span>Менше</span>
+
+        <div
+            class="legend-box l0"
+            aria-label="Немає даних"
+        ></div>
+
+        <div
+            class="legend-box l1"
+            aria-label="Рівень 1"
+        ></div>
+
+        <div
+            class="legend-box l2"
+            aria-label="Рівень 2"
+        ></div>
+
+        <div
+            class="legend-box l3"
+            aria-label="Рівень 3"
+        ></div>
+
+        <div
+            class="legend-box l4"
+            aria-label="Рівень 4"
+        ></div>
+
+        <div
+            class="legend-box l5"
+            aria-label="Рівень 5"
+        ></div>
+
+        <div
+            class="legend-box l6"
+            aria-label="Рівень 6"
+        ></div>
+
+        <span>Більше</span>
+    </div>
 </div>
-
-<script>
-  async function loadHeatmap(year) {
-    const res = await fetch(`/api/nutrition/heatmap?year=${year}`);
-    const data = await res.json();
-    renderHeatmap(data.days);
-  }
-
-  function renderHeatmap(days) {
-    const grid = document.getElementById("heatmap-grid");
-    grid.innerHTML = "";
-
-    days.forEach((d) => {
-      const cell = document.createElement("div");
-
-      cell.className = "heatmap-cell";
-      cell.dataset.level = d.level;
-
-      if (d.is_today) {
-        cell.classList.add("today");
-      }
-
-      const tooltip = document.createElement("div");
-
-      tooltip.className = "heatmap-tooltip";
-      tooltip.textContent = `${d.kcal} ккал`;
-
-      cell.appendChild(tooltip);
-      grid.appendChild(cell);
-    });
-  }
-
-  document.addEventListener("DOMContentLoaded", () => {
-    const yearSelect = document.getElementById("heatmap-year");
-
-    yearSelect.addEventListener("change", () => {
-      loadHeatmap(yearSelect.value);
-    });
-
-    loadHeatmap(yearSelect.value);
-  });
-</script>

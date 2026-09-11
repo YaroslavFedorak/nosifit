@@ -1,0 +1,56 @@
+<div
+  class="nutrition-calendar-modal"
+  id="nutrition-calendar-modal"
+  aria-hidden="true"
+>
+  <div
+    class="nutrition-calendar-dialog"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="nutrition-calendar-year"
+  >
+    <div class="nutrition-calendar-header">
+      <div class="nutrition-calendar-title-block">
+        <div
+          class="nutrition-calendar-month"
+          id="nutrition-calendar-year"
+        ></div>
+
+        <div class="nutrition-calendar-subtitle">Харчування за рік</div>
+      </div>
+
+      <button
+        type="button"
+        class="nutrition-calendar-close"
+        data-close-calendar
+        aria-label="Закрити"
+      >
+        ×
+      </button>
+    </div>
+
+    <div class="nutrition-calendar-navigation">
+      <button
+        type="button"
+        class="nutrition-calendar-nav"
+        id="nutrition-calendar-prev"
+        aria-label="Попередній рік"
+      >
+        ←
+      </button>
+
+      <strong id="nutrition-calendar-current-year"></strong>
+
+      <button
+        type="button"
+        class="nutrition-calendar-nav"
+        id="nutrition-calendar-next"
+        aria-label="Наступний рік"
+      >
+        →
+      </button>
+    </div>
+
+    <div class="nutrition-calendar-grid" id="nutrition-calendar-grid"></div>
+  </div>
+</div>
