@@ -2,29 +2,46 @@ import {
     NutritionAPI,
 } from "./api.js";
 
+
 import {
     renderBalance,
 } from "./ui/balance.js";
+
 
 import {
     renderMeals,
 } from "./ui/meals.js";
 
+
 import {
     setupMealModals,
 } from "./modals/meals.js";
+
 
 import {
     setupItemModals,
 } from "./modals/items.js";
 
+
 import {
     setupWaterModal,
 } from "./modals/water.js";
 
+
 import {
     setupWeightModal,
 } from "./modals/weight.js";
+
+
+import {
+    setupNutritionHeatmapModals,
+} from "./modals/heatmap.js";
+
+
+import {
+    initializeNutritionHeatmap,
+} from "./heatmap.js";
+
 
 import {
     loadNutritionRecommendations,
@@ -41,7 +58,8 @@ function setTodayDate(): void {
         return;
     }
 
-    const today = new Date();
+    const today =
+        new Date();
 
     element.textContent =
         today.toLocaleDateString(
@@ -60,7 +78,9 @@ async function loadNutritionDay(): Promise<void> {
         const data =
             await NutritionAPI.getDay();
 
-        renderBalance(data);
+        renderBalance(
+            data,
+        );
 
         renderMeals(
             data.meals,
@@ -68,6 +88,12 @@ async function loadNutritionDay(): Promise<void> {
         );
 
         await loadNutritionRecommendations();
+
+        document.dispatchEvent(
+            new CustomEvent(
+                "nutrition:heatmap-reload",
+            ),
+        );
 
     } catch (error) {
         console.error(
@@ -80,6 +106,8 @@ async function loadNutritionDay(): Promise<void> {
 
 function initializeNutritionPage(): void {
     setTodayDate();
+
+    setupNutritionHeatmapModals();
 
     setupMealModals(
         loadNutritionDay,
@@ -96,6 +124,8 @@ function initializeNutritionPage(): void {
     setupWeightModal(
         loadNutritionDay,
     );
+
+    initializeNutritionHeatmap();
 
     void loadNutritionDay();
 }

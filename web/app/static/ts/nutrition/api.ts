@@ -4,6 +4,8 @@ import type {
     MealItemPayload,
     MealPayload,
     NutritionDay,
+    NutritionDayDetails,
+    NutritionHeatmapResponse,
     NutritionRecommendationResponse,
     WaterPayload,
     WaterResponse,
@@ -46,6 +48,15 @@ export const NutritionAPI = {
     getDay(): Promise<NutritionDay> {
         return request<NutritionDay>(
             `${BASE_URL}/day`,
+        );
+    },
+
+
+    getDayDetails(
+        date: string,
+    ): Promise<NutritionDayDetails> {
+        return request<NutritionDayDetails>(
+            `${BASE_URL}/day/${date}`,
         );
     },
 
@@ -195,8 +206,8 @@ export const NutritionAPI = {
 
     getHeatmap(
         year: number,
-    ): Promise<unknown> {
-        return request<unknown>(
+    ): Promise<NutritionHeatmapResponse> {
+        return request<NutritionHeatmapResponse>(
             `${BASE_URL}/heatmap?year=${year}`,
         );
     },

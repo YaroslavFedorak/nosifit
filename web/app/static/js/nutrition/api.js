@@ -17,6 +17,9 @@ export const NutritionAPI = {
     getDay() {
         return request(`${BASE_URL}/day`);
     },
+    getDayDetails(date) {
+        return request(`${BASE_URL}/day/${date}`);
+    },
     getRecommendations() {
         return request(`${BASE_URL}/recommendations`);
     },

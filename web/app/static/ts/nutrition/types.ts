@@ -111,6 +111,54 @@ export interface WaterResponse {
 }
 
 
+export interface NutritionHeatmapDay {
+    date: string;
+
+    kcal: number;
+    protein: number;
+    fat: number;
+    carbs: number;
+
+    calorie_goal: number;
+    protein_goal: number;
+    fat_goal: number;
+    carbs_goal: number;
+
+    percent: number;
+    level: number;
+
+    is_today: boolean;
+}
+
+
+export interface NutritionHeatmapResponse {
+    year: number;
+    days: NutritionHeatmapDay[];
+}
+
+
+export interface NutritionDayDetails {
+    date: string;
+
+    calories: number;
+    protein: number;
+    fat: number;
+    carbs: number;
+
+    calorie_goal: number;
+    protein_goal: number;
+    fat_goal: number;
+    carbs_goal: number;
+
+    water: number;
+    water_goal: number;
+
+    current_weight: number | null;
+
+    meals: Meal[];
+}
+
+
 export type RecommendationType =
     | "calories"
     | "protein"

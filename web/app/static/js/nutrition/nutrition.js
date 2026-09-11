@@ -5,6 +5,8 @@ import { setupMealModals, } from "./modals/meals.js";
 import { setupItemModals, } from "./modals/items.js";
 import { setupWaterModal, } from "./modals/water.js";
 import { setupWeightModal, } from "./modals/weight.js";
+import { setupNutritionHeatmapModals, } from "./modals/heatmap.js";
+import { initializeNutritionHeatmap, } from "./heatmap.js";
 import { loadNutritionRecommendations, } from "./recommendations.js";
 function setTodayDate() {
     const element = document.getElementById("current-date");
@@ -25,6 +27,7 @@ async function loadNutritionDay() {
         renderBalance(data);
         renderMeals(data.meals, loadNutritionDay);
         await loadNutritionRecommendations();
+        document.dispatchEvent(new CustomEvent("nutrition:heatmap-reload"));
     }
     catch (error) {
         console.error("Failed to load nutrition data:", error);
@@ -32,10 +35,12 @@ async function loadNutritionDay() {
 }
 function initializeNutritionPage() {
     setTodayDate();
+    setupNutritionHeatmapModals();
     setupMealModals(loadNutritionDay);
     setupItemModals(loadNutritionDay);
     setupWaterModal(loadNutritionDay);
     setupWeightModal(loadNutritionDay);
+    initializeNutritionHeatmap();
     void loadNutritionDay();
 }
 document.addEventListener("DOMContentLoaded", initializeNutritionPage);
