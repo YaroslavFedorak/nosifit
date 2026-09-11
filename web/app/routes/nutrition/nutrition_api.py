@@ -27,6 +27,7 @@ from web.app.services.nutrition.recommendation_service import (
 )
 
 from web.app.services.nutrition.stats_service import (
+    get_day_details,
     get_stats,
     get_year_heatmap,
 )
@@ -53,6 +54,32 @@ nutrition_api = Blueprint(
 def api_day():
     data = get_daily_nutrition_data(
         current_user.id,
+    )
+
+    return jsonify(data)
+
+
+@nutrition_api.get("/day/<date_string>")
+@login_required
+def api_day_details(date_string):
+    try:
+        target_date = date.fromisoformat(
+            date_string,
+        )
+
+    except ValueError:
+        return (
+            jsonify(
+                {
+                    "error": "Invalid date",
+                }
+            ),
+            400,
+        )
+
+    data = get_day_details(
+        current_user.id,
+        target_date,
     )
 
     return jsonify(data)
@@ -409,7 +436,11 @@ def api_heatmap():
 @nutrition_api.get("/water")
 @login_required
 def api_get_water():
-    return jsonify(get_water_data(current_user.id))
+    return jsonify(
+        get_water_data(
+            current_user.id,
+        )
+    )
 
 
 @nutrition_api.post("/water")
