@@ -54,55 +54,52 @@ body %}
       <section class="db-card db-card-session">
         <div class="db-card-header">
           <div class="db-card-heading">
-            <span class="db-card-eyebrow">Training</span>
             <h2 class="db-card-title">Сьогоднішнє тренування</h2>
           </div>
 
-          <button
-            id="dashboard-open-training"
-            class="db-btn db-btn-primary"
-            type="button"
-          >
-            План тренувань
-          </button>
+          <div class="db-session-header-actions">
+            <input
+              id="dashboard-workout-title"
+              class="db-session-title-input"
+              type="text"
+              placeholder="Назва тренування"
+              autocomplete="off"
+            />
+
+            <button
+              id="dashboard-open-training"
+              class="db-btn db-btn-primary"
+              type="button"
+            >
+              План тренувань
+            </button>
+          </div>
         </div>
 
         <div class="db-session-content" id="dashboard-training-session">
-          <div class="db-session-editor">
-            <div class="db-session-info">
-              <input
-                id="dashboard-workout-title"
-                class="db-session-title-input"
-                type="text"
-                placeholder="Назва тренування"
-                autocomplete="off"
-              />
-            </div>
-
-            <div class="db-session-actions">
-              <button
-                id="dashboard-add-exercise"
-                class="db-btn db-btn-secondary"
-                type="button"
-              >
-                + Додати вправу
-              </button>
-
-              <button
-                id="dashboard-save-workout"
-                class="db-btn db-btn-primary"
-                type="button"
-              >
-                Зберегти тренування
-              </button>
-            </div>
-          </div>
-
           <div class="db-session-exercise-box">
             <div
               id="dashboard-workout-exercise-list"
               class="db-session-exercise-list"
             ></div>
+          </div>
+
+          <div class="db-session-actions">
+            <button
+              id="dashboard-add-exercise"
+              class="db-btn db-btn-secondary"
+              type="button"
+            >
+              + Додати вправу
+            </button>
+
+            <button
+              id="dashboard-save-workout"
+              class="db-btn db-btn-primary"
+              type="button"
+            >
+              Зберегти тренування
+            </button>
           </div>
         </div>
       </section>
