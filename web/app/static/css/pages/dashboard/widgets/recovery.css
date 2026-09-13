@@ -1,16 +1,500 @@
-.db-recovery-score {
-    font-size: 18px;
+/* =========================================================
+   Recovery
+   ========================================================= */
+
+.db-card-recovery {
+    min-height: 0;
+    overflow: hidden;
+}
+
+.db-recovery-content {
+    height: calc(100% - 58px);
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 16px;
+
+    min-height: 0;
+    overflow: hidden;
+}
+
+
+/* =========================================================
+   Section header
+   ========================================================= */
+
+.db-recovery-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    flex-shrink: 0;
+}
+
+.db-recovery-section-title {
+    font-size: 13px;
+    font-weight: 600;
+
+    color: var(--nf-text-main);
+}
+
+.db-recovery-habits-count {
+    font-size: 12px;
+    color: var(--nf-text-muted);
+}
+
+
+/* =========================================================
+   Sleep
+   ========================================================= */
+
+.db-recovery-sleep {
+    display: flex;
+    flex-direction: column;
+
+    gap: 10px;
+
+    flex-shrink: 0;
+}
+
+.db-recovery-sleep .db-recovery-section-header {
+    margin-bottom: 2px;
+}
+
+.sleep-add-btn {
+    background: var(--nf-blue);
+    color: white;
+
+    border: none;
+
+    padding: 6px 14px;
+
+    border-radius: var(--nf-radius-md);
+
+    font-size: 13px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background-color 0.2s ease,
+        transform 0.1s ease;
+}
+
+.sleep-add-btn:hover {
+    background: var(--nf-blue-soft);
+    transform: translateY(-1px);
+}
+
+.sleep-add-btn:active {
+    transform: translateY(0);
+}
+
+.sleep-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    background: var(--nf-surface-soft);
+
+    padding: 10px 12px;
+
+    border-radius: var(--nf-radius-md);
+
+    border: 1px solid var(--nf-border-soft);
+}
+
+.sleep-top-left {
+    display: flex;
+    flex-direction: column;
+
+    gap: 4px;
+
+    min-width: 0;
+}
+
+.sleep-duration {
+    font-size: 20px;
+    font-weight: 600;
+
     color: var(--nf-blue);
 }
 
-.db-recovery-metrics {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+.sleep-range {
+    font-size: 13px;
+
+    color: var(--nf-text-muted);
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-.db-recovery-item {
+.sleep-icon {
+    font-size: 22px;
+
+    opacity: 0.8;
+
+    flex-shrink: 0;
+}
+
+.sleep-bottom {
     display: flex;
     justify-content: space-between;
+    align-items: center;
+
+    gap: 10px;
+}
+
+.sleep-status {
+    background: var(--nf-green-soft);
+    color: var(--nf-green);
+
+    padding: 4px 10px;
+
+    border-radius: var(--nf-radius-pill);
+
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.sleep-meta {
+    font-size: 12px;
+
+    color: var(--nf-text-muted);
+
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   Habits
+   ========================================================= */
+
+.db-recovery-habits {
+    min-height: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 8px;
+
+    overflow: hidden;
+}
+
+.db-recovery-habits-list {
+    min-height: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 8px;
+
+    overflow-y: auto;
+
+    padding-right: 4px;
+
+    box-sizing: border-box;
+}
+
+.db-recovery-habits-list::-webkit-scrollbar {
+    width: 4px;
+}
+
+.db-recovery-habits-list::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 999px;
+}
+
+
+/* =========================================================
+   Habit item
+   ========================================================= */
+
+.habit-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    background: var(--nf-surface);
+
+    border-radius: 14px;
+
+    padding: 10px 12px;
+
+    border: 1px solid rgba(255, 255, 255, 0.08);
+
+    transition:
+        transform .18s cubic-bezier(0.16, 1, 0.3, 1),
+        background-color .18s ease,
+        border-color .18s ease;
+
+    box-sizing: border-box;
+
+    flex-shrink: 0;
+}
+
+.habit-item:hover {
+    background: rgba(255, 255, 255, 0.04);
+
+    border-color: rgba(255, 255, 255, 0.14);
+
+    transform: translateY(-1px);
+}
+
+.habit-item.habit-completed {
+    background: rgba(94, 220, 140, 0.08);
+
+    border-color: rgba(94, 220, 140, 0.4);
+}
+
+.habit-item.habit-completed .habit-icon {
+    opacity: 0.9;
+}
+
+.habit-main {
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    min-width: 0;
+}
+
+.habit-icon {
+    width: 34px;
+    height: 34px;
+
+    border-radius: 10px;
+
+    background:
+        linear-gradient(145deg,
+            var(--cat-color-bg),
+            rgba(255, 255, 255, 0.06));
+
+    border: 1px solid var(--cat-color);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: var(--cat-color);
+
+    box-shadow:
+        inset 0 0 6px rgba(0, 0, 0, 0.25),
+        0 2px 4px rgba(0, 0, 0, 0.25);
+
+    flex-shrink: 0;
+}
+
+.habit-icon svg {
+    width: 18px;
+    height: 18px;
+
+    stroke-linecap: round;
+    stroke-linejoin: round;
+
+    color: currentColor;
+
+    filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.35));
+}
+
+.habit-item:hover .habit-icon {
+    opacity: 1;
+
+    transform: translateY(-1px);
+}
+
+.habit-text {
+    display: flex;
+    flex-direction: column;
+
+    gap: 2px;
+
+    min-width: 0;
+}
+
+.habit-title {
+    font-size: 13px;
+    font-weight: 600;
+
     color: var(--nf-text-main);
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.habit-meta-row {
+    display: flex;
+    align-items: center;
+
+    gap: 5px;
+
+    min-width: 0;
+}
+
+.habit-category-badge {
+    font-size: 9px;
+    font-weight: 500;
+
+    padding: 2px 6px;
+
+    border-radius: 999px;
+
+    background: var(--cat-color-bg);
+    color: var(--cat-color);
+
+    text-transform: capitalize;
+
+    white-space: nowrap;
+}
+
+.habit-reason {
+    font-size: 10px;
+
+    color: var(--nf-text-muted);
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.habit-actions {
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+
+    flex-shrink: 0;
+}
+
+.habit-recovery-impact {
+    background: rgba(255, 255, 255, 0.04);
+
+    color: var(--nf-text-muted);
+
+    padding: 3px 8px;
+
+    border-radius: 999px;
+
+    font-size: 10px;
+    font-weight: 600;
+
+    letter-spacing: 0.1px;
+
+    white-space: nowrap;
+}
+
+.habit-check {
+    width: 28px;
+    height: 28px;
+
+    border-radius: 8px;
+
+    border: 2px solid var(--border-input);
+
+    cursor: pointer;
+
+    transition:
+        transform .18s cubic-bezier(0.16, 1, 0.3, 1),
+        border-color .18s ease,
+        background-color .18s ease;
+
+    position: relative;
+
+    background: transparent;
+
+    flex-shrink: 0;
+}
+
+.habit-check:hover {
+    border-color: var(--nf-blue);
+}
+
+.habit-check:active {
+    transform: scale(0.96);
+}
+
+.habit-check.habit-check-completed {
+    background: var(--nf-blue);
+
+    border-color: var(--nf-blue);
+}
+
+.habit-check.habit-check-completed::after {
+    content: "";
+
+    position: absolute;
+
+    width: 11px;
+    height: 6px;
+
+    border-left: 2px solid #000;
+    border-bottom: 2px solid #000;
+
+    transform: rotate(-45deg);
+
+    top: 8px;
+    left: 7px;
+}
+
+
+/* =========================================================
+   Habit categories
+   ========================================================= */
+
+.habit-cat-sleep {
+    --cat-color: #7C8CFF;
+    --cat-color-bg: #7C8CFF22;
+}
+
+.habit-cat-hydration {
+    --cat-color: #4CC9F0;
+    --cat-color-bg: #4CC9F022;
+}
+
+.habit-cat-nutrition {
+    --cat-color: #F4B860;
+    --cat-color-bg: #F4B86022;
+}
+
+.habit-cat-activity {
+    --cat-color: #5EDC8C;
+    --cat-color-bg: #5EDC8C22;
+}
+
+.habit-cat-recovery {
+    --cat-color: #C084FC;
+    --cat-color-bg: #C084FC22;
+}
+
+.habit-cat-stress {
+    --cat-color: #FF8A65;
+    --cat-color-bg: #FF8A6522;
+}
+
+.habit-cat-massage {
+    --cat-color: #FF9EC9;
+    --cat-color-bg: #FF9EC922;
+}
+
+
+/* =========================================================
+   Empty state
+   ========================================================= */
+
+.db-recovery-empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 70px;
+
+    color: var(--nf-text-muted);
+
+    font-size: 12px;
+
+    text-align: center;
 }

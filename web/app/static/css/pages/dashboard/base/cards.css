@@ -85,9 +85,6 @@
     color: #fff;
 }
 
-
-/* Training */
-
 .db-card-session .db-btn {
     padding: 10px 16px;
     border-radius: var(--nf-radius-sm);
@@ -144,9 +141,6 @@
     border-color: #ff6666;
 }
 
-
-/* Nutrition */
-
 .db-card-nutrition .db-btn {
     padding: 8px 12px;
     border-radius: var(--nf-radius-sm);
@@ -188,4 +182,89 @@
     background: var(--nf-violet);
     border-color: var(--nf-violet);
     color: #fff;
+}
+
+.db-card-recovery .db-btn {
+    padding: 8px 12px;
+    border-radius: var(--nf-radius-sm);
+    background: var(--nf-surface-soft);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    color: var(--nf-text-main);
+    font-size: 13px;
+    font-weight: 600;
+    transition: var(--nf-transition-fast);
+}
+
+.db-card-recovery .db-btn:hover {
+    background: var(--nf-blue);
+    border-color: var(--nf-blue);
+    color: #fff;
+    transform: translateY(-1px);
+}
+
+.db-card-recovery .db-btn-primary {
+    background: var(--nf-blue);
+    border-color: var(--nf-blue);
+    color: #fff;
+    font-weight: 600;
+}
+
+.db-card-recovery .db-btn-primary:hover {
+    background: var(--nf-blue-soft);
+    border-color: var(--nf-blue-soft);
+    color: #000;
+}
+
+.db-card-recovery .db-btn-secondary {
+    background: var(--nf-surface-soft);
+    border-color: rgba(255, 255, 255, 0.09);
+    color: var(--nf-text-main);
+}
+
+.db-card-recovery .db-btn-secondary:hover {
+    background: var(--nf-blue);
+    border-color: var(--nf-blue);
+    color: #fff;
+}
+
+.db-card-recommendations .db-btn {
+    padding: 8px 12px;
+    border-radius: var(--nf-radius-sm);
+    background: var(--nf-surface-soft);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    color: var(--nf-text-main);
+    font-size: 13px;
+    font-weight: 600;
+    transition: var(--nf-transition-fast);
+}
+
+.db-card-recommendations .db-btn:hover {
+    background: var(--nf-yellow);
+    border-color: var(--nf-yellow);
+    color: #000;
+    transform: translateY(-1px);
+}
+
+.db-card-recommendations .db-btn-primary {
+    background: var(--nf-yellow);
+    border-color: var(--nf-yellow);
+    color: #000;
+    font-weight: 600;
+}
+
+.db-card-recommendations .db-btn-primary:hover {
+    background: var(--nf-yellow-soft);
+    border-color: var(--nf-yellow-soft);
+}
+
+.db-card-recommendations .db-btn-secondary {
+    background: var(--nf-surface-soft);
+    border-color: rgba(255, 255, 255, 0.09);
+    color: var(--nf-text-main);
+}
+
+.db-card-recommendations .db-btn-secondary:hover {
+    background: var(--nf-yellow);
+    border-color: var(--nf-yellow);
+    color: #000;
 }

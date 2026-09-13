@@ -202,25 +202,58 @@ body %}
           </button>
         </div>
 
-        <div class="db-recovery-content" id="dashboard-recovery">
-          <div class="db-recovery-score">
-            <span class="db-recovery-label"> Стан відновлення </span>
+        <div id="dashboard-recovery" class="db-recovery-content">
+          <div class="db-recovery-sleep">
+            <div class="db-recovery-section-header">
+              <div class="db-recovery-section-title">Сон</div>
 
-            <strong id="dashboard-recovery-score"> — </strong>
+              <button
+                id="dashboard-add-sleep"
+                class="sleep-add-btn"
+                type="button"
+              >
+                Додати сон
+              </button>
+            </div>
+
+            <div class="sleep-top">
+              <div class="sleep-top-left">
+                <strong id="dashboard-sleep-duration" class="sleep-duration">
+                  —
+                </strong>
+
+                <span id="dashboard-sleep-range" class="sleep-range"> — </span>
+              </div>
+
+              <div
+                id="dashboard-sleep-icon"
+                class="sleep-icon"
+                aria-hidden="true"
+              >
+                ☾
+              </div>
+            </div>
+
+            <div class="sleep-bottom">
+              <span id="dashboard-sleep-quality" class="sleep-status"> — </span>
+
+              <span id="dashboard-sleep-meta" class="sleep-meta"> — </span>
+            </div>
           </div>
 
-          <div class="db-recovery-metrics">
-            <div class="db-recovery-item">
-              <span> Сон </span>
+          <div class="db-recovery-habits">
+            <div class="db-recovery-section-header">
+              <div class="db-recovery-section-title">Звички</div>
 
-              <strong id="dashboard-sleep"> — </strong>
+              <span id="dashboard-habits" class="db-recovery-habits-count">
+                —
+              </span>
             </div>
 
-            <div class="db-recovery-item">
-              <span> Звички </span>
-
-              <strong id="dashboard-habits"> — </strong>
-            </div>
+            <div
+              id="dashboard-habits-list"
+              class="db-recovery-habits-list"
+            ></div>
           </div>
         </div>
       </section>
@@ -234,7 +267,10 @@ body %}
           </div>
         </div>
 
-        <div class="db-recommendations-content" id="recommendations-list"></div>
+        <div
+          id="dashboard-recommendations"
+          class="db-recommendations-content"
+        ></div>
       </section>
     </div>
   </main>

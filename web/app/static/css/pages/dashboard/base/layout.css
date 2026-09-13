@@ -21,14 +21,18 @@
 }
 
 .dashboard-right {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-rows: 440px 260px;
     gap: 20px;
 }
 
 @media (max-width: 1400px) {
     .dashboard-main-grid {
         grid-template-columns: 1fr;
+    }
+
+    .dashboard-right {
+        grid-template-rows: auto;
     }
 }
 
