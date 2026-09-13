@@ -1,0 +1,34 @@
+<div class="modal" id="modal-edit-meal">
+  <div class="modal-content">
+    <h2>Редагувати прийом</h2>
+
+    <p class="modal-hint">
+      Змініть назву, категорію або час. КБЖВ рахується автоматично за
+      продуктами.
+    </p>
+
+    <input type="hidden" id="edit-meal-id" />
+
+    <label for="edit-meal-name">Назва</label>
+    <input type="text" id="edit-meal-name" autocomplete="off" />
+
+    <label for="edit-meal-category">Категорія</label>
+    <select id="edit-meal-category">
+      <option value="Сніданок">Сніданок</option>
+      <option value="Обід">Обід</option>
+      <option value="Вечеря">Вечеря</option>
+      <option value="Перекус">Перекус</option>
+    </select>
+
+    <label for="edit-meal-time">Час</label>
+    <input type="time" id="edit-meal-time" />
+
+    <div class="modal-actions">
+      <button type="button" class="btn" id="close-edit-meal">Скасувати</button>
+
+      <button type="button" class="btn primary" id="save-edit-meal">
+        Зберегти
+      </button>
+    </div>
+  </div>
+</div>

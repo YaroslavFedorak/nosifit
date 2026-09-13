@@ -1,0 +1,31 @@
+<div class="modal" id="modal-add-meal">
+  <div class="modal-content">
+    <h2>Новий прийом їжі</h2>
+
+    <p class="modal-hint">
+      Це лише назва прийому. Продукти та КБЖВ додаються після створення.
+    </p>
+
+    <label for="add-meal-name">Назва</label>
+    <input type="text" id="add-meal-name" autocomplete="off" />
+
+    <label for="add-meal-category">Категорія</label>
+    <select id="add-meal-category">
+      <option value="Сніданок">Сніданок</option>
+      <option value="Обід">Обід</option>
+      <option value="Вечеря">Вечеря</option>
+      <option value="Перекус">Перекус</option>
+    </select>
+
+    <label for="add-meal-time">Час</label>
+    <input type="time" id="add-meal-time" />
+
+    <div class="modal-actions">
+      <button type="button" class="btn" id="close-add-meal">Скасувати</button>
+
+      <button type="button" class="btn primary" id="save-add-meal">
+        Створити
+      </button>
+    </div>
+  </div>
+</div>

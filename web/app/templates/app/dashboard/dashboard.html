@@ -1,10 +1,14 @@
 {% extends "app/base_app.html" %} {% block title %} Дашборд — Nosi Fit {%
-endblock %} {% block styles %} {{ super() }}
+endblock %} {% block styles %}
 
 <link
   rel="stylesheet"
-  href="{{ url_for('static', filename='css/pages/dashboard/dashboard.css') }}"
+  href="{{ url_for(
+        'static',
+        filename='css/pages/dashboard/dashboard.css'
+    ) }}"
 />
+
 {% endblock %} {% block body_class %} dashboard-page {% endblock %} {% block
 body %}
 
@@ -27,7 +31,9 @@ body %}
             <path
               d="M12 3v17a1 1 0 0 1-1 1H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6a1 1 0 0 1-1 1H3"
             />
+
             <path d="M16 19h6" />
+
             <path d="M19 22v-6" />
           </svg>
         </span>
@@ -35,6 +41,7 @@ body %}
 
       <div class="dashboard-header-text">
         <h1 class="dashboard-title">Дашборд</h1>
+
         <div class="dashboard-subtitle">
           Керуйте навантаженням • Контролюйте відновлення • Аналізуйте прогрес
         </div>
@@ -44,6 +51,7 @@ body %}
     <div class="dashboard-header-right">
       <div class="dashboard-header-info">
         <div class="dashboard-header-label">Сьогодні</div>
+
         <div id="dashboard-header-date" class="dashboard-header-value"></div>
       </div>
     </div>
@@ -51,98 +59,125 @@ body %}
 
   <main class="dashboard-main-grid">
     <div class="dashboard-left">
-      <section class="db-card db-card-session">
-        <div class="db-card-header">
-          <div class="db-card-heading">
-            <h2 class="db-card-title">Сьогоднішнє тренування</h2>
-          </div>
-
-          <div class="db-session-header-actions">
-            <input
-              id="dashboard-workout-title"
-              class="db-session-title-input"
-              type="text"
-              placeholder="Назва тренування"
-              autocomplete="off"
-            />
-
-            <button
-              id="dashboard-open-training"
-              class="db-btn db-btn-primary"
-              type="button"
-            >
-              План тренувань
-            </button>
-          </div>
-        </div>
-
-        <div class="db-session-content" id="dashboard-training-session">
-          <div class="db-session-exercise-box">
-            <div
-              id="dashboard-workout-exercise-list"
-              class="db-session-exercise-list"
-            ></div>
-          </div>
-
-          <div class="db-session-actions">
-            <button
-              id="dashboard-add-exercise"
-              class="db-btn db-btn-secondary"
-              type="button"
-            >
-              + Додати вправу
-            </button>
-
-            <button
-              id="dashboard-save-workout"
-              class="db-btn db-btn-primary"
-              type="button"
-            >
-              Зберегти тренування
-            </button>
-          </div>
-        </div>
-      </section>
-
-      <section class="db-card db-card-nutrition">
-        <div class="db-card-header">
-          <div class="db-card-heading">
-            <span class="db-card-eyebrow"> Nutrition </span>
-
-            <h2 class="db-card-title">Харчування</h2>
-          </div>
-
-          <button
-            id="dashboard-open-nutrition"
-            class="db-btn db-btn-secondary"
-            type="button"
-          >
-            Харчування
-          </button>
-        </div>
-
-        <div class="db-nutrition-content" id="dashboard-nutrition">
-          <div class="db-nutrition-metrics">
-            <div class="db-nutrition-item">
-              <span class="db-nutrition-label"> Калорії </span>
-
-              <strong id="dashboard-calories"> — </strong>
+      <div class="dashboard-primary-row">
+        <section class="db-card db-card-session">
+          <div class="db-card-header">
+            <div class="db-card-heading">
+              <h2 class="db-card-title">Сьогоднішнє тренування</h2>
             </div>
 
-            <div class="db-nutrition-item">
-              <span class="db-nutrition-label"> Білок </span>
+            <div class="db-session-header-actions">
+              <input
+                id="dashboard-workout-title"
+                class="db-session-title-input"
+                type="text"
+                placeholder="Назва тренування"
+                autocomplete="off"
+              />
 
-              <strong id="dashboard-protein"> — </strong>
-            </div>
-
-            <div class="db-nutrition-item">
-              <span class="db-nutrition-label"> Вода </span>
-
-              <strong id="dashboard-water"> — </strong>
+              <button
+                id="dashboard-open-training"
+                class="db-btn db-btn-secondary"
+                type="button"
+              >
+                План тренувань
+              </button>
             </div>
           </div>
-        </div>
-      </section>
+
+          <div class="db-session-content" id="dashboard-training-session">
+            <div class="db-session-exercise-box">
+              <div
+                id="dashboard-workout-exercise-list"
+                class="db-session-exercise-list"
+              ></div>
+            </div>
+
+            <div class="db-session-actions">
+              <button
+                id="dashboard-add-exercise"
+                class="db-btn db-btn-secondary"
+                type="button"
+              >
+                + Додати вправу
+              </button>
+
+              <button
+                id="dashboard-save-workout"
+                class="db-btn db-btn-primary"
+                type="button"
+              >
+                Зберегти тренування
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <section class="db-card db-card-nutrition">
+          <div class="db-card-header">
+            <div class="db-card-heading">
+              <h2 class="db-card-title">Сьогоднішнє харчування</h2>
+            </div>
+
+            <div class="db-nutrition-header-actions">
+              <button
+                type="button"
+                class="db-btn db-btn-secondary"
+                id="dashboard-open-add-meal"
+              >
+                Новий прийом
+              </button>
+            </div>
+          </div>
+
+          <div class="db-nutrition-content" id="dashboard-nutrition">
+            <div class="db-nutrition-meals-box">
+              <div
+                id="dashboard-meals-list"
+                class="db-nutrition-meals-list"
+              ></div>
+            </div>
+
+            <div class="db-nutrition-footer">
+              <div class="db-nutrition-footer-group">
+                <div class="db-nutrition-stat">
+                  <span class="db-nutrition-stat-label"> Вода </span>
+
+                  <strong id="dashboard-water" class="db-nutrition-stat-value">
+                    —
+                  </strong>
+                </div>
+
+                <button
+                  id="dashboard-add-water"
+                  class="db-btn db-btn-secondary"
+                  type="button"
+                >
+                  + Вода
+                </button>
+              </div>
+
+              <div class="db-nutrition-footer-group db-nutrition-weight-group">
+                <div class="db-nutrition-stat">
+                  <span class="db-nutrition-stat-label"> Вага </span>
+
+                  <strong id="dashboard-weight" class="db-nutrition-stat-value">
+                    —
+                  </strong>
+                </div>
+
+                <button
+                  id="dashboard-open-update-weight"
+                  class="db-btn db-btn-secondary"
+                  type="button"
+                >
+                  Змінити вагу
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
 
       <section class="db-card db-card-heatmap">
         {% include "app/dashboard/dashboard_heatmap.html" %}
@@ -207,13 +242,29 @@ body %}
 
 {% include "app/dashboard/modals/exercise/modal.html" %} {% include
 "app/dashboard/modals/plan/modal.html" %} {% include
-"app/dashboard/modals/nutrition_modal.html" %} {% include
+"app/dashboard/modals/nutrition/add_meal.html" %} {% include
+"app/dashboard/modals/nutrition/edit_meal.html" %} {% include
+"app/dashboard/modals/nutrition/add_item.html" %} {% include
+"app/dashboard/modals/nutrition/edit_item.html" %} {% include
+"app/dashboard/modals/nutrition/water_add.html" %} {% include
+"app/dashboard/modals/nutrition/weight.html" %} {% include
 "app/dashboard/modals/recovery_modal.html" %} {% include
-"app/dashboard/modals/day_details.html" %} {% endblock %} {% block scripts %}
+"app/dashboard/modals/day_details.html" %} {% block scripts %}
 
 <script
   type="module"
-  src="{{ url_for('static', filename='js/dashboard/dashboard.js') }}"
+  src="{{ url_for(
+        'static',
+        filename='js/dashboard/dashboard.js'
+    ) }}"
 ></script>
 
-{% endblock %}
+<script
+  type="module"
+  src="{{ url_for(
+        'static',
+        filename='js/dashboard/widgets/nutrition/index.js'
+    ) }}"
+></script>
+
+{% endblock %} {% endblock %}

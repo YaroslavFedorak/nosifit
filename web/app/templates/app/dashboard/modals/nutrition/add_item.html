@@ -1,0 +1,58 @@
+<div class="modal" id="modal-add-item">
+  <div class="modal-content">
+    <h2>Додати продукт</h2>
+
+    <input type="hidden" id="add-item-meal-id" />
+
+    <label for="add-item-name">Назва</label>
+    <input type="text" id="add-item-name" autocomplete="off" />
+
+    <label for="add-item-kcal">Калорії</label>
+    <input
+      type="number"
+      id="add-item-kcal"
+      value="0"
+      min="0"
+      step="1"
+      inputmode="numeric"
+    />
+
+    <label for="add-item-protein">Білки</label>
+    <input
+      type="number"
+      id="add-item-protein"
+      value="0"
+      min="0"
+      step="0.1"
+      inputmode="decimal"
+    />
+
+    <label for="add-item-fat">Жири</label>
+    <input
+      type="number"
+      id="add-item-fat"
+      value="0"
+      min="0"
+      step="0.1"
+      inputmode="decimal"
+    />
+
+    <label for="add-item-carb">Вуглеводи</label>
+    <input
+      type="number"
+      id="add-item-carb"
+      value="0"
+      min="0"
+      step="0.1"
+      inputmode="decimal"
+    />
+
+    <div class="modal-actions">
+      <button type="button" class="btn" id="close-add-item">Скасувати</button>
+
+      <button type="button" class="btn primary" id="save-add-item">
+        Додати
+      </button>
+    </div>
+  </div>
+</div>

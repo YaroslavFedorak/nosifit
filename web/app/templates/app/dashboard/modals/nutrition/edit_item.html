@@ -1,0 +1,54 @@
+<div class="modal" id="modal-edit-item">
+  <div class="modal-content">
+    <h2>Редагувати продукт</h2>
+
+    <input type="hidden" id="edit-item-id" />
+
+    <label for="edit-item-name">Назва</label>
+    <input type="text" id="edit-item-name" autocomplete="off" />
+
+    <label for="edit-item-kcal">Калорії</label>
+    <input
+      type="number"
+      id="edit-item-kcal"
+      min="0"
+      step="1"
+      inputmode="numeric"
+    />
+
+    <label for="edit-item-protein">Білки</label>
+    <input
+      type="number"
+      id="edit-item-protein"
+      min="0"
+      step="0.1"
+      inputmode="decimal"
+    />
+
+    <label for="edit-item-fat">Жири</label>
+    <input
+      type="number"
+      id="edit-item-fat"
+      min="0"
+      step="0.1"
+      inputmode="decimal"
+    />
+
+    <label for="edit-item-carb">Вуглеводи</label>
+    <input
+      type="number"
+      id="edit-item-carb"
+      min="0"
+      step="0.1"
+      inputmode="decimal"
+    />
+
+    <div class="modal-actions">
+      <button type="button" class="btn" id="close-edit-item">Скасувати</button>
+
+      <button type="button" class="btn primary" id="save-edit-item">
+        Зберегти
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,40 @@
+<div class="modal" id="modal-update-weight">
+  <div class="modal-content">
+    <div class="modal-header">
+      <div>
+        <span class="modal-eyebrow">Вага</span>
+
+        <h2>Оновити вагу</h2>
+      </div>
+    </div>
+
+    <div class="modal-field">
+      <label for="update-weight-value"> Поточна вага </label>
+
+      <div class="modal-input-wrapper">
+        <input
+          type="number"
+          id="update-weight-value"
+          min="1"
+          max="500"
+          step="0.1"
+          inputmode="decimal"
+          placeholder="78.5"
+          autocomplete="off"
+        />
+
+        <span class="modal-input-unit"> кг </span>
+      </div>
+    </div>
+
+    <div class="modal-actions">
+      <button type="button" class="btn" id="close-update-weight">
+        Скасувати
+      </button>
+
+      <button type="button" class="btn primary" id="save-update-weight">
+        Оновити
+      </button>
+    </div>
+  </div>
+</div>
