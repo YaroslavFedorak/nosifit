@@ -2,6 +2,7 @@
     display: flex;
     flex-direction: column;
     gap: 16px;
+    min-width: 0;
 }
 
 .db-heatmap-header {
@@ -23,13 +24,18 @@
 
 .db-heatmap-grid {
     display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 6px;
+    grid-template-columns: repeat(53, minmax(10px, 1fr));
+    grid-template-rows: repeat(7, 13px);
+    grid-auto-flow: column;
+    gap: 3px;
+    width: 100%;
+    justify-content: center;
+    align-items: start;
 }
 
 .db-heatmap-cell {
-    width: 100%;
-    padding-top: 100%;
+    width: 13px;
+    height: 13px;
     position: relative;
     border-radius: var(--nf-radius-xs);
     background: var(--nf-surface-soft);
@@ -60,4 +66,12 @@
 
 .db-heatmap-level-4 .db-heatmap-cell-inner {
     background: var(--nf-violet);
+}
+
+@media (max-width: 1000px) {
+    .db-heatmap-grid {
+        overflow-x: auto;
+        grid-template-columns: repeat(53, 13px);
+        width: max-content;
+    }
 }

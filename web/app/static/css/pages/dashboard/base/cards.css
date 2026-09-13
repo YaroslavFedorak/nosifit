@@ -22,29 +22,77 @@
 }
 
 .db-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
     padding: 8px 14px;
+    border: 1px solid transparent;
     border-radius: var(--nf-radius-sm);
     font-size: 14px;
+    font-weight: 500;
+    line-height: 1.2;
+    white-space: nowrap;
     cursor: pointer;
     transition: var(--nf-transition-fast);
 }
 
+.db-btn:hover {
+    transform: translateY(-1px);
+}
+
+.db-btn:active {
+    transform: translateY(0);
+}
+
+.db-btn:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(255, 214, 10, 0.12);
+}
+
 .db-btn-primary {
     background: var(--nf-yellow);
+    border-color: var(--nf-yellow);
     color: #000;
+}
+
+.db-btn-primary:hover {
+    background: var(--nf-yellow-soft);
+    border-color: var(--nf-yellow-soft);
 }
 
 .db-btn-secondary {
     background: var(--nf-surface-soft);
+    border-color: var(--nf-border-soft);
     color: var(--nf-text-main);
-    border: 1px solid var(--nf-border-soft);
 }
+
+.db-btn-secondary:hover {
+    background: var(--nf-yellow);
+    border-color: var(--nf-yellow);
+    color: #000;
+}
+
+.db-btn-danger {
+    background: #ff4444;
+    border-color: #ff4444;
+    color: #fff;
+}
+
+.db-btn-danger:hover {
+    background: #ff6666;
+    border-color: #ff6666;
+    color: #fff;
+}
+
+
+/* Training */
 
 .db-card-session .db-btn {
     padding: 10px 16px;
     border-radius: var(--nf-radius-sm);
     background: var(--nf-surface-soft);
-    border: 1px solid var(--nf-border-soft);
+    border: 1px solid rgba(255, 255, 255, 0.09);
     color: var(--nf-text-main);
     font-size: 14px;
     font-weight: 500;
@@ -67,11 +115,12 @@
 
 .db-card-session .db-btn-primary:hover {
     background: var(--nf-yellow-soft);
+    border-color: var(--nf-yellow-soft);
 }
 
 .db-card-session .db-btn-secondary {
-    background: var(--nf-surface);
-    border-color: var(--nf-border-soft);
+    background: var(--nf-surface-soft);
+    border-color: rgba(255, 255, 255, 0.09);
     color: var(--nf-text-main);
 }
 
@@ -92,4 +141,51 @@
 
 .db-card-session .db-btn-danger:hover {
     background: #ff6666;
+    border-color: #ff6666;
+}
+
+
+/* Nutrition */
+
+.db-card-nutrition .db-btn {
+    padding: 8px 12px;
+    border-radius: var(--nf-radius-sm);
+    background: var(--nf-surface-soft);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    color: var(--nf-text-main);
+    font-size: 13px;
+    font-weight: 600;
+    transition: var(--nf-transition-fast);
+}
+
+.db-card-nutrition .db-btn:hover {
+    background: var(--nf-violet);
+    border-color: var(--nf-violet);
+    color: #fff;
+    transform: translateY(-1px);
+}
+
+.db-card-nutrition .db-btn-primary {
+    background: var(--nf-violet);
+    border-color: var(--nf-violet);
+    color: #fff;
+    font-weight: 600;
+}
+
+.db-card-nutrition .db-btn-primary:hover {
+    background: var(--nf-violet-soft);
+    border-color: var(--nf-violet-soft);
+    color: #000;
+}
+
+.db-card-nutrition .db-btn-secondary {
+    background: var(--nf-surface-soft);
+    border-color: rgba(255, 255, 255, 0.09);
+    color: var(--nf-text-main);
+}
+
+.db-card-nutrition .db-btn-secondary:hover {
+    background: var(--nf-violet);
+    border-color: var(--nf-violet);
+    color: #fff;
 }

@@ -1,19 +1,48 @@
+.dashboard-primary-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 12px;
+    align-items: stretch;
+}
+
+.dashboard-primary-row>.db-card {
+    min-width: 0;
+}
+
+.db-card-session {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
 .db-session-content {
     display: flex;
     flex-direction: column;
     gap: 12px;
+    min-width: 0;
     min-height: 0;
+    flex: 1;
+}
+
+.db-card-session .db-card-header {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
 }
 
 .db-session-header-actions {
     display: flex;
     align-items: center;
     gap: 8px;
+    width: 100%;
     min-width: 0;
 }
 
 .db-session-title-input {
-    width: 180px;
+    flex: 1;
+    width: auto;
+    min-width: 0;
     box-sizing: border-box;
     background: var(--nf-surface-soft);
     border: 1px solid var(--nf-border-soft);
@@ -33,12 +62,17 @@
     border-color: var(--nf-yellow);
 }
 
+.db-session-header-actions .db-btn {
+    flex-shrink: 0;
+}
+
 .db-session-actions {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 8px;
     flex-wrap: wrap;
+    margin-top: auto;
 }
 
 .db-session-actions .db-btn {
@@ -50,15 +84,17 @@
     background: var(--nf-surface-soft);
     border: 1px solid var(--nf-border-soft);
     border-radius: var(--nf-radius-lg);
-    padding: 12px;
-    height: 190px;
+    padding: 10px;
+    height: 340px;
+    min-height: 0;
     display: flex;
     flex-direction: column;
-    overflow-y: auto;
+    overflow: hidden;
 }
 
 .db-session-exercise-list {
     flex: 1;
+    min-height: 0;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
@@ -77,14 +113,14 @@
 
 .db-session-ex-row {
     display: grid;
-    grid-template-columns: minmax(140px, 1fr) 82px 82px 82px 34px;
+    grid-template-columns: minmax(110px, 1fr) 70px 70px 70px 34px;
     align-items: center;
+    gap: 6px;
+    min-height: 48px;
+    padding: 8px 10px;
     background: var(--nf-surface);
     border: 1px solid var(--nf-border-soft);
-    padding: 8px 10px;
     border-radius: var(--nf-radius-md);
-    min-height: 48px;
-    gap: 6px;
 }
 
 .db-session-ex-row.db-ex-done {
@@ -99,6 +135,7 @@
 }
 
 .db-session-ex-name {
+    min-width: 0;
     font-size: 14px;
     font-weight: 600;
     color: var(--nf-text-main);
@@ -157,11 +194,11 @@
 .db-arrow {
     width: 13px;
     height: 13px;
-    border-radius: 4px;
-    background: var(--nf-surface-soft);
     display: flex;
     align-items: center;
     justify-content: center;
+    border-radius: 4px;
+    background: var(--nf-surface-soft);
     cursor: pointer;
 }
 
@@ -186,11 +223,11 @@
 .db-ex-check {
     width: 24px;
     height: 24px;
+    position: relative;
+    flex-shrink: 0;
     border: 2px solid var(--nf-yellow);
     border-radius: 6px;
     cursor: pointer;
-    position: relative;
-    flex-shrink: 0;
 }
 
 .db-ex-check.checked {
@@ -200,13 +237,13 @@
 .db-ex-check.checked::after {
     content: "";
     position: absolute;
+    top: 6px;
+    left: 5px;
     width: 10px;
     height: 5px;
     border-left: 3px solid #000;
     border-bottom: 3px solid #000;
     transform: rotate(-45deg);
-    top: 6px;
-    left: 5px;
 }
 
 .db-session-ex-row.db-ex-done .db-session-ex-name {
@@ -236,22 +273,13 @@
     display: none !important;
 }
 
-@media (max-width: 800px) {
-    .db-card-session .db-card-header {
-        align-items: flex-start;
-    }
-
-    .db-session-header-actions {
-        flex: 1;
-        justify-content: flex-end;
-    }
-
-    .db-session-title-input {
-        width: 150px;
+@media (max-width: 1100px) {
+    .db-session-exercise-box {
+        height: 280px;
     }
 
     .db-session-ex-row {
-        grid-template-columns: 1fr 72px 72px 72px 32px;
+        grid-template-columns: minmax(100px, 1fr) 64px 64px 64px 32px;
         gap: 5px;
         padding: 8px;
     }
@@ -261,20 +289,19 @@
     }
 }
 
+@media (max-width: 900px) {
+    .dashboard-primary-row {
+        grid-template-columns: 1fr;
+    }
+
+    .db-session-exercise-box {
+        height: 250px;
+    }
+}
+
 @media (max-width: 600px) {
-    .db-card-session .db-card-header {
-        flex-direction: column;
-        gap: 10px;
-    }
-
     .db-session-header-actions {
-        width: 100%;
-        justify-content: stretch;
-    }
-
-    .db-session-title-input {
-        flex: 1;
-        width: auto;
+        flex-wrap: wrap;
     }
 }
 
@@ -284,20 +311,26 @@
         align-items: stretch;
     }
 
-    .db-session-title-input {
-        width: 100%;
-    }
-
+    .db-session-title-input,
     .db-session-header-actions .db-btn {
         width: 100%;
     }
 
+    .db-session-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .db-session-actions .db-btn {
+        width: 100%;
+    }
+
     .db-session-exercise-box {
-        height: 170px;
+        height: 220px;
         padding: 8px;
     }
 
     .db-session-ex-row {
-        grid-template-columns: minmax(100px, 1fr) 60px 60px 60px 30px;
+        grid-template-columns: minmax(90px, 1fr) 58px 58px 58px 30px;
     }
 }
