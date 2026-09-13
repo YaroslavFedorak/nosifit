@@ -5,76 +5,51 @@ const state = {
     training: null,
     subscribers: new Map()
 };
-
-
 export function subscribe(key, fn) {
     if (!state.subscribers.has(key)) {
         state.subscribers.set(key, []);
     }
-
-    const subscribers =
-        state.subscribers.get(key);
-
+    const subscribers = state.subscribers.get(key);
     subscribers.push(fn);
-
     return () => {
-        const index =
-            subscribers.indexOf(fn);
-
+        const index = subscribers.indexOf(fn);
         if (index !== -1) {
             subscribers.splice(index, 1);
         }
     };
 }
-
-
 function notify(key) {
-    const subscribers =
-        state.subscribers.get(key) || [];
-
+    const subscribers = state.subscribers.get(key) || [];
     for (const fn of subscribers) {
         try {
             fn(state[key]);
-        } catch (error) {
-            console.error(
-                `Dashboard state subscriber error: ${key}`,
-                error
-            );
+        }
+        catch (error) {
+            console.error(`Dashboard state subscriber error: ${key}`, error);
         }
     }
 }
-
-
 export function setOverview(data) {
     state.overview = data;
     notify("overview");
 }
-
-
 export function setHeatmap(data) {
     state.heatmap = data;
     notify("heatmap");
 }
-
-
 export function setRecommendations(data) {
     state.recommendations = data;
     notify("recommendations");
 }
-
-
 export function setTraining(data) {
     state.training = data;
     notify("training");
 }
-
-
 export function getState() {
     return {
         overview: state.overview,
         heatmap: state.heatmap,
-        recommendations:
-            state.recommendations,
+        recommendations: state.recommendations,
         training: state.training
     };
 }

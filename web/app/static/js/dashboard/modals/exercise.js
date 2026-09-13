@@ -1,5 +1,4 @@
-import { TrainingAPI } from "../../training/api.js";
-
+import { TrainingAPI } from "../widgets/training/api.js";
 const state = {
     exercises: [],
     category: "all",
@@ -7,272 +6,306 @@ const state = {
     callback: null,
     loading: false
 };
-
-const getModal = () => document.getElementById("db-exercise-modal");
-const getList = () => document.getElementById("db-exercise-list");
-
-const createLocalId = () =>
-    typeof crypto !== "undefined" && crypto.randomUUID
+function getModal() {
+    return document.getElementById("db-exercise-modal");
+}
+function getList() {
+    return document.getElementById("db-exercise-list");
+}
+function createLocalId() {
+    return typeof crypto !==
+        "undefined" &&
+        typeof crypto.randomUUID ===
+            "function"
         ? crypto.randomUUID()
-        : Date.now().toString(36) + Math.random().toString(36).slice(2);
-
-const normalizeDatabaseId = value => (value ? String(value) : null);
-
-function findExerciseId(ex) {
+        : Date.now().toString(36) +
+            Math.random()
+                .toString(36)
+                .slice(2);
+}
+function normalizeDatabaseId(value) {
+    return value
+        ? String(value)
+        : null;
+}
+function findExerciseId(exercise) {
     const candidates = [
-        ex.id,
-        ex.exercise_id,
-        ex.exerciseId,
-        ex.database_id,
-        ex.databaseId,
-        ex.exercise?.id,
-        ex.exercise?.exercise_id,
-        ex.exercise?.exerciseId,
-        ex.exercise?.database_id,
-        ex.exercise?.databaseId,
-        ex.data?.id,
-        ex.data?.exercise_id,
-        ex.data?.exerciseId,
-        ex.data?.database_id,
-        ex.data?.databaseId
+        exercise?.id,
+        exercise?.exercise_id,
+        exercise?.exerciseId,
+        exercise?.database_id,
+        exercise?.databaseId,
+        exercise?.exercise?.id,
+        exercise?.exercise?.exercise_id,
+        exercise?.exercise?.exerciseId,
+        exercise?.exercise?.database_id,
+        exercise?.exercise?.databaseId,
+        exercise?.data?.id,
+        exercise?.data?.exercise_id,
+        exercise?.data?.exerciseId,
+        exercise?.data?.database_id,
+        exercise?.data?.databaseId
     ];
-    for (const c of candidates) {
-        const id = normalizeDatabaseId(c);
-        if (id !== null) return id;
+    for (const candidate of candidates) {
+        const id = normalizeDatabaseId(candidate);
+        if (id !== null) {
+            return id;
+        }
     }
     return null;
 }
-
-const normalizeArray = value =>
-    Array.isArray(value)
-        ? value
-        : typeof value === "string" && value.trim()
-        ? value.split(",").map(v => v.trim()).filter(Boolean)
-        : [];
-
-const normalizeExercise = ex => ({
-    id: createLocalId(),
-    databaseId: findExerciseId(ex),
-    name: String(
-        ex.name ??
-        ex.exercise_name ??
-        ex.title ??
-        ex.exercise?.name ??
-        "Без назви"
-    ),
-    movement_pattern:
-        ex.movement_pattern ??
-        ex.movementPattern ??
-        ex.exercise?.movement_pattern ??
-        ex.exercise?.movementPattern ??
-        "",
-    muscles_primary: normalizeArray(
-        ex.muscles_primary ??
-        ex.primary_muscles ??
-        ex.exercise?.muscles_primary ??
-        ex.exercise?.primary_muscles
-    ),
-    muscles_secondary: normalizeArray(
-        ex.muscles_secondary ??
-        ex.secondary_muscles ??
-        ex.exercise?.muscles_secondary ??
-        ex.exercise?.secondary_muscles
-    ),
-    equipment: normalizeArray(ex.equipment ?? ex.exercise?.equipment),
-    original: ex
-});
-
+function normalizeArray(value) {
+    if (Array.isArray(value)) {
+        return value;
+    }
+    if (typeof value === "string" &&
+        value.trim()) {
+        return value
+            .split(",")
+            .map(item => item.trim())
+            .filter(Boolean);
+    }
+    return [];
+}
+function normalizeExercise(exercise) {
+    return {
+        id: createLocalId(),
+        databaseId: findExerciseId(exercise),
+        name: String(exercise?.name ??
+            exercise?.exercise_name ??
+            exercise?.title ??
+            exercise?.exercise?.name ??
+            "Без назви"),
+        movement_pattern: exercise?.movement_pattern ??
+            exercise?.movementPattern ??
+            exercise?.exercise
+                ?.movement_pattern ??
+            exercise?.exercise
+                ?.movementPattern ??
+            "",
+        muscles_primary: normalizeArray(exercise?.muscles_primary ??
+            exercise?.primary_muscles ??
+            exercise?.exercise
+                ?.muscles_primary ??
+            exercise?.exercise
+                ?.primary_muscles),
+        muscles_secondary: normalizeArray(exercise?.muscles_secondary ??
+            exercise?.secondary_muscles ??
+            exercise?.exercise
+                ?.muscles_secondary ??
+            exercise?.exercise
+                ?.secondary_muscles),
+        equipment: normalizeArray(exercise?.equipment ??
+            exercise?.exercise?.equipment),
+        original: exercise
+    };
+}
 function openModal() {
     const modal = getModal();
-    if (!modal) return;
+    if (!modal) {
+        return;
+    }
     modal.classList.add("open");
     modal.setAttribute("aria-hidden", "false");
     document.body.classList.add("db-modal-open");
 }
-
 function closeModal() {
     const modal = getModal();
-    if (!modal) return;
+    if (!modal) {
+        return;
+    }
     modal.classList.remove("open");
     modal.setAttribute("aria-hidden", "true");
     document.body.classList.remove("db-modal-open");
     state.callback = null;
 }
-
-function matchesCategory(ex) {
-    if (state.category === "all") return true;
-
-    const cat = state.category.toLowerCase();
-    const pattern = (ex.movement_pattern || "").toLowerCase();
-    const muscles = [...ex.muscles_primary, ...ex.muscles_secondary].map(m => m.toLowerCase());
-
-    if (cat === "legs") {
-        return (
-            pattern.includes("squat") ||
+function matchesCategory(exercise) {
+    if (state.category === "all") {
+        return true;
+    }
+    const category = state.category.toLowerCase();
+    const pattern = (exercise.movement_pattern ||
+        "").toLowerCase();
+    const muscles = [
+        ...exercise.muscles_primary,
+        ...exercise.muscles_secondary
+    ].map(muscle => muscle.toLowerCase());
+    if (category === "legs") {
+        return (pattern.includes("squat") ||
             pattern.includes("lunge") ||
-            muscles.some(m =>
-                m.includes("quad") ||
-                m.includes("glute") ||
-                m.includes("hamstring") ||
-                m.includes("calf")
-            )
-        );
+            muscles.some(muscle => muscle.includes("quad") ||
+                muscle.includes("glute") ||
+                muscle.includes("hamstring") ||
+                muscle.includes("calf")));
     }
-
-    if (cat === "core") {
-        return (
-            pattern.includes("core") ||
+    if (category === "core") {
+        return (pattern.includes("core") ||
             pattern.includes("abs") ||
-            muscles.some(m => m.includes("abs") || m.includes("oblique"))
-        );
+            muscles.some(muscle => muscle.includes("abs") ||
+                muscle.includes("oblique")));
     }
-
-    if (cat === "mobility") {
-        return pattern.includes("mobility") || pattern.includes("stretch");
+    if (category === "mobility") {
+        return (pattern.includes("mobility") ||
+            pattern.includes("stretch"));
     }
-
-    return pattern.includes(cat) || muscles.some(m => m.includes(cat));
+    return (pattern.includes(category) ||
+        muscles.some(muscle => muscle.includes(category)));
 }
-
 function getFilteredExercises() {
-    const q = state.search.trim().toLowerCase();
-    return state.exercises.filter(ex => {
-        const name = ex.name.toLowerCase();
-        return (!q || name.includes(q)) && matchesCategory(ex);
+    const query = state.search
+        .trim()
+        .toLowerCase();
+    return state.exercises.filter(exercise => {
+        const name = exercise.name.toLowerCase();
+        return ((!query ||
+            name.includes(query)) &&
+            matchesCategory(exercise));
     });
 }
-
-function renderEmpty(msg) {
+function renderEmpty(message) {
     const list = getList();
-    if (!list) return;
-    list.innerHTML = `<div class="db-session-empty">${msg}</div>`;
+    if (!list) {
+        return;
+    }
+    list.innerHTML =
+        `<div class="db-session-empty">${message}</div>`;
 }
-
 function renderExercises() {
     const list = getList();
-    if (!list) return;
-
+    if (!list) {
+        return;
+    }
     list.innerHTML = "";
-
     if (state.loading) {
         renderEmpty("Завантаження вправ...");
         return;
     }
-
     const items = getFilteredExercises();
     if (!items.length) {
         renderEmpty("Вправи не знайдені.");
         return;
     }
-
     const fragment = document.createDocumentFragment();
-
-    items.forEach(ex => {
-        const btn = document.createElement("button");
-        btn.type = "button";
-        btn.className = "db-session-item";
-        btn.dataset.exerciseId = ex.databaseId;
-
+    items.forEach(exercise => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className =
+            "db-session-item";
+        if (exercise.databaseId) {
+            button.dataset.exerciseId =
+                exercise.databaseId;
+        }
         const name = document.createElement("div");
-        name.className = "db-session-item-name";
-        name.textContent = ex.name;
-
-        btn.appendChild(name);
-
-        btn.addEventListener("click", () => {
-            if (!state.callback) return;
-
+        name.className =
+            "db-session-item-name";
+        name.textContent =
+            exercise.name;
+        button.appendChild(name);
+        button.addEventListener("click", () => {
+            if (!state.callback) {
+                return;
+            }
             state.callback({
-                databaseId: ex.databaseId,
-                id: ex.databaseId,
-                name: ex.name,
-                movement_pattern: ex.movement_pattern,
-                muscles_primary: ex.muscles_primary,
-                muscles_secondary: ex.muscles_secondary,
-                equipment: ex.equipment,
+                databaseId: exercise.databaseId,
+                id: exercise.databaseId,
+                name: exercise.name,
+                movement_pattern: exercise.movement_pattern,
+                muscles_primary: exercise.muscles_primary,
+                muscles_secondary: exercise.muscles_secondary,
+                equipment: exercise.equipment,
                 sets: 3,
                 reps: "10",
                 weight: 0,
                 completed: false
             });
-
             closeModal();
         });
-
-        fragment.appendChild(btn);
+        fragment.appendChild(button);
     });
-
     list.appendChild(fragment);
 }
-
 function extractExercises(data) {
-    if (Array.isArray(data?.items)) return data.items;
-    if (Array.isArray(data?.exercises)) return data.exercises;
-    if (Array.isArray(data)) return data;
+    if (Array.isArray(data?.items)) {
+        return data.items;
+    }
+    if (Array.isArray(data?.exercises)) {
+        return data.exercises;
+    }
+    if (Array.isArray(data)) {
+        return data;
+    }
     return [];
 }
-
 async function loadExercises() {
     state.loading = true;
     renderExercises();
-
     try {
         const data = await TrainingAPI.getExercises();
         const raw = extractExercises(data);
-
-        state.exercises = raw
-            .map(normalizeExercise)
-            .filter(ex => ex.databaseId !== null && ex.name !== "Без назви");
-
+        state.exercises =
+            raw
+                .map(normalizeExercise)
+                .filter(exercise => exercise.databaseId !==
+                null &&
+                exercise.name !==
+                    "Без назви");
         console.log("Dashboard exercises loaded:", state.exercises.length);
-    } catch (err) {
-        console.error("Failed to load dashboard exercises:", err);
+    }
+    catch (error) {
+        console.error("Failed to load dashboard exercises:", error);
         state.exercises = [];
         renderEmpty("Не вдалося завантажити вправи.");
-    } finally {
+    }
+    finally {
         state.loading = false;
         renderExercises();
     }
 }
-
 export function openExerciseModal(callback) {
-    state.callback = typeof callback === "function" ? callback : null;
+    state.callback =
+        typeof callback === "function"
+            ? callback
+            : null;
     openModal();
-    loadExercises();
+    void loadExercises();
 }
-
 export function closeExerciseModal() {
     closeModal();
 }
-
 export function initExerciseModal() {
     const modal = getModal();
-    if (!modal) return;
-
+    if (!modal) {
+        return;
+    }
     const search = document.getElementById("db-exercise-search");
     const filters = modal.querySelectorAll("[data-exercise-category]");
-
     if (search) {
         search.addEventListener("input", () => {
-            state.search = search.value;
+            state.search =
+                search.value;
             renderExercises();
         });
     }
-
-    filters.forEach(btn => {
-        btn.addEventListener("click", () => {
-            state.category = btn.dataset.exerciseCategory || "all";
-            filters.forEach(f => f.classList.remove("active"));
-            btn.classList.add("active");
+    filters.forEach(button => {
+        button.addEventListener("click", () => {
+            state.category =
+                button.dataset
+                    .exerciseCategory ||
+                    "all";
+            filters.forEach(filter => filter.classList.remove("active"));
+            button.classList.add("active");
             renderExercises();
         });
     });
-
-    modal.querySelectorAll("[data-close-exercise-modal]").forEach(btn => {
-        btn.addEventListener("click", closeModal);
+    modal
+        .querySelectorAll("[data-close-exercise-modal]")
+        .forEach(button => {
+        button.addEventListener("click", closeModal);
     });
-
-    modal.addEventListener("click", e => {
-        if (e.target === modal) closeModal();
+    modal.addEventListener("click", event => {
+        if (event.target ===
+            modal) {
+            closeModal();
+        }
     });
 }

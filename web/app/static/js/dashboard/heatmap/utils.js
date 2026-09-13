@@ -1,8 +1,13 @@
 export function formatDateIso(iso) {
     try {
-        const d = new Date(iso);
-        return d.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
-    } catch (e) {
+        const date = new Date(iso);
+        return date.toLocaleDateString(undefined, {
+            year: "numeric",
+            month: "short",
+            day: "numeric"
+        });
+    }
+    catch (_) {
         return iso;
     }
 }
