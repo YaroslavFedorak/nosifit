@@ -5,7 +5,6 @@ import { HABIT_ICONS } from "./habit_icons.js";
 import { NUTRITION_ICONS } from "./nutrition.js";
 import { TRACKER_ICONS } from "./tracker.js";
 import { PROFILE_ICONS } from "./profile.js";
-
 export const ICONS = {
     ...COMMON_ICONS,
     ...TRAINING_ICONS,
