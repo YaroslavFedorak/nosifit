@@ -22,7 +22,6 @@ import {
 import { initHabitModal } from "./modals/recovery/habit.js";
 import { initSleepModal } from "./modals/recovery/sleep.js";
 
-
 function setMetricValue(
     id: string,
     value: unknown
@@ -45,13 +44,29 @@ function setMetricValue(
             : String(value);
 }
 
-
-function bindOverview(overview: any): void {
+function bindOverview(
+    overview: any
+): void {
     if (!overview) {
-        setMetricValue("daily-score", "—");
-        setMetricValue("training-load", "—");
-        setMetricValue("recovery-score", "—");
-        setMetricValue("sleep-score", "—");
+        setMetricValue(
+            "daily-score",
+            "—"
+        );
+
+        setMetricValue(
+            "training-load",
+            "—"
+        );
+
+        setMetricValue(
+            "recovery-score",
+            "—"
+        );
+
+        setMetricValue(
+            "sleep-score",
+            "—"
+        );
 
         return;
     }
@@ -83,10 +98,14 @@ function bindOverview(overview: any): void {
             : "—"
     );
 
-    bindRecoverySummary(overview);
-    bindNutritionSummary(overview);
-}
+    bindRecoverySummary(
+        overview
+    );
 
+    bindNutritionSummary(
+        overview
+    );
+}
 
 function bindRecoverySummary(
     overview: any
@@ -138,7 +157,6 @@ function bindRecoverySummary(
     }
 }
 
-
 function bindNutritionSummary(
     overview: any
 ): void {
@@ -178,7 +196,9 @@ function bindNutritionSummary(
 
     if (calories) {
         const value =
-            Number(nutrition.calories);
+            Number(
+                nutrition.calories
+            );
 
         calories.textContent =
             Number.isFinite(value)
@@ -188,7 +208,9 @@ function bindNutritionSummary(
 
     if (protein) {
         const value =
-            Number(nutrition.protein);
+            Number(
+                nutrition.protein
+            );
 
         protein.textContent =
             Number.isFinite(value)
@@ -198,7 +220,9 @@ function bindNutritionSummary(
 
     if (water) {
         const value =
-            Number(nutrition.water);
+            Number(
+                nutrition.water
+            );
 
         water.textContent =
             Number.isFinite(value)
@@ -207,8 +231,9 @@ function bindNutritionSummary(
     }
 }
 
-
-function bindHeatmap(data: any): void {
+function bindHeatmap(
+    data: any
+): void {
     const container =
         document.getElementById(
             "dashboard-heatmap"
@@ -221,7 +246,6 @@ function bindHeatmap(data: any): void {
         data
     );
 }
-
 
 function bindRecommendations(
     recommendations: any
@@ -239,7 +263,6 @@ function bindRecommendations(
     );
 }
 
-
 function getTrainingPlan(
     training: any
 ): any | null {
@@ -252,7 +275,6 @@ function getTrainingPlan(
         null
     );
 }
-
 
 function getCurrentPlanExercises(
     plan: any
@@ -284,12 +306,13 @@ function getCurrentPlanExercises(
     return [];
 }
 
-
 function applyPlanToWorkout(
     plan: any
 ): void {
     const exercises =
-        getCurrentPlanExercises(plan);
+        getCurrentPlanExercises(
+            plan
+        );
 
     trainingEditor.replaceExercises(
         exercises
@@ -306,7 +329,6 @@ function applyPlanToWorkout(
             "Тренування";
     }
 }
-
 
 function loadPersistedExercises(): any[] {
     try {
@@ -350,7 +372,6 @@ function loadPersistedExercises(): any[] {
     }
 }
 
-
 function restoreTodayExercises(
     overview: any
 ): void {
@@ -369,7 +390,8 @@ function restoreTodayExercises(
             Array.isArray(fromOverview) &&
             fromOverview.length
         ) {
-            exercises = fromOverview;
+            exercises =
+                fromOverview;
         }
     }
 
@@ -390,7 +412,6 @@ function restoreTodayExercises(
     );
 }
 
-
 function handleExerciseSelected(
     exercise: any
 ): void {
@@ -408,7 +429,6 @@ function handleExerciseSelected(
         );
     }
 }
-
 
 async function handleSaveWorkout(): Promise<void> {
     try {
@@ -452,7 +472,6 @@ async function handleSaveWorkout(): Promise<void> {
     }
 }
 
-
 async function loadAll(): Promise<void> {
     try {
         const [
@@ -487,7 +506,6 @@ async function loadAll(): Promise<void> {
         );
     }
 }
-
 
 function bindNavigation(): void {
     const trainingButton =
@@ -529,7 +547,6 @@ function bindNavigation(): void {
     );
 }
 
-
 function bindWorkoutActions(): void {
     const addExerciseButton =
         document.getElementById(
@@ -560,7 +577,6 @@ function bindWorkoutActions(): void {
     }
 }
 
-
 function getUserId(): number | null {
     const element =
         document.getElementById(
@@ -584,7 +600,6 @@ function getUserId(): number | null {
 
     return userId;
 }
-
 
 function bindRecoveryNavigation(): void {
     const recoveryButton =
@@ -617,11 +632,12 @@ function bindRecoveryNavigation(): void {
             if (!habitModal) return;
 
             habitModal.hidden = false;
-            habitModal.classList.add("open");
+            habitModal.classList.add(
+                "open"
+            );
         }
     );
 }
-
 
 function initRecoveryModals(): void {
     const userId =
@@ -640,13 +656,11 @@ function initRecoveryModals(): void {
     bindRecoveryNavigation();
 }
 
-
 function initModals(): void {
     initExerciseModal();
     initPlanModal();
     initRecoveryModals();
 }
-
 
 function initSubscriptions(): void {
     state.subscribe(
@@ -664,7 +678,6 @@ function initSubscriptions(): void {
         bindRecommendations
     );
 }
-
 
 async function init(): Promise<void> {
     initSubscriptions();
@@ -689,7 +702,6 @@ async function init(): Promise<void> {
         }
     );
 }
-
 
 document.addEventListener(
     "DOMContentLoaded",

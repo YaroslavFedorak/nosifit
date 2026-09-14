@@ -5,14 +5,9 @@
 
 .db-recommendations-content {
     height: calc(100% - 58px);
-
     display: flex;
     flex-direction: column;
-
-    overflow-y: auto;
-
-    padding-right: 4px;
-
+    gap: 10px;
     box-sizing: border-box;
 }
 
@@ -25,104 +20,230 @@
     border-radius: 999px;
 }
 
+.db-recommendation-categories {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+}
 
-/* =========================================================
-   Recommendation
-   ========================================================= */
-
-.db-recommendation-item {
+.db-recommendation-category {
+    min-width: 0;
+    min-height: 104px;
+    padding: 13px;
     display: flex;
-    align-items: flex-start;
+    box-sizing: border-box;
+    background: var(--nf-surface-soft);
+    border: 1px solid var(--nf-border-soft);
+    border-radius: var(--nf-radius-sm);
+}
 
-    gap: 12px;
+.db-recommendation-category-inner {
+    width: 100%;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
 
-    padding: 10px 0;
-
-    border-bottom: 1px solid var(--nf-border-soft);
-
+.db-recommendation-category-icon {
+    width: 36px;
+    height: 36px;
     flex-shrink: 0;
-}
-
-.db-recommendation-item:last-child {
-    border-bottom: none;
-}
-
-.db-recommendation-icon {
-    width: 30px;
-    height: 30px;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
-    flex-shrink: 0;
-
-    background: var(--nf-surface-soft);
-
     border-radius: var(--nf-radius-sm);
-
-    color: var(--nf-text-muted);
 }
 
-.db-recommendation-icon svg {
-    width: 16px;
-    height: 16px;
+.db-recommendation-category-icon svg {
+    width: 21px;
+    height: 21px;
 }
 
-.db-recommendation-body {
+.db-recommendation-category-training .db-recommendation-category-icon {
+    color: #f5c84c;
+    background: rgba(245, 200, 76, 0.1);
+}
+
+.db-recommendation-category-recovery .db-recommendation-category-icon {
+    color: #4dd9ff;
+    background: rgba(66, 214, 197, 0.1);
+}
+
+.db-recommendation-category-nutrition .db-recommendation-category-icon {
+    color: #b47cff;
+    background: rgba(180, 124, 255, 0.1);
+}
+
+.db-recommendation-category-body {
     min-width: 0;
-
     display: flex;
     flex-direction: column;
-
-    gap: 3px;
+    gap: 5px;
 }
 
-.db-recommendation-title {
-    font-size: 13px;
-    line-height: 1.3;
-
+.db-recommendation-category-label {
+    font-size: 11px;
+    line-height: 1.2;
     font-weight: 600;
+    color: var(--nf-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.45px;
+}
 
+.db-recommendation-category-title {
+    min-width: 0;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    font-size: 14px;
+    line-height: 1.35;
+    font-weight: 600;
     color: var(--nf-text-main);
 }
 
-.db-recommendation-description {
-    font-size: 11px;
-    line-height: 1.35;
-
-    color: var(--nf-text-muted);
-}
-
-.db-recommendation-source {
-    display: inline-flex;
-    align-items: center;
-
-    width: fit-content;
-
-    margin-top: 2px;
-
-    font-size: 10px;
-    font-weight: 600;
-
-    color: var(--nf-text-muted);
-
-    text-transform: uppercase;
-    letter-spacing: 0.4px;
-}
-
-
-
-.db-recommendations-empty {
+.db-recommendation-daily {
     flex: 1;
+    min-height: 82px;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    padding: 12px 14px;
+    background: var(--nf-surface-soft);
+    border: 1px solid var(--nf-border-soft);
+    border-radius: var(--nf-radius-sm);
+}
 
+.db-recommendation-daily-inner {
+    width: 100%;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.db-recommendation-daily-icon {
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
     display: flex;
     align-items: center;
     justify-content: center;
+    border-radius: var(--nf-radius-sm);
+}
 
+.db-recommendation-daily-icon svg {
+    width: 22px;
+    height: 22px;
+}
+
+.db-recommendation-daily-icon-training {
+    color: #f5c84c;
+    background: rgba(245, 200, 76, 0.1);
+}
+
+.db-recommendation-daily-icon-recovery {
+    color: #42d6c5;
+    background: rgba(66, 214, 197, 0.1);
+}
+
+.db-recommendation-daily-icon-nutrition {
+    color: #b47cff;
+    background: rgba(180, 124, 255, 0.1);
+}
+
+.db-recommendation-daily-body {
+    min-width: 0;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.db-recommendation-daily-label {
+    font-size: 10px;
+    line-height: 1.2;
+    font-weight: 600;
     color: var(--nf-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
 
+.db-recommendation-daily-title {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 15px;
+    line-height: 1.3;
+    font-weight: 600;
+    color: var(--nf-text-main);
+}
+
+.db-recommendation-daily-description {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     font-size: 12px;
+    line-height: 1.3;
+    color: var(--nf-text-muted);
+}
 
+.db-recommendation-daily-source {
+    flex-shrink: 0;
+    align-self: center;
+    font-size: 10px;
+    line-height: 1;
+    font-weight: 600;
+    color: var(--nf-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.35px;
+}
+
+.db-recommendations-empty {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--nf-text-muted);
+    font-size: 13px;
     text-align: center;
+}
+
+@media (max-width: 900px) {
+    .db-recommendation-categories {
+        grid-template-columns: 1fr;
+    }
+
+    .db-recommendation-category {
+        min-height: 74px;
+    }
+
+    .db-recommendation-category-inner {
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .db-recommendation-category-body {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 600px) {
+    .db-recommendation-daily-source {
+        display: none;
+    }
+
+    .db-recommendation-category-title {
+        font-size: 13px;
+    }
+
+    .db-recommendation-daily-title {
+        font-size: 14px;
+    }
 }

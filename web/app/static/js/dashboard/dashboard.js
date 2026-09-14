@@ -189,7 +189,8 @@ function restoreTodayExercises(overview) {
             [];
         if (Array.isArray(fromOverview) &&
             fromOverview.length) {
-            exercises = fromOverview;
+            exercises =
+                fromOverview;
         }
     }
     if (!exercises.length) {

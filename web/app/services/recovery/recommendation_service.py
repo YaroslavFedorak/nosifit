@@ -139,8 +139,8 @@ class RecommendationService:
                         "id": "full_recovery",
                         "priority": "high",
                         "text": (
-                            "Focus on recovery today and avoid "
-                            "high-intensity training"
+                            "Зосередьтеся сьогодні на відновленні "
+                            "та уникайте високоінтенсивних тренувань"
                         ),
                         "reason": {
                             "recovery_score": recovery_score,
@@ -155,7 +155,8 @@ class RecommendationService:
                         "id": "light_training",
                         "priority": "medium",
                         "text": (
-                            "Keep today's training light and " "focus on technique"
+                            "Сьогодні краще провести легке тренування "
+                            "та зосередитися на техніці"
                         ),
                         "reason": {
                             "recovery_score": recovery_score,
@@ -170,7 +171,8 @@ class RecommendationService:
                     "id": "low_energy",
                     "priority": "medium",
                     "text": (
-                        "Energy is low — prefer light activity " "or active recovery"
+                        "Рівень енергії низький — оберіть легку активність "
+                        "або активне відновлення"
                     ),
                     "reason": {
                         "energy_score": energy_score,
@@ -192,7 +194,10 @@ class RecommendationService:
                 "type": "habit",
                 "id": "complete_habits",
                 "priority": "medium",
-                "text": ("Complete your recovery habits " "to improve recovery"),
+                "text": (
+                    "Виконайте свої звички для відновлення, "
+                    "щоб покращити відновлення"
+                ),
                 "reason": {
                     "habit_score": habit_score,
                 },
@@ -213,8 +218,9 @@ class RecommendationService:
                     "id": "very_high_daily_load",
                     "priority": "high",
                     "text": (
-                        "Today's training load is very high. "
-                        "Prioritize recovery before another hard session."
+                        "Сьогоднішнє тренувальне навантаження дуже високе. "
+                        "Зосередьтеся на відновленні перед наступним "
+                        "інтенсивним тренуванням."
                     ),
                     "reason": {
                         "daily_load": round(daily_load, 2),
@@ -229,8 +235,8 @@ class RecommendationService:
                     "id": "high_daily_load",
                     "priority": "medium",
                     "text": (
-                        "Today's training load is high. "
-                        "Avoid adding unnecessary volume."
+                        "Сьогоднішнє тренувальне навантаження високе. "
+                        "Уникайте додавання зайвого обсягу."
                     ),
                     "reason": {
                         "daily_load": round(daily_load, 2),
@@ -274,7 +280,8 @@ class RecommendationService:
                         "muscle": muscle,
                         "priority": "high",
                         "text": (
-                            f"Give {muscle} more recovery " "after heavy recent load"
+                            f"Дайте {muscle} більше часу на відновлення "
+                            "після значного недавнього навантаження"
                         ),
                         "reason": {
                             "recent_load": round(recent_load, 2),
@@ -301,7 +308,8 @@ class RecommendationService:
                         "muscle": muscle,
                         "priority": "medium",
                         "text": (
-                            f"Consider training {muscle} " "(lower recent volume)"
+                            f"Розгляньте тренування {muscle} "
+                            "(низький недавній обсяг)"
                         ),
                         "reason": {
                             "recent_load": round(recent_load, 2),
