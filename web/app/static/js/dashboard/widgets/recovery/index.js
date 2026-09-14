@@ -1,36 +1,57 @@
-import { recoveryState } from "./state";
-import { renderRecovery } from "./render";
-import { initSleepButton } from "./sleep";
-import { bindHabitActions } from "./habits";
-function getUserId() {
-    const root = document.querySelector(".dashboard-page-wrapper");
-    if (root?.dataset.userId) {
-        return root.dataset.userId;
+import { RecoveryAPI } from "../../modals/recovery/api.js";
+import { recoveryState } from "./state.js";
+import { renderRecoveryWidget } from "./render.js";
+let userId = null;
+function resolveUserId() {
+    if (userId !== null) {
+        return userId;
     }
-    const recoveryRoot = document.getElementById("dashboard-recovery");
-    if (recoveryRoot?.dataset.userId) {
-        return recoveryRoot.dataset.userId;
+    const source = document.getElementById("dashboard-open-recovery");
+    const rawUserId = source?.getAttribute("data-user-id");
+    if (!rawUserId) {
+        return null;
     }
-    const appRoot = document.querySelector("[data-user-id]");
-    return appRoot?.dataset.userId || null;
+    const parsed = Number(rawUserId);
+    if (!Number.isFinite(parsed)) {
+        return null;
+    }
+    userId = parsed;
+    return userId;
 }
-async function loadSnapshot() {
-    const userId = getUserId();
-    if (!userId) {
-        recoveryState.error = "User ID not found";
+export async function refreshRecoveryWidget() {
+    const currentUserId = resolveUserId();
+    if (currentUserId === null) {
         recoveryState.snapshot = null;
-        renderRecovery(recoveryState);
+        recoveryState.loading = false;
+        recoveryState.error =
+            "Recovery user id is not available";
+        renderRecoveryWidget(recoveryState);
         return;
     }
     recoveryState.loading = true;
     recoveryState.error = null;
-    renderRecovery(recoveryState);
     try {
-        const response = await fetch(`/api/recovery/snapshot/${encodeURIComponent(userId)}`);
-        if (!response.ok) {
-            throw new Error(`HTTP ${response.status}`);
+        const [snapshot, userHabits] = await Promise.all([
+            RecoveryAPI.getSnapshot(currentUserId),
+            RecoveryAPI.getUserHabits(currentUserId)
+        ]);
+        if (snapshot) {
+            snapshot.habits =
+                Array.isArray(snapshot.habits)
+                    ? snapshot.habits
+                    : userHabits;
         }
-        recoveryState.snapshot = await response.json();
+        else if (userHabits.length > 0) {
+            recoveryState.snapshot = {
+                habits: userHabits
+            };
+            recoveryState.error =
+                null;
+            return;
+        }
+        recoveryState.snapshot =
+            snapshot;
+        recoveryState.error = null;
     }
     catch (error) {
         recoveryState.snapshot = null;
@@ -41,21 +62,9 @@ async function loadSnapshot() {
     }
     finally {
         recoveryState.loading = false;
-        renderRecovery(recoveryState);
+        renderRecoveryWidget(recoveryState);
     }
-}
-export async function refreshRecoveryWidget() {
-    await loadSnapshot();
 }
 export function initRecoveryWidget() {
-    initSleepButton();
-    bindHabitActions(refreshRecoveryWidget);
-    loadSnapshot();
+    void refreshRecoveryWidget();
 }
-document.addEventListener("DOMContentLoaded", () => {
-    const recoveryWidget = document.getElementById("dashboard-recovery");
-    if (!recoveryWidget) {
-        return;
-    }
-    initRecoveryWidget();
-});

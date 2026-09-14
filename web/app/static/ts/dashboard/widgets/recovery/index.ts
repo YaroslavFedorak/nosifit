@@ -1,57 +1,102 @@
-import { recoveryState } from "./state";
-import { renderRecovery } from "./render";
-import { initSleepButton } from "./sleep";
-import { bindHabitActions } from "./habits";
+import { RecoveryAPI } from "../../modals/recovery/api.js";
+import {
+    recoveryState
+} from "./state.js";
+import {
+    renderRecoveryWidget
+} from "./render.js";
 
-function getUserId(): string | null {
-    const root =
-        document.querySelector<HTMLElement>(".dashboard-page-wrapper");
+let userId: number | null = null;
 
-    if (root?.dataset.userId) {
-        return root.dataset.userId;
+function resolveUserId(): number | null {
+    if (userId !== null) {
+        return userId;
     }
 
-    const recoveryRoot =
-        document.getElementById("dashboard-recovery");
+    const source =
+        document.getElementById(
+            "dashboard-open-recovery"
+        );
 
-    if (recoveryRoot?.dataset.userId) {
-        return recoveryRoot.dataset.userId;
+    const rawUserId =
+        source?.getAttribute(
+            "data-user-id"
+        );
+
+    if (!rawUserId) {
+        return null;
     }
 
-    const appRoot =
-        document.querySelector<HTMLElement>("[data-user-id]");
+    const parsed =
+        Number(rawUserId);
 
-    return appRoot?.dataset.userId || null;
+    if (!Number.isFinite(parsed)) {
+        return null;
+    }
+
+    userId = parsed;
+
+    return userId;
 }
 
-async function loadSnapshot(): Promise<void> {
-    const userId = getUserId();
+export async function refreshRecoveryWidget(): Promise<void> {
+    const currentUserId =
+        resolveUserId();
 
-    if (!userId) {
-        recoveryState.error = "User ID not found";
+    if (currentUserId === null) {
         recoveryState.snapshot = null;
-        renderRecovery(recoveryState);
+        recoveryState.loading = false;
+        recoveryState.error =
+            "Recovery user id is not available";
+
+        renderRecoveryWidget(
+            recoveryState
+        );
+
         return;
     }
 
     recoveryState.loading = true;
     recoveryState.error = null;
 
-    renderRecovery(recoveryState);
-
     try {
-        const response = await fetch(
-            `/api/recovery/snapshot/${encodeURIComponent(userId)}`
-        );
+        const [
+            snapshot,
+            userHabits
+        ] = await Promise.all([
+            RecoveryAPI.getSnapshot(
+                currentUserId
+            ),
+            RecoveryAPI.getUserHabits(
+                currentUserId
+            )
+        ]);
 
-        if (!response.ok) {
-            throw new Error(
-                `HTTP ${response.status}`
-            );
+        if (snapshot) {
+            snapshot.habits =
+                Array.isArray(
+                    snapshot.habits
+                )
+                    ? snapshot.habits
+                    : userHabits;
+        } else if (
+            userHabits.length > 0
+        ) {
+            recoveryState.snapshot = {
+                habits: userHabits
+            };
+
+            recoveryState.error =
+                null;
+
+            return;
         }
 
-        recoveryState.snapshot = await response.json();
-    } catch (error) {
+        recoveryState.snapshot =
+            snapshot;
+
+        recoveryState.error = null;
+    } catch (error: unknown) {
         recoveryState.snapshot = null;
 
         recoveryState.error =
@@ -60,31 +105,13 @@ async function loadSnapshot(): Promise<void> {
                 : "Failed to load recovery data";
     } finally {
         recoveryState.loading = false;
-        renderRecovery(recoveryState);
-    }
-}
 
-export async function refreshRecoveryWidget(): Promise<void> {
-    await loadSnapshot();
+        renderRecoveryWidget(
+            recoveryState
+        );
+    }
 }
 
 export function initRecoveryWidget(): void {
-    initSleepButton();
-
-    bindHabitActions(
-        refreshRecoveryWidget
-    );
-
-    loadSnapshot();
+    void refreshRecoveryWidget();
 }
-
-document.addEventListener("DOMContentLoaded", () => {
-    const recoveryWidget =
-        document.getElementById("dashboard-recovery");
-
-    if (!recoveryWidget) {
-        return;
-    }
-
-    initRecoveryWidget();
-});

@@ -1,4 +1,6 @@
-import { DashboardAPI } from "../../api.js";
+import { ICONS } from "../../../icons/index.js";
+import { RecoveryAPI } from "./api.js";
+import { refreshRecoveryWidget } from "../../widgets/recovery/index.js";
 
 interface Habit {
     id: number;
@@ -10,16 +12,10 @@ interface Habit {
 }
 
 interface UserHabit {
-    id: number;
+    id?: number;
+    habit_id?: number;
+    user_habit_id?: number;
 }
-
-type SortKey =
-    | "points"
-    | "category"
-    | "name";
-
-let initialized = false;
-let currentSort: SortKey = "points";
 
 const CATEGORY_MAP: Record<string, string> = {
     hydration: "Вода",
@@ -31,18 +27,91 @@ const CATEGORY_MAP: Record<string, string> = {
     massage: "Масаж"
 };
 
-function getElement<T extends HTMLElement>(
-    selector: string
-): T | null {
-    return document.querySelector<T>(selector);
+let initialized = false;
+let currentSort = "points";
+
+function normalizeHabits(payload: unknown): Habit[] {
+    if (Array.isArray(payload)) {
+        return payload as Habit[];
+    }
+
+    if (
+        payload &&
+        typeof payload === "object"
+    ) {
+        const value =
+            payload as Record<string, unknown>;
+
+        if (Array.isArray(value.habits)) {
+            return value.habits as Habit[];
+        }
+
+        if (Array.isArray(value.items)) {
+            return value.items as Habit[];
+        }
+
+        if (Array.isArray(value.data)) {
+            return value.data as Habit[];
+        }
+    }
+
+    return [];
 }
 
-function getUserId(): string | null {
-    const root = document.querySelector<HTMLElement>(
-        ".dashboard-page-wrapper"
-    );
+function normalizeUserHabits(
+    payload: unknown
+): UserHabit[] {
+    if (Array.isArray(payload)) {
+        return payload as UserHabit[];
+    }
 
-    return root?.dataset.userId || null;
+    if (
+        payload &&
+        typeof payload === "object"
+    ) {
+        const value =
+            payload as Record<string, unknown>;
+
+        if (Array.isArray(value.habits)) {
+            return value.habits as UserHabit[];
+        }
+
+        if (Array.isArray(value.items)) {
+            return value.items as UserHabit[];
+        }
+
+        if (Array.isArray(value.data)) {
+            return value.data as UserHabit[];
+        }
+    }
+
+    return [];
+}
+
+function getHabitId(
+    habit: UserHabit
+): number {
+    return Number(
+        habit.habit_id ??
+        habit.id ??
+        habit.user_habit_id ??
+        0
+    );
+}
+
+function getIcon(
+    iconKey?: string
+): string {
+    if (
+        iconKey &&
+        iconKey in ICONS
+    ) {
+        return ICONS[
+            iconKey as keyof typeof ICONS
+        ];
+    }
+
+    return ICONS.rest;
 }
 
 function localizeCategory(
@@ -52,51 +121,62 @@ function localizeCategory(
         return "";
     }
 
-    return CATEGORY_MAP[category] || category;
-}
-
-function getIcon(habit: Habit): string {
-    const icons = (
-        window as Window & {
-            ICONS?: Record<string, string>;
-        }
-    ).ICONS;
-
     return (
-        icons?.[habit.icon || "rest"] ||
-        icons?.rest ||
-        ""
+        CATEGORY_MAP[category] ||
+        category
     );
 }
 
-function sortHabits(
+function sortAvailable(
     habits: Habit[],
-    sort: SortKey
+    sortKey: string
 ): Habit[] {
-    const result = [...habits];
+    const sorted = [...habits];
 
-    if (sort === "points") {
-        return result.sort(
+    if (sortKey === "points") {
+        return sorted.sort(
             (a, b) =>
                 Number(b.points || 0) -
                 Number(a.points || 0)
         );
     }
 
-    if (sort === "category") {
-        return result.sort((a, b) =>
-            localizeCategory(a.category).localeCompare(
-                localizeCategory(b.category),
-                "uk"
-            )
+    if (sortKey === "category") {
+        return sorted.sort(
+            (a, b) =>
+                localizeCategory(
+                    a.category
+                ).localeCompare(
+                    localizeCategory(
+                        b.category
+                    ),
+                    "uk"
+                )
         );
     }
 
-    return result.sort((a, b) =>
-        a.name.localeCompare(
-            b.name,
-            "uk"
-        )
+    if (sortKey === "name") {
+        return sorted.sort(
+            (a, b) =>
+                a.name.localeCompare(
+                    b.name,
+                    "uk"
+                )
+        );
+    }
+
+    return sorted;
+}
+
+function sortAdded(
+    habits: Habit[]
+): Habit[] {
+    return [...habits].sort(
+        (a, b) =>
+            a.name.localeCompare(
+                b.name,
+                "uk"
+            )
     );
 }
 
@@ -105,15 +185,25 @@ function createHabitRow(
     added: boolean
 ): HTMLElement {
     const category =
-        habit.category || "recovery";
+        habit.category ||
+        "recovery";
 
-    const row = document.createElement("div");
+    const row =
+        document.createElement("div");
 
     row.className =
-        `habit-row habit-cat-${category}`;
+        "dashboard-habit-row";
+
+    if (category) {
+        row.classList.add(
+            `dashboard-habit-cat-${category}`
+        );
+    }
 
     if (added) {
-        row.classList.add("habit-added");
+        row.classList.add(
+            "dashboard-habit-added"
+        );
     }
 
     row.dataset.habitId =
@@ -122,28 +212,29 @@ function createHabitRow(
     const left =
         document.createElement("div");
 
-    left.className = "habit-left";
+    left.className =
+        "dashboard-habit-left";
 
     const icon =
         document.createElement("div");
 
     icon.className =
-        "habit-modal-icon";
+        "dashboard-habit-modal-icon";
 
     icon.innerHTML =
-        getIcon(habit);
+        getIcon(habit.icon);
 
     const info =
         document.createElement("div");
 
     info.className =
-        "habit-info";
+        "dashboard-habit-info";
 
     const title =
         document.createElement("div");
 
     title.className =
-        "habit-title";
+        "dashboard-habit-title";
 
     title.textContent =
         habit.name;
@@ -155,12 +246,14 @@ function createHabitRow(
             document.createElement("div");
 
         description.className =
-            "habit-description";
+            "dashboard-habit-description";
 
         description.textContent =
             habit.description;
 
-        info.appendChild(description);
+        info.appendChild(
+            description
+        );
     }
 
     left.appendChild(icon);
@@ -170,38 +263,46 @@ function createHabitRow(
         document.createElement("div");
 
     right.className =
-        "habit-right";
+        "dashboard-habit-right";
 
-    const points =
+    const impact =
         document.createElement("div");
 
-    points.className =
-        "habit-points";
+    impact.className =
+        "dashboard-habit-impact";
 
-    points.textContent =
-        `Recovery +${Number(habit.points || 0)}`;
+    impact.textContent =
+        `Recovery +${Number(
+            habit.points || 0
+        )}`;
 
     const meta =
         document.createElement("div");
 
     meta.className =
-        "habit-meta";
+        "dashboard-habit-meta";
 
     meta.textContent =
-        localizeCategory(category);
+        localizeCategory(
+            category
+        );
 
     const check =
         document.createElement("div");
 
     check.className =
-        "habit-check";
+        "dashboard-habit-check";
 
     if (added) {
-        check.classList.add("checked");
-        check.textContent = "✓";
+        check.classList.add(
+            "dashboard-habit-checked"
+        );
+
+        check.textContent =
+            "✓";
     }
 
-    right.appendChild(points);
+    right.appendChild(impact);
     right.appendChild(meta);
     right.appendChild(check);
 
@@ -211,351 +312,440 @@ function createHabitRow(
     return row;
 }
 
-async function loadHabits(
-    userId: string
-): Promise<void> {
-    const list =
-        getElement<HTMLElement>(
-            "#dashboard-habit-modal-list"
-        );
-
-    const saveButton =
-        getElement<HTMLButtonElement>(
-            "#dashboard-save-habit"
-        );
-
-    if (!list || !saveButton) {
-        return;
-    }
-
-    list.textContent =
-        "Завантаження…";
-
-    try {
-        const [
-            allHabits,
-            userHabits
-        ] = await Promise.all([
-            DashboardAPI.getRecoveryHabits(),
-            DashboardAPI.getUserRecoveryHabits(
-                userId
-            )
-        ]);
-
-        const userHabitIds =
-            new Set(
-                userHabits.map(
-                    (habit: UserHabit) =>
-                        habit.id
-                )
-            );
-
-        const available =
-            allHabits.filter(
-                (habit: Habit) =>
-                    !userHabitIds.has(
-                        habit.id
-                    )
-            );
-
-        const added =
-            allHabits.filter(
-                (habit: Habit) =>
-                    userHabitIds.has(
-                        habit.id
-                    )
-            );
-
-        const sortedAvailable =
-            sortHabits(
-                available,
-                currentSort
-            );
-
-        const sortedAdded =
-            [...added].sort((a, b) =>
-                a.name.localeCompare(
-                    b.name,
-                    "uk"
-                )
-            );
-
-        list.replaceChildren();
-
-        const availableHeader =
-            document.createElement("div");
-
-        availableHeader.className =
-            "habit-section-title";
-
-        availableHeader.textContent =
-            "Доступні";
-
-        list.appendChild(
-            availableHeader
-        );
-
-        if (sortedAvailable.length === 0) {
-            const empty =
-                document.createElement("div");
-
-            empty.className =
-                "habit-empty";
-
-            empty.textContent =
-                "Усі доступні звички вже додані";
-
-            list.appendChild(empty);
-        } else {
-            sortedAvailable.forEach(
-                (habit) => {
-                    list.appendChild(
-                        createHabitRow(
-                            habit,
-                            false
-                        )
-                    );
-                }
-            );
-        }
-
-        const addedHeader =
-            document.createElement("div");
-
-        addedHeader.className =
-            "habit-section-title";
-
-        addedHeader.textContent =
-            "Вже додані";
-
-        list.appendChild(
-            addedHeader
-        );
-
-        sortedAdded.forEach(
-            (habit) => {
-                list.appendChild(
-                    createHabitRow(
-                        habit,
-                        true
-                    )
-                );
-            }
-        );
-
-        updateSaveState();
-    } catch (error) {
-        console.error(
-            "Failed to load habits:",
-            error
-        );
-
-        list.textContent =
-            "Не вдалося завантажити звички";
-    }
-}
-
-function updateSaveState(): void {
-    const list =
-        getElement<HTMLElement>(
-            "#dashboard-habit-modal-list"
-        );
-
-    const saveButton =
-        getElement<HTMLButtonElement>(
-            "#dashboard-save-habit"
-        );
-
-    if (!list || !saveButton) {
-        return;
-    }
-
-    const selected =
-        list.querySelectorAll(
-            ".habit-row.selected"
-        );
-
-    saveButton.disabled =
-        selected.length === 0;
-}
-
-function openModal(): void {
-    const backdrop =
-        getElement<HTMLElement>(
-            "#habit-modal-backdrop"
-        );
-
-    const userId =
-        getUserId();
-
-    if (!backdrop || !userId) {
-        return;
-    }
-
-    backdrop.classList.add("open");
-
-    loadHabits(userId);
-}
-
-function closeModal(): void {
-    const backdrop =
-        getElement<HTMLElement>(
-            "#habit-modal-backdrop"
-        );
-
-    const list =
-        getElement<HTMLElement>(
-            "#dashboard-habit-modal-list"
-        );
-
-    const saveButton =
-        getElement<HTMLButtonElement>(
-            "#dashboard-save-habit"
-        );
-
-    backdrop?.classList.remove("open");
-
-    list?.replaceChildren();
-
-    if (saveButton) {
-        saveButton.disabled = true;
-    }
-}
-
-async function saveHabits(): Promise<void> {
-    const userId =
-        getUserId();
-
-    const list =
-        getElement<HTMLElement>(
-            "#dashboard-habit-modal-list"
-        );
-
-    const saveButton =
-        getElement<HTMLButtonElement>(
-            "#dashboard-save-habit"
-        );
-
-    if (!userId || !list || !saveButton) {
-        return;
-    }
-
-    const selected =
-        Array.from(
-            list.querySelectorAll<HTMLElement>(
-                ".habit-row.selected"
-            )
-        );
-
-    if (selected.length === 0) {
-        return;
-    }
-
-    saveButton.disabled = true;
-
-    try {
-        await Promise.all(
-            selected.map((row) =>
-                DashboardAPI.addRecoveryHabit(
-                    userId,
-                    Number(row.dataset.habitId)
-                )
-            )
-        );
-
-        closeModal();
-
-        window.dispatchEvent(
-            new CustomEvent(
-                "dashboard:recovery-updated"
-            )
-        );
-    } catch (error) {
-        console.error(
-            "Failed to save habits:",
-            error
-        );
-
-        alert(
-            error instanceof Error
-                ? error.message
-                : "Не вдалося додати звички"
-        );
-
-        saveButton.disabled = false;
-    }
-}
-
-export function initHabitModal(): void {
+export function initHabitModal(
+    userId: number
+): void {
     if (initialized) {
         return;
     }
 
-    const openButton =
-        getElement<HTMLButtonElement>(
-            "#dashboard-add-habit"
+    const backdropElement =
+        document.getElementById(
+            "habit-modal-backdrop"
         );
 
-    const backButton =
-        getElement<HTMLButtonElement>(
-            "#dashboard-habit-back"
+    const openButtonElement =
+        document.getElementById(
+            "dashboard-open-recovery"
         );
 
-    const saveButton =
-        getElement<HTMLButtonElement>(
-            "#dashboard-save-habit"
+    const backButtonElement =
+        document.getElementById(
+            "habit-back-btn"
         );
 
-    const list =
-        getElement<HTMLElement>(
-            "#dashboard-habit-modal-list"
+    const saveButtonElement =
+        document.getElementById(
+            "save-habit"
         );
 
-    const backdrop =
-        getElement<HTMLElement>(
-            "#habit-modal-backdrop"
+    const listBoxElement =
+        document.getElementById(
+            "habit-modal-list"
         );
 
     if (
-        !openButton ||
-        !backButton ||
-        !saveButton ||
-        !list ||
-        !backdrop
+        !(backdropElement instanceof HTMLElement) ||
+        !(backButtonElement instanceof HTMLButtonElement) ||
+        !(saveButtonElement instanceof HTMLButtonElement) ||
+        !(listBoxElement instanceof HTMLElement)
     ) {
+        console.error(
+            "Recovery habit modal elements not found"
+        );
+
         return;
     }
 
+    const backdrop =
+        backdropElement;
+
+    const backButton =
+        backButtonElement;
+
+    const saveButton =
+        saveButtonElement;
+
+    const listBox =
+        listBoxElement;
+
+    const openButton =
+        openButtonElement instanceof HTMLElement
+            ? openButtonElement
+            : null;
+
+    const sortButtons =
+        document.querySelectorAll<HTMLButtonElement>(
+            ".dashboard-habit-sort-btn"
+        );
+
     initialized = true;
 
-    openButton.addEventListener(
-        "click",
-        openModal
-    );
+    function updateSaveState(): void {
+        const selected =
+            listBox.querySelectorAll(
+                ".dashboard-habit-row.dashboard-habit-selected"
+            );
+
+        saveButton.disabled =
+            selected.length === 0;
+    }
+
+    async function renderList(): Promise<void> {
+        listBox.innerHTML = "";
+
+        const loading =
+            document.createElement("div");
+
+        loading.className =
+            "dashboard-habit-loading";
+
+        loading.textContent =
+            "Завантаження звичок…";
+
+        listBox.appendChild(
+            loading
+        );
+
+        try {
+            const [
+                allHabitsPayload,
+                userHabitsPayload
+            ] = await Promise.all([
+                RecoveryAPI.getHabitsList(),
+                RecoveryAPI.getUserHabits(
+                    userId
+                )
+            ]);
+
+            const allHabits =
+                normalizeHabits(
+                    allHabitsPayload
+                );
+
+            const userHabits =
+                normalizeUserHabits(
+                    userHabitsPayload
+                );
+
+            const userHabitIds =
+                new Set(
+                    userHabits
+                        .map(getHabitId)
+                        .filter(
+                            id => id > 0
+                        )
+                );
+
+            const available =
+                allHabits.filter(
+                    habit =>
+                        !userHabitIds.has(
+                            Number(habit.id)
+                        )
+                );
+
+            const added =
+                allHabits.filter(
+                    habit =>
+                        userHabitIds.has(
+                            Number(habit.id)
+                        )
+                );
+
+            const sortedAvailable =
+                sortAvailable(
+                    available,
+                    currentSort
+                );
+
+            const sortedAdded =
+                sortAdded(
+                    added
+                );
+
+            listBox.innerHTML = "";
+
+            const availableHeader =
+                document.createElement("div");
+
+            availableHeader.className =
+                "dashboard-habit-section-title";
+
+            availableHeader.textContent =
+                "Доступні звички";
+
+            listBox.appendChild(
+                availableHeader
+            );
+
+            if (
+                sortedAvailable.length === 0
+            ) {
+                const empty =
+                    document.createElement(
+                        "div"
+                    );
+
+                empty.className =
+                    "dashboard-habit-empty";
+
+                empty.textContent =
+                    "Усі доступні звички вже додані";
+
+                listBox.appendChild(
+                    empty
+                );
+            } else {
+                sortedAvailable.forEach(
+                    habit => {
+                        listBox.appendChild(
+                            createHabitRow(
+                                habit,
+                                false
+                            )
+                        );
+                    }
+                );
+            }
+
+            const addedHeader =
+                document.createElement("div");
+
+            addedHeader.className =
+                "dashboard-habit-section-title";
+
+            addedHeader.textContent =
+                "Вже додані";
+
+            listBox.appendChild(
+                addedHeader
+            );
+
+            if (
+                sortedAdded.length === 0
+            ) {
+                const empty =
+                    document.createElement(
+                        "div"
+                    );
+
+                empty.className =
+                    "dashboard-habit-empty dashboard-habit-empty-secondary";
+
+                empty.textContent =
+                    "Ще немає доданих звичок";
+
+                listBox.appendChild(
+                    empty
+                );
+            } else {
+                sortedAdded.forEach(
+                    habit => {
+                        listBox.appendChild(
+                            createHabitRow(
+                                habit,
+                                true
+                            )
+                        );
+                    }
+                );
+            }
+
+            updateSaveState();
+        } catch (error) {
+            console.error(
+                "Failed to load recovery habits",
+                error
+            );
+
+            listBox.innerHTML = "";
+
+            const errorBox =
+                document.createElement(
+                    "div"
+                );
+
+            errorBox.className =
+                "dashboard-habit-error";
+
+            errorBox.textContent =
+                "Не вдалося завантажити звички";
+
+            listBox.appendChild(
+                errorBox
+            );
+
+            updateSaveState();
+        }
+    }
+
+    function open(): void {
+        backdrop.hidden = false;
+
+        requestAnimationFrame(
+            () => {
+                backdrop.classList.add(
+                    "open"
+                );
+            }
+        );
+
+        saveButton.disabled = true;
+
+        void renderList();
+    }
+
+    function close(): void {
+        backdrop.classList.remove(
+            "open"
+        );
+
+        window.setTimeout(
+            () => {
+                if (
+                    !backdrop.classList.contains(
+                        "open"
+                    )
+                ) {
+                    backdrop.hidden = true;
+                }
+            },
+            180
+        );
+
+        listBox.innerHTML = "";
+
+        saveButton.disabled = true;
+    }
+
+    async function save(): Promise<void> {
+        const selected =
+            Array.from(
+                listBox.querySelectorAll<HTMLElement>(
+                    ".dashboard-habit-row.dashboard-habit-selected"
+                )
+            );
+
+        if (
+            selected.length === 0
+        ) {
+            return;
+        }
+
+        saveButton.disabled = true;
+
+        try {
+            const habitIds =
+                selected
+                    .map(
+                        row =>
+                            Number(
+                                row.dataset.habitId
+                            )
+                    )
+                    .filter(
+                        id => id > 0
+                    );
+
+            await Promise.all(
+                habitIds.map(
+                    habitId =>
+                        RecoveryAPI.addHabit(
+                            userId,
+                            habitId
+                        )
+                )
+            );
+
+            await refreshRecoveryWidget();
+
+            close();
+        } catch (error) {
+            console.error(
+                "Failed to save recovery habits",
+                error
+            );
+
+            alert(
+                "Не вдалося зберегти звички"
+            );
+
+            saveButton.disabled = false;
+        }
+    }
+
+    if (openButton) {
+        openButton.addEventListener(
+            "click",
+            open
+        );
+    }
 
     backButton.addEventListener(
         "click",
-        closeModal
+        close
     );
 
     saveButton.addEventListener(
         "click",
-        saveHabits
+        () => {
+            void save();
+        }
     );
 
-    list.addEventListener(
+    backdrop.addEventListener(
         "click",
-        (event) => {
+        event => {
+            if (
+                event.target === backdrop
+            ) {
+                close();
+            }
+        }
+    );
+
+    sortButtons.forEach(
+        button => {
+            button.addEventListener(
+                "click",
+                () => {
+                    sortButtons.forEach(
+                        item =>
+                            item.classList.remove(
+                                "active"
+                            )
+                    );
+
+                    button.classList.add(
+                        "active"
+                    );
+
+                    currentSort =
+                        button.dataset.sort ||
+                        "points";
+
+                    void renderList();
+                }
+            );
+        }
+    );
+
+    listBox.addEventListener(
+        "click",
+        event => {
             const target =
                 event.target;
 
-            if (!(target instanceof HTMLElement)) {
+            if (
+                !(target instanceof HTMLElement)
+            ) {
                 return;
             }
 
             const row =
                 target.closest<HTMLElement>(
-                    ".habit-row"
+                    ".dashboard-habit-row"
                 );
 
             if (!row) {
@@ -564,34 +754,34 @@ export function initHabitModal(): void {
 
             if (
                 row.classList.contains(
-                    "habit-added"
+                    "dashboard-habit-added"
                 )
             ) {
                 return;
             }
 
             row.classList.toggle(
-                "selected"
+                "dashboard-habit-selected"
             );
 
             const check =
-                row.querySelector(
-                    ".habit-check"
+                row.querySelector<HTMLElement>(
+                    ".dashboard-habit-check"
                 );
 
             if (check) {
-                const selected =
+                const checked =
                     row.classList.contains(
-                        "selected"
+                        "dashboard-habit-selected"
                     );
 
                 check.classList.toggle(
-                    "checked",
-                    selected
+                    "dashboard-habit-checked",
+                    checked
                 );
 
                 check.textContent =
-                    selected
+                    checked
                         ? "✓"
                         : "";
             }
@@ -600,72 +790,14 @@ export function initHabitModal(): void {
         }
     );
 
-    document
-        .querySelectorAll<HTMLButtonElement>(
-            ".dashboard-habit-sort-btn"
-        )
-        .forEach((button) => {
-            button.addEventListener(
-                "click",
-                async () => {
-                    const sort =
-                        button.dataset.sort;
-
-                    if (
-                        sort !== "points" &&
-                        sort !== "category" &&
-                        sort !== "name"
-                    ) {
-                        return;
-                    }
-
-                    currentSort =
-                        sort;
-
-                    document
-                        .querySelectorAll(
-                            ".dashboard-habit-sort-btn"
-                        )
-                        .forEach(
-                            (item) =>
-                                item.classList.remove(
-                                    "active"
-                                )
-                        );
-
-                    button.classList.add(
-                        "active"
-                    );
-
-                    const userId =
-                        getUserId();
-
-                    if (userId) {
-                        await loadHabits(
-                            userId
-                        );
-                    }
-                }
-            );
-        });
-
-    backdrop.addEventListener(
-        "click",
-        (event) => {
-            if (event.target === backdrop) {
-                closeModal();
-            }
-        }
-    );
-
     document.addEventListener(
         "keydown",
-        (event) => {
+        event => {
             if (
                 event.key === "Escape" &&
-                backdrop.classList.contains("open")
+                !backdrop.hidden
             ) {
-                closeModal();
+                close();
             }
         }
     );

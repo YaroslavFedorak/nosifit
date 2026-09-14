@@ -1,0 +1,82 @@
+<div class="dashboard-recovery-modal-backdrop" id="sleep-modal-backdrop" hidden>
+  <div
+    class="dashboard-recovery-modal dashboard-sleep-modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="dashboard-sleep-modal-title"
+  >
+    <div class="dashboard-sleep-header">
+      <div
+        class="dashboard-sleep-header-icon"
+        id="sleep-header-icon"
+        aria-hidden="true"
+      ></div>
+
+      <div class="dashboard-sleep-header-text">
+        <div class="dashboard-sleep-title" id="dashboard-sleep-modal-title">
+          Додати сон
+        </div>
+
+        <div class="dashboard-sleep-subtitle">
+          Запиши період сну для розрахунку відновлення
+        </div>
+      </div>
+    </div>
+
+    <div class="dashboard-sleep-body">
+      <div class="dashboard-sleep-field-card">
+        <label class="dashboard-sleep-label"> Дата сну </label>
+
+        <div class="dashboard-sleep-input-wrapper">
+          <input
+            type="date"
+            class="dashboard-sleep-input-date"
+            data-sleep-date
+          />
+        </div>
+      </div>
+
+      <div class="dashboard-sleep-time-section">
+        <label class="dashboard-sleep-label"> Час сну </label>
+
+        <div class="dashboard-sleep-time-row">
+          <div class="dashboard-sleep-time-field">
+            <div class="dashboard-sleep-time-label">Початок</div>
+
+            <input
+              type="time"
+              class="dashboard-sleep-input-time"
+              data-sleep-start-time
+            />
+          </div>
+
+          <div class="dashboard-sleep-time-arrow" aria-hidden="true">→</div>
+
+          <div class="dashboard-sleep-time-field">
+            <div class="dashboard-sleep-time-label">Кінець</div>
+
+            <input
+              type="time"
+              class="dashboard-sleep-input-time"
+              data-sleep-end-time
+            />
+          </div>
+        </div>
+
+        <div class="dashboard-sleep-hint">
+          Сон через опівніч буде визначено автоматично.
+        </div>
+      </div>
+    </div>
+
+    <div class="dashboard-sleep-footer">
+      <button class="dashboard-sleep-btn-cancel" type="button" data-close-sleep>
+        Скасувати
+      </button>
+
+      <button class="dashboard-sleep-btn-save" type="button" data-save-sleep>
+        Зберегти сон
+      </button>
+    </div>
+  </div>
+</div>

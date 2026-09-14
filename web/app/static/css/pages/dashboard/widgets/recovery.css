@@ -1,89 +1,146 @@
-/* =========================================================
-   Recovery
-   ========================================================= */
-
 .db-card-recovery {
     min-height: 0;
     overflow: hidden;
 }
 
 .db-recovery-content {
-    height: calc(100% - 58px);
-
+    flex: 1 1 auto;
+    min-height: 0;
     display: flex;
     flex-direction: column;
-
     gap: 16px;
-
-    min-height: 0;
     overflow: hidden;
 }
-
-
-/* =========================================================
-   Section header
-   ========================================================= */
 
 .db-recovery-section-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-
+    gap: 10px;
     flex-shrink: 0;
+    min-width: 0;
 }
 
 .db-recovery-section-title {
     font-size: 13px;
     font-weight: 600;
-
     color: var(--nf-text-main);
 }
 
-.db-recovery-habits-count {
-    font-size: 12px;
-    color: var(--nf-text-muted);
+.db-recovery-habits-header-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    min-width: 0;
 }
 
+.db-recovery-habits-count {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 22px;
+    height: 22px;
+    padding: 0 7px;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.045);
+    color: var(--nf-text-muted);
+    font-size: 11px;
+    font-weight: 600;
+    box-sizing: border-box;
+}
 
-/* =========================================================
-   Sleep
-   ========================================================= */
+.db-recovery-habits-header-actions .db-btn {
+    padding: 6px 10px;
+    font-size: 12px;
+}
 
 .db-recovery-sleep {
     display: flex;
     flex-direction: column;
+    gap: 8px;
+    flex: 0 0 auto;
+    min-width: 0;
+}
 
+.sleep-top {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    align-items: center;
     gap: 10px;
+    background: var(--nf-surface-soft);
+    padding: 9px 10px;
+    border-radius: var(--nf-radius-md);
+    border: 1px solid var(--nf-border-soft);
+    min-width: 0;
+    box-sizing: border-box;
+}
 
+.sleep-top-left {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.sleep-duration {
+    font-size: 18px;
+    line-height: 1.15;
+    font-weight: 600;
+    color: var(--nf-blue);
+}
+
+.sleep-range {
+    font-size: 12px;
+    line-height: 1.2;
+    color: var(--nf-text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.sleep-icon {
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--nf-blue);
+    opacity: 0.85;
     flex-shrink: 0;
 }
 
-.db-recovery-sleep .db-recovery-section-header {
-    margin-bottom: 2px;
+.sleep-icon svg {
+    width: 24px;
+    height: 24px;
+    display: block;
 }
 
 .sleep-add-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 30px;
+    padding: 6px 10px;
     background: var(--nf-blue);
-    color: white;
-
-    border: none;
-
-    padding: 6px 14px;
-
-    border-radius: var(--nf-radius-md);
-
-    font-size: 13px;
+    color: #fff;
+    border: 1px solid var(--nf-blue);
+    border-radius: var(--nf-radius-sm);
+    font-size: 12px;
     font-weight: 600;
-
+    line-height: 1.2;
+    white-space: nowrap;
     cursor: pointer;
-
     transition:
-        background-color 0.2s ease,
-        transform 0.1s ease;
+        background-color 0.18s ease,
+        border-color 0.18s ease,
+        transform 0.18s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .sleep-add-btn:hover {
     background: var(--nf-blue-soft);
+    border-color: var(--nf-blue-soft);
     transform: translateY(-1px);
 }
 
@@ -91,236 +148,188 @@
     transform: translateY(0);
 }
 
-.sleep-top {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    background: var(--nf-surface-soft);
-
-    padding: 10px 12px;
-
-    border-radius: var(--nf-radius-md);
-
-    border: 1px solid var(--nf-border-soft);
-}
-
-.sleep-top-left {
-    display: flex;
-    flex-direction: column;
-
-    gap: 4px;
-
-    min-width: 0;
-}
-
-.sleep-duration {
-    font-size: 20px;
-    font-weight: 600;
-
-    color: var(--nf-blue);
-}
-
-.sleep-range {
-    font-size: 13px;
-
-    color: var(--nf-text-muted);
-
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.sleep-icon {
-    font-size: 22px;
-
-    opacity: 0.8;
-
-    flex-shrink: 0;
-}
-
 .sleep-bottom {
     display: flex;
     justify-content: space-between;
     align-items: center;
-
-    gap: 10px;
+    gap: 8px;
+    min-height: 24px;
 }
 
 .sleep-status {
     background: var(--nf-green-soft);
     color: var(--nf-green);
-
-    padding: 4px 10px;
-
+    padding: 4px 9px;
     border-radius: var(--nf-radius-pill);
-
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 600;
-}
-
-.sleep-meta {
-    font-size: 12px;
-
-    color: var(--nf-text-muted);
-
+    line-height: 1.2;
     white-space: nowrap;
 }
 
-
-/* =========================================================
-   Habits
-   ========================================================= */
+.sleep-meta {
+    font-size: 11px;
+    line-height: 1.2;
+    color: var(--nf-text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 
 .db-recovery-habits {
-    min-height: 0;
-
     display: flex;
     flex-direction: column;
-
     gap: 8px;
-
+    min-height: 0;
+    flex: 1 1 auto;
     overflow: hidden;
 }
 
 .db-recovery-habits-list {
-    min-height: 0;
-
     display: flex;
     flex-direction: column;
-
     gap: 8px;
-
+    min-height: 0;
+    flex: 1 1 auto;
     overflow-y: auto;
-
-    padding-right: 4px;
-
+    overflow-x: hidden;
+    padding: 2px 4px 4px 0;
     box-sizing: border-box;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.16) transparent;
+    overscroll-behavior: contain;
 }
 
 .db-recovery-habits-list::-webkit-scrollbar {
-    width: 4px;
+    width: 5px;
+}
+
+.db-recovery-habits-list::-webkit-scrollbar-track {
+    background: transparent;
 }
 
 .db-recovery-habits-list::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.16);
     border-radius: 999px;
 }
 
+.db-recovery-habits-list::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.24);
+}
 
-/* =========================================================
-   Habit item
-   ========================================================= */
+.habits-widget-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+    min-height: 0;
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    background: transparent;
+    box-sizing: border-box;
+}
+
+.habits-widget-container-header {
+    display: none;
+}
+
+.habits-widget-container .habits-grid {
+    min-height: 0;
+}
+
+.habits-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+    min-height: 0;
+}
+
+.habits-col {
+    display: contents;
+}
 
 .habit-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-
+    gap: 12px;
+    width: 100%;
+    min-height: 72px;
     background: var(--nf-surface);
-
     border-radius: 14px;
-
-    padding: 10px 12px;
-
-    border: 1px solid rgba(255, 255, 255, 0.08);
-
+    padding: 13px 14px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
     transition:
-        transform .18s cubic-bezier(0.16, 1, 0.3, 1),
-        background-color .18s ease,
-        border-color .18s ease;
-
+        transform 0.18s cubic-bezier(0.16, 1, 0.3, 1),
+        background-color 0.18s ease,
+        border-color 0.18s ease;
     box-sizing: border-box;
-
     flex-shrink: 0;
+    min-width: 0;
 }
 
 .habit-item:hover {
     background: rgba(255, 255, 255, 0.04);
-
-    border-color: rgba(255, 255, 255, 0.14);
-
+    border-color: rgba(255, 255, 255, 0.16);
     transform: translateY(-1px);
 }
 
 .habit-item.habit-completed {
     background: rgba(94, 220, 140, 0.08);
-
     border-color: rgba(94, 220, 140, 0.4);
-}
-
-.habit-item.habit-completed .habit-icon {
-    opacity: 0.9;
 }
 
 .habit-main {
     display: flex;
     align-items: center;
-
-    gap: 12px;
-
+    gap: 11px;
     min-width: 0;
+    flex: 1 1 auto;
 }
 
 .habit-icon {
-    width: 34px;
-    height: 34px;
-
+    width: 36px;
+    height: 36px;
     border-radius: 10px;
-
     background:
         linear-gradient(145deg,
             var(--cat-color-bg),
             rgba(255, 255, 255, 0.06));
-
     border: 1px solid var(--cat-color);
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     color: var(--cat-color);
-
     box-shadow:
         inset 0 0 6px rgba(0, 0, 0, 0.25),
         0 2px 4px rgba(0, 0, 0, 0.25);
-
     flex-shrink: 0;
 }
 
 .habit-icon svg {
-    width: 18px;
-    height: 18px;
-
+    width: 24px;
+    height: 24px;
     stroke-linecap: round;
     stroke-linejoin: round;
-
     color: currentColor;
-
     filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.35));
-}
-
-.habit-item:hover .habit-icon {
-    opacity: 1;
-
-    transform: translateY(-1px);
 }
 
 .habit-text {
     display: flex;
     flex-direction: column;
-
-    gap: 2px;
-
+    gap: 3px;
     min-width: 0;
+    flex: 1 1 auto;
 }
 
 .habit-title {
-    font-size: 13px;
+    font-size: 16px;
+    line-height: 1.3;
     font-weight: 600;
-
     color: var(--nf-text-main);
-
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -329,33 +338,27 @@
 .habit-meta-row {
     display: flex;
     align-items: center;
-
-    gap: 5px;
-
+    gap: 6px;
     min-width: 0;
 }
 
 .habit-category-badge {
-    font-size: 9px;
+    font-size: 11px;
+    line-height: 1.2;
     font-weight: 500;
-
-    padding: 2px 6px;
-
+    padding: 3px 7px;
     border-radius: 999px;
-
     background: var(--cat-color-bg);
     color: var(--cat-color);
-
     text-transform: capitalize;
-
     white-space: nowrap;
+    flex-shrink: 0;
 }
 
 .habit-reason {
-    font-size: 10px;
-
+    font-size: 13px;
+    line-height: 1.25;
     color: var(--nf-text-muted);
-
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -364,137 +367,205 @@
 .habit-actions {
     display: flex;
     align-items: center;
-
-    gap: 8px;
-
+    gap: 7px;
     flex-shrink: 0;
 }
 
 .habit-recovery-impact {
     background: rgba(255, 255, 255, 0.04);
-
     color: var(--nf-text-muted);
-
-    padding: 3px 8px;
-
+    padding: 4px 8px;
     border-radius: 999px;
-
     font-size: 10px;
+    line-height: 1.2;
     font-weight: 600;
-
     letter-spacing: 0.1px;
-
     white-space: nowrap;
 }
 
 .habit-check {
-    width: 28px;
-    height: 28px;
-
-    border-radius: 8px;
-
-    border: 2px solid var(--border-input);
-
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border-radius: 9px;
+    border: 2px solid rgba(255, 255, 255, 0.28);
     cursor: pointer;
-
     transition:
-        transform .18s cubic-bezier(0.16, 1, 0.3, 1),
-        border-color .18s ease,
-        background-color .18s ease;
-
+        transform 0.18s cubic-bezier(0.16, 1, 0.3, 1),
+        border-color 0.18s ease,
+        background-color 0.18s ease,
+        box-shadow 0.18s ease;
     position: relative;
-
-    background: transparent;
-
+    background: rgba(255, 255, 255, 0.025);
     flex-shrink: 0;
+    box-sizing: border-box;
 }
 
 .habit-check:hover {
     border-color: var(--nf-blue);
+    background: rgba(0, 194, 255, 0.06);
+    box-shadow: 0 0 0 2px rgba(0, 194, 255, 0.06);
 }
 
 .habit-check:active {
-    transform: scale(0.96);
+    transform: scale(0.94);
 }
 
 .habit-check.habit-check-completed {
     background: var(--nf-blue);
-
     border-color: var(--nf-blue);
 }
 
 .habit-check.habit-check-completed::after {
     content: "";
-
     position: absolute;
-
     width: 11px;
     height: 6px;
-
     border-left: 2px solid #000;
     border-bottom: 2px solid #000;
-
     transform: rotate(-45deg);
-
-    top: 8px;
-    left: 7px;
+    top: 9px;
+    left: 8px;
 }
 
-
-/* =========================================================
-   Habit categories
-   ========================================================= */
-
-.habit-cat-sleep {
-    --cat-color: #7C8CFF;
-    --cat-color-bg: #7C8CFF22;
+.habit-btn-remove {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 9px;
+    background: transparent;
+    color: var(--nf-text-muted);
+    cursor: pointer;
+    flex-shrink: 0;
+    transition:
+        background-color 0.18s ease,
+        border-color 0.18s ease,
+        color 0.18s ease;
 }
 
-.habit-cat-hydration {
-    --cat-color: #4CC9F0;
-    --cat-color-bg: #4CC9F022;
+.habit-btn-remove:hover {
+    color: var(--nf-text-main);
+    background: rgba(255, 255, 255, 0.05);
 }
 
-.habit-cat-nutrition {
-    --cat-color: #F4B860;
-    --cat-color-bg: #F4B86022;
+.habit-btn-remove svg {
+    width: 24px;
+    height: 24px;
 }
 
-.habit-cat-activity {
-    --cat-color: #5EDC8C;
-    --cat-color-bg: #5EDC8C22;
+.habit-btn-remove.habit-remove-pending {
+    color: var(--nf-red, #ff6b6b);
+    border-color: rgba(255, 107, 107, 0.35);
+    background: rgba(255, 107, 107, 0.08);
 }
 
-.habit-cat-recovery {
-    --cat-color: #C084FC;
-    --cat-color-bg: #C084FC22;
+.habits-widget-footer {
+    display: none;
 }
-
-.habit-cat-stress {
-    --cat-color: #FF8A65;
-    --cat-color-bg: #FF8A6522;
-}
-
-.habit-cat-massage {
-    --cat-color: #FF9EC9;
-    --cat-color-bg: #FF9EC922;
-}
-
-
-/* =========================================================
-   Empty state
-   ========================================================= */
 
 .db-recovery-empty {
     display: flex;
     align-items: center;
     justify-content: center;
-
     min-height: 70px;
-
     color: var(--nf-text-muted);
-
     font-size: 12px;
-
     text-align: center;
+    padding: 20px 10px;
+}
+
+.habit-cat-sleep {
+    --cat-color: #7c8cff;
+    --cat-color-bg: #7c8cff22;
+}
+
+.habit-cat-hydration {
+    --cat-color: #4cc9f0;
+    --cat-color-bg: #4cc9f022;
+}
+
+.habit-cat-nutrition {
+    --cat-color: #f4b860;
+    --cat-color-bg: #f4b86022;
+}
+
+.habit-cat-activity {
+    --cat-color: #5edc8c;
+    --cat-color-bg: #5edc8c22;
+}
+
+.habit-cat-recovery {
+    --cat-color: #c084fc;
+    --cat-color-bg: #c084fc22;
+}
+
+.habit-cat-stress {
+    --cat-color: #ff8a65;
+    --cat-color-bg: #ff8a6522;
+}
+
+.habit-cat-massage {
+    --cat-color: #ff9ec9;
+    --cat-color-bg: #ff9ec922;
+}
+
+@media (max-width: 900px) {
+    .db-recovery-habits-list {
+        overflow-y: auto;
+    }
+}
+
+@media (max-width: 600px) {
+    .sleep-top {
+        grid-template-columns: minmax(0, 1fr) auto;
+    }
+
+    .sleep-icon {
+        display: none;
+    }
+
+    .sleep-add-btn {
+        grid-column: 2;
+        grid-row: 1;
+    }
+
+    .habit-item {
+        min-height: 62px;
+        padding: 10px;
+    }
+
+    .habit-main {
+        gap: 9px;
+    }
+
+    .habit-icon {
+        width: 34px;
+        height: 34px;
+    }
+
+    .habit-reason {
+        display: none;
+    }
+
+    .habit-recovery-impact {
+        display: none;
+    }
+
+    .habit-actions {
+        gap: 5px;
+    }
+
+    .habit-check,
+    .habit-btn-remove {
+        width: 34px;
+        height: 34px;
+    }
+
+    .db-recovery-habits-header-actions .db-btn {
+        padding: 6px 9px;
+    }
 }

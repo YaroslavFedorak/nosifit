@@ -1,5 +1,5 @@
 export const recoveryState = {
     snapshot: null,
-    loading: false,
+    loading: true,
     error: null
 };

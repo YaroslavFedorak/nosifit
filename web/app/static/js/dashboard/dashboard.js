@@ -3,9 +3,12 @@ import * as state from "./state.js";
 import { renderRecommendations } from "./widgets/recommendations.js";
 import * as trainingEditor from "./widgets/training/index.js";
 import { saveWorkout } from "./widgets/training/controller.js";
+import { initRecoveryWidget } from "./widgets/recovery/index.js";
 import { renderHeatmap } from "./heatmap/render.js";
 import { openExerciseModal, initExerciseModal } from "./modals/exercise.js";
 import { openPlanModal, initPlanModal } from "./modals/plan/index.js";
+import { initHabitModal } from "./modals/recovery/habit.js";
+import { initSleepModal } from "./modals/recovery/sleep.js";
 function setMetricValue(id, value) {
     const container = document.getElementById(id);
     if (!container)
@@ -111,7 +114,7 @@ function bindHeatmap(data) {
     renderHeatmap(container, data);
 }
 function bindRecommendations(recommendations) {
-    const container = document.getElementById("recommendations-list");
+    const container = document.getElementById("dashboard-recommendations");
     if (!container)
         return;
     renderRecommendations(container, recommendations);
@@ -277,9 +280,48 @@ function bindWorkoutActions() {
         saveButton.addEventListener("click", handleSaveWorkout);
     }
 }
+function getUserId() {
+    const element = document.getElementById("dashboard-open-recovery");
+    if (!element) {
+        return null;
+    }
+    const userId = Number(element.getAttribute("data-user-id"));
+    if (!Number.isFinite(userId)) {
+        return null;
+    }
+    return userId;
+}
+function bindRecoveryNavigation() {
+    const recoveryButton = document.getElementById("dashboard-open-recovery");
+    if (!recoveryButton) {
+        return;
+    }
+    recoveryButton.addEventListener("click", () => {
+        const habitButton = document.getElementById("open-habit-modal");
+        if (habitButton) {
+            habitButton.click();
+            return;
+        }
+        const habitModal = document.getElementById("habit-modal-backdrop");
+        if (!habitModal)
+            return;
+        habitModal.hidden = false;
+        habitModal.classList.add("open");
+    });
+}
+function initRecoveryModals() {
+    const userId = getUserId();
+    if (userId === null) {
+        return;
+    }
+    initHabitModal(userId);
+    initSleepModal();
+    bindRecoveryNavigation();
+}
 function initModals() {
     initExerciseModal();
     initPlanModal();
+    initRecoveryModals();
 }
 function initSubscriptions() {
     state.subscribe("overview", bindOverview);
@@ -290,11 +332,13 @@ async function init() {
     initSubscriptions();
     trainingEditor.init();
     initModals();
+    initRecoveryWidget();
     bindNavigation();
     bindWorkoutActions();
     await loadAll();
     window.addEventListener("dashboard:refresh", () => {
         void loadAll();
+        void initRecoveryWidget();
     });
 }
 document.addEventListener("DOMContentLoaded", () => {

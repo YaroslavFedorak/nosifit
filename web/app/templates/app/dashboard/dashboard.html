@@ -188,32 +188,14 @@ body %}
       <section class="db-card db-card-recovery">
         <div class="db-card-header">
           <div class="db-card-heading">
-            <span class="db-card-eyebrow"> Recovery </span>
-
             <h2 class="db-card-title">Відновлення</h2>
           </div>
-
-          <button
-            id="dashboard-open-recovery"
-            class="db-btn db-btn-secondary"
-            type="button"
-          >
-            Відновлення
-          </button>
         </div>
 
         <div id="dashboard-recovery" class="db-recovery-content">
           <div class="db-recovery-sleep">
             <div class="db-recovery-section-header">
               <div class="db-recovery-section-title">Сон</div>
-
-              <button
-                id="dashboard-add-sleep"
-                class="sleep-add-btn"
-                type="button"
-              >
-                Додати сон
-              </button>
             </div>
 
             <div class="sleep-top">
@@ -229,9 +211,15 @@ body %}
                 id="dashboard-sleep-icon"
                 class="sleep-icon"
                 aria-hidden="true"
+              ></div>
+
+              <button
+                id="dashboard-add-sleep"
+                class="sleep-add-btn"
+                type="button"
               >
-                ☾
-              </div>
+                Додати сон
+              </button>
             </div>
 
             <div class="sleep-bottom">
@@ -245,9 +233,16 @@ body %}
             <div class="db-recovery-section-header">
               <div class="db-recovery-section-title">Звички</div>
 
-              <span id="dashboard-habits" class="db-recovery-habits-count">
-                —
-              </span>
+              <div class="db-recovery-habits-header-actions">
+                <button
+                  id="dashboard-open-recovery"
+                  class="db-btn db-btn-secondary"
+                  type="button"
+                  data-user-id="{{ current_user.id }}"
+                >
+                  Додати звичку
+                </button>
+              </div>
             </div>
 
             <div
@@ -261,8 +256,6 @@ body %}
       <section class="db-card db-card-recommendations">
         <div class="db-card-header">
           <div class="db-card-heading">
-            <span class="db-card-eyebrow"> Analysis </span>
-
             <h2 class="db-card-title">Рекомендації</h2>
           </div>
         </div>
@@ -285,7 +278,9 @@ body %}
 "app/dashboard/modals/nutrition/water_add.html" %} {% include
 "app/dashboard/modals/nutrition/weight.html" %} {% include
 "app/dashboard/modals/recovery_modal.html" %} {% include
-"app/dashboard/modals/day_details.html" %} {% block scripts %}
+"app/dashboard/modals/recovery/habit_modal.html" %} {% include
+"app/dashboard/modals/recovery/sleep_modal.html" %} {% include
+"app/dashboard/modals/day_details.html" %}
 
 <script
   type="module"
@@ -303,4 +298,4 @@ body %}
     ) }}"
 ></script>
 
-{% endblock %} {% endblock %}
+{% endblock %}

@@ -22,7 +22,7 @@
 
 .dashboard-right {
     display: grid;
-    grid-template-rows: 440px 260px;
+    grid-template-rows: 480px 260px;
     gap: 20px;
 }
 

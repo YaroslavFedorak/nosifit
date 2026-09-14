@@ -1,12 +1,20 @@
-function getElement(id) {
-    return document.getElementById(id);
-}
+import { RECOVERY_ICONS } from "../../../icons/recovery.js";
 function formatDuration(minutes) {
+    if (minutes == null ||
+        minutes <= 0) {
+        return "—";
+    }
     const hours = Math.floor(minutes / 60);
-    const remainingMinutes = minutes % 60;
-    return `${hours} год ${remainingMinutes} хв`;
+    const remaining = minutes % 60;
+    if (remaining === 0) {
+        return `${hours} год`;
+    }
+    return `${hours} год ${remaining} хв`;
 }
 function formatTime(value) {
+    if (!value) {
+        return "—";
+    }
     const date = new Date(value);
     if (Number.isNaN(date.getTime())) {
         return "—";
@@ -16,85 +24,63 @@ function formatTime(value) {
         minute: "2-digit"
     });
 }
-function getSleepStatus(minutes) {
-    if (minutes <= 0) {
-        return "Немає даних";
+function renderSleepIcon() {
+    const icon = document.getElementById("dashboard-sleep-icon");
+    if (!icon) {
+        return;
     }
-    if (minutes >= 480) {
-        return "Відмінний сон";
-    }
-    if (minutes >= 420) {
-        return "Добрий сон";
-    }
-    if (minutes >= 360) {
-        return "Достатній сон";
-    }
-    return "Недосип";
+    icon.innerHTML =
+        RECOVERY_ICONS.moon;
 }
-function getRecencyLabel(dateValue) {
-    if (!dateValue) {
-        return "";
-    }
-    const snapshotDate = new Date(dateValue);
-    if (Number.isNaN(snapshotDate.getTime())) {
-        return "";
-    }
-    const today = new Date();
-    const snapshotDay = new Date(snapshotDate.getFullYear(), snapshotDate.getMonth(), snapshotDate.getDate());
-    const todayDay = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-    const difference = Math.round((todayDay.getTime() - snapshotDay.getTime()) /
-        (1000 * 60 * 60 * 24));
-    if (difference === 0) {
-        return "Останній запис: сьогодні";
-    }
-    if (difference === 1) {
-        return "Останній запис: вчора";
-    }
-    return `Останній запис: ${snapshotDate.toLocaleDateString("uk-UA", {
-        day: "numeric",
-        month: "long",
-        year: "numeric"
-    })}`;
-}
-export function renderSleep(snapshot) {
-    const durationEl = getElement("dashboard-sleep-duration");
-    const rangeEl = getElement("dashboard-sleep-range");
-    const qualityEl = getElement("dashboard-sleep-quality");
-    const metaEl = getElement("dashboard-sleep-meta");
-    if (!durationEl || !rangeEl || !qualityEl || !metaEl) {
+export function renderSleepWidget(snapshot) {
+    const duration = document.getElementById("dashboard-sleep-duration");
+    const range = document.getElementById("dashboard-sleep-range");
+    const quality = document.getElementById("dashboard-sleep-quality");
+    const meta = document.getElementById("dashboard-sleep-meta");
+    if (!duration ||
+        !range ||
+        !quality ||
+        !meta) {
         return;
     }
-    if (!snapshot ||
-        snapshot.sleep_duration_minutes == null ||
-        !snapshot.sleep_start ||
-        !snapshot.sleep_end) {
-        durationEl.textContent = "Немає даних";
-        rangeEl.textContent = "Додайте сон для відстеження";
-        qualityEl.textContent = "Немає даних";
-        metaEl.textContent = "";
+    renderSleepIcon();
+    if (!snapshot) {
+        duration.textContent =
+            "—";
+        range.textContent =
+            "—";
+        quality.textContent =
+            "Дані відсутні";
+        meta.textContent =
+            "";
         return;
     }
-    const duration = Number(snapshot.sleep_duration_minutes);
-    if (!Number.isFinite(duration) || duration <= 0) {
-        durationEl.textContent = "Немає даних";
-        rangeEl.textContent = "Додайте сон для відстеження";
-        qualityEl.textContent = "Немає даних";
-        metaEl.textContent = "";
-        return;
+    duration.textContent =
+        formatDuration(snapshot.sleep_duration_minutes);
+    if (snapshot.sleep_start &&
+        snapshot.sleep_end) {
+        range.textContent =
+            `${formatTime(snapshot.sleep_start)} — ${formatTime(snapshot.sleep_end)}`;
     }
-    durationEl.textContent = formatDuration(duration);
-    rangeEl.textContent =
-        `${formatTime(snapshot.sleep_start)} → ${formatTime(snapshot.sleep_end)}`;
-    qualityEl.textContent = getSleepStatus(duration);
-    metaEl.textContent = getRecencyLabel(snapshot.date);
-}
-export function initSleepButton() {
-    const button = getElement("dashboard-add-sleep");
-    if (!button) {
-        return;
+    else {
+        range.textContent =
+            "Період сну не записаний";
     }
-    button.addEventListener("click", () => {
-        const recoveryButton = getElement("dashboard-open-recovery");
-        recoveryButton?.click();
-    });
+    const score = snapshot.sleep_score;
+    if (score != null) {
+        quality.textContent =
+            `Якість ${score}/100`;
+    }
+    else {
+        quality.textContent =
+            "Якість не визначена";
+    }
+    if (snapshot.date) {
+        meta.textContent =
+            snapshot.date;
+    }
+    else {
+        meta.textContent =
+            "";
+    }
 }

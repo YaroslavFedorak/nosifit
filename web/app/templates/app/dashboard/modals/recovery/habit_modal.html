@@ -1,0 +1,60 @@
+<div class="dashboard-recovery-modal-backdrop" id="habit-modal-backdrop" hidden>
+  <div
+    class="dashboard-recovery-modal dashboard-habit-modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="dashboard-habit-modal-title"
+  >
+    <div class="dashboard-habit-modal-header">
+      <span
+        class="dashboard-habit-modal-title"
+        id="dashboard-habit-modal-title"
+      >
+        Додати звичку
+      </span>
+    </div>
+
+    <div class="dashboard-habit-sort-bar">
+      <button
+        class="dashboard-habit-sort-btn active"
+        type="button"
+        data-sort="points"
+      >
+        Бали
+      </button>
+
+      <button
+        class="dashboard-habit-sort-btn"
+        type="button"
+        data-sort="category"
+      >
+        Категорія
+      </button>
+
+      <button class="dashboard-habit-sort-btn" type="button" data-sort="name">
+        Назва
+      </button>
+    </div>
+
+    <div class="dashboard-habit-modal-list" id="habit-modal-list"></div>
+
+    <div class="dashboard-habit-footer">
+      <button
+        id="habit-back-btn"
+        class="dashboard-habit-back-btn"
+        type="button"
+      >
+        Назад
+      </button>
+
+      <button
+        id="save-habit"
+        class="dashboard-habit-save-btn"
+        type="button"
+        disabled
+      >
+        Зберегти
+      </button>
+    </div>
+  </div>
+</div>

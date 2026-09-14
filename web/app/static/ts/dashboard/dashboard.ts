@@ -5,6 +5,8 @@ import { renderRecommendations } from "./widgets/recommendations.js";
 import * as trainingEditor from "./widgets/training/index.js";
 import { saveWorkout } from "./widgets/training/controller.js";
 
+import { initRecoveryWidget } from "./widgets/recovery/index.js";
+
 import { renderHeatmap } from "./heatmap/render.js";
 
 import {
@@ -17,12 +19,16 @@ import {
     initPlanModal
 } from "./modals/plan/index.js";
 
+import { initHabitModal } from "./modals/recovery/habit.js";
+import { initSleepModal } from "./modals/recovery/sleep.js";
+
 
 function setMetricValue(
     id: string,
     value: unknown
 ): void {
-    const container = document.getElementById(id);
+    const container =
+        document.getElementById(id);
 
     if (!container) return;
 
@@ -222,7 +228,7 @@ function bindRecommendations(
 ): void {
     const container =
         document.getElementById(
-            "recommendations-list"
+            "dashboard-recommendations"
         );
 
     if (!container) return;
@@ -555,9 +561,90 @@ function bindWorkoutActions(): void {
 }
 
 
+function getUserId(): number | null {
+    const element =
+        document.getElementById(
+            "dashboard-open-recovery"
+        );
+
+    if (!element) {
+        return null;
+    }
+
+    const userId =
+        Number(
+            element.getAttribute(
+                "data-user-id"
+            )
+        );
+
+    if (!Number.isFinite(userId)) {
+        return null;
+    }
+
+    return userId;
+}
+
+
+function bindRecoveryNavigation(): void {
+    const recoveryButton =
+        document.getElementById(
+            "dashboard-open-recovery"
+        );
+
+    if (!recoveryButton) {
+        return;
+    }
+
+    recoveryButton.addEventListener(
+        "click",
+        () => {
+            const habitButton =
+                document.getElementById(
+                    "open-habit-modal"
+                );
+
+            if (habitButton) {
+                habitButton.click();
+                return;
+            }
+
+            const habitModal =
+                document.getElementById(
+                    "habit-modal-backdrop"
+                );
+
+            if (!habitModal) return;
+
+            habitModal.hidden = false;
+            habitModal.classList.add("open");
+        }
+    );
+}
+
+
+function initRecoveryModals(): void {
+    const userId =
+        getUserId();
+
+    if (userId === null) {
+        return;
+    }
+
+    initHabitModal(
+        userId
+    );
+
+    initSleepModal();
+
+    bindRecoveryNavigation();
+}
+
+
 function initModals(): void {
     initExerciseModal();
     initPlanModal();
+    initRecoveryModals();
 }
 
 
@@ -586,6 +673,8 @@ async function init(): Promise<void> {
 
     initModals();
 
+    initRecoveryWidget();
+
     bindNavigation();
 
     bindWorkoutActions();
@@ -596,6 +685,7 @@ async function init(): Promise<void> {
         "dashboard:refresh",
         () => {
             void loadAll();
+            void initRecoveryWidget();
         }
     );
 }

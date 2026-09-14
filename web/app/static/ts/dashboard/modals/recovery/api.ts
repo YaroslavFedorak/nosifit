@@ -1,12 +1,23 @@
-const API_BASE = "/api/recovery";
+import type {
+    RecoveryHabit,
+    RecoverySnapshot
+} from "../../widgets/recovery/state.js";
 
-const DEFAULT_TIMEOUT_MS = 10000;
+const API_BASE =
+    "/api/recovery";
 
-async function request(
+const DEFAULT_TIMEOUT_MS =
+    10000;
+
+interface RecoverySnapshotResponse {
+    snapshot: RecoverySnapshot | null;
+}
+
+async function request<T>(
     url: string,
     options: RequestInit = {},
-    timeoutMs: number = DEFAULT_TIMEOUT_MS
-): Promise<any> {
+    timeoutMs = DEFAULT_TIMEOUT_MS
+): Promise<T> {
     const controller =
         new AbortController();
 
@@ -18,16 +29,19 @@ async function request(
 
     try {
         const response =
-            await fetch(url, {
-                headers: {
-                    "Content-Type":
-                        "application/json",
-                    ...(options.headers || {})
-                },
-                signal:
-                    controller.signal,
-                ...options
-            });
+            await fetch(
+                url,
+                {
+                    headers: {
+                        "Content-Type":
+                            "application/json",
+                        ...(options.headers || {})
+                    },
+                    signal:
+                        controller.signal,
+                    ...options
+                }
+            );
 
         if (!response.ok) {
             let message =
@@ -49,7 +63,8 @@ async function request(
 
                     if (
                         error &&
-                        error.error
+                        typeof error.error ===
+                            "string"
                     ) {
                         message =
                             error.error;
@@ -59,12 +74,15 @@ async function request(
                         await response.text();
 
                     if (text) {
-                        message = text;
+                        message =
+                            text;
                     }
                 }
-            } catch (_) {}
+            } catch {}
 
-            throw new Error(message);
+            throw new Error(
+                message
+            );
         }
 
         const contentType =
@@ -77,13 +95,13 @@ async function request(
                 "application/json"
             )
         ) {
-            return await response.json();
+            return await response.json() as T;
         }
 
-        return null;
-    } catch (error: any) {
+        return null as T;
+    } catch (error: unknown) {
         if (
-            error &&
+            error instanceof DOMException &&
             error.name === "AbortError"
         ) {
             throw new Error(
@@ -101,101 +119,113 @@ async function request(
 
 const ENDPOINTS = {
     snapshot: (
-        userId: string | number,
-        date?: string | null
-    ): string =>
-        date
-            ? `${API_BASE}/snapshot/${userId}?date=${encodeURIComponent(date)}`
-            : `${API_BASE}/snapshot/${userId}`,
+        userId: number | string
+    ) =>
+        `${API_BASE}/snapshot/${userId}`,
 
-    heatmap: (
-        userId: string | number,
-        year: number
-    ): string =>
-        `${API_BASE}/heatmap/${userId}?year=${year}`,
-
-    recommendations: (
-        userId: string | number
-    ): string =>
-        `${API_BASE}/recommendations/${userId}`,
-
-    sleep: (): string =>
-        `${API_BASE}/sleep`,
+    sleep:
+        () =>
+            `${API_BASE}/sleep`,
 
     addHabit: (
-        habitId: string | number
-    ): string =>
+        habitId: number | string
+    ) =>
         `${API_BASE}/habits/add/${habitId}`,
 
     removeHabit: (
-        userHabitId: string | number
-    ): string =>
+        userHabitId: number | string
+    ) =>
         `${API_BASE}/habits/${userHabitId}`,
 
-    logHabit: (): string =>
-        `${API_BASE}/habits/logs`,
+    logHabit:
+        () =>
+            `${API_BASE}/habits/logs`,
 
-    habitsList: (): string =>
-        `${API_BASE}/habits/list`,
+    habitsList:
+        () =>
+            `${API_BASE}/habits/list`,
 
     userHabits: (
-        userId: string | number
-    ): string =>
-        `${API_BASE}/habits/user/${userId}`,
-
-    dayDetails: (
-        userId: string | number,
-        date: string
-    ): string =>
-        `${API_BASE}/day-details/${userId}?date=${encodeURIComponent(date)}`
+        userId: number | string
+    ) =>
+        `${API_BASE}/habits/user/${userId}`
 };
 
+function isSnapshotResponse(
+    value: unknown
+): value is RecoverySnapshotResponse {
+    return (
+        typeof value === "object" &&
+        value !== null &&
+        "snapshot" in value
+    );
+}
+
+function isRecoverySnapshot(
+    value: unknown
+): value is RecoverySnapshot {
+    return (
+        typeof value === "object" &&
+        value !== null
+    );
+}
+
 export const RecoveryAPI = {
-    getSnapshot(
-        userId: string | number,
-        date: string | null = null
-    ): Promise<any> {
-        return request(
-            ENDPOINTS.snapshot(
-                userId,
-                date
+    async getSnapshot(
+        userId: number | string
+    ): Promise<RecoverySnapshot | null> {
+        const response =
+            await request<unknown>(
+                ENDPOINTS.snapshot(
+                    userId
+                )
+            );
+
+        if (
+            isSnapshotResponse(
+                response
             )
-        );
+        ) {
+            return (
+                response.snapshot
+            );
+        }
+
+        if (
+            isRecoverySnapshot(
+                response
+            )
+        ) {
+            return response;
+        }
+
+        return null;
     },
 
-    getHeatmap(
-        userId: string | number,
-        year: number
-    ): Promise<any> {
-        return request(
-            ENDPOINTS.heatmap(
-                userId,
-                year
-            )
-        );
-    },
-
-    getRecommendations(
-        userId: string | number
-    ): Promise<any> {
-        return request(
-            ENDPOINTS.recommendations(
+    getUserHabits(
+        userId: number | string
+    ): Promise<RecoveryHabit[]> {
+        return request<
+            RecoveryHabit[]
+        >(
+            ENDPOINTS.userHabits(
                 userId
             )
         );
     },
 
     addSleep(
-        userId: string | number,
+        userId: number | string,
         sleepStart: string,
         sleepEnd: string
-    ): Promise<any> {
-        return request(
+    ) {
+        return request<unknown>(
             ENDPOINTS.sleep(),
             {
                 method: "POST",
                 body: JSON.stringify({
-                    user_id: userId,
+                    user_id:
+                        userId,
                     sleep_start:
                         sleepStart,
                     sleep_end:
@@ -206,26 +236,28 @@ export const RecoveryAPI = {
     },
 
     addHabit(
-        userId: string | number,
-        habitId: string | number
-    ): Promise<any> {
-        return request(
+        userId: number | string,
+        habitId: number | string
+    ) {
+        return request<unknown>(
             ENDPOINTS.addHabit(
                 habitId
             ),
             {
                 method: "POST",
                 body: JSON.stringify({
-                    user_id: userId
+                    user_id:
+                        userId
                 })
             }
         );
     },
 
     removeHabit(
-        userHabitId: string | number
-    ): Promise<any> {
-        return request(
+        userHabitId:
+            number | string
+    ) {
+        return request<unknown>(
             ENDPOINTS.removeHabit(
                 userHabitId
             ),
@@ -236,9 +268,10 @@ export const RecoveryAPI = {
     },
 
     logHabit(
-        userHabitId: string | number
-    ): Promise<any> {
-        return request(
+        userHabitId:
+            number | string
+    ) {
+        return request<unknown>(
             ENDPOINTS.logHabit(),
             {
                 method: "POST",
@@ -250,31 +283,11 @@ export const RecoveryAPI = {
         );
     },
 
-    getHabitsList(): Promise<any> {
-        return request(
+    getHabitsList() {
+        return request<
+            RecoveryHabit[]
+        >(
             ENDPOINTS.habitsList()
-        );
-    },
-
-    getUserHabits(
-        userId: string | number
-    ): Promise<any> {
-        return request(
-            ENDPOINTS.userHabits(
-                userId
-            )
-        );
-    },
-
-    getDayDetails(
-        userId: string | number,
-        date: string
-    ): Promise<any> {
-        return request(
-            ENDPOINTS.dayDetails(
-                userId,
-                date
-            )
         );
     }
 };

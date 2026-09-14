@@ -19,7 +19,8 @@ async function request(url, options = {}, timeoutMs = DEFAULT_TIMEOUT_MS) {
                 if (contentType.includes("application/json")) {
                     const error = await response.json();
                     if (error &&
-                        error.error) {
+                        typeof error.error ===
+                            "string") {
                         message =
                             error.error;
                     }
@@ -27,11 +28,12 @@ async function request(url, options = {}, timeoutMs = DEFAULT_TIMEOUT_MS) {
                 else {
                     const text = await response.text();
                     if (text) {
-                        message = text;
+                        message =
+                            text;
                     }
                 }
             }
-            catch (_) { }
+            catch { }
             throw new Error(message);
         }
         const contentType = response.headers.get("content-type") || "";
@@ -41,7 +43,7 @@ async function request(url, options = {}, timeoutMs = DEFAULT_TIMEOUT_MS) {
         return null;
     }
     catch (error) {
-        if (error &&
+        if (error instanceof DOMException &&
             error.name === "AbortError") {
             throw new Error("Request timeout");
         }
@@ -52,28 +54,36 @@ async function request(url, options = {}, timeoutMs = DEFAULT_TIMEOUT_MS) {
     }
 }
 const ENDPOINTS = {
-    snapshot: (userId, date) => date
-        ? `${API_BASE}/snapshot/${userId}?date=${encodeURIComponent(date)}`
-        : `${API_BASE}/snapshot/${userId}`,
-    heatmap: (userId, year) => `${API_BASE}/heatmap/${userId}?year=${year}`,
-    recommendations: (userId) => `${API_BASE}/recommendations/${userId}`,
+    snapshot: (userId) => `${API_BASE}/snapshot/${userId}`,
     sleep: () => `${API_BASE}/sleep`,
     addHabit: (habitId) => `${API_BASE}/habits/add/${habitId}`,
     removeHabit: (userHabitId) => `${API_BASE}/habits/${userHabitId}`,
     logHabit: () => `${API_BASE}/habits/logs`,
     habitsList: () => `${API_BASE}/habits/list`,
-    userHabits: (userId) => `${API_BASE}/habits/user/${userId}`,
-    dayDetails: (userId, date) => `${API_BASE}/day-details/${userId}?date=${encodeURIComponent(date)}`
+    userHabits: (userId) => `${API_BASE}/habits/user/${userId}`
 };
+function isSnapshotResponse(value) {
+    return (typeof value === "object" &&
+        value !== null &&
+        "snapshot" in value);
+}
+function isRecoverySnapshot(value) {
+    return (typeof value === "object" &&
+        value !== null);
+}
 export const RecoveryAPI = {
-    getSnapshot(userId, date = null) {
-        return request(ENDPOINTS.snapshot(userId, date));
+    async getSnapshot(userId) {
+        const response = await request(ENDPOINTS.snapshot(userId));
+        if (isSnapshotResponse(response)) {
+            return (response.snapshot);
+        }
+        if (isRecoverySnapshot(response)) {
+            return response;
+        }
+        return null;
     },
-    getHeatmap(userId, year) {
-        return request(ENDPOINTS.heatmap(userId, year));
-    },
-    getRecommendations(userId) {
-        return request(ENDPOINTS.recommendations(userId));
+    getUserHabits(userId) {
+        return request(ENDPOINTS.userHabits(userId));
     },
     addSleep(userId, sleepStart, sleepEnd) {
         return request(ENDPOINTS.sleep(), {
@@ -108,11 +118,5 @@ export const RecoveryAPI = {
     },
     getHabitsList() {
         return request(ENDPOINTS.habitsList());
-    },
-    getUserHabits(userId) {
-        return request(ENDPOINTS.userHabits(userId));
-    },
-    getDayDetails(userId, date) {
-        return request(ENDPOINTS.dayDetails(userId, date));
     }
 };

@@ -15,6 +15,9 @@
 @import "./modals/training/plan.css";
 @import "./modals/training/plan-card.css";
 
+@import "./modals/recovery/modal.css";
+@import "./modals/recovery/habit.css";
+@import "./modals/recovery/sleep.css";
 @import "./modals/recovery.css";
 @import "./modals/day_details.css";
 @import "./modals/nutrition/modal.css";
