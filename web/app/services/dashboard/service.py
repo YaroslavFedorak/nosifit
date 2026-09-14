@@ -1,5 +1,13 @@
-from .aggregator import get_heatmap, get_today_overview
-from .day import get_day_details
+from web.app.dashboard.recommendations.service import (
+    DashboardRecommendationService,
+)
+from web.app.services.dashboard.aggregator import (
+    get_heatmap,
+    get_today_overview,
+)
+from web.app.services.dashboard.day import (
+    get_day_details,
+)
 
 
 class DashboardService:
@@ -12,5 +20,14 @@ class DashboardService:
         return get_heatmap(user_id)
 
     @staticmethod
-    def get_day(user_id, day_iso):
-        return get_day_details(user_id, day_iso)
+    def get_day(user_id, date):
+        return get_day_details(
+            user_id,
+            date,
+        )
+
+    @staticmethod
+    def get_recommendation(user_id):
+        return DashboardRecommendationService.get_recommendations(
+            user_id,
+        )

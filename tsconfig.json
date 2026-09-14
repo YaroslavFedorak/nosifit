@@ -8,7 +8,9 @@
         "rootDir": "./web/app/static/ts",
         "esModuleInterop": true,
         "forceConsistentCasingInFileNames": true,
-        "skipLibCheck": true
+        "skipLibCheck": true,
+        "allowImportingTsExtensions": false,
+        "resolveJsonModule": true
     },
     "include": [
         "web/app/static/ts/**/*.ts"

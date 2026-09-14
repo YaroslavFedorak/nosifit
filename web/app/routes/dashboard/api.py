@@ -2,7 +2,6 @@ from flask import Blueprint, jsonify
 from flask_login import current_user, login_required
 
 from web.app.services.dashboard.service import DashboardService
-from web.app.services.recovery.recommendation_service import RecommendationService
 
 dashboard_api_bp = Blueprint(
     "dashboard_api",
@@ -14,24 +13,40 @@ dashboard_api_bp = Blueprint(
 @dashboard_api_bp.get("/today")
 @login_required
 def today():
-    data = DashboardService.get_today(current_user.id)
+    data = DashboardService.get_today(
+        current_user.id,
+    )
+
     return jsonify(data)
 
 
 @dashboard_api_bp.get("/heatmap")
 @login_required
 def heatmap():
-    data = DashboardService.get_heatmap(current_user.id)
+    data = DashboardService.get_heatmap(
+        current_user.id,
+    )
+
     return jsonify(data)
 
 
 @dashboard_api_bp.get("/day/<date_iso>")
 @login_required
 def day(date_iso):
-    data = DashboardService.get_day(current_user.id, date_iso)
+    data = DashboardService.get_day(
+        current_user.id,
+        date_iso,
+    )
 
     if data is None:
-        return jsonify({"error": "invalid_date_or_no_data"}), 404
+        return (
+            jsonify(
+                {
+                    "error": "invalid_date_or_no_data",
+                }
+            ),
+            404,
+        )
 
     return jsonify(data)
 
@@ -39,31 +54,8 @@ def day(date_iso):
 @dashboard_api_bp.get("/recommendation")
 @login_required
 def recommendation():
-    recommendations = RecommendationService.build_recommendations(current_user.id)
-
-    if not recommendations:
-        return jsonify({"recommendation": None})
-
-    priority_order = {
-        "high": 0,
-        "medium": 1,
-        "low": 2,
-    }
-
-    recommendation = min(
-        recommendations,
-        key=lambda item: (
-            priority_order.get(
-                item.get("priority"),
-                3,
-            )
-            if isinstance(item, dict)
-            else 3
-        ),
+    data = DashboardService.get_recommendation(
+        current_user.id,
     )
 
-    return jsonify(
-        {
-            "recommendation": recommendation,
-        }
-    )
+    return jsonify(data)
