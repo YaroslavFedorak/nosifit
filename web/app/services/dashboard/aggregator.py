@@ -1,171 +1,252 @@
-from datetime import date
+from datetime import date, timedelta
 
-from .score import calculate_daily_score
+from web.app.models.nutrition.meal import Meal
+from web.app.models.recovery.daily_recovery_snapshot import (
+    DailyRecoverySnapshot,
+)
+from web.app.models.training_session import TrainingSession
+from web.app.services.dashboard.score import calculate_daily_score
+from web.app.dashboard.training.metrics import (
+    calculate_training_score,
+)
+from web.app.services.nutrition.quality_service import (
+    calculate_quality,
+)
 
 
-def _import(name):
-    module = __import__(name, fromlist=["*"])
-    return module
+def _day_bounds(target_date):
+    from datetime import datetime, time
+
+    return (
+        datetime.combine(target_date, time.min),
+        datetime.combine(target_date, time.max),
+    )
 
 
-def _call(func, *args, **kwargs):
-    return func(*args, **kwargs)
+def _get_training_session(user_id, target_date):
+    start_dt, end_dt = _day_bounds(target_date)
+
+    return (
+        TrainingSession.query.filter(
+            TrainingSession.user_id == user_id,
+            TrainingSession.started_at >= start_dt,
+            TrainingSession.started_at <= end_dt,
+            TrainingSession.status == "finished",
+        )
+        .order_by(TrainingSession.started_at.desc())
+        .first()
+    )
+
+
+def _get_training_data(user_id, target_date):
+    session = _get_training_session(
+        user_id,
+        target_date,
+    )
+
+    if not session:
+        return {
+            "score": None,
+            "completed": False,
+            "duration": 0,
+            "exercise_count": 0,
+        }
+
+    return {
+        "score": calculate_training_score(session),
+        "completed": True,
+        "duration": _get_duration(session),
+        "exercise_count": len(session.exercises),
+    }
+
+
+def _get_duration(session):
+    if not session.started_at:
+        return 0
+
+    end = session.finished_at
+
+    if not end:
+        return 0
+
+    seconds = (end - session.started_at).total_seconds()
+
+    if seconds <= 0:
+        return 0
+
+    return int(round(seconds / 60))
+
+
+def _get_nutrition_data(user_id, target_date):
+    meals = (
+        Meal.query.filter(
+            Meal.user_id == user_id,
+            Meal.date == target_date,
+        )
+        .order_by(
+            Meal.time.asc().nullsfirst(),
+            Meal.id.asc(),
+        )
+        .all()
+    )
+
+    total_calories = 0
+    total_protein = 0
+    total_fat = 0
+    total_carbs = 0
+
+    ration_items = []
+
+    for meal in meals:
+        total_calories += meal.total_calories or 0
+        total_protein += meal.total_protein or 0
+        total_fat += meal.total_fat or 0
+        total_carbs += meal.total_carbs or 0
+
+        for item in meal.items:
+            ration_items.append(
+                {
+                    "id": item.id,
+                    "name": item.name,
+                    "calories": item.calories or 0,
+                    "protein": item.protein or 0,
+                    "fat": item.fat or 0,
+                    "carbs": item.carbs or 0,
+                    "fiber": item.fiber or 0,
+                }
+            )
+
+    if not meals:
+        score = None
+    else:
+        quality = calculate_quality(ration_items)
+        score = quality.get("score")
+
+    return {
+        "score": score,
+        "calories": total_calories,
+        "protein": total_protein,
+        "water": 0,
+    }
+
+
+def _get_recovery_data(user_id, target_date):
+    snapshot = DailyRecoverySnapshot.query.filter_by(
+        user_id=user_id,
+        date=target_date,
+    ).first()
+
+    if not snapshot:
+        return {
+            "score": None,
+            "sleep_hours": 0,
+            "habits_completed": 0,
+            "habits_total": 0,
+        }
+
+    sleep_hours = 0
+
+    if snapshot.sleep_duration_minutes:
+        sleep_hours = round(
+            snapshot.sleep_duration_minutes / 60,
+            1,
+        )
+
+    return {
+        "score": snapshot.recovery_score,
+        "sleep_hours": sleep_hours,
+        "habits_completed": 0,
+        "habits_total": 0,
+    }
+
+
+def _build_day(user_id, target_date):
+    training = _get_training_data(
+        user_id,
+        target_date,
+    )
+
+    nutrition = _get_nutrition_data(
+        user_id,
+        target_date,
+    )
+
+    recovery = _get_recovery_data(
+        user_id,
+        target_date,
+    )
+
+    daily_score = calculate_daily_score(
+        training.get("score"),
+        nutrition.get("score"),
+        recovery.get("score"),
+    )
+
+    return {
+        "date": target_date.isoformat(),
+        "daily_score": daily_score,
+        "training": training,
+        "nutrition": nutrition,
+        "recovery": recovery,
+    }
 
 
 def get_today_overview(user_id):
-    today = date.today().isoformat()
-
-    training = {}
-    nutrition = {}
-    recovery = {}
-
-    try:
-        mod = _import("web.app.services.training.load_service")
-        svc = getattr(mod, "TrainingLoadService", None)
-
-        if svc and hasattr(svc, "get_daily_summary"):
-            training = _call(svc.get_daily_summary, user_id) or {}
-    except Exception:
-        raise
-
-    try:
-        mod = _import("web.app.services.nutrition.stats_service")
-        svc = getattr(mod, "NutritionStatsService", None)
-
-        if svc and hasattr(svc, "get_daily_summary"):
-            nutrition = _call(svc.get_daily_summary, user_id) or {}
-    except Exception:
-        raise
-
-    try:
-        mod = _import("web.app.services.recovery.snapshot_service")
-        svc = getattr(mod, "RecoverySnapshotService", None)
-
-        if svc and hasattr(svc, "get_daily_summary"):
-            recovery = _call(svc.get_daily_summary, user_id) or {}
-    except Exception:
-        raise
-
-    training_score = training.get("score") if isinstance(training, dict) else None
-
-    nutrition_score = nutrition.get("score") if isinstance(nutrition, dict) else None
-
-    recovery_score = recovery.get("score") if isinstance(recovery, dict) else None
-
-    daily_score = calculate_daily_score(
-        training_score,
-        nutrition_score,
-        recovery_score,
+    return _build_day(
+        user_id,
+        date.today(),
     )
-
-    training_payload = {
-        "score": training_score,
-        "completed": (
-            training.get("completed", False) if isinstance(training, dict) else False
-        ),
-        "duration": (training.get("duration", 0) if isinstance(training, dict) else 0),
-        "exercise_count": (
-            training.get("exercise_count", 0) if isinstance(training, dict) else 0
-        ),
-    }
-
-    nutrition_payload = {
-        "score": nutrition_score,
-        "calories": (
-            nutrition.get("calories", 0) if isinstance(nutrition, dict) else 0
-        ),
-        "protein": (nutrition.get("protein", 0) if isinstance(nutrition, dict) else 0),
-        "water": (nutrition.get("water", 0) if isinstance(nutrition, dict) else 0),
-    }
-
-    recovery_payload = {
-        "score": recovery_score,
-        "sleep_hours": (
-            recovery.get("sleep_hours", 0) if isinstance(recovery, dict) else 0
-        ),
-        "habits_completed": (
-            recovery.get("habits_completed", 0) if isinstance(recovery, dict) else 0
-        ),
-        "habits_total": (
-            recovery.get("habits_total", 0) if isinstance(recovery, dict) else 0
-        ),
-    }
-
-    return {
-        "date": today,
-        "daily_score": daily_score,
-        "training": training_payload,
-        "nutrition": nutrition_payload,
-        "recovery": recovery_payload,
-    }
 
 
 def get_heatmap(user_id):
-    try:
-        tmod = _import("web.app.services.training.load_service")
-        tsvc = getattr(tmod, "TrainingLoadService", None)
-    except Exception:
-        raise
+    today = date.today()
+    start_date = today - timedelta(days=364)
 
-    try:
-        nmod = _import("web.app.services.nutrition.stats_service")
-        nsvc = getattr(nmod, "NutritionStatsService", None)
-    except Exception:
-        raise
+    days = []
 
-    try:
-        rmod = _import("web.app.services.recovery.snapshot_service")
-        rsvc = getattr(rmod, "RecoverySnapshotService", None)
-    except Exception:
-        raise
+    current_date = start_date
 
-    t_days = {}
-    n_days = {}
-    r_days = {}
-
-    if tsvc and hasattr(tsvc, "get_month_scores"):
-        t_days = _call(tsvc.get_month_scores, user_id) or {}
-
-    if nsvc and hasattr(nsvc, "get_month_scores"):
-        n_days = _call(nsvc.get_month_scores, user_id) or {}
-
-    if rsvc and hasattr(rsvc, "get_month_scores"):
-        r_days = _call(rsvc.get_month_scores, user_id) or {}
-
-    keys = set()
-
-    if isinstance(t_days, dict):
-        keys.update(t_days.keys())
-
-    if isinstance(n_days, dict):
-        keys.update(n_days.keys())
-
-    if isinstance(r_days, dict):
-        keys.update(r_days.keys())
-
-    result = []
-
-    for day in sorted(keys):
-        training = t_days.get(day) if isinstance(t_days, dict) else None
-
-        nutrition = n_days.get(day) if isinstance(n_days, dict) else None
-
-        recovery = r_days.get(day) if isinstance(r_days, dict) else None
-
-        daily_score = calculate_daily_score(
-            training,
-            nutrition,
-            recovery,
+    while current_date <= today:
+        data = _build_day(
+            user_id,
+            current_date,
         )
 
-        result.append(
-            {
-                "date": day,
-                "daily_score": daily_score,
-                "training": training,
-                "nutrition": nutrition,
-                "recovery": recovery,
-            }
+        has_data = (
+            data["training"]["score"] is not None
+            or data["nutrition"]["score"] is not None
+            or data["recovery"]["score"] is not None
         )
 
-    return result
+        if has_data:
+            daily_score = data["daily_score"]
+
+            if daily_score <= 0:
+                level = 0
+            elif daily_score <= 20:
+                level = 1
+            elif daily_score <= 40:
+                level = 2
+            elif daily_score <= 60:
+                level = 3
+            elif daily_score <= 80:
+                level = 4
+            elif daily_score <= 90:
+                level = 5
+            else:
+                level = 6
+
+            days.append(
+                {
+                    **data,
+                    "level": level,
+                }
+            )
+
+        current_date += timedelta(days=1)
+
+    return {
+        "days": days,
+        "start_date": start_date.isoformat(),
+        "end_date": today.isoformat(),
+    }
