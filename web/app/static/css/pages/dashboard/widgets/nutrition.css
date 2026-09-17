@@ -41,7 +41,7 @@
     border: 1px solid var(--nf-border-soft);
     border-radius: var(--nf-radius-lg);
     padding: 10px;
-    height: 340px;
+    height: 315px;
     min-height: 0;
     max-height: 340px;
     box-sizing: border-box;
