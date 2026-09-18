@@ -22,6 +22,9 @@ import {
 import { initHabitModal } from "./modals/recovery/habit.js";
 import { initSleepModal } from "./modals/recovery/sleep.js";
 
+import { initCalendarModal } from "./modals/heatmap/calendar.js";
+import { initDayDetailsModal } from "./modals/heatmap/day_details.js";
+
 function setMetricValue(
     id: string,
     value: unknown
@@ -656,10 +659,22 @@ function initRecoveryModals(): void {
     bindRecoveryNavigation();
 }
 
+function initHeatmapModals(): void {
+    const heatmap =
+        state.getState().heatmap;
+
+    initDayDetailsModal();
+
+    initCalendarModal(
+        heatmap
+    );
+}
+
 function initModals(): void {
     initExerciseModal();
     initPlanModal();
     initRecoveryModals();
+    initHeatmapModals();
 }
 
 function initSubscriptions(): void {

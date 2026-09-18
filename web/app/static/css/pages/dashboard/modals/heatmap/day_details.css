@@ -1,0 +1,188 @@
+.heatmap-day-details-modal .db-modal-panel {
+    max-width: 680px;
+}
+
+.heatmap-day-details {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.heatmap-day-details-overview {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 16px;
+    align-items: stretch;
+}
+
+.heatmap-day-details-date {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 0;
+    padding: 16px;
+    border: 1px solid var(--db-modal-border);
+    border-radius: var(--db-modal-radius);
+    background: var(--db-modal-card-soft);
+}
+
+.heatmap-day-details-date-label {
+    margin-bottom: 5px;
+    color: var(--db-modal-text-muted);
+    font-size: 11px;
+    line-height: 1.3;
+}
+
+.heatmap-day-details-date-value {
+    color: var(--db-modal-text);
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.35;
+}
+
+.heatmap-day-details-score {
+    min-width: 120px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    border: 1px solid var(--db-modal-border);
+    border-radius: var(--db-modal-radius);
+    background: var(--db-modal-card-soft);
+}
+
+.heatmap-day-details-score-label {
+    color: var(--db-modal-text-muted);
+    font-size: 11px;
+    line-height: 1.3;
+}
+
+.heatmap-day-details-score-value {
+    margin-top: 5px;
+    color: var(--db-modal-text);
+    font-size: 30px;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.heatmap-day-details-score-value.is-empty {
+    color: var(--db-modal-text-muted);
+}
+
+.heatmap-day-details-sections {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.heatmap-day-details-section {
+    min-width: 0;
+    padding: 15px;
+    border: 1px solid var(--db-modal-border);
+    border-radius: var(--db-modal-radius);
+    background: var(--db-modal-card-soft);
+}
+
+.heatmap-day-details-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.heatmap-day-details-section-title {
+    color: var(--db-modal-text);
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+.heatmap-day-details-section-score {
+    color: var(--db-modal-text);
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.heatmap-day-details-section-score.is-empty {
+    color: var(--db-modal-text-muted);
+}
+
+.heatmap-day-details-metrics {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.heatmap-day-details-metric {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.heatmap-day-details-metric-label {
+    min-width: 0;
+    overflow: hidden;
+    color: var(--db-modal-text-muted);
+    font-size: 11px;
+    line-height: 1.3;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.heatmap-day-details-metric-value {
+    flex: 0 0 auto;
+    color: var(--db-modal-text);
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+.heatmap-day-details-empty {
+    padding: 18px;
+    border: 1px solid var(--db-modal-border);
+    border-radius: var(--db-modal-radius);
+    background: var(--db-modal-card-soft);
+    color: var(--db-modal-text-muted);
+    font-size: 12px;
+    line-height: 1.5;
+    text-align: center;
+}
+
+.heatmap-day-details-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+@media (max-width: 700px) {
+    .heatmap-day-details-sections {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .heatmap-day-details-overview {
+        grid-template-columns: 1fr;
+    }
+
+    .heatmap-day-details-score {
+        min-width: 0;
+        min-height: 100px;
+    }
+
+    .heatmap-day-details-score-value {
+        font-size: 28px;
+    }
+
+    .heatmap-day-details-footer {
+        flex-direction: column;
+    }
+
+    .heatmap-day-details-footer .db-btn {
+        width: 100%;
+    }
+}

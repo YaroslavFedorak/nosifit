@@ -9,6 +9,8 @@ import { openExerciseModal, initExerciseModal } from "./modals/exercise.js";
 import { openPlanModal, initPlanModal } from "./modals/plan/index.js";
 import { initHabitModal } from "./modals/recovery/habit.js";
 import { initSleepModal } from "./modals/recovery/sleep.js";
+import { initCalendarModal } from "./modals/heatmap/calendar.js";
+import { initDayDetailsModal } from "./modals/heatmap/day_details.js";
 function setMetricValue(id, value) {
     const container = document.getElementById(id);
     if (!container)
@@ -319,10 +321,16 @@ function initRecoveryModals() {
     initSleepModal();
     bindRecoveryNavigation();
 }
+function initHeatmapModals() {
+    const heatmap = state.getState().heatmap;
+    initDayDetailsModal();
+    initCalendarModal(heatmap);
+}
 function initModals() {
     initExerciseModal();
     initPlanModal();
     initRecoveryModals();
+    initHeatmapModals();
 }
 function initSubscriptions() {
     state.subscribe("overview", bindOverview);

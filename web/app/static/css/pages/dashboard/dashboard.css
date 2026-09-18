@@ -19,7 +19,9 @@
 @import "./modals/recovery/habit.css";
 @import "./modals/recovery/sleep.css";
 @import "./modals/recovery.css";
-@import "./modals/day_details.css";
 @import "./modals/nutrition/modal.css";
+
+@import "./modals/heatmap/day_details.css";
+@import "./modals/heatmap/calendar.css";
 
 @import "./header.css";

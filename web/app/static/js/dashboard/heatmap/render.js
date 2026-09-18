@@ -81,13 +81,7 @@ function createCell(day) {
         cell.appendChild(createTooltip(day));
         cell.addEventListener("click", () => {
             document.dispatchEvent(new CustomEvent("dashboard:open-day", {
-                detail: {
-                    date: day.date,
-                    daily_score: day.daily_score,
-                    training: day.training,
-                    recovery: day.recovery,
-                    nutrition: day.nutrition,
-                },
+                detail: day,
             }));
         });
     }
@@ -141,6 +135,22 @@ function buildDayMap(data) {
     });
     return map;
 }
+function createEmptyDay(date) {
+    return {
+        date,
+        daily_score: null,
+        level: 0,
+        training: {
+            score: null,
+        },
+        recovery: {
+            score: null,
+        },
+        nutrition: {
+            score: null,
+        },
+    };
+}
 function renderGrid(container, data) {
     container.innerHTML =
         "";
@@ -151,21 +161,8 @@ function renderGrid(container, data) {
     const lastDate = new Date(year, 11, 31);
     while (current <= lastDate) {
         const dateString = formatDateKey(current);
-        const existingDay = dayMap.get(dateString);
-        const day = existingDay ?? {
-            date: dateString,
-            daily_score: null,
-            level: 0,
-            training: {
-                score: null,
-            },
-            recovery: {
-                score: null,
-            },
-            nutrition: {
-                score: null,
-            },
-        };
+        const day = dayMap.get(dateString) ??
+            createEmptyDay(dateString);
         container.appendChild(createCell(day));
         current.setDate(current.getDate() + 1);
     }

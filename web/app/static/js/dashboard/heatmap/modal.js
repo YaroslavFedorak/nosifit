@@ -1,3 +1,8 @@
+function formatScore(value) {
+    return value == null
+        ? "—"
+        : String(value);
+}
 export function openDayModal(data) {
     const modal = document.getElementById("nf-day-modal");
     if (!modal) {
@@ -18,18 +23,15 @@ export function openDayModal(data) {
     }
     if (trainingScore) {
         trainingScore.textContent =
-            String(data.training?.score ??
-                0);
+            formatScore(data.training?.score);
     }
     if (nutritionScore) {
         nutritionScore.textContent =
-            String(data.nutrition?.score ??
-                0);
+            formatScore(data.nutrition?.score);
     }
     if (recoveryScore) {
         recoveryScore.textContent =
-            String(data.recovery?.score ??
-                0);
+            formatScore(data.recovery?.score);
     }
     modal.classList.add("open");
 }
