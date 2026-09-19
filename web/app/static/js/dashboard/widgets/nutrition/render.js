@@ -58,9 +58,9 @@ export function renderMeals(meals, onRefresh) {
     if (!meals?.length) {
         const empty = document.createElement("div");
         empty.className =
-            "meals-empty";
+            "db-session-empty";
         empty.textContent =
-            "Ще немає прийомів за сьогодні.";
+            "Ще немає прийомів за сьогодні";
         list.appendChild(empty);
         return;
     }

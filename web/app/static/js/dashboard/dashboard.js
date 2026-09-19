@@ -11,6 +11,7 @@ import { initHabitModal } from "./modals/recovery/habit.js";
 import { initSleepModal } from "./modals/recovery/sleep.js";
 import { initCalendarModal } from "./modals/heatmap/calendar.js";
 import { initDayDetailsModal } from "./modals/heatmap/day_details.js";
+import { formatDashboardDate } from "./utils/date.js";
 function setMetricValue(id, value) {
     const container = document.getElementById(id);
     if (!container)
@@ -22,6 +23,13 @@ function setMetricValue(id, value) {
         value == null || value === ""
             ? "—"
             : String(value);
+}
+function bindHeaderDate() {
+    const element = document.getElementById("dashboard-header-date");
+    if (!element)
+        return;
+    element.textContent =
+        formatDashboardDate(new Date());
 }
 function bindOverview(overview) {
     if (!overview) {
@@ -338,6 +346,7 @@ function initSubscriptions() {
     state.subscribe("recommendations", bindRecommendations);
 }
 async function init() {
+    bindHeaderDate();
     initSubscriptions();
     trainingEditor.init();
     initModals();

@@ -59,7 +59,7 @@ export function renderMeals(meals, onRefresh) {
         const empty = document.createElement("div");
         empty.className = "meals-empty";
         empty.textContent =
-            "Ще немає прийомів за сьогодні.";
+            "Ще немає прийомів за сьогодні";
         list.appendChild(empty);
         return;
     }

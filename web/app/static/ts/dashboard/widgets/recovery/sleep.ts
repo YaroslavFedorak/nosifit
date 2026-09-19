@@ -6,6 +6,10 @@ import {
     RECOVERY_ICONS
 } from "../../../icons/recovery.js";
 
+import {
+    formatDashboardDate
+} from "../../utils/date.js";
+
 function formatDuration(
     minutes:
         number | null | undefined

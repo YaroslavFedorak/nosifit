@@ -24,31 +24,42 @@
 }
 
 .heatmap-calendar-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
     height: 30px;
-    padding: 0 10px;
-    border-radius: var(--radius-sm);
-    border: 1px solid var(--border-soft);
-    background: var(--card-soft);
-    color: var(--text);
+    padding: 0 11px;
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: var(--nf-radius-sm);
+    background: var(--nf-surface-soft);
+    color: var(--nf-text-main);
     font-size: 12px;
+    font-weight: 600;
+    line-height: 1.2;
+    white-space: nowrap;
     cursor: pointer;
     transition:
-        background var(--transition-fast),
-        border-color var(--transition-fast),
-        transform var(--transition-fast);
+        background-color 0.18s ease,
+        border-color 0.18s ease,
+        color 0.18s ease,
+        transform 0.18s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .heatmap-calendar-button:hover {
-    background: var(--card-deep);
-    border-color: var(--accent);
+    background: var(--nf-yellow);
+    border-color: var(--nf-yellow);
+    color: #000;
     transform: translateY(-1px);
 }
 
-.nutrition-heatmap-content {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    min-width: 0;
+.heatmap-calendar-button:active {
+    transform: translateY(0);
+}
+
+.heatmap-calendar-button:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(255, 214, 10, 0.12);
 }
 
 .heatmap-months {

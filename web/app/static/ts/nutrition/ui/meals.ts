@@ -85,7 +85,7 @@ export function renderMeals(
         empty.className = "meals-empty";
 
         empty.textContent =
-            "Ще немає прийомів за сьогодні.";
+            "Ще немає прийомів за сьогодні";
 
         list.appendChild(empty);
 

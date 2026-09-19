@@ -25,6 +25,7 @@ import { initSleepModal } from "./modals/recovery/sleep.js";
 import { initCalendarModal } from "./modals/heatmap/calendar.js";
 import { initDayDetailsModal } from "./modals/heatmap/day_details.js";
 
+import { formatDashboardDate } from "./utils/date.js";
 function setMetricValue(
     id: string,
     value: unknown
@@ -45,6 +46,20 @@ function setMetricValue(
         value == null || value === ""
             ? "—"
             : String(value);
+}
+
+function bindHeaderDate(): void {
+    const element =
+        document.getElementById(
+            "dashboard-header-date"
+        );
+
+    if (!element) return;
+
+    element.textContent =
+        formatDashboardDate(
+            new Date()
+        );
 }
 
 function bindOverview(
@@ -695,6 +710,8 @@ function initSubscriptions(): void {
 }
 
 async function init(): Promise<void> {
+    bindHeaderDate();
+
     initSubscriptions();
 
     trainingEditor.init();
