@@ -11,6 +11,8 @@
     display: flex;
     flex-direction: column;
     gap: 8px;
+    position: relative;
+    overflow: visible;
 }
 
 .tr-heatmap-header {
@@ -36,7 +38,7 @@
 
 .tr-heatmap-content {
     width: 100%;
-    overflow-x: auto;
+    position: relative;
 }
 
 .tr-heatmap-months {
@@ -47,7 +49,9 @@
     max-width: 845px;
     margin: 0 auto;
     padding: 0;
-    font-size: 10px;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.01em;
     line-height: 1;
     color: var(--text-muted);
 }
@@ -61,7 +65,7 @@
 
 .tr-heatmap-grid {
     display: grid;
-    grid-template-columns: repeat(53, 13px);
+    grid-template-columns: repeat(53, minmax(0, 1fr));
     grid-template-rows: repeat(7, 13px);
     grid-auto-flow: column;
     gap: 3px;
@@ -74,8 +78,10 @@
 }
 
 .heatmap-cell {
-    width: 13px;
+    width: 100%;
+    max-width: 13px;
     height: 13px;
+    justify-self: center;
     border-radius: 3px;
     background: #1a1f27;
     position: relative;
@@ -324,17 +330,26 @@
         padding: 12px;
     }
 
+    .tr-heatmap-content {
+        overflow-x: hidden;
+    }
+
     .tr-heatmap-months {
-        width: max-content;
+        width: 100%;
         max-width: none;
         margin: 0;
     }
 
     .tr-heatmap-grid {
-        width: max-content;
+        width: 100%;
         max-width: none;
         margin: 0;
-        justify-content: start;
+        grid-template-columns: repeat(53, minmax(0, 1fr));
+        gap: 2px;
+    }
+
+    .heatmap-cell {
+        max-width: none;
     }
 
     .tr-calendar-dialog {

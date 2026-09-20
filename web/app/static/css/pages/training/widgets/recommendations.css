@@ -29,6 +29,13 @@
     opacity: 0.55;
 }
 
+.tr-rec-section-title>span:first-child svg {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+    opacity: 0.55;
+}
+
 .tr-weak-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -75,8 +82,8 @@
 }
 
 .tr-rec-line-item-top svg {
-    width: 22px;
-    height: 22px;
+    width: 24px;
+    height: 24px;
     opacity: 0.55;
     flex-shrink: 0;
 }
@@ -134,8 +141,8 @@
 }
 
 .tr-balance-item svg {
-    width: 20px;
-    height: 20px;
+    width: 24px;
+    height: 24px;
     opacity: 0.55;
 }
 

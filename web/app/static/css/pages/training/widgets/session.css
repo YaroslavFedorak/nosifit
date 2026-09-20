@@ -1,7 +1,7 @@
 .tr-card-session {
     display: flex;
     flex-direction: column;
-    height: calc(100vh - 400px);
+    height: 520px;
     gap: 14px;
     overflow: hidden;
     padding: 14px;
@@ -222,4 +222,10 @@
 .tr-toast-saved.show {
     opacity: 1;
     transform: translateY(0);
+}
+
+@media (max-width: 900px) {
+    .tr-card-session {
+        height: 460px;
+    }
 }
