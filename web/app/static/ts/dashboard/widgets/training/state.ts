@@ -1,30 +1,24 @@
 interface TrainingExercise {
     id: string;
-
     databaseId: string | null;
-
     name: string;
-
     movement_pattern: string;
-
     muscles_primary: string[];
-
     muscles_secondary: string[];
-
     equipment: string[];
-
     sets: number;
-
     reps: any;
-
     weight: number;
-
     rpe: number | null;
-
     completed: boolean;
-
     [key: string]: any;
 }
+
+const STORAGE_KEY =
+    "dashboard_training_exercises";
+
+const STORAGE_DATE_KEY =
+    "dashboard_training_date";
 
 const exercises: TrainingExercise[] = [];
 
@@ -42,6 +36,25 @@ function createLocalId(): string {
             .toString(36)
             .slice(2)
     );
+}
+
+function getTodayKey(): string {
+    const today = new Date();
+
+    const year =
+        today.getFullYear();
+
+    const month =
+        String(
+            today.getMonth() + 1
+        ).padStart(2, "0");
+
+    const day =
+        String(
+            today.getDate()
+        ).padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
 }
 
 function normalizeDatabaseId(
@@ -64,10 +77,11 @@ function normalizeNumber(
         return fallback;
     }
 
-    const n = Number(value);
+    const number =
+        Number(value);
 
-    return Number.isFinite(n)
-        ? n
+    return Number.isFinite(number)
+        ? number
         : fallback;
 }
 
@@ -149,10 +163,6 @@ function getMuscles(
 function detectCompleted(
     exercise: any
 ): boolean {
-    /*
-     * Якщо бекенд повернув
-     * done/completed → completed.
-     */
     if (
         exercise.completed === true ||
         exercise.done === true
@@ -160,25 +170,14 @@ function detectCompleted(
         return true;
     }
 
-    /*
-     * Якщо є sets_done /
-     * reps_done / load_done
-     * → completed.
-     */
     if (
-        exercise.sets_done !==
-            undefined ||
-        exercise.reps_done !==
-            undefined ||
-        exercise.load_done !==
-            undefined
+        exercise.sets_done !== undefined ||
+        exercise.reps_done !== undefined ||
+        exercise.load_done !== undefined
     ) {
         return true;
     }
 
-    /*
-     * Інакше — нова вправа.
-     */
     return false;
 }
 
@@ -199,7 +198,10 @@ function normalizeExercise(
             : null;
 
     return {
-        id: createLocalId(),
+        id:
+            typeof exercise.id === "string"
+                ? exercise.id
+                : createLocalId(),
 
         databaseId,
 
@@ -253,13 +255,96 @@ function normalizeExercise(
                 0
             ) ?? 0,
 
-        rpe: normalizedRpe,
+        rpe:
+            normalizedRpe,
 
         completed:
             detectCompleted(
                 exercise
             )
     };
+}
+
+function persist(): void {
+    try {
+        window.localStorage.setItem(
+            STORAGE_KEY,
+            JSON.stringify(exercises)
+        );
+
+        window.localStorage.setItem(
+            STORAGE_DATE_KEY,
+            getTodayKey()
+        );
+    } catch {
+        return;
+    }
+}
+
+function loadPersisted(): void {
+    try {
+        const savedDate =
+            window.localStorage.getItem(
+                STORAGE_DATE_KEY
+            );
+
+        if (
+            savedDate !==
+            getTodayKey()
+        ) {
+            window.localStorage.removeItem(
+                STORAGE_KEY
+            );
+
+            window.localStorage.removeItem(
+                STORAGE_DATE_KEY
+            );
+
+            return;
+        }
+
+        const raw =
+            window.localStorage.getItem(
+                STORAGE_KEY
+            );
+
+        if (!raw) {
+            return;
+        }
+
+        const parsed =
+            JSON.parse(raw);
+
+        if (!Array.isArray(parsed)) {
+            return;
+        }
+
+        exercises.length = 0;
+
+        parsed.forEach(
+            exercise => {
+                const normalized =
+                    normalizeExercise(
+                        exercise
+                    );
+
+                if (
+                    normalized.databaseId !==
+                    null
+                ) {
+                    exercises.push(
+                        normalized
+                    );
+                }
+            }
+        );
+    } catch {
+        exercises.length = 0;
+    }
+}
+
+export function initState(): void {
+    loadPersisted();
 }
 
 export function getExercises(): TrainingExercise[] {
@@ -287,7 +372,8 @@ export function addExercise(
         );
 
     if (
-        normalized.databaseId === null
+        normalized.databaseId ===
+        null
     ) {
         console.error(
             "Cannot add exercise without database ID:",
@@ -297,7 +383,11 @@ export function addExercise(
         return null;
     }
 
-    exercises.push(normalized);
+    exercises.push(
+        normalized
+    );
+
+    persist();
 
     return normalized;
 }
@@ -316,7 +406,12 @@ export function removeExercise(
         return false;
     }
 
-    exercises.splice(index, 1);
+    exercises.splice(
+        index,
+        1
+    );
+
+    persist();
 
     return true;
 }
@@ -333,7 +428,10 @@ export function updateExercise(
         return false;
     }
 
-    exercise[field] = value;
+    exercise[field] =
+        value;
+
+    persist();
 
     return true;
 }
@@ -351,6 +449,8 @@ export function toggleExercise(
     exercise.completed =
         !exercise.completed;
 
+    persist();
+
     return true;
 }
 
@@ -360,18 +460,29 @@ export function replaceExercises(
     exercises.length = 0;
 
     if (!Array.isArray(newExercises)) {
+        persist();
         return;
     }
 
     newExercises.forEach(
         exercise => {
-            exercises.push(
+            const normalized =
                 normalizeExercise(
                     exercise
-                )
-            );
+                );
+
+            if (
+                normalized.databaseId !==
+                null
+            ) {
+                exercises.push(
+                    normalized
+                );
+            }
         }
     );
+
+    persist();
 }
 
 export function getCompletedExercises(): TrainingExercise[] {
@@ -383,6 +494,18 @@ export function getCompletedExercises(): TrainingExercise[] {
 
 export function clear(): void {
     exercises.length = 0;
+
+    try {
+        window.localStorage.removeItem(
+            STORAGE_KEY
+        );
+
+        window.localStorage.removeItem(
+            STORAGE_DATE_KEY
+        );
+    } catch {
+        return;
+    }
 }
 
 export function hasExercises(): boolean {

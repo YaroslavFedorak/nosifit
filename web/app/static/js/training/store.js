@@ -7,5 +7,4 @@ export const trainingStore = {
     recommendations: null,
     loading: false
 };
-
 window.trainingStore = trainingStore;

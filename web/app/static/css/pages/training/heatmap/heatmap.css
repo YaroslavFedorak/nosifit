@@ -34,6 +34,31 @@
     font-size: 12px;
 }
 
+.tr-heatmap-content {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.tr-heatmap-months {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 845px;
+    margin: 0 auto;
+    padding: 0;
+    font-size: 10px;
+    line-height: 1;
+    color: var(--text-muted);
+}
+
+.tr-heatmap-months span {
+    display: block;
+    flex: 0 0 auto;
+    text-align: center;
+    white-space: nowrap;
+}
+
 .tr-heatmap-grid {
     display: grid;
     grid-template-columns: repeat(53, 13px);
@@ -43,7 +68,8 @@
     padding: 6px 0;
     justify-content: center;
     align-items: start;
-    max-width: 680px;
+    max-width: 845px;
+    width: 100%;
     margin: 0 auto;
 }
 
@@ -53,6 +79,7 @@
     border-radius: 3px;
     background: #1a1f27;
     position: relative;
+    cursor: pointer;
     transition: var(--transition-fast);
 }
 
@@ -97,27 +124,40 @@
 .heatmap-tooltip {
     position: absolute;
     left: 50%;
-    transform: translate(-50%, -130%);
-    background: var(--card-deep);
-    border: 1px solid var(--border-soft);
-    padding: 4px 8px;
+    bottom: calc(100% + 8px);
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: max-content;
+    padding: 6px 9px;
     border-radius: var(--radius-sm);
-    font-size: 11px;
-    color: var(--text);
+    background: #0b0d10;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+    color: #fff;
+    font-size: 10px;
+    line-height: 1.3;
     white-space: nowrap;
     pointer-events: none;
     opacity: 0;
-    transition: var(--transition-fast);
+    visibility: hidden;
+    transition:
+        opacity var(--transition-fast),
+        visibility var(--transition-fast);
+    z-index: 100;
 }
 
 .heatmap-cell:hover .heatmap-tooltip {
     opacity: 1;
+    visibility: visible;
 }
 
 .tr-heatmap-legend {
     display: flex;
     align-items: center;
     gap: 6px;
+    margin-top: 2px;
     font-size: 11px;
     color: var(--text-muted);
 }
@@ -284,10 +324,17 @@
         padding: 12px;
     }
 
+    .tr-heatmap-months {
+        width: max-content;
+        max-width: none;
+        margin: 0;
+    }
+
     .tr-heatmap-grid {
-        max-width: 100%;
-        transform: scale(0.9);
-        transform-origin: center;
+        width: max-content;
+        max-width: none;
+        margin: 0;
+        justify-content: start;
     }
 
     .tr-calendar-dialog {

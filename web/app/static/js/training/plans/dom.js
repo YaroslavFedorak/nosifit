@@ -1,7 +1,8 @@
+const getInput = (id) => document.getElementById(id);
 export const dom = {
     modal: document.getElementById("tr-plan-modal"),
     saveBtn: document.getElementById("tr-plan-save"),
-    titleInput: document.getElementById("tr-plan-title"),
+    titleInput: getInput("tr-plan-title"),
     summaryCount: document.getElementById("tr-plan-summary-count"),
     summarySets: document.getElementById("tr-plan-summary-sets"),
     daySummary: document.getElementById("tr-plan-day-summary"),

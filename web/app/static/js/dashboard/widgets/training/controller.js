@@ -1,7 +1,9 @@
 import { trainingAPI } from "./api.js";
 let isSavingWorkout = false;
 function normalizeDatabaseId(value) {
-    if (!value) {
+    if (value === null ||
+        value === undefined ||
+        value === "") {
         return null;
     }
     return String(value);
@@ -12,7 +14,8 @@ function prepareExerciseForSave(exercise = {}) {
         exercise.exerciseId ??
         exercise.exercise_id ??
         exercise.original?.id ??
-        exercise.exercise?.id);
+        exercise.exercise?.id ??
+        exercise.id);
     return {
         ...exercise,
         databaseId
@@ -48,7 +51,8 @@ function getSaveButton() {
 function setSaveState(isSaving) {
     const button = getSaveButton();
     if (button) {
-        button.disabled = isSaving;
+        button.disabled =
+            isSaving;
     }
 }
 function getFatigueBefore() {
@@ -63,19 +67,6 @@ function prepareExercises(exercises) {
     return exercises
         .map(prepareExerciseForSave)
         .filter(isValidExercise);
-}
-function persistExercises(exercises) {
-    try {
-        const serialized = JSON.stringify(exercises);
-        const today = new Date()
-            .toISOString()
-            .slice(0, 10);
-        window.localStorage.setItem("dashboard_training_exercises", serialized);
-        window.localStorage.setItem("dashboard_training_date", today);
-    }
-    catch (_) {
-        // localStorage may be unavailable
-    }
 }
 async function saveExercise(sessionId, exercise) {
     await trainingAPI.addExerciseToSession(sessionId, exercise.databaseId);
@@ -124,7 +115,6 @@ export async function saveWorkout({ exercises, onSuccess }) {
         if (sessionId === null) {
             throw new Error("Сервер не повернув коректний ID тренування.");
         }
-        persistExercises(validExercises);
         const savedExercises = await saveExercises(sessionId, validExercises);
         if (savedExercises === 0) {
             throw new Error("Не вдалося зберегти жодної вправи.");
@@ -133,7 +123,8 @@ export async function saveWorkout({ exercises, onSuccess }) {
             fatigue_after: getFatigueAfter()
         });
         clearWorkoutTitle();
-        if (typeof onSuccess === "function") {
+        if (typeof onSuccess ===
+            "function") {
             await onSuccess(finished);
         }
         return finished;

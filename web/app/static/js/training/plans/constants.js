@@ -7,3 +7,6 @@ export const DAYS = [
     { key: "sat", short: "Сб" },
     { key: "sun", short: "Нд" }
 ];
+export function isPlanDayKey(value) {
+    return DAYS.some(day => day.key === value);
+}

@@ -8,71 +8,74 @@ import { initSession } from "./session.js";
 import { initPlanModal } from "./plan_modal.js";
 import { renderRecommendations } from "./recommendations.js";
 import { initHeatmap } from "./heatmap.js";
-import { initStrengthTest, injectIcons, setupArrows } from "./strength_test.js";
-
+import { initStrengthTest } from "./strength_test.js";
+import { initDailyState, persistWorkout } from "./state.js";
 document.addEventListener("DOMContentLoaded", async () => {
     renderCurrentDate();
-
     await Promise.all([
         loadPlan(),
-
         TrainingAPI.getExercises()
             .then(data => {
-                trainingStore.exercises = Array.isArray(data?.items)
-                    ? data.items
-                    : Array.isArray(data)
-                        ? data
+            trainingStore.exercises =
+                Array.isArray(data)
+                    ? data
+                    : Array.isArray(data.items)
+                        ? data.items
                         : [];
-            })
+        })
             .catch(() => {
-                trainingStore.exercises = [];
-            }),
-
+            trainingStore.exercises =
+                [];
+        }),
         TrainingAPI.getAnalytics()
             .then(data => {
-                renderAnalytics(data);
-                renderStrengthTestResults(
-                    data?.raw_performance ??
-                    data?.performance_raw ??
-                    data?.performance ??
-                    null
-                );
-            })
-            .catch(() => {}),
-
+            renderAnalytics(data);
+            renderStrengthTestResults(data.raw_performance ??
+                data.performance_raw ??
+                null);
+        })
+            .catch(() => {
+            return;
+        }),
         TrainingAPI.getRecommendations()
             .then(data => {
-                trainingStore.recommendations = data;
-                renderRecommendations(data);
-            })
+            trainingStore.recommendations =
+                data;
+            renderRecommendations(data);
+        })
             .catch(() => {
-                trainingStore.recommendations = null;
-            })
+            trainingStore.recommendations =
+                null;
+        })
     ]);
-
+    initDailyState();
     const addExercise = document.getElementById("tr-add-exercise");
     if (addExercise) {
         addExercise.onclick = () => {
-            openExercisePicker(ex => {
+            openExercisePicker(exercise => {
+                const exists = trainingStore.workout.some(item => String(item.exercise?.id) ===
+                    String(exercise.id));
+                if (exists) {
+                    return;
+                }
                 trainingStore.workout.push({
-                    exercise: ex,
+                    exercise,
                     sets: 3,
                     reps: "8-12",
                     load: 0,
                     done: false,
                     fromPlan: false
                 });
+                persistWorkout(trainingStore.workout);
                 renderWorkoutList();
+                window.dispatchEvent(new CustomEvent("training:workout-updated"));
             });
         };
     }
-
     initSession();
     initExercisePicker();
     initPlanModal();
     renderWorkoutList();
     initHeatmap();
     initStrengthTest();
-    injectIcons();
-    setupArrows();
 });

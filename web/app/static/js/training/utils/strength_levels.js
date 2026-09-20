@@ -18,21 +18,20 @@ const LEVELS = {
         { max: Infinity, label: "Відмінний" }
     ]
 };
-
 const MAX_PROGRESS = {
     pushups: 40,
     squats: 80,
     situps: 60
 };
-
 export function getLevel(type, value) {
     const ranges = LEVELS[type] || [];
-    for (const r of ranges) {
-        if (value <= r.max) return r.label;
+    for (const range of ranges) {
+        if (value <= range.max) {
+            return range.label;
+        }
     }
     return "Низький";
 }
-
 export function getProgress(type, value) {
     const max = MAX_PROGRESS[type] || 40;
     return Math.min(100, Math.floor((value / max) * 100));

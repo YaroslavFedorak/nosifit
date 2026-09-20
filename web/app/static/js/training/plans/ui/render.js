@@ -1,27 +1,29 @@
-import { state } from "../state.js";
-import { dom } from "../dom.js";
 import { createExerciseCard } from "./exerciseCard.js";
 import { updateSummary } from "./summary.js";
-
+import { state } from "../state.js";
 export function renderExercises(openPicker) {
-    dom.container.innerHTML = "";
-    const list = state.days[state.currentDay] ?? [];
-
-    if (!list.length) {
-        dom.emptyState.classList.add("visible");
-        updateSummary(list);
+    const container = document.getElementById("tr-plan-exercises");
+    const emptyState = document.getElementById("tr-plan-empty");
+    if (!container ||
+        !emptyState) {
         return;
     }
-
-    dom.emptyState.classList.remove("visible");
-
-    const rerender = () => renderExercises(openPicker);
-
-    list.forEach((ex, index) => {
-        dom.container.appendChild(
-            createExerciseCard(ex, index, list, rerender, openPicker)
-        );
+    const list = state.days[state.currentDay];
+    container.innerHTML = "";
+    if (!list.length) {
+        container.classList.add("hidden");
+        emptyState.classList.remove("hidden");
+        updateSummary();
+        return;
+    }
+    container.classList.remove("hidden");
+    emptyState.classList.add("hidden");
+    const rerender = () => {
+        renderExercises(openPicker);
+    };
+    list.forEach((exercise, index) => {
+        const card = createExerciseCard(exercise, index, list, rerender, openPicker);
+        container.appendChild(card);
     });
-
-    updateSummary(list);
+    updateSummary();
 }

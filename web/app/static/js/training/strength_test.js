@@ -1,108 +1,173 @@
 import { TrainingAPI } from "./api.js";
 import { renderStrengthTestResults } from "./dashboard.js";
-import { getLevel, getProgress } from "./utils/strength_levels.js";
-import { ICONS } from "../icons/index.js";
-
-function getNumber(id) {
-    return Number(document.getElementById(id)?.value) || 0;
+const TYPES = [
+    "pushups",
+    "squats",
+    "situps"
+];
+function getInput(type) {
+    return document.getElementById(`st_${type}`);
 }
-
+function getModal() {
+    return document.getElementById("tr-modal-strength");
+}
+function getSubmitButton() {
+    return document.getElementById("strength-test-submit");
+}
+function getErrorElement() {
+    return document.getElementById("strength-error");
+}
+function getSuccessElement() {
+    return document.getElementById("strength-success");
+}
+function openModal() {
+    const modal = getModal();
+    if (!modal) {
+        return;
+    }
+    modal.classList.add("open");
+}
+function closeModal() {
+    const modal = getModal();
+    if (!modal) {
+        return;
+    }
+    modal.classList.remove("open");
+}
+function showError(message) {
+    const error = getErrorElement();
+    if (!error) {
+        return;
+    }
+    error.textContent =
+        message;
+    error.classList.remove("hidden");
+}
+function hideError() {
+    getErrorElement()?.classList.add("hidden");
+}
+function showSuccess() {
+    getSuccessElement()?.classList.remove("hidden");
+}
+function hideSuccess() {
+    getSuccessElement()?.classList.add("hidden");
+}
+function setLoading(loading) {
+    const button = getSubmitButton();
+    if (!button) {
+        return;
+    }
+    button.disabled =
+        loading;
+    const text = button.querySelector(".btn-text");
+    const loader = button.querySelector(".btn-loader");
+    text?.classList.toggle("hidden", loading);
+    loader?.classList.toggle("hidden", !loading);
+}
+function resetState() {
+    hideError();
+    hideSuccess();
+}
 export function injectIcons() {
-    document.querySelectorAll(".tr-strength-icon")?.forEach(el => {
-        el.innerHTML = ICONS.exercise;
-    });
-}
-
-export function setupArrows() {
-    document.querySelectorAll(".tr-arrow-up").forEach(btn => {
-        btn.addEventListener("click", () => {
-            const id = btn.dataset.inc;
-            const input = document.getElementById(id);
-            input.value = Number(input.value || 0) + 1;
-        });
-    });
-
-    document.querySelectorAll(".tr-arrow-down").forEach(btn => {
-        btn.addEventListener("click", () => {
-            const id = btn.dataset.dec;
-            const input = document.getElementById(id);
-            const v = Number(input.value || 0);
-            input.value = v > 0 ? v - 1 : 0;
-        });
-    });
-}
-
-export function initStrengthTest() {
-    const openBtn = document.getElementById("tr-strength-open");
-    const modal = document.getElementById("tr-modal-strength");
-    const closeBtns = document.querySelectorAll("[data-close-strength]");
-    const submitBtn = document.getElementById("strength-test-submit");
-    const successBlock = document.getElementById("strength-success");
-    const errorBlock = document.getElementById("strength-error");
-
-    injectIcons();
-    setupArrows();
-
-    openBtn?.addEventListener("click", () => {
-        modal?.classList.add("open");
-        successBlock?.classList.add("hidden");
-        errorBlock?.classList.add("hidden");
-    });
-
-    closeBtns.forEach(btn => {
-        btn.addEventListener("click", () => modal?.classList.remove("open"));
-    });
-
-    ["st_pushups", "st_squats", "st_situps"].forEach(id => {
-        const el = document.getElementById(id);
-        el?.addEventListener("input", () => errorBlock?.classList.add("hidden"));
-    });
-
-    submitBtn?.addEventListener("click", () => {
-        const pushups = getNumber("st_pushups");
-        const squats = getNumber("st_squats");
-        const situps = getNumber("st_situps");
-
-        if (pushups === 0 && squats === 0 && situps === 0) {
-            errorBlock.textContent = "Введіть хоча б один результат";
-            errorBlock.classList.remove("hidden");
+    const icons = {
+        pushups: "↗",
+        squats: "↕",
+        situps: "↔"
+    };
+    const fields = document.querySelectorAll(".tr-strength-field");
+    fields.forEach((field, index) => {
+        const type = TYPES[index];
+        if (!type) {
             return;
         }
-
-        const text = submitBtn.querySelector(".btn-text");
-        const loader = submitBtn.querySelector(".btn-loader");
-
-        text?.classList.add("hidden");
-        loader?.classList.remove("hidden");
-
-        TrainingAPI.strengthTest({ pushups, squats, situps })
-            .then(res => {
-                const perf = res?.raw_performance || res || {};
-
-                const result = {
-                    ...perf,
-                    pushups_level: getLevel("pushups", perf.pushups),
-                    squats_level: getLevel("squats", perf.squats),
-                    situps_level: getLevel("situps", perf.situps),
-                    pushups_progress: getProgress("pushups", perf.pushups),
-                    squats_progress: getProgress("squats", perf.squats),
-                    situps_progress: getProgress("situps", perf.situps)
-                };
-
-                renderStrengthTestResults(result);
-                successBlock?.classList.remove("hidden");
-
-                if (modal) {
-                    setTimeout(() => modal.classList.remove("open"), 800);
-                }
-            })
-            .catch(() => {
-                errorBlock.textContent = "Не вдалося зберегти результати";
-                errorBlock.classList.remove("hidden");
-            })
-            .finally(() => {
-                loader?.classList.add("hidden");
-                text?.classList.remove("hidden");
-            });
+        const icon = field.querySelector(".tr-strength-icon");
+        if (icon) {
+            icon.textContent =
+                icons[type];
+        }
+    });
+}
+export function setupArrows() {
+    TYPES.forEach(type => {
+        const input = getInput(type);
+        if (!input) {
+            return;
+        }
+        const increase = document.querySelector(`[data-inc="st_${type}"]`);
+        const decrease = document.querySelector(`[data-dec="st_${type}"]`);
+        increase?.addEventListener("click", () => {
+            const value = Math.max(0, Number(input.value || 0) + 1);
+            input.value =
+                String(value);
+            hideError();
+        });
+        decrease?.addEventListener("click", () => {
+            const value = Math.max(0, Number(input.value || 0) - 1);
+            input.value =
+                String(value);
+            hideError();
+        });
+    });
+}
+async function submitTest() {
+    resetState();
+    const pushups = Number(getInput("pushups")?.value || 0);
+    const squats = Number(getInput("squats")?.value || 0);
+    const situps = Number(getInput("situps")?.value || 0);
+    if (!Number.isFinite(pushups) ||
+        !Number.isFinite(squats) ||
+        !Number.isFinite(situps)) {
+        showError("Введіть коректні значення.");
+        return;
+    }
+    setLoading(true);
+    try {
+        const result = await TrainingAPI.strengthTest({
+            pushups,
+            squats,
+            situps
+        });
+        const performance = result.raw_performance ??
+            {
+                pushups,
+                squats,
+                situps
+            };
+        renderStrengthTestResults(performance);
+        showSuccess();
+    }
+    catch {
+        showError("Не вдалося зберегти тест. Спробуйте ще раз.");
+    }
+    finally {
+        setLoading(false);
+    }
+}
+export function initStrengthTest() {
+    const modal = getModal();
+    if (!modal) {
+        return;
+    }
+    const openButton = document.getElementById("tr-strength-open");
+    const submitButton = getSubmitButton();
+    injectIcons();
+    setupArrows();
+    openButton?.addEventListener("click", () => {
+        resetState();
+        openModal();
+    });
+    submitButton?.addEventListener("click", async (event) => {
+        event.preventDefault();
+        await submitTest();
+    });
+    modal
+        .querySelectorAll("[data-close-strength]")
+        .forEach(button => {
+        button.addEventListener("click", closeModal);
+    });
+    modal.addEventListener("click", event => {
+        if (event.target === modal) {
+            closeModal();
+        }
     });
 }

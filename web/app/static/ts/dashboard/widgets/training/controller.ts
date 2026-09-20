@@ -5,7 +5,11 @@ let isSavingWorkout = false;
 function normalizeDatabaseId(
     value: any
 ): string | null {
-    if (!value) {
+    if (
+        value === null ||
+        value === undefined ||
+        value === ""
+    ) {
         return null;
     }
 
@@ -15,14 +19,16 @@ function normalizeDatabaseId(
 function prepareExerciseForSave(
     exercise: any = {}
 ): any {
-    const databaseId = normalizeDatabaseId(
-        exercise.databaseId ??
-        exercise.database_id ??
-        exercise.exerciseId ??
-        exercise.exercise_id ??
-        exercise.original?.id ??
-        exercise.exercise?.id
-    );
+    const databaseId =
+        normalizeDatabaseId(
+            exercise.databaseId ??
+            exercise.database_id ??
+            exercise.exerciseId ??
+            exercise.exercise_id ??
+            exercise.original?.id ??
+            exercise.exercise?.id ??
+            exercise.id
+        );
 
     return {
         ...exercise,
@@ -88,10 +94,12 @@ function getSaveButton(): HTMLButtonElement | null {
 function setSaveState(
     isSaving: boolean
 ): void {
-    const button = getSaveButton();
+    const button =
+        getSaveButton();
 
     if (button) {
-        button.disabled = isSaving;
+        button.disabled =
+            isSaving;
     }
 }
 
@@ -113,34 +121,12 @@ function prepareExercises(
     exercises: any[]
 ): any[] {
     return exercises
-        .map(prepareExerciseForSave)
-        .filter(isValidExercise);
-}
-
-function persistExercises(
-    exercises: any[]
-): void {
-    try {
-        const serialized =
-            JSON.stringify(exercises);
-
-        const today =
-            new Date()
-                .toISOString()
-                .slice(0, 10);
-
-        window.localStorage.setItem(
-            "dashboard_training_exercises",
-            serialized
+        .map(
+            prepareExerciseForSave
+        )
+        .filter(
+            isValidExercise
         );
-
-        window.localStorage.setItem(
-            "dashboard_training_date",
-            today
-        );
-    } catch (_) {
-        // localStorage may be unavailable
-    }
 }
 
 async function saveExercise(
@@ -156,21 +142,28 @@ async function saveExercise(
         sessionId,
         exercise.databaseId,
         {
-            sets_done: Number(exercise.sets),
+            sets_done:
+                Number(
+                    exercise.sets
+                ),
 
-            reps_done: String(
-                exercise.reps
-            ),
+            reps_done:
+                String(
+                    exercise.reps
+                ),
 
-            load_done: Number(
-                exercise.weight ??
-                exercise.load ??
-                0
-            ),
+            load_done:
+                Number(
+                    exercise.weight ??
+                    exercise.load ??
+                    0
+                ),
 
             rpe:
                 exercise.rpe != null
-                    ? Number(exercise.rpe)
+                    ? Number(
+                        exercise.rpe
+                    )
                     : null
         }
     );
@@ -182,7 +175,9 @@ async function saveExercises(
 ): Promise<number> {
     let savedExercises = 0;
 
-    for (const exercise of exercises) {
+    for (
+        const exercise of exercises
+    ) {
         await saveExercise(
             sessionId,
             exercise
@@ -199,7 +194,9 @@ export async function saveWorkout({
     onSuccess
 }: {
     exercises: any[];
-    onSuccess?: (result: any) => Promise<void> | void;
+    onSuccess?: (
+        result: any
+    ) => Promise<void> | void;
 }): Promise<any> {
     if (isSavingWorkout) {
         return null;
@@ -215,9 +212,13 @@ export async function saveWorkout({
     }
 
     const validExercises =
-        prepareExercises(exercises);
+        prepareExercises(
+            exercises
+        );
 
-    if (!validExercises.length) {
+    if (
+        !validExercises.length
+    ) {
         throw new Error(
             "Немає коректних вправ для збереження."
         );
@@ -248,15 +249,13 @@ export async function saveWorkout({
                 session?.id
             );
 
-        if (sessionId === null) {
+        if (
+            sessionId === null
+        ) {
             throw new Error(
                 "Сервер не повернув коректний ID тренування."
             );
         }
-
-        persistExercises(
-            validExercises
-        );
 
         const savedExercises =
             await saveExercises(
@@ -264,7 +263,9 @@ export async function saveWorkout({
                 validExercises
             );
 
-        if (savedExercises === 0) {
+        if (
+            savedExercises === 0
+        ) {
             throw new Error(
                 "Не вдалося зберегти жодної вправи."
             );
@@ -281,8 +282,13 @@ export async function saveWorkout({
 
         clearWorkoutTitle();
 
-        if (typeof onSuccess === "function") {
-            await onSuccess(finished);
+        if (
+            typeof onSuccess ===
+            "function"
+        ) {
+            await onSuccess(
+                finished
+            );
         }
 
         return finished;
