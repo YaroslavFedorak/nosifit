@@ -41,6 +41,8 @@ document.addEventListener(
     async () => {
         renderCurrentDate();
 
+        initHeatmap();
+
         await Promise.all([
             loadPlan(),
 
@@ -144,7 +146,6 @@ document.addEventListener(
         initExercisePicker();
         initPlanModal();
         renderWorkoutList();
-        initHeatmap();
         initStrengthTest();
     }
 );

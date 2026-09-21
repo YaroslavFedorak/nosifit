@@ -13,9 +13,24 @@ const MONTHS = [
     "Лис",
     "Гру"
 ];
+const MONTH_NAMES = [
+    "Січень",
+    "Лютий",
+    "Березень",
+    "Квітень",
+    "Травень",
+    "Червень",
+    "Липень",
+    "Серпень",
+    "Вересень",
+    "Жовтень",
+    "Листопад",
+    "Грудень"
+];
 let CALENDAR_DATA = [];
 let CURRENT_YEAR = new Date().getFullYear();
 let CURRENT_MONTH = new Date().getMonth();
+let heatmapRequestId = 0;
 export function initHeatmap() {
     const yearSelect = document.getElementById("tr-heatmap-year");
     const yearSelectCal = document.getElementById("cal-year-select");
@@ -33,13 +48,21 @@ export function initHeatmap() {
     yearSelectCal.value =
         String(CURRENT_YEAR);
     const load = () => {
-        CURRENT_YEAR =
-            Number(yearSelect.value);
+        const year = Number(yearSelect.value);
+        if (!Number.isFinite(year)) {
+            return;
+        }
+        CURRENT_YEAR = year;
         yearSelectCal.value =
             String(CURRENT_YEAR);
+        const requestId = ++heatmapRequestId;
         TrainingAPI
             .getHeatmap(CURRENT_YEAR)
             .then((data) => {
+            if (requestId !==
+                heatmapRequestId) {
+                return;
+            }
             CALENDAR_DATA =
                 Array.isArray(data?.days)
                     ? data.days
@@ -48,11 +71,16 @@ export function initHeatmap() {
             renderCalendarMonth();
         })
             .catch(() => {
+            if (requestId !==
+                heatmapRequestId) {
+                return;
+            }
             CALENDAR_DATA = [];
             renderHeatmap([]);
             renderCalendarMonth();
         });
     };
+    setupHeatmapEvents();
     load();
     yearSelect.addEventListener("change", load);
     yearSelectCal.addEventListener("change", () => {
@@ -65,57 +93,148 @@ export function initHeatmap() {
     openCalendar.addEventListener("click", () => {
         modal.classList.add("open");
     });
-    const closeCalendar = document.querySelectorAll("[data-close-calendar]");
-    closeCalendar.forEach(button => {
+    document
+        .querySelectorAll("[data-close-calendar]")
+        .forEach(button => {
         button.addEventListener("click", () => {
             modal.classList.remove("open");
         });
     });
-    const closeDayDetails = document.querySelectorAll("[data-close-day-details]");
-    closeDayDetails.forEach(button => {
+    document
+        .querySelectorAll("[data-close-day-details]")
+        .forEach(button => {
         button.addEventListener("click", () => {
             const dayModal = document.getElementById("tr-day-details-modal");
-            if (dayModal) {
-                dayModal.classList.remove("open");
-            }
+            dayModal?.classList.remove("open");
         });
     });
     const prevButton = document.getElementById("cal-prev");
     const nextButton = document.getElementById("cal-next");
-    if (prevButton) {
-        prevButton.addEventListener("click", () => {
-            CURRENT_MONTH -= 1;
-            if (CURRENT_MONTH < 0) {
-                CURRENT_MONTH = 11;
-                CURRENT_YEAR -= 1;
-                yearSelect.value =
-                    String(CURRENT_YEAR);
-                yearSelectCal.value =
-                    String(CURRENT_YEAR);
-                load();
-            }
-            else {
-                renderCalendarMonth();
-            }
-        });
+    prevButton?.addEventListener("click", () => {
+        CURRENT_MONTH -= 1;
+        if (CURRENT_MONTH < 0) {
+            CURRENT_MONTH = 11;
+            CURRENT_YEAR -= 1;
+            yearSelect.value =
+                String(CURRENT_YEAR);
+            yearSelectCal.value =
+                String(CURRENT_YEAR);
+            load();
+            return;
+        }
+        renderCalendarMonth();
+    });
+    nextButton?.addEventListener("click", () => {
+        CURRENT_MONTH += 1;
+        if (CURRENT_MONTH > 11) {
+            CURRENT_MONTH = 0;
+            CURRENT_YEAR += 1;
+            yearSelect.value =
+                String(CURRENT_YEAR);
+            yearSelectCal.value =
+                String(CURRENT_YEAR);
+            load();
+            return;
+        }
+        renderCalendarMonth();
+    });
+}
+function setupHeatmapEvents() {
+    const grid = document.getElementById("training-heatmap");
+    if (!grid) {
+        return;
     }
-    if (nextButton) {
-        nextButton.addEventListener("click", () => {
-            CURRENT_MONTH += 1;
-            if (CURRENT_MONTH > 11) {
-                CURRENT_MONTH = 0;
-                CURRENT_YEAR += 1;
-                yearSelect.value =
-                    String(CURRENT_YEAR);
-                yearSelectCal.value =
-                    String(CURRENT_YEAR);
-                load();
-            }
-            else {
-                renderCalendarMonth();
-            }
-        });
+    grid.addEventListener("click", event => {
+        const target = event.target;
+        const cell = target.closest(".heatmap-cell");
+        if (!cell) {
+            return;
+        }
+        const date = cell.dataset.date;
+        if (!date) {
+            return;
+        }
+        openDayDetails(date);
+    });
+    grid.addEventListener("pointerover", event => {
+        const target = event.target;
+        const cell = target.closest(".heatmap-cell");
+        if (!cell) {
+            return;
+        }
+        const relatedTarget = event.relatedTarget;
+        if (relatedTarget &&
+            cell.contains(relatedTarget)) {
+            return;
+        }
+        showHeatmapTooltip(cell);
+    });
+    grid.addEventListener("pointerout", event => {
+        const target = event.target;
+        const cell = target.closest(".heatmap-cell");
+        if (!cell) {
+            return;
+        }
+        const relatedTarget = event.relatedTarget;
+        if (relatedTarget &&
+            cell.contains(relatedTarget)) {
+            return;
+        }
+        hideHeatmapTooltip();
+    });
+    grid.addEventListener("pointerleave", hideHeatmapTooltip);
+}
+function getHeatmapTooltip() {
+    let tooltip = document.getElementById("heatmap-tooltip");
+    if (tooltip) {
+        return tooltip;
     }
+    tooltip =
+        document.createElement("div");
+    tooltip.id =
+        "heatmap-tooltip";
+    tooltip.className =
+        "heatmap-tooltip";
+    document.body.appendChild(tooltip);
+    return tooltip;
+}
+function showHeatmapTooltip(cell) {
+    const tooltip = getHeatmapTooltip();
+    const percent = Number(cell.dataset.percent) || 0;
+    const load = Number(cell.dataset.load) || 0;
+    tooltip.textContent =
+        `${percent}% навантаження (${load} од.)`;
+    tooltip.classList.add("is-visible");
+    const rect = cell.getBoundingClientRect();
+    const tooltipRect = tooltip.getBoundingClientRect();
+    const gap = 8;
+    let top = rect.top -
+        tooltipRect.height -
+        gap;
+    if (top < 8) {
+        top =
+            rect.bottom +
+                gap;
+    }
+    let left = rect.left +
+        rect.width / 2 -
+        tooltipRect.width / 2;
+    const maxLeft = window.innerWidth -
+        tooltipRect.width -
+        8;
+    left =
+        Math.max(8, Math.min(left, maxLeft));
+    tooltip.style.left =
+        `${left}px`;
+    tooltip.style.top =
+        `${top}px`;
+}
+function hideHeatmapTooltip() {
+    const tooltip = document.getElementById("heatmap-tooltip");
+    if (!tooltip) {
+        return;
+    }
+    tooltip.classList.remove("is-visible");
 }
 function formatDateKey(date) {
     const year = date.getFullYear();
@@ -128,13 +247,10 @@ function renderMonths() {
     if (!months) {
         return;
     }
-    months.innerHTML = "";
-    MONTHS.forEach(month => {
-        const element = document.createElement("span");
-        element.textContent =
-            month;
-        months.appendChild(element);
-    });
+    months.innerHTML =
+        MONTHS
+            .map(month => `<span>${month}</span>`)
+            .join("");
 }
 function createEmptyDay(date) {
     return {
@@ -150,21 +266,19 @@ function renderHeatmap(days) {
     if (!grid) {
         return;
     }
-    grid.innerHTML = "";
-    renderMonths();
     const data = new Map();
-    days.forEach(day => {
+    for (const day of days) {
         if (typeof day.date ===
             "string") {
             data.set(day.date, day);
         }
-    });
+    }
     const start = new Date(CURRENT_YEAR, 0, 1);
     const end = new Date(CURRENT_YEAR, 11, 31);
+    const cells = [];
     const current = new Date(start);
     while (current <= end) {
-        const date = new Date(current);
-        const dateString = formatDateKey(date);
+        const dateString = formatDateKey(current);
         const day = data.get(dateString) ??
             createEmptyDay(dateString);
         let level = Number(day.level);
@@ -173,26 +287,27 @@ function renderHeatmap(days) {
         }
         level =
             Math.max(0, Math.min(6, Math.round(level)));
-        const cell = document.createElement("div");
-        cell.className =
-            "heatmap-cell";
-        cell.dataset.level =
-            String(level);
-        if (day.is_today) {
-            cell.classList.add("today");
-        }
-        const tooltip = document.createElement("div");
-        tooltip.className =
-            "heatmap-tooltip";
-        tooltip.textContent =
-            `${Number(day.percent) || 0}% навантаження (${Number(day.load) || 0} од.)`;
-        cell.appendChild(tooltip);
-        cell.addEventListener("click", () => {
-            openDayDetails(dateString);
-        });
-        grid.appendChild(cell);
+        const percent = Number(day.percent) || 0;
+        const load = Number(day.load) || 0;
+        const todayClass = day.is_today
+            ? " today"
+            : "";
+        cells.push(`
+                <div
+                    class="heatmap-cell${todayClass}"
+                    data-date="${dateString}"
+                    data-level="${level}"
+                    data-percent="${percent}"
+                    data-load="${load}"
+                    role="gridcell"
+                    aria-label="${dateString}: ${percent}% навантаження"
+                ></div>
+            `);
         current.setDate(current.getDate() + 1);
     }
+    renderMonths();
+    grid.innerHTML =
+        cells.join("");
 }
 function renderCalendarMonth() {
     const grid = document.getElementById("tr-calendar-grid");
@@ -201,23 +316,8 @@ function renderCalendarMonth() {
         !title) {
         return;
     }
-    grid.innerHTML = "";
-    const monthNames = [
-        "Січень",
-        "Лютий",
-        "Березень",
-        "Квітень",
-        "Травень",
-        "Червень",
-        "Липень",
-        "Серпень",
-        "Вересень",
-        "Жовтень",
-        "Листопад",
-        "Грудень"
-    ];
     title.textContent =
-        `${monthNames[CURRENT_MONTH]} ${CURRENT_YEAR}`;
+        `${MONTH_NAMES[CURRENT_MONTH]} ${CURRENT_YEAR}`;
     const days = CALENDAR_DATA.filter(day => {
         if (!day.date) {
             return false;
@@ -228,32 +328,40 @@ function renderCalendarMonth() {
             date.getMonth() ===
                 CURRENT_MONTH);
     });
-    days.forEach(day => {
-        if (!day.date) {
-            return;
-        }
-        const item = document.createElement("div");
-        item.className =
-            `tr-calendar-item tr-level-${day.level ?? 0}`;
-        const date = document.createElement("div");
-        date.className =
-            "tr-calendar-date";
-        date.textContent =
-            new Date(`${day.date}T12:00:00`)
-                .getDate()
-                .toString();
-        const load = document.createElement("div");
-        load.className =
-            "tr-calendar-load";
-        load.textContent =
-            `${day.percent || 0}%`;
-        item.appendChild(date);
-        item.appendChild(load);
-        item.addEventListener("click", () => {
-            openDayDetails(day.date);
-        });
-        grid.appendChild(item);
-    });
+    grid.innerHTML =
+        days
+            .filter(day => Boolean(day.date))
+            .map(day => {
+            const date = new Date(`${day.date}T12:00:00`);
+            const level = Math.max(0, Math.min(6, Math.round(Number(day.level) || 0)));
+            const percent = Number(day.percent) || 0;
+            return `
+                        <div
+                            class="tr-calendar-item tr-level-${level}"
+                            data-date="${day.date}"
+                        >
+                            <div class="tr-calendar-date">
+                                ${date.getDate()}
+                            </div>
+                            <div class="tr-calendar-load">
+                                ${percent}%
+                            </div>
+                        </div>
+                    `;
+        })
+            .join("");
+    grid.onclick =
+        event => {
+            const target = event.target;
+            const item = target.closest(".tr-calendar-item");
+            if (!item) {
+                return;
+            }
+            const date = item.dataset.date;
+            if (date) {
+                openDayDetails(date);
+            }
+        };
 }
 function openDayDetails(date) {
     TrainingAPI
@@ -319,8 +427,6 @@ function openDayDetails(date) {
             body.innerHTML =
                 "<p>Не вдалося завантажити дані.</p>";
         }
-        if (modal) {
-            modal.classList.add("open");
-        }
+        modal?.classList.add("open");
     });
 }

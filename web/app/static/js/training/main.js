@@ -12,6 +12,7 @@ import { initStrengthTest } from "./strength_test.js";
 import { initDailyState, persistWorkout } from "./state.js";
 document.addEventListener("DOMContentLoaded", async () => {
     renderCurrentDate();
+    initHeatmap();
     await Promise.all([
         loadPlan(),
         TrainingAPI.getExercises()
@@ -76,6 +77,5 @@ document.addEventListener("DOMContentLoaded", async () => {
     initExercisePicker();
     initPlanModal();
     renderWorkoutList();
-    initHeatmap();
     initStrengthTest();
 });
