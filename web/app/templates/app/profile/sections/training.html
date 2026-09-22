@@ -20,7 +20,15 @@
             </span>
 
             <span class="profile-training-value">
-                {{ user.training_location or "—" }}
+                {% if profile.training_location == "gym" %}
+                    Зал
+                {% elif profile.training_location == "home" %}
+                    Дім
+                {% elif profile.training_location == "outdoor" %}
+                    Вулиця
+                {% else %}
+                    —
+                {% endif %}
             </span>
         </div>
 
@@ -29,7 +37,7 @@
                 Харчування
             </span>
 
-            {% if user.wants_nutrition %}
+            {% if profile.wants_nutrition %}
                 <span class="profile-pill profile-pill-active">
                     Активне
                 </span>
@@ -45,7 +53,7 @@
                 Відновлення
             </span>
 
-            {% if user.wants_recovery %}
+            {% if profile.wants_recovery %}
                 <span class="profile-pill profile-pill-active">
                     Активне
                 </span>
@@ -61,7 +69,7 @@
                 Онбординг
             </span>
 
-            {% if user.onboarding_completed %}
+            {% if profile.onboarding_completed %}
                 <span class="profile-pill profile-pill-active">
                     Завершено
                 </span>

@@ -1,15 +1,15 @@
 .profile-training-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 12px;
+    gap: 10px 12px;
 }
 
 .profile-training-item {
     display: flex;
     flex-direction: column;
-    gap: 7px;
+    gap: 5px;
     min-width: 0;
-    padding: 14px;
+    padding: 11px 12px;
     border: 1px solid var(--profile-border);
     border-radius: var(--profile-radius-md);
     background: var(--profile-surface-soft);
@@ -32,7 +32,7 @@
 }
 
 .profile-training-value {
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 500;
     color: var(--profile-text);
 }
@@ -42,11 +42,11 @@
     align-items: center;
     width: fit-content;
     max-width: 100%;
-    padding: 5px 10px;
+    padding: 4px 8px;
     border: 1px solid var(--profile-border);
     border-radius: var(--profile-radius-pill);
     background: var(--profile-surface-soft);
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 500;
     color: var(--profile-text-soft);
     white-space: nowrap;

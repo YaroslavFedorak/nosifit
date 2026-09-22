@@ -5,6 +5,7 @@
 @import "./widgets/training.css";
 @import "./widgets/progress.css";
 @import "./widgets/goals.css";
+@import "./widgets/activity.css";
 @import "./widgets/actions.css";
 @import "./modals/base.css";
 @import "./modals/forms.css";

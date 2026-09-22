@@ -23,43 +23,43 @@
     {% set ns.filled = ns.filled + 1 %}
 {% endif %}
 
-{% if user.age %}
+{% if profile.age is not none %}
     {% set ns.filled = ns.filled + 1 %}
 {% endif %}
 
-{% if user.gender %}
+{% if profile.gender %}
     {% set ns.filled = ns.filled + 1 %}
 {% endif %}
 
-{% if user.height %}
+{% if profile.height is not none %}
     {% set ns.filled = ns.filled + 1 %}
 {% endif %}
 
-{% if user.weight %}
+{% if profile.weight is not none %}
     {% set ns.filled = ns.filled + 1 %}
 {% endif %}
 
-{% if user.activity_level %}
+{% if profile.goal %}
     {% set ns.filled = ns.filled + 1 %}
 {% endif %}
 
-{% if user.experience_level %}
+{% if profile.activity %}
     {% set ns.filled = ns.filled + 1 %}
 {% endif %}
 
-{% if user.goal %}
+{% if profile.experience %}
     {% set ns.filled = ns.filled + 1 %}
 {% endif %}
 
-{% if user.workouts_per_week %}
+{% if profile.workouts_per_week is not none %}
     {% set ns.filled = ns.filled + 1 %}
 {% endif %}
 
-{% if user.training_location %}
+{% if profile.training_location %}
     {% set ns.filled = ns.filled + 1 %}
 {% endif %}
 
-{% if user.onboarding_completed %}
+{% if profile.onboarding_completed %}
     {% set ns.filled = ns.filled + 1 %}
 {% endif %}
 
@@ -119,9 +119,15 @@
 
         <div class="profile-column">
 
-            {% include "app/profile/sections/progress.html" %}
+            <div class="profile-top-grid">
 
-            {% include "app/profile/sections/goals.html" %}
+                {% include "app/profile/sections/goals.html" %}
+
+                {% include "app/profile/sections/progress.html" %}
+
+            </div>
+
+            {% include "app/profile/sections/activity.html" %}
 
             {% include "app/profile/sections/actions.html" %}
 

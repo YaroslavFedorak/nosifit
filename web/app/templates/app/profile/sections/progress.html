@@ -54,7 +54,7 @@
 
             <div class="profile-progress-item">
                 <span
-                    class="profile-progress-dot {% if user.age and user.gender and user.height and user.weight %}profile-progress-dot-filled{% endif %}"
+                    class="profile-progress-dot {% if profile.age is not none and profile.gender and profile.height is not none and profile.weight is not none %}profile-progress-dot-filled{% endif %}"
                 ></span>
 
                 <span class="profile-progress-text">
@@ -64,7 +64,7 @@
 
             <div class="profile-progress-item">
                 <span
-                    class="profile-progress-dot {% if user.goal and user.activity_level %}profile-progress-dot-filled{% endif %}"
+                    class="profile-progress-dot {% if profile.goal and profile.activity and profile.experience and profile.workouts_per_week is not none %}profile-progress-dot-filled{% endif %}"
                 ></span>
 
                 <span class="profile-progress-text">
@@ -74,7 +74,7 @@
 
             <div class="profile-progress-item">
                 <span
-                    class="profile-progress-dot {% if user.training_location and user.onboarding_completed %}profile-progress-dot-filled{% endif %}"
+                    class="profile-progress-dot {% if profile.training_location and profile.onboarding_completed %}profile-progress-dot-filled{% endif %}"
                 ></span>
 
                 <span class="profile-progress-text">

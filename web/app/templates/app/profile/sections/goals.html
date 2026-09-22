@@ -3,11 +3,11 @@
     <div class="profile-card-header">
         <div>
             <h2 class="profile-card-title">
-                Цілі
+                Цілі та фокус
             </h2>
 
             <p class="profile-card-subtitle">
-                Основні параметри твоєї програми
+                Основні параметри твоєї тренувальної програми
             </p>
         </div>
     </div>
@@ -15,41 +15,142 @@
     <div class="profile-goals-grid">
 
         <div class="profile-goal-item">
-
-            <span class="profile-goal-label">
-                Фітнес-рівень
-            </span>
-
-            <span class="profile-goal-value">
-                {{ profile.fitness_level or "—" }}
-            </span>
-
-        </div>
-
-        <div class="profile-goal-item">
-
             <span class="profile-goal-label">
                 Основна ціль
             </span>
 
             <span class="profile-goal-value">
-                {{ profile.goal or user.goal or "—" }}
+                {% if profile.goal == "maintenance" %}
+                    Підтримка форми
+                {% elif profile.goal == "strength" %}
+                    Розвиток сили
+                {% elif profile.goal == "muscle_gain" %}
+                    Набір м'язів
+                {% elif profile.goal == "fat_loss" %}
+                    Зниження ваги
+                {% else %}
+                    —
+                {% endif %}
             </span>
-
         </div>
 
         <div class="profile-goal-item">
+            <span class="profile-goal-label">
+                Досвід
+            </span>
 
+            <span class="profile-goal-value">
+                {% if profile.experience == "beginner" %}
+                    Початківець
+                {% elif profile.experience == "intermediate" %}
+                    Середній
+                {% elif profile.experience == "experienced" %}
+                    Досвідчений
+                {% else %}
+                    —
+                {% endif %}
+            </span>
+        </div>
+
+        <div class="profile-goal-item">
             <span class="profile-goal-label">
                 Тренувань / тиждень
             </span>
 
             <span class="profile-goal-value">
-                {{ user.workouts_per_week or "—" }}
+                {% if profile.workouts_per_week is not none %}
+                    {{ profile.workouts_per_week }}
+                {% else %}
+                    —
+                {% endif %}
             </span>
-
         </div>
 
     </div>
+
+    {% if user.training_goals %}
+
+        <div class="profile-focus">
+
+            <div class="profile-focus-header">
+                <span class="profile-focus-title">
+                    Фокус тренувань
+                </span>
+
+                <span class="profile-focus-scale">
+                    0–10
+                </span>
+            </div>
+
+            <div class="profile-focus-list">
+
+                <div class="profile-focus-item">
+
+                    <div class="profile-focus-meta">
+                        <span class="profile-focus-label">
+                            Верхня частина
+                        </span>
+
+                        <span class="profile-focus-value">
+                            {{ user.training_goals.focus_upper }}/10
+                        </span>
+                    </div>
+
+                    <div class="profile-focus-track">
+                        <span
+                            class="profile-focus-fill"
+                            style="width: {{ user.training_goals.focus_upper * 10 }}%;"
+                        ></span>
+                    </div>
+
+                </div>
+
+                <div class="profile-focus-item">
+
+                    <div class="profile-focus-meta">
+                        <span class="profile-focus-label">
+                            Нижня частина
+                        </span>
+
+                        <span class="profile-focus-value">
+                            {{ user.training_goals.focus_lower }}/10
+                        </span>
+                    </div>
+
+                    <div class="profile-focus-track">
+                        <span
+                            class="profile-focus-fill"
+                            style="width: {{ user.training_goals.focus_lower * 10 }}%;"
+                        ></span>
+                    </div>
+
+                </div>
+
+                <div class="profile-focus-item">
+
+                    <div class="profile-focus-meta">
+                        <span class="profile-focus-label">
+                            Кор
+                        </span>
+
+                        <span class="profile-focus-value">
+                            {{ user.training_goals.focus_core }}/10
+                        </span>
+                    </div>
+
+                    <div class="profile-focus-track">
+                        <span
+                            class="profile-focus-fill"
+                            style="width: {{ user.training_goals.focus_core * 10 }}%;"
+                        ></span>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    {% endif %}
 
 </section>
