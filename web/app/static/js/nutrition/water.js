@@ -38,7 +38,7 @@ function applyWaterData(data) {
         Number(data.recommended ?? 0);
     updateWaterVisual();
 }
-async function loadWater() {
+export async function loadWater() {
     try {
         const data = await NutritionAPI.getWater();
         applyWaterData(data);
@@ -50,4 +50,3 @@ async function loadWater() {
 document.addEventListener("nutrition:water-updated", () => {
     void loadWater();
 });
-void loadWater();

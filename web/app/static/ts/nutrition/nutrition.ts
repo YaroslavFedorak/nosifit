@@ -48,6 +48,44 @@ import {
 } from "./recommendations.js";
 
 
+import {
+    loadWater,
+} from "./water.js";
+
+
+import {
+    loadWeight,
+} from "./weight.js";
+
+
+import {
+    ICONS,
+} from "../icons/index.js";
+
+
+function initNutritionIcons(): void {
+    const weightIcon =
+        document.querySelector(
+            '[data-icon="weight"]',
+        );
+
+    const waterIcon =
+        document.querySelector(
+            '[data-icon="glass_water"]',
+        );
+
+    if (weightIcon) {
+        weightIcon.innerHTML =
+            ICONS.weight;
+    }
+
+    if (waterIcon) {
+        waterIcon.innerHTML =
+            ICONS.glass_water;
+    }
+}
+
+
 function setTodayDate(): void {
     const element =
         document.getElementById(
@@ -65,9 +103,9 @@ function setTodayDate(): void {
         today.toLocaleDateString(
             "uk-UA",
             {
-                day: "2-digit",
-                month: "2-digit",
-                year: "numeric",
+                weekday: "long",
+                day: "numeric",
+                month: "long",
             },
         );
 }
@@ -94,7 +132,6 @@ async function loadNutritionDay(): Promise<void> {
                 "nutrition:heatmap-reload",
             ),
         );
-
     } catch (error) {
         console.error(
             "Failed to load nutrition data:",
@@ -105,6 +142,7 @@ async function loadNutritionDay(): Promise<void> {
 
 
 function initializeNutritionPage(): void {
+    initNutritionIcons();
     setTodayDate();
 
     setupNutritionHeatmapModals();
@@ -127,6 +165,8 @@ function initializeNutritionPage(): void {
 
     initializeNutritionHeatmap();
 
+    void loadWater();
+    void loadWeight();
     void loadNutritionDay();
 }
 

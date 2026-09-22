@@ -25,7 +25,7 @@ function renderWeight(data) {
     bmiElement.textContent =
         data.bmi.toFixed(1);
 }
-async function loadWeight() {
+export async function loadWeight() {
     if (!widget) {
         return;
     }
@@ -40,4 +40,3 @@ async function loadWeight() {
 document.addEventListener("nutrition:weight-updated", () => {
     void loadWeight();
 });
-void loadWeight();

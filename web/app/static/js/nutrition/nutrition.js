@@ -8,6 +8,21 @@ import { setupWeightModal, } from "./modals/weight.js";
 import { setupNutritionHeatmapModals, } from "./modals/heatmap.js";
 import { initializeNutritionHeatmap, } from "./heatmap.js";
 import { loadNutritionRecommendations, } from "./recommendations.js";
+import { loadWater, } from "./water.js";
+import { loadWeight, } from "./weight.js";
+import { ICONS, } from "../icons/index.js";
+function initNutritionIcons() {
+    const weightIcon = document.querySelector('[data-icon="weight"]');
+    const waterIcon = document.querySelector('[data-icon="glass_water"]');
+    if (weightIcon) {
+        weightIcon.innerHTML =
+            ICONS.weight;
+    }
+    if (waterIcon) {
+        waterIcon.innerHTML =
+            ICONS.glass_water;
+    }
+}
 function setTodayDate() {
     const element = document.getElementById("current-date");
     if (!element) {
@@ -16,9 +31,9 @@ function setTodayDate() {
     const today = new Date();
     element.textContent =
         today.toLocaleDateString("uk-UA", {
-            day: "2-digit",
-            month: "2-digit",
-            year: "numeric",
+            weekday: "long",
+            day: "numeric",
+            month: "long",
         });
 }
 async function loadNutritionDay() {
@@ -34,6 +49,7 @@ async function loadNutritionDay() {
     }
 }
 function initializeNutritionPage() {
+    initNutritionIcons();
     setTodayDate();
     setupNutritionHeatmapModals();
     setupMealModals(loadNutritionDay);
@@ -41,6 +57,8 @@ function initializeNutritionPage() {
     setupWaterModal(loadNutritionDay);
     setupWeightModal(loadNutritionDay);
     initializeNutritionHeatmap();
+    void loadWater();
+    void loadWeight();
     void loadNutritionDay();
 }
 document.addEventListener("DOMContentLoaded", initializeNutritionPage);

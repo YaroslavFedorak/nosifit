@@ -12,10 +12,12 @@ const widget =
         "weight-widget",
     );
 
+
 const currentElement =
     document.getElementById(
         "weight-current",
     );
+
 
 const bmiElement =
     document.getElementById(
@@ -57,7 +59,7 @@ function renderWeight(
 }
 
 
-async function loadWeight(): Promise<void> {
+export async function loadWeight(): Promise<void> {
     if (!widget) {
         return;
     }
@@ -66,8 +68,9 @@ async function loadWeight(): Promise<void> {
         const data =
             await NutritionAPI.getWeight();
 
-        renderWeight(data);
-
+        renderWeight(
+            data,
+        );
     } catch (error) {
         console.error(
             "Failed to load weight:",
@@ -83,6 +86,3 @@ document.addEventListener(
         void loadWeight();
     },
 );
-
-
-void loadWeight();

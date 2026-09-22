@@ -110,7 +110,7 @@ function applyWaterData(
 }
 
 
-async function loadWater(): Promise<void> {
+export async function loadWater(): Promise<void> {
     try {
         const data =
             await NutritionAPI.getWater();
@@ -132,6 +132,3 @@ document.addEventListener(
         void loadWater();
     },
 );
-
-
-void loadWater();
