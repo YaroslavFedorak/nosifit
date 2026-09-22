@@ -84,15 +84,14 @@ function renderMonths(days) {
     }
     months.innerHTML =
         "";
-    let lastMonth = -1;
+    const visibleMonths = new Set();
     days.forEach((day) => {
         const date = new Date(`${day.date}T12:00:00`);
         const month = date.getMonth();
-        if (month === lastMonth) {
+        if (visibleMonths.has(month)) {
             return;
         }
-        lastMonth =
-            month;
+        visibleMonths.add(month);
         const element = document.createElement("span");
         element.textContent =
             MONTHS[month];

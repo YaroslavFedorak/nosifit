@@ -44,10 +44,16 @@
     justify-content: center;
     width: 28px;
     height: 28px;
-    font-size: 14px;
+    color: var(--nutrition-accent);
     background: var(--nutrition-surface-soft);
     border: 1px solid var(--nutrition-border);
     border-radius: 8px;
+}
+
+.quick-stat-icon svg {
+    width: 15px;
+    height: 15px;
+    stroke: currentColor;
 }
 
 .quick-stat-value {

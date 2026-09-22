@@ -14,13 +14,6 @@
     ) }}"
 />
 
-<link
-    rel="stylesheet"
-    href="{{ url_for(
-        'static',
-        filename='css/pages/nutrition/modals_nutr.css'
-    ) }}"
-/>
 
 {% endblock %}
 
@@ -213,7 +206,7 @@
                         </div>
 
                         <div class="quick-stat-icon">
-                            <i data-icon="scale"></i>
+                            <i data-icon="weight"></i>
                         </div>
 
                     </div>
@@ -314,7 +307,7 @@
                         </div>
 
                         <div class="quick-stat-icon">
-                            <i data-icon="glass-water"></i>
+                            <i data-icon="glass_water"></i>
                         </div>
 
                     </div>
@@ -479,22 +472,6 @@
 
 {% include "app/nutrition/modals/nutrition_day_details.html" %}
 
-
-<script
-    type="module"
-    src="{{ url_for(
-        'static',
-        filename='js/nutrition/water.js'
-    ) }}"
-></script>
-
-<script
-    type="module"
-    src="{{ url_for(
-        'static',
-        filename='js/nutrition/weight.js'
-    ) }}"
-></script>
 
 <script
     type="module"

@@ -3,14 +3,13 @@
     flex-direction: column;
     gap: 14px;
     position: relative;
+    overflow: visible;
 }
-
 
 .heatmap-widget.is-loading {
     opacity: 0.65;
     pointer-events: none;
 }
-
 
 .heatmap-widget-header {
     display: flex;
@@ -19,13 +18,11 @@
     gap: 16px;
 }
 
-
 .heatmap-controls {
     display: flex;
     align-items: center;
     gap: 6px;
 }
-
 
 .heatmap-select {
     min-width: 78px;
@@ -39,11 +36,9 @@
     outline: none;
 }
 
-
 .heatmap-select:focus {
     border-color: var(--nutrition-accent);
 }
-
 
 .heatmap-nav-button,
 .heatmap-calendar-button {
@@ -61,12 +56,10 @@
         transform var(--nutrition-transition-fast);
 }
 
-
 .heatmap-nav-button {
     width: 30px;
     padding: 0;
 }
-
 
 .heatmap-nav-button:hover,
 .heatmap-calendar-button:hover {
@@ -75,36 +68,34 @@
     transform: translateY(-1px);
 }
 
-
 .heatmap-calendar-button {
     margin-left: 4px;
 }
-
 
 .nutrition-heatmap-content {
     display: flex;
     flex-direction: column;
     gap: 8px;
     min-width: 0;
+    overflow: visible;
 }
-
 
 .heatmap-months {
     display: grid;
     grid-template-columns: repeat(12, 1fr);
+    width: 100%;
+    min-height: 12px;
     font-size: 10px;
     line-height: 1;
     color: var(--nf-text-muted);
-    padding-left: 2px;
-    min-height: 12px;
 }
-
 
 .heatmap-months span {
-    text-align: left;
-    padding-left: 2px;
+    display: block;
+    min-width: 0;
+    text-align: center;
+    white-space: nowrap;
 }
-
 
 .heatmap-grid {
     display: grid;
@@ -115,8 +106,8 @@
     width: 100%;
     justify-content: center;
     align-items: start;
+    overflow: visible;
 }
-
 
 .nutrition-heatmap-cell {
     appearance: none;
@@ -133,61 +124,50 @@
         filter var(--nutrition-transition-fast);
 }
 
-
 .nutrition-heatmap-cell-empty {
     cursor: default;
     pointer-events: none;
     opacity: 0;
 }
 
-
 .nutrition-heatmap-cell[data-level="0"] {
     background: #1a1f27;
 }
-
 
 .nutrition-heatmap-cell[data-level="1"] {
     background: rgba(155, 93, 229, 0.25);
 }
 
-
 .nutrition-heatmap-cell[data-level="2"] {
     background: rgba(155, 93, 229, 0.4);
 }
-
 
 .nutrition-heatmap-cell[data-level="3"] {
     background: rgba(155, 93, 229, 0.58);
 }
 
-
 .nutrition-heatmap-cell[data-level="4"] {
     background: #9b5de5;
 }
-
 
 .nutrition-heatmap-cell[data-level="5"] {
     background: #b777f0;
 }
 
-
 .nutrition-heatmap-cell[data-level="6"] {
     background: #d19aff;
 }
-
 
 .nutrition-heatmap-cell.today {
     outline: 2px solid var(--nutrition-accent-soft);
     outline-offset: -2px;
 }
 
-
 .nutrition-heatmap-cell:hover {
     transform: scale(1.25);
     filter: brightness(1.12);
     z-index: 5;
 }
-
 
 .nutrition-heatmap-tooltip {
     position: absolute;
@@ -216,23 +196,19 @@
     z-index: 20;
 }
 
-
 .nutrition-heatmap-tooltip strong {
     font-size: 10px;
     font-weight: 600;
 }
 
-
 .nutrition-heatmap-tooltip span {
     color: var(--nutrition-text-muted);
 }
-
 
 .nutrition-heatmap-cell:hover .nutrition-heatmap-tooltip {
     opacity: 1;
     visibility: visible;
 }
-
 
 .heatmap-legend {
     display: flex;
@@ -243,48 +219,39 @@
     color: var(--nf-text-muted);
 }
 
-
 .legend-box {
     width: 12px;
     height: 12px;
     border-radius: 3px;
 }
 
-
 .legend-box.l0 {
     background: #1a1f27;
 }
-
 
 .legend-box.l1 {
     background: rgba(155, 93, 229, 0.25);
 }
 
-
 .legend-box.l2 {
     background: rgba(155, 93, 229, 0.4);
 }
-
 
 .legend-box.l3 {
     background: rgba(155, 93, 229, 0.58);
 }
 
-
 .legend-box.l4 {
     background: #9b5de5;
 }
-
 
 .legend-box.l5 {
     background: #b777f0;
 }
 
-
 .legend-box.l6 {
     background: #d19aff;
 }
-
 
 @media (max-width: 1000px) {
     .heatmap-widget-header {
@@ -302,16 +269,12 @@
         width: max-content;
     }
 
-    .nutrition-heatmap-content {
-        overflow-x: auto;
-    }
-
     .heatmap-months {
         min-width: 830px;
         grid-template-columns: repeat(12, 1fr);
+        width: 830px;
     }
 }
-
 
 @media (max-width: 600px) {
     .heatmap-controls {

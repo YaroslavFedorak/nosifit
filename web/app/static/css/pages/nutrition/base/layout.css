@@ -9,7 +9,7 @@
 
 .nutrition-main-grid {
     display: grid;
-    grid-template-columns: 60% 40%;
+    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
     gap: 24px;
     align-items: start;
 }
@@ -46,6 +46,10 @@
 .nutrition-page .cmp-card:hover {
     background: var(--nutrition-surface-hover);
     border-color: var(--nutrition-border-soft);
+}
+
+.nutrition-page .cmp-card.heatmap-widget {
+    overflow: visible;
 }
 
 @media (max-width: 1400px) {

@@ -2,6 +2,7 @@ import {
     NutritionAPI,
 } from "./api.js";
 
+
 import type {
     NutritionHeatmapDay,
 } from "./types.js";
@@ -25,6 +26,7 @@ const MONTHS = [
 
 let currentYear =
     new Date().getFullYear();
+
 
 let currentDays: NutritionHeatmapDay[] = [];
 
@@ -188,8 +190,8 @@ function renderMonths(
     months.innerHTML =
         "";
 
-    let lastMonth =
-        -1;
+    const visibleMonths =
+        new Set<number>();
 
     days.forEach(
         (day) => {
@@ -201,12 +203,11 @@ function renderMonths(
             const month =
                 date.getMonth();
 
-            if (month === lastMonth) {
+            if (visibleMonths.has(month)) {
                 return;
             }
 
-            lastMonth =
-                month;
+            visibleMonths.add(month);
 
             const element =
                 document.createElement(
@@ -332,13 +333,11 @@ async function loadHeatmap(
         );
 
         updateYearSelect();
-
     } catch (error) {
         console.error(
             "Failed to load nutrition heatmap:",
             error,
         );
-
     } finally {
         widget.classList.remove(
             "is-loading",
