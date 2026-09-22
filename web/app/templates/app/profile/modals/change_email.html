@@ -1,0 +1,116 @@
+<div
+    class="profile-modal-backdrop"
+    id="modal-change-email"
+    aria-hidden="true"
+>
+    <div
+        class="profile-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="change-email-title"
+    >
+
+        <div class="profile-modal-header">
+
+            <h2
+                class="profile-modal-title"
+                id="change-email-title"
+            >
+                Змінити email
+            </h2>
+
+            <button
+                type="button"
+                class="profile-modal-close"
+                data-modal-close
+                aria-label="Закрити"
+            >
+                &times;
+            </button>
+
+        </div>
+
+        <form
+            method="post"
+            action="{{ url_for('profile_update.change_email') }}"
+        >
+
+            <div class="profile-modal-body">
+
+                <div class="profile-field">
+
+                    <label
+                        class="profile-field-label"
+                        for="new-email"
+                    >
+                        Новий email
+                    </label>
+
+                    <input
+                        class="profile-input"
+                        id="new-email"
+                        type="email"
+                        name="new_email"
+                        autocomplete="email"
+                        required
+                    >
+
+                </div>
+
+                <div class="profile-field">
+
+                    <label
+                        class="profile-field-label"
+                        for="email-password"
+                    >
+                        Поточний пароль
+                    </label>
+
+                    <div class="profile-password-wrapper">
+
+                        <input
+                            class="profile-input profile-password-input"
+                            id="email-password"
+                            type="password"
+                            name="password"
+                            autocomplete="current-password"
+                            required
+                        >
+
+                        <button
+                            type="button"
+                            class="profile-password-toggle"
+                            data-password-toggle
+                        >
+                            Показати
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="profile-modal-footer">
+
+                <button
+                    type="button"
+                    class="profile-btn profile-btn-ghost"
+                    data-modal-close
+                >
+                    Скасувати
+                </button>
+
+                <button
+                    type="submit"
+                    class="profile-btn profile-btn-primary"
+                >
+                    Зберегти
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+</div>

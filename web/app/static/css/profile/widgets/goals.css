@@ -1,0 +1,49 @@
+.profile-goals-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.profile-goal-item {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    padding: 14px;
+    border: 1px solid var(--profile-border);
+    border-radius: var(--profile-radius-md);
+    background: var(--profile-surface-soft);
+    transition:
+        background-color var(--profile-transition-fast),
+        border-color var(--profile-transition-fast),
+        transform var(--profile-transition-fast);
+}
+
+.profile-goal-item:hover {
+    background: var(--profile-surface-hover);
+    border-color: var(--profile-border-soft);
+    transform: translateY(-1px);
+}
+
+.profile-goal-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--profile-text-muted);
+}
+
+.profile-goal-value {
+    margin-top: 7px;
+    overflow: hidden;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.4;
+    color: var(--profile-text);
+    text-overflow: ellipsis;
+}
+
+@media (max-width: 760px) {
+    .profile-goals-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}

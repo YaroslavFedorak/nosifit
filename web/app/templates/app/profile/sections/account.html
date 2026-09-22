@@ -1,0 +1,89 @@
+<section class="profile-card">
+
+    <div class="profile-card-header">
+        <div>
+            <h2 class="profile-card-title">
+                Обліковий запис
+            </h2>
+
+            <p class="profile-card-subtitle">
+                Основна інформація про акаунт
+            </p>
+        </div>
+    </div>
+
+    <div class="profile-account-content">
+
+        <div class="profile-data-row">
+            <span class="profile-data-label">
+                Ім'я користувача
+            </span>
+
+            <span class="profile-data-value">
+                {{ user.username or "Не вказано" }}
+            </span>
+        </div>
+
+        <div class="profile-data-row">
+            <span class="profile-data-label">
+                Email
+            </span>
+
+            <span class="profile-data-value">
+                {{ user.email or "Не вказано" }}
+            </span>
+        </div>
+
+        <div class="profile-data-grid">
+
+            <div class="profile-data-row">
+                <span class="profile-data-label">
+                    Реєстрація
+                </span>
+
+                <span class="profile-data-value">
+                    {{ user.created_at.strftime("%d.%m.%Y") if user.created_at else "—" }}
+                </span>
+            </div>
+
+            <div class="profile-data-row">
+                <span class="profile-data-label">
+                    Оновлено
+                </span>
+
+                <span class="profile-data-value">
+                    {{ user.updated_at.strftime("%d.%m.%Y") if user.updated_at else "—" }}
+                </span>
+            </div>
+
+            <div class="profile-data-row">
+                <span class="profile-data-label">
+                    План
+                </span>
+
+                {% if user.is_premium %}
+                    <span class="profile-status profile-status-accent">
+                        Premium
+                    </span>
+                {% else %}
+                    <span class="profile-status">
+                        Standard
+                    </span>
+                {% endif %}
+            </div>
+
+            <div class="profile-data-row">
+                <span class="profile-data-label">
+                    Безпека
+                </span>
+
+                <span class="profile-status profile-status-success">
+                    Активна
+                </span>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>

@@ -1,0 +1,89 @@
+<section class="profile-card">
+
+    <div
+        class="profile-card-header profile-progress-header"
+    >
+        <div>
+            <h2 class="profile-card-title">
+                Заповнення профілю
+            </h2>
+
+            <p class="profile-card-subtitle">
+                Наскільки повними є твої дані
+            </p>
+        </div>
+
+        <span class="profile-progress-percentage">
+            {{ completion }}%
+        </span>
+    </div>
+
+    <div
+        class="profile-progress-content"
+        data-profile-completion="{{ completion }}"
+    >
+
+        <div
+            class="profile-progress-circle"
+            data-progress-circle
+        >
+            <div class="profile-progress-inner">
+
+                <span class="profile-progress-value">
+                    {{ completion }}%
+                </span>
+
+                <span class="profile-progress-label">
+                    профіль
+                </span>
+
+            </div>
+        </div>
+
+        <div class="profile-progress-list">
+
+            <div class="profile-progress-item">
+                <span
+                    class="profile-progress-dot {% if user.username and user.email %}profile-progress-dot-filled{% endif %}"
+                ></span>
+
+                <span class="profile-progress-text">
+                    Основна інформація
+                </span>
+            </div>
+
+            <div class="profile-progress-item">
+                <span
+                    class="profile-progress-dot {% if user.age and user.gender and user.height and user.weight %}profile-progress-dot-filled{% endif %}"
+                ></span>
+
+                <span class="profile-progress-text">
+                    Параметри тіла
+                </span>
+            </div>
+
+            <div class="profile-progress-item">
+                <span
+                    class="profile-progress-dot {% if user.goal and user.activity_level %}profile-progress-dot-filled{% endif %}"
+                ></span>
+
+                <span class="profile-progress-text">
+                    Цілі та активність
+                </span>
+            </div>
+
+            <div class="profile-progress-item">
+                <span
+                    class="profile-progress-dot {% if user.training_location and user.onboarding_completed %}profile-progress-dot-filled{% endif %}"
+                ></span>
+
+                <span class="profile-progress-text">
+                    Тренувальний профіль
+                </span>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>

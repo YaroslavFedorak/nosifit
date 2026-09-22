@@ -1,0 +1,502 @@
+<div
+    class="profile-modal-backdrop"
+    id="modal-edit-profile"
+    aria-hidden="true"
+>
+    <div
+        class="profile-modal profile-modal-wide"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="edit-profile-title"
+    >
+
+        <div class="profile-modal-header">
+
+            <h2
+                class="profile-modal-title"
+                id="edit-profile-title"
+            >
+                Редагувати профіль
+            </h2>
+
+            <button
+                type="button"
+                class="profile-modal-close"
+                data-modal-close
+                aria-label="Закрити"
+            >
+                &times;
+            </button>
+
+        </div>
+
+        <form
+            method="post"
+            action="{{ url_for('profile_update.update_full') }}"
+        >
+
+            <div class="profile-modal-body">
+
+                <h3 class="profile-section-title">
+                    Основна інформація
+                </h3>
+
+                <div class="profile-modal-grid">
+
+                    <div class="profile-field">
+
+                        <label
+                            class="profile-field-label"
+                            for="edit-username"
+                        >
+                            Ім'я користувача
+                        </label>
+
+                        <input
+                            class="profile-input"
+                            id="edit-username"
+                            type="text"
+                            name="username"
+                            value="{{ user.username or '' }}"
+                            autocomplete="username"
+                        >
+
+                    </div>
+
+                    <div class="profile-field">
+
+                        <label
+                            class="profile-field-label"
+                            for="edit-email"
+                        >
+                            Email
+                        </label>
+
+                        <input
+                            class="profile-input"
+                            id="edit-email"
+                            type="email"
+                            name="email"
+                            value="{{ user.email or '' }}"
+                            autocomplete="email"
+                        >
+
+                    </div>
+
+                </div>
+
+                <h3 class="profile-section-title">
+                    Параметри тіла
+                </h3>
+
+                <div class="profile-modal-grid">
+
+                    <div class="profile-field">
+
+                        <label
+                            class="profile-field-label"
+                            for="edit-age"
+                        >
+                            Вік
+                        </label>
+
+                        <input
+                            class="profile-input"
+                            id="edit-age"
+                            type="number"
+                            name="age"
+                            value="{{ user.age if user.age is not none else '' }}"
+                            min="1"
+                            max="120"
+                        >
+
+                    </div>
+
+                    <div class="profile-field">
+
+                        <label
+                            class="profile-field-label"
+                            for="edit-gender"
+                        >
+                            Стать
+                        </label>
+
+                        <select
+                            class="profile-input"
+                            id="edit-gender"
+                            name="gender"
+                        >
+                            <option value="">
+                                Не вказано
+                            </option>
+
+                            <option
+                                value="male"
+                                {% if user.gender == "male" %}selected{% endif %}
+                            >
+                                Чоловіча
+                            </option>
+
+                            <option
+                                value="female"
+                                {% if user.gender == "female" %}selected{% endif %}
+                            >
+                                Жіноча
+                            </option>
+                        </select>
+
+                    </div>
+
+                    <div class="profile-field">
+
+                        <label
+                            class="profile-field-label"
+                            for="edit-height"
+                        >
+                            Зріст
+                        </label>
+
+                        <input
+                            class="profile-input"
+                            id="edit-height"
+                            type="number"
+                            name="height"
+                            value="{{ user.height if user.height is not none else '' }}"
+                            min="50"
+                            max="250"
+                        >
+
+                    </div>
+
+                    <div class="profile-field">
+
+                        <label
+                            class="profile-field-label"
+                            for="edit-weight"
+                        >
+                            Вага
+                        </label>
+
+                        <input
+                            class="profile-input"
+                            id="edit-weight"
+                            type="number"
+                            name="weight"
+                            value="{{ user.weight if user.weight is not none else '' }}"
+                            min="20"
+                            max="400"
+                            step="0.1"
+                        >
+
+                    </div>
+
+                </div>
+
+                <h3 class="profile-section-title">
+                    Тренування
+                </h3>
+
+                <div class="profile-modal-grid">
+
+                    <div class="profile-field">
+
+                        <label
+                            class="profile-field-label"
+                            for="edit-goal"
+                        >
+                            Ціль
+                        </label>
+
+                        <select
+                            class="profile-input"
+                            id="edit-goal"
+                            name="goal"
+                        >
+                            <option value="">
+                                Не вказано
+                            </option>
+
+                            <option
+                                value="maintenance"
+                                {% if user.goal == "maintenance" %}selected{% endif %}
+                            >
+                                Підтримка форми
+                            </option>
+
+                            <option
+                                value="strength"
+                                {% if user.goal == "strength" %}selected{% endif %}
+                            >
+                                Сила
+                            </option>
+
+                            <option
+                                value="muscle_gain"
+                                {% if user.goal == "muscle_gain" %}selected{% endif %}
+                            >
+                                Набір м'язів
+                            </option>
+
+                            <option
+                                value="fat_loss"
+                                {% if user.goal == "fat_loss" %}selected{% endif %}
+                            >
+                                Зниження ваги
+                            </option>
+                        </select>
+
+                    </div>
+
+                    <div class="profile-field">
+
+                        <label
+                            class="profile-field-label"
+                            for="edit-activity"
+                        >
+                            Активність
+                        </label>
+
+                        <select
+                            class="profile-input"
+                            id="edit-activity"
+                            name="activity_level"
+                        >
+                            <option value="">
+                                Не вказано
+                            </option>
+
+                            <option
+                                value="sedentary"
+                                {% if user.activity_level == "sedentary" %}selected{% endif %}
+                            >
+                                Низька
+                            </option>
+
+                            <option
+                                value="light"
+                                {% if user.activity_level == "light" %}selected{% endif %}
+                            >
+                                Легка
+                            </option>
+
+                            <option
+                                value="moderate"
+                                {% if user.activity_level == "moderate" %}selected{% endif %}
+                            >
+                                Помірна
+                            </option>
+
+                            <option
+                                value="active"
+                                {% if user.activity_level == "active" %}selected{% endif %}
+                            >
+                                Висока
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <div class="profile-field">
+
+                        <label
+                            class="profile-field-label"
+                            for="edit-experience"
+                        >
+                            Досвід
+                        </label>
+
+                        <select
+                            class="profile-input"
+                            id="edit-experience"
+                            name="experience_level"
+                        >
+                            <option value="">
+                                Не вказано
+                            </option>
+
+                            <option
+                                value="beginner"
+                                {% if user.experience_level == "beginner" %}selected{% endif %}
+                            >
+                                Початківець
+                            </option>
+
+                            <option
+                                value="intermediate"
+                                {% if user.experience_level == "intermediate" %}selected{% endif %}
+                            >
+                                Середній
+                            </option>
+
+                            <option
+                                value="experienced"
+                                {% if user.experience_level == "experienced" %}selected{% endif %}
+                            >
+                                Досвідчений
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <div class="profile-field">
+
+                        <label
+                            class="profile-field-label"
+                            for="edit-workouts"
+                        >
+                            Тренувань / тиждень
+                        </label>
+
+                        <input
+                            class="profile-input"
+                            id="edit-workouts"
+                            type="number"
+                            name="workouts_per_week"
+                            value="{{ user.workouts_per_week if user.workouts_per_week is not none else '' }}"
+                            min="1"
+                            max="14"
+                        >
+
+                    </div>
+
+                    <div class="profile-field">
+
+                        <label
+                            class="profile-field-label"
+                            for="edit-location"
+                        >
+                            Локація
+                        </label>
+
+                        <select
+                            class="profile-input"
+                            id="edit-location"
+                            name="training_location"
+                        >
+                            <option value="">
+                                Не вказано
+                            </option>
+
+                            <option
+                                value="gym"
+                                {% if user.training_location == "gym" %}selected{% endif %}
+                            >
+                                Зал
+                            </option>
+
+                            <option
+                                value="home"
+                                {% if user.training_location == "home" %}selected{% endif %}
+                            >
+                                Дім
+                            </option>
+
+                            <option
+                                value="outdoor"
+                                {% if user.training_location == "outdoor" %}selected{% endif %}
+                            >
+                                Вулиця
+                            </option>
+                        </select>
+
+                    </div>
+
+                </div>
+
+                <h3 class="profile-section-title">
+                    Додаткові можливості
+                </h3>
+
+                <div class="profile-modal-grid">
+
+                    <div class="profile-field">
+
+                        <label
+                            class="profile-field-label"
+                            for="edit-nutrition"
+                        >
+                            Харчування
+                        </label>
+
+                        <select
+                            class="profile-input"
+                            id="edit-nutrition"
+                            name="wants_nutrition"
+                        >
+                            <option
+                                value="1"
+                                {% if user.wants_nutrition %}selected{% endif %}
+                            >
+                                Увімкнено
+                            </option>
+
+                            <option
+                                value="0"
+                                {% if not user.wants_nutrition %}selected{% endif %}
+                            >
+                                Вимкнено
+                            </option>
+                        </select>
+
+                    </div>
+
+                    <div class="profile-field">
+
+                        <label
+                            class="profile-field-label"
+                            for="edit-recovery"
+                        >
+                            Відновлення
+                        </label>
+
+                        <select
+                            class="profile-input"
+                            id="edit-recovery"
+                            name="wants_recovery"
+                        >
+                            <option
+                                value="1"
+                                {% if user.wants_recovery %}selected{% endif %}
+                            >
+                                Увімкнено
+                            </option>
+
+                            <option
+                                value="0"
+                                {% if not user.wants_recovery %}selected{% endif %}
+                            >
+                                Вимкнено
+                            </option>
+                        </select>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="profile-modal-footer">
+
+                <button
+                    type="button"
+                    class="profile-btn profile-btn-ghost"
+                    data-modal-close
+                >
+                    Скасувати
+                </button>
+
+                <button
+                    type="submit"
+                    class="profile-btn profile-btn-primary"
+                >
+                    Зберегти зміни
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+</div>

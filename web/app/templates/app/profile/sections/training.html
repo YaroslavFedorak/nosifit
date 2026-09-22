@@ -1,0 +1,77 @@
+<section class="profile-card">
+
+    <div class="profile-card-header">
+        <div>
+            <h2 class="profile-card-title">
+                Тренувальний профіль
+            </h2>
+
+            <p class="profile-card-subtitle">
+                Налаштування та статуси персоналізації
+            </p>
+        </div>
+    </div>
+
+    <div class="profile-training-grid">
+
+        <div class="profile-training-item">
+            <span class="profile-training-label">
+                Локація
+            </span>
+
+            <span class="profile-training-value">
+                {{ user.training_location or "—" }}
+            </span>
+        </div>
+
+        <div class="profile-training-item">
+            <span class="profile-training-label">
+                Харчування
+            </span>
+
+            {% if user.wants_nutrition %}
+                <span class="profile-pill profile-pill-active">
+                    Активне
+                </span>
+            {% else %}
+                <span class="profile-pill">
+                    Вимкнено
+                </span>
+            {% endif %}
+        </div>
+
+        <div class="profile-training-item">
+            <span class="profile-training-label">
+                Відновлення
+            </span>
+
+            {% if user.wants_recovery %}
+                <span class="profile-pill profile-pill-active">
+                    Активне
+                </span>
+            {% else %}
+                <span class="profile-pill">
+                    Вимкнено
+                </span>
+            {% endif %}
+        </div>
+
+        <div class="profile-training-item">
+            <span class="profile-training-label">
+                Онбординг
+            </span>
+
+            {% if user.onboarding_completed %}
+                <span class="profile-pill profile-pill-active">
+                    Завершено
+                </span>
+            {% else %}
+                <span class="profile-pill">
+                    Не завершено
+                </span>
+            {% endif %}
+        </div>
+
+    </div>
+
+</section>

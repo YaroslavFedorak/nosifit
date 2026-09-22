@@ -1,0 +1,87 @@
+<section class="profile-card">
+
+    <div class="profile-card-header">
+        <div>
+            <h2 class="profile-card-title">
+                Параметри тіла
+            </h2>
+
+            <p class="profile-card-subtitle">
+                Дані, які використовуються для персоналізації
+            </p>
+        </div>
+    </div>
+
+    <div class="profile-info-grid">
+
+        <div class="profile-info-item">
+            <span class="profile-info-label">
+                Вік
+            </span>
+
+            <span class="profile-info-value">
+                {{ user.age if user.age is not none else "—" }}
+            </span>
+        </div>
+
+        <div class="profile-info-item">
+            <span class="profile-info-label">
+                Стать
+            </span>
+
+            <span class="profile-info-value">
+                {{ user.gender or "—" }}
+            </span>
+        </div>
+
+        <div class="profile-info-item">
+            <span class="profile-info-label">
+                Зріст
+            </span>
+
+            <span class="profile-info-value">
+                {% if user.height %}
+                    {{ user.height }} см
+                {% else %}
+                    —
+                {% endif %}
+            </span>
+        </div>
+
+        <div class="profile-info-item">
+            <span class="profile-info-label">
+                Вага
+            </span>
+
+            <span class="profile-info-value">
+                {% if user.weight %}
+                    {{ user.weight }} кг
+                {% else %}
+                    —
+                {% endif %}
+            </span>
+        </div>
+
+        <div class="profile-info-item">
+            <span class="profile-info-label">
+                Активність
+            </span>
+
+            <span class="profile-info-value">
+                {{ user.activity_level or "—" }}
+            </span>
+        </div>
+
+        <div class="profile-info-item">
+            <span class="profile-info-label">
+                Досвід
+            </span>
+
+            <span class="profile-info-value">
+                {{ user.experience_level or "—" }}
+            </span>
+        </div>
+
+    </div>
+
+</section>

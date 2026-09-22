@@ -1,0 +1,201 @@
+<div
+    class="profile-modal-backdrop"
+    id="modal-delete-account"
+    aria-hidden="true"
+    data-delete-account-modal
+>
+    <div
+        class="profile-modal profile-modal-danger"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="delete-account-title"
+    >
+
+        <div class="profile-modal-header">
+
+            <h2
+                class="profile-modal-title"
+                id="delete-account-title"
+            >
+                Видалити акаунт
+            </h2>
+
+            <button
+                type="button"
+                class="profile-modal-close"
+                data-modal-close
+                aria-label="Закрити"
+            >
+                &times;
+            </button>
+
+        </div>
+
+        <div class="profile-modal-body">
+
+            <div
+                class="delete-step active"
+                data-delete-step="1"
+            >
+
+                <div class="profile-danger-box">
+                    Видалення акаунта є незворотною дією.
+                    Усі пов'язані з акаунтом дані буде видалено.
+                </div>
+
+                <p class="profile-hint">
+                    Для продовження ми надішлемо код підтвердження
+                    на адресу електронної пошти акаунта.
+                </p>
+
+                <button
+                    type="button"
+                    class="profile-btn profile-btn-danger profile-delete-action"
+                    id="delete-send-code"
+                >
+                    Надіслати код
+                </button>
+
+            </div>
+
+            <div
+                class="delete-step"
+                data-delete-step="2"
+            >
+
+                <div class="profile-field">
+
+                    <label
+                        class="profile-field-label"
+                        for="delete-confirm-code"
+                    >
+                        Код підтвердження
+                    </label>
+
+                    <input
+                        class="profile-input"
+                        id="delete-confirm-code"
+                        type="text"
+                        inputmode="numeric"
+                        autocomplete="one-time-code"
+                        maxlength="6"
+                    >
+
+                </div>
+
+                <p class="profile-hint">
+                    Введи код, який було надіслано на твою пошту.
+                </p>
+
+                <button
+                    type="button"
+                    class="profile-btn profile-btn-danger profile-delete-action"
+                    id="delete-confirm-btn"
+                >
+                    Підтвердити код
+                </button>
+
+                <button
+                    type="button"
+                    class="profile-delete-back"
+                    data-delete-back="1"
+                >
+                    Повернутися назад
+                </button>
+
+            </div>
+
+            <div
+                class="delete-step"
+                data-delete-step="3"
+            >
+
+                <div class="profile-danger-box">
+                    Останній крок. Підтверди email і пароль,
+                    щоб остаточно видалити акаунт.
+                </div>
+
+                <div class="profile-field">
+
+                    <label
+                        class="profile-field-label"
+                        for="delete-final-email"
+                    >
+                        Email
+                    </label>
+
+                    <input
+                        class="profile-input"
+                        id="delete-final-email"
+                        type="email"
+                        autocomplete="email"
+                        required
+                    >
+
+                </div>
+
+                <div class="profile-field">
+
+                    <label
+                        class="profile-field-label"
+                        for="delete-final-password"
+                    >
+                        Пароль
+                    </label>
+
+                    <div class="profile-password-wrapper">
+
+                        <input
+                            class="profile-input profile-password-input"
+                            id="delete-final-password"
+                            type="password"
+                            autocomplete="current-password"
+                            required
+                        >
+
+                        <button
+                            type="button"
+                            class="profile-password-toggle"
+                            data-password-toggle
+                        >
+                            Показати
+                        </button>
+
+                    </div>
+
+                </div>
+
+                <button
+                    type="button"
+                    class="profile-btn profile-btn-danger profile-delete-action"
+                    id="delete-final-btn"
+                >
+                    Видалити акаунт
+                </button>
+
+                <button
+                    type="button"
+                    class="profile-delete-back"
+                    data-delete-back="2"
+                >
+                    Повернутися назад
+                </button>
+
+            </div>
+
+        </div>
+
+        <div class="profile-modal-footer">
+
+            <button
+                type="button"
+                class="profile-btn profile-btn-ghost"
+                data-modal-close
+            >
+                Скасувати
+            </button>
+
+        </div>
+
+    </div>
+</div>

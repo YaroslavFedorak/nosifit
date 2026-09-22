@@ -1,0 +1,55 @@
+<section class="profile-card">
+
+    <div class="profile-card-header">
+        <div>
+            <h2 class="profile-card-title">
+                Цілі
+            </h2>
+
+            <p class="profile-card-subtitle">
+                Основні параметри твоєї програми
+            </p>
+        </div>
+    </div>
+
+    <div class="profile-goals-grid">
+
+        <div class="profile-goal-item">
+
+            <span class="profile-goal-label">
+                Фітнес-рівень
+            </span>
+
+            <span class="profile-goal-value">
+                {{ profile.fitness_level or "—" }}
+            </span>
+
+        </div>
+
+        <div class="profile-goal-item">
+
+            <span class="profile-goal-label">
+                Основна ціль
+            </span>
+
+            <span class="profile-goal-value">
+                {{ profile.goal or user.goal or "—" }}
+            </span>
+
+        </div>
+
+        <div class="profile-goal-item">
+
+            <span class="profile-goal-label">
+                Тренувань / тиждень
+            </span>
+
+            <span class="profile-goal-value">
+                {{ user.workouts_per_week or "—" }}
+            </span>
+
+        </div>
+
+    </div>
+
+</section>

@@ -1,0 +1,93 @@
+.profile-progress-header {
+    align-items: center;
+}
+
+.profile-progress-percentage {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--profile-accent-hover);
+}
+
+.profile-progress-content {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.profile-progress-circle {
+    width: 126px;
+    height: 126px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 126px;
+    border-radius: 50%;
+    background: conic-gradient(var(--profile-accent) 0 var(--progress, 0%),
+            var(--profile-surface-soft) var(--progress, 0%) 100%);
+    transition: background var(--profile-transition);
+}
+
+.profile-progress-inner {
+    width: 94px;
+    height: 94px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    border: 1px solid var(--profile-border);
+    border-radius: 50%;
+    background: var(--profile-surface);
+}
+
+.profile-progress-value {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--profile-text);
+}
+
+.profile-progress-label {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--profile-text-muted);
+}
+
+.profile-progress-list {
+    display: flex;
+    flex-direction: column;
+    gap: 11px;
+}
+
+.profile-progress-item {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+
+.profile-progress-dot {
+    width: 8px;
+    height: 8px;
+    flex: 0 0 8px;
+    border: 1px solid var(--profile-border-soft);
+    border-radius: 50%;
+    background: var(--profile-surface-soft);
+}
+
+.profile-progress-dot-filled {
+    border-color: var(--profile-accent);
+    background: var(--profile-accent);
+}
+
+.profile-progress-text {
+    font-size: 13px;
+    color: var(--profile-text-soft);
+}
+
+@media (max-width: 600px) {
+    .profile-progress-content {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}
