@@ -7,7 +7,7 @@ from flask import (
     current_app,
 )
 
-from web.app.services.recovery import (
+from backend.app.services.recovery import (
     SleepService,
     HabitService,
     SnapshotService,
@@ -15,8 +15,8 @@ from web.app.services.recovery import (
     RecommendationService,
 )
 
-from web.app.models.recovery.habit import RecoveryHabit
-from web.app.services.training.load_service import TrainingLoadService
+from backend.app.models.recovery.habit import RecoveryHabit
+from backend.app.services.training.load_service import TrainingLoadService
 
 recovery_bp = Blueprint("recovery", __name__, url_prefix="/api/recovery")
 
@@ -457,7 +457,7 @@ def get_day_details(user_id):
             )
             sleep_entry = None
 
-        from web.app.models.training_session import TrainingSession
+        from backend.app.models.training_session import TrainingSession
 
         sessions = (
             TrainingSession.query.filter(
@@ -598,3 +598,4 @@ def get_day_details(user_id):
             ),
             200,
         )
+

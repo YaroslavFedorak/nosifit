@@ -11,7 +11,7 @@ def test_register_success(client, app):
 
     assert response.status_code in (200, 302)
 
-    from web.app.models.user import User
+    from backend.app.models.user import User
 
     user = User.query.filter_by(email="new@example.com").first()
 
@@ -42,8 +42,9 @@ def test_delete_account(client, app, user):
 
     assert response.status_code in (200, 302)
 
-    from web.app.models.user import User
+    from backend.app.models.user import User
 
     deleted = User.query.filter_by(email="test@example.com").first()
 
     assert deleted is None
+

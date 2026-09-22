@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import patch
-from web.app.models.oauth_account import OAuthAccount
-from web.app import db
+from backend.app.models.oauth_account import OAuthAccount
+from backend.app.extensions import db
 
 
 @patch("requests.post")
@@ -79,3 +79,5 @@ def test_google_connect_existing_user(mock_get, mock_token, client, app, user):
     ).first()
     assert acc is not None
     assert acc.user_id == user.id
+
+

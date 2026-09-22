@@ -1,9 +1,9 @@
 from flask import Blueprint, request, session, jsonify
 from flask_login import login_required, current_user, logout_user
 from werkzeug.security import check_password_hash
-from web.app import db
-from web.app.models.user import User
-from web.app.models.user_injury import UserInjury
+from backend.app.extensions import db
+from backend.app.models.user import User
+from backend.app.models.user_injury import UserInjury
 
 delete_final_bp = Blueprint("delete_final", __name__)
 
@@ -60,3 +60,5 @@ def delete_final():
     logout_user()
 
     return jsonify({"status": "deleted"})
+
+

@@ -3,41 +3,41 @@ from datetime import date, timedelta
 from flask import Blueprint, jsonify, request
 from flask_login import current_user, login_required
 
-from web.app.models import Meal
+from backend.app.models import Meal
 
-from web.app.services.nutrition.day_service import (
+from backend.app.services.nutrition.day_service import (
     get_daily_nutrition_data,
 )
 
-from web.app.services.nutrition.item_service import (
+from backend.app.services.nutrition.item_service import (
     add_item_service,
     delete_item_service,
     update_item_service,
 )
 
-from web.app.services.nutrition.meal_service import (
+from backend.app.services.nutrition.meal_service import (
     add_meal_service,
     copy_meal_service,
     delete_meal_service,
     update_meal_service,
 )
 
-from web.app.services.nutrition.recommendation_service import (
+from backend.app.services.nutrition.recommendation_service import (
     get_nutrition_recommendations,
 )
 
-from web.app.services.nutrition.stats_service import (
+from backend.app.services.nutrition.stats_service import (
     get_day_details,
     get_stats,
     get_year_heatmap,
 )
 
-from web.app.services.nutrition.water_service import (
+from backend.app.services.nutrition.water_service import (
     add_water_service,
     get_water_data,
 )
 
-from web.app.services.nutrition.weight_service import (
+from backend.app.services.nutrition.weight_service import (
     get_weight_data,
     update_user_weight,
 )
@@ -487,3 +487,4 @@ def api_add_water():
             "recommended": water_data["recommended"],
         }
     )
+

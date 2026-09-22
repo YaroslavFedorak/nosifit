@@ -1,18 +1,18 @@
 from flask import Blueprint, jsonify, request, current_app
 from flask_login import login_required, current_user
-from web.app import db
-from web.app.training_engine.models.exercise import Exercise
-from web.app.training_engine.models.muscle import Muscle
-from web.app.training_engine.models.equipment import TEEquipment
-from web.app.training_engine.models.user_pref import UserPreference
-from web.app.services.training.session_service import TrainingSessionService
-from web.app.services.training.load import compute_daily_load_index
-from web.app.training_engine.training_analysis.recommendations_engine import (
+from backend.app.extensions import db
+from backend.app.training.models.exercise import Exercise
+from backend.app.training.models.muscle import Muscle
+from backend.app.training.models.equipment import TEEquipment
+from backend.app.training.models.user_pref import UserPreference
+from backend.app.services.training.session_service import TrainingSessionService
+from backend.app.services.training.load import compute_daily_load_index
+from backend.app.training.training_analysis.recommendations_engine import (
     build_recommendations,
 )
-from web.app.models.training_session import TrainingSession, SessionExercise
-from web.app.training_engine.models.training_plan import TrainingPlan
-from web.app.training_engine.models.performance_state import PerformanceState
+from backend.app.models.training_session import TrainingSession, SessionExercise
+from backend.app.training.models.training_plan import TrainingPlan
+from backend.app.training.models.performance_state import PerformanceState
 import datetime as dt
 
 training_api_bp = Blueprint("training_api", __name__, url_prefix="/api/training")
@@ -717,3 +717,5 @@ def strength_test():
         )
     except Exception as e:
         return _error(e)
+
+

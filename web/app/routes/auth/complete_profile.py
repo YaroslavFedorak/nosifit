@@ -1,9 +1,9 @@
 from flask import Blueprint, render_template, request, redirect, session
 from flask_login import login_user
 
-from web.app import db
-from web.app.models.user import User
-from web.app.models.user_profile import UserProfile
+from backend.app.extensions import db
+from backend.app.models.user import User
+from backend.app.models.user_profile import UserProfile
 
 complete_profile_bp = Blueprint(
     "complete_profile",
@@ -77,3 +77,5 @@ def complete_profile():
         "auth/complete_profile.html",
         oauth_user=oauth_user,
     )
+
+

@@ -1,9 +1,9 @@
 from flask import Blueprint, request, redirect, url_for, flash
 from flask_login import login_required, current_user
 
-from web.app import db
+from backend.app.extensions import db
 
-from web.app.services.nutrition.calories_service import (
+from backend.app.services.nutrition.calories_service import (
     update_user_nutrition_goals,
 )
 
@@ -190,3 +190,5 @@ def delete_account():
     )
 
     return redirect(url_for("auth.login"))
+
+

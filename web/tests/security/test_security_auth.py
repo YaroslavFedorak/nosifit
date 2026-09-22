@@ -13,8 +13,8 @@ def test_login_wrong_email(client):
 
 
 def test_oauth_user_cannot_login_with_password(client, app):
-    from web.app.models.user import User
-    from web.app import db
+    from backend.app.models.user import User
+    from backend.app.extensions import db
 
     u = User(username="oauthuser", email="oauth@example.com", password="oauth")
     db.session.add(u)
@@ -24,3 +24,5 @@ def test_oauth_user_cannot_login_with_password(client, app):
         "/login", data={"email": "oauth@example.com", "password": "anything"}
     )
     assert response.status_code == 403
+
+

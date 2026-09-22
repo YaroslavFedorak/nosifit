@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, redirect
-from web.app import db
+from backend.app.extensions import db
 from flask_login import login_required, current_user
 
 premium_bp = Blueprint("premium", __name__)
@@ -19,3 +19,4 @@ def activate_premium():
     user.is_premium = True
     db.session.commit()
     return redirect("/premium")
+

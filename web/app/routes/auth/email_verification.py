@@ -1,7 +1,7 @@
 from flask import Blueprint, request, render_template, redirect, session, flash, url_for
-from web.app.models.verification_code import VerificationCode
-from web.app.models.user import User
-from web.app import db, mail
+from backend.app.models.verification_code import VerificationCode
+from backend.app.models.user import User
+from backend.app.extensions import db, mail
 from flask_mail import Message
 import random
 
@@ -108,3 +108,5 @@ def resend_code():
 
     flash("Код надіслано повторно!", "info")
     return redirect(url_for("email_verification.verify_email"))
+
+

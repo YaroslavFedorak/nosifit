@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify, session
 from flask_login import login_required, current_user
-from web.app.utils.mailer import send_email_code
-from web.app import db
+from backend.app.utils.mailer import send_email_code
+from backend.app.extensions import db
 import random
 
 email_change_bp = Blueprint("email_change", __name__)
@@ -64,3 +64,5 @@ def confirm_email():
     session.pop("email_change_target", None)
 
     return jsonify({"status": "success"})
+
+

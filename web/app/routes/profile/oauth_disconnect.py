@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from flask_login import login_required, current_user
-from web.app import db
-from web.app.models.oauth_account import OAuthAccount
+from backend.app.extensions import db
+from backend.app.models.oauth_account import OAuthAccount
 
 oauth_disconnect_bp = Blueprint("oauth_disconnect", __name__)
 
@@ -22,3 +22,5 @@ def oauth_disconnect():
     db.session.commit()
 
     return jsonify({"message": "OAuth disconnected"}), 200
+
+

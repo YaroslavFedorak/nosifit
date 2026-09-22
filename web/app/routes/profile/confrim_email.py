@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify, session
 from flask_login import login_required, current_user
-from web.app import db
+from backend.app.extensions import db
 
 confirm_email_bp = Blueprint("confirm_email", __name__)
 
@@ -24,3 +24,4 @@ def confirm_email():
     session.pop("email_change_target")
 
     return jsonify({"status": "success"})
+

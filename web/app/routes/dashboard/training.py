@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request
 from flask_login import current_user, login_required
 
-from web.app.dashboard.training.service import TrainingDashboardService
+from backend.app.dashboard.training.service import TrainingDashboardService
 
 training_dashboard_api_bp = Blueprint(
     "training_dashboard_api",
@@ -191,3 +191,4 @@ def finish_session(session_id):
             "session": data,
         }
     )
+

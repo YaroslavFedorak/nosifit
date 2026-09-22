@@ -1,25 +1,17 @@
 import os
+
 from dotenv import load_dotenv
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from flask_login import LoginManager
-from flask_migrate import Migrate
-from flask_mail import Mail
-from authlib.integrations.flask_client import OAuth
+
+from backend.app.extensions import db, login_manager, migrate, mail, oauth
 
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 load_dotenv(os.path.join(BASE_DIR, ".env"))
 
-db = SQLAlchemy()
-login_manager = LoginManager()
-migrate = Migrate()
-mail = Mail()
-oauth = OAuth()
-
 
 def create_app():
     app = Flask(__name__)
-    app.config.from_object("web.app.config.Config")
+    app.config.from_object("backend.config.Config")
 
     db.init_app(app)
     login_manager.init_app(app)
@@ -29,12 +21,12 @@ def create_app():
 
     login_manager.login_view = "auth.login"
 
-    from web.app.models.user import User
-    from web.app.models.verification_code import VerificationCode
-    from web.app.models.oauth_account import OAuthAccount
-    from web.app.models.recovery.habit import RecoveryHabit
-    from web.app.models.recovery.user_habit import UserRecoveryHabit
-    from web.app.models.recovery.habit_log import RecoveryHabitLog
+    from backend.app.models.user import User
+    from backend.app.models.verification_code import VerificationCode
+    from backend.app.models.oauth_account import OAuthAccount
+    from backend.app.models.recovery.habit import RecoveryHabit
+    from backend.app.models.recovery.user_habit import UserRecoveryHabit
+    from backend.app.models.recovery.habit_log import RecoveryHabitLog
 
     @login_manager.user_loader
     def load_user(user_id):

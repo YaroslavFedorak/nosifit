@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify
 from flask_login import current_user, login_required
 
-from web.app.services.dashboard.service import DashboardService
+from backend.app.services.dashboard.service import DashboardService
 
 dashboard_api_bp = Blueprint(
     "dashboard_api",
@@ -59,3 +59,4 @@ def recommendation():
     )
 
     return jsonify(data)
+

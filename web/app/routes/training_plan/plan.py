@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, jsonify
 from flask_login import login_required, current_user
 
-from web.app.training_engine.models.training_plan import TrainingPlan
+from backend.app.training.models.training_plan import TrainingPlan
 
 plan_bp = Blueprint("plan", __name__, url_prefix="/plan")
 
@@ -48,3 +48,4 @@ def view_plan_json():
         )
 
     return jsonify(plan.to_dict())
+

@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request
 from flask_login import login_required, current_user
-from web.app.services.injury_service import InjuryService
+from backend.app.services.injury_service import InjuryService
 
 injury_api = Blueprint("injury_api", __name__, url_prefix="/api/injuries")
 
@@ -16,3 +16,4 @@ def set_user_injuries():
     data = request.get_json() or {}
     InjuryService.set_user_injuries(current_user, data.get("injuries", []))
     return jsonify({"status": "ok"})
+

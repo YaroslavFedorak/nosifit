@@ -1,11 +1,11 @@
 from flask import Blueprint, render_template, request, redirect, flash, session, url_for
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, logout_user
-from web.app import db
-from web.app.models.user import User
-from web.app.models.user_profile import UserProfile
-from web.app.utils.email_service import send_password_reset_email
-from web.app.utils.token import verify_reset_token
+from backend.app.extensions import db
+from backend.app.models.user import User
+from backend.app.models.user_profile import UserProfile
+from backend.app.utils.email_service import send_password_reset_email
+from backend.app.utils.token import verify_reset_token
 
 auth_bp = Blueprint("auth", __name__, url_prefix="/auth")
 print("LOADED AUTH_MAIN:", __file__)
@@ -181,3 +181,5 @@ def reset_with_token(token):
 @auth_bp.route("/forgot", endpoint="forgot")
 def forgot_alias():
     return redirect(url_for("auth.reset_password"))
+
+

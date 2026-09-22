@@ -1,5 +1,5 @@
-from web.app.models.user import User
-from web.app import db
+from backend.app.models.user import User
+from backend.app.extensions import db
 
 
 def test_create_user(app):
@@ -12,3 +12,5 @@ def test_create_user(app):
     assert saved is not None
     assert saved.username == "yarik"
     assert saved.password == "hashedpass"
+
+

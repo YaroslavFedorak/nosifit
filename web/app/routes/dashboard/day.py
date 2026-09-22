@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify
 from flask_login import current_user, login_required
 
-from web.app.services.dashboard.day import get_day_details
+from backend.app.services.dashboard.day import get_day_details
 
 dashboard_day_api_bp = Blueprint(
     "dashboard_day_api",
@@ -29,3 +29,4 @@ def day(date_iso):
         )
 
     return jsonify(data)
+

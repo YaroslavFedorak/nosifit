@@ -1,6 +1,6 @@
 import json
-from web.app import db
-from web.app.training_engine.models.exercise import Exercise
+from backend.app.extensions import db
+from backend.app.training.models.exercise import Exercise
 
 
 def import_file(path):
@@ -32,3 +32,5 @@ import_file("web/app/training_engine/data/exercises/lower_body.json")
 import_file("web/app/training_engine/data/exercises/core.json")
 import_file("web/app/training_engine/data/exercises/mobility.json")
 import_file("web/app/training_engine/data/exercises/full_body.json")
+
+

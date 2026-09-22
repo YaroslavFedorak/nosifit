@@ -1,6 +1,6 @@
 import pytest
 from web.app import create_app, db
-from web.app.models.user import User
+from backend.app.models.user import User
 from werkzeug.security import generate_password_hash
 
 
@@ -32,3 +32,4 @@ def user(app):
     db.session.add(u)
     db.session.commit()
     return u
+

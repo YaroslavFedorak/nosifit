@@ -44,9 +44,9 @@ def run_seed():
     exercises_dir = os.path.join(BASE_DIR, "exercises")
 
     with app.app_context():
-        from web.app.training_engine.models.muscle import Muscle
-        from web.app.training_engine.models.equipment import TEEquipment
-        from web.app.training_engine.models.exercise import Exercise
+        from backend.app.training.models.muscle import Muscle
+        from backend.app.training.models.equipment import TEEquipment
+        from backend.app.training.models.exercise import Exercise
 
         muscles = load_json(muscles_path)
         equipment = load_json(equipment_path)
@@ -129,3 +129,4 @@ def run_seed():
 
 if __name__ == "__main__":
     run_seed()
+

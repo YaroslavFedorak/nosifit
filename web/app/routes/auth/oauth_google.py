@@ -1,9 +1,9 @@
 from flask import Blueprint, redirect, url_for, session, jsonify
 from flask_login import login_user
-from web.app.models.user import User
-from web.app.models.oauth_account import OAuthAccount
-from web.app.models.user_profile import UserProfile
-from web.app import db, oauth
+from backend.app.models.user import User
+from backend.app.models.oauth_account import OAuthAccount
+from backend.app.models.user_profile import UserProfile
+from backend.app.extensions import db, oauth
 
 google_bp = Blueprint("google_oauth", __name__)
 
@@ -81,3 +81,5 @@ def google_callback():
     }
 
     return redirect("/auth/complete_profile")
+
+

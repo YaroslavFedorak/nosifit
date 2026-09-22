@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from flask_login import login_required, current_user
 from werkzeug.security import check_password_hash, generate_password_hash
-from web.app import db
+from backend.app.extensions import db
 
 password_change_bp = Blueprint("password_change", __name__)
 
@@ -29,3 +29,4 @@ def change_password():
     db.session.commit()
 
     return jsonify({"status": "success"})
+

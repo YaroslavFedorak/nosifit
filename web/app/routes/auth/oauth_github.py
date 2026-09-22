@@ -1,10 +1,10 @@
 from flask import Blueprint, redirect, request, session, current_app, jsonify
 import requests
 from flask_login import login_user
-from web.app.models.user import User
-from web.app.models.oauth_account import OAuthAccount
-from web.app.models.user_profile import UserProfile
-from web.app import db
+from backend.app.models.user import User
+from backend.app.models.oauth_account import OAuthAccount
+from backend.app.models.user_profile import UserProfile
+from backend.app.extensions import db
 
 github_bp = Blueprint("github", __name__)
 
@@ -117,3 +117,5 @@ def github_callback():
     }
 
     return redirect("/auth/complete_profile")
+
+

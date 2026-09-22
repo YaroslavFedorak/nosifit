@@ -1,5 +1,5 @@
-from web.app.models.oauth_account import OAuthAccount
-from web.app import db
+from backend.app.models.oauth_account import OAuthAccount
+from backend.app.extensions import db
 
 
 def test_disconnect_oauth(client, app, user):
@@ -36,3 +36,5 @@ def test_cannot_disconnect_last_oauth(client, app, user):
     response = client.post("/profile/oauth_disconnect", data={"provider": "google"})
 
     assert response.status_code == 400
+
+

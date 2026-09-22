@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from flask_login import login_required, current_user
-from web.app.services.onboarding_service import OnboardingService
+from backend.app.services.onboarding_service import OnboardingService
 
 onboarding_api = Blueprint("onboarding_api", __name__, url_prefix="/api/onboarding")
 
@@ -65,3 +65,4 @@ def save_injuries():
 def complete_onboarding():
     OnboardingService.complete_onboarding(current_user)
     return jsonify({"onboarding_completed": True})
+

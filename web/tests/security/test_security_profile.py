@@ -12,8 +12,8 @@ def test_user_cannot_update_profile_without_login(client):
 def test_user_cannot_update_other_user_profile(client, app, user):
     client.post("/login", data={"email": "test@example.com", "password": "password123"})
 
-    from web.app.models.user import User
-    from web.app import db
+    from backend.app.models.user import User
+    from backend.app.extensions import db
 
     other = User(username="other", email="other@example.com", password="hashed")
     db.session.add(other)
@@ -42,8 +42,8 @@ def test_change_password_requires_login(client):
 
 
 def test_oauth_user_cannot_change_password(client, app):
-    from web.app.models.user import User
-    from web.app import db
+    from backend.app.models.user import User
+    from backend.app.extensions import db
 
     u = User(username="oauth", email="oauth@example.com", password="oauth")
     db.session.add(u)
@@ -109,8 +109,8 @@ def test_change_password_mismatch(client, app, user):
 
 
 def test_oauth_user_cannot_change_password(client, app):
-    from web.app.models.user import User
-    from web.app import db
+    from backend.app.models.user import User
+    from backend.app.extensions import db
 
     u = User(username="oauth", email="oauth@example.com", password="oauth")
     db.session.add(u)
@@ -146,8 +146,8 @@ def test_change_email_invalid_format(client, app, user):
 
 
 def test_change_email_already_taken(client, app, user):
-    from web.app.models.user import User
-    from web.app import db
+    from backend.app.models.user import User
+    from backend.app.extensions import db
 
     other = User(username="other", email="other@example.com", password="123")
     db.session.add(other)
@@ -184,3 +184,5 @@ def test_confirm_email_success(client, app, user):
     response = client.post("/profile/confirm_email", json={"code": "123456"})
 
     assert response.status_code == 200
+
+

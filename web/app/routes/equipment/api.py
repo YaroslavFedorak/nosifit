@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from flask_login import login_required, current_user
-from web.app.services.equipment_service import EquipmentService
+from backend.app.services.equipment_service import EquipmentService
 
 equipment_api = Blueprint("equipment_api", __name__, url_prefix="/api/user/equipment")
 
@@ -26,3 +26,4 @@ def remove_equipment():
     data = request.get_json() or {}
     EquipmentService.remove_equipment(current_user, data.get("equipment_id"))
     return jsonify({"status": "removed"})
+
