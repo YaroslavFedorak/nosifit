@@ -1,11 +1,11 @@
 .sleep-modal {
-    background: var(--surface);
-    border-radius: 22px;
+    background: var(--card);
+    border-radius: var(--radius-lg);
     padding: 28px 30px;
     display: flex;
     flex-direction: column;
     gap: 26px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--border-soft);
     box-shadow:
         0 20px 50px rgba(0, 0, 0, 0.35),
         0 4px 12px rgba(0, 0, 0, 0.18);
@@ -21,12 +21,17 @@
     width: 42px;
     height: 42px;
     border-radius: 12px;
-    background: var(--accent-soft);
+    background: rgba(0, 194, 255, 0.08);
     border: 1px solid var(--accent);
     display: flex;
     align-items: center;
     justify-content: center;
     color: var(--accent);
+}
+
+.sleep-header-icon svg {
+    width: 24px;
+    height: 24px;
 }
 
 .sleep-title {
@@ -59,9 +64,9 @@
 }
 
 .sleep-input-wrapper {
-    background: var(--bg-secondary);
+    background: var(--surface-input);
     border: 1px solid var(--border-input);
-    border-radius: 12px;
+    border-radius: var(--radius-md);
     padding: 10px 14px;
 }
 
@@ -77,7 +82,6 @@
 
 .sleep-input-date:focus {
     border-color: var(--accent);
-    box-shadow: 0 0 0 3px var(--accent-soft);
 }
 
 .sleep-time-section {
@@ -106,9 +110,9 @@
 
 .sleep-input-time {
     height: 48px;
-    background: var(--bg-secondary);
+    background: var(--surface-input);
     border: 1px solid var(--border-input);
-    border-radius: 12px;
+    border-radius: var(--radius-md);
     padding: 0 14px;
     font-size: 20px;
     font-weight: 600;
@@ -119,7 +123,7 @@
 
 .sleep-input-time:focus {
     border-color: var(--accent);
-    box-shadow: 0 0 0 3px var(--accent-soft);
+    box-shadow: 0 0 0 3px rgba(0, 194, 255, 0.08);
 }
 
 .sleep-time-arrow {
@@ -129,13 +133,13 @@
 }
 
 .sleep-hint {
-    background: var(--accent-soft);
-    border: 1px solid var(--accent);
-    border-radius: 12px;
+    background: rgba(0, 194, 255, 0.08);
+    border: 1px solid rgba(0, 194, 255, 0.28);
+    border-radius: var(--radius-md);
     padding: 12px 14px;
     font-size: 13px;
     font-weight: 500;
-    color: #000;
+    color: var(--text);
 }
 
 .sleep-footer {
@@ -144,23 +148,22 @@
     align-items: center;
     gap: 14px;
     padding-top: 20px;
-    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    border-top: 1px solid var(--border-soft);
 }
 
-/* CUSTOM BUTTONS — NO GLOBAL OVERRIDE POSSIBLE */
 .sleep-btn-save {
     background: var(--accent);
     color: #000;
     border: 1px solid var(--accent);
-    border-radius: 12px;
+    border-radius: var(--radius-md);
     padding: 10px 20px;
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
     transition:
-        transform .18s cubic-bezier(0.16, 1, 0.3, 1),
-        background-color .18s ease,
-        opacity .18s ease;
+        transform 0.18s cubic-bezier(0.16, 1, 0.3, 1),
+        background-color 0.18s ease,
+        opacity 0.18s ease;
 }
 
 .sleep-btn-save:hover:not(:disabled) {
@@ -178,23 +181,23 @@
 }
 
 .sleep-btn-cancel {
-    background: rgba(255, 255, 255, 0.06);
+    background: var(--surface-input);
     color: var(--text);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 12px;
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius-md);
     padding: 10px 20px;
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
     transition:
-        transform .18s cubic-bezier(0.16, 1, 0.3, 1),
-        background-color .18s ease,
-        border-color .18s ease;
+        transform 0.18s cubic-bezier(0.16, 1, 0.3, 1),
+        background-color 0.18s ease,
+        border-color 0.18s ease;
 }
 
 .sleep-btn-cancel:hover {
-    background: rgba(255, 255, 255, 0.12);
-    border-color: rgba(255, 255, 255, 0.18);
+    background: var(--surface-hover);
+    border-color: var(--border-input);
     transform: translateY(-2px);
 }
 
@@ -203,6 +206,10 @@
 }
 
 @media (max-width: 540px) {
+    .sleep-modal {
+        padding: 22px;
+    }
+
     .sleep-time-row {
         grid-template-columns: 1fr;
     }

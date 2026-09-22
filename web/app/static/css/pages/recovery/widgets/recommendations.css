@@ -14,15 +14,19 @@
     gap: 14px;
     padding: 14px 16px;
     min-height: 64px;
-    background: var(--nf-surface-soft);
-    border: 1px solid var(--nf-border-soft);
-    border-radius: var(--nf-radius-md);
-    transition: background-color 0.18s ease, border-color 0.18s ease;
+    background: var(--card-soft);
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius-md);
+    transition:
+        background-color 0.18s ease,
+        border-color 0.18s ease,
+        transform 0.18s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .rec-item:hover {
-    background: var(--nf-surface-hover);
-    border-color: var(--nf-border-soft-hover);
+    background: var(--surface-hover);
+    border-color: var(--border-input);
+    transform: translateY(-1px);
 }
 
 .rec-icon {
@@ -32,7 +36,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--nf-blue);
+    color: var(--accent);
 }
 
 .rec-icon svg {
@@ -43,7 +47,7 @@
 .rec-title {
     font-size: 15px;
     font-weight: 600;
-    color: var(--nf-text-main);
+    color: var(--text);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;

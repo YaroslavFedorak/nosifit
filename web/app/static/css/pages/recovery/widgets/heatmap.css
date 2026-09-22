@@ -11,6 +11,8 @@
     display: flex;
     flex-direction: column;
     gap: 8px;
+    position: relative;
+    overflow: visible;
 }
 
 .rc-heatmap-header {
@@ -34,59 +36,60 @@
     font-size: 12px;
 }
 
-.rc-btn {
-    display: inline-flex;
+.rc-heatmap-content {
+    width: 100%;
+    position: relative;
+}
+
+.rc-heatmap-months {
+    display: flex;
+    justify-content: space-between;
     align-items: center;
-    justify-content: center;
-    padding: 6px 10px;
-    border-radius: var(--radius-sm);
-    border: 1px solid var(--border-soft);
-    background: var(--surface-input);
-    color: var(--text);
-    font-size: 13px;
-    cursor: pointer;
-}
-
-.rc-btn-sm {
-    padding: 4px 8px;
+    width: 100%;
+    max-width: 845px;
+    margin: 0 auto;
+    padding: 0;
     font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    line-height: 1;
+    color: var(--text-muted);
 }
 
-:root {
-    --rc-cell-size: 13px;
-    --rc-gap: 3px;
-    --rc-max-width: 680px;
-    --rc-t1: #05343a;
-    --rc-t2: #0aa3bf;
-    --rc-t3: var(--accent);
-    --rc-t4: var(--accent-soft);
-    --legend-text: rgba(255, 255, 255, 0.92);
-    --legend-muted: rgba(255, 255, 255, 0.65);
+.rc-heatmap-months span {
+    display: block;
+    flex: 0 0 auto;
+    text-align: center;
+    white-space: nowrap;
 }
 
 .rc-heatmap-grid {
     display: grid;
-    grid-template-columns: repeat(53, var(--rc-cell-size));
-    grid-template-rows: repeat(7, var(--rc-cell-size));
+    grid-template-columns: repeat(53, minmax(0, 1fr));
+    grid-template-rows: repeat(7, 13px);
     grid-auto-flow: column;
-    gap: var(--rc-gap);
+    gap: 3px;
     padding: 6px 0;
     justify-content: center;
     align-items: start;
-    max-width: var(--rc-max-width);
+    max-width: 845px;
+    width: 100%;
     margin: 0 auto;
-    box-sizing: border-box;
 }
 
 .rc-heatmap-cell {
-    width: var(--rc-cell-size);
-    height: var(--rc-cell-size);
+    width: 100%;
+    max-width: 13px;
+    height: 13px;
+    justify-self: center;
     border-radius: 3px;
     background: #1a1f27;
     position: relative;
-    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
     cursor: pointer;
     box-sizing: border-box;
+    transition:
+        transform 160ms ease,
+        box-shadow 160ms ease;
 }
 
 .rc-heatmap-cell[data-level="0"] {
@@ -94,19 +97,19 @@
 }
 
 .rc-heatmap-cell[data-level="1"] {
-    background: var(--rc-t1);
+    background: #05343a;
 }
 
 .rc-heatmap-cell[data-level="2"] {
-    background: var(--rc-t2);
+    background: #0aa3bf;
 }
 
 .rc-heatmap-cell[data-level="3"] {
-    background: var(--rc-t3);
+    background: var(--accent);
 }
 
 .rc-heatmap-cell[data-level="4"] {
-    background: var(--rc-t4);
+    background: var(--accent-soft);
 }
 
 .rc-heatmap-cell.today {
@@ -116,15 +119,17 @@
 
 .rc-heatmap-cell:hover {
     transform: scale(1.2);
-    z-index: 6;
-    box-shadow: 0 6px 18px rgba(2, 6, 23, 0.6);
+    z-index: 5;
+    box-shadow:
+        0 6px 18px rgba(2, 6, 23, 0.6);
 }
 
-.rc-heatmap-cell .rc-heatmap-tooltip {
+.rc-heatmap-tooltip {
     position: absolute;
     left: 50%;
-    transform: translateX(-50%) translateY(-8px);
     bottom: calc(100% + 6px);
+    transform:
+        translateX(-50%) translateY(-8px);
     background: rgba(6, 10, 15, 0.95);
     border: 1px solid rgba(255, 255, 255, 0.06);
     padding: 8px 10px;
@@ -134,10 +139,13 @@
     white-space: nowrap;
     pointer-events: none;
     opacity: 0;
-    transition: opacity var(--transition-fast), transform var(--transition-fast);
+    transition:
+        opacity 160ms ease,
+        transform 160ms ease;
     z-index: 70;
     will-change: transform, opacity;
-    box-shadow: 0 6px 18px rgba(2, 6, 23, 0.6);
+    box-shadow:
+        0 6px 18px rgba(2, 6, 23, 0.6);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -145,107 +153,59 @@
     line-height: 1;
 }
 
-.rc-heatmap-cell .rc-heatmap-tooltip.visible {
+.rc-heatmap-tooltip.visible {
     opacity: 1;
-    transform: translateX(-50%) translateY(-12px);
+    transform:
+        translateX(-50%) translateY(-12px);
 }
 
-.rc-heatmap-cell .rc-heatmap-tooltip::after {
+.rc-heatmap-tooltip::after {
     content: "";
     position: absolute;
     left: 50%;
-    transform: translateX(-50%) rotate(45deg);
+    transform:
+        translateX(-50%) rotate(45deg);
     bottom: -5px;
     width: 10px;
     height: 10px;
     background: rgba(6, 10, 15, 0.95);
-    border-left: 1px solid rgba(255, 255, 255, 0.06);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-    z-index: 69;
+    border-left:
+        1px solid rgba(255, 255, 255, 0.06);
+    border-bottom:
+        1px solid rgba(255, 255, 255, 0.06);
 }
 
 .rc-heatmap-legend {
     display: flex;
     align-items: center;
-    gap: 12px;
-    font-size: 12px;
-    color: var(--legend-muted);
-    padding-top: 6px;
-    width: 100%;
-    box-sizing: border-box;
-    justify-content: flex-end;
-}
-
-.rc-heatmap-legend::before {
-    content: "Рівень відновлення";
-    font-size: 12px;
-    color: var(--legend-text);
-    font-weight: 600;
-    white-space: nowrap;
-    margin-right: auto;
-    padding-left: 4px;
-}
-
-.rc-heatmap-legend .legend-scale {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: transparent;
-    padding: 6px 8px;
-    border-radius: 8px;
-    white-space: nowrap;
-    align-items: center;
-}
-
-.rc-heatmap-legend .legend-scale .legend-label {
-    font-size: 12px;
-    color: var(--legend-text);
-    font-weight: 700;
-    letter-spacing: 0.2px;
-    white-space: nowrap;
-}
-
-.rc-heatmap-legend .legend-scale .legend-label.left {
-    margin-right: 8px;
-}
-
-.rc-heatmap-legend .legend-scale .legend-label.right {
-    margin-left: 8px;
-}
-
-.rc-heatmap-legend .legend-scale .legend-box-wrap {
-    display: inline-flex;
     gap: 6px;
-    align-items: center;
-    padding: 4px 6px;
-    background: rgba(255, 255, 255, 0.02);
-    border-radius: 6px;
+    margin-top: 2px;
+    padding-top: 2px;
+    font-size: 11px;
+    color: var(--text-muted);
 }
 
 .legend-box {
     width: 14px;
     height: 14px;
     border-radius: 3px;
-    position: relative;
-    display: inline-block;
-    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.25) inset;
-    flex: none;
+    flex: 0 0 auto;
 }
 
 .legend-box.level-1 {
-    background: var(--rc-t1);
+    background: #05343a;
 }
 
 .legend-box.level-2 {
-    background: var(--rc-t2);
+    background: #0aa3bf;
 }
 
 .legend-box.level-3 {
-    background: var(--rc-t3);
+    background: var(--accent);
 }
 
 .legend-box.level-4 {
-    background: var(--rc-t4);
+    background: var(--accent-soft);
 }
 
 .rc-calendar-modal {
@@ -272,7 +232,8 @@
     width: 90%;
     max-width: 520px;
     padding: 20px;
-    box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
+    box-shadow:
+        0 0 40px rgba(0, 0, 0, 0.5);
     display: flex;
     flex-direction: column;
     gap: 16px;
@@ -325,19 +286,19 @@
 }
 
 .rc-level-1 {
-    background: var(--rc-t1);
+    background: #05343a;
 }
 
 .rc-level-2 {
-    background: var(--rc-t2);
+    background: #0aa3bf;
 }
 
 .rc-level-3 {
-    background: var(--rc-t3);
+    background: var(--accent);
 }
 
 .rc-level-4 {
-    background: var(--rc-t4);
+    background: var(--accent-soft);
 }
 
 .rc-day-details-body {
@@ -375,10 +336,27 @@
         padding: 12px;
     }
 
+    .rc-heatmap-content {
+        overflow-x: hidden;
+    }
+
+    .rc-heatmap-months {
+        width: 100%;
+        max-width: none;
+        margin: 0;
+    }
+
     .rc-heatmap-grid {
-        max-width: 100%;
-        transform: scale(0.95);
-        transform-origin: center;
+        width: 100%;
+        max-width: none;
+        margin: 0;
+        grid-template-columns:
+            repeat(53, minmax(0, 1fr));
+        gap: 2px;
+    }
+
+    .rc-heatmap-cell {
+        max-width: none;
     }
 
     .rc-calendar-dialog {
@@ -391,11 +369,19 @@
         padding: 8px 10px;
     }
 
-    .rc-heatmap-grid {
-        grid-template-columns: repeat(53, 12px);
-        gap: 3px;
-        max-width: 100%;
+    .rc-heatmap-content {
         overflow-x: auto;
+    }
+
+    .rc-heatmap-months {
+        min-width: 680px;
+    }
+
+    .rc-heatmap-grid {
+        min-width: 680px;
+        grid-template-columns:
+            repeat(53, minmax(0, 1fr));
+        gap: 3px;
     }
 
     .rc-heatmap-legend {

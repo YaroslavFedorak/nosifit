@@ -17,7 +17,7 @@
 
 .recovery-left {
     display: grid;
-    grid-template-rows: 480px 300px;
+    grid-template-rows: 575px 205px;
     gap: 16px;
 }
 

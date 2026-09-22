@@ -9,7 +9,9 @@
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
-    transition: var(--nf-transition);
+    transition:
+        opacity var(--transition),
+        visibility var(--transition);
     backdrop-filter: blur(4px);
 }
 
@@ -20,13 +22,13 @@
 }
 
 .recovery-modal {
-    background: var(--nf-surface-soft);
-    border-radius: var(--nf-radius-lg);
+    background: var(--card);
+    border-radius: var(--radius-lg);
     padding: 24px;
     width: 420px;
     max-width: 90vw;
-    box-shadow: var(--nf-shadow-soft);
-    border: 1px solid var(--nf-border-subtle);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+    border: 1px solid var(--border-soft);
     display: flex;
     flex-direction: column;
     gap: 16px;
@@ -41,7 +43,7 @@
 .recovery-modal-title {
     font-size: 18px;
     font-weight: 600;
-    color: var(--nf-text-main);
+    color: var(--text);
 }
 
 .recovery-modal-body {

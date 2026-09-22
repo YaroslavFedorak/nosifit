@@ -1,5 +1,9 @@
 :root {
-    font-family: 'Inter', sans-serif;
+    --bg: #0b0e13;
+
+    --card: #11141c;
+    --card-soft: #1a1f27;
+    --card-deep: #0f1218;
 
     --surface: #141414;
     --surface-hover: #181818;

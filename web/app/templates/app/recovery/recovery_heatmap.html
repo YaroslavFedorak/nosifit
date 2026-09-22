@@ -1,23 +1,37 @@
-<div class="rc-heatmap-container">
-  <div class="rc-heatmap-header">
-    <h3>Історія відновлення</h3>
+<div class="rc-heatmap-header">
+  <h3>Історія відновлення</h3>
 
-    <div class="rc-heatmap-controls">
-      <label class="sr-only" for="rc-heatmap-year">Рік</label>
-      <select id="rc-heatmap-year" class="rc-select"></select>
-    </div>
+  <div class="rc-heatmap-controls">
+    <label class="sr-only" for="rc-heatmap-year">Рік</label>
+
+    <select id="rc-heatmap-year" class="rc-select"></select>
   </div>
+</div>
 
-  <div id="recovery-heatmap" class="rc-heatmap-grid"></div>
+<div class="rc-heatmap-content">
+  <div
+    id="recovery-heatmap-months"
+    class="rc-heatmap-months"
+    aria-hidden="true"
+  ></div>
 
-  <div class="rc-heatmap-legend">
-    <span>Менш</span>
-    <div class="legend-box level-1"></div>
-    <div class="legend-box level-2"></div>
-    <div class="legend-box level-3"></div>
-    <div class="legend-box level-4"></div>
-    <span>Більш</span>
-  </div>
+  <div
+    id="recovery-heatmap"
+    class="rc-heatmap-grid"
+    role="grid"
+    aria-label="Heatmap відновлення за рік"
+  ></div>
+</div>
+
+<div class="rc-heatmap-legend">
+  <span>Менш</span>
+
+  <div class="legend-box level-1"></div>
+  <div class="legend-box level-2"></div>
+  <div class="legend-box level-3"></div>
+  <div class="legend-box level-4"></div>
+
+  <span>Більш</span>
 </div>
 
 {% include "app/recovery/modals/recovery_day_details.html" %}
