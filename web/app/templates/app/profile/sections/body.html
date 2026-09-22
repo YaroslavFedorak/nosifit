@@ -20,7 +20,7 @@
             </span>
 
             <span class="profile-info-value">
-                {{ user.age if user.age is not none else "—" }}
+                {{ profile.age if profile.age is not none else "—" }}
             </span>
         </div>
 
@@ -30,7 +30,13 @@
             </span>
 
             <span class="profile-info-value">
-                {{ user.gender or "—" }}
+                {% if profile.gender == "male" %}
+                    Чоловіча
+                {% elif profile.gender == "female" %}
+                    Жіноча
+                {% else %}
+                    —
+                {% endif %}
             </span>
         </div>
 
@@ -40,8 +46,8 @@
             </span>
 
             <span class="profile-info-value">
-                {% if user.height %}
-                    {{ user.height }} см
+                {% if profile.height is not none %}
+                    {{ profile.height|int }} см
                 {% else %}
                     —
                 {% endif %}
@@ -54,8 +60,8 @@
             </span>
 
             <span class="profile-info-value">
-                {% if user.weight %}
-                    {{ user.weight }} кг
+                {% if profile.weight is not none %}
+                    {{ profile.weight }} кг
                 {% else %}
                     —
                 {% endif %}
@@ -68,7 +74,17 @@
             </span>
 
             <span class="profile-info-value">
-                {{ user.activity_level or "—" }}
+                {% if profile.activity == "sedentary" %}
+                    Низька
+                {% elif profile.activity == "light" %}
+                    Легка
+                {% elif profile.activity == "moderate" %}
+                    Помірна
+                {% elif profile.activity == "active" %}
+                    Висока
+                {% else %}
+                    —
+                {% endif %}
             </span>
         </div>
 
@@ -78,7 +94,15 @@
             </span>
 
             <span class="profile-info-value">
-                {{ user.experience_level or "—" }}
+                {% if profile.experience == "beginner" %}
+                    Початківець
+                {% elif profile.experience == "intermediate" %}
+                    Середній
+                {% elif profile.experience == "experienced" %}
+                    Досвідчений
+                {% else %}
+                    —
+                {% endif %}
             </span>
         </div>
 

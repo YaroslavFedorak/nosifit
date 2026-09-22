@@ -105,7 +105,7 @@
                             id="edit-age"
                             type="number"
                             name="age"
-                            value="{{ user.age if user.age is not none else '' }}"
+                            value="{{ profile.age if profile.age is not none else '' }}"
                             min="1"
                             max="120"
                         >
@@ -132,14 +132,14 @@
 
                             <option
                                 value="male"
-                                {% if user.gender == "male" %}selected{% endif %}
+                                {% if profile.gender == "male" %}selected{% endif %}
                             >
                                 Чоловіча
                             </option>
 
                             <option
                                 value="female"
-                                {% if user.gender == "female" %}selected{% endif %}
+                                {% if profile.gender == "female" %}selected{% endif %}
                             >
                                 Жіноча
                             </option>
@@ -161,7 +161,7 @@
                             id="edit-height"
                             type="number"
                             name="height"
-                            value="{{ user.height if user.height is not none else '' }}"
+                            value="{{ profile.height if profile.height is not none else '' }}"
                             min="50"
                             max="250"
                         >
@@ -182,7 +182,7 @@
                             id="edit-weight"
                             type="number"
                             name="weight"
-                            value="{{ user.weight if user.weight is not none else '' }}"
+                            value="{{ profile.weight if profile.weight is not none else '' }}"
                             min="20"
                             max="400"
                             step="0.1"
@@ -218,28 +218,28 @@
 
                             <option
                                 value="maintenance"
-                                {% if user.goal == "maintenance" %}selected{% endif %}
+                                {% if profile.goal == "maintenance" %}selected{% endif %}
                             >
                                 Підтримка форми
                             </option>
 
                             <option
                                 value="strength"
-                                {% if user.goal == "strength" %}selected{% endif %}
+                                {% if profile.goal == "strength" %}selected{% endif %}
                             >
                                 Сила
                             </option>
 
                             <option
                                 value="muscle_gain"
-                                {% if user.goal == "muscle_gain" %}selected{% endif %}
+                                {% if profile.goal == "muscle_gain" %}selected{% endif %}
                             >
                                 Набір м'язів
                             </option>
 
                             <option
                                 value="fat_loss"
-                                {% if user.goal == "fat_loss" %}selected{% endif %}
+                                {% if profile.goal == "fat_loss" %}selected{% endif %}
                             >
                                 Зниження ваги
                             </option>
@@ -259,7 +259,7 @@
                         <select
                             class="profile-input"
                             id="edit-activity"
-                            name="activity_level"
+                            name="activity"
                         >
                             <option value="">
                                 Не вказано
@@ -267,28 +267,28 @@
 
                             <option
                                 value="sedentary"
-                                {% if user.activity_level == "sedentary" %}selected{% endif %}
+                                {% if profile.activity == "sedentary" %}selected{% endif %}
                             >
                                 Низька
                             </option>
 
                             <option
                                 value="light"
-                                {% if user.activity_level == "light" %}selected{% endif %}
+                                {% if profile.activity == "light" %}selected{% endif %}
                             >
                                 Легка
                             </option>
 
                             <option
                                 value="moderate"
-                                {% if user.activity_level == "moderate" %}selected{% endif %}
+                                {% if profile.activity == "moderate" %}selected{% endif %}
                             >
                                 Помірна
                             </option>
 
                             <option
                                 value="active"
-                                {% if user.activity_level == "active" %}selected{% endif %}
+                                {% if profile.activity == "active" %}selected{% endif %}
                             >
                                 Висока
                             </option>
@@ -309,7 +309,7 @@
                         <select
                             class="profile-input"
                             id="edit-experience"
-                            name="experience_level"
+                            name="experience"
                         >
                             <option value="">
                                 Не вказано
@@ -317,21 +317,21 @@
 
                             <option
                                 value="beginner"
-                                {% if user.experience_level == "beginner" %}selected{% endif %}
+                                {% if profile.experience == "beginner" %}selected{% endif %}
                             >
                                 Початківець
                             </option>
 
                             <option
                                 value="intermediate"
-                                {% if user.experience_level == "intermediate" %}selected{% endif %}
+                                {% if profile.experience == "intermediate" %}selected{% endif %}
                             >
                                 Середній
                             </option>
 
                             <option
                                 value="experienced"
-                                {% if user.experience_level == "experienced" %}selected{% endif %}
+                                {% if profile.experience == "experienced" %}selected{% endif %}
                             >
                                 Досвідчений
                             </option>
@@ -354,7 +354,7 @@
                             id="edit-workouts"
                             type="number"
                             name="workouts_per_week"
-                            value="{{ user.workouts_per_week if user.workouts_per_week is not none else '' }}"
+                            value="{{ profile.workouts_per_week if profile.workouts_per_week is not none else '' }}"
                             min="1"
                             max="14"
                         >
@@ -374,28 +374,25 @@
                             class="profile-input"
                             id="edit-location"
                             name="training_location"
+                            required
                         >
-                            <option value="">
-                                Не вказано
-                            </option>
-
                             <option
                                 value="gym"
-                                {% if user.training_location == "gym" %}selected{% endif %}
+                                {% if profile.training_location == "gym" %}selected{% endif %}
                             >
                                 Зал
                             </option>
 
                             <option
                                 value="home"
-                                {% if user.training_location == "home" %}selected{% endif %}
+                                {% if profile.training_location == "home" %}selected{% endif %}
                             >
                                 Дім
                             </option>
 
                             <option
                                 value="outdoor"
-                                {% if user.training_location == "outdoor" %}selected{% endif %}
+                                {% if profile.training_location == "outdoor" %}selected{% endif %}
                             >
                                 Вулиця
                             </option>
@@ -427,14 +424,14 @@
                         >
                             <option
                                 value="1"
-                                {% if user.wants_nutrition %}selected{% endif %}
+                                {% if profile.wants_nutrition %}selected{% endif %}
                             >
                                 Увімкнено
                             </option>
 
                             <option
                                 value="0"
-                                {% if not user.wants_nutrition %}selected{% endif %}
+                                {% if not profile.wants_nutrition %}selected{% endif %}
                             >
                                 Вимкнено
                             </option>
@@ -458,14 +455,14 @@
                         >
                             <option
                                 value="1"
-                                {% if user.wants_recovery %}selected{% endif %}
+                                {% if profile.wants_recovery %}selected{% endif %}
                             >
                                 Увімкнено
                             </option>
 
                             <option
                                 value="0"
-                                {% if not user.wants_recovery %}selected{% endif %}
+                                {% if not profile.wants_recovery %}selected{% endif %}
                             >
                                 Вимкнено
                             </option>
