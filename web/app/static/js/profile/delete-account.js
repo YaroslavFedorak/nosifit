@@ -16,6 +16,10 @@ const setButtonLoading = (button, loading, text) => {
     button.disabled = loading;
     button.textContent = text;
 };
+const showError = (button, text) => {
+    button.disabled = false;
+    button.textContent = text;
+};
 const bindSendCode = (modal) => {
     const button = modal.querySelector("#delete-send-code");
     if (!button) {
@@ -25,22 +29,19 @@ const bindSendCode = (modal) => {
         setButtonLoading(button, true, "Надсилання...");
         try {
             const response = await fetch("/profile/delete/request", {
-                method: "POST"
+                method: "POST",
+                credentials: "same-origin"
             });
             const data = await response.json();
-            if (data.status === "sent") {
+            if (response.ok &&
+                data.status === "sent") {
                 showStep(modal, "2");
                 return;
             }
-            button.textContent =
-                "Спробувати ще раз";
+            showError(button, "Спробувати ще раз");
         }
         catch {
-            button.textContent =
-                "Спробувати ще раз";
-        }
-        finally {
-            button.disabled = false;
+            showError(button, "Спробувати ще раз");
         }
     });
 };
@@ -56,10 +57,15 @@ const bindConfirmCode = (modal) => {
             input.focus();
             return;
         }
+        if (!/^\d{6}$/.test(code)) {
+            input.focus();
+            return;
+        }
         setButtonLoading(button, true, "Перевірка...");
         try {
             const response = await fetch("/profile/delete/confirm", {
                 method: "POST",
+                credentials: "same-origin",
                 headers: {
                     "Content-Type": "application/json"
                 },
@@ -68,19 +74,28 @@ const bindConfirmCode = (modal) => {
                 })
             });
             const data = await response.json();
-            if (data.status === "ok") {
+            if (response.ok &&
+                data.status === "ok") {
                 showStep(modal, "3");
                 return;
             }
-            button.textContent =
-                "Спробувати ще раз";
+            if (data.status === "expired") {
+                showError(button, "Код прострочений");
+                return;
+            }
+            if (data.status === "wrong") {
+                showError(button, "Неправильний код");
+                return;
+            }
+            if (data.status ===
+                "email_mismatch") {
+                showError(button, "Email не збігається");
+                return;
+            }
+            showError(button, "Спробувати ще раз");
         }
         catch {
-            button.textContent =
-                "Спробувати ще раз";
-        }
-        finally {
-            button.disabled = false;
+            showError(button, "Спробувати ще раз");
         }
     });
 };
@@ -108,6 +123,7 @@ const bindFinalDelete = (modal) => {
         try {
             const response = await fetch("/profile/delete/final", {
                 method: "POST",
+                credentials: "same-origin",
                 headers: {
                     "Content-Type": "application/json"
                 },
@@ -117,20 +133,31 @@ const bindFinalDelete = (modal) => {
                 })
             });
             const data = await response.json();
-            if (data.status === "deleted") {
+            if (response.ok &&
+                data.status === "deleted") {
                 window.location.href =
-                    "/login";
+                    "/auth/login";
                 return;
             }
-            button.textContent =
-                "Спробувати ще раз";
+            if (data.status ===
+                "wrong_password") {
+                showError(button, "Неправильний пароль");
+                return;
+            }
+            if (data.status ===
+                "email_mismatch") {
+                showError(button, "Неправильний email");
+                return;
+            }
+            if (data.status ===
+                "expired") {
+                showError(button, "Код прострочений");
+                return;
+            }
+            showError(button, "Спробувати ще раз");
         }
         catch {
-            button.textContent =
-                "Спробувати ще раз";
-        }
-        finally {
-            button.disabled = false;
+            showError(button, "Спробувати ще раз");
         }
     });
 };

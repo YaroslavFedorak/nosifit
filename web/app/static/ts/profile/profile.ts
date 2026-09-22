@@ -4,15 +4,19 @@ import { initModals } from "./modals.js";
 import { initDeleteAccount } from "./delete-account.js";
 
 const initProfileIcon = (): void => {
-    const iconElement = document.querySelector<HTMLElement>(
-        "[data-profile-icon]"
-    );
+    const iconElement =
+        document.querySelector<HTMLElement>(
+            "[data-profile-icon]"
+        );
 
     if (!iconElement) {
         return;
     }
 
-    const iconName = iconElement.dataset.profileIcon as keyof typeof ICONS;
+    const iconName =
+        iconElement.dataset.profileIcon as
+            | keyof typeof ICONS
+            | undefined;
 
     if (!iconName) {
         return;
@@ -34,10 +38,17 @@ const initProfile = (): void => {
     initDeleteAccount();
 };
 
-if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", initProfile, {
-        once: true
-    });
+if (
+    document.readyState ===
+    "loading"
+) {
+    document.addEventListener(
+        "DOMContentLoaded",
+        initProfile,
+        {
+            once: true
+        }
+    );
 } else {
     initProfile();
 }

@@ -23,7 +23,8 @@ const initProfile = () => {
     initModals();
     initDeleteAccount();
 };
-if (document.readyState === "loading") {
+if (document.readyState ===
+    "loading") {
     document.addEventListener("DOMContentLoaded", initProfile, {
         once: true
     });

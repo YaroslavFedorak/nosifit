@@ -15,10 +15,11 @@ const updateProgressCircle = (value) => {
         return;
     }
     circle.style.setProperty("--progress", `${value}%`);
-    circle.style.background = `conic-gradient(
-        var(--profile-accent) 0 ${value}%,
-        var(--profile-surface-soft) ${value}% 100%
-    )`;
+    circle.style.background =
+        `conic-gradient(
+            var(--profile-accent) 0 ${value}%,
+            var(--profile-surface-soft) ${value}% 100%
+        )`;
 };
 export const initProgress = () => {
     const value = getCompletionValue();

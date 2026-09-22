@@ -1,9 +1,7 @@
 const ACTIVE_CLASS = "active";
 
 const getDeleteModal = (): HTMLElement | null => {
-    return document.getElementById(
-        "modal-delete-account"
-    );
+    return document.getElementById("modal-delete-account");
 };
 
 const getStep = (
@@ -40,6 +38,14 @@ const setButtonLoading = (
     button.textContent = text;
 };
 
+const showError = (
+    button: HTMLButtonElement,
+    text: string
+): void => {
+    button.disabled = false;
+    button.textContent = text;
+};
+
 const bindSendCode = (
     modal: HTMLElement
 ): void => {
@@ -62,31 +68,33 @@ const bindSendCode = (
             );
 
             try {
-                const response =
-                    await fetch(
-                        "/profile/delete/request",
-                        {
-                            method: "POST"
-                        }
-                    );
+                const response = await fetch(
+                    "/profile/delete/request",
+                    {
+                        method: "POST",
+                        credentials: "same-origin"
+                    }
+                );
 
-                const data =
-                    await response.json();
+                const data = await response.json();
 
                 if (
+                    response.ok &&
                     data.status === "sent"
                 ) {
                     showStep(modal, "2");
                     return;
                 }
 
-                button.textContent =
-                    "Спробувати ще раз";
+                showError(
+                    button,
+                    "Спробувати ще раз"
+                );
             } catch {
-                button.textContent =
-                    "Спробувати ще раз";
-            } finally {
-                button.disabled = false;
+                showError(
+                    button,
+                    "Спробувати ще раз"
+                );
             }
         }
     );
@@ -112,10 +120,14 @@ const bindConfirmCode = (
     button.addEventListener(
         "click",
         async () => {
-            const code =
-                input.value.trim();
+            const code = input.value.trim();
 
             if (!code) {
+                input.focus();
+                return;
+            }
+
+            if (!/^\d{6}$/.test(code)) {
                 input.focus();
                 return;
             }
@@ -127,38 +139,67 @@ const bindConfirmCode = (
             );
 
             try {
-                const response =
-                    await fetch(
-                        "/profile/delete/confirm",
-                        {
-                            method: "POST",
-                            headers: {
-                                "Content-Type":
-                                    "application/json"
-                            },
-                            body: JSON.stringify({
-                                code
-                            })
-                        }
-                    );
+                const response = await fetch(
+                    "/profile/delete/confirm",
+                    {
+                        method: "POST",
+                        credentials: "same-origin",
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+                        body: JSON.stringify({
+                            code
+                        })
+                    }
+                );
 
-                const data =
-                    await response.json();
+                const data = await response.json();
 
                 if (
+                    response.ok &&
                     data.status === "ok"
                 ) {
                     showStep(modal, "3");
                     return;
                 }
 
-                button.textContent =
-                    "Спробувати ще раз";
+                if (data.status === "expired") {
+                    showError(
+                        button,
+                        "Код прострочений"
+                    );
+                    return;
+                }
+
+                if (data.status === "wrong") {
+                    showError(
+                        button,
+                        "Неправильний код"
+                    );
+                    return;
+                }
+
+                if (
+                    data.status ===
+                    "email_mismatch"
+                ) {
+                    showError(
+                        button,
+                        "Email не збігається"
+                    );
+                    return;
+                }
+
+                showError(
+                    button,
+                    "Спробувати ще раз"
+                );
             } catch {
-                button.textContent =
-                    "Спробувати ще раз";
-            } finally {
-                button.disabled = false;
+                showError(
+                    button,
+                    "Спробувати ще раз"
+                );
             }
         }
     );
@@ -216,41 +257,75 @@ const bindFinalDelete = (
             );
 
             try {
-                const response =
-                    await fetch(
-                        "/profile/delete/final",
-                        {
-                            method: "POST",
-                            headers: {
-                                "Content-Type":
-                                    "application/json"
-                            },
-                            body: JSON.stringify({
-                                email,
-                                password
-                            })
-                        }
-                    );
+                const response = await fetch(
+                    "/profile/delete/final",
+                    {
+                        method: "POST",
+                        credentials: "same-origin",
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+                        body: JSON.stringify({
+                            email,
+                            password
+                        })
+                    }
+                );
 
-                const data =
-                    await response.json();
+                const data = await response.json();
 
                 if (
+                    response.ok &&
                     data.status === "deleted"
                 ) {
                     window.location.href =
-                        "/login";
-
+                        "/auth/login";
                     return;
                 }
 
-                button.textContent =
-                    "Спробувати ще раз";
+                if (
+                    data.status ===
+                    "wrong_password"
+                ) {
+                    showError(
+                        button,
+                        "Неправильний пароль"
+                    );
+                    return;
+                }
+
+                if (
+                    data.status ===
+                    "email_mismatch"
+                ) {
+                    showError(
+                        button,
+                        "Неправильний email"
+                    );
+                    return;
+                }
+
+                if (
+                    data.status ===
+                    "expired"
+                ) {
+                    showError(
+                        button,
+                        "Код прострочений"
+                    );
+                    return;
+                }
+
+                showError(
+                    button,
+                    "Спробувати ще раз"
+                );
             } catch {
-                button.textContent =
-                    "Спробувати ще раз";
-            } finally {
-                button.disabled = false;
+                showError(
+                    button,
+                    "Спробувати ще раз"
+                );
             }
         }
     );

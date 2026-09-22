@@ -95,10 +95,67 @@ const bindPasswordToggles = () => {
         });
     });
 };
+const bindPasswordForm = () => {
+    const form = document.querySelector("#modal-change-password form");
+    if (!form) {
+        return;
+    }
+    form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const submitButton = form.querySelector('button[type="submit"]');
+        if (submitButton) {
+            submitButton.disabled = true;
+        }
+        try {
+            const response = await fetch(form.action, {
+                method: "POST",
+                credentials: "same-origin",
+                body: new FormData(form)
+            });
+            const data = await response.json();
+            if (!response.ok) {
+                if (data.message ===
+                    "wrong_old") {
+                    alert("Поточний пароль введено неправильно.");
+                }
+                else if (data.message ===
+                    "mismatch") {
+                    alert("Нові паролі не збігаються.");
+                }
+                else if (data.message ===
+                    "same") {
+                    alert("Новий пароль має відрізнятися від поточного.");
+                }
+                else {
+                    alert("Не вдалося змінити пароль.");
+                }
+                return;
+            }
+            if (data.status ===
+                "success") {
+                alert("Пароль успішно змінено.");
+                const modal = form.closest(".profile-modal-backdrop");
+                if (modal) {
+                    closeModal(modal);
+                }
+            }
+        }
+        catch {
+            alert("Не вдалося змінити пароль. Спробуй ще раз.");
+        }
+        finally {
+            if (submitButton) {
+                submitButton.disabled =
+                    false;
+            }
+        }
+    });
+};
 export const initModals = () => {
     bindOpenButtons();
     bindCloseButtons();
     bindBackdropClose();
     bindEscapeClose();
     bindPasswordToggles();
+    bindPasswordForm();
 };

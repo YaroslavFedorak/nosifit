@@ -1,7 +1,8 @@
 const getCompletionValue = (): number => {
-    const element = document.querySelector<HTMLElement>(
-        "[data-profile-completion]"
-    );
+    const element =
+        document.querySelector<HTMLElement>(
+            "[data-profile-completion]"
+        );
 
     if (!element) {
         return 0;
@@ -24,9 +25,10 @@ const getCompletionValue = (): number => {
 const updateProgressCircle = (
     value: number
 ): void => {
-    const circle = document.querySelector<HTMLElement>(
-        "[data-progress-circle]"
-    );
+    const circle =
+        document.querySelector<HTMLElement>(
+            "[data-progress-circle]"
+        );
 
     if (!circle) {
         return;
@@ -37,14 +39,16 @@ const updateProgressCircle = (
         `${value}%`
     );
 
-    circle.style.background = `conic-gradient(
-        var(--profile-accent) 0 ${value}%,
-        var(--profile-surface-soft) ${value}% 100%
-    )`;
+    circle.style.background =
+        `conic-gradient(
+            var(--profile-accent) 0 ${value}%,
+            var(--profile-surface-soft) ${value}% 100%
+        )`;
 };
 
 export const initProgress = (): void => {
-    const value = getCompletionValue();
+    const value =
+        getCompletionValue();
 
     updateProgressCircle(value);
 };

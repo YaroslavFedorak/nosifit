@@ -9,10 +9,12 @@ password_change_bp = Blueprint("password_change", __name__)
 @password_change_bp.route("/profile/change_password", methods=["POST"])
 @login_required
 def change_password():
-    data = request.json
-    old = data.get("old_password")
-    new = data.get("new_password")
-    confirm = data.get("confirm_password")
+    old = request.form.get("current_password", "")
+    new = request.form.get("new_password", "")
+    confirm = request.form.get("confirm_password", "")
+
+    if not old or not new or not confirm:
+        return jsonify({"status": "error", "message": "missing_fields"}), 400
 
     if not check_password_hash(current_user.password, old):
         return jsonify({"status": "error", "message": "wrong_old"}), 400

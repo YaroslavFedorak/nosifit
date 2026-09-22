@@ -14,8 +14,8 @@ print("LOADED AUTH_MAIN:", __file__)
 @auth_bp.route("/login", methods=["GET", "POST"], endpoint="login")
 def login():
     if request.method == "POST":
-        email = request.form.get("email")
-        password = request.form.get("password")
+        email = request.form.get("email", "").strip().lower()
+        password = request.form.get("password", "")
 
         user = User.query.filter_by(email=email).first()
 
@@ -29,13 +29,15 @@ def login():
 
         if not user.profile:
             profile = UserProfile(
-                user_id=user.id, training_location="home", onboarding_completed=False
+                user_id=user.id,
+                training_location="home",
+                onboarding_completed=False,
             )
             db.session.add(profile)
             db.session.commit()
 
         login_user(user, remember=True)
-        return redirect(url_for("dashboard_pages.dashboard"))
+        return redirect(url_for("dashboard.dashboard"))
 
     return render_template("auth/login.html")
 
@@ -46,7 +48,9 @@ def register():
 
 
 @auth_bp.route(
-    "/register_complete", methods=["GET", "POST"], endpoint="register_complete"
+    "/register_complete",
+    methods=["GET", "POST"],
+    endpoint="register_complete",
 )
 def register_complete():
     reg_data = session.get("reg_data")
@@ -95,7 +99,8 @@ def register_complete():
         session.pop("verified_email", None)
 
         login_user(user, remember=True)
-        return redirect(url_for("dashboard_pages.dashboard"))
+
+        return redirect(url_for("dashboard.dashboard"))
 
     return render_template("auth/register_complete.html")
 
@@ -106,25 +111,39 @@ def logout():
     return redirect(url_for("root.landing"))
 
 
-@auth_bp.route("/reset", methods=["GET", "POST"], endpoint="reset_password")
+@auth_bp.route(
+    "/reset",
+    methods=["GET", "POST"],
+    endpoint="reset_password",
+)
 def reset_password():
     if request.method == "POST":
-        email = request.form.get("email")
+        email = request.form.get("email", "").strip().lower()
         user = User.query.filter_by(email=email).first()
 
         if user:
             send_password_reset_email(user)
 
-        return render_template("auth/reset_status.html", mode="sent", email=email)
+        return render_template(
+            "auth/reset_status.html",
+            mode="sent",
+            email=email,
+        )
 
     return render_template("auth/reset_password.html")
 
 
-@auth_bp.route("/reset/<token>", methods=["GET", "POST"], endpoint="reset_with_token")
+@auth_bp.route(
+    "/reset/<token>",
+    methods=["GET", "POST"],
+    endpoint="reset_with_token",
+)
 def reset_with_token(token):
     email = verify_reset_token(token)
+
     if isinstance(email, bytes):
         email = email.decode("utf-8")
+
     email = email.strip().lower()
 
     if not email:
@@ -132,19 +151,29 @@ def reset_with_token(token):
         return redirect(url_for("auth.reset_password"))
 
     if request.method == "POST":
-        password = request.form.get("password")
-        confirm = request.form.get("confirm")
+        password = request.form.get("password", "")
+        confirm = request.form.get("confirm", "")
+
+        if not password or not confirm:
+            flash("Заповніть обидва поля пароля.", "error")
+            return redirect(request.url)
 
         if password != confirm:
             flash("Паролі не співпадають.", "error")
             return redirect(request.url)
 
         user = User.query.filter(db.func.lower(User.email) == email).first()
+
+        if not user:
+            flash("Користувача не знайдено.", "error")
+            return redirect(url_for("auth.reset_password"))
+
         user.password = generate_password_hash(password)
         db.session.commit()
 
         login_user(user, remember=True)
-        return redirect(url_for("dashboard_pages.dashboard"))
+
+        return redirect(url_for("dashboard.dashboard"))
 
     return render_template("auth/new_password.html")
 
