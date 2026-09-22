@@ -1,87 +1,292 @@
 import { RecoveryAPI } from "../../api.js";
-import { formatDateLong, formatWeekday } from "../formatters.js";
-import { renderDayDetailsBody } from "./renderer.js";
-
-export async function openDayDetailsModal(dateIso) {
-  const modal = document.getElementById("rc-day-details-modal");
-  if (!modal) return;
-
-  const dialog = modal.querySelector(".rc-day-details-dialog");
-  if (!dialog) return;
-
-  const title = dialog.querySelector("#rc-day-details-title");
-  const subtitle = dialog.querySelector("#rc-day-details-subtitle");
-  const body = dialog.querySelector("#rc-day-details-body");
-
-  if (!title || !subtitle || !body) return;
-
-  title.textContent = formatDateLong(dateIso);
-  subtitle.textContent = formatWeekday(dateIso);
-  body.innerHTML = "";
-
-  modal.classList.add("open");
-  modal.setAttribute("aria-hidden", "false");
-
-  const root = document.getElementById("recovery-app");
-  const userId = Number(root?.dataset?.userId || 0);
-
-  const loading = document.createElement("div");
-  loading.className = "rc-day-daily-summary";
-  loading.textContent = "Завантаження…";
-  body.appendChild(loading);
-
-  let raw = null;
-  try {
-    raw = await RecoveryAPI.getDayDetails(userId, dateIso);
-  } catch {
-    raw = null;
-  }
-
-  const data = normalize(raw, dateIso);
-  body.innerHTML = "";
-  renderDayDetailsBody(body, data);
-}
-
-export function initDayDetailsModalControls() {
-  const modal = document.getElementById("rc-day-details-modal");
-  if (!modal) return;
-
-  const closeBtns = modal.querySelectorAll("[data-close-day-details]");
-  closeBtns.forEach(btn => {
-    btn.addEventListener("click", () => {
-      modal.classList.remove("open");
-      modal.setAttribute("aria-hidden", "true");
-    });
-  });
-
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && modal.classList.contains("open")) {
-      modal.classList.remove("open");
-      modal.setAttribute("aria-hidden", "true");
+import { createDailySummary, createHabitsGrid, createRecommendationRow } from "./components.js";
+let initialized = false;
+let requestSequence = 0;
+let previousBodyOverflow = "";
+function getUserId() {
+    const app = document.getElementById("recovery-app");
+    if (!app) {
+        return null;
     }
-  });
+    const userId = Number(app.dataset.userId);
+    if (!Number.isFinite(userId) ||
+        userId <= 0) {
+        return null;
+    }
+    return userId;
 }
-
-function normalize(raw, dateIso) {
-  if (!raw) {
-    return {
-      date: dateIso,
-      has_data: false,
-      recovery: { score: null, status: null, energy_score: null },
-      sleep: { duration_minutes: null, quality_score: null },
-      training: { load: null, sessions: 0, exercises: [] },
-      habits: { completed: 0, total: 0, score: null, items: [] },
-      recommendations: { items: [], total: 0 }
-    };
-  }
-
-  return {
-    date: raw.date || dateIso,
-    has_data: raw.has_data ?? true,
-    recovery: raw.recovery ?? {},
-    sleep: raw.sleep ?? {},
-    training: raw.training ?? {},
-    habits: raw.habits ?? {},
-    recommendations: raw.recommendations ?? {}
-  };
+function getElement(id) {
+    return document.getElementById(id);
+}
+function formatDate(date) {
+    const value = new Date(`${date}T12:00:00`);
+    if (Number.isNaN(value.getTime())) {
+        return date;
+    }
+    return new Intl.DateTimeFormat("uk-UA", {
+        day: "numeric",
+        month: "long",
+        year: "numeric"
+    }).format(value);
+}
+function renderLoading() {
+    const title = getElement("rc-day-details-title");
+    const subtitle = getElement("rc-day-details-subtitle");
+    const summary = getElement("rc-day-details-summary");
+    const habits = getElement("rc-day-habits");
+    const recommendations = getElement("rc-day-recommendations");
+    if (title) {
+        title.textContent =
+            "Завантаження";
+    }
+    if (subtitle) {
+        subtitle.textContent =
+            "Отримуємо дані за день";
+    }
+    if (summary) {
+        summary.innerHTML =
+            `
+            <div class="rc-day-details-state">
+                <div class="rc-day-details-spinner"></div>
+                <div class="rc-day-details-state-text">
+                    Завантаження даних…
+                </div>
+            </div>
+            `;
+    }
+    if (habits) {
+        habits.hidden = true;
+    }
+    if (recommendations) {
+        recommendations.hidden = true;
+    }
+}
+function renderError(message = "Не вдалося завантажити дані") {
+    const title = getElement("rc-day-details-title");
+    const subtitle = getElement("rc-day-details-subtitle");
+    const summary = getElement("rc-day-details-summary");
+    const habits = getElement("rc-day-habits");
+    const recommendations = getElement("rc-day-recommendations");
+    if (title) {
+        title.textContent =
+            "Помилка";
+    }
+    if (subtitle) {
+        subtitle.textContent =
+            "Не вдалося відкрити дані за день";
+    }
+    if (summary) {
+        summary.innerHTML =
+            `
+            <div class="rc-day-details-state rc-day-details-state-error">
+                <div class="rc-day-details-state-title">
+                    Не вдалося завантажити дані
+                </div>
+                <div class="rc-day-details-state-text">
+                    ${message}
+                </div>
+            </div>
+            `;
+    }
+    if (habits) {
+        habits.hidden = true;
+    }
+    if (recommendations) {
+        recommendations.hidden = true;
+    }
+}
+function renderDay(data) {
+    const title = getElement("rc-day-details-title");
+    const subtitle = getElement("rc-day-details-subtitle");
+    const summary = getElement("rc-day-details-summary");
+    const habitsSection = getElement("rc-day-habits");
+    const recommendationsSection = getElement("rc-day-recommendations");
+    const habitsCount = getElement("rc-habits-count");
+    const habitsList = getElement("rc-habits-list");
+    const recommendationsList = getElement("rc-recommendations-list");
+    if (!title ||
+        !subtitle ||
+        !summary ||
+        !habitsSection ||
+        !recommendationsSection ||
+        !habitsCount ||
+        !habitsList ||
+        !recommendationsList) {
+        throw new Error("Не знайдено елемент модалки");
+    }
+    title.textContent =
+        formatDate(data.date);
+    subtitle.textContent =
+        data.has_data
+            ? "Деталі відновлення за день"
+            : "За цей день доступні лише часткові дані";
+    summary.innerHTML = "";
+    const summaryGrid = document.createElement("div");
+    summaryGrid.id =
+        "rc-day-summary-grid";
+    summaryGrid.className =
+        "rc-day-summary-grid";
+    summaryGrid.appendChild(createDailySummary(data));
+    summary.appendChild(summaryGrid);
+    const dailySummary = document.createElement("div");
+    dailySummary.id =
+        "rc-day-daily-summary";
+    dailySummary.className =
+        "rc-day-daily-summary";
+    const parts = [];
+    if (data.training.sessions > 0) {
+        parts.push(`Тренування: ${data.training.sessions}`);
+    }
+    const sleepMinutes = data.sleep.duration_minutes;
+    if (sleepMinutes !== null &&
+        sleepMinutes !== undefined) {
+        const hours = Math.floor(sleepMinutes / 60);
+        const minutes = sleepMinutes % 60;
+        parts.push(`Сон: ${hours} год ${String(minutes).padStart(2, "0")} хв`);
+    }
+    if (data.habits.total > 0) {
+        parts.push(`Звички: ${data.habits.completed}/${data.habits.total}`);
+    }
+    dailySummary.textContent =
+        parts.length > 0
+            ? parts.join(" · ")
+            : "За цей день додаткових даних немає";
+    summary.appendChild(dailySummary);
+    const habits = Array.isArray(data.habits.items)
+        ? data.habits.items
+        : [];
+    habitsCount.textContent =
+        data.habits.total > 0
+            ? `${data.habits.completed}/${data.habits.total}`
+            : "0";
+    habitsList.innerHTML = "";
+    const habitsGrid = createHabitsGrid(habits);
+    habitsList.appendChild(habitsGrid);
+    habitsList.classList.remove("expanded");
+    const habitsToggle = getElement("rc-habits-toggle");
+    if (habitsToggle) {
+        habitsToggle.textContent =
+            "Показати всі";
+        habitsToggle.classList.remove("is-expanded");
+        habitsToggle.hidden =
+            habits.length <= 4;
+    }
+    const recommendations = Array.isArray(data.recommendations.items)
+        ? data.recommendations.items
+        : [];
+    recommendationsList.innerHTML = "";
+    if (recommendations.length === 0) {
+        const empty = document.createElement("div");
+        empty.className =
+            "rc-empty-state";
+        empty.textContent =
+            "За цей день рекомендацій немає";
+        recommendationsList.appendChild(empty);
+    }
+    else {
+        recommendations.forEach((recommendation) => {
+            recommendationsList.appendChild(createRecommendationRow(recommendation));
+        });
+    }
+    habitsSection.hidden =
+        false;
+    recommendationsSection.hidden =
+        false;
+}
+function showModal(modal) {
+    previousBodyOverflow =
+        document.body.style.overflow;
+    document.body.style.overflow =
+        "hidden";
+    modal.setAttribute("aria-hidden", "false");
+    modal.classList.add("open");
+}
+function hideModal(modal) {
+    requestSequence += 1;
+    modal.setAttribute("aria-hidden", "true");
+    modal.classList.remove("open");
+    document.body.style.overflow =
+        previousBodyOverflow;
+}
+export function openDayDetails(date) {
+    const modal = getElement("rc-day-details-modal");
+    const userId = getUserId();
+    if (!modal ||
+        userId === null ||
+        !date) {
+        return;
+    }
+    const currentRequest = ++requestSequence;
+    showModal(modal);
+    renderLoading();
+    RecoveryAPI
+        .getDayDetails(userId, date)
+        .then(data => {
+        if (currentRequest !==
+            requestSequence) {
+            return;
+        }
+        if (data === null) {
+            renderError("Сервер не повернув дані");
+            return;
+        }
+        try {
+            renderDay(data);
+        }
+        catch (error) {
+            console.error("[Recovery] Render error:", error);
+            renderError(error instanceof Error
+                ? error.message
+                : "Помилка відображення даних");
+        }
+    })
+        .catch(error => {
+        if (currentRequest !==
+            requestSequence) {
+            return;
+        }
+        console.error("[Recovery] Day details error:", error);
+        renderError(error instanceof Error
+            ? error.message
+            : "Не вдалося завантажити дані");
+    });
+}
+export function initDayDetailsModal() {
+    if (initialized) {
+        return;
+    }
+    const modal = getElement("rc-day-details-modal");
+    if (!modal) {
+        return;
+    }
+    initialized = true;
+    const closeButton = modal.querySelector("[data-close-day-details]");
+    closeButton?.addEventListener("click", () => {
+        hideModal(modal);
+    });
+    const habitsToggle = getElement("rc-habits-toggle");
+    habitsToggle?.addEventListener("click", () => {
+        const habitsList = getElement("rc-habits-list");
+        if (!habitsList) {
+            return;
+        }
+        const expanded = habitsList.classList.toggle("expanded");
+        habitsToggle.classList.toggle("is-expanded", expanded);
+        habitsToggle.textContent =
+            expanded
+                ? "Показати менше"
+                : "Показати всі";
+    });
+    modal.addEventListener("click", event => {
+        if (event.target ===
+            modal) {
+            hideModal(modal);
+        }
+    });
+    document.addEventListener("keydown", event => {
+        if (event.key === "Escape" &&
+            modal.classList.contains("open")) {
+            hideModal(modal);
+        }
+    });
 }

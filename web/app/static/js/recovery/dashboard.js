@@ -1,122 +1,151 @@
-import { RECOVERY_MESSAGES } from "./messages.js";
 import { RecoveryAPI } from "./api.js";
 import { renderSleepWidget } from "./sleep.js";
 import { renderHabitsWidget } from "./habits.js";
-import { renderRecoveryHeatmap } from "./heatmap/heatmap.js";
+import { renderHeatmapWidget } from "./heatmap/heatmap.js";
 import { renderRecommendationsWidget } from "./recommendations.js";
 import { renderScoreWidget } from "./score.js";
-
-const CURRENT_YEAR = new Date().getFullYear();
-
 const state = {
     snapshot: null,
+    habits: [],
     heatmap: null,
     recommendations: null,
-    firstLoad: true,
-    userId: null,
-    errors: {
-        snapshot: null,
-        heatmap: null,
-        recommendations: null
-    }
+    firstLoad: true
 };
-
-function resolveUserId() {
-    if (state.userId) return state.userId;
-    const root = document.getElementById("recovery-app");
-    state.userId = root?.dataset?.userId || null;
-    return state.userId;
-}
-
-function renderHeatmapWidget(data, opts = {}) {
-    const grid = document.getElementById("recovery-heatmap");
-
-    if (opts.loading) {
-        if (grid) grid.innerHTML = "<div class='rc-loading'>Завантаження…</div>";
-        return;
+function getUserId() {
+    const app = document.getElementById("recovery-app");
+    if (!app) {
+        return null;
     }
-
-    if (!grid) return;
-
-    if (opts.error) {
-        grid.innerHTML = "";
-        grid.textContent = RECOVERY_MESSAGES.error;
-        return;
-    }
-
-    const days = Array.isArray(data?.days) ? data.days : [];
-    renderRecoveryHeatmap(days);
+    const userId = Number(app.dataset.userId);
+    return Number.isFinite(userId) &&
+        userId > 0
+        ? userId
+        : null;
 }
-
+function normalizeRecommendations(data) {
+    if (!data) {
+        return null;
+    }
+    const raw = data.recommendations;
+    if (Array.isArray(raw)) {
+        const recommendations = [];
+        raw.forEach(item => {
+            if (typeof item === "object" &&
+                item !== null) {
+                const value = item;
+                recommendations.push({
+                    type: typeof value.type === "string"
+                        ? value.type
+                        : undefined,
+                    text: typeof value.text === "string"
+                        ? value.text
+                        : undefined,
+                    priority: typeof value.priority === "string"
+                        ? value.priority
+                        : undefined
+                });
+            }
+        });
+        return {
+            recommendations
+        };
+    }
+    if (typeof raw === "object" &&
+        raw !== null) {
+        const value = raw;
+        if (Array.isArray(value.items)) {
+            const recommendations = [];
+            value.items.forEach(item => {
+                if (typeof item === "object" &&
+                    item !== null) {
+                    const recommendation = item;
+                    recommendations.push({
+                        type: typeof recommendation.type === "string"
+                            ? recommendation.type
+                            : undefined,
+                        text: typeof recommendation.text === "string"
+                            ? recommendation.text
+                            : undefined,
+                        priority: typeof recommendation.priority === "string"
+                            ? recommendation.priority
+                            : undefined
+                    });
+                }
+            });
+            return {
+                recommendations
+            };
+        }
+    }
+    return {
+        recommendations: []
+    };
+}
 function renderLoading() {
-    renderSleepWidget(null, { loading: true });
-    renderHabitsWidget(null, { loading: true });
-    renderScoreWidget(null, { loading: true });
-    renderHeatmapWidget(null, { loading: true });
-    renderRecommendationsWidget(null, { loading: true });
+    renderSleepWidget(null, {
+        loading: true
+    });
+    renderHabitsWidget(null, {
+        loading: true
+    });
+    renderScoreWidget(null, {
+        loading: true
+    });
+    renderHeatmapWidget(null, {
+        loading: true
+    });
+    renderRecommendationsWidget(null, {
+        loading: true
+    });
 }
-
 function renderAll() {
-    renderSleepWidget(state.snapshot, { error: state.errors.snapshot });
-    renderHabitsWidget(state.snapshot, { error: state.errors.snapshot });
-    renderScoreWidget(state.snapshot, { error: state.errors.snapshot });
-    renderHeatmapWidget(state.heatmap, { error: state.errors.heatmap });
-    renderRecommendationsWidget(state.recommendations, { error: state.errors.recommendations });
+    renderSleepWidget(state.snapshot);
+    renderHabitsWidget(state.habits);
+    renderScoreWidget(state.snapshot);
+    renderHeatmapWidget(state.heatmap);
+    const recommendations = normalizeRecommendations(state.recommendations);
+    renderRecommendationsWidget(recommendations);
 }
-
-export async function refreshRecoveryDashboard() {
-    const userId = resolveUserId();
-    if (!userId) return;
-
+export async function refreshRecoveryDashboard(userId) {
+    const resolvedUserId = userId ?? getUserId();
+    if (resolvedUserId === null) {
+        return;
+    }
     if (state.firstLoad) {
         renderLoading();
     }
-
-    const [snapshotRes, heatmapRes, recommendationsRes] =
-        await Promise.allSettled([
-            RecoveryAPI.getSnapshot(userId),
-            RecoveryAPI.getHeatmap(userId, CURRENT_YEAR),
-            RecoveryAPI.getRecommendations(userId)
-        ]);
-
-    if (snapshotRes.status === "fulfilled") {
-        state.snapshot = snapshotRes.value;
-        state.errors.snapshot = null;
-    } else {
-        state.snapshot = null;
-        state.errors.snapshot = snapshotRes.reason?.message || "Failed to load snapshot";
-    }
-
-    if (heatmapRes.status === "fulfilled") {
-        state.heatmap = heatmapRes.value;
-        state.errors.heatmap = null;
-    } else {
-        state.heatmap = null;
-        state.errors.heatmap = heatmapRes.reason?.message || "Failed to load heatmap";
-    }
-
-    if (recommendationsRes.status === "fulfilled") {
-        state.recommendations = recommendationsRes.value;
-        state.errors.recommendations = null;
-    } else {
-        state.recommendations = null;
-        state.errors.recommendations = recommendationsRes.reason?.message || "Failed to load recommendations";
-    }
-
+    const [snapshotResult, habitsResult, heatmapResult, recommendationsResult] = await Promise.allSettled([
+        RecoveryAPI.getSnapshot(resolvedUserId),
+        RecoveryAPI.getHabits(resolvedUserId),
+        RecoveryAPI.getHeatmap(resolvedUserId, new Date().getFullYear()),
+        RecoveryAPI.getRecommendations(resolvedUserId)
+    ]);
+    state.snapshot =
+        snapshotResult.status === "fulfilled"
+            ? snapshotResult.value
+            : null;
+    state.habits =
+        habitsResult.status === "fulfilled"
+            ? habitsResult.value
+            : [];
+    state.heatmap =
+        heatmapResult.status === "fulfilled"
+            ? heatmapResult.value
+            : null;
+    state.recommendations =
+        recommendationsResult.status === "fulfilled"
+            ? recommendationsResult.value
+            : null;
     state.firstLoad = false;
-
     renderAll();
 }
-
-export async function initRecoveryDashboard() {
-    resolveUserId();
-    await refreshRecoveryDashboard();
+export async function initRecoveryDashboard(userId) {
+    await refreshRecoveryDashboard(userId);
 }
-
 export function destroyRecoveryDashboard() {
     state.snapshot = null;
+    state.habits = [];
     state.heatmap = null;
     state.recommendations = null;
     state.firstLoad = true;
-    state.errors = { snapshot: null, heatmap: null, recommendations: null };
 }

@@ -1,80 +1,134 @@
 import { RecoveryAPI } from "../api.js";
 import { refreshRecoveryDashboard } from "../dashboard.js";
-
-export function initSleepModal(userId) {
+import { ICONS } from "../../icons/index.js";
+let initialized = false;
+function getElements() {
     const backdrop = document.getElementById("sleep-modal-backdrop");
     const openBtn = document.getElementById("open-sleep-modal");
     const closeBtn = document.querySelector("[data-close-sleep]");
     const saveBtn = document.querySelector("[data-save-sleep]");
-
     const dateInput = document.querySelector("[data-sleep-date]");
-    const startTimeInput = document.querySelector("[data-sleep-start-time]");
-    const endTimeInput = document.querySelector("[data-sleep-end-time]");
-
-    if (!backdrop || !openBtn || !closeBtn || !saveBtn) return;
-
-    const open = () => {
-        backdrop.classList.add("open");
+    const startInput = document.querySelector("[data-sleep-start-time]");
+    const endInput = document.querySelector("[data-sleep-end-time]");
+    if (!backdrop ||
+        !openBtn ||
+        !closeBtn ||
+        !saveBtn ||
+        !dateInput ||
+        !startInput ||
+        !endInput) {
+        return null;
+    }
+    return {
+        backdrop,
+        openBtn,
+        closeBtn: closeBtn,
+        saveBtn,
+        dateInput,
+        startInput,
+        endInput
     };
-
-    const close = () => {
-        backdrop.classList.remove("open");
-        dateInput.value = "";
-        startTimeInput.value = "";
-        endTimeInput.value = "";
-    };
-
-    const save = async () => {
-        const date = dateInput.value;
-        const startTime = startTimeInput.value;
-        const endTime = endTimeInput.value;
-
-        if (!date || !startTime || !endTime) {
-            alert("Заповніть всі поля");
+}
+function getToday() {
+    const today = new Date();
+    return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+}
+function openModal(elements) {
+    elements.backdrop.hidden =
+        false;
+    requestAnimationFrame(() => {
+        elements.backdrop.classList.add("open");
+    });
+    if (!elements.dateInput.value) {
+        elements.dateInput.value =
+            getToday();
+    }
+    document.body.classList.add("modal-open");
+}
+function closeModal(elements) {
+    elements.backdrop.classList.remove("open");
+    elements.backdrop.hidden =
+        true;
+    elements.dateInput.value = "";
+    elements.startInput.value = "";
+    elements.endInput.value = "";
+    document.body.classList.remove("modal-open");
+}
+async function saveSleep(elements, userId) {
+    const date = elements.dateInput.value;
+    const startTime = elements.startInput.value;
+    const endTime = elements.endInput.value;
+    if (!date ||
+        !startTime ||
+        !endTime) {
+        alert("Заповніть усі поля");
+        return;
+    }
+    const start = new Date(`${date}T${startTime}`);
+    const end = new Date(`${date}T${endTime}`);
+    if (Number.isNaN(start.getTime()) ||
+        Number.isNaN(end.getTime())) {
+        alert("Некоректна дата або час");
+        return;
+    }
+    if (end.getTime() <=
+        start.getTime()) {
+        end.setDate(end.getDate() + 1);
+    }
+    if (end.getTime() >
+        Date.now()) {
+        alert("Час завершення сну не може бути в майбутньому");
+        return;
+    }
+    elements.saveBtn.disabled =
+        true;
+    try {
+        const response = await RecoveryAPI.addSleep(userId, start.toISOString(), end.toISOString());
+        if (response &&
+            typeof response === "object" &&
+            "error" in response &&
+            typeof response.error === "string") {
+            alert(response.error);
             return;
         }
-
-        const start = `${date}T${startTime}`;
-        let end = `${date}T${endTime}`;
-
-        if (endTime < startTime) {
-            const d = new Date(date);
-            d.setDate(d.getDate() + 1);
-            end = `${d.toISOString().slice(0, 10)}T${endTime}`;
+        await refreshRecoveryDashboard(userId);
+        closeModal(elements);
+    }
+    catch {
+        alert("Не вдалося зберегти сон");
+    }
+    finally {
+        elements.saveBtn.disabled =
+            false;
+    }
+}
+export function initSleepModal(userId) {
+    if (initialized) {
+        return;
+    }
+    const elements = getElements();
+    if (!elements) {
+        return;
+    }
+    initialized = true;
+    const sleepIcon = document.getElementById("sleep-header-icon");
+    if (sleepIcon) {
+        sleepIcon.innerHTML =
+            ICONS.moon;
+    }
+    elements.openBtn.addEventListener("click", () => {
+        openModal(elements);
+    });
+    elements.closeBtn.addEventListener("click", () => {
+        closeModal(elements);
+    });
+    elements.backdrop.addEventListener("click", event => {
+        if (event.target ===
+            elements.backdrop) {
+            closeModal(elements);
         }
-
-        const startDt = new Date(start);
-        const endDt = new Date(end);
-        const now = new Date();
-
-        if (endDt > now) {
-            alert("Сон не може закінчуватися у майбутньому");
-            return;
-        }
-
-        saveBtn.disabled = true;
-
-        try {
-            const res = await RecoveryAPI.addSleep(
-                userId,
-                startDt.toISOString(),
-                endDt.toISOString()
-            );
-
-            if (res?.error) {
-                alert(res.error);
-                return;
-            }
-
-            await refreshRecoveryDashboard(userId);
-
-            close();
-        } finally {
-            saveBtn.disabled = false;
-        }
-    };
-
-    openBtn.addEventListener("click", open);
-    closeBtn.addEventListener("click", close);
-    saveBtn.addEventListener("click", save);
+    });
+    elements.saveBtn.addEventListener("click", () => {
+        void saveSleep(elements, userId);
+    });
 }
