@@ -4,8 +4,15 @@ from web.app import create_app
 from backend.app.models.user import User
 from werkzeug.security import generate_password_hash
 
+import os
+from dotenv import load_dotenv
 
-TEST_DATABASE_URI = "postgresql+psycopg://postgres:postgres123@localhost:5432/nosifit_test"
+load_dotenv()
+
+TEST_DATABASE_URI = os.getenv("TEST_DATABASE_URL")
+
+if not TEST_DATABASE_URI:
+    raise RuntimeError("TEST_DATABASE_URL is not configured")
 
 
 @pytest.fixture

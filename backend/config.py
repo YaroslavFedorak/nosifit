@@ -1,11 +1,10 @@
 import os
 
+
 class Config:
     SECRET_KEY = os.getenv("SECRET_KEY")
 
-    SQLALCHEMY_DATABASE_URI = (
-        "postgresql+psycopg://postgres:postgres123@localhost:5432/mydb"
-    )
+    SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL")
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
@@ -27,4 +26,3 @@ class Config:
     REMEMBER_COOKIE_SECURE = False
     SESSION_COOKIE_SAMESITE = "Lax"
     REMEMBER_COOKIE_SAMESITE = "Lax"
-
