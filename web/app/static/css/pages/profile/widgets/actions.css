@@ -1,0 +1,88 @@
+.profile-actions-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 13px;
+}
+
+.profile-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 45px;
+    padding: 11px 14px;
+    border: 1px solid transparent;
+    border-radius: var(--profile-radius-md);
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.2;
+    cursor: pointer;
+    transition:
+        background-color var(--profile-transition-fast),
+        border-color var(--profile-transition-fast),
+        color var(--profile-transition-fast),
+        transform var(--profile-transition-fast);
+}
+
+.profile-btn:hover {
+    transform: translateY(-1px);
+}
+
+.profile-btn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.profile-btn-primary {
+    border-color: var(--profile-accent);
+    background: var(--profile-accent);
+    color: #ffffff;
+}
+
+.profile-btn-primary:hover {
+    border-color: var(--profile-accent-hover);
+    background: var(--profile-accent-hover);
+}
+
+.profile-btn-secondary {
+    border-color: var(--profile-border);
+    background: var(--profile-surface-soft);
+    color: var(--profile-text-soft);
+}
+
+.profile-btn-secondary:hover {
+    border-color: var(--profile-border-soft);
+    background: var(--profile-surface-hover);
+    color: var(--profile-text);
+}
+
+.profile-btn-ghost {
+    border-color: var(--profile-border);
+    background: transparent;
+    color: var(--profile-text-soft);
+}
+
+.profile-btn-ghost:hover {
+    border-color: var(--profile-border-soft);
+    background: var(--profile-surface-soft);
+    color: var(--profile-text);
+}
+
+.profile-btn-danger {
+    border-color: rgba(255, 92, 114, 0.3);
+    background: var(--profile-danger-soft);
+    color: #ff8b9b;
+}
+
+.profile-btn-danger:hover {
+    border-color: rgba(255, 92, 114, 0.5);
+    background: rgba(255, 92, 114, 0.15);
+    color: #ff9aaa;
+}
+
+@media (max-width: 560px) {
+    .profile-actions-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
