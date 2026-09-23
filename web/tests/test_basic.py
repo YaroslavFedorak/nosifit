@@ -1,16 +1,11 @@
-import pytest
-from web.app.app import create_app
+﻿from web.app import create_app
 
 
-@pytest.fixture
-def client():
+def test_home_page():
     app = create_app()
     app.config["TESTING"] = True
 
     with app.test_client() as client:
-        yield client
+        response = client.get("/")
 
-
-def test_home_page(client):
-    respone = client.get("/")
-    assert respone.status_code == 200
+    assert response.status_code == 200
