@@ -5,10 +5,17 @@ from backend.app.models.user import User
 from werkzeug.security import generate_password_hash
 
 
+TEST_DATABASE_URI = "postgresql+psycopg://postgres:postgres123@localhost:5432/nosifit_test"
+
+
 @pytest.fixture
 def app():
-    app = create_app()
-    app.config["TESTING"] = True
+    app = create_app(
+        {
+            "TESTING": True,
+            "SQLALCHEMY_DATABASE_URI": TEST_DATABASE_URI,
+        }
+    )
 
     with app.app_context():
         db.create_all()
