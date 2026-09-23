@@ -8,7 +8,6 @@ from backend.app.utils.email_service import send_password_reset_email
 from backend.app.utils.token import verify_reset_token
 
 auth_bp = Blueprint("auth", __name__, url_prefix="/auth")
-print("LOADED AUTH_MAIN:", __file__)
 
 
 @auth_bp.route("/login", methods=["GET", "POST"], endpoint="login")
