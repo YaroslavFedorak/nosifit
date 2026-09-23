@@ -10,7 +10,7 @@ from backend.app.services.training.load import compute_daily_load_index
 from backend.app.training.training_analysis.recommendations_engine import (
     build_recommendations,
 )
-from backend.app.models.training_session import TrainingSession, SessionExercise
+from backend.app.models.training_session import TrainingSession
 from backend.app.training.models.training_plan import TrainingPlan
 from backend.app.training.models.performance_state import PerformanceState
 import datetime as dt
@@ -428,6 +428,8 @@ def delete_plan(plan_id):
 @login_required
 def complete_session():
     try:
+        data = request.get_json() or {}
+
         existing = (
             TrainingSession.query.filter_by(
                 user_id=current_user.id,
@@ -440,10 +442,13 @@ def complete_session():
         if existing:
             TrainingSessionService.finish_session(
                 existing,
-                (request.get_json() or {}).get("fatigue_after"),
+                data.get("fatigue_after"),
             )
 
-        data = request.get_json() or {}
+        session = TrainingSessionService.start_session(
+            current_user,
+            fatigue_before=data.get("fatigue_before"),
+        )
 
         raw = data.get("exercises", [])
 
@@ -453,41 +458,27 @@ def complete_session():
             else [item for values in raw.values() for item in values]
         )
 
-        session = TrainingSession(
-            user_id=current_user.id,
-            started_at=dt.datetime.utcnow(),
-            status="active",
-        )
-
-        db.session.add(session)
-        db.session.flush()
-
-        for ex in exercises:
-            exercise_data = ex.get("exercise", {})
-
+        for item in exercises:
+            exercise_data = item.get("exercise", {})
             exercise_id = exercise_data.get("id")
 
             if not exercise_id:
                 continue
 
-            db.session.add(
-                SessionExercise(
-                    session_id=session.id,
-                    exercise_id=exercise_id,
-                    sets_done=ex.get("sets"),
-                    reps_done=ex.get("reps"),
-                    load_done=ex.get("load"),
-                    rpe=ex.get("rpe"),
-                )
+            TrainingSessionService.update_exercise(
+                session,
+                exercise_id,
+                {
+                    "sets_done": item.get("sets"),
+                    "reps_done": item.get("reps"),
+                    "load_done": item.get("load"),
+                    "rpe": item.get("rpe"),
+                },
             )
-
-        db.session.commit()
-
-        fatigue_after = data.get("fatigue_after")
 
         TrainingSessionService.finish_session(
             session,
-            fatigue_after,
+            data.get("fatigue_after"),
         )
 
         return jsonify(
@@ -633,7 +624,7 @@ def analytics():
             "squats": getattr(perf, "squats", 0),
             "situps": getattr(perf, "situps", 0),
             "plank_sec": getattr(perf, "plank_sec", 0),
-            "weight": getattr(current_user, "weight", 70),
+            "weight": getattr(perf, "weight", 70),
             "training_load": getattr(perf, "training_load", 0),
             "hip": getattr(perf, "hip", 0),
             "shoulder": getattr(perf, "shoulder", 0),
@@ -717,5 +708,3 @@ def strength_test():
         )
     except Exception as e:
         return _error(e)
-
-
