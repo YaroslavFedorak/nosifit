@@ -1,4 +1,4 @@
-from web.app import db
+from backend.app.extensions import db
 from datetime import datetime, timedelta, timezone
 
 

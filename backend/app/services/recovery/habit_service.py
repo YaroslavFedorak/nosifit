@@ -1,6 +1,6 @@
 from datetime import date
 
-from web.app import db
+from backend.app.extensions import db
 from backend.app.models.recovery.habit import RecoveryHabit
 from backend.app.models.recovery.user_habit import UserRecoveryHabit
 from backend.app.models.recovery.habit_log import RecoveryHabitLog

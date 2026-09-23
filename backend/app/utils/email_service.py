@@ -1,6 +1,6 @@
 from flask import url_for
 from backend.app.utils.token import generate_reset_token
-from web.app import mail
+from backend.app.extensions import mail
 from flask_mail import Message
 
 

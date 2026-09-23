@@ -117,5 +117,3 @@ def github_callback():
     }
 
     return redirect("/auth/complete_profile")
-
-

@@ -1,5 +1,6 @@
 import pytest
-from web.app import create_app, db
+from backend.app.extensions import db
+from web.app import create_app
 from backend.app.models.user import User
 from werkzeug.security import generate_password_hash
 
@@ -8,7 +9,6 @@ from werkzeug.security import generate_password_hash
 def app():
     app = create_app()
     app.config["TESTING"] = True
-    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///:memory:"
 
     with app.app_context():
         db.create_all()
@@ -32,4 +32,3 @@ def user(app):
     db.session.add(u)
     db.session.commit()
     return u
-

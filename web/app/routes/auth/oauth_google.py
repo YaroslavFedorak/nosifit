@@ -77,9 +77,7 @@ def google_callback():
         "provider": "google",
         "provider_user_id": google_id,
         "email": email,
-        "name": name,
+        "username": name,
     }
 
     return redirect("/auth/complete_profile")
-
-

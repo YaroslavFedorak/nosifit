@@ -1,4 +1,4 @@
-from web.app import db
+from backend.app.extensions import db
 from backend.app.models.injury import Injury
 from backend.app.models.user_injury import UserInjury
 

@@ -1,4 +1,4 @@
-from web.app import db
+from backend.app.extensions import db
 
 
 class RecoveryPlan(db.Model):

@@ -1,6 +1,6 @@
 from datetime import date
 
-from web.app import db
+from backend.app.extensions import db
 from backend.app.models.nutrition.user_weight import UserWeight
 from backend.app.models.user_profile import UserProfile
 

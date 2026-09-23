@@ -1,4 +1,4 @@
-from web.app import db
+from backend.app.extensions import db
 from backend.app.models.user_profile import UserProfile
 from backend.app.models.user_goals import UserTrainingGoals
 from backend.app.models.user_injury import UserInjury

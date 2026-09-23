@@ -1,6 +1,14 @@
 import json
+from pathlib import Path
+
 from backend.app.extensions import db
+from backend.app.models.user import User
 from backend.app.training.models.exercise import Exercise
+from backend.app.factory import create_backend_app
+
+
+BASE_DIR = Path(__file__).resolve().parents[2]
+EXERCISES_DIR = BASE_DIR / "backend" / "app" / "training" / "data" / "exercises"
 
 
 def import_file(path):
@@ -27,10 +35,16 @@ def import_file(path):
     db.session.commit()
 
 
-import_file("web/app/training_engine/data/exercises/upper_body.json")
-import_file("web/app/training_engine/data/exercises/lower_body.json")
-import_file("web/app/training_engine/data/exercises/core.json")
-import_file("web/app/training_engine/data/exercises/mobility.json")
-import_file("web/app/training_engine/data/exercises/full_body.json")
+def run():
+    app = create_backend_app()
+
+    with app.app_context():
+        import_file(EXERCISES_DIR / "upper_body.json")
+        import_file(EXERCISES_DIR / "lower_body.json")
+        import_file(EXERCISES_DIR / "core.json")
+        import_file(EXERCISES_DIR / "mobility.json")
+        import_file(EXERCISES_DIR / "full_body.json")
 
 
+if __name__ == "__main__":
+    run()

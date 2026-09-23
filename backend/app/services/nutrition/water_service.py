@@ -1,6 +1,6 @@
 from datetime import date
 
-from web.app import db
+from backend.app.extensions import db
 from backend.app.models import User
 from backend.app.models.nutrition.user_water import UserWater
 

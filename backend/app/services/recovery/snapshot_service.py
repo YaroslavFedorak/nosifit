@@ -1,7 +1,7 @@
 from datetime import date
 from typing import Dict, Any, Optional
 
-from web.app import db
+from backend.app.extensions import db
 from backend.app.models.recovery.daily_recovery_snapshot import DailyRecoverySnapshot
 from backend.app.services.recovery.recovery_score_service import RecoveryScoreService
 from backend.app.services.recovery.habit_service import HabitService

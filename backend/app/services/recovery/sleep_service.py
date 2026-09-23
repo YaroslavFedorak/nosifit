@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta, time, date
 from typing import Optional, List
 
-from web.app import db
+from backend.app.extensions import db
 from backend.app.models.recovery.sleep_entry import SleepEntry
 from backend.app.models.user import User
 from backend.app.services.recovery.constants import (

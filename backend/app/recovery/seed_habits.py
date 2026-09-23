@@ -1,7 +1,8 @@
 import os
 import json
 
-from web.app import create_app, db
+from backend.app.extensions import db
+from backend.app.factory import create_backend_app
 from backend.app.models.recovery.habit import RecoveryHabit
 
 BASE_DIR = os.path.abspath(
@@ -16,7 +17,7 @@ FILE_PATH = os.path.join(BASE_DIR, "habits.json")
 
 
 def run():
-    app = create_app()
+    app = create_backend_app()
     with app.app_context():
         with open(FILE_PATH, "r", encoding="utf-8") as f:
             habits = json.load(f)
@@ -57,4 +58,3 @@ def run():
 
 if __name__ == "__main__":
     run()
-

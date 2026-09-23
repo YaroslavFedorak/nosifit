@@ -1,6 +1,6 @@
 from datetime import datetime
 from typing import Dict
-from web.app import db
+from backend.app.extensions import db
 from sqlalchemy.dialects.postgresql import JSONB
 
 

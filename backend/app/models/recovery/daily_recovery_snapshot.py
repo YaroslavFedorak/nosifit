@@ -1,5 +1,5 @@
 from sqlalchemy.sql import func
-from web.app import db
+from backend.app.extensions import db
 from sqlalchemy import CheckConstraint
 
 

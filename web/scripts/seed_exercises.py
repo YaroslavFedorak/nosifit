@@ -1,11 +1,10 @@
 import json
 import os
 import sys
-from web.app import create_app, db
+from web.app import create_app
+from backend.app.extensions import db
 
-BASE_DIR = os.path.abspath(
-    os.path.join(os.path.dirname(__file__), "..", "app", "training_engine", "data")
-)
+BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "backend", "app", "training", "data"))
 
 
 def load_json(path):
@@ -129,4 +128,3 @@ def run_seed():
 
 if __name__ == "__main__":
     run_seed()
-

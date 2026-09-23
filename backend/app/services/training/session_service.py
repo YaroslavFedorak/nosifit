@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from web.app import db
+from backend.app.extensions import db
 from backend.app.models.training_session import (
     SessionExercise,
     TrainingSession,

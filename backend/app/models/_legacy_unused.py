@@ -1,6 +1,6 @@
 from datetime import datetime
 from sqlalchemy.dialects.postgresql import JSONB
-from web.app import db
+from backend.app.extensions import db
 
 
 class WorkoutPlan(db.Model):

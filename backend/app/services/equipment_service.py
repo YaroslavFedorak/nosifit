@@ -1,4 +1,4 @@
-from web.app import db
+from backend.app.extensions import db
 from backend.app.models.user_equipment import UserEquipment
 from backend.app.training.models.equipment import TEEquipment
 

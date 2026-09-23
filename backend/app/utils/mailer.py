@@ -1,6 +1,6 @@
 from flask import current_app
 from flask_mail import Message
-from web.app import mail
+from backend.app.extensions import mail
 
 
 def send_email_code(email, code):

@@ -1,6 +1,6 @@
 from datetime import date, datetime, time
 
-from web.app import db
+from backend.app.extensions import db
 from backend.app.models import Meal
 
 

@@ -1,6 +1,6 @@
 from datetime import date
 
-from web.app import db
+from backend.app.extensions import db
 
 
 class UserWater(db.Model):

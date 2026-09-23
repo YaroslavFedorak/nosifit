@@ -1,5 +1,5 @@
 from datetime import datetime, timezone
-from web.app import db
+from backend.app.extensions import db
 
 
 class OAuthAccount(db.Model):

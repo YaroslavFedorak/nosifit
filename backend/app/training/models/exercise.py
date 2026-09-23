@@ -1,7 +1,7 @@
 from datetime import datetime
 import uuid
 from sqlalchemy.dialects.postgresql import JSONB
-from web.app import db
+from backend.app.extensions import db
 
 
 class Exercise(db.Model):

@@ -1,4 +1,4 @@
-from web.app import db
+from backend.app.extensions import db
 from backend.app.models import Meal, MealItem
 
 from backend.app.services.nutrition.meal_service import (

@@ -1,4 +1,4 @@
-from web.app import db
+from backend.app.extensions import db
 
 from backend.app.models.user import User
 from backend.app.models.nutrition.user_goals import UserGoals

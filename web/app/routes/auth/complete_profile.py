@@ -42,7 +42,7 @@ def complete_profile():
         workouts = int(request.form.get("workouts"))
 
         user = User(
-            username=oauth_user["name"],
+            username=oauth_user["username"],
             email=oauth_user["email"],
             password="oauth",
             is_premium=False,
@@ -53,6 +53,7 @@ def complete_profile():
 
         profile = UserProfile(
             user_id=user.id,
+            training_location="home",
             age=age,
             height=height,
             weight=weight,
@@ -77,5 +78,3 @@ def complete_profile():
         "auth/complete_profile.html",
         oauth_user=oauth_user,
     )
-
-
