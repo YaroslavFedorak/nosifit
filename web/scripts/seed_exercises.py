@@ -1,18 +1,29 @@
 import json
 import os
-import sys
+
 from web.app import create_app
 from backend.app.extensions import db
 
-BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "backend", "app", "training", "data"))
+BASE_DIR = os.path.abspath(
+    os.path.join(
+        os.path.dirname(__file__),
+        "..",
+        "..",
+        "backend",
+        "app",
+        "training",
+        "data",
+    )
+)
 
 
 def load_json(path):
     if not os.path.exists(path):
         return []
+
     try:
-        with open(path, "r", encoding="utf-8") as f:
-            data = json.load(f)
+        with open(path, "r", encoding="utf-8") as file:
+            data = json.load(file)
             return data if isinstance(data, list) else []
     except Exception:
         return []
@@ -20,18 +31,25 @@ def load_json(path):
 
 def load_all_from_dir(path):
     items = []
+
     if not os.path.exists(path):
         return items
-    for fname in os.listdir(path):
-        if fname.endswith(".json"):
-            fpath = os.path.join(path, fname)
-            try:
-                with open(fpath, "r", encoding="utf-8") as f:
-                    data = json.load(f)
-                    if isinstance(data, list):
-                        items.extend(data)
-            except Exception:
-                continue
+
+    for filename in os.listdir(path):
+        if not filename.endswith(".json"):
+            continue
+
+        file_path = os.path.join(path, filename)
+
+        try:
+            with open(file_path, "r", encoding="utf-8") as file:
+                data = json.load(file)
+
+            if isinstance(data, list):
+                items.extend(data)
+        except Exception:
+            continue
+
     return items
 
 
@@ -51,78 +69,101 @@ def run_seed():
         equipment = load_json(equipment_path)
         exercises = load_all_from_dir(exercises_dir)
 
-        for m in muscles:
-            slug = m.get("slug")
-            name = m.get("name")
-            desc = m.get("description")
-            if not slug or not name:
-                continue
-            obj = Muscle.query.filter_by(slug=slug).first()
-            if not obj:
-                obj = Muscle(slug=slug, name=name, description=desc)
-                db.session.add(obj)
+        created_muscles = 0
+        created_equipment = 0
+        created_exercises = 0
+        updated_exercises = 0
 
-        for e in equipment:
-            slug = e.get("slug")
-            name = e.get("name")
-            desc = e.get("description")
-            tags = e.get("tags", [])
+        for item in muscles:
+            slug = item.get("slug")
+            name = item.get("name")
+
             if not slug or not name:
                 continue
-            obj = TEEquipment.query.filter_by(slug=slug).first()
-            if not obj:
-                obj = TEEquipment(slug=slug, name=name, description=desc)
-                obj.set_tags(tags)
-                db.session.add(obj)
+
+            muscle = Muscle.query.filter_by(slug=slug).first()
+
+            if not muscle:
+                muscle = Muscle(
+                    slug=slug,
+                    name=name,
+                    description=item.get("description"),
+                )
+                db.session.add(muscle)
+                created_muscles += 1
+
+        for item in equipment:
+            slug = item.get("slug")
+            name = item.get("name")
+
+            if not slug or not name:
+                continue
+
+            equipment_item = TEEquipment.query.filter_by(slug=slug).first()
+
+            if not equipment_item:
+                equipment_item = TEEquipment(
+                    slug=slug,
+                    name=name,
+                    description=item.get("description"),
+                )
+                equipment_item.set_tags(item.get("tags", []))
+                db.session.add(equipment_item)
+                created_equipment += 1
 
         db.session.flush()
 
-        for it in exercises:
-            slug = it.get("slug") or it["name"].lower().replace(" ", "-")
+        for item in exercises:
+            name = item.get("name")
+            slug = item.get("slug")
+
+            if not name:
+                continue
+
             if not slug:
-                continue
+                slug = name.lower().replace(" ", "-")
 
-            ex = Exercise.query.filter_by(slug=slug).first()
-            if ex:
-                continue
+            exercise = Exercise.query.filter_by(slug=slug).first()
 
-            ex = Exercise(
-                name=it["name"],
-                slug=slug,
-                description=it.get("description"),
-                difficulty=it.get("difficulty", 1),
-                location=it.get("location", "any"),
-                movement_pattern=it.get("movement_pattern"),
-                risk_level=it.get("risk_level", 1),
-                muscles_primary=it.get("muscles_primary", []),
-                muscles_secondary=it.get("muscles_secondary", []),
-                progression=json.dumps(it.get("progression", [])),
-                regression=json.dumps(it.get("regression", [])),
-            )
-            db.session.add(ex)
-            db.session.flush()
-
-            for mslug in it.get("muscles_primary", []):
-                m = Muscle.query.filter_by(slug=mslug).first()
-                if m and m not in ex.muscles:
-                    ex.muscles.append(m)
-
-            for mslug in it.get("muscles_secondary", []):
-                m = Muscle.query.filter_by(slug=mslug).first()
-                if m and m not in ex.muscles:
-                    ex.muscles.append(m)
-
-            for ename in it.get("equipment", []):
-                eslug = ename.lower().replace(" ", "-")
-                eq = TEEquipment.query.filter_by(slug=eslug).first()
-                if eq:
-                    ex.equipment.append(eq)
+            if not exercise:
+                exercise = Exercise(
+                    name=name,
+                    slug=slug,
+                    description=item.get("description"),
+                    difficulty=item.get("difficulty", 1),
+                    location=item.get("location", "any"),
+                    movement_pattern=item.get("movement_pattern"),
+                    risk_level=item.get("risk_level", 1),
+                    muscles_primary=item.get("muscles_primary", []),
+                    muscles_secondary=item.get("muscles_secondary", []),
+                    equipment=item.get("equipment", []),
+                    max_additional_load_kg=item.get("max_additional_load_kg"),
+                    muscle_load_profile=item.get("muscle_load_profile"),
+                )
+                db.session.add(exercise)
+                created_exercises += 1
+            else:
+                exercise.name = name
+                exercise.description = item.get("description")
+                exercise.difficulty = item.get("difficulty", 1)
+                exercise.location = item.get("location", "any")
+                exercise.movement_pattern = item.get("movement_pattern")
+                exercise.risk_level = item.get("risk_level", 1)
+                exercise.muscles_primary = item.get("muscles_primary", [])
+                exercise.muscles_secondary = item.get("muscles_secondary", [])
+                exercise.equipment = item.get("equipment", [])
+                exercise.max_additional_load_kg = item.get("max_additional_load_kg")
+                exercise.muscle_load_profile = item.get("muscle_load_profile")
+                updated_exercises += 1
 
         db.session.commit()
+
         print(
-            f"Seed complete: {len(muscles)} muscles, "
-            f"{len(equipment)} equipment items, "
-            f"{len(exercises)} exercises processed."
+            f"Seed complete: "
+            f"{created_muscles} muscles created, "
+            f"{created_equipment} equipment items created, "
+            f"{created_exercises} exercises created, "
+            f"{updated_exercises} exercises updated."
         )
 
 
