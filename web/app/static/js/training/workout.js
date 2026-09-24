@@ -1,7 +1,7 @@
 import { trainingStore } from "./store.js";
 import { persistWorkout } from "./state.js";
 import { ICONS } from "../icons/index.js";
-import { t } from "../i18n/index.js";
+import { exercise_t, t } from "../i18n/index.js";
 function makeInlineBlock(labelText, initialValue, onChange, isRange = false, disabled = false) {
     const wrap = document.createElement("div");
     wrap.className =
@@ -98,6 +98,19 @@ function makeInlineBlock(labelText, initialValue, onChange, isRange = false, dis
     }
     return wrap;
 }
+function getExerciseName(item) {
+    const slug = item.exercise?.slug;
+    if (typeof slug === "string" &&
+        slug.trim()) {
+        const translated = exercise_t(slug);
+        if (translated !==
+            `${slug}.name`) {
+            return translated;
+        }
+    }
+    return (item.exercise?.name ||
+        t("exercise.fallback"));
+}
 export function renderWorkoutList() {
     const box = document.getElementById("tr-workout-exercise-list");
     if (!box) {
@@ -144,8 +157,7 @@ export function renderWorkoutList() {
         name.className =
             "tr-session-ex-name";
         name.textContent =
-            item.exercise?.name ||
-                t("exercise.fallback");
+            getExerciseName(item);
         nameWrap.appendChild(name);
         if (item.fromPlan) {
             const planIcon = document.createElement("span");

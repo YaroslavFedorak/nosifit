@@ -1,222 +1,265 @@
 import { trainingStore } from "./store.js";
 
 import type {
-    Exercise
+Exercise
 } from "./api.js";
 
 import {
-    t
+exercise_t,
+t
 } from "../i18n/index.js";
 
 type PickerCallback =
-    (exercise: Exercise) => void;
+(exercise: Exercise) => void;
 
 let pickerCallback:
-    PickerCallback | null = null;
+PickerCallback | null = null;
+
+function getExerciseName(
+exercise: Exercise
+): string {
+if (!exercise.slug) {
+return exercise.name;
+}
+
+const translated =
+    exercise_t(exercise.slug);
+
+return translated ===
+    `${exercise.slug}.name`
+    ? exercise.name
+    : translated;
+
+}
 
 export function openExercisePicker(
-    callback: PickerCallback
+callback: PickerCallback
 ): void {
-    pickerCallback = callback;
+pickerCallback = callback;
 
-    const modal =
-        document.getElementById(
-            "tr-modal-picker"
-        );
+const modal =
+    document.getElementById(
+        "tr-modal-picker"
+    );
 
-    if (!modal) {
-        return;
-    }
+if (!modal) {
+    return;
+}
 
-    modal.classList.add("open");
+modal.classList.add("open");
+
 }
 
 export function initExercisePicker(): void {
-    const modal =
-        document.getElementById(
-            "tr-modal-picker"
-        );
+const modal =
+document.getElementById(
+"tr-modal-picker"
+);
 
-    const list =
-        document.getElementById(
-            "tr-ex-list"
-        );
+const list =
+    document.getElementById(
+        "tr-ex-list"
+    );
 
-    const search =
-        document.getElementById(
-            "tr-ex-search"
-        ) as HTMLInputElement | null;
+const search =
+    document.getElementById(
+        "tr-ex-search"
+    ) as HTMLInputElement | null;
 
-    const categories =
-        document.querySelectorAll<HTMLElement>(
-            ".tr-ex-cat"
-        );
+const categories =
+    document.querySelectorAll<HTMLElement>(
+        ".tr-ex-cat"
+    );
 
-    if (
-        !modal ||
-        !list ||
-        !search
-    ) {
-        return;
-    }
+if (
+    !modal ||
+    !list ||
+    !search
+) {
+    return;
+}
 
-    const closeButtons =
-        modal.querySelectorAll<HTMLElement>(
-            "[data-close-picker]"
-        );
+const closeButtons =
+    modal.querySelectorAll<HTMLElement>(
+        "[data-close-picker]"
+    );
 
-    let currentCategory = "all";
+let currentCategory = "all";
 
-    const renderList =
-        (items: Exercise[]): void => {
-            list.innerHTML = "";
+const renderList =
+    (items: Exercise[]): void => {
+        list.innerHTML = "";
 
-            if (!items.length) {
-                const empty =
-                    document.createElement("div");
+        if (!items.length) {
+            const empty =
+                document.createElement("div");
 
-                empty.className =
-                    "tr-ex-modal-empty";
+            empty.className =
+                "tr-ex-modal-empty";
 
-                empty.textContent =
-                    t("recommendations.exercisesEmpty");
+            empty.textContent =
+                t(
+                    "recommendations.exercisesEmpty"
+                );
 
-                list.appendChild(empty);
+            list.appendChild(empty);
 
-                return;
-            }
+            return;
+        }
 
-            items.forEach(exercise => {
-                const row =
-                    document.createElement("div");
+        items.forEach(exercise => {
+            const row =
+                document.createElement("div");
 
-                row.className =
-                    "tr-ex-modal-item";
+            row.className =
+                "tr-ex-modal-item";
 
-                row.textContent =
-                    exercise.name;
+            row.textContent =
+                getExerciseName(
+                    exercise
+                );
 
-                row.onclick = () => {
-                    pickerCallback?.(exercise);
+            row.onclick = () => {
+                pickerCallback?.(
+                    exercise
+                );
 
-                    modal.classList.remove(
-                        "open"
-                    );
-                };
+                modal.classList.remove(
+                    "open"
+                );
+            };
 
-                list.appendChild(row);
-            });
-        };
+            list.appendChild(row);
+        });
+    };
 
-    const filterItems =
-        (): void => {
-            const query =
-                search.value
-                    .trim()
-                    .toLowerCase();
+const filterItems =
+    (): void => {
+        const query =
+            search.value
+                .trim()
+                .toLowerCase();
 
-            let items =
-                [...trainingStore.exercises];
+        let items =
+            [...trainingStore.exercises];
 
-            if (
-                currentCategory !==
-                "all"
-            ) {
-                items =
-                    items.filter(
-                        exercise => {
-                            const muscles =
+        if (
+            currentCategory !==
+            "all"
+        ) {
+            items =
+                items.filter(
+                    exercise => {
+                        const muscles =
+                            exercise
+                                .muscles_primary ||
+                            [];
+
+                        return muscles.some(
+                            muscle =>
+                                muscle
+                                    .toLowerCase()
+                                    .includes(
+                                        currentCategory
+                                    )
+                        );
+                    }
+                );
+        }
+
+        if (query) {
+            items =
+                items.filter(
+                    exercise => {
+                        const localizedName =
+                            getExerciseName(
                                 exercise
-                                    .muscles_primary ||
-                                [];
+                            ).toLowerCase();
 
-                            return muscles.some(
-                                muscle =>
-                                    muscle
-                                        .toLowerCase()
-                                        .includes(
-                                            currentCategory
-                                        )
-                            );
-                        }
-                    );
-            }
-
-            if (query) {
-                items =
-                    items.filter(
-                        exercise =>
+                        const originalName =
                             exercise.name
-                                .toLowerCase()
-                                .includes(query)
-                    );
-            }
+                                .toLowerCase();
 
-            renderList(items);
-        };
+                        return (
+                            localizedName.includes(
+                                query
+                            ) ||
+                            originalName.includes(
+                                query
+                            )
+                        );
+                    }
+                );
+        }
 
-    const closeModal =
-        (): void => {
-            modal.classList.remove(
+        renderList(items);
+    };
+
+const closeModal =
+    (): void => {
+        modal.classList.remove(
+            "open"
+        );
+
+        pickerCallback = null;
+    };
+
+renderList(
+    trainingStore.exercises
+);
+
+search.oninput =
+    filterItems;
+
+categories.forEach(button => {
+    button.onclick = () => {
+        currentCategory =
+            button.dataset.cat ||
+            "all";
+
+        categories.forEach(
+            category =>
+                category.classList.remove(
+                    "active"
+                )
+        );
+
+        button.classList.add(
+            "active"
+        );
+
+        filterItems();
+    };
+});
+
+closeButtons.forEach(button => {
+    button.onclick =
+        closeModal;
+});
+
+modal.addEventListener(
+    "click",
+    event => {
+        if (
+            event.target === modal
+        ) {
+            closeModal();
+        }
+    }
+);
+
+document.addEventListener(
+    "keydown",
+    event => {
+        if (
+            event.key === "Escape" &&
+            modal.classList.contains(
                 "open"
-            );
-
-            pickerCallback = null;
-        };
-
-    renderList(
-        trainingStore.exercises
-    );
-
-    search.oninput =
-        filterItems;
-
-    categories.forEach(button => {
-        button.onclick = () => {
-            currentCategory =
-                button.dataset.cat ||
-                "all";
-
-            categories.forEach(
-                category =>
-                    category.classList.remove(
-                        "active"
-                    )
-            );
-
-            button.classList.add(
-                "active"
-            );
-
-            filterItems();
-        };
-    });
-
-    closeButtons.forEach(button => {
-        button.onclick =
-            closeModal;
-    });
-
-    modal.addEventListener(
-        "click",
-        event => {
-            if (
-                event.target === modal
-            ) {
-                closeModal();
-            }
+            )
+        ) {
+            closeModal();
         }
-    );
+    }
+);
 
-    document.addEventListener(
-        "keydown",
-        event => {
-            if (
-                event.key === "Escape" &&
-                modal.classList.contains("open")
-            ) {
-                closeModal();
-            }
-        }
-    );
 }

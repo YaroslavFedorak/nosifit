@@ -1,5 +1,5 @@
 import { TrainingAPI } from "./api.js";
-import { getLocale, t } from "../i18n/index.js";
+import { exercise_t, getLocale, t } from "../i18n/index.js";
 let CALENDAR_DATA = [];
 let CURRENT_YEAR = new Date().getFullYear();
 let CURRENT_MONTH = new Date().getMonth();
@@ -399,6 +399,18 @@ function renderCalendarMonth() {
             }
         };
 }
+function getDayExerciseName(exercise) {
+    if (typeof exercise.slug === "string" &&
+        exercise.slug.trim()) {
+        const translated = exercise_t(exercise.slug);
+        if (translated !==
+            `${exercise.slug}.name`) {
+            return translated;
+        }
+    }
+    return exercise.name ||
+        t("exercise.fallback");
+}
 function openDayDetails(date) {
     TrainingAPI
         .getDayDetails(date)
@@ -433,7 +445,7 @@ function openDayDetails(date) {
                     .map(exercise => `
                                                     <div class="tr-day-exercise">
                                                         <div class="tr-ex-name">
-                                                            ${exercise.name}
+                                                            ${getDayExerciseName(exercise)}
                                                         </div>
                                                         <div class="tr-ex-meta">
                                                             ${exercise.load != null

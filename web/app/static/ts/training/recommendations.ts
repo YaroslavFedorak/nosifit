@@ -1,11 +1,13 @@
 import { ICONS } from "../icons/index.js";
 
 import {
+    exercise_t,
     t
 } from "../i18n/index.js";
 
 type RecommendationItem = {
     exercise?: string;
+    slug?: string;
     reasons?: string[];
     score?: number;
 };
@@ -140,6 +142,29 @@ function translateReason(
         : capitalize(value);
 }
 
+function translateExercise(
+    item: RecommendationItem
+): string {
+    if (
+        typeof item.slug === "string" &&
+        item.slug.trim()
+    ) {
+        const translated =
+            exercise_t(
+                item.slug
+            );
+
+        if (
+            translated !==
+            `${item.slug}.name`
+        ) {
+            return translated;
+        }
+    }
+
+    return item.exercise || "";
+}
+
 export function renderRecommendations(
     data: RecommendationsData | null | undefined
 ): void {
@@ -223,8 +248,14 @@ function renderRecommendedExercises(
             .filter(
                 item =>
                     item &&
-                    typeof item.exercise === "string" &&
-                    item.exercise.trim().length > 0
+                    (
+                        typeof item.exercise === "string" ||
+                        typeof item.slug === "string"
+                    ) &&
+                    (
+                        item.exercise?.trim().length ||
+                        item.slug?.trim().length
+                    )
             )
             .slice(0, 3);
 
@@ -253,7 +284,7 @@ function renderRecommendedExercises(
                     <div class="tr-rec-line-item">
                         <div class="tr-rec-line-item-top">
                             ${ICONS.exercise}
-                            <span>${item.exercise || ""}</span>
+                            <span>${translateExercise(item)}</span>
                         </div>
 
                         ${

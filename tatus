@@ -1,0 +1,32 @@
+warning: in the working copy of 'web/app/static/js/i18n/index.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'web/app/static/js/i18n/loader.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'web/app/static/js/training/exercise_picker.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'web/app/static/js/training/exercises.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'web/app/static/js/training/heatmap.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'web/app/static/js/training/main.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'web/app/static/js/training/plans/ui/exerciseCard.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'web/app/static/js/training/recommendations.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'web/app/static/js/training/workout.js', LF will be replaced by CRLF the next time Git touches it
+ web/app/routes/training/api_training.py            |  59 [32m++[m[31m-[m
+ web/app/static/js/i18n/index.js                    |   5 [32m+[m[31m-[m
+ web/app/static/js/i18n/loader.js                   |  10 [32m+[m[31m-[m
+ web/app/static/js/training/exercise_picker.js      |  24 [32m+[m[31m-[m
+ web/app/static/js/training/exercises.js            |   5 [32m+[m[31m-[m
+ web/app/static/js/training/heatmap.js              |  16 [32m+[m[31m-[m
+ web/app/static/js/training/main.js                 |   5 [32m+[m[31m-[m
+ .../static/js/training/plans/ui/exerciseCard.js    |  46 [32m++[m[31m-[m
+ web/app/static/js/training/recommendations.js      |  21 [32m+[m[31m-[m
+ web/app/static/js/training/workout.js              |  18 [32m+[m[31m-[m
+ web/app/static/ts/i18n/index.ts                    |  10 [32m+[m
+ web/app/static/ts/i18n/loader.ts                   | 207 [32m++++++[m[31m-----[m
+ web/app/static/ts/training/api.ts                  |   2 [32m+[m
+ web/app/static/ts/training/exercise_picker.ts      | 395 [32m++++++++++++[m[31m---------[m
+ web/app/static/ts/training/exercises.ts            |  79 [32m+++[m[31m--[m
+ web/app/static/ts/training/heatmap.ts              |  65 [32m+++[m[31m-[m
+ web/app/static/ts/training/main.ts                 |   7 [32m+[m[31m-[m
+ .../static/ts/training/plans/ui/exerciseCard.ts    | 267 [32m+++++++[m[31m-------[m
+ web/app/static/ts/training/recommendations.ts      |  39 [32m+[m[31m-[m
+ web/app/static/ts/training/session.ts              |   2 [32m+[m[31m-[m
+ web/app/static/ts/training/workout.ts              |  49 [32m++[m[31m-[m
+ web/scripts/import_exercises_jsonb.py              |  50 [31m---[m
+ 22 files changed, 821 insertions(+), 560 deletions(-)

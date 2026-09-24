@@ -1,6 +1,16 @@
 import { trainingStore } from "./store.js";
-import { t } from "../i18n/index.js";
+import { exercise_t, t } from "../i18n/index.js";
 let pickerCallback = null;
+function getExerciseName(exercise) {
+    if (!exercise.slug) {
+        return exercise.name;
+    }
+    const translated = exercise_t(exercise.slug);
+    return translated ===
+        `${exercise.slug}.name`
+        ? exercise.name
+        : translated;
+}
 export function openExercisePicker(callback) {
     pickerCallback = callback;
     const modal = document.getElementById("tr-modal-picker");
@@ -37,7 +47,7 @@ export function initExercisePicker() {
             row.className =
                 "tr-ex-modal-item";
             row.textContent =
-                exercise.name;
+                getExerciseName(exercise);
             row.onclick = () => {
                 pickerCallback?.(exercise);
                 modal.classList.remove("open");
@@ -64,9 +74,13 @@ export function initExercisePicker() {
         }
         if (query) {
             items =
-                items.filter(exercise => exercise.name
-                    .toLowerCase()
-                    .includes(query));
+                items.filter(exercise => {
+                    const localizedName = getExerciseName(exercise).toLowerCase();
+                    const originalName = exercise.name
+                        .toLowerCase();
+                    return (localizedName.includes(query) ||
+                        originalName.includes(query));
+                });
         }
         renderList(items);
     };

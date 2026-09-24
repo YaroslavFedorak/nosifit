@@ -40,8 +40,11 @@ import {
 document.addEventListener(
     "DOMContentLoaded",
     async () => {
-        await loadTranslations("training");
-        
+        await Promise.all([
+            loadTranslations("training"),
+            loadTranslations("exercises")
+        ]);
+
         renderCurrentDate();
 
         initHeatmap();

@@ -12,7 +12,10 @@ import { initHeatmap } from "./heatmap.js";
 import { initStrengthTest } from "./strength_test.js";
 import { initDailyState, persistWorkout } from "./state.js";
 document.addEventListener("DOMContentLoaded", async () => {
-    await loadTranslations("training");
+    await Promise.all([
+        loadTranslations("training"),
+        loadTranslations("exercises")
+    ]);
     renderCurrentDate();
     initHeatmap();
     await Promise.all([

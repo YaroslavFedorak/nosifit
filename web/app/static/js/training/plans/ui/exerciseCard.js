@@ -1,32 +1,44 @@
 import { createCounterField, createRepsField } from "./counters.js";
 import { enableDrag } from "../interactions/dragdrop.js";
 import { ICONS } from "../../../icons/index.js";
+import { exercise_t } from "../../../i18n/index.js";
+function getExerciseName(exercise) {
+    if (!exercise.slug) {
+        return exercise.name;
+    }
+    const translated = exercise_t(exercise.slug);
+    return translated ===
+        `${exercise.slug}.name`
+        ? exercise.name
+        : translated;
+}
 export function createExerciseCard(exercise, index, list, rerender, openPicker) {
     const card = document.createElement("div");
     card.className =
         "tr-plan-card";
+    const name = getExerciseName(exercise.exercise);
     card.innerHTML = `
-        <div class="tr-plan-card-header">
-            <div class="tr-plan-card-header-left">
-                <div class="tr-plan-card-strip"></div>
-                <button class="tr-plan-ex-name">
-                    ${exercise.exercise.name}
-                </button>
-            </div>
-
-            <div class="tr-plan-card-header-right">
-                <button class="tr-plan-card-drag">
-                    ${ICONS.grip}
-                </button>
-
-                <button class="tr-plan-card-delete">
-                    ${ICONS.delete}
-                </button>
-            </div>
+    <div class="tr-plan-card-header">
+        <div class="tr-plan-card-header-left">
+            <div class="tr-plan-card-strip"></div>
+            <button class="tr-plan-ex-name">
+                ${name}
+            </button>
         </div>
 
-        <div class="tr-plan-card-body"></div>
-    `;
+        <div class="tr-plan-card-header-right">
+            <button class="tr-plan-card-drag">
+                ${ICONS.grip}
+            </button>
+
+            <button class="tr-plan-card-delete">
+                ${ICONS.delete}
+            </button>
+        </div>
+    </div>
+
+    <div class="tr-plan-card-body"></div>
+`;
     const nameButton = card.querySelector(".tr-plan-ex-name");
     const deleteButton = card.querySelector(".tr-plan-card-delete");
     const body = card.querySelector(".tr-plan-card-body");

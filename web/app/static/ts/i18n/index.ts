@@ -18,7 +18,17 @@ export function t(
     params: Record<string, string | number> = {}
 ): string {
     return translate(
+        "training",
         key,
         params
+    );
+}
+
+export function exercise_t(
+    slug: string
+): string {
+    return translate(
+        "exercises",
+        `${slug}.name`
     );
 }

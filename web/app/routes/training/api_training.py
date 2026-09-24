@@ -14,6 +14,26 @@ from backend.app.models.training_session import TrainingSession
 from backend.app.training.models.training_plan import TrainingPlan
 from backend.app.training.models.performance_state import PerformanceState
 import datetime as dt
+from zoneinfo import ZoneInfo
+
+APP_TIMEZONE = ZoneInfo("Europe/Warsaw")
+
+
+def _local_now():
+    return dt.datetime.now(APP_TIMEZONE)
+
+
+def _local_today():
+    return _local_now().date()
+
+
+def _session_local_date(session):
+    return (
+        session.started_at.replace(tzinfo=dt.timezone.utc)
+        .astimezone(APP_TIMEZONE)
+        .date()
+    )
+
 
 training_api_bp = Blueprint("training_api", __name__, url_prefix="/api/training")
 
@@ -33,7 +53,7 @@ def _active_plan(user):
 
 
 def _today_key():
-    return ["mon", "tue", "wed", "thu", "fri", "sat", "sun"][dt.date.today().weekday()]
+    return ["mon", "tue", "wed", "thu", "fri", "sat", "sun"][_local_today().weekday()]
 
 
 def _plan_days_struct(raw):
@@ -299,22 +319,26 @@ def heatmap():
         start = dt.date(year, 1, 1)
         end = dt.date(year, 12, 31)
 
-        sessions = (
-            TrainingSession.query.filter(
-                TrainingSession.user_id == current_user.id,
-                TrainingSession.started_at >= dt.datetime.combine(start, dt.time.min),
-                TrainingSession.started_at <= dt.datetime.combine(end, dt.time.max),
-            )
-            .order_by(TrainingSession.started_at.asc())
-            .all()
+        local_start = dt.datetime.combine(start, dt.time.min, tzinfo=APP_TIMEZONE)
+
+        local_end = dt.datetime.combine(end, dt.time.max, tzinfo=APP_TIMEZONE)
+
+        utc_start = local_start.astimezone(dt.timezone.utc).replace(tzinfo=None)
+
+        utc_end = local_end.astimezone(dt.timezone.utc).replace(tzinfo=None)
+
+        sessions = TrainingSession.query.filter(
+            TrainingSession.user_id == current_user.id,
+            TrainingSession.started_at >= utc_start,
+            TrainingSession.started_at <= utc_end,
         )
 
         days = []
         d = start
-        today = dt.date.today()
+        today = _local_today()
 
         while d <= end:
-            day_sessions = [s for s in sessions if s.started_at.date() == d]
+            day_sessions = [s for s in sessions if _session_local_date(s) == d]
             load_today = sum(s.internal_load or 0 for s in day_sessions)
 
             if d > today or not day_sessions:
@@ -574,10 +598,18 @@ def day_details(date):
     try:
         target = dt.datetime.strptime(date, "%Y-%m-%d").date()
 
+        local_start = dt.datetime.combine(target, dt.time.min, tzinfo=APP_TIMEZONE)
+
+        local_end = dt.datetime.combine(target, dt.time.max, tzinfo=APP_TIMEZONE)
+
+        utc_start = local_start.astimezone(dt.timezone.utc).replace(tzinfo=None)
+
+        utc_end = local_end.astimezone(dt.timezone.utc).replace(tzinfo=None)
+
         sessions = TrainingSession.query.filter(
             TrainingSession.user_id == current_user.id,
-            TrainingSession.started_at >= dt.datetime.combine(target, dt.time.min),
-            TrainingSession.started_at <= dt.datetime.combine(target, dt.time.max),
+            TrainingSession.started_at >= utc_start,
+            TrainingSession.started_at <= utc_end,
         )
 
         result = []
@@ -589,6 +621,7 @@ def day_details(date):
                     exercises.append(
                         {
                             "name": obj.name,
+                            "slug": obj.slug,
                             "sets": ex.sets_done or ex.sets_planned,
                             "reps": ex.reps_done or ex.reps_planned,
                             "load": ex.load_done or ex.load_planned,

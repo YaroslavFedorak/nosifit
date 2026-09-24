@@ -1,3 +1,4 @@
+import { exercise_t } from "../i18n/index.js";
 import { trainingStore } from "./store.js";
 export function loadExercisesList(containerId) {
     const container = document.getElementById(containerId);
@@ -13,7 +14,9 @@ export function loadExercisesList(containerId) {
         name.className =
             "tr-exercise-name";
         name.textContent =
-            exercise.name;
+            exercise.slug
+                ? exercise_t(exercise.slug)
+                : exercise.name;
         const meta = document.createElement("div");
         meta.className =
             "tr-exercise-meta";

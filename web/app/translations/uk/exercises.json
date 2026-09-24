@@ -1,0 +1,149 @@
+{
+    "plank": {
+        "name": "Планка"
+    },
+    "side-plank": {
+        "name": "Бічна планка"
+    },
+    "crunches": {
+        "name": "Скручування"
+    },
+    "bicycle-crunch": {
+        "name": "Велосипед"
+    },
+    "dead-bug": {
+        "name": "Dead Bug"
+    },
+    "bird-dog": {
+        "name": "Bird Dog"
+    },
+    "lying-leg-raise": {
+        "name": "Підйом ніг лежачи"
+    },
+    "superman": {
+        "name": "Superman"
+    },
+    "pallof-press": {
+        "name": "Pallof Press"
+    },
+    "cable-crunch": {
+        "name": "Cable Crunch"
+    },
+    "burpee": {
+        "name": "Burpee"
+    },
+    "mountain-climbers": {
+        "name": "Mountain Climbers"
+    },
+    "jumping-jacks": {
+        "name": "Jumping Jacks"
+    },
+    "bear-crawl": {
+        "name": "Bear Crawl"
+    },
+    "farmer-walk": {
+        "name": "Прогулянка фермера"
+    },
+    "squat-to-press": {
+        "name": "Присідання з жимом"
+    },
+    "wall-sit": {
+        "name": "Стільчик біля стіни"
+    },
+    "squat": {
+        "name": "Присідання"
+    },
+    "box-squat": {
+        "name": "Присідання до лави"
+    },
+    "lunges": {
+        "name": "Випади"
+    },
+    "step-ups": {
+        "name": "Кроки на платформу"
+    },
+    "glute-bridge": {
+        "name": "Ягодичний міст"
+    },
+    "rdl-dumbbells": {
+        "name": "Румунська тяга з гантелями"
+    },
+    "leg-curl": {
+        "name": "Згинання ніг"
+    },
+    "leg-extension": {
+        "name": "Розгинання ніг"
+    },
+    "calf-raise": {
+        "name": "Підйоми на носки"
+    },
+    "kickback": {
+        "name": "Відведення ноги назад"
+    },
+    "neck-tilts": {
+        "name": "Нахили шиї"
+    },
+    "shoulder-circles": {
+        "name": "Колові рухи плечима"
+    },
+    "arm-circles": {
+        "name": "Колові рухи руками"
+    },
+    "cat-cow": {
+        "name": "Кішка-корова"
+    },
+    "thread-the-needle": {
+        "name": "Thread the Needle"
+    },
+    "thoracic-rotation": {
+        "name": "Повороти грудного відділу"
+    },
+    "chest-stretch": {
+        "name": "Розтягування грудних"
+    },
+    "hip-flexor-stretch": {
+        "name": "Розтягування згиначів стегна"
+    },
+    "hamstring-stretch": {
+        "name": "Розтягування задньої поверхні стегна"
+    },
+    "quad-stretch": {
+        "name": "Розтягування квадрицепса"
+    },
+    "calf-stretch": {
+        "name": "Розтягування литок"
+    },
+    "worlds-greatest-stretch": {
+        "name": "Найкраще розтягування у світі"
+    },
+    "push-ups": {
+        "name": "Віджимання"
+    },
+    "bench-dips": {
+        "name": "Віджимання від лави"
+    },
+    "pull-ups": {
+        "name": "Підтягування"
+    },
+    "seated-row": {
+        "name": "Горизонтальна тяга"
+    },
+    "bench-press": {
+        "name": "Жим від грудей"
+    },
+    "overhead-press": {
+        "name": "Жим над головою"
+    },
+    "bicep-curl": {
+        "name": "Згинання рук"
+    },
+    "tricep-pushdown": {
+        "name": "Розгинання рук на блоці"
+    },
+    "lateral-raises": {
+        "name": "Бічні підйоми рук"
+    },
+    "reverse-fly": {
+        "name": "Зворотні розведення"
+    }
+}

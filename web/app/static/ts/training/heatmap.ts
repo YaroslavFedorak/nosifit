@@ -9,6 +9,7 @@ import type {
 } from "./api.js";
 
 import {
+    exercise_t,
     getLocale,
     t
 } from "../i18n/index.js";
@@ -919,6 +920,31 @@ function renderCalendarMonth(): void {
         };
 }
 
+function getDayExerciseName(
+    exercise: {
+        name?: string;
+        slug?: string;
+    }
+): string {
+    if (
+        typeof exercise.slug === "string" &&
+        exercise.slug.trim()
+    ) {
+        const translated =
+            exercise_t(exercise.slug);
+
+        if (
+            translated !==
+            `${exercise.slug}.name`
+        ) {
+            return translated;
+        }
+    }
+
+    return exercise.name ||
+        t("exercise.fallback");
+}
+
 function openDayDetails(
     date: string
 ): void {
@@ -993,25 +1019,28 @@ function openDayDetails(
                                                 exercise => `
                                                     <div class="tr-day-exercise">
                                                         <div class="tr-ex-name">
-                                                            ${exercise.name}
+                                                            ${getDayExerciseName(
+                                                                exercise
+                                                            )}
                                                         </div>
                                                         <div class="tr-ex-meta">
-                                                            ${exercise.load != null
-                                                                ? t(
-                                                                    "heatmap.exerciseMeta",
-                                                                    {
-                                                                        sets: exercise.sets,
-                                                                        reps: exercise.reps,
-                                                                        load: exercise.load
-                                                                    }
-                                                                )
-                                                                : t(
-                                                                    "heatmap.exerciseMetaNoLoad",
-                                                                    {
-                                                                        sets: exercise.sets,
-                                                                        reps: exercise.reps
-                                                                    }
-                                                                )
+                                                            ${
+                                                                exercise.load != null
+                                                                    ? t(
+                                                                        "heatmap.exerciseMeta",
+                                                                        {
+                                                                            sets: exercise.sets,
+                                                                            reps: exercise.reps,
+                                                                            load: exercise.load
+                                                                        }
+                                                                    )
+                                                                    : t(
+                                                                        "heatmap.exerciseMetaNoLoad",
+                                                                        {
+                                                                            sets: exercise.sets,
+                                                                            reps: exercise.reps
+                                                                        }
+                                                                    )
                                                             }
                                                         </div>
                                                     </div>

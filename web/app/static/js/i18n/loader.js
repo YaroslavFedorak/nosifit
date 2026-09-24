@@ -47,12 +47,16 @@ export async function loadTranslations(namespace) {
     if (!response.ok) {
         throw new Error(`Failed to load translations: ${namespace}`);
     }
-    translations =
+    translations[namespace] =
         await response.json();
 }
-export function translate(key, params = {}) {
+export function translate(namespace, key, params = {}) {
+    const namespaceTranslations = translations[namespace];
+    if (!namespaceTranslations) {
+        return key;
+    }
     const parts = key.split(".");
-    let value = translations;
+    let value = namespaceTranslations;
     for (const part of parts) {
         if (typeof value !== "object" ||
             value === null) {

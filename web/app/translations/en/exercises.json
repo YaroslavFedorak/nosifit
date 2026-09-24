@@ -1,0 +1,149 @@
+{
+    "plank": {
+        "name": "Plank"
+    },
+    "side-plank": {
+        "name": "Side plank"
+    },
+    "crunches": {
+        "name": "Crunches"
+    },
+    "bicycle-crunch": {
+        "name": "Bicycle crunch"
+    },
+    "dead-bug": {
+        "name": "Dead bug"
+    },
+    "bird-dog": {
+        "name": "Bird dog"
+    },
+    "lying-leg-raise": {
+        "name": "Lying leg raise"
+    },
+    "superman": {
+        "name": "Superman"
+    },
+    "pallof-press": {
+        "name": "Pallof press"
+    },
+    "cable-crunch": {
+        "name": "Cable crunch"
+    },
+    "burpee": {
+        "name": "Burpee"
+    },
+    "mountain-climbers": {
+        "name": "Mountain climbers"
+    },
+    "jumping-jacks": {
+        "name": "Jumping jacks"
+    },
+    "bear-crawl": {
+        "name": "Bear crawl"
+    },
+    "farmer-walk": {
+        "name": "Farmer's walk"
+    },
+    "squat-to-press": {
+        "name": "Squat to press"
+    },
+    "wall-sit": {
+        "name": "Wall sit"
+    },
+    "squat": {
+        "name": "Squat"
+    },
+    "box-squat": {
+        "name": "Box squat"
+    },
+    "lunges": {
+        "name": "Lunges"
+    },
+    "step-ups": {
+        "name": "Step-ups"
+    },
+    "glute-bridge": {
+        "name": "Glute bridge"
+    },
+    "rdl-dumbbells": {
+        "name": "Dumbbell Romanian deadlift"
+    },
+    "leg-curl": {
+        "name": "Leg curl"
+    },
+    "leg-extension": {
+        "name": "Leg extension"
+    },
+    "calf-raise": {
+        "name": "Calf raise"
+    },
+    "kickback": {
+        "name": "Glute kickback"
+    },
+    "neck-tilts": {
+        "name": "Neck tilts"
+    },
+    "shoulder-circles": {
+        "name": "Shoulder circles"
+    },
+    "arm-circles": {
+        "name": "Arm circles"
+    },
+    "cat-cow": {
+        "name": "Cat-cow"
+    },
+    "thread-the-needle": {
+        "name": "Thread the needle"
+    },
+    "thoracic-rotation": {
+        "name": "Thoracic rotation"
+    },
+    "chest-stretch": {
+        "name": "Chest stretch"
+    },
+    "hip-flexor-stretch": {
+        "name": "Hip flexor stretch"
+    },
+    "hamstring-stretch": {
+        "name": "Hamstring stretch"
+    },
+    "quad-stretch": {
+        "name": "Quadriceps stretch"
+    },
+    "calf-stretch": {
+        "name": "Calf stretch"
+    },
+    "worlds-greatest-stretch": {
+        "name": "World's greatest stretch"
+    },
+    "push-ups": {
+        "name": "Push-ups"
+    },
+    "bench-dips": {
+        "name": "Bench dips"
+    },
+    "pull-ups": {
+        "name": "Pull-ups"
+    },
+    "seated-row": {
+        "name": "Seated row"
+    },
+    "bench-press": {
+        "name": "Bench press"
+    },
+    "overhead-press": {
+        "name": "Overhead press"
+    },
+    "bicep-curl": {
+        "name": "Bicep curl"
+    },
+    "tricep-pushdown": {
+        "name": "Tricep pushdown"
+    },
+    "lateral-raises": {
+        "name": "Lateral raises"
+    },
+    "reverse-fly": {
+        "name": "Reverse fly"
+    }
+}

@@ -10,7 +10,10 @@ import {
 
 import { ICONS } from "../icons/index.js";
 
-import { t } from "../i18n/index.js";
+import {
+    exercise_t,
+    t
+} from "../i18n/index.js";
 
 type InputChangeHandler = (
     value: string | number
@@ -117,9 +120,11 @@ function makeInlineBlock(
         }
 
         const next =
-            (Number(
-                input.value
-            ) || 0) + 1;
+            (
+                Number(
+                    input.value
+                ) || 0
+            ) + 1;
 
         input.value =
             String(next);
@@ -260,6 +265,35 @@ function makeInlineBlock(
     return wrap;
 }
 
+function getExerciseName(
+    item: WorkoutExercise
+): string {
+    const slug =
+        item.exercise?.slug;
+
+    if (
+        typeof slug === "string" &&
+        slug.trim()
+    ) {
+        const translated =
+            exercise_t(
+                slug
+            );
+
+        if (
+            translated !==
+            `${slug}.name`
+        ) {
+            return translated;
+        }
+    }
+
+    return (
+        item.exercise?.name ||
+        t("exercise.fallback")
+    );
+}
+
 export function renderWorkoutList(): void {
     const box =
         document.getElementById(
@@ -356,8 +390,9 @@ export function renderWorkoutList(): void {
                 "tr-session-ex-name";
 
             name.textContent =
-                item.exercise?.name ||
-                t("exercise.fallback");
+                getExerciseName(
+                    item
+                );
 
             nameWrap.appendChild(
                 name

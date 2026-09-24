@@ -3,6 +3,7 @@ const BASE = "/api/training";
 export type Exercise = {
     id: number | string;
     name: string;
+    slug?: string;
     muscles_primary?: string[];
     [key: string]: unknown;
 };
@@ -69,6 +70,7 @@ export type HeatmapResponse = {
 
 export type SessionExercise = {
     name: string;
+    slug?: string;
     sets: number;
     reps: number | string;
     load: number;

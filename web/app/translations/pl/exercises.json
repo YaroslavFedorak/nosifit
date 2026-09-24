@@ -1,0 +1,149 @@
+{
+    "plank": {
+        "name": "Deska"
+    },
+    "side-plank": {
+        "name": "Deska boczna"
+    },
+    "crunches": {
+        "name": "Brzuszki"
+    },
+    "bicycle-crunch": {
+        "name": "Brzuszki rowerowe"
+    },
+    "dead-bug": {
+        "name": "Dead Bug"
+    },
+    "bird-dog": {
+        "name": "Bird Dog"
+    },
+    "lying-leg-raise": {
+        "name": "Unoszenie nóg w leżeniu"
+    },
+    "superman": {
+        "name": "Superman"
+    },
+    "pallof-press": {
+        "name": "Pallof Press"
+    },
+    "cable-crunch": {
+        "name": "Brzuszki na wyciągu"
+    },
+    "burpee": {
+        "name": "Burpees"
+    },
+    "mountain-climbers": {
+        "name": "Wspinaczka górska"
+    },
+    "jumping-jacks": {
+        "name": "Pajacyki"
+    },
+    "bear-crawl": {
+        "name": "Chód niedźwiedzia"
+    },
+    "farmer-walk": {
+        "name": "Spacer farmera"
+    },
+    "squat-to-press": {
+        "name": "Przysiad z wyciskaniem"
+    },
+    "wall-sit": {
+        "name": "Krzesło przy ścianie"
+    },
+    "squat": {
+        "name": "Przysiady"
+    },
+    "box-squat": {
+        "name": "Przysiady do ławki"
+    },
+    "lunges": {
+        "name": "Wykroki"
+    },
+    "step-ups": {
+        "name": "Wejścia na podest"
+    },
+    "glute-bridge": {
+        "name": "Mostek pośladkowy"
+    },
+    "rdl-dumbbells": {
+        "name": "Rumuński martwy ciąg z hantlami"
+    },
+    "leg-curl": {
+        "name": "Uginanie nóg"
+    },
+    "leg-extension": {
+        "name": "Prostowanie nóg"
+    },
+    "calf-raise": {
+        "name": "Wspięcia na palce"
+    },
+    "kickback": {
+        "name": "Odwodzenie nogi w tył"
+    },
+    "neck-tilts": {
+        "name": "Skłony szyi"
+    },
+    "shoulder-circles": {
+        "name": "Krążenia ramion"
+    },
+    "arm-circles": {
+        "name": "Krążenia ramion"
+    },
+    "cat-cow": {
+        "name": "Koci grzbiet"
+    },
+    "thread-the-needle": {
+        "name": "Thread the Needle"
+    },
+    "thoracic-rotation": {
+        "name": "Rotacja odcinka piersiowego"
+    },
+    "chest-stretch": {
+        "name": "Rozciąganie klatki piersiowej"
+    },
+    "hip-flexor-stretch": {
+        "name": "Rozciąganie zginaczy biodra"
+    },
+    "hamstring-stretch": {
+        "name": "Rozciąganie mięśni dwugłowych uda"
+    },
+    "quad-stretch": {
+        "name": "Rozciąganie mięśnia czworogłowego"
+    },
+    "calf-stretch": {
+        "name": "Rozciąganie łydek"
+    },
+    "worlds-greatest-stretch": {
+        "name": "Najlepsze rozciąganie świata"
+    },
+    "push-ups": {
+        "name": "Pompki"
+    },
+    "bench-dips": {
+        "name": "Pompki na ławce"
+    },
+    "pull-ups": {
+        "name": "Podciąganie"
+    },
+    "seated-row": {
+        "name": "Wiosłowanie siedząc"
+    },
+    "bench-press": {
+        "name": "Wyciskanie na ławce"
+    },
+    "overhead-press": {
+        "name": "Wyciskanie nad głowę"
+    },
+    "bicep-curl": {
+        "name": "Uginanie ramion"
+    },
+    "tricep-pushdown": {
+        "name": "Prostowanie ramion na wyciągu"
+    },
+    "lateral-raises": {
+        "name": "Unoszenie ramion bokiem"
+    },
+    "reverse-fly": {
+        "name": "Rozpiętki odwrotne"
+    }
+}

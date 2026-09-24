@@ -1,0 +1,149 @@
+{
+    "plank": {
+        "name": "Планка"
+    },
+    "side-plank": {
+        "name": "Боковая планка"
+    },
+    "crunches": {
+        "name": "Скручивания"
+    },
+    "bicycle-crunch": {
+        "name": "Велосипед"
+    },
+    "dead-bug": {
+        "name": "Dead Bug"
+    },
+    "bird-dog": {
+        "name": "Bird Dog"
+    },
+    "lying-leg-raise": {
+        "name": "Подъём ног лёжа"
+    },
+    "superman": {
+        "name": "Superman"
+    },
+    "pallof-press": {
+        "name": "Pallof Press"
+    },
+    "cable-crunch": {
+        "name": "Скручивания на блоке"
+    },
+    "burpee": {
+        "name": "Берпи"
+    },
+    "mountain-climbers": {
+        "name": "Альпинист"
+    },
+    "jumping-jacks": {
+        "name": "Прыжки с разведением рук и ног"
+    },
+    "bear-crawl": {
+        "name": "Медвежья ходьба"
+    },
+    "farmer-walk": {
+        "name": "Прогулка фермера"
+    },
+    "squat-to-press": {
+        "name": "Приседание с жимом"
+    },
+    "wall-sit": {
+        "name": "Стульчик у стены"
+    },
+    "squat": {
+        "name": "Приседания"
+    },
+    "box-squat": {
+        "name": "Приседания до скамьи"
+    },
+    "lunges": {
+        "name": "Выпады"
+    },
+    "step-ups": {
+        "name": "Зашагивания на платформу"
+    },
+    "glute-bridge": {
+        "name": "Ягодичный мост"
+    },
+    "rdl-dumbbells": {
+        "name": "Румынская тяга с гантелями"
+    },
+    "leg-curl": {
+        "name": "Сгибание ног"
+    },
+    "leg-extension": {
+        "name": "Разгибание ног"
+    },
+    "calf-raise": {
+        "name": "Подъёмы на носки"
+    },
+    "kickback": {
+        "name": "Отведение ноги назад"
+    },
+    "neck-tilts": {
+        "name": "Наклоны шеи"
+    },
+    "shoulder-circles": {
+        "name": "Круговые движения плечами"
+    },
+    "arm-circles": {
+        "name": "Круговые движения руками"
+    },
+    "cat-cow": {
+        "name": "Кошка-корова"
+    },
+    "thread-the-needle": {
+        "name": "Thread the Needle"
+    },
+    "thoracic-rotation": {
+        "name": "Повороты грудного отдела"
+    },
+    "chest-stretch": {
+        "name": "Растяжка груди"
+    },
+    "hip-flexor-stretch": {
+        "name": "Растяжка сгибателей бедра"
+    },
+    "hamstring-stretch": {
+        "name": "Растяжка задней поверхности бедра"
+    },
+    "quad-stretch": {
+        "name": "Растяжка квадрицепса"
+    },
+    "calf-stretch": {
+        "name": "Растяжка икр"
+    },
+    "worlds-greatest-stretch": {
+        "name": "Величайшая растяжка в мире"
+    },
+    "push-ups": {
+        "name": "Отжимания"
+    },
+    "bench-dips": {
+        "name": "Отжимания от скамьи"
+    },
+    "pull-ups": {
+        "name": "Подтягивания"
+    },
+    "seated-row": {
+        "name": "Горизонтальная тяга"
+    },
+    "bench-press": {
+        "name": "Жим лёжа"
+    },
+    "overhead-press": {
+        "name": "Жим над головой"
+    },
+    "bicep-curl": {
+        "name": "Сгибание рук"
+    },
+    "tricep-pushdown": {
+        "name": "Разгибание рук на блоке"
+    },
+    "lateral-raises": {
+        "name": "Разведения рук в стороны"
+    },
+    "reverse-fly": {
+        "name": "Обратные разведения"
+    }
+}
