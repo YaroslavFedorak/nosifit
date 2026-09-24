@@ -1,0 +1,176 @@
+{
+    "title": "Training",
+    "subtitle": "Plan workouts • Analyze progress • Get recommendations",
+    "today": "Today",
+    "todayWorkout": "Today's workout",
+    "trainingPlan": "Training plan",
+    "workoutName": "Workout name",
+    "addExercise": "Add exercise",
+    "saveWorkout": "Save workout",
+    "strengthTest": {
+        "title": "Strength test",
+        "takeTest": "Take the test",
+        "pushups": "Push-ups",
+        "squats": "Squats",
+        "situps": "Sit-ups",
+        "description": "Maximum repetitions without breaks.",
+        "finish": "Finish test",
+        "saved": "Test saved. Recommendations updated",
+        "invalidValues": "Enter valid values.",
+        "saveError": "Failed to save the test. Please try again."
+    },
+    "weakPoints": "Weak points",
+    "recommendedExercises": "Recommended exercises",
+    "muscleBalance": "Muscle balance",
+    "balanced": "Balanced",
+    "overloaded": "Overloaded",
+    "recommendations": {
+        "weakPointsEmpty": "Not enough data to identify weak muscle groups",
+        "weakPointsDescription": "Add a few workouts to get a personalized analysis",
+        "exercisesEmpty": "No personalized recommendations yet",
+        "exercisesDescription": "Add a few workouts so the system can analyze your progress",
+        "balanceEmpty": "Not enough data to analyze muscle balance",
+        "balanceDescription": "Keep training to get an analysis of your muscle groups",
+        "noBalancedGroups": "No groups are in the balanced range",
+        "noOverloadedGroups": "No overloaded groups",
+        "reasons": {
+            "improvesWeakMuscleGroup": "Develops a weak muscle group",
+            "improvesWeakMovementPattern": "Improves a weak movement pattern",
+            "helpsReverseRegression": "Helps restore progress",
+            "helpsBreakPlateau": "Helps break a plateau",
+            "supportsAnUndertrainedMuscle": "Strengthens an undertrained muscle group",
+            "addsExerciseVariety": "Adds exercise variety",
+            "targetsYourWeakPoint": "Targets your weak point",
+            "progression": "Supports progress",
+            "lowFrequency": "This muscle group is trained too infrequently",
+            "highFrequency": "Accounts for high training frequency"
+        }
+    },
+    "muscles": {
+        "spine": "Spine",
+        "traps": "Traps",
+        "abs": "Abs",
+        "obliques": "Obliques",
+        "hipFlexors": "Hip flexors",
+        "chest": "Chest",
+        "back": "Back",
+        "glutes": "Glutes",
+        "quads": "Quads",
+        "shoulders": "Shoulders",
+        "triceps": "Triceps",
+        "biceps": "Biceps",
+        "core": "Core",
+        "legs": "Legs",
+        "lowerBack": "Lower back"
+    },
+    "heatmap": {
+        "yearActivity": "Activity over the year",
+        "year": "Year",
+        "calendar": "Calendar",
+        "activityHeatmap": "Activity heatmap for the year",
+        "less": "Less",
+        "more": "More",
+        "load": "{percent}% load ({load} units)",
+        "ariaLabel": "{date}: {percent}% load",
+        "emptyDay": "No workouts on this day",
+        "session": "Session",
+        "exerciseMeta": "{sets}×{reps}, {load} kg",
+        "error": "Error",
+        "loadError": "Failed to load data."
+    },
+    "months": {
+        "jan": "Jan",
+        "feb": "Feb",
+        "mar": "Mar",
+        "apr": "Apr",
+        "may": "May",
+        "jun": "Jun",
+        "jul": "Jul",
+        "aug": "Aug",
+        "sep": "Sep",
+        "oct": "Oct",
+        "nov": "Nov",
+        "dec": "Dec"
+    },
+    "monthNames": {
+        "jan": "January",
+        "feb": "February",
+        "mar": "March",
+        "apr": "April",
+        "may": "May",
+        "jun": "June",
+        "jul": "July",
+        "aug": "August",
+        "sep": "September",
+        "oct": "October",
+        "nov": "November",
+        "dec": "December"
+    },
+    "plan": {
+        "title": "My training plan",
+        "help": "Help",
+        "helpChooseDay": "Choose a day, add exercises, and set reps, sets, and weight",
+        "helpReorder": "Drag exercises by the handle to change their order",
+        "name": "Plan name",
+        "namePlaceholder": "For example: Full Body",
+        "dayExercises": "Exercises for this day",
+        "empty": "This day's plan is empty",
+        "emptyDescription": "Add your first exercise to start the workout",
+        "exercisesCount": "exercises",
+        "setsCount": "sets",
+        "save": "Save plan",
+        "saved": "Plan saved",
+        "saveError": "Failed to save the plan"
+    },
+    "exercisePicker": {
+        "title": "Exercise selection",
+        "search": "Search exercises",
+        "all": "All",
+        "chest": "Chest",
+        "back": "Back",
+        "legs": "Legs",
+        "shoulders": "Shoulders",
+        "arms": "Arms",
+        "core": "Core"
+    },
+    "exercise": {
+        "execution": "Exercise details",
+        "sets": "Sets",
+        "reps": "Reps",
+        "weight": "Weight (kg)",
+        "rpe": "RPE",
+        "fallback": "Exercise"
+    },
+    "workout": {
+        "add": "Add workout",
+        "setsShort": "sets",
+        "repsShort": "reps",
+        "weightShort": "kg"
+    },
+    "summary": {
+        "exercises": "exercises",
+        "sets": "sets"
+    },
+    "calendar": {
+        "month": "Month",
+        "close": "Close"
+    },
+    "dayDetails": {
+        "day": "Day"
+    },
+    "session": {
+        "saved": "Workout saved"
+    },
+    "strengthLevels": {
+        "low": "Low",
+        "medium": "Medium",
+        "good": "Good",
+        "excellent": "Excellent"
+    },
+    "common": {
+        "cancel": "Cancel",
+        "close": "Close",
+        "save": "Save",
+        "error": "Error"
+    }
+}

@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 from flask import Flask
 
 from backend.app.extensions import db, login_manager, migrate, mail, oauth
+from web.app.i18n import init_i18n
 
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 load_dotenv(os.path.join(BASE_DIR, ".env"))
@@ -12,6 +13,8 @@ load_dotenv(os.path.join(BASE_DIR, ".env"))
 def create_app(config=None):
     app = Flask(__name__)
     app.config.from_object("backend.config.Config")
+
+    init_i18n(app)
 
     if config:
         app.config.update(config)
@@ -62,6 +65,7 @@ def create_app(config=None):
         root_bp,
         public_bp,
         info_bp,
+        i18n_bp,
         dashboard_bp,
         dashboard_api_bp,
         training_dashboard_api_bp,
@@ -104,6 +108,7 @@ def create_app(config=None):
     app.register_blueprint(root_bp)
     app.register_blueprint(public_bp)
     app.register_blueprint(info_bp)
+    app.register_blueprint(i18n_bp)
 
     app.register_blueprint(dashboard_bp)
     app.register_blueprint(dashboard_api_bp)

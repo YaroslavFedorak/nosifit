@@ -1,4 +1,5 @@
 import { state } from "../state.js";
+import { t } from "../../../i18n/index.js";
 export function updateSummary(items) {
     const list = items ??
         state.days[state.currentDay] ??
@@ -10,11 +11,11 @@ export function updateSummary(items) {
     const setsElement = document.getElementById("tr-plan-summary-sets");
     if (countElement) {
         countElement.textContent =
-            `${count} вправ`;
+            `${count} ${t("summary.exercises")}`;
     }
     if (setsElement) {
         setsElement.textContent =
-            `${sets} підходів`;
+            `${sets} ${t("summary.sets")}`;
     }
     updateBadges();
 }
@@ -31,7 +32,8 @@ export function updateBadges() {
             badge.classList.add("visible");
         }
         else {
-            badge.textContent = "";
+            badge.textContent =
+                "";
             badge.classList.remove("visible");
         }
     });

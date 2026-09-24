@@ -10,6 +10,8 @@ import {
 
 import { ICONS } from "../icons/index.js";
 
+import { t } from "../i18n/index.js";
+
 type InputChangeHandler = (
     value: string | number
 ) => void;
@@ -303,7 +305,7 @@ export function renderWorkoutList(): void {
             "tr-session-empty";
 
         empty.textContent =
-            "Додати тренування+";
+            t("workout.add");
 
         empty.onclick = () => {
             const button =
@@ -355,7 +357,7 @@ export function renderWorkoutList(): void {
 
             name.textContent =
                 item.exercise?.name ||
-                "Вправа";
+                t("exercise.fallback");
 
             nameWrap.appendChild(
                 name
@@ -385,7 +387,7 @@ export function renderWorkoutList(): void {
 
             const setsBlock =
                 makeInlineBlock(
-                    "підх.",
+                    t("exercise.sets"),
                     item.sets,
                     value => {
                         item.sets =
@@ -402,7 +404,7 @@ export function renderWorkoutList(): void {
 
             const repsBlock =
                 makeInlineBlock(
-                    "повт.",
+                    t("exercise.reps"),
                     item.reps,
                     value => {
                         item.reps =
@@ -416,7 +418,7 @@ export function renderWorkoutList(): void {
 
             const loadBlock =
                 makeInlineBlock(
-                    "кг",
+                    t("exercise.weight"),
                     item.load,
                     value => {
                         item.load =

@@ -1,36 +1,39 @@
 import { TrainingAPI } from "./api.js";
-const MONTHS = [
-    "Січ",
-    "Лют",
-    "Бер",
-    "Кві",
-    "Тра",
-    "Чер",
-    "Лип",
-    "Сер",
-    "Вер",
-    "Жов",
-    "Лис",
-    "Гру"
-];
-const MONTH_NAMES = [
-    "Січень",
-    "Лютий",
-    "Березень",
-    "Квітень",
-    "Травень",
-    "Червень",
-    "Липень",
-    "Серпень",
-    "Вересень",
-    "Жовтень",
-    "Листопад",
-    "Грудень"
-];
+import { getLocale, t } from "../i18n/index.js";
 let CALENDAR_DATA = [];
 let CURRENT_YEAR = new Date().getFullYear();
 let CURRENT_MONTH = new Date().getMonth();
 let heatmapRequestId = 0;
+const MONTH_KEYS = [
+    "jan",
+    "feb",
+    "mar",
+    "apr",
+    "may",
+    "jun",
+    "jul",
+    "aug",
+    "sep",
+    "oct",
+    "nov",
+    "dec"
+];
+function getMonthTranslation(month, full = false) {
+    const key = MONTH_KEYS[month];
+    if (!key) {
+        return "";
+    }
+    return t(full
+        ? `monthNames.${key}`
+        : `months.${key}`);
+}
+function formatDate(date) {
+    return date.toLocaleDateString(getLocale(), {
+        day: "numeric",
+        month: "long",
+        year: "numeric"
+    });
+}
 export function initHeatmap() {
     const yearSelect = document.getElementById("tr-heatmap-year");
     const yearSelectCal = document.getElementById("cal-year-select");
@@ -52,7 +55,8 @@ export function initHeatmap() {
         if (!Number.isFinite(year)) {
             return;
         }
-        CURRENT_YEAR = year;
+        CURRENT_YEAR =
+            year;
         yearSelectCal.value =
             String(CURRENT_YEAR);
         const requestId = ++heatmapRequestId;
@@ -203,7 +207,10 @@ function showHeatmapTooltip(cell) {
     const percent = Number(cell.dataset.percent) || 0;
     const load = Number(cell.dataset.load) || 0;
     tooltip.textContent =
-        `${percent}% навантаження (${load} од.)`;
+        t("heatmap.load", {
+            percent,
+            load
+        });
     tooltip.classList.add("is-visible");
     const rect = cell.getBoundingClientRect();
     const tooltipRect = tooltip.getBoundingClientRect();
@@ -248,8 +255,8 @@ function renderMonths() {
         return;
     }
     months.innerHTML =
-        MONTHS
-            .map(month => `<span>${month}</span>`)
+        MONTH_KEYS
+            .map((_, index) => `<span>${getMonthTranslation(index)}</span>`)
             .join("");
 }
 function createEmptyDay(date) {
@@ -300,7 +307,10 @@ function renderHeatmap(days) {
                     data-percent="${percent}"
                     data-load="${load}"
                     role="gridcell"
-                    aria-label="${dateString}: ${percent}% навантаження"
+                    aria-label="${t("heatmap.ariaLabel", {
+            date: dateString,
+            percent
+        })}"
                 ></div>
             `);
         current.setDate(current.getDate() + 1);
@@ -317,7 +327,7 @@ function renderCalendarMonth() {
         return;
     }
     title.textContent =
-        `${MONTH_NAMES[CURRENT_MONTH]} ${CURRENT_YEAR}`;
+        `${getMonthTranslation(CURRENT_MONTH, true)} ${CURRENT_YEAR}`;
     const days = CALENDAR_DATA.filter(day => {
         if (!day.date) {
             return false;
@@ -377,17 +387,13 @@ function openDayDetails(date) {
         }
         const parsedDate = new Date(`${date}T12:00:00`);
         title.textContent =
-            parsedDate.toLocaleDateString("uk-UA", {
-                day: "numeric",
-                month: "long",
-                year: "numeric"
-            });
+            formatDate(parsedDate);
         const sessions = Array.isArray(data?.sessions)
             ? data.sessions
             : [];
         if (!sessions.length) {
             body.innerHTML =
-                "<p>Немає тренувань у цей день</p>";
+                `<p>${t("heatmap.emptyDay")}</p>`;
         }
         else {
             body.innerHTML =
@@ -395,7 +401,7 @@ function openDayDetails(date) {
                     .map(session => `
                                     <div class="tr-day-session">
                                         <div class="tr-day-session-title">
-                                            Сесія
+                                            ${t("heatmap.session")}
                                         </div>
                                         ${(session.exercises ?? [])
                     .map(exercise => `
@@ -404,7 +410,11 @@ function openDayDetails(date) {
                                                             ${exercise.name}
                                                         </div>
                                                         <div class="tr-ex-meta">
-                                                            ${exercise.sets}×${exercise.reps}, ${exercise.load} кг
+                                                            ${t("heatmap.exerciseMeta", {
+                    sets: exercise.sets,
+                    reps: exercise.reps,
+                    load: exercise.load
+                })}
                                                         </div>
                                                     </div>
                                                 `)
@@ -421,11 +431,11 @@ function openDayDetails(date) {
         const body = document.getElementById("tr-day-details-body");
         if (title) {
             title.textContent =
-                "Помилка";
+                t("heatmap.error");
         }
         if (body) {
             body.innerHTML =
-                "<p>Не вдалося завантажити дані.</p>";
+                `<p>${t("heatmap.loadError")}</p>`;
         }
         modal?.classList.add("open");
     });

@@ -1,6 +1,7 @@
 import { trainingStore } from "./store.js";
 import { persistWorkout } from "./state.js";
 import { ICONS } from "../icons/index.js";
+import { t } from "../i18n/index.js";
 function makeInlineBlock(labelText, initialValue, onChange, isRange = false, disabled = false) {
     const wrap = document.createElement("div");
     wrap.className =
@@ -121,7 +122,7 @@ export function renderWorkoutList() {
         empty.className =
             "tr-session-empty";
         empty.textContent =
-            "Додати тренування+";
+            t("workout.add");
         empty.onclick = () => {
             const button = document.getElementById("tr-add-exercise");
             button?.click();
@@ -144,7 +145,7 @@ export function renderWorkoutList() {
             "tr-session-ex-name";
         name.textContent =
             item.exercise?.name ||
-                "Вправа";
+                t("exercise.fallback");
         nameWrap.appendChild(name);
         if (item.fromPlan) {
             const planIcon = document.createElement("span");
@@ -155,15 +156,15 @@ export function renderWorkoutList() {
             nameWrap.appendChild(planIcon);
         }
         const disabled = Boolean(item.done);
-        const setsBlock = makeInlineBlock("підх.", item.sets, value => {
+        const setsBlock = makeInlineBlock(t("exercise.sets"), item.sets, value => {
             item.sets =
                 parseInt(String(value), 10) || 0;
         }, false, disabled);
-        const repsBlock = makeInlineBlock("повт.", item.reps, value => {
+        const repsBlock = makeInlineBlock(t("exercise.reps"), item.reps, value => {
             item.reps =
                 String(value);
         }, true, disabled);
-        const loadBlock = makeInlineBlock("кг", item.load, value => {
+        const loadBlock = makeInlineBlock(t("exercise.weight"), item.load, value => {
             item.load =
                 parseFloat(String(value)) || 0;
         }, false, disabled);

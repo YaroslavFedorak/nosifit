@@ -1,6 +1,18 @@
-import { TrainingAPI } from "./api.js";
-import { trainingStore } from "./store.js";
-import { renderWorkoutList } from "./workout.js";
+import {
+    TrainingAPI
+} from "./api.js";
+
+import {
+    trainingStore
+} from "./store.js";
+
+import {
+    renderWorkoutList
+} from "./workout.js";
+
+import {
+    t
+} from "../i18n/index.js";
 
 export function initSession(): void {
     const saveButton =
@@ -85,9 +97,11 @@ function showSavedToast(): void {
         "tr-toast-saved";
 
     toast.textContent =
-        "Тренування збережене";
+        t("session.saved");
 
-    document.body.appendChild(toast);
+    document.body.appendChild(
+        toast
+    );
 
     setTimeout(() => {
         toast.classList.add("show");

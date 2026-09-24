@@ -1,4 +1,5 @@
 import { trainingStore } from "./store.js";
+import { t } from "../i18n/index.js";
 const STORAGE_KEY = "dashboard_training_exercises";
 const STORAGE_DATE_KEY = "dashboard_training_date";
 function getTodayKey() {
@@ -42,7 +43,7 @@ function normalizeExercise(item) {
             id,
         name: item.name ??
             source?.name ??
-            "Вправа"
+            t("exercise.fallback")
     };
     const name = typeof item.name === "string" &&
         item.name.trim()
@@ -106,7 +107,7 @@ export function persistWorkout(exercises) {
             ? String(item.exercise.id)
             : null,
         name: item.exercise?.name ??
-            "Вправа",
+            t("exercise.fallback"),
         exercise: item.exercise,
         sets: item.sets,
         reps: item.reps,

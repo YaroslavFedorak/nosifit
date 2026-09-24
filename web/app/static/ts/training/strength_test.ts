@@ -6,6 +6,10 @@ import {
     renderStrengthTestResults
 } from "./dashboard.js";
 
+import {
+    t
+} from "../i18n/index.js";
+
 type StrengthType =
     | "pushups"
     | "squats"
@@ -276,7 +280,7 @@ async function submitTest(): Promise<void> {
         !Number.isFinite(situps)
     ) {
         showError(
-            "Введіть коректні значення."
+            t("strengthTest.invalidValues")
         );
 
         return;
@@ -309,7 +313,7 @@ async function submitTest(): Promise<void> {
         showSuccess();
     } catch {
         showError(
-            "Не вдалося зберегти тест. Спробуйте ще раз."
+            t("strengthTest.saveError")
         );
     } finally {
         setLoading(

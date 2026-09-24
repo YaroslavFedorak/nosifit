@@ -19,6 +19,10 @@ import {
     dom
 } from "../dom.js";
 
+import {
+    t
+} from "../../../i18n/index.js";
+
 export async function savePlan(): Promise<void> {
     const button =
         dom.saveBtn;
@@ -46,7 +50,7 @@ export async function savePlan(): Promise<void> {
     const payload = {
         name:
             titleInput.value ||
-            "Мій план",
+            t("plan.name"),
 
         is_active:
             true,
@@ -89,7 +93,7 @@ export async function savePlan(): Promise<void> {
             normalized;
 
         showToast(
-            "План збережено"
+            t("plan.saved")
         );
 
         setTimeout(
@@ -102,7 +106,7 @@ export async function savePlan(): Promise<void> {
         );
     } catch {
         showToast(
-            "Помилка збереження"
+            t("plan.saveError")
         );
     } finally {
         button.disabled =

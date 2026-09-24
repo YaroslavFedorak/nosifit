@@ -1,0 +1,176 @@
+{
+    "title": "Trening",
+    "subtitle": "Planuj treningi • Analizuj postępy • Otrzymuj rekomendacje",
+    "today": "Dzisiaj",
+    "todayWorkout": "Dzisiejszy trening",
+    "trainingPlan": "Plan treningowy",
+    "workoutName": "Nazwa treningu",
+    "addExercise": "Dodaj ćwiczenie",
+    "saveWorkout": "Zapisz trening",
+    "strengthTest": {
+        "title": "Test siły",
+        "takeTest": "Rozpocznij test",
+        "pushups": "Pompki",
+        "squats": "Przysiady",
+        "situps": "Brzuszki",
+        "description": "Maksymalna liczba powtórzeń bez przerw.",
+        "finish": "Zakończ test",
+        "saved": "Test zapisany. Rekomendacje zaktualizowane",
+        "invalidValues": "Wprowadź poprawne wartości.",
+        "saveError": "Nie udało się zapisać testu. Spróbuj ponownie."
+    },
+    "weakPoints": "Słabe punkty",
+    "recommendedExercises": "Polecane ćwiczenia",
+    "muscleBalance": "Balans mięśni",
+    "balanced": "Zrównoważone",
+    "overloaded": "Przeciążone",
+    "recommendations": {
+        "weakPointsEmpty": "Za mało danych, aby określić słabe grupy mięśni",
+        "weakPointsDescription": "Dodaj kilka treningów, aby otrzymać spersonalizowaną analizę",
+        "exercisesEmpty": "Brak spersonalizowanych rekomendacji",
+        "exercisesDescription": "Dodaj kilka treningów, aby system mógł przeanalizować postępy",
+        "balanceEmpty": "Za mało danych, aby przeanalizować balans mięśni",
+        "balanceDescription": "Kontynuuj treningi, aby otrzymać analizę grup mięśniowych",
+        "noBalancedGroups": "Brak grup w zakresie równowagi",
+        "noOverloadedGroups": "Brak przeciążonych grup",
+        "reasons": {
+            "improvesWeakMuscleGroup": "Wzmacnia słabą grupę mięśni",
+            "improvesWeakMovementPattern": "Poprawia słaby wzorzec ruchu",
+            "helpsReverseRegression": "Pomaga odzyskać postępy",
+            "helpsBreakPlateau": "Pomaga przełamać stagnację",
+            "supportsAnUndertrainedMuscle": "Wzmacnia niedotrenowaną grupę mięśni",
+            "addsExerciseVariety": "Dodaje różnorodność ćwiczeń",
+            "targetsYourWeakPoint": "Celuje w twój słaby punkt",
+            "progression": "Wspiera progres",
+            "lowFrequency": "Ta grupa mięśni jest trenowana zbyt rzadko",
+            "highFrequency": "Uwzględnia wysoką częstotliwość treningów"
+        }
+    },
+    "muscles": {
+        "spine": "Kręgosłup",
+        "traps": "Czworoboczny",
+        "abs": "Brzuch",
+        "obliques": "Skośne",
+        "hipFlexors": "Zginacze bioder",
+        "chest": "Klatka piersiowa",
+        "back": "Plecy",
+        "glutes": "Pośladki",
+        "quads": "Czworogłowe",
+        "shoulders": "Barki",
+        "triceps": "Tricepsy",
+        "biceps": "Bicepsy",
+        "core": "Core",
+        "legs": "Nogi",
+        "lowerBack": "Dolne plecy"
+    },
+    "heatmap": {
+        "yearActivity": "Aktywność w ciągu roku",
+        "year": "Rok",
+        "calendar": "Kalendarz",
+        "activityHeatmap": "Mapa aktywności w ciągu roku",
+        "less": "Mniej",
+        "more": "Więcej",
+        "load": "{percent}% obciążenia ({load} jednostek)",
+        "ariaLabel": "{date}: {percent}% obciążenia",
+        "emptyDay": "Brak treningów tego dnia",
+        "session": "Sesja",
+        "exerciseMeta": "{sets}×{reps}, {load} kg",
+        "error": "Błąd",
+        "loadError": "Nie udało się załadować danych."
+    },
+    "months": {
+        "jan": "Sty",
+        "feb": "Lut",
+        "mar": "Mar",
+        "apr": "Kwi",
+        "may": "Maj",
+        "jun": "Cze",
+        "jul": "Lip",
+        "aug": "Sie",
+        "sep": "Wrz",
+        "oct": "Paź",
+        "nov": "Lis",
+        "dec": "Gru"
+    },
+    "monthNames": {
+        "jan": "Styczeń",
+        "feb": "Luty",
+        "mar": "Marzec",
+        "apr": "Kwiecień",
+        "may": "Maj",
+        "jun": "Czerwiec",
+        "jul": "Lipiec",
+        "aug": "Sierpień",
+        "sep": "Wrzesień",
+        "oct": "Październik",
+        "nov": "Listopad",
+        "dec": "Grudzień"
+    },
+    "plan": {
+        "title": "Mój plan treningowy",
+        "help": "Pomoc",
+        "helpChooseDay": "Wybierz dzień, dodaj ćwiczenia i ustaw powtórzenia, serie oraz ciężar",
+        "helpReorder": "Przeciągnij ćwiczenia, aby zmienić ich kolejność",
+        "name": "Nazwa planu",
+        "namePlaceholder": "Na przykład: Full Body",
+        "dayExercises": "Ćwiczenia na ten dzień",
+        "empty": "Plan na ten dzień jest pusty",
+        "emptyDescription": "Dodaj pierwsze ćwiczenie, aby rozpocząć trening",
+        "exercisesCount": "ćwiczeń",
+        "setsCount": "serii",
+        "save": "Zapisz plan",
+        "saved": "Plan zapisany",
+        "saveError": "Nie udało się zapisać planu"
+    },
+    "exercisePicker": {
+        "title": "Wybór ćwiczeń",
+        "search": "Szukaj ćwiczeń",
+        "all": "Wszystkie",
+        "chest": "Klatka",
+        "back": "Plecy",
+        "legs": "Nogi",
+        "shoulders": "Barki",
+        "arms": "Ramiona",
+        "core": "Core"
+    },
+    "exercise": {
+        "execution": "Szczegóły ćwiczenia",
+        "sets": "Serie",
+        "reps": "Powtórzenia",
+        "weight": "Ciężar (kg)",
+        "rpe": "RPE",
+        "fallback": "Ćwiczenie"
+    },
+    "workout": {
+        "add": "Dodaj trening",
+        "setsShort": "serie",
+        "repsShort": "powt.",
+        "weightShort": "kg"
+    },
+    "summary": {
+        "exercises": "ćwiczeń",
+        "sets": "serii"
+    },
+    "calendar": {
+        "month": "Miesiąc",
+        "close": "Zamknij"
+    },
+    "dayDetails": {
+        "day": "Dzień"
+    },
+    "session": {
+        "saved": "Trening zapisany"
+    },
+    "strengthLevels": {
+        "low": "Niski",
+        "medium": "Średni",
+        "good": "Dobry",
+        "excellent": "Doskonały"
+    },
+    "common": {
+        "cancel": "Anuluj",
+        "close": "Zamknij",
+        "save": "Zapisz",
+        "error": "Błąd"
+    }
+}

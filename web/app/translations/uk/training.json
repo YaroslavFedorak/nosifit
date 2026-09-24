@@ -1,0 +1,176 @@
+{
+    "title": "Тренування",
+    "subtitle": "Плануйте тренування • Аналізуйте прогрес • Отримуйте рекомендації",
+    "today": "Сьогодні",
+    "todayWorkout": "Сьогоднішнє тренування",
+    "trainingPlan": "План тренувань",
+    "workoutName": "Назва тренування",
+    "addExercise": "Додати вправу",
+    "saveWorkout": "Зберегти тренування",
+    "strengthTest": {
+        "title": "Тест сили",
+        "takeTest": "Пройти тест",
+        "pushups": "Віджимання",
+        "squats": "Присідання",
+        "situps": "Скручування",
+        "description": "Максимальна кількість повторень без перерв.",
+        "finish": "Завершити тест",
+        "saved": "Тест збережено. Рекомендації оновлено",
+        "invalidValues": "Введіть коректні значення.",
+        "saveError": "Не вдалося зберегти тест. Спробуйте ще раз."
+    },
+    "weakPoints": "Слабкі місця",
+    "recommendedExercises": "Рекомендовані вправи",
+    "muscleBalance": "Баланс м’язів",
+    "balanced": "Збалансовані",
+    "overloaded": "Перевантажені",
+    "recommendations": {
+        "weakPointsEmpty": "Недостатньо даних для визначення слабких груп м’язів",
+        "weakPointsDescription": "Додайте кілька тренувань, щоб отримати персоналізований аналіз",
+        "exercisesEmpty": "Поки немає персональних рекомендацій",
+        "exercisesDescription": "Додайте кілька тренувань, щоб система могла проаналізувати прогрес",
+        "balanceEmpty": "Недостатньо даних для аналізу балансу м’язів",
+        "balanceDescription": "Продовжуйте тренуватися, щоб отримати аналіз м’язових груп",
+        "noBalancedGroups": "Немає груп у збалансованому діапазоні",
+        "noOverloadedGroups": "Немає перевантажених груп",
+        "reasons": {
+            "improvesWeakMuscleGroup": "Розвиває слабку групу м’язів",
+            "improvesWeakMovementPattern": "Покращує слабкий руховий патерн",
+            "helpsReverseRegression": "Допомагає відновити прогрес",
+            "helpsBreakPlateau": "Допомагає подолати плато",
+            "supportsAnUndertrainedMuscle": "Підсилює недотреновану групу м’язів",
+            "addsExerciseVariety": "Додає різноманітність вправ",
+            "targetsYourWeakPoint": "Працює над вашим слабким місцем",
+            "progression": "Підтримує прогрес",
+            "lowFrequency": "Ця група м’язів тренується надто рідко",
+            "highFrequency": "Враховує високу частоту тренувань"
+        }
+    },
+    "muscles": {
+        "spine": "Хребет",
+        "traps": "Трапеції",
+        "abs": "Прес",
+        "obliques": "Косі",
+        "hipFlexors": "Згиначі стегна",
+        "chest": "Груди",
+        "back": "Спина",
+        "glutes": "Сідниці",
+        "quads": "Квадрицепси",
+        "shoulders": "Плечі",
+        "triceps": "Трицепси",
+        "biceps": "Біцепси",
+        "core": "Кор",
+        "legs": "Ноги",
+        "lowerBack": "Нижня частина спини"
+    },
+    "heatmap": {
+        "yearActivity": "Активність за рік",
+        "year": "Рік",
+        "calendar": "Календар",
+        "activityHeatmap": "Карта активності за рік",
+        "less": "Менше",
+        "more": "Більше",
+        "load": "{percent}% навантаження ({load} од.)",
+        "ariaLabel": "{date}: {percent}% навантаження",
+        "emptyDay": "Немає тренувань у цей день",
+        "session": "Сесія",
+        "exerciseMeta": "{sets}×{reps}, {load} кг",
+        "error": "Помилка",
+        "loadError": "Не вдалося завантажити дані."
+    },
+    "months": {
+        "jan": "Січ",
+        "feb": "Лют",
+        "mar": "Бер",
+        "apr": "Кві",
+        "may": "Тра",
+        "jun": "Чер",
+        "jul": "Лип",
+        "aug": "Сер",
+        "sep": "Вер",
+        "oct": "Жов",
+        "nov": "Лис",
+        "dec": "Гру"
+    },
+    "monthNames": {
+        "jan": "Січень",
+        "feb": "Лютий",
+        "mar": "Березень",
+        "apr": "Квітень",
+        "may": "Травень",
+        "jun": "Червень",
+        "jul": "Липень",
+        "aug": "Серпень",
+        "sep": "Вересень",
+        "oct": "Жовтень",
+        "nov": "Листопад",
+        "dec": "Грудень"
+    },
+    "plan": {
+        "title": "Мій план тренувань",
+        "help": "Допомога",
+        "helpChooseDay": "Оберіть день, додайте вправи та встановіть повторення, підходи й вагу",
+        "helpReorder": "Перетягуйте вправи, щоб змінити їх порядок",
+        "name": "Назва плану",
+        "namePlaceholder": "Наприклад: Full Body",
+        "dayExercises": "Вправи на цей день",
+        "empty": "План на цей день порожній",
+        "emptyDescription": "Додайте першу вправу, щоб розпочати тренування",
+        "exercisesCount": "вправ",
+        "setsCount": "підходів",
+        "save": "Зберегти план",
+        "saved": "План збережено",
+        "saveError": "Не вдалося зберегти план"
+    },
+    "exercisePicker": {
+        "title": "Вибір вправ",
+        "search": "Пошук вправ",
+        "all": "Усі",
+        "chest": "Груди",
+        "back": "Спина",
+        "legs": "Ноги",
+        "shoulders": "Плечі",
+        "arms": "Руки",
+        "core": "Кор"
+    },
+    "exercise": {
+        "execution": "Деталі вправи",
+        "sets": "Підходи",
+        "reps": "Повторення",
+        "weight": "Вага (кг)",
+        "rpe": "RPE",
+        "fallback": "Вправа"
+    },
+    "workout": {
+        "add": "Додати тренування",
+        "setsShort": "підх.",
+        "repsShort": "повт.",
+        "weightShort": "кг"
+    },
+    "summary": {
+        "exercises": "вправ",
+        "sets": "підходів"
+    },
+    "calendar": {
+        "month": "Місяць",
+        "close": "Закрити"
+    },
+    "dayDetails": {
+        "day": "День"
+    },
+    "session": {
+        "saved": "Тренування збережено"
+    },
+    "strengthLevels": {
+        "low": "Низький",
+        "medium": "Середній",
+        "good": "Добрий",
+        "excellent": "Відмінний"
+    },
+    "common": {
+        "cancel": "Скасувати",
+        "close": "Закрити",
+        "save": "Зберегти",
+        "error": "Помилка"
+    }
+}

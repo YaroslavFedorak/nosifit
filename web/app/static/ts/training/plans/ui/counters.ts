@@ -1,4 +1,10 @@
-import { ICONS } from "../../../icons/index.js";
+import {
+    ICONS
+} from "../../../icons/index.js";
+
+import {
+    t
+} from "../../../i18n/index.js";
 
 type NumberChangeHandler =
     (value: number) => void;
@@ -56,13 +62,19 @@ export function createCounterField(
             ".tr-arrow-down"
         );
 
-    if (!input || !up || !down) {
+    if (
+        !input ||
+        !up ||
+        !down
+    ) {
         return field;
     }
 
     up.onclick = () => {
         const current =
-            Number(input.value) || 0;
+            Number(
+                input.value
+            ) || 0;
 
         const next =
             current + 1;
@@ -70,28 +82,43 @@ export function createCounterField(
         input.value =
             String(next);
 
-        onChange(next);
+        onChange(
+            next
+        );
     };
 
     down.onclick = () => {
         const current =
-            Number(input.value) || 0;
+            Number(
+                input.value
+            ) || 0;
 
         const next =
-            Math.max(0, current - 1);
+            Math.max(
+                0,
+                current - 1
+            );
 
         input.value =
             String(next);
 
-        onChange(next);
+        onChange(
+            next
+        );
     };
 
     input.oninput = () => {
         const value =
-            Number(input.value);
+            Number(
+                input.value
+            );
 
-        if (!Number.isNaN(value)) {
-            onChange(value);
+        if (
+            !Number.isNaN(value)
+        ) {
+            onChange(
+                value
+            );
         }
     };
 
@@ -114,7 +141,7 @@ export function createRepsField(
                 ${ICONS.exercise}
             </span>
             <span class="tr-plan-field-label">
-                Повтори
+                ${t("exercise.reps")}
             </span>
         </div>
 
@@ -149,7 +176,11 @@ export function createRepsField(
             ".tr-arrow-down"
         );
 
-    if (!input || !up || !down) {
+    if (
+        !input ||
+        !up ||
+        !down
+    ) {
         return field;
     }
 
@@ -187,12 +218,16 @@ export function createRepsField(
         input.value =
             next;
 
-        onChange(next);
+        onChange(
+            next
+        );
     };
 
     up.onclick = () => {
         const [first, second] =
-            parseRange(input.value);
+            parseRange(
+                input.value
+            );
 
         updateRange(
             first + 1,
@@ -202,10 +237,15 @@ export function createRepsField(
 
     down.onclick = () => {
         let [first, second] =
-            parseRange(input.value);
+            parseRange(
+                input.value
+            );
 
         first =
-            Math.max(1, first - 1);
+            Math.max(
+                1,
+                first - 1
+            );
 
         second =
             Math.max(
@@ -221,7 +261,9 @@ export function createRepsField(
 
     input.oninput = () => {
         const [first, second] =
-            parseRange(input.value);
+            parseRange(
+                input.value
+            );
 
         updateRange(
             first,

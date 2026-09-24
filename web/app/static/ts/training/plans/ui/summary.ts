@@ -6,6 +6,10 @@ import {
     state
 } from "../state.js";
 
+import {
+    t
+} from "../../../i18n/index.js";
+
 export function updateSummary(
     items?: PlanExercise[]
 ): void {
@@ -39,12 +43,16 @@ export function updateSummary(
 
     if (countElement) {
         countElement.textContent =
-            `${count} вправ`;
+            `${count} ${t(
+                "summary.exercises"
+            )}`;
     }
 
     if (setsElement) {
         setsElement.textContent =
-            `${sets} підходів`;
+            `${sets} ${t(
+                "summary.sets"
+            )}`;
     }
 
     updateBadges();
@@ -53,34 +61,39 @@ export function updateSummary(
 export function updateBadges(): void {
     Object.keys(
         state.days
-    ).forEach(day => {
-        const badge =
-            document.querySelector<HTMLElement>(
-                `[data-day-badge="${day}"]`
-            );
+    ).forEach(
+        day => {
+            const badge =
+                document.querySelector<HTMLElement>(
+                    `[data-day-badge="${day}"]`
+                );
 
-        if (!badge) {
-            return;
+            if (!badge) {
+                return;
+            }
+
+            const count =
+                state.days[
+                    day as keyof typeof state.days
+                ]?.length || 0;
+
+            if (
+                count > 0
+            ) {
+                badge.textContent =
+                    String(count);
+
+                badge.classList.add(
+                    "visible"
+                );
+            } else {
+                badge.textContent =
+                    "";
+
+                badge.classList.remove(
+                    "visible"
+                );
+            }
         }
-
-        const count =
-            state.days[
-                day as keyof typeof state.days
-            ]?.length || 0;
-
-        if (count > 0) {
-            badge.textContent =
-                String(count);
-
-            badge.classList.add(
-                "visible"
-            );
-        } else {
-            badge.textContent = "";
-
-            badge.classList.remove(
-                "visible"
-            );
-        }
-    });
+    );
 }

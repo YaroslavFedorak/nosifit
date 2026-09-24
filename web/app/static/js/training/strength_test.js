@@ -1,5 +1,6 @@
 import { TrainingAPI } from "./api.js";
 import { renderStrengthTestResults } from "./dashboard.js";
+import { t } from "../i18n/index.js";
 const TYPES = [
     "pushups",
     "squats",
@@ -117,7 +118,7 @@ async function submitTest() {
     if (!Number.isFinite(pushups) ||
         !Number.isFinite(squats) ||
         !Number.isFinite(situps)) {
-        showError("Введіть коректні значення.");
+        showError(t("strengthTest.invalidValues"));
         return;
     }
     setLoading(true);
@@ -137,7 +138,7 @@ async function submitTest() {
         showSuccess();
     }
     catch {
-        showError("Не вдалося зберегти тест. Спробуйте ще раз.");
+        showError(t("strengthTest.saveError"));
     }
     finally {
         setLoading(false);

@@ -1,4 +1,5 @@
 import { ICONS } from "../../../icons/index.js";
+import { t } from "../../../i18n/index.js";
 export function createCounterField(label, iconSvg, value, onChange) {
     const field = document.createElement("div");
     field.className =
@@ -28,7 +29,9 @@ export function createCounterField(label, iconSvg, value, onChange) {
     const input = field.querySelector(".tr-plan-counter-input");
     const up = field.querySelector(".tr-arrow-up");
     const down = field.querySelector(".tr-arrow-down");
-    if (!input || !up || !down) {
+    if (!input ||
+        !up ||
+        !down) {
         return field;
     }
     up.onclick = () => {
@@ -63,7 +66,7 @@ export function createRepsField(value, onChange) {
                 ${ICONS.exercise}
             </span>
             <span class="tr-plan-field-label">
-                Повтори
+                ${t("exercise.reps")}
             </span>
         </div>
 
@@ -85,7 +88,9 @@ export function createRepsField(value, onChange) {
     const input = field.querySelector(".tr-plan-reps-input");
     const up = field.querySelector(".tr-arrow-up");
     const down = field.querySelector(".tr-arrow-down");
-    if (!input || !up || !down) {
+    if (!input ||
+        !up ||
+        !down) {
         return field;
     }
     const parseRange = (value) => {

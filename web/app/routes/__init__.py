@@ -3,6 +3,7 @@ from .public.root import root_bp
 
 from .public.marketing import public_bp
 from .public.info import info_bp
+from .i18n import i18n_bp
 
 from .auth.oauth_google import google_bp
 from .auth.oauth_github import github_bp

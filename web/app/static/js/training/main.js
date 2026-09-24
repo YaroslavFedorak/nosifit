@@ -1,5 +1,6 @@
 import { TrainingAPI } from "./api.js";
 import { trainingStore } from "./store.js";
+import { loadTranslations } from "../i18n/index.js";
 import { renderCurrentDate, renderAnalytics, renderStrengthTestResults } from "./dashboard.js";
 import { loadPlan } from "./plans.js";
 import { renderWorkoutList } from "./workout.js";
@@ -11,6 +12,7 @@ import { initHeatmap } from "./heatmap.js";
 import { initStrengthTest } from "./strength_test.js";
 import { initDailyState, persistWorkout } from "./state.js";
 document.addEventListener("DOMContentLoaded", async () => {
+    await loadTranslations("training");
     renderCurrentDate();
     initHeatmap();
     await Promise.all([

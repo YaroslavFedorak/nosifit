@@ -7,6 +7,10 @@ import {
     trainingStore
 } from "./store.js";
 
+import {
+    t
+} from "../i18n/index.js";
+
 const STORAGE_KEY =
     "dashboard_training_exercises";
 
@@ -105,7 +109,7 @@ function normalizeExercise(
         name:
             item.name ??
             source?.name ??
-            "Вправа"
+            t("exercise.fallback")
     };
 
     const name =
@@ -231,7 +235,7 @@ export function persistWorkout(
                             : null,
                     name:
                         item.exercise?.name ??
-                        "Вправа",
+                        t("exercise.fallback"),
                     exercise:
                         item.exercise,
                     sets:

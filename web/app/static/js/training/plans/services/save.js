@@ -3,6 +3,7 @@ import { showToast } from "../ui/toast.js";
 import { TrainingAPI } from "../../api.js";
 import { trainingStore } from "../../store.js";
 import { dom } from "../dom.js";
+import { t } from "../../../i18n/index.js";
 export async function savePlan() {
     const button = dom.saveBtn;
     const titleInput = dom.titleInput;
@@ -14,7 +15,7 @@ export async function savePlan() {
     const loader = button.querySelector(".btn-loader");
     const payload = {
         name: titleInput.value ||
-            "Мій план",
+            t("plan.name"),
         is_active: true,
         days: state.days
     };
@@ -31,13 +32,13 @@ export async function savePlan() {
         const normalized = normalize(saved.days ?? {});
         state.days =
             normalized;
-        showToast("План збережено");
+        showToast(t("plan.saved"));
         setTimeout(() => {
             dom.modal?.classList.remove("open");
         }, 600);
     }
     catch {
-        showToast("Помилка збереження");
+        showToast(t("plan.saveError"));
     }
     finally {
         button.disabled =

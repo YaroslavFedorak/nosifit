@@ -1,5 +1,6 @@
 import { TrainingAPI } from "./api.js";
 import { trainingStore } from "./store.js";
+import { loadTranslations } from "../i18n/index.js";
 
 import {
     renderCurrentDate,
@@ -39,6 +40,8 @@ import {
 document.addEventListener(
     "DOMContentLoaded",
     async () => {
+        await loadTranslations("training");
+        
         renderCurrentDate();
 
         initHeatmap();

@@ -3,6 +3,10 @@ import type {
     StrengthPerformance
 } from "./api.js";
 
+import {
+    getLocale
+} from "../i18n/index.js";
+
 export function renderCurrentDate(): void {
     const element =
         document.getElementById("current-date");
@@ -14,11 +18,14 @@ export function renderCurrentDate(): void {
     const date = new Date();
 
     element.textContent =
-        date.toLocaleDateString("uk-UA", {
-            weekday: "long",
-            day: "numeric",
-            month: "long"
-        });
+        date.toLocaleDateString(
+            getLocale(),
+            {
+                weekday: "long",
+                day: "numeric",
+                month: "long"
+            }
+        );
 }
 
 export function renderAnalytics(
@@ -31,10 +38,14 @@ export function renderAnalytics(
         data.recovery || {};
 
     const performanceElement =
-        document.getElementById("tr-performance");
+        document.getElementById(
+            "tr-performance"
+        );
 
     const recoveryElement =
-        document.getElementById("tr-recovery");
+        document.getElementById(
+            "tr-recovery"
+        );
 
     if (performanceElement) {
         const averagePerformance =
@@ -70,7 +81,10 @@ export function renderAnalytics(
 }
 
 export function renderStrengthTestResults(
-    performance: StrengthPerformance | null | undefined
+    performance:
+        StrengthPerformance |
+        null |
+        undefined
 ): void {
     if (!performance) {
         return;
