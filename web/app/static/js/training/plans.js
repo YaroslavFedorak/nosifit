@@ -9,8 +9,8 @@ export async function loadPlan() {
                 data.plans ||
                 [];
         trainingStore.plan =
-            plans.find(plan => plan.is_active) ||
-                plans[0] ||
+            plans.find(plan => plan.is_active) ??
+                plans[0] ??
                 null;
     }
     catch {

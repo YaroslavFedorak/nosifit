@@ -1,6 +1,12 @@
 import { TrainingAPI } from "./api.js";
-import type { TrainingPlan } from "./api.js";
-import { trainingStore } from "./store.js";
+
+import type {
+    TrainingPlan
+} from "./api.js";
+
+import {
+    trainingStore
+} from "./store.js";
 
 export async function loadPlan(): Promise<void> {
     try {
@@ -16,9 +22,10 @@ export async function loadPlan(): Promise<void> {
 
         trainingStore.plan =
             plans.find(
-                plan => plan.is_active
-            ) ||
-            plans[0] ||
+                plan =>
+                    plan.is_active
+            ) ??
+            plans[0] ??
             null;
     } catch {
         trainingStore.plan = null;

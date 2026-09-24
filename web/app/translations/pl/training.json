@@ -75,6 +75,7 @@
         "emptyDay": "Brak treningów tego dnia",
         "session": "Sesja",
         "exerciseMeta": "{sets}×{reps}, {load} kg",
+        "exerciseMetaNoLoad": "{sets}×{reps}",
         "error": "Błąd",
         "loadError": "Nie udało się załadować danych."
     },
@@ -106,6 +107,15 @@
         "nov": "Listopad",
         "dec": "Grudzień"
     },
+    "weekdays": {
+        "mon": "Pon",
+        "tue": "Wt",
+        "wed": "Śr",
+        "thu": "Czw",
+        "fri": "Pt",
+        "sat": "Sob",
+        "sun": "Ndz"
+    },
     "plan": {
         "title": "Mój plan treningowy",
         "help": "Pomoc",
@@ -131,7 +141,8 @@
         "legs": "Nogi",
         "shoulders": "Barki",
         "arms": "Ramiona",
-        "core": "Core"
+        "core": "Core",
+        "empty": "Nie znaleziono ćwiczeń"
     },
     "exercise": {
         "execution": "Szczegóły ćwiczenia",
@@ -153,10 +164,13 @@
     },
     "calendar": {
         "month": "Miesiąc",
-        "close": "Zamknij"
+        "close": "Zamknij",
+        "previousMonth": "Poprzedni miesiąc",
+        "nextMonth": "Następny miesiąc"
     },
     "dayDetails": {
-        "day": "Dzień"
+        "day": "Dzień",
+        "close": "Zamknij"
     },
     "session": {
         "saved": "Trening zapisany"
@@ -171,6 +185,8 @@
         "cancel": "Anuluj",
         "close": "Zamknij",
         "save": "Zapisz",
-        "error": "Błąd"
+        "error": "Błąd",
+        "loading": "Ładowanie",
+        "noData": "Brak danych"
     }
 }

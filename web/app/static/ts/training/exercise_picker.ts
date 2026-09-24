@@ -1,10 +1,12 @@
-import {
-    trainingStore
-} from "./store.js";
+import { trainingStore } from "./store.js";
 
 import type {
     Exercise
 } from "./api.js";
+
+import {
+    t
+} from "../i18n/index.js";
 
 type PickerCallback =
     (exercise: Exercise) => void;
@@ -53,8 +55,7 @@ export function initExercisePicker(): void {
     if (
         !modal ||
         !list ||
-        !search ||
-        !categories.length
+        !search
     ) {
         return;
     }
@@ -64,15 +65,30 @@ export function initExercisePicker(): void {
             "[data-close-picker]"
         );
 
+    let currentCategory = "all";
+
     const renderList =
         (items: Exercise[]): void => {
             list.innerHTML = "";
 
+            if (!items.length) {
+                const empty =
+                    document.createElement("div");
+
+                empty.className =
+                    "tr-ex-modal-empty";
+
+                empty.textContent =
+                    t("recommendations.exercisesEmpty");
+
+                list.appendChild(empty);
+
+                return;
+            }
+
             items.forEach(exercise => {
                 const row =
-                    document.createElement(
-                        "div"
-                    );
+                    document.createElement("div");
 
                 row.className =
                     "tr-ex-modal-item";
@@ -81,9 +97,7 @@ export function initExercisePicker(): void {
                     exercise.name;
 
                 row.onclick = () => {
-                    pickerCallback?.(
-                        exercise
-                    );
+                    pickerCallback?.(exercise);
 
                     modal.classList.remove(
                         "open"
@@ -94,9 +108,6 @@ export function initExercisePicker(): void {
             });
         };
 
-    let currentCategory =
-        "all";
-
     const filterItems =
         (): void => {
             const query =
@@ -105,7 +116,7 @@ export function initExercisePicker(): void {
                     .toLowerCase();
 
             let items =
-                trainingStore.exercises;
+                [...trainingStore.exercises];
 
             if (
                 currentCategory !==
@@ -113,19 +124,21 @@ export function initExercisePicker(): void {
             ) {
                 items =
                     items.filter(
-                        exercise =>
-                            (
+                        exercise => {
+                            const muscles =
                                 exercise
                                     .muscles_primary ||
-                                []
-                            )
-                                .map(
-                                    muscle =>
-                                        muscle.toLowerCase()
-                                )
-                                .includes(
-                                    currentCategory
-                                )
+                                [];
+
+                            return muscles.some(
+                                muscle =>
+                                    muscle
+                                        .toLowerCase()
+                                        .includes(
+                                            currentCategory
+                                        )
+                            );
+                        }
                     );
             }
 
@@ -140,6 +153,15 @@ export function initExercisePicker(): void {
             }
 
             renderList(items);
+        };
+
+    const closeModal =
+        (): void => {
+            modal.classList.remove(
+                "open"
+            );
+
+            pickerCallback = null;
         };
 
     renderList(
@@ -171,10 +193,30 @@ export function initExercisePicker(): void {
     });
 
     closeButtons.forEach(button => {
-        button.onclick = () => {
-            modal.classList.remove(
-                "open"
-            );
-        };
+        button.onclick =
+            closeModal;
     });
+
+    modal.addEventListener(
+        "click",
+        event => {
+            if (
+                event.target === modal
+            ) {
+                closeModal();
+            }
+        }
+    );
+
+    document.addEventListener(
+        "keydown",
+        event => {
+            if (
+                event.key === "Escape" &&
+                modal.classList.contains("open")
+            ) {
+                closeModal();
+            }
+        }
+    );
 }

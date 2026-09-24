@@ -1,27 +1,37 @@
 <div id="tr-modal-strength" class="tr-modal">
   <div class="tr-modal-content tr-modal-narrow">
     <div class="tr-modal-header">
-      <h3>Тест сили</h3>
-      <button class="tr-modal-close" data-close-strength>&times;</button>
+      <h3>{{ training_t("strengthTest.title") }}</h3>
+
+      <button
+        class="tr-modal-close"
+        data-close-strength
+        type="button"
+        aria-label="{{ training_t('common.close') }}"
+      >
+        &times;
+      </button>
     </div>
 
     <div class="tr-modal-body tr-strength-body">
-      <p class="tr-strength-desc">Максимум повторень без пауз.</p>
+      <p class="tr-strength-desc">{{ training_t("strengthTest.description") }}</p>
 
       <div class="tr-strength-field">
         <label for="st_pushups">
           <span class="tr-strength-icon"></span>
-          Віджимання
+          {{ training_t("strengthTest.pushups") }}
         </label>
 
         <div class="tr-strength-input-box">
           <div class="tr-arrow-up" data-inc="st_pushups"></div>
+
           <input
             id="st_pushups"
             type="number"
             min="0"
             class="tr-strength-input"
           />
+
           <div class="tr-arrow-down" data-dec="st_pushups"></div>
         </div>
       </div>
@@ -29,17 +39,19 @@
       <div class="tr-strength-field">
         <label for="st_squats">
           <span class="tr-strength-icon"></span>
-          Присідання
+          {{ training_t("strengthTest.squats") }}
         </label>
 
         <div class="tr-strength-input-box">
           <div class="tr-arrow-up" data-inc="st_squats"></div>
+
           <input
             id="st_squats"
             type="number"
             min="0"
             class="tr-strength-input"
           />
+
           <div class="tr-arrow-down" data-dec="st_squats"></div>
         </div>
       </div>
@@ -47,35 +59,55 @@
       <div class="tr-strength-field">
         <label for="st_situps">
           <span class="tr-strength-icon"></span>
-          Скручування
+          {{ training_t("strengthTest.situps") }}
         </label>
 
         <div class="tr-strength-input-box">
           <div class="tr-arrow-up" data-inc="st_situps"></div>
+
           <input
             id="st_situps"
             type="number"
             min="0"
             class="tr-strength-input"
           />
+
           <div class="tr-arrow-down" data-dec="st_situps"></div>
         </div>
       </div>
 
-      <div id="strength-error" class="tr-strength-error hidden"></div>
+      <div
+        id="strength-error"
+        class="tr-strength-error hidden"
+        role="alert"
+        aria-live="polite"
+      ></div>
 
-      <div id="strength-success" class="tr-strength-success hidden">
+      <div
+        id="strength-success"
+        class="tr-strength-success hidden"
+        role="status"
+        aria-live="polite"
+      >
         <div class="checkmark"></div>
-        <p>Тест збережено. Рекомендації оновлено</p>
+        <p>{{ training_t("strengthTest.saved") }}</p>
       </div>
     </div>
 
     <div class="tr-modal-footer">
-      <button class="tr-btn tr-btn-ghost" data-close-strength>Скасувати</button>
-      <button id="strength-test-submit" class="tr-btn tr-btn-primary">
-        <span class="btn-text">Завершити тест</span>
-        <span class="btn-loader hidden"></span>
+      <button class="tr-btn tr-btn-ghost" data-close-strength type="button">
+        {{ training_t("common.cancel") }}
+      </button>
+
+      <button
+        id="strength-test-submit"
+        class="tr-btn tr-btn-primary"
+        type="button"
+      >
+        <span class="btn-text">{{ training_t("strengthTest.finish") }}</span>
+        <span class="btn-loader hidden" aria-hidden="true"></span>
       </button>
     </div>
   </div>
 </div>
+

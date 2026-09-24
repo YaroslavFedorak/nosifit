@@ -8,6 +8,10 @@ import {
 } from "./dom.js";
 
 import {
+    t
+} from "../../i18n/index.js";
+
+import {
     DAYS,
     isPlanDayKey
 } from "./constants.js";
@@ -61,7 +65,7 @@ function renderDays(): void {
                 day.key;
 
             button.innerHTML = `
-                <span>${day.short}</span>
+                <span>${t(`weekdays.${day.key}`)}</span>
                 <span
                     class="tr-plan-day-badge"
                     data-day-badge="${day.key}"

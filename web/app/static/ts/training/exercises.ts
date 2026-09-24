@@ -1,8 +1,8 @@
-import { TrainingAPI } from "./api.js";
+import { trainingStore } from "./store.js";
 
-export async function loadExercisesList(
+export function loadExercisesList(
     containerId: string
-): Promise<void> {
+): void {
     const container =
         document.getElementById(
             containerId
@@ -12,18 +12,10 @@ export async function loadExercisesList(
         return;
     }
 
-    try {
-        const data =
-            await TrainingAPI.getExercises();
+    container.innerHTML = "";
 
-        const items =
-            Array.isArray(data)
-                ? data
-                : data.items || [];
-
-        container.innerHTML = "";
-
-        items.forEach(exercise => {
+    trainingStore.exercises.forEach(
+        exercise => {
             const row =
                 document.createElement("div");
 
@@ -55,8 +47,6 @@ export async function loadExercisesList(
             row.appendChild(meta);
 
             container.appendChild(row);
-        });
-    } catch {
-        return;
-    }
+        }
+    );
 }

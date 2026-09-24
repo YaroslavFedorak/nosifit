@@ -1,10 +1,11 @@
-{% extends "app/base_app.html" %} {% block title %}Тренування — Nosi Fit{%
-endblock %} {% block styles %} {{ super() }}
+{% extends "app/base_app.html" %} {% block title %} {{ training_t("title") }} —
+Nosi Fit {% endblock %} {% block styles %} {{ super() }}
+
 <link
   rel="stylesheet"
   href="{{ url_for('static', filename='css/pages/training/training.css') }}"
 />
-{% endblock %} {% block body_class %}training-page{% endblock %} {% block body
+{% endblock %} {% block body_class %} training-page {% endblock %} {% block body
 %}
 
 <div class="training-page-wrapper">
@@ -15,16 +16,16 @@ endblock %} {% block styles %} {{ super() }}
       </div>
 
       <div class="training-header-text">
-        <h1 class="training-title">Тренування</h1>
-        <div class="training-subtitle">
-          Плануйте тренування • Аналізуйте прогрес • Отримуйте рекомендації
-        </div>
+        <h1 class="training-title">{{ training_t("title") }}</h1>
+
+        <div class="training-subtitle">{{ training_t("subtitle") }}</div>
       </div>
     </div>
 
     <div class="training-header-right">
       <div class="training-header-info">
-        <div class="training-header-label">Сьогодні</div>
+        <div class="training-header-label">{{ training_t("today") }}</div>
+
         <div id="current-date" class="training-header-value"></div>
       </div>
     </div>
@@ -34,14 +35,18 @@ endblock %} {% block styles %} {{ super() }}
     <div class="training-left">
       <section class="tr-card tr-card-session">
         <div class="tr-card-header">
-          <h3 class="tr-card-title">Сьогоднішнє тренування</h3>
+          <h3 class="tr-card-title">{{ training_t("todayWorkout") }}</h3>
+
           <button id="tr-edit-plan" class="tr-btn tr-btn-primary" type="button">
-            План тренувань
+            {{ training_t("trainingPlan") }}
           </button>
         </div>
 
         <div class="tr-session-info">
-          <input id="tr-workout-title" placeholder="Назва тренування" />
+          <input
+            id="tr-workout-title"
+            placeholder="{{ training_t('workoutName') }}"
+          />
         </div>
 
         <div class="tr-session-actions-compact">
@@ -50,14 +55,15 @@ endblock %} {% block styles %} {{ super() }}
             class="tr-btn tr-btn-secondary"
             type="button"
           >
-            + Додати вправу
+            + {{ training_t("addExercise") }}
           </button>
+
           <button
             id="tr-save-workout"
             class="tr-btn tr-btn-primary"
             type="button"
           >
-            Зберегти тренування
+            {{ training_t("saveWorkout") }}
           </button>
         </div>
 
@@ -77,27 +83,33 @@ endblock %} {% block styles %} {{ super() }}
     <div class="training-right">
       <section class="tr-card tr-card-strength">
         <div class="tr-card-header">
-          <h3 class="tr-card-title">Тест сили</h3>
+          <h3 class="tr-card-title">{{ training_t("strengthTest.title") }}</h3>
+
           <button
             id="tr-strength-open"
             class="tr-btn tr-btn-primary"
             type="button"
           >
-            Пройти тест
+            {{ training_t("strengthTest.takeTest") }}
           </button>
         </div>
 
         <div class="tr-strength-results-grid">
           <div class="tr-strength-result-box">
-            <h4>Віджимання</h4>
+            <h4>{{ training_t("strengthTest.pushups") }}</h4>
+
             <span id="st-result-pushups">—</span>
           </div>
+
           <div class="tr-strength-result-box">
-            <h4>Присідання</h4>
+            <h4>{{ training_t("strengthTest.squats") }}</h4>
+
             <span id="st-result-squats">—</span>
           </div>
+
           <div class="tr-strength-result-box">
-            <h4>Скручування</h4>
+            <h4>{{ training_t("strengthTest.situps") }}</h4>
+
             <span id="st-result-situps">—</span>
           </div>
         </div>
@@ -107,33 +119,44 @@ endblock %} {% block styles %} {{ super() }}
         <div class="tr-rec-section">
           <div class="tr-rec-section-title">
             <span id="tr-icon-weak"></span>
-            <span>Слабкі місця</span>
+
+            <span> {{ training_t("weakPoints") }} </span>
           </div>
+
           <div id="tr-weak-points" class="tr-weak-grid"></div>
         </div>
 
         <div class="tr-rec-section">
           <div class="tr-rec-section-title">
             <span id="tr-icon-recommended"></span>
-            <span>Рекомендовані вправи</span>
+
+            <span> {{ training_t("recommendedExercises") }} </span>
           </div>
+
           <div id="tr-rec-grid" class="tr-rec-line"></div>
         </div>
 
         <div class="tr-rec-section tr-balance-section">
           <div class="tr-rec-section-title">
             <span id="tr-icon-balance"></span>
-            <span>Баланс м’язів</span>
+
+            <span> {{ training_t("muscleBalance") }} </span>
           </div>
 
           <div class="tr-balance-grid">
             <div class="tr-balance-col">
-              <div class="tr-balance-group-title">Збалансовані</div>
+              <div class="tr-balance-group-title">
+                {{ training_t("balanced") }}
+              </div>
+
               <div id="tr-balance-balanced" class="tr-balance-list"></div>
             </div>
 
             <div class="tr-balance-col">
-              <div class="tr-balance-group-title">Перевантажені</div>
+              <div class="tr-balance-group-title">
+                {{ training_t("overloaded") }}
+              </div>
+
               <div id="tr-balance-overloaded" class="tr-balance-list"></div>
             </div>
           </div>
@@ -152,6 +175,7 @@ endblock %} {% block styles %} {{ super() }}
 
 <script type="module">
   import { ICONS } from "/static/js/icons/index.js";
+
   document.getElementById("tr-icon-weak").innerHTML = ICONS.weak;
   document.getElementById("tr-icon-recommended").innerHTML = ICONS.recommended;
   document.getElementById("tr-icon-balance").innerHTML = ICONS.balance;

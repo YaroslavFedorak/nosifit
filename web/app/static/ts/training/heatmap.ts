@@ -69,6 +69,52 @@ function formatDate(
     );
 }
 
+function formatDateKey(
+    date: Date
+): string {
+    const year =
+        date.getFullYear();
+
+    const month =
+        String(
+            date.getMonth() + 1
+        ).padStart(
+            2,
+            "0"
+        );
+
+    const day =
+        String(
+            date.getDate()
+        ).padStart(
+            2,
+            "0"
+        );
+
+    return `${year}-${month}-${day}`;
+}
+
+function getDayFromDate(
+    date: string
+): HeatmapDay | null {
+    return (
+        CALENDAR_DATA.find(
+            day =>
+                day.date === date
+        ) ?? null
+    );
+}
+
+function closeModal(
+    id: string
+): void {
+    document
+        .getElementById(id)
+        ?.classList.remove(
+            "open"
+        );
+}
+
 export function initHeatmap(): void {
     const yearSelect =
         document.getElementById(
@@ -104,6 +150,9 @@ export function initHeatmap(): void {
             yearSelect.value ||
             new Date().getFullYear()
         );
+
+    CURRENT_MONTH =
+        new Date().getMonth();
 
     yearSelectCal.value =
         String(
@@ -190,10 +239,21 @@ export function initHeatmap(): void {
     yearSelectCal.addEventListener(
         "change",
         () => {
-            CURRENT_YEAR =
+            const year =
                 Number(
                     yearSelectCal.value
                 );
+
+            if (
+                !Number.isFinite(year)
+            ) {
+                return;
+            }
+
+            CURRENT_YEAR =
+                year;
+
+            CURRENT_MONTH = 0;
 
             yearSelect.value =
                 String(
@@ -207,6 +267,8 @@ export function initHeatmap(): void {
     openCalendar.addEventListener(
         "click",
         () => {
+            renderCalendarMonth();
+
             modal.classList.add(
                 "open"
             );
@@ -214,7 +276,7 @@ export function initHeatmap(): void {
     );
 
     document
-        .querySelectorAll(
+        .querySelectorAll<HTMLElement>(
             "[data-close-calendar]"
         )
         .forEach(
@@ -222,8 +284,8 @@ export function initHeatmap(): void {
                 button.addEventListener(
                     "click",
                     () => {
-                        modal.classList.remove(
-                            "open"
+                        closeModal(
+                            "tr-calendar-modal"
                         );
                     }
                 );
@@ -231,7 +293,7 @@ export function initHeatmap(): void {
         );
 
     document
-        .querySelectorAll(
+        .querySelectorAll<HTMLElement>(
             "[data-close-day-details]"
         )
         .forEach(
@@ -239,13 +301,8 @@ export function initHeatmap(): void {
                 button.addEventListener(
                     "click",
                     () => {
-                        const dayModal =
-                            document.getElementById(
-                                "tr-day-details-modal"
-                            );
-
-                        dayModal?.classList.remove(
-                            "open"
+                        closeModal(
+                            "tr-day-details-modal"
                         );
                     }
                 );
@@ -319,6 +376,38 @@ export function initHeatmap(): void {
             }
 
             renderCalendarMonth();
+        }
+    );
+
+    modal.addEventListener(
+        "click",
+        event => {
+            if (
+                event.target === modal
+            ) {
+                closeModal(
+                    "tr-calendar-modal"
+                );
+            }
+        }
+    );
+
+    document.addEventListener(
+        "keydown",
+        event => {
+            if (
+                event.key !== "Escape"
+            ) {
+                return;
+            }
+
+            closeModal(
+                "tr-calendar-modal"
+            );
+
+            closeModal(
+                "tr-day-details-modal"
+            );
         }
     );
 }
@@ -550,31 +639,6 @@ function hideHeatmapTooltip(): void {
     );
 }
 
-function formatDateKey(
-    date: Date
-): string {
-    const year =
-        date.getFullYear();
-
-    const month =
-        String(
-            date.getMonth() + 1
-        ).padStart(
-            2,
-            "0"
-        );
-
-    const day =
-        String(
-            date.getDate()
-        ).padStart(
-            2,
-            "0"
-        );
-
-    return `${year}-${month}-${day}`;
-}
-
 function renderMonths(): void {
     const months =
         document.getElementById(
@@ -720,7 +784,9 @@ function renderHeatmap(
                     aria-label="${t(
                         "heatmap.ariaLabel",
                         {
-                            date: dateString,
+                            date: formatDate(
+                                current
+                            ),
                             percent
                         }
                     )}"
@@ -786,12 +852,6 @@ function renderCalendarMonth(): void {
 
     grid.innerHTML =
         days
-            .filter(
-                day =>
-                    Boolean(
-                        day.date
-                    )
-            )
             .map(
                 day => {
                     const date =
@@ -924,7 +984,9 @@ function openDayDetails(
                                 session => `
                                     <div class="tr-day-session">
                                         <div class="tr-day-session-title">
-                                            ${t("heatmap.session")}
+                                            ${t(
+                                                "heatmap.session"
+                                            )}
                                         </div>
                                         ${(session.exercises ?? [])
                                             .map(
@@ -934,14 +996,23 @@ function openDayDetails(
                                                             ${exercise.name}
                                                         </div>
                                                         <div class="tr-ex-meta">
-                                                            ${t(
-                                                                "heatmap.exerciseMeta",
-                                                                {
-                                                                    sets: exercise.sets,
-                                                                    reps: exercise.reps,
-                                                                    load: exercise.load
-                                                                }
-                                                            )}
+                                                            ${exercise.load != null
+                                                                ? t(
+                                                                    "heatmap.exerciseMeta",
+                                                                    {
+                                                                        sets: exercise.sets,
+                                                                        reps: exercise.reps,
+                                                                        load: exercise.load
+                                                                    }
+                                                                )
+                                                                : t(
+                                                                    "heatmap.exerciseMetaNoLoad",
+                                                                    {
+                                                                        sets: exercise.sets,
+                                                                        reps: exercise.reps
+                                                                    }
+                                                                )
+                                                            }
                                                         </div>
                                                     </div>
                                                 `
@@ -976,7 +1047,9 @@ function openDayDetails(
 
             if (title) {
                 title.textContent =
-                    t("heatmap.error");
+                    t(
+                        "heatmap.error"
+                    );
             }
 
             if (body) {

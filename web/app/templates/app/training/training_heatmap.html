@@ -1,9 +1,12 @@
 <div class="tr-heatmap-container">
   <div class="tr-heatmap-header">
-    <h3>Активність за рік</h3>
+    <h3>{{ training_t("heatmap.yearActivity") }}</h3>
 
     <div class="tr-heatmap-controls">
-      <label class="sr-only" for="tr-heatmap-year">Рік</label>
+      <label class="sr-only" for="tr-heatmap-year">
+        {{ training_t("heatmap.year") }}
+      </label>
+
       <select id="tr-heatmap-year" class="tr-select">
         <option value="2026">2026</option>
         <option value="2025">2025</option>
@@ -11,7 +14,7 @@
       </select>
 
       <button type="button" id="tr-open-calendar" class="tr-btn tr-btn-sm">
-        Календар
+        {{ training_t("heatmap.calendar") }}
       </button>
     </div>
   </div>
@@ -27,16 +30,18 @@
       id="training-heatmap"
       class="tr-heatmap-grid"
       role="grid"
-      aria-label="Heatmap активності за рік"
+      aria-label="{{ training_t('heatmap.activityHeatmap') }}"
     ></div>
   </div>
 
   <div class="tr-heatmap-legend">
-    <span>Менше</span>
+    <span> {{ training_t("heatmap.less") }} </span>
+
     <div class="legend-box level-1"></div>
     <div class="legend-box level-2"></div>
     <div class="legend-box level-3"></div>
     <div class="legend-box level-4"></div>
-    <span>Більше</span>
+
+    <span> {{ training_t("heatmap.more") }} </span>
   </div>
 </div>

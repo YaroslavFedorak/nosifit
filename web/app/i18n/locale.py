@@ -3,7 +3,13 @@ from pathlib import Path
 
 from flask import request
 
-SUPPORTED_LOCALES = ("uk", "en", "pl", "ru")
+SUPPORTED_LOCALES = (
+    "uk",
+    "en",
+    "pl",
+    "ru",
+)
+
 DEFAULT_LOCALE = "uk"
 LOCALE_COOKIE = "nosifit_locale"
 
@@ -21,7 +27,10 @@ def resolve_locale() -> str:
     return browser_locale or DEFAULT_LOCALE
 
 
-def load_translation(locale: str, namespace: str) -> dict:
+def load_translation(
+    locale: str,
+    namespace: str,
+) -> dict:
     if locale not in SUPPORTED_LOCALES:
         locale = DEFAULT_LOCALE
 
@@ -33,16 +42,18 @@ def load_translation(locale: str, namespace: str) -> dict:
     if not path.exists():
         return {}
 
-    with path.open("r", encoding="utf-8") as file:
+    with path.open(
+        "r",
+        encoding="utf-8",
+    ) as file:
         return json.load(file)
 
 
-def get_translation(locale: str, key: str) -> str:
-    namespace, _, path = key.partition(".")
-
-    if not namespace or not path:
-        return key
-
+def get_translation(
+    locale: str,
+    namespace: str,
+    key: str,
+) -> str:
     translations = load_translation(
         locale,
         namespace,
@@ -50,10 +61,13 @@ def get_translation(locale: str, key: str) -> str:
 
     value = translations
 
-    for part in path.split("."):
+    for part in key.split("."):
         if not isinstance(value, dict):
             return key
 
         value = value.get(part)
 
-    return value if isinstance(value, str) else key
+    if isinstance(value, str):
+        return value
+
+    return key

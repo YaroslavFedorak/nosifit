@@ -1,30 +1,65 @@
 <div id="tr-modal-picker" class="tr-modal">
   <div class="tr-modal-content tr-modal-wide">
     <div class="tr-modal-header">
-      <h3>Вибір вправи</h3>
-      <button class="tr-modal-close" data-close-picker>&times;</button>
+      <h3>{{ training_t("exercisePicker.title") }}</h3>
+
+      <button
+        class="tr-modal-close"
+        data-close-picker
+        type="button"
+        aria-label="{{ training_t('common.close') }}"
+      >
+        &times;
+      </button>
     </div>
 
     <div class="tr-modal-body">
       <div class="tr-ex-search-block">
-        <input id="tr-ex-search" class="tr-input" placeholder="Пошук вправ" />
+        <input
+          id="tr-ex-search"
+          class="tr-input"
+          placeholder="{{ training_t('exercisePicker.search') }}"
+        />
       </div>
 
       <div class="tr-ex-categories">
-        <button class="tr-ex-cat" data-cat="all">Усі</button>
-        <button class="tr-ex-cat" data-cat="chest">Груди</button>
-        <button class="tr-ex-cat" data-cat="back">Спина</button>
-        <button class="tr-ex-cat" data-cat="legs">Ноги</button>
-        <button class="tr-ex-cat" data-cat="shoulders">Плечі</button>
-        <button class="tr-ex-cat" data-cat="arms">Руки</button>
-        <button class="tr-ex-cat" data-cat="core">Кор</button>
+        <button class="tr-ex-cat" data-cat="all">
+          {{ training_t("exercisePicker.all") }}
+        </button>
+
+        <button class="tr-ex-cat" data-cat="chest">
+          {{ training_t("exercisePicker.chest") }}
+        </button>
+
+        <button class="tr-ex-cat" data-cat="back">
+          {{ training_t("exercisePicker.back") }}
+        </button>
+
+        <button class="tr-ex-cat" data-cat="legs">
+          {{ training_t("exercisePicker.legs") }}
+        </button>
+
+        <button class="tr-ex-cat" data-cat="shoulders">
+          {{ training_t("exercisePicker.shoulders") }}
+        </button>
+
+        <button class="tr-ex-cat" data-cat="arms">
+          {{ training_t("exercisePicker.arms") }}
+        </button>
+
+        <button class="tr-ex-cat" data-cat="core">
+          {{ training_t("exercisePicker.core") }}
+        </button>
       </div>
 
       <div id="tr-ex-list" class="tr-ex-modal-list"></div>
     </div>
 
     <div class="tr-modal-footer">
-      <button class="tr-btn tr-btn-ghost" data-close-picker>Закрити</button>
+      <button class="tr-btn tr-btn-ghost" data-close-picker type="button">
+        {{ training_t("common.close") }}
+      </button>
     </div>
   </div>
 </div>
+

@@ -22,7 +22,8 @@
             <path d="M15 17h5" />
           </svg>
         </span>
-        <h3>Мій план тренувань</h3>
+
+        <h3>{{ training_t("plan.title") }}</h3>
       </div>
 
       <div class="tr-plan-header-actions">
@@ -30,7 +31,7 @@
           id="tr-plan-help-toggle"
           class="tr-plan-help-btn"
           type="button"
-          aria-label="Допомога"
+          aria-label="{{ training_t('plan.help') }}"
           aria-expanded="false"
         >
           <svg
@@ -47,7 +48,12 @@
           </svg>
         </button>
 
-        <button class="tr-modal-close" data-close-plan type="button">
+        <button
+          class="tr-modal-close"
+          data-close-plan
+          type="button"
+          aria-label="{{ training_t('common.close') }}"
+        >
           &times;
         </button>
       </div>
@@ -55,22 +61,21 @@
 
     <div id="tr-plan-help" class="tr-plan-help-popover">
       <ul class="tr-plan-help-list">
-        <li>
-          Оберіть день, додайте вправи, налаштуйте повтори, підходи та вагу
-        </li>
-        <li>Перетягуйте вправи за ручку, щоб змінити порядок</li>
+        <li>{{ training_t("plan.helpChooseDay") }}</li>
+        <li>{{ training_t("plan.helpReorder") }}</li>
       </ul>
     </div>
 
     <div class="tr-plan-body">
       <div class="tr-plan-name-block">
-        <label for="tr-plan-title" class="tr-plan-name-label"
-          >Назва плану</label
-        >
+        <label for="tr-plan-title" class="tr-plan-name-label">
+          {{ training_t("plan.name") }}
+        </label>
+
         <input
           id="tr-plan-title"
           class="tr-input tr-plan-title"
-          placeholder="Наприклад: Full Body"
+          placeholder="{{ training_t('plan.namePlaceholder') }}"
           maxlength="80"
         />
       </div>
@@ -80,7 +85,10 @@
       <section class="tr-plan-column">
         <div class="tr-plan-toolbar">
           <div class="tr-plan-toolbar-left">
-            <span class="tr-plan-toolbar-title">Вправи цього дня</span>
+            <span class="tr-plan-toolbar-title">
+              {{ training_t("plan.dayExercises") }}
+            </span>
+
             <span
               id="tr-plan-day-summary"
               class="tr-plan-toolbar-subtitle"
@@ -91,7 +99,7 @@
             class="tr-btn tr-btn-primary tr-plan-add-exercise"
             type="button"
           >
-            + Додати вправу
+            + {{ training_t("addExercise") }}
           </button>
         </div>
 
@@ -113,24 +121,25 @@
               stroke-width="2"
             >
               <path
-                d="M17.6 12.8a2 2 0 1 0 2.8-2.8l-1.8-1.8a2 2 0 0 0 2.8-2.8l-2.8-2.8a2 2 0 0 0-2.8 2.8l-1.8-1.8a2 2 0 1 0-2.8 2.8z"
+                d="M17.6 12.8a2 2 0 1 0 2.8-2.8l-1.8-1.8a2 2 0 1 0 2.8-2.8l-2.8-2.8a2 2 0 0 0-2.8 2.8l-1.8-1.8a2 2 0 1 0-2.8 2.8z"
               />
               <path d="m2.5 21.5 1.4-1.4" />
               <path d="m20.1 3.9 1.4-1.4" />
               <path
-                d="M5.3 21.5a2 2 0 1 0 2.8-2.8l1.8 1.8a2 2 0 1 0 2.8-2.8l-6.4-6.4a2 2 0 1 0-2.8 2.8l1.8 1.8a2 2 0 0 0-2.8 2.8z"
+                d="M5.3 21.5a2 2 0 1 0 2.8-2.8l1.8 1.8a2 2 0 1 0 2.8-2.8l-6.4-6.4a2 2 0 1 0-2.8 2.8l1.8 1.8a2 2 0 1 0-2.8 2.8z"
               />
               <path d="m9.6 14.4 4.8-4.8" />
             </svg>
           </div>
 
-          <div class="tr-plan-empty-text-main">План цього дня порожній</div>
+          <div class="tr-plan-empty-text-main">{{ training_t("plan.empty") }}</div>
+
           <div class="tr-plan-empty-text-sub">
-            Додайте першу вправу, щоб почати тренування
+            {{ training_t("plan.emptyDescription") }}
           </div>
 
           <button class="tr-btn tr-btn-primary tr-plan-empty-add" type="button">
-            + Додати вправу
+            + {{ training_t("addExercise") }}
           </button>
         </div>
       </section>
@@ -138,20 +147,24 @@
 
     <footer class="tr-plan-footer">
       <div class="tr-plan-footer-summary">
-        <span id="tr-plan-summary-count">0 вправ</span>
-        <span id="tr-plan-summary-sets">0 підходів</span>
+        <span id="tr-plan-summary-count">
+          0 {{ training_t("plan.exercisesCount") }}
+        </span>
+
+        <span id="tr-plan-summary-sets"> 0 {{ training_t("plan.setsCount") }} </span>
       </div>
 
       <div class="tr-plan-footer-actions">
         <button class="tr-btn tr-btn-ghost" data-close-plan type="button">
-          Скасувати
+          {{ training_t("common.cancel") }}
         </button>
 
         <button id="tr-plan-save" class="tr-btn tr-btn-primary" type="button">
-          <span class="btn-text">Зберегти план</span>
+          <span class="btn-text">{{ training_t("plan.save") }}</span>
           <span class="btn-loader hidden" aria-hidden="true"></span>
         </button>
       </div>
     </footer>
   </div>
 </div>
+

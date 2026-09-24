@@ -1,23 +1,31 @@
 <div id="tr-modal-exercise" class="tr-modal">
   <div class="tr-modal-content tr-modal-narrow">
     <div class="tr-modal-header">
-      <h3 id="tr-exercise-title">Виконання вправи</h3>
-      <button class="tr-modal-close" data-close-exercise>&times;</button>
+      <h3 id="tr-exercise-title">{{ training_t("exercise.execution") }}</h3>
+
+      <button
+        class="tr-modal-close"
+        data-close-exercise
+        type="button"
+        aria-label="{{ training_t('common.close') }}"
+      >
+        &times;
+      </button>
     </div>
 
     <div class="tr-modal-body">
       <div class="tr-ex-field">
-        <label>Підходи</label>
+        <label for="tr-ex-sets">{{ training_t("exercise.sets") }}</label>
         <input id="tr-ex-sets" type="number" min="1" class="tr-input" />
       </div>
 
       <div class="tr-ex-field">
-        <label>Повтори</label>
+        <label for="tr-ex-reps">{{ training_t("exercise.reps") }}</label>
         <input id="tr-ex-reps" type="text" class="tr-input" />
       </div>
 
       <div class="tr-ex-field">
-        <label>Вага (кг)</label>
+        <label for="tr-ex-load">{{ training_t("exercise.weight") }}</label>
         <input
           id="tr-ex-load"
           type="number"
@@ -28,14 +36,20 @@
       </div>
 
       <div class="tr-ex-field">
-        <label>RPE</label>
+        <label for="tr-ex-rpe">{{ training_t("exercise.rpe") }}</label>
         <input id="tr-ex-rpe" type="number" min="1" max="10" class="tr-input" />
       </div>
     </div>
 
     <div class="tr-modal-footer">
-      <button class="tr-btn tr-btn-ghost" data-close-exercise>Скасувати</button>
-      <button id="tr-ex-save" class="tr-btn tr-btn-primary">Зберегти</button>
+      <button class="tr-btn tr-btn-ghost" data-close-exercise type="button">
+        {{ training_t("common.cancel") }}
+      </button>
+
+      <button id="tr-ex-save" class="tr-btn tr-btn-primary" type="button">
+        {{ training_t("common.save") }}
+      </button>
     </div>
   </div>
 </div>
+

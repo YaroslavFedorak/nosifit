@@ -34,6 +34,20 @@ function formatDate(date) {
         year: "numeric"
     });
 }
+function formatDateKey(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+}
+function getDayFromDate(date) {
+    return (CALENDAR_DATA.find(day => day.date === date) ?? null);
+}
+function closeModal(id) {
+    document
+        .getElementById(id)
+        ?.classList.remove("open");
+}
 export function initHeatmap() {
     const yearSelect = document.getElementById("tr-heatmap-year");
     const yearSelectCal = document.getElementById("cal-year-select");
@@ -48,6 +62,8 @@ export function initHeatmap() {
     CURRENT_YEAR =
         Number(yearSelect.value ||
             new Date().getFullYear());
+    CURRENT_MONTH =
+        new Date().getMonth();
     yearSelectCal.value =
         String(CURRENT_YEAR);
     const load = () => {
@@ -88,28 +104,33 @@ export function initHeatmap() {
     load();
     yearSelect.addEventListener("change", load);
     yearSelectCal.addEventListener("change", () => {
+        const year = Number(yearSelectCal.value);
+        if (!Number.isFinite(year)) {
+            return;
+        }
         CURRENT_YEAR =
-            Number(yearSelectCal.value);
+            year;
+        CURRENT_MONTH = 0;
         yearSelect.value =
             String(CURRENT_YEAR);
         load();
     });
     openCalendar.addEventListener("click", () => {
+        renderCalendarMonth();
         modal.classList.add("open");
     });
     document
         .querySelectorAll("[data-close-calendar]")
         .forEach(button => {
         button.addEventListener("click", () => {
-            modal.classList.remove("open");
+            closeModal("tr-calendar-modal");
         });
     });
     document
         .querySelectorAll("[data-close-day-details]")
         .forEach(button => {
         button.addEventListener("click", () => {
-            const dayModal = document.getElementById("tr-day-details-modal");
-            dayModal?.classList.remove("open");
+            closeModal("tr-day-details-modal");
         });
     });
     const prevButton = document.getElementById("cal-prev");
@@ -141,6 +162,18 @@ export function initHeatmap() {
             return;
         }
         renderCalendarMonth();
+    });
+    modal.addEventListener("click", event => {
+        if (event.target === modal) {
+            closeModal("tr-calendar-modal");
+        }
+    });
+    document.addEventListener("keydown", event => {
+        if (event.key !== "Escape") {
+            return;
+        }
+        closeModal("tr-calendar-modal");
+        closeModal("tr-day-details-modal");
     });
 }
 function setupHeatmapEvents() {
@@ -243,12 +276,6 @@ function hideHeatmapTooltip() {
     }
     tooltip.classList.remove("is-visible");
 }
-function formatDateKey(date) {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-    return `${year}-${month}-${day}`;
-}
 function renderMonths() {
     const months = document.getElementById("training-heatmap-months");
     if (!months) {
@@ -308,7 +335,7 @@ function renderHeatmap(days) {
                     data-load="${load}"
                     role="gridcell"
                     aria-label="${t("heatmap.ariaLabel", {
-            date: dateString,
+            date: formatDate(current),
             percent
         })}"
                 ></div>
@@ -340,7 +367,6 @@ function renderCalendarMonth() {
     });
     grid.innerHTML =
         days
-            .filter(day => Boolean(day.date))
             .map(day => {
             const date = new Date(`${day.date}T12:00:00`);
             const level = Math.max(0, Math.min(6, Math.round(Number(day.level) || 0)));
@@ -410,11 +436,16 @@ function openDayDetails(date) {
                                                             ${exercise.name}
                                                         </div>
                                                         <div class="tr-ex-meta">
-                                                            ${t("heatmap.exerciseMeta", {
-                    sets: exercise.sets,
-                    reps: exercise.reps,
-                    load: exercise.load
-                })}
+                                                            ${exercise.load != null
+                    ? t("heatmap.exerciseMeta", {
+                        sets: exercise.sets,
+                        reps: exercise.reps,
+                        load: exercise.load
+                    })
+                    : t("heatmap.exerciseMetaNoLoad", {
+                        sets: exercise.sets,
+                        reps: exercise.reps
+                    })}
                                                         </div>
                                                     </div>
                                                 `)

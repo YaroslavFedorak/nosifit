@@ -1,11 +1,11 @@
 export const DAYS = [
-    { key: "mon", short: "Пн" },
-    { key: "tue", short: "Вт" },
-    { key: "wed", short: "Ср" },
-    { key: "thu", short: "Чт" },
-    { key: "fri", short: "Пт" },
-    { key: "sat", short: "Сб" },
-    { key: "sun", short: "Нд" }
+    { key: "mon" },
+    { key: "tue" },
+    { key: "wed" },
+    { key: "thu" },
+    { key: "fri" },
+    { key: "sat" },
+    { key: "sun" }
 ];
 export function isPlanDayKey(value) {
     return DAYS.some(day => day.key === value);

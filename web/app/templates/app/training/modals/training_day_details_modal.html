@@ -1,12 +1,14 @@
 <div id="tr-day-details-modal" class="tr-calendar-modal">
   <div class="tr-calendar-dialog">
     <div class="tr-calendar-header">
-      <h3 id="tr-day-details-title">День</h3>
+      <h3 id="tr-day-details-title">{{ training_t("dayDetails.day") }}</h3>
+
       <button type="button" class="tr-btn tr-btn-sm" data-close-day-details>
-        Закрити
+        {{ training_t("common.close") }}
       </button>
     </div>
 
     <div id="tr-day-details-body" class="tr-day-details-body"></div>
   </div>
 </div>
+

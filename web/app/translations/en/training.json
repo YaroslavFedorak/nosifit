@@ -75,6 +75,7 @@
         "emptyDay": "No workouts on this day",
         "session": "Session",
         "exerciseMeta": "{sets}×{reps}, {load} kg",
+        "exerciseMetaNoLoad": "{sets}×{reps}",
         "error": "Error",
         "loadError": "Failed to load data."
     },
@@ -106,6 +107,15 @@
         "nov": "November",
         "dec": "December"
     },
+    "weekdays": {
+        "mon": "Mon",
+        "tue": "Tue",
+        "wed": "Wed",
+        "thu": "Thu",
+        "fri": "Fri",
+        "sat": "Sat",
+        "sun": "Sun"
+    },
     "plan": {
         "title": "My training plan",
         "help": "Help",
@@ -131,7 +141,8 @@
         "legs": "Legs",
         "shoulders": "Shoulders",
         "arms": "Arms",
-        "core": "Core"
+        "core": "Core",
+        "empty": "No exercises found"
     },
     "exercise": {
         "execution": "Exercise details",
@@ -153,10 +164,13 @@
     },
     "calendar": {
         "month": "Month",
-        "close": "Close"
+        "close": "Close",
+        "previousMonth": "Previous month",
+        "nextMonth": "Next month"
     },
     "dayDetails": {
-        "day": "Day"
+        "day": "Day",
+        "close": "Close"
     },
     "session": {
         "saved": "Workout saved"
@@ -171,6 +185,8 @@
         "cancel": "Cancel",
         "close": "Close",
         "save": "Save",
-        "error": "Error"
+        "error": "Error",
+        "loading": "Loading",
+        "noData": "No data available"
     }
 }

@@ -9,7 +9,6 @@ from .locale import (
 
 
 def init_i18n(app):
-
     @app.before_request
     def set_locale():
         g.locale = resolve_locale()
@@ -22,11 +21,26 @@ def init_i18n(app):
             DEFAULT_LOCALE,
         )
 
+        def translate(
+            namespace: str,
+            key: str,
+        ) -> str:
+            return get_translation(
+                locale,
+                namespace,
+                key,
+            )
+
         return {
             "locale": locale,
             "supported_locales": SUPPORTED_LOCALES,
-            "t": lambda key: get_translation(
-                locale,
+            "t": lambda key: translate(
+                "common",
+                key,
+            ),
+            "translate": translate,
+            "training_t": lambda key: translate(
+                "training",
                 key,
             ),
         }

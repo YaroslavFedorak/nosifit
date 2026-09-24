@@ -1,4 +1,5 @@
 import { trainingStore } from "./store.js";
+import { t } from "../i18n/index.js";
 let pickerCallback = null;
 export function openExercisePicker(callback) {
     pickerCallback = callback;
@@ -15,13 +16,22 @@ export function initExercisePicker() {
     const categories = document.querySelectorAll(".tr-ex-cat");
     if (!modal ||
         !list ||
-        !search ||
-        !categories.length) {
+        !search) {
         return;
     }
     const closeButtons = modal.querySelectorAll("[data-close-picker]");
+    let currentCategory = "all";
     const renderList = (items) => {
         list.innerHTML = "";
+        if (!items.length) {
+            const empty = document.createElement("div");
+            empty.className =
+                "tr-ex-modal-empty";
+            empty.textContent =
+                t("recommendations.exercisesEmpty");
+            list.appendChild(empty);
+            return;
+        }
         items.forEach(exercise => {
             const row = document.createElement("div");
             row.className =
@@ -35,20 +45,22 @@ export function initExercisePicker() {
             list.appendChild(row);
         });
     };
-    let currentCategory = "all";
     const filterItems = () => {
         const query = search.value
             .trim()
             .toLowerCase();
-        let items = trainingStore.exercises;
+        let items = [...trainingStore.exercises];
         if (currentCategory !==
             "all") {
             items =
-                items.filter(exercise => (exercise
-                    .muscles_primary ||
-                    [])
-                    .map(muscle => muscle.toLowerCase())
-                    .includes(currentCategory));
+                items.filter(exercise => {
+                    const muscles = exercise
+                        .muscles_primary ||
+                        [];
+                    return muscles.some(muscle => muscle
+                        .toLowerCase()
+                        .includes(currentCategory));
+                });
         }
         if (query) {
             items =
@@ -57,6 +69,10 @@ export function initExercisePicker() {
                     .includes(query));
         }
         renderList(items);
+    };
+    const closeModal = () => {
+        modal.classList.remove("open");
+        pickerCallback = null;
     };
     renderList(trainingStore.exercises);
     search.oninput =
@@ -72,8 +88,18 @@ export function initExercisePicker() {
         };
     });
     closeButtons.forEach(button => {
-        button.onclick = () => {
-            modal.classList.remove("open");
-        };
+        button.onclick =
+            closeModal;
+    });
+    modal.addEventListener("click", event => {
+        if (event.target === modal) {
+            closeModal();
+        }
+    });
+    document.addEventListener("keydown", event => {
+        if (event.key === "Escape" &&
+            modal.classList.contains("open")) {
+            closeModal();
+        }
     });
 }

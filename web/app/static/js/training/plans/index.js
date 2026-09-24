@@ -1,5 +1,6 @@
 import { initState, state } from "./state.js";
 import { dom } from "./dom.js";
+import { t } from "../../i18n/index.js";
 import { DAYS, isPlanDayKey } from "./constants.js";
 import { renderExercises } from "./ui/render.js";
 import { savePlan } from "./services/save.js";
@@ -21,7 +22,7 @@ function renderDays() {
         button.dataset.day =
             day.key;
         button.innerHTML = `
-                <span>${day.short}</span>
+                <span>${t(`weekdays.${day.key}`)}</span>
                 <span
                     class="tr-plan-day-badge"
                     data-day-badge="${day.key}"
