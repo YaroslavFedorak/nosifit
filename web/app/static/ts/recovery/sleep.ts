@@ -1,280 +1,415 @@
-import { RECOVERY_MESSAGES } from "./messages.js";
 import {
-    clearElement,
-    createCard,
-    createEmpty,
-    createError,
-    createLoading
+getLocale,
+translate
+} from "../i18n/loader.js";
+
+import {
+RECOVERY_MESSAGES
+} from "./messages.js";
+
+import {
+clearElement,
+createCard,
+createEmpty,
+createError,
+createLoading
 } from "./dom.js";
-import { ICONS } from "../icons/index.js";
+
+import {
+ICONS
+} from "../icons/index.js";
 
 interface SleepSnapshot {
-    sleep_duration_minutes?: number | null;
-    sleep_start?: string | null;
-    sleep_end?: string | null;
-    date?: string | null;
+sleep_duration_minutes?: number | null;
+sleep_start?: string | null;
+sleep_end?: string | null;
+date?: string | null;
 }
 
 interface RenderOptions {
-    loading?: boolean;
-    error?: string | null;
+loading?: boolean;
+error?: string | null;
 }
 
 function getSleepStatus(
-    minutes: number | null | undefined
+minutes: number | null | undefined
 ): string {
-    if (!minutes || minutes <= 0) {
-        return "Немає даних";
-    }
+if (
+!minutes ||
+minutes <= 0
+) {
+return translate(
+"recovery",
+"sleep.status.none"
+);
+}
 
-    if (minutes >= 480) {
-        return "Відмінний сон";
-    }
+if (
+    minutes >= 480
+) {
+    return translate(
+        "recovery",
+        "sleep.status.excellent"
+    );
+}
 
-    if (minutes >= 420) {
-        return "Добрий сон";
-    }
+if (
+    minutes >= 420
+) {
+    return translate(
+        "recovery",
+        "sleep.status.good"
+    );
+}
 
-    if (minutes >= 360) {
-        return "Достатній сон";
-    }
+if (
+    minutes >= 360
+) {
+    return translate(
+        "recovery",
+        "sleep.status.sufficient"
+    );
+}
 
-    return "Недосип";
+return translate(
+    "recovery",
+    "sleep.status.insufficient"
+);
+
+}
+
+function getDateKey(
+date: Date
+): string {
+return [
+date.getFullYear(),
+String(
+date.getMonth() + 1
+).padStart(2, "0"),
+String(
+date.getDate()
+).padStart(2, "0")
+].join("-");
 }
 
 function getRecencyLabel(
-    snapshotDateIso?: string | null
+snapshotDateIso?: string | null
 ): string {
-    if (!snapshotDateIso) {
-        return "";
-    }
+if (!snapshotDateIso) {
+return "";
+}
 
-    const snap =
-        new Date(snapshotDateIso);
+const snapshotDate =
+    new Date(
+        snapshotDateIso
+    );
 
-    const today =
-        new Date();
+if (
+    Number.isNaN(
+        snapshotDate.getTime()
+    )
+) {
+    return "";
+}
 
-    const snapshotDay =
-        new Date(
-            snap.getFullYear(),
-            snap.getMonth(),
-            snap.getDate()
-        );
+const today =
+    new Date();
 
-    const todayDay =
-        new Date(
-            today.getFullYear(),
-            today.getMonth(),
-            today.getDate()
-        );
+const snapshotKey =
+    getDateKey(
+        snapshotDate
+    );
 
-    const diff =
-        Math.round(
-            (
-                todayDay.getTime() -
-                snapshotDay.getTime()
-            ) /
-            (1000 * 60 * 60 * 24)
-        );
+const todayKey =
+    getDateKey(
+        today
+    );
 
-    if (diff === 0) {
-        return "Останній запис: сьогодні";
-    }
+if (
+    snapshotKey ===
+    todayKey
+) {
+    return translate(
+        "recovery",
+        "sleep.recency.today"
+    );
+}
 
-    if (diff === 1) {
-        return "Останній запис: вчора";
-    }
+const yesterday =
+    new Date(
+        today
+    );
 
-    return `Останній запис: ${snap.toLocaleDateString(
-        "uk-UA",
+yesterday.setDate(
+    yesterday.getDate() - 1
+);
+
+if (
+    snapshotKey ===
+    getDateKey(
+        yesterday
+    )
+) {
+    return translate(
+        "recovery",
+        "sleep.recency.yesterday"
+    );
+}
+
+const date =
+    snapshotDate.toLocaleDateString(
+        getLocale(),
         {
             day: "numeric",
             month: "long",
             year: "numeric"
         }
-    )}`;
+    );
+
+return translate(
+    "recovery",
+    "sleep.recency.date",
+    {
+        date
+    }
+);
+
 }
 
 export function renderSleepWidget(
-    snapshot: SleepSnapshot | null,
-    options: RenderOptions = {}
+snapshot: SleepSnapshot | null,
+options: RenderOptions = {}
 ): void {
-    const el =
-        document.getElementById(
-            "sleep-widget"
-        );
+const el =
+document.getElementById(
+"sleep-widget"
+);
 
-    if (!el) {
-        return;
-    }
+if (!el) {
+    return;
+}
 
-    clearElement(el);
+clearElement(el);
 
-    if (options.loading) {
-        el.appendChild(
-            createLoading(
-                RECOVERY_MESSAGES.loading
-            )
-        );
-        return;
-    }
+if (options.loading) {
+    el.appendChild(
+        createLoading(
+            RECOVERY_MESSAGES.loading
+        )
+    );
 
-    if (options.error) {
-        el.appendChild(
-            createError(
-                RECOVERY_MESSAGES.error
-            )
-        );
-        return;
-    }
+    return;
+}
 
-    if (
-        !snapshot ||
-        snapshot.sleep_duration_minutes == null ||
-        !snapshot.sleep_start ||
-        !snapshot.sleep_end
-    ) {
-        el.appendChild(
-            createEmpty(
-                RECOVERY_MESSAGES.sleep.empty
-            )
-        );
-        return;
-    }
+if (options.error) {
+    el.appendChild(
+        createError(
+            RECOVERY_MESSAGES.error
+        )
+    );
 
-    const card =
-        createCard("sleep-card");
+    return;
+}
 
-    const content =
-        document.createElement("div");
+if (
+    !snapshot ||
+    snapshot.sleep_duration_minutes == null ||
+    !snapshot.sleep_start ||
+    !snapshot.sleep_end
+) {
+    el.appendChild(
+        createEmpty(
+            RECOVERY_MESSAGES.sleep.empty
+        )
+    );
 
-    content.className =
-        "sleep-content";
+    return;
+}
 
-    const durationHours =
-        Math.floor(
-            snapshot.sleep_duration_minutes /
-            60
-        );
+const card =
+    createCard(
+        "sleep-card"
+    );
 
-    const durationMinutes =
-        snapshot.sleep_duration_minutes %
-        60;
+const content =
+    document.createElement(
+        "div"
+    );
 
-    const start =
-        new Date(
-            snapshot.sleep_start
-        );
+content.className =
+    "sleep-content";
 
-    const end =
-        new Date(
-            snapshot.sleep_end
-        );
+const durationHours =
+    Math.floor(
+        snapshot.sleep_duration_minutes /
+        60
+    );
 
-    const startStr =
-        start.toLocaleTimeString(
-            "uk-UA",
-            {
-                hour: "2-digit",
-                minute: "2-digit"
-            }
-        );
+const durationMinutes =
+    snapshot.sleep_duration_minutes %
+    60;
 
-    const endStr =
-        end.toLocaleTimeString(
-            "uk-UA",
-            {
-                hour: "2-digit",
-                minute: "2-digit"
-            }
-        );
+const start =
+    new Date(
+        snapshot.sleep_start
+    );
 
-    const statusText =
-        getSleepStatus(
-            snapshot.sleep_duration_minutes
-        );
+const end =
+    new Date(
+        snapshot.sleep_end
+    );
 
-    const recencyText =
-        getRecencyLabel(
-            snapshot.date
-        );
+const startStr =
+    start.toLocaleTimeString(
+        getLocale(),
+        {
+            hour: "2-digit",
+            minute: "2-digit"
+        }
+    );
 
-    const top =
-        document.createElement("div");
+const endStr =
+    end.toLocaleTimeString(
+        getLocale(),
+        {
+            hour: "2-digit",
+            minute: "2-digit"
+        }
+    );
 
-    top.className =
-        "sleep-top";
+const statusText =
+    getSleepStatus(
+        snapshot.sleep_duration_minutes
+    );
 
-    const left =
-        document.createElement("div");
+const recencyText =
+    getRecencyLabel(
+        snapshot.date
+    );
 
-    left.className =
-        "sleep-top-left";
+const top =
+    document.createElement(
+        "div"
+    );
 
-    const durationEl =
-        document.createElement("div");
+top.className =
+    "sleep-top";
 
-    durationEl.className =
-        "sleep-duration";
+const left =
+    document.createElement(
+        "div"
+    );
 
-    durationEl.textContent =
-        `${durationHours} год ${durationMinutes} хв`;
+left.className =
+    "sleep-top-left";
 
-    const rangeEl =
-        document.createElement("div");
+const durationEl =
+    document.createElement(
+        "div"
+    );
 
-    rangeEl.className =
-        "sleep-range";
+durationEl.className =
+    "sleep-duration";
 
-    rangeEl.textContent =
-        `${startStr} → ${endStr}`;
+durationEl.textContent =
+    `${durationHours} ${translate(
+        "recovery",
+        "sleep.duration.hours"
+    )} ${durationMinutes} ${translate(
+        "recovery",
+        "sleep.duration.minutes"
+    )}`;
 
-    left.appendChild(durationEl);
-    left.appendChild(rangeEl);
+const rangeEl =
+    document.createElement(
+        "div"
+    );
 
-    const icon =
-        document.createElement("div");
+rangeEl.className =
+    "sleep-range";
 
-    icon.className =
-        "sleep-icon";
+rangeEl.textContent =
+    `${startStr} → ${endStr}`;
 
-    icon.innerHTML =
-        ICONS.moon || "";
+left.appendChild(
+    durationEl
+);
 
-    top.appendChild(left);
-    top.appendChild(icon);
+left.appendChild(
+    rangeEl
+);
 
-    const bottom =
-        document.createElement("div");
+const icon =
+    document.createElement(
+        "div"
+    );
 
-    bottom.className =
-        "sleep-bottom";
+icon.className =
+    "sleep-icon";
 
-    const statusEl =
-        document.createElement("div");
+icon.innerHTML =
+    ICONS.moon || "";
 
-    statusEl.className =
-        "sleep-status";
+top.appendChild(
+    left
+);
 
-    statusEl.textContent =
-        statusText;
+top.appendChild(
+    icon
+);
 
-    const metaEl =
-        document.createElement("div");
+const bottom =
+    document.createElement(
+        "div"
+    );
 
-    metaEl.className =
-        "sleep-meta";
+bottom.className =
+    "sleep-bottom";
 
-    metaEl.textContent =
-        recencyText;
+const statusEl =
+    document.createElement(
+        "div"
+    );
 
-    bottom.appendChild(statusEl);
-    bottom.appendChild(metaEl);
+statusEl.className =
+    "sleep-status";
 
-    content.appendChild(top);
-    content.appendChild(bottom);
+statusEl.textContent =
+    statusText;
 
-    card.appendChild(content);
-    el.appendChild(card);
+const metaEl =
+    document.createElement(
+        "div"
+    );
+
+metaEl.className =
+    "sleep-meta";
+
+metaEl.textContent =
+    recencyText;
+
+bottom.appendChild(
+    statusEl
+);
+
+bottom.appendChild(
+    metaEl
+);
+
+content.appendChild(
+    top
+);
+
+content.appendChild(
+    bottom
+);
+
+card.appendChild(
+    content
+);
+
+el.appendChild(
+    card
+);
+
 }

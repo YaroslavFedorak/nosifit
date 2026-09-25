@@ -1,6 +1,7 @@
 import { RecoveryAPI } from "../api.js";
 import { refreshRecoveryDashboard } from "../dashboard.js";
 import { ICONS } from "../../icons/index.js";
+import { recovery_t } from "../../i18n/index.js";
 
 let initialized = false;
 
@@ -80,9 +81,15 @@ function getToday(): string {
 
     return `${today.getFullYear()}-${String(
         today.getMonth() + 1
-    ).padStart(2, "0")}-${String(
+    ).padStart(
+        2,
+        "0"
+    )}-${String(
         today.getDate()
-    ).padStart(2, "0")}`;
+    ).padStart(
+        2,
+        "0"
+    )}`;
 }
 
 function openModal(
@@ -145,7 +152,9 @@ async function saveSleep(
         !endTime
     ) {
         alert(
-            "Заповніть усі поля"
+            recovery_t(
+                "sleep.validation.required"
+            )
         );
 
         return;
@@ -170,7 +179,9 @@ async function saveSleep(
         )
     ) {
         alert(
-            "Некоректна дата або час"
+            recovery_t(
+                "sleep.validation.invalid_datetime"
+            )
         );
 
         return;
@@ -190,7 +201,9 @@ async function saveSleep(
         Date.now()
     ) {
         alert(
-            "Час завершення сну не може бути в майбутньому"
+            recovery_t(
+                "sleep.validation.future"
+            )
         );
 
         return;
@@ -229,7 +242,9 @@ async function saveSleep(
         );
     } catch {
         alert(
-            "Не вдалося зберегти сон"
+            recovery_t(
+                "sleep.errors.save"
+            )
         );
     } finally {
         elements.saveBtn.disabled =

@@ -4,16 +4,8 @@ import { RecoveryAPI } from "./api.js";
 import { refreshRecoveryDashboard } from "./dashboard.js";
 import { showRecoveryToast } from "./toast.js";
 import { ICONS } from "../icons/index.js";
+import { recovery_t } from "../i18n/index.js";
 const ICON_MAP = ICONS;
-const CATEGORY_LABELS = {
-    sleep: "Сон",
-    hydration: "Вода",
-    nutrition: "Харчування",
-    activity: "Активність",
-    recovery: "Відновлення",
-    stress: "Стрес",
-    massage: "Масаж"
-};
 const CATEGORY_ICONS = {
     sleep: "bed",
     hydration: "droplet",
@@ -28,10 +20,22 @@ function getUserHabitId(habit) {
         "";
     return String(value);
 }
-function label(category) {
-    return (CATEGORY_LABELS[category || ""] ||
-        category ||
+function getHabitSlug(habit) {
+    return (habit.slug ||
         "");
+}
+function label(category) {
+    if (!category) {
+        return "";
+    }
+    return recovery_t(`categories.${category}`);
+}
+function getHabitName(habit) {
+    const slug = getHabitSlug(habit);
+    if (slug) {
+        return recovery_t(`habits.${slug}.name`);
+    }
+    return habit.name || "";
 }
 function getHabitIcon(habit) {
     const habitIcon = habit.icon || "";
@@ -47,24 +51,10 @@ function getHabitIcon(habit) {
     return ICON_MAP.rest || "";
 }
 function buildReason(habit) {
-    switch (habit.category) {
-        case "sleep":
-            return "Рекомендовано через якість сну";
-        case "hydration":
-            return "Рекомендовано через рівень гідратації";
-        case "nutrition":
-            return "Рекомендовано для підтримки харчування";
-        case "activity":
-            return "Рекомендовано після навантаження";
-        case "recovery":
-            return "Рекомендовано для покращення відновлення";
-        case "stress":
-            return "Рекомендовано через рівень стресу";
-        case "massage":
-            return "Рекомендовано для розслаблення м'язів";
-        default:
-            return "Рекомендовано для балансу відновлення";
+    if (!habit.category) {
+        return recovery_t("reasons.default");
     }
+    return recovery_t(`reasons.${habit.category}`);
 }
 function createHabitItem(habit) {
     const item = document.createElement("div");
@@ -96,7 +86,7 @@ function createHabitItem(habit) {
     title.className =
         "habit-title";
     title.textContent =
-        habit.name || "";
+        getHabitName(habit);
     const metaRow = document.createElement("div");
     metaRow.className =
         "habit-meta-row";
@@ -124,7 +114,7 @@ function createHabitItem(habit) {
         "habit-recovery-impact";
     if (habit.points != null) {
         impact.textContent =
-            `Recovery +${habit.points}`;
+            `${recovery_t("points.label")} +${habit.points}`;
     }
     const check = document.createElement("button");
     check.type =
@@ -138,11 +128,11 @@ function createHabitItem(habit) {
     }
     check.title =
         habit.completed
-            ? "Відмінити"
-            : "Позначити як виконано";
+            ? recovery_t("actions.cancel")
+            : recovery_t("actions.complete");
     check.addEventListener("click", async () => {
         if (!userHabitId) {
-            showRecoveryToast("Невідомий ідентифікатор звички");
+            showRecoveryToast(recovery_t("errors.unknown_habit"));
             return;
         }
         const wasCompleted = check.classList.contains("habit-check-completed");
@@ -157,18 +147,18 @@ function createHabitItem(habit) {
         try {
             if (wasCompleted) {
                 await RecoveryAPI.unlogHabit(userHabitId);
-                showRecoveryToast("Відмітку знято");
+                showRecoveryToast(recovery_t("toast.uncompleted"));
             }
             else {
                 await RecoveryAPI.logHabit(userHabitId);
-                showRecoveryToast("Звичку виконано");
+                showRecoveryToast(recovery_t("toast.completed"));
             }
             await refreshRecoveryDashboard();
         }
         catch {
             check.classList.toggle("habit-check-completed", wasCompleted);
             item.classList.toggle("habit-completed", wasCompleted);
-            showRecoveryToast("Помилка при збереженні звички");
+            showRecoveryToast(recovery_t("errors.save"));
         }
         finally {
             check.disabled =
@@ -188,7 +178,7 @@ function createHabitItem(habit) {
     let timeoutId = null;
     removeBtn.addEventListener("click", async () => {
         if (!userHabitId) {
-            showRecoveryToast("Невідомий ідентифікатор звички");
+            showRecoveryToast(recovery_t("errors.unknown_habit"));
             return;
         }
         if (!confirm) {
@@ -214,11 +204,11 @@ function createHabitItem(habit) {
             true;
         try {
             await RecoveryAPI.deleteHabit(userHabitId);
-            showRecoveryToast("Звичку видалено");
+            showRecoveryToast(recovery_t("toast.deleted"));
             await refreshRecoveryDashboard();
         }
         catch {
-            showRecoveryToast("Помилка при видаленні звички");
+            showRecoveryToast(recovery_t("errors.delete"));
         }
         finally {
             confirm =
@@ -296,7 +286,7 @@ export function renderHabitsWidget(habits, options = {}) {
         moreBtn.className =
             "rc-btn rc-btn-sm";
         moreBtn.textContent =
-            `Показати всі (${userAdded.length})`;
+            `${recovery_t("actions.show_all")} (${userAdded.length})`;
         moreBtn.addEventListener("click", () => {
             clearElement(el);
             el.appendChild(renderHabitsGrid(userAdded));
@@ -309,7 +299,7 @@ export function renderHabitsWidget(habits, options = {}) {
             backBtn.className =
                 "rc-btn rc-btn-sm";
             backBtn.textContent =
-                "Показати менше";
+                recovery_t("actions.show_less");
             backBtn.addEventListener("click", () => renderHabitsWidget(habits));
             backFooter.appendChild(backBtn);
             el.appendChild(backFooter);

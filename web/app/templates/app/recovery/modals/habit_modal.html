@@ -1,23 +1,34 @@
 <div class="recovery-modal-backdrop" id="habit-modal-backdrop">
   <div class="recovery-modal habit-modal-modern">
     <div class="recovery-modal-header">
-      <span class="recovery-modal-title">Додати звичку</span>
+      <span class="recovery-modal-title">
+        {{ translate("recovery", "template.habit_modal.title") }}
+      </span>
     </div>
 
     <div class="habit-sort-bar">
-      <button class="habit-sort-btn active" data-sort="points">Бали</button>
-      <button class="habit-sort-btn" data-sort="category">Категорія</button>
-      <button class="habit-sort-btn" data-sort="name">Назва</button>
+      <button class="habit-sort-btn active" data-sort="points">
+        {{ translate("recovery", "template.habit_modal.sort.points") }}
+      </button>
+
+      <button class="habit-sort-btn" data-sort="category">
+        {{ translate("recovery", "template.habit_modal.sort.category") }}
+      </button>
+
+      <button class="habit-sort-btn" data-sort="name">
+        {{ translate("recovery", "template.habit_modal.sort.name") }}
+      </button>
     </div>
 
     <div class="habit-modal-list" id="habit-modal-list"></div>
 
     <div class="recovery-modal-footer">
       <button id="habit-back-btn" class="cmp-btn-secondary cmp-btn-sm">
-        Назад
+        {{ translate("recovery", "template.actions.back") }}
       </button>
+
       <button id="save-habit" class="cmp-btn-primary cmp-btn-sm" disabled>
-        Зберегти
+        {{ translate("recovery", "template.actions.save") }}
       </button>
     </div>
   </div>

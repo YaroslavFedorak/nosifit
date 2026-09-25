@@ -1,6 +1,7 @@
 import { RecoveryAPI } from "../api.js";
 import { refreshRecoveryDashboard } from "../dashboard.js";
 import { ICONS } from "../../icons/index.js";
+import { recovery_t } from "../../i18n/index.js";
 
 import type {
     RecoveryHabit
@@ -25,16 +26,6 @@ interface HabitModalElements {
     saveButton: HTMLButtonElement;
     sortButtons: NodeListOf<HTMLButtonElement>;
 }
-
-const CATEGORY_LABELS: Record<string, string> = {
-    sleep: "Сон",
-    hydration: "Вода",
-    nutrition: "Харчування",
-    activity: "Активність",
-    recovery: "Відновлення",
-    stress: "Стрес",
-    massage: "Масаж"
-};
 
 const CATEGORY_COLORS: Record<string, string> = {
     sleep: "#8b95b8",
@@ -166,10 +157,69 @@ function getUserHabitId(
     );
 }
 
+function getHabitSlug(
+    habit: RecoveryHabit
+): string | null {
+    const value =
+        (habit as RecoveryHabit & {
+            slug?: string;
+        }).slug;
+
+    return value || null;
+}
+
 function getHabitName(
     habit: RecoveryHabit
 ): string {
-    return habit.name || "Звичка";
+    const slug =
+        getHabitSlug(habit);
+
+    if (slug) {
+        const translated =
+            recovery_t(
+                `habits.${slug}.name`
+            );
+
+        if (
+            translated !==
+            `habits.${slug}.name`
+        ) {
+            return translated;
+        }
+    }
+
+    return habit.name ||
+        recovery_t(
+            "habit.fallback"
+        );
+}
+
+function getHabitDescription(
+    habit: RecoveryHabit
+): string {
+    const slug =
+        getHabitSlug(habit);
+
+    if (slug) {
+        const translated =
+            recovery_t(
+                `habits.${slug}.description`
+            );
+
+        if (
+            translated !==
+            `habits.${slug}.description`
+        ) {
+            return translated;
+        }
+    }
+
+    return (
+        habit.description ||
+        getCategoryLabel(
+            habit.category
+        )
+    );
 }
 
 function getHabitPoints(
@@ -192,11 +242,18 @@ function getCategoryLabel(
             category
         );
 
-    return (
-        CATEGORY_LABELS[key] ??
-        category ??
-        "Відновлення"
-    );
+    const translated =
+        recovery_t(
+            `categories.${key}`
+        );
+
+    return translated ===
+        `categories.${key}`
+        ? category ??
+            recovery_t(
+                "categories.recovery"
+            )
+        : translated;
 }
 
 function getCategoryColor(
@@ -354,7 +411,10 @@ function sortHabits(
             (a, b) =>
                 getHabitName(a).localeCompare(
                     getHabitName(b),
-                    "uk"
+                    undefined,
+                    {
+                        sensitivity: "base"
+                    }
                 )
         );
     }
@@ -368,7 +428,10 @@ function sortHabits(
                     getCategoryLabel(
                         b.category
                     ),
-                    "uk"
+                    undefined,
+                    {
+                        sensitivity: "base"
+                    }
                 )
         );
     }
@@ -387,7 +450,10 @@ function sortAddedHabits(
         (a, b) =>
             getHabitName(a).localeCompare(
                 getHabitName(b),
-                "uk"
+                undefined,
+                {
+                    sensitivity: "base"
+                }
             )
     );
 }
@@ -403,7 +469,8 @@ function createSectionTitle(
     title.className =
         "habit-modal-section-title";
 
-    title.textContent = text;
+    title.textContent =
+        text;
 
     return title;
 }
@@ -426,7 +493,8 @@ function createEmptyState(
         );
     }
 
-    empty.textContent = text;
+    empty.textContent =
+        text;
 
     return empty;
 }
@@ -531,10 +599,7 @@ function createHabitItem(
         "habit-description";
 
     description.textContent =
-        habit.description ||
-        getCategoryLabel(
-            habit.category
-        );
+        getHabitDescription(habit);
 
     info.appendChild(title);
     info.appendChild(description);
@@ -559,7 +624,15 @@ function createHabitItem(
         "habit-points";
 
     points.textContent =
-        `Recovery +${getHabitPoints(habit)}`;
+        recovery_t(
+            "habit.points",
+            {
+                points:
+                    getHabitPoints(
+                        habit
+                    )
+            }
+        );
 
     const meta =
         document.createElement(
@@ -651,7 +724,9 @@ function renderFullList(
 
     elements.list.appendChild(
         createSectionTitle(
-            "Доступні звички"
+            recovery_t(
+                "modal.available"
+            )
         )
     );
 
@@ -661,7 +736,9 @@ function renderFullList(
     ) {
         elements.list.appendChild(
             createEmptyState(
-                "Усі доступні звички вже додані"
+                recovery_t(
+                    "modal.all_added"
+                )
             )
         );
     } else {
@@ -679,7 +756,9 @@ function renderFullList(
 
     elements.list.appendChild(
         createSectionTitle(
-            "Вже додані"
+            recovery_t(
+                "modal.added"
+            )
         )
     );
 
@@ -689,7 +768,9 @@ function renderFullList(
     ) {
         elements.list.appendChild(
             createEmptyState(
-                "Ще немає доданих звичок",
+                recovery_t(
+                    "modal.none_added"
+                ),
                 true
             )
         );
@@ -779,7 +860,9 @@ async function loadHabits(
         "habit-modal-loading";
 
     loading.textContent =
-        "Завантаження...";
+        recovery_t(
+            "modal.loading"
+        );
 
     elements.list.appendChild(
         loading
@@ -882,7 +965,9 @@ async function loadHabits(
             "habit-modal-error";
 
         error.textContent =
-            "Не вдалося завантажити звички";
+            recovery_t(
+                "modal.load_error"
+            );
 
         elements.list.appendChild(
             error

@@ -12,16 +12,12 @@ import type {
     RecoverySnapshot
 } from "./api.js";
 
-import type {
-    RecommendationsData,
-    Recommendation
-} from "./recommendations.js";
-
 interface RecoveryState {
     snapshot: RecoverySnapshot | null;
     habits: RecoveryHabit[];
     heatmap: RecoveryHeatmapResponse | null;
-    recommendations: RecoveryRecommendationsResponse | null;
+    recommendations:
+        RecoveryRecommendationsResponse | null;
     firstLoad: boolean;
 }
 
@@ -52,95 +48,6 @@ function getUserId(): number | null {
         userId > 0
         ? userId
         : null;
-}
-
-function normalizeRecommendations(
-    data: RecoveryRecommendationsResponse | null
-): RecommendationsData | null {
-    if (!data) {
-        return null;
-    }
-
-    const raw =
-        data.recommendations;
-
-    if (Array.isArray(raw)) {
-        const recommendations: Recommendation[] = [];
-
-        raw.forEach(item => {
-            if (
-                typeof item === "object" &&
-                item !== null
-            ) {
-                const value =
-                    item as Record<string, unknown>;
-
-                recommendations.push({
-                    type:
-                        typeof value.type === "string"
-                            ? value.type
-                            : undefined,
-                    text:
-                        typeof value.text === "string"
-                            ? value.text
-                            : undefined,
-                    priority:
-                        typeof value.priority === "string"
-                            ? value.priority
-                            : undefined
-                });
-            }
-        });
-
-        return {
-            recommendations
-        };
-    }
-
-    if (
-        typeof raw === "object" &&
-        raw !== null
-    ) {
-        const value =
-            raw as Record<string, unknown>;
-
-        if (Array.isArray(value.items)) {
-            const recommendations: Recommendation[] = [];
-
-            value.items.forEach(item => {
-                if (
-                    typeof item === "object" &&
-                    item !== null
-                ) {
-                    const recommendation =
-                        item as Record<string, unknown>;
-
-                    recommendations.push({
-                        type:
-                            typeof recommendation.type === "string"
-                                ? recommendation.type
-                                : undefined,
-                        text:
-                            typeof recommendation.text === "string"
-                                ? recommendation.text
-                                : undefined,
-                        priority:
-                            typeof recommendation.priority === "string"
-                                ? recommendation.priority
-                                : undefined
-                    });
-                }
-            });
-
-            return {
-                recommendations
-            };
-        }
-    }
-
-    return {
-        recommendations: []
-    };
 }
 
 function renderLoading(): void {
@@ -197,13 +104,8 @@ function renderAll(): void {
         state.heatmap
     );
 
-    const recommendations =
-        normalizeRecommendations(
-            state.recommendations
-        );
-
     renderRecommendationsWidget(
-        recommendations
+        state.recommendations
     );
 }
 
@@ -266,7 +168,8 @@ export async function refreshRecoveryDashboard(
             ? recommendationsResult.value
             : null;
 
-    state.firstLoad = false;
+    state.firstLoad =
+        false;
 
     renderAll();
 }
@@ -280,9 +183,18 @@ export async function initRecoveryDashboard(
 }
 
 export function destroyRecoveryDashboard(): void {
-    state.snapshot = null;
-    state.habits = [];
-    state.heatmap = null;
-    state.recommendations = null;
-    state.firstLoad = true;
+    state.snapshot =
+        null;
+
+    state.habits =
+        [];
+
+    state.heatmap =
+        null;
+
+    state.recommendations =
+        null;
+
+    state.firstLoad =
+        true;
 }

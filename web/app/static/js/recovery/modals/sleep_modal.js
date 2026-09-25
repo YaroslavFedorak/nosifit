@@ -1,6 +1,7 @@
 import { RecoveryAPI } from "../api.js";
 import { refreshRecoveryDashboard } from "../dashboard.js";
 import { ICONS } from "../../icons/index.js";
+import { recovery_t } from "../../i18n/index.js";
 let initialized = false;
 function getElements() {
     const backdrop = document.getElementById("sleep-modal-backdrop");
@@ -61,14 +62,14 @@ async function saveSleep(elements, userId) {
     if (!date ||
         !startTime ||
         !endTime) {
-        alert("Заповніть усі поля");
+        alert(recovery_t("sleep.validation.required"));
         return;
     }
     const start = new Date(`${date}T${startTime}`);
     const end = new Date(`${date}T${endTime}`);
     if (Number.isNaN(start.getTime()) ||
         Number.isNaN(end.getTime())) {
-        alert("Некоректна дата або час");
+        alert(recovery_t("sleep.validation.invalid_datetime"));
         return;
     }
     if (end.getTime() <=
@@ -77,7 +78,7 @@ async function saveSleep(elements, userId) {
     }
     if (end.getTime() >
         Date.now()) {
-        alert("Час завершення сну не може бути в майбутньому");
+        alert(recovery_t("sleep.validation.future"));
         return;
     }
     elements.saveBtn.disabled =
@@ -95,7 +96,7 @@ async function saveSleep(elements, userId) {
         closeModal(elements);
     }
     catch {
-        alert("Не вдалося зберегти сон");
+        alert(recovery_t("sleep.errors.save"));
     }
     finally {
         elements.saveBtn.disabled =

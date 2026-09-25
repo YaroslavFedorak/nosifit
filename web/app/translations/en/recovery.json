@@ -1,0 +1,348 @@
+{
+    "categories": {
+        "sleep": "Sleep",
+        "hydration": "Hydration",
+        "nutrition": "Nutrition",
+        "activity": "Activity",
+        "recovery": "Recovery",
+        "stress": "Stress",
+        "massage": "Massage"
+    },
+    "points": {
+        "label": "Recovery"
+    },
+    "status": {
+        "no_data": "No data",
+        "good": "Good",
+        "normal": "Normal",
+        "attention": "Attention",
+        "low": "Low"
+    },
+    "summary": {
+        "recovery": "Recovery",
+        "sleep": "Sleep",
+        "load": "Load",
+        "habits": "Habits",
+        "training": "Training"
+    },
+    "time": {
+        "sleep": "{hours} h {minutes} min"
+    },
+    "heatmap": {
+        "empty": "No heatmap data available",
+        "title": "Recovery",
+        "daysLabel": "days",
+        "recovery": "recovery",
+        "no_data": "no data",
+        "score": "{score} recovery points",
+        "months": {
+            "jan": "Jan",
+            "feb": "Feb",
+            "mar": "Mar",
+            "apr": "Apr",
+            "may": "May",
+            "jun": "Jun",
+            "jul": "Jul",
+            "aug": "Aug",
+            "sep": "Sep",
+            "oct": "Oct",
+            "nov": "Nov",
+            "dec": "Dec"
+        }
+    },
+    "modal": {
+        "available": "Available habits",
+        "added": "Already added",
+        "all_added": "All available habits are already added",
+        "none_added": "No habits added yet",
+        "loading": "Loading...",
+        "load_error": "Failed to load habits"
+    },
+    "sleep": {
+        "empty": "No sleep data available",
+        "title": "Sleep",
+        "scoreLabel": "Sleep score",
+        "validation": {
+            "required": "Fill in all fields",
+            "invalid_datetime": "Invalid date or time",
+            "future": "Sleep end time cannot be in the future"
+        },
+        "errors": {
+            "save": "Failed to save sleep"
+        },
+        "status": {
+            "none": "No data",
+            "excellent": "Excellent",
+            "good": "Good",
+            "sufficient": "Sufficient",
+            "insufficient": "Insufficient"
+        },
+        "recency": {
+            "today": "Today",
+            "yesterday": "Yesterday",
+            "date": "{date}"
+        },
+        "duration": {
+            "hours": "h",
+            "minutes": "min"
+        }
+    },
+    "day_details": {
+        "loading": "Loading",
+        "loading_subtitle": "Fetching data for the day",
+        "loading_data": "Loading data...",
+        "error": "Error",
+        "error_subtitle": "Failed to open day data",
+        "load_error": "Failed to load data",
+        "modal_missing": "Modal element not found",
+        "full_subtitle": "Daily recovery details",
+        "partial_subtitle": "Only partial data is available for this day",
+        "no_extra_data": "No additional data for this day",
+        "no_habits": "No habits for this day",
+        "no_recommendations": "No recommendations for this day",
+        "server_empty": "Server returned no data",
+        "render_error": "Error rendering data",
+        "recommendation": "Recommendation",
+        "completed": "Completed",
+        "not_completed": "Not completed",
+        "show_all": "Show all",
+        "show_less": "Show less",
+        "summary": {
+            "training": "Training: {count}",
+            "sleep": "Sleep: {hours} h {minutes} min",
+            "habits": "Habits: {completed}/{total}"
+        }
+    },
+    "actions": {
+        "cancel": "Cancel",
+        "complete": "Mark as completed",
+        "show_all": "Show all",
+        "show_less": "Show less"
+    },
+    "toast": {
+        "completed": "Habit completed",
+        "uncompleted": "Completion mark removed",
+        "deleted": "Habit deleted"
+    },
+    "errors": {
+        "unknown_habit": "Unknown habit identifier",
+        "save": "Error saving habit",
+        "delete": "Error deleting habit"
+    },
+    "reasons": {
+        "sleep": "Recommended due to sleep quality",
+        "hydration": "Recommended due to hydration level",
+        "nutrition": "Recommended to support nutrition",
+        "activity": "Recommended after physical load",
+        "recovery": "Recommended to improve recovery",
+        "stress": "Recommended due to stress level",
+        "massage": "Recommended to relax muscles",
+        "default": "Recommended to support recovery balance"
+    },
+    "request": {
+        "invalidJson": "Server returned invalid JSON",
+        "timeout": "Request timed out"
+    },
+    "loading": "Loading...",
+    "error": "Failed to load data",
+    "habits": {
+        "empty": "No available habits",
+        "title": "Habits",
+        "scoreLabel": "Recovery impact",
+        "drink_water": {
+            "name": "Drink enough water",
+            "description": "Drink enough water throughout the day"
+        },
+        "electrolytes": {
+            "name": "Electrolytes",
+            "description": "Take electrolytes after training or in hot weather"
+        },
+        "sleep_8h": {
+            "name": "Sleep at least 8 hours",
+            "description": "Optimal duration of night sleep"
+        },
+        "consistent_sleep": {
+            "name": "Consistent sleep schedule",
+            "description": "Go to bed at the same time each night"
+        },
+        "screen_off_before_sleep": {
+            "name": "Turn off screens before sleep",
+            "description": "Avoid using a phone or computer for 30 minutes before sleep"
+        },
+        "post_workout_protein": {
+            "name": "Post-workout protein",
+            "description": "Consume protein to support muscle recovery"
+        },
+        "post_workout_carbs": {
+            "name": "Post-workout carbohydrates",
+            "description": "Replenish glycogen stores"
+        },
+        "balanced_meal": {
+            "name": "Balanced meal",
+            "description": "A complete meal with protein, fats and complex carbohydrates"
+        },
+        "walk_30m": {
+            "name": "30-minute walk",
+            "description": "Light activity to improve circulation"
+        },
+        "stretching": {
+            "name": "Stretching",
+            "description": "5–10 minutes of stretching to relieve tension"
+        },
+        "mobility": {
+            "name": "Mobility",
+            "description": "A short mobility session for the joints"
+        },
+        "foam_roll": {
+            "name": "Foam rolling",
+            "description": "Relax muscles using a foam roller"
+        },
+        "breathing_reset": {
+            "name": "Breathing break",
+            "description": "1–2 minutes of deep breathing"
+        },
+        "meditation": {
+            "name": "Meditation",
+            "description": "5 minutes of meditation to reduce stress"
+        },
+        "journal_stress": {
+            "name": "Stress journal",
+            "description": "Write down thoughts or feelings to reduce stress"
+        },
+        "full_rest_day": {
+            "name": "Full rest day",
+            "description": "Avoid training for full recovery"
+        },
+        "massage_or_physio": {
+            "name": "Massage or physiotherapy",
+            "description": "Massage or physiotherapy to reduce muscle tension"
+        },
+        "deload_week": {
+            "name": "Deload week",
+            "description": "Reduce training load by 30–50% for a week"
+        }
+    },
+    "muscles": {
+        "chest": "chest",
+        "back": "back",
+        "shoulders": "shoulders",
+        "biceps": "biceps",
+        "triceps": "triceps",
+        "forearms": "forearms",
+        "upper_back": "upper back",
+        "traps": "traps",
+        "quads": "quadriceps",
+        "quadriceps": "quadriceps",
+        "hamstrings": "hamstrings",
+        "glutes": "glutes",
+        "calves": "calves",
+        "core": "core",
+        "abs": "abs"
+    },
+    "score": {
+        "empty": "No recovery score data",
+        "title": "Recovery score",
+        "labels": {
+            "sleep": "Sleep",
+            "training": "Training",
+            "energy": "Energy",
+            "habits": "Habits"
+        },
+        "status": {
+            "attention": "Needs attention",
+            "medium": "Moderate",
+            "good": "Good",
+            "excellent": "Excellent"
+        }
+    },
+    "recommendations": {
+        "empty": "No recommendations at the moment",
+        "title": "Recommendations",
+        "fallback": "Recovery recommendation",
+        "items": {
+            "full_recovery": {
+                "title": "Focus on recovery",
+                "text": "Focus on recovery today and avoid high-intensity training"
+            },
+            "light_training": {
+                "title": "Keep training light",
+                "text": "Consider a light workout today and focus on technique"
+            },
+            "low_energy": {
+                "title": "Low energy",
+                "text": "Your energy level is low — choose light activity or active recovery"
+            },
+            "complete_habits": {
+                "title": "Complete your recovery habits",
+                "text": "Complete your recovery habits to improve recovery"
+            },
+            "very_high_daily_load": {
+                "title": "Very high training load",
+                "text": "Today's training load is very high. Focus on recovery before your next intense workout."
+            },
+            "high_daily_load": {
+                "title": "High training load",
+                "text": "Today's training load is high. Avoid adding unnecessary volume."
+            },
+            "rest_muscle": {
+                "title": "Give {muscle} more time to recover",
+                "text": "Give {muscle} more time to recover after significant recent training load"
+            },
+            "train_muscle": {
+                "title": "Consider training {muscle}",
+                "text": "Consider training {muscle} due to low recent volume"
+            }
+        }
+    },
+    "habit": {
+        "fallback": "Habit",
+        "points": "{points} recovery points"
+    },
+    "template": {
+        "page_title": "Recovery",
+        "header": {
+            "title": "Recovery",
+            "subtitle": "Analyze sleep • Manage habits • Track recovery",
+            "today": "Today"
+        },
+        "sections": {
+            "habits": "Habits",
+            "sleep": "Sleep",
+            "score": "Metrics",
+            "recommendations": "Recommendations"
+        },
+        "actions": {
+            "add": "Add",
+            "back": "Back",
+            "save": "Save",
+            "cancel": "Cancel",
+            "close": "Close",
+            "show_all": "Show all"
+        },
+        "heatmap": {
+            "title": "Recovery history",
+            "year": "Year",
+            "aria_label": "Recovery heatmap for the year",
+            "less": "Less",
+            "more": "More"
+        },
+        "habit_modal": {
+            "title": "Add habit",
+            "sort": {
+                "points": "Points",
+                "category": "Category",
+                "name": "Name"
+            }
+        },
+        "sleep_modal": {
+            "title": "Add sleep",
+            "subtitle": "Record your sleep period to calculate recovery",
+            "sleep_date": "Sleep date",
+            "sleep_time": "Sleep time",
+            "start": "Start",
+            "end": "End",
+            "midnight_hint": "Sleep across midnight will be detected automatically.",
+            "save": "Save sleep"
+        }
+    }
+}

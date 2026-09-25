@@ -32,3 +32,14 @@ export function exercise_t(
         `${slug}.name`
     );
 }
+
+export function recovery_t(
+    key: string,
+    params: Record<string, string | number> = {}
+): string {
+    return translate(
+        "recovery",
+        key,
+        params
+    );
+}

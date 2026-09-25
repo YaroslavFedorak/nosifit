@@ -1,43 +1,59 @@
+import { getLocale, translate } from "../i18n/loader.js";
 import { RECOVERY_MESSAGES } from "./messages.js";
 import { clearElement, createCard, createEmpty, createError, createLoading } from "./dom.js";
 import { ICONS } from "../icons/index.js";
 function getSleepStatus(minutes) {
-    if (!minutes || minutes <= 0) {
-        return "Немає даних";
+    if (!minutes ||
+        minutes <= 0) {
+        return translate("recovery", "sleep.status.none");
     }
     if (minutes >= 480) {
-        return "Відмінний сон";
+        return translate("recovery", "sleep.status.excellent");
     }
     if (minutes >= 420) {
-        return "Добрий сон";
+        return translate("recovery", "sleep.status.good");
     }
     if (minutes >= 360) {
-        return "Достатній сон";
+        return translate("recovery", "sleep.status.sufficient");
     }
-    return "Недосип";
+    return translate("recovery", "sleep.status.insufficient");
+}
+function getDateKey(date) {
+    return [
+        date.getFullYear(),
+        String(date.getMonth() + 1).padStart(2, "0"),
+        String(date.getDate()).padStart(2, "0")
+    ].join("-");
 }
 function getRecencyLabel(snapshotDateIso) {
     if (!snapshotDateIso) {
         return "";
     }
-    const snap = new Date(snapshotDateIso);
+    const snapshotDate = new Date(snapshotDateIso);
+    if (Number.isNaN(snapshotDate.getTime())) {
+        return "";
+    }
     const today = new Date();
-    const snapshotDay = new Date(snap.getFullYear(), snap.getMonth(), snap.getDate());
-    const todayDay = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-    const diff = Math.round((todayDay.getTime() -
-        snapshotDay.getTime()) /
-        (1000 * 60 * 60 * 24));
-    if (diff === 0) {
-        return "Останній запис: сьогодні";
+    const snapshotKey = getDateKey(snapshotDate);
+    const todayKey = getDateKey(today);
+    if (snapshotKey ===
+        todayKey) {
+        return translate("recovery", "sleep.recency.today");
     }
-    if (diff === 1) {
-        return "Останній запис: вчора";
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+    if (snapshotKey ===
+        getDateKey(yesterday)) {
+        return translate("recovery", "sleep.recency.yesterday");
     }
-    return `Останній запис: ${snap.toLocaleDateString("uk-UA", {
+    const date = snapshotDate.toLocaleDateString(getLocale(), {
         day: "numeric",
         month: "long",
         year: "numeric"
-    })}`;
+    });
+    return translate("recovery", "sleep.recency.date", {
+        date
+    });
 }
 export function renderSleepWidget(snapshot, options = {}) {
     const el = document.getElementById("sleep-widget");
@@ -70,11 +86,11 @@ export function renderSleepWidget(snapshot, options = {}) {
         60;
     const start = new Date(snapshot.sleep_start);
     const end = new Date(snapshot.sleep_end);
-    const startStr = start.toLocaleTimeString("uk-UA", {
+    const startStr = start.toLocaleTimeString(getLocale(), {
         hour: "2-digit",
         minute: "2-digit"
     });
-    const endStr = end.toLocaleTimeString("uk-UA", {
+    const endStr = end.toLocaleTimeString(getLocale(), {
         hour: "2-digit",
         minute: "2-digit"
     });
@@ -90,7 +106,7 @@ export function renderSleepWidget(snapshot, options = {}) {
     durationEl.className =
         "sleep-duration";
     durationEl.textContent =
-        `${durationHours} год ${durationMinutes} хв`;
+        `${durationHours} ${translate("recovery", "sleep.duration.hours")} ${durationMinutes} ${translate("recovery", "sleep.duration.minutes")}`;
     const rangeEl = document.createElement("div");
     rangeEl.className =
         "sleep-range";

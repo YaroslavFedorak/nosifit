@@ -8,6 +8,7 @@
     <div class="rc-day-details-header">
       <div class="rc-day-details-title-block">
         <h3 id="rc-day-details-title" class="rc-day-details-title"></h3>
+
         <div id="rc-day-details-subtitle" class="rc-day-details-subtitle"></div>
       </div>
     </div>
@@ -15,33 +16,42 @@
     <div id="rc-day-details-body" class="rc-day-details-body">
       <div id="rc-day-details-summary" class="rc-day-details-summary">
         <div id="rc-day-summary-grid" class="rc-day-summary-grid"></div>
+
         <div id="rc-day-daily-summary" class="rc-day-daily-summary"></div>
       </div>
 
       <div id="rc-day-habits" class="rc-day-habits">
         <div class="rc-section-header">
-          <div class="rc-section-title">Звички</div>
+          <div class="rc-section-title">
+            {{ translate("recovery", "template.sections.habits") }}
+          </div>
+
           <div id="rc-habits-count" class="rc-section-meta"></div>
         </div>
+
         <div id="rc-habits-list" class="rc-habits-list"></div>
+
         <div class="rc-habits-footer">
           <button id="rc-habits-toggle" type="button" class="rc-btn rc-btn-sm">
-            Показати всі
+            {{ translate("recovery", "template.actions.show_all") }}
           </button>
         </div>
       </div>
 
       <div id="rc-day-recommendations" class="rc-day-recommendations">
         <div class="rc-section-header">
-          <div class="rc-section-title">Рекомендації</div>
+          <div class="rc-section-title">
+            {{ translate("recovery", "template.sections.recommendations") }}
+          </div>
         </div>
+
         <div id="rc-recommendations-list" class="rc-recommendations-list"></div>
       </div>
     </div>
 
     <div class="rc-day-details-actions">
       <button type="button" class="rc-day-details-close" data-close-day-details>
-        Закрити
+        {{ translate("recovery", "template.actions.close") }}
       </button>
     </div>
   </div>

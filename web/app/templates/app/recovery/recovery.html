@@ -1,10 +1,12 @@
-{% extends "app/base_app.html" %} {% block title %}Відновлення{% endblock %} {%
-block styles %}
+{% extends "app/base_app.html" %} {% block title %} {{ translate("recovery",
+"template.page_title") }} {% endblock %} {% block styles %}
+
 <link
   rel="stylesheet"
   href="{{ url_for('static', filename='css/pages/recovery/recovery.css') }}"
 />
 {% endblock %} {% block body %}
+
 <div id="recovery-app" class="recovery-root" data-user-id="{{ user.id }}">
   <div class="recovery-header">
     <div class="recovery-header-left">
@@ -13,16 +15,22 @@ block styles %}
       </div>
 
       <div class="recovery-header-text">
-        <h1 class="recovery-title">Відновлення</h1>
+        <h1 class="recovery-title">
+          {{ translate("recovery", "template.header.title") }}
+        </h1>
+
         <div class="recovery-subtitle">
-          Аналізуйте сон • Контролюйте звички • Слідкуйте за відновленням
+          {{ translate("recovery", "template.header.subtitle") }}
         </div>
       </div>
     </div>
 
     <div class="recovery-header-right">
       <div class="recovery-header-info">
-        <div class="recovery-header-label">Сьогодні</div>
+        <div class="recovery-header-label">
+          {{ translate("recovery", "template.header.today") }}
+        </div>
+
         <div id="recovery-header-date" class="recovery-header-value"></div>
       </div>
     </div>
@@ -32,8 +40,11 @@ block styles %}
     <div class="recovery-left">
       <section id="habits-section" class="panel-habits widget-card">
         <div class="section-header habits-header">
-          <h2>Звички</h2>
-          <button class="habits-add-btn" id="open-habit-modal">+ Додати</button>
+          <h2>{{ translate("recovery", "template.sections.habits") }}</h2>
+
+          <button class="habits-add-btn" id="open-habit-modal">
+            + {{ translate("recovery", "template.actions.add") }}
+          </button>
         </div>
 
         <div class="habits-box">
@@ -49,8 +60,11 @@ block styles %}
     <div class="recovery-right">
       <section id="sleep-section" class="panel-sleep widget-card">
         <div class="section-header">
-          <h2>Сон</h2>
-          <button class="sleep-add-btn" id="open-sleep-modal">+ Додати</button>
+          <h2>{{ translate("recovery", "template.sections.sleep") }}</h2>
+
+          <button class="sleep-add-btn" id="open-sleep-modal">
+            + {{ translate("recovery", "template.actions.add") }}
+          </button>
         </div>
 
         <div id="sleep-widget" class="panel-content"></div>
@@ -58,7 +72,7 @@ block styles %}
 
       <section id="score-section" class="panel-score widget-card">
         <div class="section-header">
-          <h2>Показники</h2>
+          <h2>{{ translate("recovery", "template.sections.score") }}</h2>
         </div>
 
         <div id="score-widget" class="panel-content"></div>
@@ -69,7 +83,9 @@ block styles %}
         class="panel-recommendations widget-card"
       >
         <div class="section-header">
-          <h2>Рекомендації</h2>
+          <h2>
+            {{ translate("recovery", "template.sections.recommendations") }}
+          </h2>
         </div>
 
         <div id="recommendations-widget" class="panel-content"></div>
@@ -80,8 +96,10 @@ block styles %}
 
 {% include "app/recovery/modals/sleep_modal.html" %} {% include
 "app/recovery/modals/habit_modal.html" %} {% endblock %} {% block scripts %}
+
 <script
   type="module"
   src="{{ url_for('static', filename='js/recovery/main.js') }}"
 ></script>
+
 {% endblock %}

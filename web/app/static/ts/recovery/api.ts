@@ -1,3 +1,7 @@
+import {
+    translate
+} from "../i18n/loader.js";
+
 export interface RecoverySnapshot {
     date: string;
     score: number | null;
@@ -49,6 +53,7 @@ export interface RecoveryHabit {
 }
 
 export interface RecoveryRecommendation {
+    id?: string | null;
     icon?: string | null;
     text?: string | null;
     title?: string | null;
@@ -57,6 +62,7 @@ export interface RecoveryRecommendation {
     reason?: unknown;
     priority?: string | null;
     type?: string | null;
+    muscle?: string | null;
 }
 
 export interface RecoveryRecommendationsResponse {
@@ -196,7 +202,10 @@ async function request<T>(
                     );
             } catch {
                 throw new Error(
-                    "Сервер повернув некоректний JSON"
+                    translate(
+                        "recovery",
+                        "request.invalidJson"
+                    )
                 );
             }
         }
@@ -219,7 +228,10 @@ async function request<T>(
             error.name === "AbortError"
         ) {
             throw new Error(
-                "Запит перевищив час очікування"
+                translate(
+                    "recovery",
+                    "request.timeout"
+                )
             );
         }
 

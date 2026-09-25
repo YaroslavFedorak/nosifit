@@ -22,65 +22,6 @@ function getUserId() {
         ? userId
         : null;
 }
-function normalizeRecommendations(data) {
-    if (!data) {
-        return null;
-    }
-    const raw = data.recommendations;
-    if (Array.isArray(raw)) {
-        const recommendations = [];
-        raw.forEach(item => {
-            if (typeof item === "object" &&
-                item !== null) {
-                const value = item;
-                recommendations.push({
-                    type: typeof value.type === "string"
-                        ? value.type
-                        : undefined,
-                    text: typeof value.text === "string"
-                        ? value.text
-                        : undefined,
-                    priority: typeof value.priority === "string"
-                        ? value.priority
-                        : undefined
-                });
-            }
-        });
-        return {
-            recommendations
-        };
-    }
-    if (typeof raw === "object" &&
-        raw !== null) {
-        const value = raw;
-        if (Array.isArray(value.items)) {
-            const recommendations = [];
-            value.items.forEach(item => {
-                if (typeof item === "object" &&
-                    item !== null) {
-                    const recommendation = item;
-                    recommendations.push({
-                        type: typeof recommendation.type === "string"
-                            ? recommendation.type
-                            : undefined,
-                        text: typeof recommendation.text === "string"
-                            ? recommendation.text
-                            : undefined,
-                        priority: typeof recommendation.priority === "string"
-                            ? recommendation.priority
-                            : undefined
-                    });
-                }
-            });
-            return {
-                recommendations
-            };
-        }
-    }
-    return {
-        recommendations: []
-    };
-}
 function renderLoading() {
     renderSleepWidget(null, {
         loading: true
@@ -103,8 +44,7 @@ function renderAll() {
     renderHabitsWidget(state.habits);
     renderScoreWidget(state.snapshot);
     renderHeatmapWidget(state.heatmap);
-    const recommendations = normalizeRecommendations(state.recommendations);
-    renderRecommendationsWidget(recommendations);
+    renderRecommendationsWidget(state.recommendations);
 }
 export async function refreshRecoveryDashboard(userId) {
     const resolvedUserId = userId ?? getUserId();
@@ -136,16 +76,22 @@ export async function refreshRecoveryDashboard(userId) {
         recommendationsResult.status === "fulfilled"
             ? recommendationsResult.value
             : null;
-    state.firstLoad = false;
+    state.firstLoad =
+        false;
     renderAll();
 }
 export async function initRecoveryDashboard(userId) {
     await refreshRecoveryDashboard(userId);
 }
 export function destroyRecoveryDashboard() {
-    state.snapshot = null;
-    state.habits = [];
-    state.heatmap = null;
-    state.recommendations = null;
-    state.firstLoad = true;
+    state.snapshot =
+        null;
+    state.habits =
+        [];
+    state.heatmap =
+        null;
+    state.recommendations =
+        null;
+    state.firstLoad =
+        true;
 }

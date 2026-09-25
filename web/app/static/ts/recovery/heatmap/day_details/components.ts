@@ -3,6 +3,10 @@ import {
 } from "../../../icons/index.js";
 
 import {
+    recovery_t
+} from "../../../i18n/index.js";
+
+import {
     createMiniCard
 } from "./day_card.js";
 
@@ -49,6 +53,27 @@ const RECOMMENDATION_ICONS: Record<
     activity: "mobility"
 };
 
+const MUSCLE_KEYS: Record<
+    string,
+    string
+> = {
+    chest: "chest",
+    back: "back",
+    shoulders: "shoulders",
+    biceps: "biceps",
+    triceps: "triceps",
+    forearms: "forearms",
+    upper_back: "upper_back",
+    traps: "traps",
+    quads: "quads",
+    quadriceps: "quadriceps",
+    hamstrings: "hamstrings",
+    glutes: "glutes",
+    calves: "calves",
+    core: "core",
+    abs: "abs"
+};
+
 function getIcon(
     key: string | null | undefined
 ): string {
@@ -57,9 +82,7 @@ function getIcon(
     }
 
     const resolvedKey =
-        ICON_ALIASES[
-            key
-        ] ?? key;
+        ICON_ALIASES[key] ?? key;
 
     if (
         resolvedKey in ICONS
@@ -131,28 +154,38 @@ function getStatus(
     if (
         value == null
     ) {
-        return "Немає даних";
+        return recovery_t(
+            "status.no_data"
+        );
     }
 
     if (
         value >= 80
     ) {
-        return "Добре";
+        return recovery_t(
+            "status.good"
+        );
     }
 
     if (
         value >= 60
     ) {
-        return "Нормально";
+        return recovery_t(
+            "status.normal"
+        );
     }
 
     if (
         value >= 40
     ) {
-        return "Увага";
+        return recovery_t(
+            "status.attention"
+        );
     }
 
-    return "Низько";
+    return recovery_t(
+        "status.low"
+    );
 }
 
 function getBarFill(
@@ -174,6 +207,214 @@ function getBarFill(
             Number(value)
         )
     );
+}
+
+function getHabitName(
+    habit: RecoveryHabit
+): string {
+    if (
+        habit.slug
+    ) {
+        const key =
+            `habits.${habit.slug}.name`;
+
+        const translated =
+            recovery_t(
+                key
+            );
+
+        if (
+            translated !== key
+        ) {
+            return translated;
+        }
+    }
+
+    return (
+        habit.name ||
+        recovery_t(
+            "habit.fallback"
+        )
+    );
+}
+
+function getHabitCategory(
+    category?: string | null
+): string {
+    if (!category) {
+        return "";
+    }
+
+    const key =
+        `categories.${category}`;
+
+    const translated =
+        recovery_t(
+            key
+        );
+
+    return translated === key
+        ? category
+        : translated;
+}
+
+function getHabitStatus(
+    completed: boolean
+): string {
+    return completed
+        ? recovery_t(
+            "day_details.completed"
+        )
+        : recovery_t(
+            "day_details.not_completed"
+        );
+}
+
+function getMuscleName(
+    muscle?: string | null
+): string {
+    if (!muscle) {
+        return "";
+    }
+
+    const normalized =
+        muscle
+            .trim()
+            .toLowerCase()
+            .replace(
+                /-/g,
+                "_"
+            );
+
+    const key =
+        MUSCLE_KEYS[
+            normalized
+        ];
+
+    if (!key) {
+        return muscle;
+    }
+
+    const translationKey =
+        `muscles.${key}`;
+
+    const translated =
+        recovery_t(
+            translationKey
+        );
+
+    return translated === translationKey
+        ? muscle
+        : translated;
+}
+
+function getRecommendationKey(
+    recommendation: RecoveryRecommendation
+): string | null {
+    const id =
+        recommendation.id;
+
+    if (!id) {
+        return null;
+    }
+
+    if (
+        id.startsWith("rest_")
+    ) {
+        return "rest_muscle";
+    }
+
+    if (
+        id.startsWith("train_")
+    ) {
+        return "train_muscle";
+    }
+
+    return id;
+}
+
+function getRecommendationParams(
+    recommendation: RecoveryRecommendation
+): Record<
+    string,
+    string | number
+> {
+    return {
+        muscle:
+            getMuscleName(
+                recommendation.muscle
+            )
+    };
+}
+
+function getRecommendationText(
+    recommendation: RecoveryRecommendation
+): string {
+    const key =
+        getRecommendationKey(
+            recommendation
+        );
+
+    if (!key) {
+        return (
+            recommendation.text ||
+            recommendation.description ||
+            recommendation.message ||
+            ""
+        );
+    }
+
+    const translationKey =
+        `recommendations.items.${key}.text`;
+
+    const translated =
+        recovery_t(
+            translationKey,
+            getRecommendationParams(
+                recommendation
+            )
+        );
+
+    if (
+        translated !== translationKey
+    ) {
+        return translated;
+    }
+
+    return (
+        recommendation.text ||
+        recommendation.description ||
+        recommendation.message ||
+        ""
+    );
+}
+
+function getRecommendationTitle(
+    recommendation: RecoveryRecommendation
+): string {
+    const key =
+        getRecommendationKey(
+            recommendation
+        );
+
+    if (!key) {
+        return "";
+    }
+
+    const translationKey =
+        `recommendations.items.${key}.title`;
+
+    const translated =
+        recovery_t(
+            translationKey,
+            getRecommendationParams(
+                recommendation
+            )
+        );
+
+    return translated === translationKey
+        ? ""
+        : translated;
 }
 
 export function createSummaryCard(
@@ -232,7 +473,9 @@ export function createDailySummary(
 
     wrapper.appendChild(
         createSummaryCard(
-            "Відновлення",
+            recovery_t(
+                "summary.recovery"
+            ),
             formatScore(
                 recovery
             ),
@@ -247,7 +490,9 @@ export function createDailySummary(
 
     wrapper.appendChild(
         createSummaryCard(
-            "Сон",
+            recovery_t(
+                "summary.sleep"
+            ),
             formatScore(
                 sleep
             ),
@@ -262,15 +507,21 @@ export function createDailySummary(
 
     wrapper.appendChild(
         createSummaryCard(
-            "Навантаження",
+            recovery_t(
+                "summary.load"
+            ),
             training == null
                 ? "—"
                 : Math.round(
                     training
                 ),
             training == null
-                ? "Немає даних"
-                : "Тренування",
+                ? recovery_t(
+                    "status.no_data"
+                )
+                : recovery_t(
+                    "summary.training"
+                ),
             training == null
                 ? 0
                 : Math.min(
@@ -285,7 +536,9 @@ export function createDailySummary(
 
     wrapper.appendChild(
         createSummaryCard(
-            "Звички",
+            recovery_t(
+                "summary.habits"
+            ),
             formatScore(
                 habits
             ),
@@ -334,7 +587,9 @@ export function createHabitsGrid(
             "rc-empty-state";
 
         empty.textContent =
-            "За цей день звичок немає";
+            recovery_t(
+                "day_details.no_habits"
+            );
 
         grid.appendChild(
             empty
@@ -405,8 +660,9 @@ export function createHabitRow(
         "rc-habit-name";
 
     name.textContent =
-        habit.name ||
-        "Звичка";
+        getHabitName(
+            habit
+        );
 
     content.appendChild(
         name
@@ -424,7 +680,9 @@ export function createHabitRow(
             "rc-habit-category";
 
         category.textContent =
-            habit.category;
+            getHabitCategory(
+                habit.category
+            );
 
         content.appendChild(
             category
@@ -440,9 +698,11 @@ export function createHabitRow(
         "rc-habit-status";
 
     status.textContent =
-        habit.completed
-            ? "Виконано"
-            : "Не виконано";
+        getHabitStatus(
+            Boolean(
+                habit.completed
+            )
+        );
 
     row.appendChild(
         icon
@@ -506,14 +766,14 @@ export function createRecommendationRow(
         "rc-rec-body";
 
     const title =
-        recommendation.title ||
-        "";
+        getRecommendationTitle(
+            recommendation
+        );
 
     const text =
-        recommendation.text ||
-        recommendation.description ||
-        recommendation.message ||
-        "";
+        getRecommendationText(
+            recommendation
+        );
 
     if (
         title
@@ -566,7 +826,9 @@ export function createRecommendationRow(
             "rc-rec-text";
 
         empty.textContent =
-            "Рекомендація";
+            recovery_t(
+                "day_details.recommendation"
+            );
 
         body.appendChild(
             empty

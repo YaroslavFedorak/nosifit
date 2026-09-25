@@ -1,9 +1,13 @@
 import {
     RecoveryAPI,
     type RecoveryDayDetails,
-    type RecoveryHabit,
     type RecoveryRecommendation
 } from "../../api.js";
+
+import {
+    getLocale,
+    recovery_t
+} from "../../../i18n/index.js";
 
 import {
     createDailySummary,
@@ -65,7 +69,7 @@ function formatDate(
     }
 
     return new Intl.DateTimeFormat(
-        "uk-UA",
+        getLocale(),
         {
             day: "numeric",
             month: "long",
@@ -102,12 +106,16 @@ function renderLoading(): void {
 
     if (title) {
         title.textContent =
-            "Завантаження";
+            recovery_t(
+                "day_details.loading"
+            );
     }
 
     if (subtitle) {
         subtitle.textContent =
-            "Отримуємо дані за день";
+            recovery_t(
+                "day_details.loading_subtitle"
+            );
     }
 
     if (summary) {
@@ -116,7 +124,9 @@ function renderLoading(): void {
             <div class="rc-day-details-state">
                 <div class="rc-day-details-spinner"></div>
                 <div class="rc-day-details-state-text">
-                    Завантаження даних…
+                    ${recovery_t(
+                        "day_details.loading_data"
+                    )}
                 </div>
             </div>
             `;
@@ -132,7 +142,7 @@ function renderLoading(): void {
 }
 
 function renderError(
-    message = "Не вдалося завантажити дані"
+    message?: string
 ): void {
     const title =
         getElement(
@@ -159,14 +169,24 @@ function renderError(
             "rc-day-recommendations"
         );
 
+    const errorMessage =
+        message ||
+        recovery_t(
+            "day_details.load_error"
+        );
+
     if (title) {
         title.textContent =
-            "Помилка";
+            recovery_t(
+                "day_details.error"
+            );
     }
 
     if (subtitle) {
         subtitle.textContent =
-            "Не вдалося відкрити дані за день";
+            recovery_t(
+                "day_details.error_subtitle"
+            );
     }
 
     if (summary) {
@@ -174,10 +194,12 @@ function renderError(
             `
             <div class="rc-day-details-state rc-day-details-state-error">
                 <div class="rc-day-details-state-title">
-                    Не вдалося завантажити дані
+                    ${recovery_t(
+                        "day_details.load_error"
+                    )}
                 </div>
                 <div class="rc-day-details-state-text">
-                    ${message}
+                    ${errorMessage}
                 </div>
             </div>
             `;
@@ -246,7 +268,9 @@ function renderDay(
         !recommendationsList
     ) {
         throw new Error(
-            "Не знайдено елемент модалки"
+            recovery_t(
+                "day_details.modal_missing"
+            )
         );
     }
 
@@ -257,8 +281,12 @@ function renderDay(
 
     subtitle.textContent =
         data.has_data
-            ? "Деталі відновлення за день"
-            : "За цей день доступні лише часткові дані";
+            ? recovery_t(
+                "day_details.full_subtitle"
+            )
+            : recovery_t(
+                "day_details.partial_subtitle"
+            );
 
     summary.innerHTML = "";
 
@@ -300,7 +328,13 @@ function renderDay(
         data.training.sessions > 0
     ) {
         parts.push(
-            `Тренування: ${data.training.sessions}`
+            recovery_t(
+                "day_details.summary.training",
+                {
+                    count:
+                        data.training.sessions
+                }
+            )
         );
     }
 
@@ -320,7 +354,19 @@ function renderDay(
             sleepMinutes % 60;
 
         parts.push(
-            `Сон: ${hours} год ${String(minutes).padStart(2, "0")} хв`
+            recovery_t(
+                "day_details.summary.sleep",
+                {
+                    hours,
+                    minutes:
+                        String(
+                            minutes
+                        ).padStart(
+                            2,
+                            "0"
+                        )
+                }
+            )
         );
     }
 
@@ -328,14 +374,24 @@ function renderDay(
         data.habits.total > 0
     ) {
         parts.push(
-            `Звички: ${data.habits.completed}/${data.habits.total}`
+            recovery_t(
+                "day_details.summary.habits",
+                {
+                    completed:
+                        data.habits.completed,
+                    total:
+                        data.habits.total
+                }
+            )
         );
     }
 
     dailySummary.textContent =
         parts.length > 0
             ? parts.join(" · ")
-            : "За цей день додаткових даних немає";
+            : recovery_t(
+                "day_details.no_extra_data"
+            );
 
     summary.appendChild(
         dailySummary
@@ -375,7 +431,9 @@ function renderDay(
 
     if (habitsToggle) {
         habitsToggle.textContent =
-            "Показати всі";
+            recovery_t(
+                "day_details.show_all"
+            );
 
         habitsToggle.classList.remove(
             "is-expanded"
@@ -406,7 +464,9 @@ function renderDay(
             "rc-empty-state";
 
         empty.textContent =
-            "За цей день рекомендацій немає";
+            recovery_t(
+                "day_details.no_recommendations"
+            );
 
         recommendationsList.appendChild(
             empty
@@ -515,8 +575,11 @@ export function openDayDetails(
                     data === null
                 ) {
                     renderError(
-                        "Сервер не повернув дані"
+                        recovery_t(
+                            "day_details.server_empty"
+                        )
                     );
+
                     return;
                 }
 
@@ -535,7 +598,9 @@ export function openDayDetails(
                     renderError(
                         error instanceof Error
                             ? error.message
-                            : "Помилка відображення даних"
+                            : recovery_t(
+                                "day_details.render_error"
+                            )
                     );
                 }
             }
@@ -557,7 +622,9 @@ export function openDayDetails(
                 renderError(
                     error instanceof Error
                         ? error.message
-                        : "Не вдалося завантажити дані"
+                        : recovery_t(
+                            "day_details.load_error"
+                        )
                 );
             }
         );
@@ -626,8 +693,12 @@ export function initDayDetailsModal(): void {
 
             habitsToggle.textContent =
                 expanded
-                    ? "Показати менше"
-                    : "Показати всі";
+                    ? recovery_t(
+                        "day_details.show_less"
+                    )
+                    : recovery_t(
+                        "day_details.show_all"
+                    );
         }
     );
 

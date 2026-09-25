@@ -1,31 +1,70 @@
+import { translate } from "../i18n/loader.js";
 export const RECOVERY_MESSAGES = {
-    loading: "Завантаження...",
-    error: "Не вдалося завантажити дані. Спробуйте ще раз.",
+    get loading() {
+        return translate("recovery", "loading");
+    },
+    get error() {
+        return translate("recovery", "error");
+    },
     sleep: {
-        empty: "Немає даних про сон",
-        title: "Сон",
-        scoreLabel: "Оцінка"
+        get empty() {
+            return translate("recovery", "sleep.empty");
+        },
+        get title() {
+            return translate("recovery", "sleep.title");
+        },
+        get scoreLabel() {
+            return translate("recovery", "sleep.scoreLabel");
+        }
     },
     habits: {
-        empty: "Звички ще не додані",
-        title: "Звички",
-        scoreLabel: "Оцінка"
+        get empty() {
+            return translate("recovery", "habits.empty");
+        },
+        get title() {
+            return translate("recovery", "habits.title");
+        },
+        get scoreLabel() {
+            return translate("recovery", "habits.scoreLabel");
+        }
     },
     score: {
-        empty: "Немає даних для розрахунку відновлення",
-        title: "Загальний показник відновлення",
-        sleepLabel: "Сон",
-        habitsLabel: "Звички",
-        trainingLabel: "Тренування",
-        energyLabel: "Енергія"
+        get empty() {
+            return translate("recovery", "score.empty");
+        },
+        get title() {
+            return translate("recovery", "score.title");
+        },
+        get sleepLabel() {
+            return translate("recovery", "score.labels.sleep");
+        },
+        get habitsLabel() {
+            return translate("recovery", "score.labels.habits");
+        },
+        get trainingLabel() {
+            return translate("recovery", "score.labels.training");
+        },
+        get energyLabel() {
+            return translate("recovery", "score.labels.energy");
+        }
     },
     heatmap: {
-        empty: "Немає історії відновлення",
-        title: "Історія відновлення",
-        daysLabel: "Днів у вибірці"
+        get empty() {
+            return translate("recovery", "heatmap.empty");
+        },
+        get title() {
+            return translate("recovery", "heatmap.title");
+        },
+        get daysLabel() {
+            return translate("recovery", "heatmap.daysLabel");
+        }
     },
     recommendations: {
-        empty: "Немає рекомендацій",
-        title: "Рекомендації"
+        get empty() {
+            return translate("recovery", "recommendations.empty");
+        },
+        get title() {
+            return translate("recovery", "recommendations.title");
+        }
     }
 };

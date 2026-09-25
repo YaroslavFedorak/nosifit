@@ -1,29 +1,7 @@
+import { getLocale, recovery_t } from "../../i18n/index.js";
 const MINI_BAR_SEGMENTS = 5;
 export const LOW_THRESHOLD = 40;
 export const HIGH_THRESHOLD = 70;
-const MONTH_SHORT_UA = [
-    "січ",
-    "лют",
-    "бер",
-    "квіт",
-    "трав",
-    "черв",
-    "лип",
-    "серп",
-    "вер",
-    "жовт",
-    "лист",
-    "груд"
-];
-const WEEKDAY_UA = [
-    "Неділя",
-    "Понеділок",
-    "Вівторок",
-    "Середа",
-    "Четвер",
-    "П'ятниця",
-    "Субота"
-];
 function parseLocalDate(value) {
     if (!value) {
         return null;
@@ -75,14 +53,17 @@ export function formatDateShort(value) {
     if (!date) {
         return "";
     }
-    return `${date.getDate()} ${MONTH_SHORT_UA[date.getMonth()] || ""}`;
+    return date.toLocaleDateString(getLocale(), {
+        day: "numeric",
+        month: "short"
+    });
 }
 export function formatDateLong(value) {
     const date = parseLocalDate(value);
     if (!date) {
         return "";
     }
-    return date.toLocaleDateString("uk-UA", {
+    return date.toLocaleDateString(getLocale(), {
         day: "numeric",
         month: "long",
         year: "numeric"
@@ -93,7 +74,9 @@ export function formatWeekday(value) {
     if (!date) {
         return "";
     }
-    return (WEEKDAY_UA[date.getDay()] || "");
+    return date.toLocaleDateString(getLocale(), {
+        weekday: "long"
+    });
 }
 export function formatSleep(minutes) {
     if (minutes == null) {
@@ -107,7 +90,10 @@ export function formatSleep(minutes) {
     const rounded = Math.floor(total);
     const hours = Math.floor(rounded / 60);
     const mins = String(rounded % 60).padStart(2, "0");
-    return `${hours} год ${mins} хв`;
+    return recovery_t("time.sleep", {
+        hours,
+        minutes: mins
+    });
 }
 export function formatTooltipDayHTML(data) {
     const date = data.date
@@ -118,7 +104,7 @@ export function formatTooltipDayHTML(data) {
         : normalizeScore(data.recovery_score);
     return `
         <div class="tt-single-line">
-            <span class="tt-score">${score} відновлення</span>
+            <span class="tt-score">${score} ${recovery_t("heatmap.recovery")}</span>
             <span class="tt-date">${date}</span>
         </div>
     `;
@@ -128,13 +114,20 @@ export function formatDailySummary(data) {
     const sessions = data.training?.sessions ??
         0;
     if (sessions > 0) {
-        parts.push(`Тренування: ${sessions} сесій`);
+        parts.push(recovery_t("day_details.summary.training", {
+            count: sessions
+        }));
     }
     const sleep = data.sleep?.duration_minutes;
     const sleepText = formatSleep(sleep);
     if (sleepText) {
-        parts.push(`Сон: ${sleepText}`);
+        parts.push(recovery_t("day_details.summary.sleep", {
+            value: sleepText
+        }));
     }
-    parts.push(`Звички: ${data.habits?.completed ?? 0}/${data.habits?.total ?? 0} виконано`);
+    parts.push(recovery_t("day_details.summary.habits", {
+        completed: data.habits?.completed ?? 0,
+        total: data.habits?.total ?? 0
+    }));
     return parts.join(" · ");
 }

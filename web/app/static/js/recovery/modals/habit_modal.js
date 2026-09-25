@@ -1,15 +1,7 @@
 import { RecoveryAPI } from "../api.js";
 import { refreshRecoveryDashboard } from "../dashboard.js";
 import { ICONS } from "../../icons/index.js";
-const CATEGORY_LABELS = {
-    sleep: "Сон",
-    hydration: "Вода",
-    nutrition: "Харчування",
-    activity: "Активність",
-    recovery: "Відновлення",
-    stress: "Стрес",
-    massage: "Масаж"
-};
+import { recovery_t } from "../../i18n/index.js";
 const CATEGORY_COLORS = {
     sleep: "#8b95b8",
     hydration: "#5b9db0",
@@ -88,8 +80,33 @@ function getUserHabitId(habit) {
         habit.user_habit_id ??
         null);
 }
+function getHabitSlug(habit) {
+    const value = habit.slug;
+    return value || null;
+}
 function getHabitName(habit) {
-    return habit.name || "Звичка";
+    const slug = getHabitSlug(habit);
+    if (slug) {
+        const translated = recovery_t(`habits.${slug}.name`);
+        if (translated !==
+            `habits.${slug}.name`) {
+            return translated;
+        }
+    }
+    return habit.name ||
+        recovery_t("habit.fallback");
+}
+function getHabitDescription(habit) {
+    const slug = getHabitSlug(habit);
+    if (slug) {
+        const translated = recovery_t(`habits.${slug}.description`);
+        if (translated !==
+            `habits.${slug}.description`) {
+            return translated;
+        }
+    }
+    return (habit.description ||
+        getCategoryLabel(habit.category));
 }
 function getHabitPoints(habit) {
     return habit.points ?? 0;
@@ -99,9 +116,12 @@ function getCategoryKey(category) {
 }
 function getCategoryLabel(category) {
     const key = getCategoryKey(category);
-    return (CATEGORY_LABELS[key] ??
-        category ??
-        "Відновлення");
+    const translated = recovery_t(`categories.${key}`);
+    return translated ===
+        `categories.${key}`
+        ? category ??
+            recovery_t("categories.recovery")
+        : translated;
 }
 function getCategoryColor(category) {
     return (CATEGORY_COLORS[getCategoryKey(category)] ??
@@ -165,22 +185,29 @@ function normalizeUserHabits(data) {
 function sortHabits(source) {
     const result = [...source];
     if (sortMode === "name") {
-        return result.sort((a, b) => getHabitName(a).localeCompare(getHabitName(b), "uk"));
+        return result.sort((a, b) => getHabitName(a).localeCompare(getHabitName(b), undefined, {
+            sensitivity: "base"
+        }));
     }
     if (sortMode === "category") {
-        return result.sort((a, b) => getCategoryLabel(a.category).localeCompare(getCategoryLabel(b.category), "uk"));
+        return result.sort((a, b) => getCategoryLabel(a.category).localeCompare(getCategoryLabel(b.category), undefined, {
+            sensitivity: "base"
+        }));
     }
     return result.sort((a, b) => getHabitPoints(b) -
         getHabitPoints(a));
 }
 function sortAddedHabits(source) {
-    return [...source].sort((a, b) => getHabitName(a).localeCompare(getHabitName(b), "uk"));
+    return [...source].sort((a, b) => getHabitName(a).localeCompare(getHabitName(b), undefined, {
+        sensitivity: "base"
+    }));
 }
 function createSectionTitle(text) {
     const title = document.createElement("div");
     title.className =
         "habit-modal-section-title";
-    title.textContent = text;
+    title.textContent =
+        text;
     return title;
 }
 function createEmptyState(text, secondary = false) {
@@ -190,7 +217,8 @@ function createEmptyState(text, secondary = false) {
     if (secondary) {
         empty.classList.add("habit-modal-empty-secondary");
     }
-    empty.textContent = text;
+    empty.textContent =
+        text;
     return empty;
 }
 function createHabitItem(habit, elements, added = false) {
@@ -231,8 +259,7 @@ function createHabitItem(habit, elements, added = false) {
     description.className =
         "habit-description";
     description.textContent =
-        habit.description ||
-            getCategoryLabel(habit.category);
+        getHabitDescription(habit);
     info.appendChild(title);
     info.appendChild(description);
     left.appendChild(icon);
@@ -244,7 +271,9 @@ function createHabitItem(habit, elements, added = false) {
     points.className =
         "habit-points";
     points.textContent =
-        `Recovery +${getHabitPoints(habit)}`;
+        recovery_t("habit.points", {
+            points: getHabitPoints(habit)
+        });
     const meta = document.createElement("span");
     meta.className =
         "habit-meta";
@@ -289,20 +318,20 @@ function renderFullList(elements, available, added) {
     elements.list.innerHTML = "";
     const sortedAvailable = sortHabits(available);
     const sortedAdded = sortAddedHabits(added);
-    elements.list.appendChild(createSectionTitle("Доступні звички"));
+    elements.list.appendChild(createSectionTitle(recovery_t("modal.available")));
     if (sortedAvailable.length ===
         0) {
-        elements.list.appendChild(createEmptyState("Усі доступні звички вже додані"));
+        elements.list.appendChild(createEmptyState(recovery_t("modal.all_added")));
     }
     else {
         sortedAvailable.forEach(habit => {
             elements.list.appendChild(createHabitItem(habit, elements));
         });
     }
-    elements.list.appendChild(createSectionTitle("Вже додані"));
+    elements.list.appendChild(createSectionTitle(recovery_t("modal.added")));
     if (sortedAdded.length ===
         0) {
-        elements.list.appendChild(createEmptyState("Ще немає доданих звичок", true));
+        elements.list.appendChild(createEmptyState(recovery_t("modal.none_added"), true));
     }
     else {
         sortedAdded.forEach(habit => {
@@ -341,7 +370,7 @@ async function loadHabits(elements) {
     loading.className =
         "habit-modal-loading";
     loading.textContent =
-        "Завантаження...";
+        recovery_t("modal.loading");
     elements.list.appendChild(loading);
     if (currentUserId === null) {
         return;
@@ -377,7 +406,7 @@ async function loadHabits(elements) {
         error.className =
             "habit-modal-error";
         error.textContent =
-            "Не вдалося завантажити звички";
+            recovery_t("modal.load_error");
         elements.list.appendChild(error);
     }
 }

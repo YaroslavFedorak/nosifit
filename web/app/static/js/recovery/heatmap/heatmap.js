@@ -1,19 +1,20 @@
 import { RecoveryAPI } from "../api.js";
+import { recovery_t } from "../../i18n/index.js";
 import { attachTooltip } from "./tooltip.js";
 import { openDayDetails } from "./day_details/modal.js";
 const MONTHS = [
-    "Січ",
-    "Лют",
-    "Бер",
-    "Кві",
-    "Тра",
-    "Чер",
-    "Лип",
-    "Сер",
-    "Вер",
-    "Жов",
-    "Лис",
-    "Гру"
+    "jan",
+    "feb",
+    "mar",
+    "apr",
+    "may",
+    "jun",
+    "jul",
+    "aug",
+    "sep",
+    "oct",
+    "nov",
+    "dec"
 ];
 const MS_DAY = 1000 *
     60 *
@@ -40,7 +41,7 @@ function renderMonths() {
     MONTHS.forEach(month => {
         const element = document.createElement("span");
         element.textContent =
-            month;
+            recovery_t(`heatmap.months.${month}`);
         months.appendChild(element);
     });
 }
@@ -75,9 +76,12 @@ function createCell(day, date, today) {
         String(normalizeLevel(day.level));
     cell.setAttribute("role", "gridcell");
     cell.setAttribute("tabindex", "0");
-    cell.setAttribute("aria-label", `${date}: ${day.recovery_score == null
-        ? "немає даних"
-        : `${Math.round(day.recovery_score)} балів відновлення`}`);
+    const scoreLabel = day.recovery_score == null
+        ? recovery_t("heatmap.no_data")
+        : recovery_t("heatmap.score", {
+            score: Math.round(day.recovery_score)
+        });
+    cell.setAttribute("aria-label", `${date}: ${scoreLabel}`);
     if (day.is_today ||
         date === today) {
         cell.classList.add("today");

@@ -1,3 +1,4 @@
+import { translate } from "../i18n/loader.js";
 async function request(url, options = {}) {
     const controller = new AbortController();
     const timeout = window.setTimeout(() => {
@@ -24,7 +25,7 @@ async function request(url, options = {}) {
                     JSON.parse(body);
             }
             catch {
-                throw new Error("Сервер повернув некоректний JSON");
+                throw new Error(translate("recovery", "request.invalidJson"));
             }
         }
         if (!response.ok) {
@@ -38,7 +39,7 @@ async function request(url, options = {}) {
     catch (error) {
         if (error instanceof DOMException &&
             error.name === "AbortError") {
-            throw new Error("Запит перевищив час очікування");
+            throw new Error(translate("recovery", "request.timeout"));
         }
         throw error;
     }

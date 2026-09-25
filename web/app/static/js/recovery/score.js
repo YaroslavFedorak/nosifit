@@ -1,3 +1,4 @@
+import { translate } from "../i18n/loader.js";
 import { ICONS } from "../icons/index.js";
 import { RECOVERY_MESSAGES } from "./messages.js";
 import { clearElement, createCard, createLoading, createError, createEmpty } from "./dom.js";
@@ -24,15 +25,15 @@ function getLevel(value) {
 function getStatus(value) {
     const score = normalize(value);
     if (score < 40) {
-        return "Потребує уваги";
+        return translate("recovery", "score.status.attention");
     }
     if (score < 70) {
-        return "Середній стан";
+        return translate("recovery", "score.status.medium");
     }
     if (score < 85) {
-        return "Добре";
+        return translate("recovery", "score.status.good");
     }
-    return "Відмінно";
+    return translate("recovery", "score.status.excellent");
 }
 function createBar(score) {
     const bar = document.createElement("div");
@@ -111,9 +112,9 @@ export function renderScoreWidget(snapshot, options = {}) {
         return;
     }
     const card = createCard("score-card");
-    card.appendChild(createItem(ICONS.moon || "", "Сон", snapshot.sleep_score));
-    card.appendChild(createItem(ICONS.exercise || "", "Тренування", snapshot.training_score));
-    card.appendChild(createItem(ICONS.zap || "", "Енергія", snapshot.energy_score));
-    card.appendChild(createItem(ICONS.calendar_cog || "", "Звички", snapshot.habits_score));
+    card.appendChild(createItem(ICONS.moon || "", translate("recovery", "score.labels.sleep"), snapshot.sleep_score));
+    card.appendChild(createItem(ICONS.exercise || "", translate("recovery", "score.labels.training"), snapshot.training_score));
+    card.appendChild(createItem(ICONS.zap || "", translate("recovery", "score.labels.energy"), snapshot.energy_score));
+    card.appendChild(createItem(ICONS.calendar_cog || "", translate("recovery", "score.labels.habits"), snapshot.habits_score));
     el.appendChild(card);
 }

@@ -3,6 +3,10 @@ import {
 } from "../api.js";
 
 import {
+    recovery_t
+} from "../../i18n/index.js";
+
+import {
     attachTooltip
 } from "./tooltip.js";
 
@@ -20,18 +24,18 @@ interface HeatmapRenderOptions {
 }
 
 const MONTHS = [
-    "Січ",
-    "Лют",
-    "Бер",
-    "Кві",
-    "Тра",
-    "Чер",
-    "Лип",
-    "Сер",
-    "Вер",
-    "Жов",
-    "Лис",
-    "Гру"
+    "jan",
+    "feb",
+    "mar",
+    "apr",
+    "may",
+    "jun",
+    "jul",
+    "aug",
+    "sep",
+    "oct",
+    "nov",
+    "dec"
 ];
 
 const MS_DAY =
@@ -110,7 +114,9 @@ function renderMonths(): void {
                 );
 
             element.textContent =
-                month;
+                recovery_t(
+                    `heatmap.months.${month}`
+                );
 
             months.appendChild(
                 element
@@ -207,13 +213,24 @@ function createCell(
         "0"
     );
 
+    const scoreLabel =
+        day.recovery_score == null
+            ? recovery_t(
+                "heatmap.no_data"
+            )
+            : recovery_t(
+                "heatmap.score",
+                {
+                    score:
+                        Math.round(
+                            day.recovery_score
+                        )
+                }
+            );
+
     cell.setAttribute(
         "aria-label",
-        `${date}: ${
-            day.recovery_score == null
-                ? "немає даних"
-                : `${Math.round(day.recovery_score)} балів відновлення`
-        }`
+        `${date}: ${scoreLabel}`
     );
 
     if (

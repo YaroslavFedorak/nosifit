@@ -1,32 +1,12 @@
+import {
+    getLocale,
+    recovery_t
+} from "../../i18n/index.js";
+
 const MINI_BAR_SEGMENTS = 5;
 
 export const LOW_THRESHOLD = 40;
 export const HIGH_THRESHOLD = 70;
-
-const MONTH_SHORT_UA = [
-    "січ",
-    "лют",
-    "бер",
-    "квіт",
-    "трав",
-    "черв",
-    "лип",
-    "серп",
-    "вер",
-    "жовт",
-    "лист",
-    "груд"
-];
-
-const WEEKDAY_UA = [
-    "Неділя",
-    "Понеділок",
-    "Вівторок",
-    "Середа",
-    "Четвер",
-    "П'ятниця",
-    "Субота"
-];
 
 interface DailyData {
     training?: {
@@ -178,7 +158,13 @@ export function formatDateShort(
         return "";
     }
 
-    return `${date.getDate()} ${MONTH_SHORT_UA[date.getMonth()] || ""}`;
+    return date.toLocaleDateString(
+        getLocale(),
+        {
+            day: "numeric",
+            month: "short"
+        }
+    );
 }
 
 export function formatDateLong(
@@ -194,7 +180,7 @@ export function formatDateLong(
     }
 
     return date.toLocaleDateString(
-        "uk-UA",
+        getLocale(),
         {
             day: "numeric",
             month: "long",
@@ -215,10 +201,11 @@ export function formatWeekday(
         return "";
     }
 
-    return (
-        WEEKDAY_UA[
-            date.getDay()
-        ] || ""
+    return date.toLocaleDateString(
+        getLocale(),
+        {
+            weekday: "long"
+        }
     );
 }
 
@@ -261,7 +248,13 @@ export function formatSleep(
             "0"
         );
 
-    return `${hours} год ${mins} хв`;
+    return recovery_t(
+        "time.sleep",
+        {
+            hours,
+            minutes: mins
+        }
+    );
 }
 
 interface TooltipData {
@@ -288,7 +281,7 @@ export function formatTooltipDayHTML(
 
     return `
         <div class="tt-single-line">
-            <span class="tt-score">${score} відновлення</span>
+            <span class="tt-score">${score} ${recovery_t("heatmap.recovery")}</span>
             <span class="tt-date">${date}</span>
         </div>
     `;
@@ -308,7 +301,12 @@ export function formatDailySummary(
         sessions > 0
     ) {
         parts.push(
-            `Тренування: ${sessions} сесій`
+            recovery_t(
+                "day_details.summary.training",
+                {
+                    count: sessions
+                }
+            )
         );
     }
 
@@ -322,12 +320,25 @@ export function formatDailySummary(
 
     if (sleepText) {
         parts.push(
-            `Сон: ${sleepText}`
+            recovery_t(
+                "day_details.summary.sleep",
+                {
+                    value: sleepText
+                }
+            )
         );
     }
 
     parts.push(
-        `Звички: ${data.habits?.completed ?? 0}/${data.habits?.total ?? 0} виконано`
+        recovery_t(
+            "day_details.summary.habits",
+            {
+                completed:
+                    data.habits?.completed ?? 0,
+                total:
+                    data.habits?.total ?? 0
+            }
+        )
     );
 
     return parts.join(

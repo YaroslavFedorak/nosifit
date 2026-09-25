@@ -1,0 +1,348 @@
+{
+    "categories": {
+        "sleep": "Sen",
+        "hydration": "Nawodnienie",
+        "nutrition": "Odżywianie",
+        "activity": "Aktywność",
+        "recovery": "Regeneracja",
+        "stress": "Stres",
+        "massage": "Masaż"
+    },
+    "points": {
+        "label": "Regeneracja"
+    },
+    "status": {
+        "no_data": "Brak danych",
+        "good": "Dobrze",
+        "normal": "Normalnie",
+        "attention": "Uwaga",
+        "low": "Niski"
+    },
+    "summary": {
+        "recovery": "Regeneracja",
+        "sleep": "Sen",
+        "load": "Obciążenie",
+        "habits": "Nawyki",
+        "training": "Trening"
+    },
+    "time": {
+        "sleep": "{hours} godz. {minutes} min"
+    },
+    "heatmap": {
+        "empty": "Brak danych do wyświetlenia mapy",
+        "title": "Regeneracja",
+        "daysLabel": "dni",
+        "recovery": "regeneracja",
+        "no_data": "brak danych",
+        "score": "{score} punktów regeneracji",
+        "months": {
+            "jan": "Sty",
+            "feb": "Lut",
+            "mar": "Mar",
+            "apr": "Kwi",
+            "may": "Maj",
+            "jun": "Cze",
+            "jul": "Lip",
+            "aug": "Sie",
+            "sep": "Wrz",
+            "oct": "Paź",
+            "nov": "Lis",
+            "dec": "Gru"
+        }
+    },
+    "modal": {
+        "available": "Dostępne nawyki",
+        "added": "Już dodane",
+        "all_added": "Wszystkie dostępne nawyki zostały już dodane",
+        "none_added": "Brak dodanych nawyków",
+        "loading": "Ładowanie...",
+        "load_error": "Nie udało się załadować nawyków"
+    },
+    "sleep": {
+        "empty": "Brak danych o śnie",
+        "title": "Sen",
+        "scoreLabel": "Ocena snu",
+        "validation": {
+            "required": "Wypełnij wszystkie pola",
+            "invalid_datetime": "Nieprawidłowa data lub czas",
+            "future": "Czas zakończenia snu nie może być w przyszłości"
+        },
+        "errors": {
+            "save": "Nie udało się zapisać snu"
+        },
+        "status": {
+            "none": "Brak danych",
+            "excellent": "Doskonały",
+            "good": "Dobry",
+            "sufficient": "Wystarczający",
+            "insufficient": "Niewystarczający"
+        },
+        "recency": {
+            "today": "Dzisiaj",
+            "yesterday": "Wczoraj",
+            "date": "{date}"
+        },
+        "duration": {
+            "hours": "godz.",
+            "minutes": "min"
+        }
+    },
+    "day_details": {
+        "loading": "Ładowanie",
+        "loading_subtitle": "Pobieranie danych za dzień",
+        "loading_data": "Ładowanie danych...",
+        "error": "Błąd",
+        "error_subtitle": "Nie udało się otworzyć danych za dzień",
+        "load_error": "Nie udało się załadować danych",
+        "modal_missing": "Nie znaleziono okna",
+        "full_subtitle": "Szczegóły regeneracji za dzień",
+        "partial_subtitle": "Dla tego dnia dostępne są tylko częściowe dane",
+        "no_extra_data": "Dla tego dnia brak dodatkowych danych",
+        "no_habits": "Dla tego dnia brak nawyków",
+        "no_recommendations": "Dla tego dnia brak rekomendacji",
+        "server_empty": "Serwer nie zwrócił danych",
+        "render_error": "Błąd wyświetlania danych",
+        "recommendation": "Rekomendacja",
+        "completed": "Wykonano",
+        "not_completed": "Nie wykonano",
+        "show_all": "Pokaż wszystkie",
+        "show_less": "Pokaż mniej",
+        "summary": {
+            "training": "Trening: {count}",
+            "sleep": "Sen: {hours} godz. {minutes} min",
+            "habits": "Nawyki: {completed}/{total}"
+        }
+    },
+    "actions": {
+        "cancel": "Anuluj",
+        "complete": "Oznacz jako wykonane",
+        "show_all": "Pokaż wszystkie",
+        "show_less": "Pokaż mniej"
+    },
+    "toast": {
+        "completed": "Nawyk wykonany",
+        "uncompleted": "Oznaczenie usunięte",
+        "deleted": "Nawyk usunięty"
+    },
+    "errors": {
+        "unknown_habit": "Nieznany identyfikator nawyku",
+        "save": "Błąd podczas zapisywania nawyku",
+        "delete": "Błąd podczas usuwania nawyku"
+    },
+    "reasons": {
+        "sleep": "Zalecane ze względu na jakość snu",
+        "hydration": "Zalecane ze względu na poziom nawodnienia",
+        "nutrition": "Zalecane dla wsparcia odżywiania",
+        "activity": "Zalecane po wysiłku fizycznym",
+        "recovery": "Zalecane dla poprawy regeneracji",
+        "stress": "Zalecane ze względu na poziom stresu",
+        "massage": "Zalecane dla rozluźnienia mięśni",
+        "default": "Zalecane dla wsparcia regeneracji"
+    },
+    "request": {
+        "invalidJson": "Serwer zwrócił nieprawidłowy JSON",
+        "timeout": "Przekroczono czas żądania"
+    },
+    "loading": "Ładowanie...",
+    "error": "Nie udało się załadować danych",
+    "habits": {
+        "empty": "Brak dostępnych nawyków",
+        "title": "Nawyki",
+        "scoreLabel": "Wpływ na regenerację",
+        "drink_water": {
+            "name": "Pić wystarczająco dużo wody",
+            "description": "Pić odpowiednią ilość wody w ciągu dnia"
+        },
+        "electrolytes": {
+            "name": "Elektrolity",
+            "description": "Przyjąć elektrolity po treningu lub w upalne dni"
+        },
+        "sleep_8h": {
+            "name": "Spać co najmniej 8 godzin",
+            "description": "Optymalna długość nocnego snu"
+        },
+        "consistent_sleep": {
+            "name": "Stały harmonogram snu",
+            "description": "Kłaść się spać o tej samej porze każdej nocy"
+        },
+        "screen_off_before_sleep": {
+            "name": "Wyłączyć ekrany przed snem",
+            "description": "Unikać korzystania z telefonu lub komputera przez 30 minut przed snem"
+        },
+        "post_workout_protein": {
+            "name": "Białko po treningu",
+            "description": "Spożyć białko, aby wspomóc regenerację mięśni"
+        },
+        "post_workout_carbs": {
+            "name": "Węglowodany po treningu",
+            "description": "Uzupełnić zapasy glikogenu"
+        },
+        "balanced_meal": {
+            "name": "Zbilansowany posiłek",
+            "description": "Pełnowartościowy posiłek z białkiem, tłuszczami i złożonymi węglowodanami"
+        },
+        "walk_30m": {
+            "name": "30 minut spaceru",
+            "description": "Lekka aktywność poprawiająca krążenie"
+        },
+        "stretching": {
+            "name": "Rozciąganie",
+            "description": "5–10 minut rozciągania w celu zmniejszenia napięcia"
+        },
+        "mobility": {
+            "name": "Mobilność",
+            "description": "Krótka sesja mobilności dla stawów"
+        },
+        "foam_roll": {
+            "name": "Foam rolling",
+            "description": "Rozluźnianie mięśni za pomocą rollera"
+        },
+        "breathing_reset": {
+            "name": "Przerwa oddechowa",
+            "description": "1–2 minuty głębokiego oddychania"
+        },
+        "meditation": {
+            "name": "Medytacja",
+            "description": "5 minut medytacji w celu zmniejszenia stresu"
+        },
+        "journal_stress": {
+            "name": "Dziennik stresu",
+            "description": "Zapisywanie myśli lub odczuć w celu zmniejszenia poziomu stresu"
+        },
+        "full_rest_day": {
+            "name": "Pełny dzień odpoczynku",
+            "description": "Unikać treningów dla pełnej regeneracji"
+        },
+        "massage_or_physio": {
+            "name": "Masaż lub fizjoterapia",
+            "description": "Masaż lub fizjoterapia w celu zmniejszenia napięcia mięśniowego"
+        },
+        "deload_week": {
+            "name": "Tydzień odciążenia",
+            "description": "Zmniejszyć obciążenie treningowe o 30–50% przez tydzień"
+        }
+    },
+    "muscles": {
+        "chest": "klatka piersiowa",
+        "back": "plecy",
+        "shoulders": "barki",
+        "biceps": "bicepsy",
+        "triceps": "tricepsy",
+        "forearms": "przedramiona",
+        "upper_back": "górna część pleców",
+        "traps": "mięsień czworoboczny",
+        "quads": "czworogłowe",
+        "quadriceps": "czworogłowe",
+        "hamstrings": "tył uda",
+        "glutes": "pośladki",
+        "calves": "łydki",
+        "core": "core",
+        "abs": "mięśnie brzucha"
+    },
+    "score": {
+        "empty": "Brak danych o ocenie regeneracji",
+        "title": "Ocena regeneracji",
+        "labels": {
+            "sleep": "Sen",
+            "training": "Trening",
+            "energy": "Energia",
+            "habits": "Nawyki"
+        },
+        "status": {
+            "attention": "Wymaga uwagi",
+            "medium": "Umiarkowanie",
+            "good": "Dobrze",
+            "excellent": "Doskonały"
+        }
+    },
+    "recommendations": {
+        "empty": "Brak rekomendacji w tej chwili",
+        "title": "Rekomendacje",
+        "fallback": "Rekomendacja dotycząca regeneracji",
+        "items": {
+            "full_recovery": {
+                "title": "Skup się na regeneracji",
+                "text": "Skup się dziś na regeneracji i unikaj intensywnych treningów"
+            },
+            "light_training": {
+                "title": "Trenuj lekko",
+                "text": "Rozważ dziś lekki trening i skup się na technice"
+            },
+            "low_energy": {
+                "title": "Niski poziom energii",
+                "text": "Twój poziom energii jest niski — wybierz lekką aktywność lub aktywną regenerację"
+            },
+            "complete_habits": {
+                "title": "Wykonaj swoje nawyki regeneracyjne",
+                "text": "Wykonaj swoje nawyki regeneracyjne, aby poprawić regenerację"
+            },
+            "very_high_daily_load": {
+                "title": "Bardzo wysokie obciążenie treningowe",
+                "text": "Dzisiejsze obciążenie treningowe jest bardzo wysokie. Skup się na regeneracji przed kolejnym intensywnym treningiem."
+            },
+            "high_daily_load": {
+                "title": "Wysokie obciążenie treningowe",
+                "text": "Dzisiejsze obciążenie treningowe jest wysokie. Unikaj dodawania niepotrzebnej objętości."
+            },
+            "rest_muscle": {
+                "title": "Daj {muscle} więcej czasu na regenerację",
+                "text": "Daj {muscle} więcej czasu na regenerację po znacznym niedawnym obciążeniu"
+            },
+            "train_muscle": {
+                "title": "Rozważ trening {muscle}",
+                "text": "Rozważ trening {muscle} ze względu na niski niedawny poziom objętości"
+            }
+        }
+    },
+    "habit": {
+        "fallback": "Nawyk",
+        "points": "{points} punktów regeneracji"
+    },
+    "template": {
+        "page_title": "Regeneracja",
+        "header": {
+            "title": "Regeneracja",
+            "subtitle": "Analizuj sen • Zarządzaj nawykami • Śledź regenerację",
+            "today": "Dzisiaj"
+        },
+        "sections": {
+            "habits": "Nawyki",
+            "sleep": "Sen",
+            "score": "Metryki",
+            "recommendations": "Rekomendacje"
+        },
+        "actions": {
+            "add": "Dodaj",
+            "back": "Wstecz",
+            "save": "Zapisz",
+            "cancel": "Anuluj",
+            "close": "Zamknij",
+            "show_all": "Pokaż wszystkie"
+        },
+        "heatmap": {
+            "title": "Historia regeneracji",
+            "year": "Rok",
+            "aria_label": "Mapa regeneracji za rok",
+            "less": "Mniej",
+            "more": "Więcej"
+        },
+        "habit_modal": {
+            "title": "Dodaj nawyk",
+            "sort": {
+                "points": "Punkty",
+                "category": "Kategoria",
+                "name": "Nazwa"
+            }
+        },
+        "sleep_modal": {
+            "title": "Dodaj sen",
+            "subtitle": "Zarejestruj okres snu, aby obliczyć regenerację",
+            "sleep_date": "Data snu",
+            "sleep_time": "Czas snu",
+            "start": "Początek",
+            "end": "Koniec",
+            "midnight_hint": "Sen przechodzący przez północ zostanie wykryty automatycznie.",
+            "save": "Zapisz sen"
+        }
+    }
+}

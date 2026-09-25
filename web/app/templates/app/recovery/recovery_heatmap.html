@@ -1,8 +1,10 @@
 <div class="rc-heatmap-header">
-  <h3>Історія відновлення</h3>
+  <h3>{{ translate("recovery", "template.heatmap.title") }}</h3>
 
   <div class="rc-heatmap-controls">
-    <label class="sr-only" for="rc-heatmap-year">Рік</label>
+    <label class="sr-only" for="rc-heatmap-year">
+      {{ translate("recovery", "template.heatmap.year") }}
+    </label>
 
     <select id="rc-heatmap-year" class="rc-select"></select>
   </div>
@@ -19,19 +21,19 @@
     id="recovery-heatmap"
     class="rc-heatmap-grid"
     role="grid"
-    aria-label="Heatmap відновлення за рік"
+    aria-label="{{ translate('recovery', 'template.heatmap.aria_label') }}"
   ></div>
 </div>
 
 <div class="rc-heatmap-legend">
-  <span>Менш</span>
+  <span>{{ translate("recovery", "template.heatmap.less") }}</span>
 
   <div class="legend-box level-1"></div>
   <div class="legend-box level-2"></div>
   <div class="legend-box level-3"></div>
   <div class="legend-box level-4"></div>
 
-  <span>Більш</span>
+  <span>{{ translate("recovery", "template.heatmap.more") }}</span>
 </div>
 
 {% include "app/recovery/modals/recovery_day_details.html" %}

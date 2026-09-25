@@ -1,36 +1,148 @@
+import {
+    translate
+} from "../i18n/loader.js";
+
 export const RECOVERY_MESSAGES = {
-    loading: "Завантаження...",
-    error: "Не вдалося завантажити дані. Спробуйте ще раз.",
+    get loading(): string {
+        return translate(
+            "recovery",
+            "loading"
+        );
+    },
+
+    get error(): string {
+        return translate(
+            "recovery",
+            "error"
+        );
+    },
 
     sleep: {
-        empty: "Немає даних про сон",
-        title: "Сон",
-        scoreLabel: "Оцінка"
+        get empty(): string {
+            return translate(
+                "recovery",
+                "sleep.empty"
+            );
+        },
+
+        get title(): string {
+            return translate(
+                "recovery",
+                "sleep.title"
+            );
+        },
+
+        get scoreLabel(): string {
+            return translate(
+                "recovery",
+                "sleep.scoreLabel"
+            );
+        }
     },
 
     habits: {
-        empty: "Звички ще не додані",
-        title: "Звички",
-        scoreLabel: "Оцінка"
+        get empty(): string {
+            return translate(
+                "recovery",
+                "habits.empty"
+            );
+        },
+
+        get title(): string {
+            return translate(
+                "recovery",
+                "habits.title"
+            );
+        },
+
+        get scoreLabel(): string {
+            return translate(
+                "recovery",
+                "habits.scoreLabel"
+            );
+        }
     },
 
     score: {
-        empty: "Немає даних для розрахунку відновлення",
-        title: "Загальний показник відновлення",
-        sleepLabel: "Сон",
-        habitsLabel: "Звички",
-        trainingLabel: "Тренування",
-        energyLabel: "Енергія"
+        get empty(): string {
+            return translate(
+                "recovery",
+                "score.empty"
+            );
+        },
+
+        get title(): string {
+            return translate(
+                "recovery",
+                "score.title"
+            );
+        },
+
+        get sleepLabel(): string {
+            return translate(
+                "recovery",
+                "score.labels.sleep"
+            );
+        },
+
+        get habitsLabel(): string {
+            return translate(
+                "recovery",
+                "score.labels.habits"
+            );
+        },
+
+        get trainingLabel(): string {
+            return translate(
+                "recovery",
+                "score.labels.training"
+            );
+        },
+
+        get energyLabel(): string {
+            return translate(
+                "recovery",
+                "score.labels.energy"
+            );
+        }
     },
 
     heatmap: {
-        empty: "Немає історії відновлення",
-        title: "Історія відновлення",
-        daysLabel: "Днів у вибірці"
+        get empty(): string {
+            return translate(
+                "recovery",
+                "heatmap.empty"
+            );
+        },
+
+        get title(): string {
+            return translate(
+                "recovery",
+                "heatmap.title"
+            );
+        },
+
+        get daysLabel(): string {
+            return translate(
+                "recovery",
+                "heatmap.daysLabel"
+            );
+        }
     },
 
     recommendations: {
-        empty: "Немає рекомендацій",
-        title: "Рекомендації"
+        get empty(): string {
+            return translate(
+                "recovery",
+                "recommendations.empty"
+            );
+        },
+
+        get title(): string {
+            return translate(
+                "recovery",
+                "recommendations.title"
+            );
+        }
     }
 } as const;

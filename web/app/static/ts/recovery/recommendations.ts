@@ -1,6 +1,19 @@
-import { RECOVERY_MESSAGES } from "./messages.js";
-import { RECOVERY_ICONS } from "../icons/recovery.js";
-import { TRAINING_ICONS } from "../icons/training.js";
+import {
+    RECOVERY_ICONS
+} from "../icons/recovery.js";
+
+import {
+    TRAINING_ICONS
+} from "../icons/training.js";
+
+import {
+    TRACKER_ICONS
+} from "../icons/tracker.js";
+
+import {
+    recovery_t
+} from "../i18n/index.js";
+
 import {
     clearElement,
     createCard,
@@ -9,19 +22,16 @@ import {
     createEmpty
 } from "./dom.js";
 
-export interface Recommendation {
-    type?: string;
-    text?: string;
-    priority?: string;
-}
+import type {
+    RecoveryRecommendation,
+    RecoveryRecommendationsResponse
+} from "./api.js";
 
-export interface RecommendationsData {
-    recommendations?:
-        | Recommendation[]
-        | {
-            items?: Recommendation[];
-        };
-}
+export type Recommendation =
+    RecoveryRecommendation;
+
+export type RecommendationsData =
+    RecoveryRecommendationsResponse;
 
 interface RenderOptions {
     loading?: boolean;
@@ -40,6 +50,9 @@ const TRAINING_ICON_MAP =
 const RECOVERY_ICON_MAP =
     RECOVERY_ICONS as Record<string, string>;
 
+const TRACKER_ICON_MAP =
+    TRACKER_ICONS as Record<string, string>;
+
 const ICON_MAP: Record<string, string> = {
     sleep: "moon",
     hydration: "water",
@@ -50,21 +63,172 @@ const ICON_MAP: Record<string, string> = {
     massage: "hand_heart",
     habit: "calendar_cog",
     exercise: "exercise",
-    muscle: "exercise"
+    muscle: "exercise",
+    training: "exercise"
 };
 
 const MAX_RECOMMENDATIONS = 4;
 
-function getIcon(name: string): string {
-    if (TRAINING_ICON_MAP[name]) {
-        return TRAINING_ICON_MAP[name];
+const MUSCLE_KEYS: Record<string, string> = {
+    chest: "chest",
+    back: "back",
+    shoulders: "shoulders",
+    biceps: "biceps",
+    triceps: "triceps",
+    forearms: "forearms",
+    "upper-back": "upper_back",
+    upper_back: "upper_back",
+    traps: "traps",
+    quads: "quads",
+    quadriceps: "quadriceps",
+    hamstrings: "hamstrings",
+    glutes: "glutes",
+    calves: "calves",
+    core: "core",
+    abs: "abs"
+};
+
+function getIcon(
+    name: string
+): string {
+    return (
+        TRAINING_ICON_MAP[name] ||
+        RECOVERY_ICON_MAP[name] ||
+        TRACKER_ICON_MAP[name] ||
+        ""
+    );
+}
+
+function getMuscleName(
+    muscle?: string | null
+): string {
+    if (!muscle) {
+        return "";
     }
 
-    if (RECOVERY_ICON_MAP[name]) {
-        return RECOVERY_ICON_MAP[name];
+    const normalized =
+        muscle
+            .trim()
+            .toLowerCase()
+            .replace(/-/g, "_");
+
+    const key =
+        MUSCLE_KEYS[normalized];
+
+    if (!key) {
+        return muscle;
     }
 
-    return "";
+    return recovery_t(
+        `muscles.${key}`
+    );
+}
+
+function getRecommendationKey(
+    recommendation: Recommendation
+): string | null {
+    const id =
+        recommendation.id?.trim();
+
+    if (!id) {
+        return null;
+    }
+
+    if (id.startsWith("rest_")) {
+        return "rest_muscle";
+    }
+
+    if (id.startsWith("train_")) {
+        return "train_muscle";
+    }
+
+    return id;
+}
+
+function getRecommendationParams(
+    recommendation: Recommendation
+): Record<string, string | number> {
+    return {
+        muscle: getMuscleName(
+            recommendation.muscle
+        )
+    };
+}
+
+function getRecommendationText(
+    recommendation: Recommendation
+): string {
+    const key =
+        getRecommendationKey(
+            recommendation
+        );
+
+    if (!key) {
+        return (
+            recommendation.text ||
+            recommendation.description ||
+            recommendation.message ||
+            ""
+        );
+    }
+
+    const translation =
+        recovery_t(
+            `recommendations.items.${key}.text`,
+            getRecommendationParams(
+                recommendation
+            )
+        );
+
+    if (
+        translation !==
+        `recommendations.items.${key}.text`
+    ) {
+        return translation;
+    }
+
+    return (
+        recommendation.text ||
+        recommendation.description ||
+        recommendation.message ||
+        ""
+    );
+}
+
+function getRecommendationTitle(
+    recommendation: Recommendation
+): string {
+    const key =
+        getRecommendationKey(
+            recommendation
+        );
+
+    if (!key) {
+        return (
+            recommendation.title ||
+            ""
+        );
+    }
+
+    const translation =
+        recovery_t(
+            `recommendations.items.${key}.title`,
+            getRecommendationParams(
+                recommendation
+            )
+        );
+
+    if (
+        translation ===
+        `recommendations.items.${key}.title`
+    ) {
+        return (
+            recommendation.title ||
+            ""
+        );
+    }
+
+    return translation;
 }
 
 function sortRecommendations(
@@ -86,7 +250,7 @@ function sortRecommendations(
 }
 
 function createRecommendation(
-    rec: Recommendation
+    recommendation: Recommendation
 ): HTMLDivElement {
     const item =
         document.createElement("div");
@@ -102,23 +266,71 @@ function createRecommendation(
 
     const iconName =
         ICON_MAP[
-            rec.type || ""
+            recommendation.type || ""
         ] || "rest";
 
     icon.innerHTML =
         getIcon(iconName);
 
-    const title =
+    const body =
         document.createElement("div");
 
-    title.className =
-        "rec-title";
+    body.className =
+        "rec-body";
 
-    title.textContent =
-        rec.text || "";
+    const titleText =
+        getRecommendationTitle(
+            recommendation
+        );
+
+    const text =
+        getRecommendationText(
+            recommendation
+        );
+
+    if (titleText) {
+        const title =
+            document.createElement("div");
+
+        title.className =
+            "rec-title";
+
+        title.textContent =
+            titleText;
+
+        body.appendChild(title);
+    }
+
+    if (text) {
+        const textElement =
+            document.createElement("div");
+
+        textElement.className =
+            "rec-text";
+
+        textElement.textContent =
+            text;
+
+        body.appendChild(textElement);
+    }
+
+    if (!titleText && !text) {
+        const fallback =
+            document.createElement("div");
+
+        fallback.className =
+            "rec-text";
+
+        fallback.textContent =
+            recovery_t(
+                "recommendations.fallback"
+            );
+
+        body.appendChild(fallback);
+    }
 
     item.appendChild(icon);
-    item.appendChild(title);
+    item.appendChild(body);
 
     return item;
 }
@@ -126,55 +338,59 @@ function createRecommendation(
 function normalizeRecommendations(
     data: RecommendationsData | null
 ): Recommendation[] {
-    const raw =
-        data?.recommendations;
-
-    if (Array.isArray(raw)) {
-        return raw.filter(
-            (rec) =>
-                Boolean(
-                    rec?.text &&
-                    rec.text.trim() !== ""
-                )
-        );
+    if (!data?.recommendations) {
+        return [];
     }
 
     if (
-        raw &&
-        typeof raw === "object" &&
-        Array.isArray(raw.items)
+        Array.isArray(
+            data.recommendations
+        )
     ) {
-        return raw.items.filter(
-            (rec) =>
+        return data.recommendations.filter(
+            recommendation =>
                 Boolean(
-                    rec?.text &&
-                    rec.text.trim() !== ""
+                    recommendation &&
+                    recommendation.id
                 )
         );
     }
 
-    return [];
+    const items =
+        data.recommendations.items;
+
+    if (!Array.isArray(items)) {
+        return [];
+    }
+
+    return items.filter(
+        recommendation =>
+            Boolean(
+                recommendation &&
+                recommendation.id
+            )
+    );
 }
 
 export function renderRecommendationsWidget(
     data: RecommendationsData | null,
     options: RenderOptions = {}
 ): void {
-    const el =
+    const element =
         document.getElementById(
             "recommendations-widget"
         );
 
-    if (!el) {
+    if (!element) {
         return;
     }
 
-    clearElement(el);
+    clearElement(element);
 
     if (options.loading) {
-        el.appendChild(
+        element.appendChild(
             createLoading(
-                RECOVERY_MESSAGES.loading
+                recovery_t("loading")
             )
         );
 
@@ -182,9 +398,9 @@ export function renderRecommendationsWidget(
     }
 
     if (options.error) {
-        el.appendChild(
+        element.appendChild(
             createError(
-                RECOVERY_MESSAGES.error
+                recovery_t("error")
             )
         );
 
@@ -194,12 +410,12 @@ export function renderRecommendationsWidget(
     const recommendations =
         normalizeRecommendations(data);
 
-    if (
-        recommendations.length === 0
-    ) {
-        el.appendChild(
+    if (recommendations.length === 0) {
+        element.appendChild(
             createEmpty(
-                "Поки все добре"
+                recovery_t(
+                    "recommendations.empty"
+                )
             )
         );
 
@@ -225,13 +441,15 @@ export function renderRecommendationsWidget(
             MAX_RECOMMENDATIONS
         )
         .forEach(
-            (rec) => {
+            recommendation => {
                 content.appendChild(
-                    createRecommendation(rec)
+                    createRecommendation(
+                        recommendation
+                    )
                 );
             }
         );
 
     card.appendChild(content);
-    el.appendChild(card);
+    element.appendChild(card);
 }

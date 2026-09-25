@@ -33,6 +33,7 @@ class HabitService:
             {
                 "user_habit_id": user_habit.id,
                 "id": habit.id,
+                "slug": habit.slug,
                 "name": habit.name,
                 "category": habit.category,
                 "points": habit.points,
@@ -79,11 +80,12 @@ class HabitService:
                 {
                     "user_habit_id": user_habit.id,
                     "id": habit.id,
+                    "slug": habit.slug,
                     "name": habit.name,
                     "category": habit.category,
                     "points": habit.points,
                     "icon": habit.icon,
-                    "completed": (user_habit.id in completed_ids),
+                    "completed": user_habit.id in completed_ids,
                 }
             )
 
@@ -205,4 +207,3 @@ class HabitService:
             RecoveryHabitLog.user_habit_id.in_(ids),
             RecoveryHabitLog.date == target_date,
         ).all()
-
