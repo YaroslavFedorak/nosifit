@@ -66,13 +66,18 @@ def _calculate_totals(items):
 
 
 def _get_user_weight(user):
-    weight = getattr(user, "weight", None)
+    weight = getattr(
+        user,
+        "weight",
+        None,
+    )
 
     if weight is None:
         return FALLBACK_WEIGHT_KG
 
     try:
         weight = float(weight)
+
     except (TypeError, ValueError):
         return FALLBACK_WEIGHT_KG
 
@@ -83,7 +88,11 @@ def _get_user_weight(user):
 
 
 def _get_goal_type(user):
-    goal = getattr(user, "goal", None)
+    goal = getattr(
+        user,
+        "goal",
+        None,
+    )
 
     if not goal:
         return "maintenance"
@@ -112,7 +121,13 @@ def _get_goal_type(user):
 
 
 def _get_protein_target(user, goals):
-    custom_target = float(goals.get("protein", 0) or 0)
+    custom_target = float(
+        goals.get(
+            "protein",
+            0,
+        )
+        or 0
+    )
 
     if custom_target > 0:
         return custom_target
@@ -125,30 +140,61 @@ def _get_protein_target(user, goals):
         DEFAULT_PROTEIN_PER_KG["maintenance"],
     )
 
-    return round(weight * protein_per_kg, 1)
+    return round(
+        weight * protein_per_kg,
+        1,
+    )
 
 
 def _get_macro_targets(user, goals):
-    calories_goal = float(goals.get("calories", 0) or 0)
+    calories_goal = float(
+        goals.get(
+            "calories",
+            0,
+        )
+        or 0
+    )
 
     protein_goal = _get_protein_target(
         user,
         goals,
     )
 
-    custom_fat = float(goals.get("fat", 0) or 0)
+    custom_fat = float(
+        goals.get(
+            "fat",
+            0,
+        )
+        or 0
+    )
 
-    custom_carbs = float(goals.get("carbs", 0) or 0)
+    custom_carbs = float(
+        goals.get(
+            "carbs",
+            0,
+        )
+        or 0
+    )
 
     if calories_goal <= 0:
         return {
             "calories": 0,
-            "protein": round(protein_goal, 1),
-            "fat": round(custom_fat, 1),
-            "carbs": round(custom_carbs, 1),
+            "protein": round(
+                protein_goal,
+                1,
+            ),
+            "fat": round(
+                custom_fat,
+                1,
+            ),
+            "carbs": round(
+                custom_carbs,
+                1,
+            ),
         }
 
     protein_calories = protein_goal * 4
+
     available_calories = max(
         calories_goal - protein_calories,
         0,
@@ -171,6 +217,7 @@ def _get_macro_targets(user, goals):
             fat_calories = requested_fat_calories * scale
 
             carbs_calories = requested_carbs_calories * scale
+
         else:
             fat_calories = requested_fat_calories
             carbs_calories = requested_carbs_calories
@@ -211,24 +258,35 @@ def _get_macro_targets(user, goals):
 
     return {
         "calories": round(calories_goal),
-        "protein": round(protein_goal, 1),
-        "fat": round(fat_goal, 1),
-        "carbs": round(carbs_goal, 1),
+        "protein": round(
+            protein_goal,
+            1,
+        ),
+        "fat": round(
+            fat_goal,
+            1,
+        ),
+        "carbs": round(
+            carbs_goal,
+            1,
+        ),
     }
 
 
 def _add_recommendation(
     recommendations,
     recommendation_type,
-    title,
-    message,
+    title_key,
+    message_key,
     priority,
+    params=None,
 ):
     recommendations.append(
         {
             "type": recommendation_type,
-            "title": title,
-            "message": message,
+            "title_key": title_key,
+            "message_key": message_key,
+            "params": params or {},
             "priority": priority,
         }
     )
@@ -297,7 +355,10 @@ def _build_progress_recommendations(
     targets,
     day_progress,
 ):
-    if day_progress in ("morning", "day"):
+    if day_progress in (
+        "morning",
+        "day",
+    ):
         if targets["protein"] > 0:
             remaining = max(
                 targets["protein"] - totals["protein"],
@@ -308,14 +369,14 @@ def _build_progress_recommendations(
                 _add_recommendation(
                     recommendations,
                     "protein_progress",
-                    "Залишився запас білка",
-                    (
-                        "До вашої денної цілі "
-                        f"залишилось близько {round(remaining)} "
-                        "г білка. Додайте джерело білка "
-                        "до наступних прийомів їжі."
-                    ),
+                    "recommendations.items.protein_progress.title",
+                    "recommendations.items.protein_progress.message",
                     "low",
+                    {
+                        "value": round(
+                            remaining,
+                        ),
+                    },
                 )
 
         return
@@ -344,14 +405,8 @@ def _build_evening_macro_recommendations(
             _add_recommendation(
                 recommendations,
                 "calories",
-                "Низька калорійність раціону",
-                (
-                    "До кінця дня ви спожили "
-                    "значно менше калорій, ніж "
-                    "заплановано. Якщо ще планується "
-                    "прийом їжі, варто зробити його "
-                    "більш поживним."
-                ),
+                "recommendations.items.calories.low.title",
+                "recommendations.items.calories.low.message",
                 "high",
             )
 
@@ -364,12 +419,14 @@ def _build_evening_macro_recommendations(
             _add_recommendation(
                 recommendations,
                 "calories",
-                "Є запас до денної цілі",
-                (
-                    "До орієнтовної денної цілі "
-                    f"залишилось близько {round(remaining)} ккал."
-                ),
+                "recommendations.items.calories.remaining.title",
+                "recommendations.items.calories.remaining.message",
                 "medium",
+                {
+                    "value": round(
+                        remaining,
+                    ),
+                },
             )
 
         elif calorie_ratio > (1 + CALORIE_TOLERANCE):
@@ -378,25 +435,15 @@ def _build_evening_macro_recommendations(
             _add_recommendation(
                 recommendations,
                 "calories",
-                "Перевищення денної калорійності",
-                (
-                    "Поточне споживання перевищує "
-                    f"ціль приблизно на {round(excess)} ккал."
-                ),
+                "recommendations.items.calories.excess.title",
+                "recommendations.items.calories.excess.message",
                 "medium",
+                {
+                    "value": round(
+                        excess,
+                    ),
+                },
             )
-
-    macro_labels = {
-        "protein": "білка",
-        "fat": "жирів",
-        "carbs": "вуглеводів",
-    }
-
-    macro_titles = {
-        "protein": "Недостатньо білка",
-        "fat": "Недостатньо жирів",
-        "carbs": "Недостатньо вуглеводів",
-    }
 
     for macro in (
         "protein",
@@ -422,13 +469,15 @@ def _build_evening_macro_recommendations(
             _add_recommendation(
                 recommendations,
                 macro,
-                macro_titles[macro],
-                (
-                    "До орієнтовної цілі "
-                    f"залишилось близько {round(remaining)} г "
-                    f"{macro_labels[macro]}."
-                ),
+                "recommendations.items.macro_insufficient.title",
+                "recommendations.items.macro_insufficient.message",
                 priority,
+                {
+                    "value": round(
+                        remaining,
+                    ),
+                    "macro": macro,
+                },
             )
 
 
@@ -448,9 +497,13 @@ def _build_balance_recommendation(
     if day_progress == "day" and len(items) < MIN_ITEMS_FOR_DAY_ANALYSIS:
         return
 
-    current_distribution = _calculate_macro_distribution(totals)
+    current_distribution = _calculate_macro_distribution(
+        totals,
+    )
 
-    target_distribution = _calculate_target_distribution(targets)
+    target_distribution = _calculate_target_distribution(
+        targets,
+    )
 
     differences = {
         macro: abs(current_distribution[macro] - target_distribution[macro])
@@ -473,31 +526,22 @@ def _build_balance_recommendation(
     if difference < tolerance:
         return
 
-    labels = {
-        "protein": "білка",
-        "fat": "жирів",
-        "carbs": "вуглеводів",
-    }
-
     current = current_distribution[largest_difference]
 
     target = target_distribution[largest_difference]
 
-    direction = "вища" if current > target else "нижча"
+    direction = "higher" if current > target else "lower"
 
     _add_recommendation(
         recommendations,
         "macro_balance",
-        "Нерівномірний розподіл макронутрієнтів",
-        (
-            "Частка "
-            f"{labels[largest_difference]} "
-            "у поточному раціоні помітно "
-            f"{direction} за орієнтовний баланс. "
-            "Спробуйте зробити наступні "
-            "прийоми їжі більш різноманітними."
-        ),
+        "recommendations.items.macro_balance.title",
+        "recommendations.items.macro_balance.message",
         "low",
+        {
+            "macro": largest_difference,
+            "direction": direction,
+        },
     )
 
 
@@ -537,13 +581,8 @@ def _build_quality_recommendations(
         _add_recommendation(
             recommendations,
             "quality",
-            "Висока частка оброблених продуктів",
-            (
-                "Значну частину раціону складають "
-                "оброблені продукти. Спробуйте "
-                "частіше додавати цільні та "
-                "мінімально оброблені продукти."
-            ),
+            "recommendations.items.quality.processed.title",
+            "recommendations.items.quality.processed.message",
             "medium",
         )
 
@@ -551,12 +590,8 @@ def _build_quality_recommendations(
         _add_recommendation(
             recommendations,
             "quality",
-            "Мало цільних продуктів",
-            (
-                "Для більш різноманітного раціону "
-                "додайте овочі, фрукти, крупи, "
-                "бобові та інші цільні продукти."
-            ),
+            "recommendations.items.quality.whole_foods.title",
+            "recommendations.items.quality.whole_foods.message",
             "low",
         )
 
@@ -564,12 +599,8 @@ def _build_quality_recommendations(
         _add_recommendation(
             recommendations,
             "quality",
-            "Є простір для покращення раціону",
-            (
-                "Спробуйте зробити раціон більш "
-                "різноманітним та збільшити частку "
-                "поживних цільних продуктів."
-            ),
+            "recommendations.items.quality.improvement.title",
+            "recommendations.items.quality.improvement.message",
             "low",
         )
 
@@ -584,17 +615,15 @@ def _build_empty_state_recommendation(
     _add_recommendation(
         recommendations,
         "balance",
-        "Почніть вести харчовий журнал",
-        (
-            "Додайте перший прийом їжі, щоб NosiFit "
-            "міг оцінити баланс вашого раціону "
-            "та сформувати персональні рекомендації."
-        ),
+        "recommendations.items.empty.title",
+        "recommendations.items.empty.message",
         "low",
     )
 
 
-def _limit_recommendations(recommendations):
+def _limit_recommendations(
+    recommendations,
+):
     priority_order = {
         "high": 0,
         "medium": 1,
@@ -606,16 +635,30 @@ def _limit_recommendations(recommendations):
     return recommendations[:MAX_RECOMMENDATIONS]
 
 
-def get_nutrition_recommendations(user_id):
+def get_nutrition_recommendations(
+    user_id,
+):
     user = User.query.get(user_id)
 
-    meals = _get_today_meals(user_id)
-    items = _get_today_items(meals)
+    meals = _get_today_meals(
+        user_id,
+    )
 
-    goals = get_goals(user_id)
+    items = _get_today_items(
+        meals,
+    )
 
-    totals = _calculate_totals(items)
-    quality = calculate_quality(items)
+    goals = get_goals(
+        user_id,
+    )
+
+    totals = _calculate_totals(
+        items,
+    )
+
+    quality = calculate_quality(
+        items,
+    )
 
     targets = _get_macro_targets(
         user,
@@ -654,12 +697,16 @@ def get_nutrition_recommendations(user_id):
             day_progress,
         )
 
-    recommendations = _limit_recommendations(recommendations)
+    recommendations = _limit_recommendations(
+        recommendations,
+    )
 
     return {
         "recommendations": recommendations,
         "summary": {
-            "calories": round(totals["calories"]),
+            "calories": round(
+                totals["calories"],
+            ),
             "calories_goal": targets["calories"],
             "protein": round(
                 totals["protein"],
@@ -683,4 +730,3 @@ def get_nutrition_recommendations(user_id):
             "day_progress": day_progress,
         },
     }
-
