@@ -1,28 +1,51 @@
 <div class="modal" id="modal-add-meal">
   <div class="modal-content">
-    <h2>Новий прийом їжі</h2>
+    <h2>{{ translate("nutrition", "meals.addTitle") }}</h2>
 
-    <p class="modal-hint">
-      Це лише назва прийому. Продукти та КБЖВ додаються після створення.
-    </p>
+    <p class="modal-hint">{{ translate("nutrition", "meals.addHint") }}</p>
 
-    <label>Назва</label>
+    <label for="add-meal-name">
+      {{ translate("nutrition", "fields.name") }}
+    </label>
+
     <input type="text" id="add-meal-name" />
 
-    <label>Категорія</label>
+    <label for="add-meal-category">
+      {{ translate("nutrition", "fields.category") }}
+    </label>
+
     <select id="add-meal-category">
-      <option value="Сніданок">Сніданок</option>
-      <option value="Обід">Обід</option>
-      <option value="Вечеря">Вечеря</option>
-      <option value="Перекус">Перекус</option>
+      <option value="Сніданок">
+        {{ translate("nutrition", "meal_categories.breakfast") }}
+      </option>
+
+      <option value="Обід">
+        {{ translate("nutrition", "meal_categories.lunch") }}
+      </option>
+
+      <option value="Вечеря">
+        {{ translate("nutrition", "meal_categories.dinner") }}
+      </option>
+
+      <option value="Перекус">
+        {{ translate("nutrition", "meal_categories.snack") }}
+      </option>
     </select>
 
-    <label>Час</label>
+    <label for="add-meal-time">
+      {{ translate("nutrition", "fields.time") }}
+    </label>
+
     <input type="time" id="add-meal-time" />
 
     <div class="modal-actions">
-      <button class="btn" id="close-add-meal">Скасувати</button>
-      <button class="btn primary" id="save-add-meal">Створити</button>
+      <button class="btn" id="close-add-meal">
+        {{ translate("nutrition", "actions.cancel") }}
+      </button>
+
+      <button class="btn primary" id="save-add-meal">
+        {{ translate("nutrition", "actions.create") }}
+      </button>
     </div>
   </div>
 </div>

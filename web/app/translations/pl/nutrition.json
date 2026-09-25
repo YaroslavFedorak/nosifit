@@ -1,0 +1,201 @@
+{
+    "page": {
+        "title": "Odżywianie",
+        "subtitle": "Śledź dietę • Monitoruj bilans • Poprawiaj nawyki",
+        "today": "Dzisiaj"
+    },
+    "history": {
+        "title": "HISTORIA",
+        "balanceTitle": "Bilans odżywiania",
+        "year": "Rok",
+        "calendar": "Kalendarz"
+    },
+    "stats": {
+        "calories": "Kalorie",
+        "protein": "Białko",
+        "fat": "Tłuszcze",
+        "carbs": "Węglowodany",
+        "water": "Woda",
+        "weight": "Waga"
+    },
+    "units": {
+        "kcal": "kcal",
+        "grams": "g",
+        "liters": "l",
+        "kg": "kg",
+        "proteinShort": "B",
+        "fatShort": "T",
+        "carbsShort": "W"
+    },
+    "balance": {
+        "kcalGoal": "z {value} kcal",
+        "noStatus": "—"
+    },
+    "fields": {
+        "name": "Nazwa",
+        "calories": "Kalorie",
+        "protein": "Białko",
+        "fat": "Tłuszcze",
+        "carbs": "Węglowodany",
+        "category": "Kategoria",
+        "time": "Czas"
+    },
+    "meal": {
+        "defaultCategory": "Posiłek"
+    },
+    "meal_categories": {
+        "breakfast": "Śniadanie",
+        "lunch": "Obiad",
+        "dinner": "Kolacja",
+        "snack": "Przekąska",
+        "default": "Posiłek"
+    },
+    "meals": {
+        "todayTitle": "Dzisiejsze posiłki",
+        "newMeal": "Nowy posiłek",
+        "addTitle": "Nowy posiłek",
+        "addHint": "To tylko nazwa posiłku. Produkty i wartości odżywcze można dodać po jego utworzeniu.",
+        "editTitle": "Edytuj posiłek",
+        "editHint": "Zmień nazwę, kategorię lub godzinę. Wartości odżywcze są obliczane automatycznie na podstawie produktów.",
+        "emptyToday": "Brak zapisanych posiłków na dziś",
+        "addProduct": "+ Produkt",
+        "noProducts": "Nie dodano jeszcze produktów."
+    },
+    "items": {
+        "addTitle": "Dodaj produkt",
+        "editTitle": "Edytuj produkt"
+    },
+    "actions": {
+        "cancel": "Anuluj",
+        "add": "Dodaj",
+        "save": "Zapisz",
+        "create": "Utwórz",
+        "update": "Aktualizuj",
+        "close": "Zamknij",
+        "editMeal": "Edytuj posiłek",
+        "deleteConfirm": "Kliknij dwukrotnie, aby usunąć",
+        "editProduct": "Edytuj produkt"
+    },
+    "weight": {
+        "update": "Aktualizuj",
+        "updateTitle": "Aktualizuj wagę",
+        "value": "Waga (kg)"
+    },
+    "water": {
+        "add": "Dodaj wodę",
+        "addTitle": "Dodaj wodę",
+        "amount": "Ilość",
+        "recommendation_unavailable": "Rekomendacja niedostępna",
+        "progress": "{value}% zalecanej ilości"
+    },
+    "heatmap": {
+        "ariaLabel": "Mapa cieplna odżywiania",
+        "noData": "Brak danych",
+        "level": "Poziom {value}",
+        "less": "Mniej",
+        "more": "Więcej",
+        "dayAriaLabel": "{date}, {kcal} kcal"
+    },
+    "calendar": {
+        "yearNutrition": "Odżywianie w ciągu roku",
+        "previousYear": "Poprzedni rok",
+        "nextYear": "Następny rok",
+        "noData": "Dzień {day}, brak danych"
+    },
+    "dayDetails": {
+        "noProducts": "Brak dodanych produktów",
+        "noMeals": "Brak posiłków",
+        "noMealsDescription": "Nie zapisano odżywiania dla tego dnia.",
+        "mealsTitle": "Posiłki",
+        "loading": "Ładowanie danych...",
+        "mealsCount": "{count} posiłków",
+        "loadError": "Nie udało się załadować danych"
+    },
+    "recommendations": {
+        "title": "REKOMENDACJE",
+        "heading": "Na co warto zwrócić uwagę",
+        "subtitle": "Spersonalizowane wskazówki na podstawie Twojego odżywiania",
+        "initial": {
+            "title": "Analizujemy Twoją dietę",
+            "message": "Dodawaj posiłki, aby otrzymywać spersonalizowane rekomendacje."
+        },
+        "empty": {
+            "title": "Twoja dieta wygląda na zbilansowaną",
+            "message": "Obecnie nie ma żadnych istotnych rekomendacji. Kontynuuj śledzenie odżywiania w ciągu dnia."
+        },
+        "summary": {
+            "remaining_calories": "Pozostało około {value} kcal",
+            "calorie_goal_reached": "Cel kaloryczny osiągnięty",
+            "remaining_protein": "{value} g białka"
+        },
+        "macro": {
+            "protein": "białka",
+            "fat": "tłuszczów",
+            "carbs": "węglowodanów"
+        },
+        "direction": {
+            "higher": "wyższa",
+            "lower": "niższa"
+        },
+        "items": {
+            "protein_progress": {
+                "title": "Pozostała część celu białkowego",
+                "message": "Do osiągnięcia dziennego celu pozostało około {value} g białka. Dodaj źródło białka do kolejnych posiłków."
+            },
+            "calories": {
+                "low": {
+                    "title": "Niska podaż kalorii",
+                    "message": "Pod koniec dnia spożyłeś znacznie mniej kalorii niż zaplanowano. Jeśli planujesz kolejny posiłek, rozważ wybór bardziej odżywczego posiłku."
+                },
+                "remaining": {
+                    "title": "Pozostał zapas do dziennego celu kalorii",
+                    "message": "Do szacowanego dziennego celu pozostało około {value} kcal."
+                },
+                "excess": {
+                    "title": "Przekroczono dzienny cel kalorii",
+                    "message": "Twoje obecne spożycie przekracza cel o około {value} kcal."
+                }
+            },
+            "macro_insufficient": {
+                "title": "Za mało {macro}",
+                "message": "Do osiągnięcia szacowanego celu pozostało około {value} g {macro}."
+            },
+            "macro_balance": {
+                "title": "Nierównomierny rozkład makroskładników",
+                "message": "Udział {macro} w obecnej diecie jest zauważalnie {direction} niż szacowany balans. Spróbuj urozmaicić kolejne posiłki."
+            },
+            "quality": {
+                "processed": {
+                    "title": "Duży udział przetworzonej żywności",
+                    "message": "Znaczną część Twojej diety stanowią produkty przetworzone. Spróbuj częściej dodawać produkty pełnowartościowe i minimalnie przetworzone."
+                },
+                "whole_foods": {
+                    "title": "Mało produktów pełnowartościowych",
+                    "message": "Aby dieta była bardziej różnorodna, dodaj warzywa, owoce, produkty zbożowe, rośliny strączkowe i inne produkty pełnowartościowe."
+                },
+                "improvement": {
+                    "title": "Jest przestrzeń na poprawę diety",
+                    "message": "Spróbuj urozmaicić dietę i zwiększyć udział wartościowych produktów pełnowartościowych."
+                }
+            },
+            "empty": {
+                "title": "Zacznij śledzić swoje odżywianie",
+                "message": "Dodaj pierwszy posiłek, aby NosiFit mógł ocenić bilans Twojej diety i przygotować spersonalizowane rekomendacje."
+            }
+        }
+    },
+    "months": {
+        "jan": "Sty",
+        "feb": "Lut",
+        "mar": "Mar",
+        "apr": "Kwi",
+        "may": "Maj",
+        "jun": "Cze",
+        "jul": "Lip",
+        "aug": "Sie",
+        "sep": "Wrz",
+        "oct": "Paź",
+        "nov": "Lis",
+        "dec": "Gru"
+    }
+}

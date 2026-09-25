@@ -1,23 +1,24 @@
 import { NutritionAPI, } from "./api.js";
-const MONTHS = [
-    "Січ",
-    "Лют",
-    "Бер",
-    "Кві",
-    "Тра",
-    "Чер",
-    "Лип",
-    "Сер",
-    "Вер",
-    "Жов",
-    "Лис",
-    "Гру",
+import { getLocale, nutrition_t, } from "../i18n/index.js";
+const MONTH_KEYS = [
+    "jan",
+    "feb",
+    "mar",
+    "apr",
+    "may",
+    "jun",
+    "jul",
+    "aug",
+    "sep",
+    "oct",
+    "nov",
+    "dec",
 ];
 let currentYear = new Date().getFullYear();
 let currentDays = [];
 function formatDate(dateString) {
     const date = new Date(`${dateString}T12:00:00`);
-    return date.toLocaleDateString("uk-UA", {
+    return date.toLocaleDateString(getLocale(), {
         day: "numeric",
         month: "long",
         year: "numeric",
@@ -39,10 +40,10 @@ function createTooltip(day) {
         formatDate(day.date);
     const kcal = document.createElement("span");
     kcal.textContent =
-        `${day.kcal} ккал`;
+        `${day.kcal} ${nutrition_t("units.kcal")}`;
     const macros = document.createElement("span");
     macros.textContent =
-        `Б ${day.protein} г · Ж ${day.fat} г · В ${day.carbs} г`;
+        `${nutrition_t("units.proteinShort")} ${day.protein} ${nutrition_t("units.grams")} · ${nutrition_t("units.fatShort")} ${day.fat} ${nutrition_t("units.grams")} · ${nutrition_t("units.carbsShort")} ${day.carbs} ${nutrition_t("units.grams")}`;
     tooltip.append(date, kcal, macros);
     return tooltip;
 }
@@ -59,7 +60,10 @@ function createCell(day) {
     if (day.is_today) {
         cell.classList.add("today");
     }
-    cell.setAttribute("aria-label", `${formatDate(day.date)}, ${day.kcal} ккал`);
+    cell.setAttribute("aria-label", nutrition_t("heatmap.dayAriaLabel", {
+        date: formatDate(day.date),
+        kcal: day.kcal,
+    }));
     cell.appendChild(createTooltip(day));
     cell.addEventListener("click", () => {
         document.dispatchEvent(new CustomEvent("nutrition:open-day", {
@@ -94,7 +98,7 @@ function renderMonths(days) {
         visibleMonths.add(month);
         const element = document.createElement("span");
         element.textContent =
-            MONTHS[month];
+            nutrition_t(`months.${MONTH_KEYS[month]}`);
         element.dataset.month =
             String(month);
         months.appendChild(element);

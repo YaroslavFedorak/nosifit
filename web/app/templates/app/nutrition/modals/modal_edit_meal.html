@@ -1,31 +1,53 @@
 <div class="modal" id="modal-edit-meal">
   <div class="modal-content">
-    <h2>Редагувати прийом</h2>
+    <h2>{{ translate("nutrition", "meals.editTitle") }}</h2>
 
-    <p class="modal-hint">
-      Змініть назву, категорію або час. КБЖВ рахується автоматично за
-      продуктами.
-    </p>
+    <p class="modal-hint">{{ translate("nutrition", "meals.editHint") }}</p>
 
     <input type="hidden" id="edit-meal-id" />
 
-    <label>Назва</label>
+    <label for="edit-meal-name">
+      {{ translate("nutrition", "fields.name") }}
+    </label>
+
     <input type="text" id="edit-meal-name" />
 
-    <label>Категорія</label>
+    <label for="edit-meal-category">
+      {{ translate("nutrition", "fields.category") }}
+    </label>
+
     <select id="edit-meal-category">
-      <option value="Сніданок">Сніданок</option>
-      <option value="Обід">Обід</option>
-      <option value="Вечеря">Вечеря</option>
-      <option value="Перекус">Перекус</option>
+      <option value="Сніданок">
+        {{ translate("nutrition", "meal_categories.breakfast") }}
+      </option>
+
+      <option value="Обід">
+        {{ translate("nutrition", "meal_categories.lunch") }}
+      </option>
+
+      <option value="Вечеря">
+        {{ translate("nutrition", "meal_categories.dinner") }}
+      </option>
+
+      <option value="Перекус">
+        {{ translate("nutrition", "meal_categories.snack") }}
+      </option>
     </select>
 
-    <label>Час</label>
+    <label for="edit-meal-time">
+      {{ translate("nutrition", "fields.time") }}
+    </label>
+
     <input type="time" id="edit-meal-time" />
 
     <div class="modal-actions">
-      <button class="btn" id="close-edit-meal">Скасувати</button>
-      <button class="btn primary" id="save-edit-meal">Зберегти</button>
+      <button class="btn" id="close-edit-meal">
+        {{ translate("nutrition", "actions.cancel") }}
+      </button>
+
+      <button class="btn primary" id="save-edit-meal">
+        {{ translate("nutrition", "actions.save") }}
+      </button>
     </div>
   </div>
 </div>

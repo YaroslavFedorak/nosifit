@@ -1,27 +1,53 @@
-<div class="modal" id="modal-edit-item">
+<div class="modal" id="modal-edit-meal">
   <div class="modal-content">
-    <h2>Редагувати продукт</h2>
+    <h2>{{ translate("nutrition", "meals.editTitle") }}</h2>
 
-    <input type="hidden" id="edit-item-id" />
+    <p class="modal-hint">{{ translate("nutrition", "meals.editHint") }}</p>
 
-    <label>Назва</label>
-    <input type="text" id="edit-item-name" />
+    <input type="hidden" id="edit-meal-id" />
 
-    <label>Калорії</label>
-    <input type="number" id="edit-item-kcal" />
+    <label for="edit-meal-name">
+      {{ translate("nutrition", "fields.name") }}
+    </label>
 
-    <label>Білки</label>
-    <input type="number" id="edit-item-protein" />
+    <input type="text" id="edit-meal-name" />
 
-    <label>Жири</label>
-    <input type="number" id="edit-item-fat" />
+    <label for="edit-meal-category">
+      {{ translate("nutrition", "fields.category") }}
+    </label>
 
-    <label>Вуглеводи</label>
-    <input type="number" id="edit-item-carb" />
+    <select id="edit-meal-category">
+      <option value="Сніданок">
+        {{ translate("nutrition", "meal_categories.breakfast") }}
+      </option>
+
+      <option value="Обід">
+        {{ translate("nutrition", "meal_categories.lunch") }}
+      </option>
+
+      <option value="Вечеря">
+        {{ translate("nutrition", "meal_categories.dinner") }}
+      </option>
+
+      <option value="Перекус">
+        {{ translate("nutrition", "meal_categories.snack") }}
+      </option>
+    </select>
+
+    <label for="edit-meal-time">
+      {{ translate("nutrition", "fields.time") }}
+    </label>
+
+    <input type="time" id="edit-meal-time" />
 
     <div class="modal-actions">
-      <button class="btn" id="close-edit-item">Скасувати</button>
-      <button class="btn primary" id="save-edit-item">Зберегти</button>
+      <button class="btn" id="close-edit-meal">
+        {{ translate("nutrition", "actions.cancel") }}
+      </button>
+
+      <button class="btn primary" id="save-edit-meal">
+        {{ translate("nutrition", "actions.save") }}
+      </button>
     </div>
   </div>
 </div>

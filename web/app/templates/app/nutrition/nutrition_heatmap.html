@@ -1,53 +1,50 @@
 <div class="nutrition-heatmap-content">
+  <div class="heatmap-months" id="nutrition-heatmap-months"></div>
+
+  <div
+    id="nutrition-heatmap-grid"
+    class="heatmap-grid"
+    aria-label="{{ nutrition_t('heatmap.ariaLabel') }}"
+  ></div>
+
+  <div class="heatmap-legend">
+    <span> {{ nutrition_t("heatmap.less") }} </span>
+
     <div
-        class="heatmap-months"
-        id="nutrition-heatmap-months"
+      class="legend-box l0"
+      aria-label="{{ nutrition_t('heatmap.noData') }}"
     ></div>
 
     <div
-        id="nutrition-heatmap-grid"
-        class="heatmap-grid"
-        aria-label="Heatmap харчування"
+      class="legend-box l1"
+      aria-label="{{ nutrition_t('heatmap.level', value=1) }}"
     ></div>
 
-    <div class="heatmap-legend">
-        <span>Менше</span>
+    <div
+      class="legend-box l2"
+      aria-label="{{ nutrition_t('heatmap.level', value=2) }}"
+    ></div>
 
-        <div
-            class="legend-box l0"
-            aria-label="Немає даних"
-        ></div>
+    <div
+      class="legend-box l3"
+      aria-label="{{ nutrition_t('heatmap.level', value=3) }}"
+    ></div>
 
-        <div
-            class="legend-box l1"
-            aria-label="Рівень 1"
-        ></div>
+    <div
+      class="legend-box l4"
+      aria-label="{{ nutrition_t('heatmap.level', value=4) }}"
+    ></div>
 
-        <div
-            class="legend-box l2"
-            aria-label="Рівень 2"
-        ></div>
+    <div
+      class="legend-box l5"
+      aria-label="{{ nutrition_t('heatmap.level', value=5) }}"
+    ></div>
 
-        <div
-            class="legend-box l3"
-            aria-label="Рівень 3"
-        ></div>
+    <div
+      class="legend-box l6"
+      aria-label="{{ nutrition_t('heatmap.level', value=6) }}"
+    ></div>
 
-        <div
-            class="legend-box l4"
-            aria-label="Рівень 4"
-        ></div>
-
-        <div
-            class="legend-box l5"
-            aria-label="Рівень 5"
-        ></div>
-
-        <div
-            class="legend-box l6"
-            aria-label="Рівень 6"
-        ></div>
-
-        <span>Більше</span>
-    </div>
+    <span> {{ nutrition_t("heatmap.more") }} </span>
+  </div>
 </div>

@@ -1,27 +1,47 @@
 <div class="modal" id="modal-add-item">
   <div class="modal-content">
-    <h2>Додати продукт</h2>
+    <h2>{{ translate("nutrition", "items.addTitle") }}</h2>
 
     <input type="hidden" id="add-item-meal-id" />
 
-    <label>Назва</label>
+    <label for="add-item-name">
+      {{ translate("nutrition", "fields.name") }}
+    </label>
+
     <input type="text" id="add-item-name" />
 
-    <label>Калорії</label>
+    <label for="add-item-kcal">
+      {{ translate("nutrition", "fields.calories") }}
+    </label>
+
     <input type="number" id="add-item-kcal" value="0" />
 
-    <label>Білки</label>
+    <label for="add-item-protein">
+      {{ translate("nutrition", "fields.protein") }}
+    </label>
+
     <input type="number" id="add-item-protein" value="0" />
 
-    <label>Жири</label>
+    <label for="add-item-fat">
+      {{ translate("nutrition", "fields.fat") }}
+    </label>
+
     <input type="number" id="add-item-fat" value="0" />
 
-    <label>Вуглеводи</label>
+    <label for="add-item-carb">
+      {{ translate("nutrition", "fields.carbs") }}
+    </label>
+
     <input type="number" id="add-item-carb" value="0" />
 
     <div class="modal-actions">
-      <button class="btn" id="close-add-item">Скасувати</button>
-      <button class="btn primary" id="save-add-item">Додати</button>
+      <button class="btn" id="close-add-item">
+        {{ translate("nutrition", "actions.cancel") }}
+      </button>
+
+      <button class="btn primary" id="save-add-item">
+        {{ translate("nutrition", "actions.add") }}
+      </button>
     </div>
   </div>
 </div>

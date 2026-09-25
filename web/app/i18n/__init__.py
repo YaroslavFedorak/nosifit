@@ -24,23 +24,57 @@ def init_i18n(app):
         def translate(
             namespace: str,
             key: str,
+            **params,
         ) -> str:
-            return get_translation(
+            value = get_translation(
                 locale,
                 namespace,
                 key,
             )
 
+            for name, replacement in params.items():
+                value = value.replace(
+                    f"{{{name}}}",
+                    str(replacement),
+                )
+
+            return value
+
+        def common_t(
+            key: str,
+            **params,
+        ) -> str:
+            return translate(
+                "common",
+                key,
+                **params,
+            )
+
+        def training_t(
+            key: str,
+            **params,
+        ) -> str:
+            return translate(
+                "training",
+                key,
+                **params,
+            )
+
+        def nutrition_t(
+            key: str,
+            **params,
+        ) -> str:
+            return translate(
+                "nutrition",
+                key,
+                **params,
+            )
+
         return {
             "locale": locale,
             "supported_locales": SUPPORTED_LOCALES,
-            "t": lambda key: translate(
-                "common",
-                key,
-            ),
+            "t": common_t,
             "translate": translate,
-            "training_t": lambda key: translate(
-                "training",
-                key,
-            ),
+            "training_t": training_t,
+            "nutrition_t": nutrition_t,
         }

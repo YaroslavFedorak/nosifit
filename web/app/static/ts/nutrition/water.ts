@@ -2,9 +2,15 @@ import {
     NutritionAPI,
 } from "./api.js";
 
+
 import type {
     WaterResponse,
 } from "./types.js";
+
+
+import {
+    nutrition_t,
+} from "../i18n/index.js";
 
 
 const waterWidget =
@@ -57,20 +63,29 @@ function updateWaterVisual(): void {
             currentWater.toFixed(1);
 
         waterProgress.textContent =
-            "Рекомендація недоступна";
+            nutrition_t(
+                "water.recommendation_unavailable",
+            );
 
         return;
     }
 
     const ratio =
-        currentWater / recommendedWater;
+        currentWater /
+        recommendedWater;
 
     const fillPercent =
-        Math.min(ratio, 1) * 80;
+        Math.min(
+            ratio,
+            1,
+        ) * 80;
 
     const overflowRatio =
         Math.min(
-            Math.max(ratio - 1, 0),
+            Math.max(
+                ratio - 1,
+                0,
+            ),
             1,
         );
 
@@ -93,7 +108,15 @@ function updateWaterVisual(): void {
         currentWater.toFixed(1);
 
     waterProgress.textContent =
-        `${Math.round(ratio * 100)}% від рекомендованого`;
+        nutrition_t(
+            "water.progress",
+            {
+                value:
+                    Math.round(
+                        ratio * 100,
+                    ),
+            },
+        );
 }
 
 
@@ -101,10 +124,14 @@ function applyWaterData(
     data: WaterResponse,
 ): void {
     currentWater =
-        Number(data.amount ?? 0);
+        Number(
+            data.amount ?? 0,
+        );
 
     recommendedWater =
-        Number(data.recommended ?? 0);
+        Number(
+            data.recommended ?? 0,
+        );
 
     updateWaterVisual();
 }
@@ -115,7 +142,9 @@ export async function loadWater(): Promise<void> {
         const data =
             await NutritionAPI.getWater();
 
-        applyWaterData(data);
+        applyWaterData(
+            data,
+        );
 
     } catch (error) {
         console.error(

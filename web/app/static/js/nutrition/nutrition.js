@@ -10,6 +10,7 @@ import { initializeNutritionHeatmap, } from "./heatmap.js";
 import { loadNutritionRecommendations, } from "./recommendations.js";
 import { loadWater, } from "./water.js";
 import { loadWeight, } from "./weight.js";
+import { getLocale, loadTranslations, } from "../i18n/index.js";
 import { ICONS, } from "../icons/index.js";
 function initNutritionIcons() {
     const weightIcon = document.querySelector('[data-icon="weight"]');
@@ -30,7 +31,7 @@ function setTodayDate() {
     }
     const today = new Date();
     element.textContent =
-        today.toLocaleDateString("uk-UA", {
+        today.toLocaleDateString(getLocale(), {
             weekday: "long",
             day: "numeric",
             month: "long",
@@ -61,4 +62,16 @@ function initializeNutritionPage() {
     void loadWeight();
     void loadNutritionDay();
 }
-document.addEventListener("DOMContentLoaded", initializeNutritionPage);
+async function startNutritionPage() {
+    try {
+        await loadTranslations("nutrition");
+        initializeNutritionPage();
+    }
+    catch (error) {
+        console.error("Failed to initialize nutrition translations:", error);
+        initializeNutritionPage();
+    }
+}
+document.addEventListener("DOMContentLoaded", () => {
+    void startNutritionPage();
+});

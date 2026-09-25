@@ -1,0 +1,201 @@
+{
+    "page": {
+        "title": "Nutrition",
+        "subtitle": "Track your diet • Monitor your balance • Improve your habits",
+        "today": "Today"
+    },
+    "history": {
+        "title": "HISTORY",
+        "balanceTitle": "Nutrition balance",
+        "year": "Year",
+        "calendar": "Calendar"
+    },
+    "stats": {
+        "calories": "Calories",
+        "protein": "Protein",
+        "fat": "Fat",
+        "carbs": "Carbohydrates",
+        "water": "Water",
+        "weight": "Weight"
+    },
+    "units": {
+        "kcal": "kcal",
+        "grams": "g",
+        "liters": "L",
+        "kg": "kg",
+        "proteinShort": "P",
+        "fatShort": "F",
+        "carbsShort": "C"
+    },
+    "balance": {
+        "kcalGoal": "of {value} kcal",
+        "noStatus": "—"
+    },
+    "fields": {
+        "name": "Name",
+        "calories": "Calories",
+        "protein": "Protein",
+        "fat": "Fat",
+        "carbs": "Carbohydrates",
+        "category": "Category",
+        "time": "Time"
+    },
+    "meal": {
+        "defaultCategory": "Meal"
+    },
+    "meal_categories": {
+        "breakfast": "Breakfast",
+        "lunch": "Lunch",
+        "dinner": "Dinner",
+        "snack": "Snack",
+        "default": "Meal"
+    },
+    "meals": {
+        "todayTitle": "Today's meals",
+        "newMeal": "New meal",
+        "addTitle": "New meal",
+        "addHint": "This is only the meal name. Food items and nutrition values can be added after creating it.",
+        "editTitle": "Edit meal",
+        "editHint": "Change the name, category, or time. Nutrition values are calculated automatically from the food items.",
+        "emptyToday": "No meals recorded today",
+        "addProduct": "+ Food",
+        "noProducts": "No food items added yet."
+    },
+    "items": {
+        "addTitle": "Add food",
+        "editTitle": "Edit food"
+    },
+    "actions": {
+        "cancel": "Cancel",
+        "add": "Add",
+        "save": "Save",
+        "create": "Create",
+        "update": "Update",
+        "close": "Close",
+        "editMeal": "Edit meal",
+        "deleteConfirm": "Double-click to delete",
+        "editProduct": "Edit food"
+    },
+    "weight": {
+        "update": "Update",
+        "updateTitle": "Update weight",
+        "value": "Weight (kg)"
+    },
+    "water": {
+        "add": "Add water",
+        "addTitle": "Add water",
+        "amount": "Amount",
+        "recommendation_unavailable": "Recommendation unavailable",
+        "progress": "{value}% of recommended"
+    },
+    "heatmap": {
+        "ariaLabel": "Nutrition heatmap",
+        "noData": "No data",
+        "level": "Level {value}",
+        "less": "Less",
+        "more": "More",
+        "dayAriaLabel": "{date}, {kcal} kcal"
+    },
+    "calendar": {
+        "yearNutrition": "Nutrition throughout the year",
+        "previousYear": "Previous year",
+        "nextYear": "Next year",
+        "noData": "Day {day}, no data"
+    },
+    "dayDetails": {
+        "noProducts": "No food items added",
+        "noMeals": "No meals",
+        "noMealsDescription": "No nutrition was recorded for this day.",
+        "mealsTitle": "Meals",
+        "loading": "Loading data...",
+        "mealsCount": "{count} meals",
+        "loadError": "Failed to load data"
+    },
+    "recommendations": {
+        "title": "RECOMMENDATIONS",
+        "heading": "Things to consider",
+        "subtitle": "Personalized insights based on your nutrition",
+        "initial": {
+            "title": "Analyzing your diet",
+            "message": "Add meals to receive personalized nutrition recommendations."
+        },
+        "empty": {
+            "title": "Your diet looks balanced",
+            "message": "There are no critical recommendations at the moment. Keep tracking your nutrition throughout the day."
+        },
+        "summary": {
+            "remaining_calories": "About {value} kcal remaining",
+            "calorie_goal_reached": "Calorie goal reached",
+            "remaining_protein": "{value} g protein"
+        },
+        "macro": {
+            "protein": "protein",
+            "fat": "fat",
+            "carbs": "carbohydrates"
+        },
+        "direction": {
+            "higher": "higher",
+            "lower": "lower"
+        },
+        "items": {
+            "protein_progress": {
+                "title": "Protein target still available",
+                "message": "You have about {value} g of protein remaining to reach your daily target. Add a protein source to your next meals."
+            },
+            "calories": {
+                "low": {
+                    "title": "Low calorie intake",
+                    "message": "By the end of the day, you have consumed significantly fewer calories than planned. If you are planning another meal, consider making it more nutritious."
+                },
+                "remaining": {
+                    "title": "Room left in your daily calorie target",
+                    "message": "About {value} kcal remain to reach your estimated daily target."
+                },
+                "excess": {
+                    "title": "Daily calorie intake exceeded",
+                    "message": "Your current intake is about {value} kcal above your target."
+                }
+            },
+            "macro_insufficient": {
+                "title": "Not enough {macro}",
+                "message": "About {value} g of {macro} remain to reach your estimated target."
+            },
+            "macro_balance": {
+                "title": "Uneven macronutrient distribution",
+                "message": "The share of {macro} in your current diet is noticeably {direction} than the estimated balance. Try making your next meals more varied."
+            },
+            "quality": {
+                "processed": {
+                    "title": "High share of processed foods",
+                    "message": "A significant part of your diet consists of processed foods. Try adding more whole and minimally processed foods."
+                },
+                "whole_foods": {
+                    "title": "Few whole foods",
+                    "message": "For a more varied diet, add vegetables, fruits, grains, legumes, and other whole foods."
+                },
+                "improvement": {
+                    "title": "Room to improve your diet",
+                    "message": "Try making your diet more varied and increasing the share of nutritious whole foods."
+                }
+            },
+            "empty": {
+                "title": "Start tracking your nutrition",
+                "message": "Add your first meal so NosiFit can evaluate your diet balance and provide personalized nutrition recommendations."
+            }
+        }
+    },
+    "months": {
+        "jan": "Jan",
+        "feb": "Feb",
+        "mar": "Mar",
+        "apr": "Apr",
+        "may": "May",
+        "jun": "Jun",
+        "jul": "Jul",
+        "aug": "Aug",
+        "sep": "Sep",
+        "oct": "Oct",
+        "nov": "Nov",
+        "dec": "Dec"
+    }
+}

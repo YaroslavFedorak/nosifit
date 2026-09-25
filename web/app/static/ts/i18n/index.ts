@@ -1,45 +1,57 @@
 import {
-    translate
+    translate,
 } from "./loader.js";
 
 export {
     getLocale,
-    loadTranslations
+    loadTranslations,
 } from "./loader.js";
 
 export type {
     Locale,
     TranslationMap,
-    TranslationValue
+    TranslationValue,
 } from "./types.js";
 
 export function t(
     key: string,
-    params: Record<string, string | number> = {}
+    params: Record<string, string | number> = {},
 ): string {
     return translate(
         "training",
         key,
-        params
+        params,
     );
 }
 
 export function exercise_t(
-    slug: string
+    slug: string,
 ): string {
     return translate(
         "exercises",
-        `${slug}.name`
+        `${slug}.name`,
     );
 }
 
 export function recovery_t(
     key: string,
-    params: Record<string, string | number> = {}
+    params: Record<string, string | number> = {},
 ): string {
     return translate(
         "recovery",
         key,
-        params
+        params,
+    );
+}
+
+
+export function nutrition_t(
+    key: string,
+    params: Record<string, string | number> = {},
+): string {
+    return translate(
+        "nutrition",
+        key,
+        params,
     );
 }

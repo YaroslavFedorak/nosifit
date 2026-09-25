@@ -1,3 +1,4 @@
+import { nutrition_t, } from "../i18n/index.js";
 async function fetchNutritionRecommendations() {
     const response = await fetch("/api/nutrition/recommendations", {
         credentials: "same-origin",
@@ -10,44 +11,58 @@ async function fetchNutritionRecommendations() {
 function getPriorityClass(priority) {
     return `recommendation-item--${priority}`;
 }
+function getRecommendationParams(params) {
+    const localizedParams = {
+        ...params,
+    };
+    if (typeof params.macro === "string") {
+        localizedParams.macro =
+            nutrition_t(`recommendations.macro.${params.macro}`);
+    }
+    if (typeof params.direction === "string") {
+        localizedParams.direction =
+            nutrition_t(`recommendations.direction.${params.direction}`);
+    }
+    return localizedParams;
+}
 function renderRecommendation(recommendation) {
     const element = document.createElement("div");
     element.className = [
         "recommendation-item",
         getPriorityClass(recommendation.priority),
     ].join(" ");
+    const params = getRecommendationParams(recommendation.params);
     element.innerHTML = `
-    <div class="recommendation-marker"></div>
+        <div class="recommendation-marker"></div>
 
-    <div class="recommendation-content">
-      <div class="recommendation-title">
-        ${recommendation.title}
-      </div>
+        <div class="recommendation-content">
+            <div class="recommendation-title">
+                ${nutrition_t(recommendation.title_key, params)}
+            </div>
 
-      <div class="recommendation-text">
-        ${recommendation.message}
-      </div>
-    </div>
-  `;
+            <div class="recommendation-text">
+                ${nutrition_t(recommendation.message_key, params)}
+            </div>
+        </div>
+    `;
     return element;
 }
 function renderEmptyRecommendations(container) {
     container.innerHTML = `
-    <div class="recommendation-item recommendation-item--low">
-      <div class="recommendation-marker"></div>
+        <div class="recommendation-item recommendation-item--low">
+            <div class="recommendation-marker"></div>
 
-      <div class="recommendation-content">
-        <div class="recommendation-title">
-          Раціон виглядає збалансовано
-        </div>
+            <div class="recommendation-content">
+                <div class="recommendation-title">
+                    ${nutrition_t("recommendations.empty.title")}
+                </div>
 
-        <div class="recommendation-text">
-          На цей момент немає критичних рекомендацій.
-          Продовжуйте стежити за харчуванням протягом дня.
+                <div class="recommendation-text">
+                    ${nutrition_t("recommendations.empty.message")}
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-  `;
+    `;
 }
 function renderRecommendations(recommendations) {
     const container = document.querySelector("[data-nutrition-recommendations]");
@@ -68,51 +83,79 @@ function renderSummary(summary) {
     if (!container) {
         return;
     }
-    const calorieRemaining = Math.max(summary.calories_goal - summary.calories, 0);
-    const proteinRemaining = Math.max(summary.protein_goal - summary.protein, 0);
+    const calorieRemaining = Math.max(summary.calories_goal
+        - summary.calories, 0);
+    const proteinRemaining = Math.max(summary.protein_goal
+        - summary.protein, 0);
+    const kcal = nutrition_t("units.kcal");
+    const grams = nutrition_t("units.grams");
     container.innerHTML = `
-    <div class="recommendations-summary-row">
-      <span>Калорії</span>
-      <span>
-        ${Math.round(summary.calories)}
-        / ${Math.round(summary.calories_goal)} ккал
-      </span>
-    </div>
+        <div class="recommendations-summary-row">
+            <span>
+                ${nutrition_t("stats.calories")}
+            </span>
 
-    <div class="recommendations-summary-row">
-      <span>Білок</span>
-      <span>
-        ${summary.protein.toFixed(1)}
-        / ${summary.protein_goal.toFixed(1)} г
-      </span>
-    </div>
+            <span>
+                ${Math.round(summary.calories)}
+                /
+                ${Math.round(summary.calories_goal)}
+                ${kcal}
+            </span>
+        </div>
 
-    <div class="recommendations-summary-row">
-      <span>Жири</span>
-      <span>
-        ${summary.fat.toFixed(1)}
-        / ${summary.fat_goal.toFixed(1)} г
-      </span>
-    </div>
+        <div class="recommendations-summary-row">
+            <span>
+                ${nutrition_t("stats.protein")}
+            </span>
 
-    <div class="recommendations-summary-row">
-      <span>Вуглеводи</span>
-      <span>
-        ${summary.carbs.toFixed(1)}
-        / ${summary.carbs_goal.toFixed(1)} г
-      </span>
-    </div>
+            <span>
+                ${summary.protein.toFixed(1)}
+                /
+                ${summary.protein_goal.toFixed(1)}
+                ${grams}
+            </span>
+        </div>
 
-    <div class="recommendations-summary-meta">
-      ${calorieRemaining > 0
-        ? `Залишилось близько ${Math.round(calorieRemaining)} ккал`
-        : "Ціль по калоріях досягнута"}
+        <div class="recommendations-summary-row">
+            <span>
+                ${nutrition_t("stats.fat")}
+            </span>
 
-      ${proteinRemaining > 0
-        ? ` • ${Math.round(proteinRemaining)} г білка`
+            <span>
+                ${summary.fat.toFixed(1)}
+                /
+                ${summary.fat_goal.toFixed(1)}
+                ${grams}
+            </span>
+        </div>
+
+        <div class="recommendations-summary-row">
+            <span>
+                ${nutrition_t("stats.carbs")}
+            </span>
+
+            <span>
+                ${summary.carbs.toFixed(1)}
+                /
+                ${summary.carbs_goal.toFixed(1)}
+                ${grams}
+            </span>
+        </div>
+
+        <div class="recommendations-summary-meta">
+            ${calorieRemaining > 0
+        ? nutrition_t("recommendations.summary.remaining_calories", {
+            value: Math.round(calorieRemaining),
+        })
+        : nutrition_t("recommendations.summary.calorie_goal_reached")}
+
+            ${proteinRemaining > 0
+        ? ` • ${nutrition_t("recommendations.summary.remaining_protein", {
+            value: Math.round(proteinRemaining),
+        })}`
         : ""}
-    </div>
-  `;
+        </div>
+    `;
 }
 export async function loadNutritionRecommendations() {
     try {

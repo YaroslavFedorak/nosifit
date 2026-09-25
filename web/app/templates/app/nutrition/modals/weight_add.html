@@ -1,8 +1,10 @@
 <div class="modal" id="modal-update-weight">
   <div class="modal-content">
-    <h2>Оновити вагу</h2>
+    <h2>{{ translate("nutrition", "weight.updateTitle") }}</h2>
 
-    <label for="update-weight-value"> Вага </label>
+    <label for="update-weight-value">
+      {{ translate("nutrition", "weight.value") }}
+    </label>
 
     <div class="water-input-wrapper">
       <input
@@ -16,16 +18,18 @@
         autocomplete="off"
       />
 
-      <span class="water-input-unit"> кг </span>
+      <span class="water-input-unit">
+        {{ translate("nutrition", "units.kg") }}
+      </span>
     </div>
 
     <div class="modal-actions">
       <button type="button" class="btn" id="close-update-weight">
-        Скасувати
+        {{ translate("nutrition", "actions.cancel") }}
       </button>
 
       <button type="button" class="btn primary" id="save-update-weight">
-        Оновити
+        {{ translate("nutrition", "actions.update") }}
       </button>
     </div>
   </div>

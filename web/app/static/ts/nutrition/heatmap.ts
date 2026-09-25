@@ -2,25 +2,29 @@ import {
     NutritionAPI,
 } from "./api.js";
 
+import {
+    getLocale,
+    nutrition_t,
+} from "../i18n/index.js";
 
 import type {
     NutritionHeatmapDay,
 } from "./types.js";
 
 
-const MONTHS = [
-    "Січ",
-    "Лют",
-    "Бер",
-    "Кві",
-    "Тра",
-    "Чер",
-    "Лип",
-    "Сер",
-    "Вер",
-    "Жов",
-    "Лис",
-    "Гру",
+const MONTH_KEYS = [
+    "jan",
+    "feb",
+    "mar",
+    "apr",
+    "may",
+    "jun",
+    "jul",
+    "aug",
+    "sep",
+    "oct",
+    "nov",
+    "dec",
 ];
 
 
@@ -28,7 +32,8 @@ let currentYear =
     new Date().getFullYear();
 
 
-let currentDays: NutritionHeatmapDay[] = [];
+let currentDays:
+    NutritionHeatmapDay[] = [];
 
 
 function formatDate(
@@ -40,7 +45,7 @@ function formatDate(
         );
 
     return date.toLocaleDateString(
-        "uk-UA",
+        getLocale(),
         {
             day: "numeric",
             month: "long",
@@ -71,13 +76,17 @@ function createTooltip(
     day: NutritionHeatmapDay,
 ): HTMLDivElement {
     const tooltip =
-        document.createElement("div");
+        document.createElement(
+            "div",
+        );
 
     tooltip.className =
         "nutrition-heatmap-tooltip";
 
     const date =
-        document.createElement("strong");
+        document.createElement(
+            "strong",
+        );
 
     date.textContent =
         formatDate(
@@ -85,16 +94,20 @@ function createTooltip(
         );
 
     const kcal =
-        document.createElement("span");
+        document.createElement(
+            "span",
+        );
 
     kcal.textContent =
-        `${day.kcal} ккал`;
+        `${day.kcal} ${nutrition_t("units.kcal")}`;
 
     const macros =
-        document.createElement("span");
+        document.createElement(
+            "span",
+        );
 
     macros.textContent =
-        `Б ${day.protein} г · Ж ${day.fat} г · В ${day.carbs} г`;
+        `${nutrition_t("units.proteinShort")} ${day.protein} ${nutrition_t("units.grams")} · ${nutrition_t("units.fatShort")} ${day.fat} ${nutrition_t("units.grams")} · ${nutrition_t("units.carbsShort")} ${day.carbs} ${nutrition_t("units.grams")}`;
 
     tooltip.append(
         date,
@@ -110,7 +123,9 @@ function createCell(
     day: NutritionHeatmapDay,
 ): HTMLButtonElement {
     const cell =
-        document.createElement("button");
+        document.createElement(
+            "button",
+        );
 
     cell.type =
         "button";
@@ -132,7 +147,15 @@ function createCell(
 
     cell.setAttribute(
         "aria-label",
-        `${formatDate(day.date)}, ${day.kcal} ккал`,
+        nutrition_t(
+            "heatmap.dayAriaLabel",
+            {
+                date: formatDate(
+                    day.date,
+                ),
+                kcal: day.kcal,
+            },
+        ),
     );
 
     cell.appendChild(
@@ -161,7 +184,9 @@ function createCell(
 
 function createEmptyCell(): HTMLDivElement {
     const cell =
-        document.createElement("div");
+        document.createElement(
+            "div",
+        );
 
     cell.className =
         "nutrition-heatmap-cell nutrition-heatmap-cell-empty";
@@ -203,11 +228,17 @@ function renderMonths(
             const month =
                 date.getMonth();
 
-            if (visibleMonths.has(month)) {
+            if (
+                visibleMonths.has(
+                    month,
+                )
+            ) {
                 return;
             }
 
-            visibleMonths.add(month);
+            visibleMonths.add(
+                month,
+            );
 
             const element =
                 document.createElement(
@@ -215,7 +246,9 @@ function renderMonths(
                 );
 
             element.textContent =
-                MONTHS[month];
+                nutrition_t(
+                    `months.${MONTH_KEYS[month]}`,
+                );
 
             element.dataset.month =
                 String(month);
@@ -333,11 +366,13 @@ async function loadHeatmap(
         );
 
         updateYearSelect();
+
     } catch (error) {
         console.error(
             "Failed to load nutrition heatmap:",
             error,
         );
+
     } finally {
         widget.classList.remove(
             "is-loading",
@@ -364,7 +399,9 @@ function setupYearSelect(): void {
                     select.value,
                 );
 
-            if (!Number.isFinite(year)) {
+            if (
+                !Number.isFinite(year)
+            ) {
                 return;
             }
 
@@ -434,11 +471,13 @@ export function initializeNutritionHeatmap(): void {
 }
 
 
-export function getNutritionHeatmapDays(): NutritionHeatmapDay[] {
+export function getNutritionHeatmapDays():
+    NutritionHeatmapDay[] {
     return currentDays;
 }
 
 
-export function getNutritionHeatmapYear(): number {
+export function getNutritionHeatmapYear():
+    number {
     return currentYear;
 }

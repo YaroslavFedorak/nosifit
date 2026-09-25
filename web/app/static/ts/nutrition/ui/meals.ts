@@ -6,10 +6,15 @@ import {
     NutritionAPI,
 } from "../api.js";
 
+import {
+    nutrition_t,
+} from "../../i18n/index.js";
+
 import type {
     Meal,
     MealItem,
 } from "../types.js";
+
 
 const ICONS = {
     pencil: `
@@ -63,60 +68,88 @@ const ICONS = {
     `,
 };
 
-type RefreshCallback = () => Promise<void> | void;
+
+type RefreshCallback =
+    () => Promise<void> | void;
+
 
 export function renderMeals(
     meals: Meal[],
     onRefresh: RefreshCallback,
 ): void {
-    const list = document.getElementById(
-        "meals-list",
-    );
+    const list =
+        document.getElementById(
+            "meals-list",
+        );
 
     if (!list) {
         return;
     }
 
-    list.innerHTML = "";
+    list.innerHTML =
+        "";
 
     if (!meals?.length) {
-        const empty = document.createElement("div");
+        const empty =
+            document.createElement(
+                "div",
+            );
 
-        empty.className = "meals-empty";
+        empty.className =
+            "meals-empty";
 
         empty.textContent =
-            "Ще немає прийомів за сьогодні";
+            nutrition_t(
+                "meals.emptyToday",
+            );
 
-        list.appendChild(empty);
+        list.appendChild(
+            empty,
+        );
 
         return;
     }
 
-    meals.forEach((meal) => {
-        list.appendChild(
-            createMealCard(
-                meal,
-                onRefresh,
-            ),
-        );
-    });
+    meals.forEach(
+        (meal) => {
+            list.appendChild(
+                createMealCard(
+                    meal,
+                    onRefresh,
+                ),
+            );
+        },
+    );
 }
+
 
 function createMealCard(
     meal: Meal,
     onRefresh: RefreshCallback,
 ): HTMLElement {
-    const card = document.createElement("article");
+    const card =
+        document.createElement(
+            "article",
+        );
 
-    card.className = "meal-card-large";
+    card.className =
+        "meal-card-large";
 
-    const header = document.createElement("div");
+    const header =
+        document.createElement(
+            "div",
+        );
 
-    header.className = "meal-header-large";
+    header.className =
+        "meal-header-large";
 
-    const content = document.createElement("div");
+    const content =
+        document.createElement(
+            "div",
+        );
 
-    content.className = "meal-content-large";
+    content.className =
+        "meal-content-large";
 
     content.appendChild(
         createMealItems(
@@ -145,47 +178,71 @@ function createMealCard(
     return card;
 }
 
+
 function createMealInfo(
     meal: Meal,
     card: HTMLElement,
     content: HTMLElement,
 ): HTMLElement {
-    const wrapper = document.createElement("button");
+    const wrapper =
+        document.createElement(
+            "button",
+        );
 
-    wrapper.type = "button";
+    wrapper.type =
+        "button";
 
-    wrapper.className = "meal-title-block";
+    wrapper.className =
+        "meal-title-block";
 
-    const titleRow = document.createElement("div");
+    const titleRow =
+        document.createElement(
+            "div",
+        );
 
-    titleRow.className = "meal-title-row";
+    titleRow.className =
+        "meal-title-row";
 
-    const title = document.createElement("span");
+    const title =
+        document.createElement(
+            "span",
+        );
 
-    title.className = "meal-title";
+    title.className =
+        "meal-title";
 
-    title.textContent = meal.name;
+    title.textContent =
+        meal.name;
 
-    const icon = document.createElement("span");
+    const icon =
+        document.createElement(
+            "span",
+        );
 
-    icon.className = "meal-expand-icon";
+    icon.className =
+        "meal-expand-icon";
 
-    icon.innerHTML = ICONS.chevron;
+    icon.innerHTML =
+        ICONS.chevron;
 
     titleRow.append(
         title,
         icon,
     );
 
-    const meta = document.createElement("div");
+    const meta =
+        document.createElement(
+            "div",
+        );
 
-    meta.className = "meal-meta-large";
+    meta.className =
+        "meal-meta-large";
 
     meta.textContent = [
-        `${meal.total_calories ?? 0} ккал`,
-        `Б ${meal.total_protein ?? 0}`,
-        `Ж ${meal.total_fat ?? 0}`,
-        `В ${meal.total_carbs ?? 0}`,
+        `${meal.total_calories ?? 0} ${nutrition_t("units.kcal")}`,
+        `${nutrition_t("units.proteinShort")} ${meal.total_protein ?? 0}`,
+        `${nutrition_t("units.fatShort")} ${meal.total_fat ?? 0}`,
+        `${nutrition_t("units.carbsShort")} ${meal.total_carbs ?? 0}`,
     ].join(" · ");
 
     wrapper.append(
@@ -211,26 +268,34 @@ function createMealInfo(
     return wrapper;
 }
 
+
 function createMealActions(
     meal: Meal,
     onRefresh: RefreshCallback,
 ): HTMLElement {
-    const actions = document.createElement("div");
+    const actions =
+        document.createElement(
+            "div",
+        );
 
     actions.className =
         "meal-actions-large";
 
-    const addItem = document.createElement(
-        "button",
-    );
+    const addItem =
+        document.createElement(
+            "button",
+        );
 
-    addItem.type = "button";
+    addItem.type =
+        "button";
 
     addItem.className =
         "meal-action-add";
 
     addItem.textContent =
-        "+ Продукт";
+        nutrition_t(
+            "meals.addProduct",
+        );
 
     addItem.addEventListener(
         "click",
@@ -276,12 +341,23 @@ function createMealActions(
                 return;
             }
 
-            mealId.value = String(meal.id);
-            name.value = "";
-            kcal.value = "0";
-            protein.value = "0";
-            fat.value = "0";
-            carb.value = "0";
+            mealId.value =
+                String(meal.id);
+
+            name.value =
+                "";
+
+            kcal.value =
+                "0";
+
+            protein.value =
+                "0";
+
+            fat.value =
+                "0";
+
+            carb.value =
+                "0";
 
             openModal(
                 "modal-add-item",
@@ -289,11 +365,14 @@ function createMealActions(
         },
     );
 
-    const edit = createIconButton(
-        "meal-action-icon",
-        ICONS.pencil,
-        "Редагувати прийом",
-    );
+    const edit =
+        createIconButton(
+            "meal-action-icon",
+            ICONS.pencil,
+            nutrition_t(
+                "actions.editMeal",
+            ),
+        );
 
     edit.addEventListener(
         "click",
@@ -327,11 +406,18 @@ function createMealActions(
                 return;
             }
 
-            id.value = String(meal.id);
-            name.value = meal.name || "";
+            id.value =
+                String(meal.id);
+
+            name.value =
+                meal.name || "";
+
             category.value =
-                meal.category
-                || "Сніданок";
+                meal.category ||
+                nutrition_t(
+                    "meal.defaultCategory",
+                );
+
             time.value =
                 meal.time || "";
 
@@ -341,11 +427,14 @@ function createMealActions(
         },
     );
 
-    const remove = createIconButton(
-        "meal-action-icon meal-action-delete",
-        ICONS.delete,
-        "Подвійний клік для видалення",
-    );
+    const remove =
+        createIconButton(
+            "meal-action-icon meal-action-delete",
+            ICONS.delete,
+            nutrition_t(
+                "actions.deleteConfirm",
+            ),
+        );
 
     remove.addEventListener(
         "dblclick",
@@ -367,61 +456,79 @@ function createMealActions(
     return actions;
 }
 
+
 function createMealItems(
     meal: Meal,
     onRefresh: RefreshCallback,
 ): HTMLElement {
     const container =
-        document.createElement("div");
+        document.createElement(
+            "div",
+        );
 
     container.className =
         "meal-items-large";
 
     if (!meal.items?.length) {
         const empty =
-            document.createElement("div");
+            document.createElement(
+                "div",
+            );
 
         empty.className =
             "meal-items-empty";
 
         empty.textContent =
-            "Продукти ще не додані.";
+            nutrition_t(
+                "meals.noProducts",
+            );
 
-        container.appendChild(empty);
+        container.appendChild(
+            empty,
+        );
 
         return container;
     }
 
-    meal.items.forEach((item) => {
-        container.appendChild(
-            createItemRow(
-                item,
-                onRefresh,
-            ),
-        );
-    });
+    meal.items.forEach(
+        (item) => {
+            container.appendChild(
+                createItemRow(
+                    item,
+                    onRefresh,
+                ),
+            );
+        },
+    );
 
     return container;
 }
+
 
 function createItemRow(
     item: MealItem,
     onRefresh: RefreshCallback,
 ): HTMLElement {
     const row =
-        document.createElement("div");
+        document.createElement(
+            "div",
+        );
 
     row.className =
         "meal-item-row-large";
 
     const info =
-        document.createElement("div");
+        document.createElement(
+            "div",
+        );
 
     info.className =
         "meal-item-info-large";
 
     const name =
-        document.createElement("div");
+        document.createElement(
+            "div",
+        );
 
     name.className =
         "meal-item-name-large";
@@ -430,16 +537,18 @@ function createItemRow(
         item.name;
 
     const macros =
-        document.createElement("div");
+        document.createElement(
+            "div",
+        );
 
     macros.className =
         "meal-item-macros-large";
 
     macros.textContent = [
-        `${item.calories ?? 0} ккал`,
-        `Б ${item.protein ?? 0}`,
-        `Ж ${item.fat ?? 0}`,
-        `В ${item.carbs ?? 0}`,
+        `${item.calories ?? 0} ${nutrition_t("units.kcal")}`,
+        `${nutrition_t("units.proteinShort")} ${item.protein ?? 0}`,
+        `${nutrition_t("units.fatShort")} ${item.fat ?? 0}`,
+        `${nutrition_t("units.carbsShort")} ${item.carbs ?? 0}`,
     ].join(" · ");
 
     info.append(
@@ -448,16 +557,21 @@ function createItemRow(
     );
 
     const actions =
-        document.createElement("div");
+        document.createElement(
+            "div",
+        );
 
     actions.className =
         "meal-item-actions-large";
 
-    const edit = createIconButton(
-        "meal-item-action",
-        ICONS.pencil,
-        "Редагувати продукт",
-    );
+    const edit =
+        createIconButton(
+            "meal-item-action",
+            ICONS.pencil,
+            nutrition_t(
+                "actions.editProduct",
+            ),
+        );
 
     edit.addEventListener(
         "click",
@@ -510,16 +624,24 @@ function createItemRow(
                 item.name || "";
 
             kcal.value =
-                String(item.calories ?? 0);
+                String(
+                    item.calories ?? 0,
+                );
 
             protein.value =
-                String(item.protein ?? 0);
+                String(
+                    item.protein ?? 0,
+                );
 
             fat.value =
-                String(item.fat ?? 0);
+                String(
+                    item.fat ?? 0,
+                );
 
             carb.value =
-                String(item.carbs ?? 0);
+                String(
+                    item.carbs ?? 0,
+                );
 
             openModal(
                 "modal-edit-item",
@@ -527,11 +649,14 @@ function createItemRow(
         },
     );
 
-    const remove = createIconButton(
-        "meal-item-action meal-item-delete",
-        ICONS.delete,
-        "Подвійний клік для видалення",
-    );
+    const remove =
+        createIconButton(
+            "meal-item-action meal-item-delete",
+            ICONS.delete,
+            nutrition_t(
+                "actions.deleteConfirm",
+            ),
+        );
 
     remove.addEventListener(
         "dblclick",
@@ -557,15 +682,19 @@ function createItemRow(
     return row;
 }
 
+
 function createIconButton(
     className: string,
     icon: string,
     label: string,
 ): HTMLButtonElement {
     const button =
-        document.createElement("button");
+        document.createElement(
+            "button",
+        );
 
-    button.type = "button";
+    button.type =
+        "button";
 
     button.className =
         className;

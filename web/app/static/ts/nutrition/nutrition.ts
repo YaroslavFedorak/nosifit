@@ -59,6 +59,12 @@ import {
 
 
 import {
+    getLocale,
+    loadTranslations,
+} from "../i18n/index.js";
+
+
+import {
     ICONS,
 } from "../icons/index.js";
 
@@ -101,7 +107,7 @@ function setTodayDate(): void {
 
     element.textContent =
         today.toLocaleDateString(
-            "uk-UA",
+            getLocale(),
             {
                 weekday: "long",
                 day: "numeric",
@@ -171,7 +177,27 @@ function initializeNutritionPage(): void {
 }
 
 
+async function startNutritionPage(): Promise<void> {
+    try {
+        await loadTranslations(
+            "nutrition",
+        );
+
+        initializeNutritionPage();
+    } catch (error) {
+        console.error(
+            "Failed to initialize nutrition translations:",
+            error,
+        );
+
+        initializeNutritionPage();
+    }
+}
+
+
 document.addEventListener(
     "DOMContentLoaded",
-    initializeNutritionPage,
+    () => {
+        void startNutritionPage();
+    },
 );

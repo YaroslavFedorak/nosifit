@@ -1,8 +1,10 @@
 <div class="modal" id="modal-water">
   <div class="modal-content">
-    <h2>Додати воду</h2>
+    <h2>{{ translate("nutrition", "water.addTitle") }}</h2>
 
-    <label for="water-amount"> Обʼєм </label>
+    <label for="water-amount">
+      {{ translate("nutrition", "water.amount") }}
+    </label>
 
     <div class="water-input-wrapper">
       <input
@@ -16,15 +18,19 @@
         autocomplete="off"
       />
 
-      <span class="water-input-unit"> л </span>
+      <span class="water-input-unit">
+        {{ translate("nutrition", "units.liters") }}
+      </span>
     </div>
 
     <div class="modal-actions">
       <button type="button" class="btn" id="close-water-modal">
-        Скасувати
+        {{ translate("nutrition", "actions.cancel") }}
       </button>
 
-      <button type="button" class="btn primary" id="save-water">Додати</button>
+      <button type="button" class="btn primary" id="save-water">
+        {{ translate("nutrition", "actions.add") }}
+      </button>
     </div>
   </div>
 </div>

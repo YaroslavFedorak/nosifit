@@ -1,225 +1,374 @@
+import {
+    nutrition_t,
+} from "../i18n/index.js";
+
+
 type RecommendationType =
-  | "calories"
-  | "protein"
-  | "fat"
-  | "carbs"
-  | "quality"
-  | "balance"
-  | "protein_progress"
-  | "macro_balance";
+    | "calories"
+    | "protein"
+    | "fat"
+    | "carbs"
+    | "quality"
+    | "balance"
+    | "protein_progress"
+    | "macro_balance";
+
 
 type RecommendationPriority =
-  | "low"
-  | "medium"
-  | "high";
+    | "low"
+    | "medium"
+    | "high";
+
 
 interface NutritionRecommendation {
-  type: RecommendationType;
-  title: string;
-  message: string;
-  priority: RecommendationPriority;
+    type: RecommendationType;
+    title_key: string;
+    message_key: string;
+    params: Record<string, string | number>;
+    priority: RecommendationPriority;
 }
+
 
 interface NutritionRecommendationSummary {
-  calories: number;
-  calories_goal: number;
-  protein: number;
-  protein_goal: number;
-  fat: number;
-  fat_goal: number;
-  carbs: number;
-  carbs_goal: number;
-  quality_score: number;
-  day_progress: "morning" | "day" | "evening" | "late";
+    calories: number;
+    calories_goal: number;
+
+    protein: number;
+    protein_goal: number;
+
+    fat: number;
+    fat_goal: number;
+
+    carbs: number;
+    carbs_goal: number;
+
+    quality_score: number;
+
+    day_progress:
+        | "morning"
+        | "day"
+        | "evening"
+        | "late";
 }
+
 
 interface NutritionRecommendationResponse {
-  recommendations: NutritionRecommendation[];
-  summary: NutritionRecommendationSummary;
+    recommendations: NutritionRecommendation[];
+    summary: NutritionRecommendationSummary;
 }
+
 
 async function fetchNutritionRecommendations(): Promise<NutritionRecommendationResponse> {
-  const response = await fetch(
-    "/api/nutrition/recommendations",
-    {
-      credentials: "same-origin",
-    },
-  );
+    const response =
+        await fetch(
+            "/api/nutrition/recommendations",
+            {
+                credentials: "same-origin",
+            },
+        );
 
-  if (!response.ok) {
-    throw new Error(
-      "Failed to fetch nutrition recommendations",
-    );
-  }
+    if (!response.ok) {
+        throw new Error(
+            "Failed to fetch nutrition recommendations",
+        );
+    }
 
-  return response.json() as Promise<NutritionRecommendationResponse>;
+    return response.json() as Promise<NutritionRecommendationResponse>;
 }
+
 
 function getPriorityClass(
-  priority: RecommendationPriority,
+    priority: RecommendationPriority,
 ): string {
-  return `recommendation-item--${priority}`;
+    return `recommendation-item--${priority}`;
 }
+
+
+function getRecommendationParams(
+    params: Record<string, string | number>,
+): Record<string, string | number> {
+    const localizedParams = {
+        ...params,
+    };
+
+    if (
+        typeof params.macro === "string"
+    ) {
+        localizedParams.macro =
+            nutrition_t(
+                `recommendations.macro.${params.macro}`,
+            );
+    }
+
+    if (
+        typeof params.direction === "string"
+    ) {
+        localizedParams.direction =
+            nutrition_t(
+                `recommendations.direction.${params.direction}`,
+            );
+    }
+
+    return localizedParams;
+}
+
 
 function renderRecommendation(
-  recommendation: NutritionRecommendation,
+    recommendation: NutritionRecommendation,
 ): HTMLDivElement {
-  const element = document.createElement("div");
+    const element =
+        document.createElement("div");
 
-  element.className = [
-    "recommendation-item",
-    getPriorityClass(recommendation.priority),
-  ].join(" ");
+    element.className = [
+        "recommendation-item",
+        getPriorityClass(
+            recommendation.priority,
+        ),
+    ].join(" ");
 
-  element.innerHTML = `
-    <div class="recommendation-marker"></div>
+    const params =
+        getRecommendationParams(
+            recommendation.params,
+        );
 
-    <div class="recommendation-content">
-      <div class="recommendation-title">
-        ${recommendation.title}
-      </div>
+    element.innerHTML = `
+        <div class="recommendation-marker"></div>
 
-      <div class="recommendation-text">
-        ${recommendation.message}
-      </div>
-    </div>
-  `;
+        <div class="recommendation-content">
+            <div class="recommendation-title">
+                ${nutrition_t(
+                    recommendation.title_key,
+                    params,
+                )}
+            </div>
 
-  return element;
+            <div class="recommendation-text">
+                ${nutrition_t(
+                    recommendation.message_key,
+                    params,
+                )}
+            </div>
+        </div>
+    `;
+
+    return element;
 }
+
 
 function renderEmptyRecommendations(
-  container: HTMLElement,
+    container: HTMLElement,
 ): void {
-  container.innerHTML = `
-    <div class="recommendation-item recommendation-item--low">
-      <div class="recommendation-marker"></div>
+    container.innerHTML = `
+        <div class="recommendation-item recommendation-item--low">
+            <div class="recommendation-marker"></div>
 
-      <div class="recommendation-content">
-        <div class="recommendation-title">
-          Раціон виглядає збалансовано
-        </div>
+            <div class="recommendation-content">
+                <div class="recommendation-title">
+                    ${nutrition_t(
+                        "recommendations.empty.title",
+                    )}
+                </div>
 
-        <div class="recommendation-text">
-          На цей момент немає критичних рекомендацій.
-          Продовжуйте стежити за харчуванням протягом дня.
+                <div class="recommendation-text">
+                    ${nutrition_t(
+                        "recommendations.empty.message",
+                    )}
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-  `;
+    `;
 }
+
 
 function renderRecommendations(
-  recommendations: NutritionRecommendation[],
+    recommendations: NutritionRecommendation[],
 ): void {
-  const container = document.querySelector<HTMLElement>(
-    "[data-nutrition-recommendations]",
-  );
+    const container =
+        document.querySelector<HTMLElement>(
+            "[data-nutrition-recommendations]",
+        );
 
-  if (!container) {
-    return;
-  }
+    if (!container) {
+        return;
+    }
 
-  container.innerHTML = "";
+    container.innerHTML = "";
 
-  if (recommendations.length === 0) {
-    renderEmptyRecommendations(container);
-    return;
-  }
+    if (
+        recommendations.length === 0
+    ) {
+        renderEmptyRecommendations(
+            container,
+        );
 
-  for (const recommendation of recommendations) {
-    container.appendChild(
-      renderRecommendation(recommendation),
-    );
-  }
+        return;
+    }
+
+    for (
+        const recommendation
+        of recommendations
+    ) {
+        container.appendChild(
+            renderRecommendation(
+                recommendation,
+            ),
+        );
+    }
 }
+
 
 function renderSummary(
-  summary: NutritionRecommendationSummary,
+    summary: NutritionRecommendationSummary,
 ): void {
-  const container = document.querySelector<HTMLElement>(
-    "[data-nutrition-recommendations-summary]",
-  );
+    const container =
+        document.querySelector<HTMLElement>(
+            "[data-nutrition-recommendations-summary]",
+        );
 
-  if (!container) {
-    return;
-  }
+    if (!container) {
+        return;
+    }
 
-  const calorieRemaining = Math.max(
-    summary.calories_goal - summary.calories,
-    0,
-  );
+    const calorieRemaining =
+        Math.max(
+            summary.calories_goal
+            - summary.calories,
+            0,
+        );
 
-  const proteinRemaining = Math.max(
-    summary.protein_goal - summary.protein,
-    0,
-  );
+    const proteinRemaining =
+        Math.max(
+            summary.protein_goal
+            - summary.protein,
+            0,
+        );
 
-  container.innerHTML = `
-    <div class="recommendations-summary-row">
-      <span>Калорії</span>
-      <span>
-        ${Math.round(summary.calories)}
-        / ${Math.round(summary.calories_goal)} ккал
-      </span>
-    </div>
+    const kcal =
+        nutrition_t(
+            "units.kcal",
+        );
 
-    <div class="recommendations-summary-row">
-      <span>Білок</span>
-      <span>
-        ${summary.protein.toFixed(1)}
-        / ${summary.protein_goal.toFixed(1)} г
-      </span>
-    </div>
+    const grams =
+        nutrition_t(
+            "units.grams",
+        );
 
-    <div class="recommendations-summary-row">
-      <span>Жири</span>
-      <span>
-        ${summary.fat.toFixed(1)}
-        / ${summary.fat_goal.toFixed(1)} г
-      </span>
-    </div>
+    container.innerHTML = `
+        <div class="recommendations-summary-row">
+            <span>
+                ${nutrition_t(
+                    "stats.calories",
+                )}
+            </span>
 
-    <div class="recommendations-summary-row">
-      <span>Вуглеводи</span>
-      <span>
-        ${summary.carbs.toFixed(1)}
-        / ${summary.carbs_goal.toFixed(1)} г
-      </span>
-    </div>
+            <span>
+                ${Math.round(
+                    summary.calories,
+                )}
+                /
+                ${Math.round(
+                    summary.calories_goal,
+                )}
+                ${kcal}
+            </span>
+        </div>
 
-    <div class="recommendations-summary-meta">
-      ${
-        calorieRemaining > 0
-          ? `Залишилось близько ${Math.round(calorieRemaining)} ккал`
-          : "Ціль по калоріях досягнута"
-      }
+        <div class="recommendations-summary-row">
+            <span>
+                ${nutrition_t(
+                    "stats.protein",
+                )}
+            </span>
 
-      ${
-        proteinRemaining > 0
-          ? ` • ${Math.round(proteinRemaining)} г білка`
-          : ""
-      }
-    </div>
-  `;
+            <span>
+                ${summary.protein.toFixed(1)}
+                /
+                ${summary.protein_goal.toFixed(1)}
+                ${grams}
+            </span>
+        </div>
+
+        <div class="recommendations-summary-row">
+            <span>
+                ${nutrition_t(
+                    "stats.fat",
+                )}
+            </span>
+
+            <span>
+                ${summary.fat.toFixed(1)}
+                /
+                ${summary.fat_goal.toFixed(1)}
+                ${grams}
+            </span>
+        </div>
+
+        <div class="recommendations-summary-row">
+            <span>
+                ${nutrition_t(
+                    "stats.carbs",
+                )}
+            </span>
+
+            <span>
+                ${summary.carbs.toFixed(1)}
+                /
+                ${summary.carbs_goal.toFixed(1)}
+                ${grams}
+            </span>
+        </div>
+
+        <div class="recommendations-summary-meta">
+            ${
+                calorieRemaining > 0
+                    ? nutrition_t(
+                        "recommendations.summary.remaining_calories",
+                        {
+                            value:
+                                Math.round(
+                                    calorieRemaining,
+                                ),
+                        },
+                    )
+                    : nutrition_t(
+                        "recommendations.summary.calorie_goal_reached",
+                    )
+            }
+
+            ${
+                proteinRemaining > 0
+                    ? ` • ${nutrition_t(
+                        "recommendations.summary.remaining_protein",
+                        {
+                            value:
+                                Math.round(
+                                    proteinRemaining,
+                                ),
+                        },
+                    )}`
+                    : ""
+            }
+        </div>
+    `;
 }
 
+
 export async function loadNutritionRecommendations(): Promise<void> {
-  try {
-    const data =
-      await fetchNutritionRecommendations();
+    try {
+        const data =
+            await fetchNutritionRecommendations();
 
-    renderRecommendations(
-      data.recommendations,
-    );
+        renderRecommendations(
+            data.recommendations,
+        );
 
-    renderSummary(
-      data.summary,
-    );
-  } catch (error) {
-    console.error(
-      "Failed to load nutrition recommendations:",
-      error,
-    );
-  }
+        renderSummary(
+            data.summary,
+        );
+    } catch (error) {
+        console.error(
+            "Failed to load nutrition recommendations:",
+            error,
+        );
+    }
 }

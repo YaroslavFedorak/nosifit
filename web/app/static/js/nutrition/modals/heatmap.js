@@ -1,11 +1,12 @@
 import { NutritionAPI, } from "../api.js";
+import { getLocale, nutrition_t, } from "../../i18n/index.js";
 let calendarModal = null;
 let dayModal = null;
 let calendarYear = new Date().getFullYear();
 let calendarDays = [];
 function formatDate(dateString) {
     const date = new Date(`${dateString}T12:00:00`);
-    return date.toLocaleDateString("uk-UA", {
+    return date.toLocaleDateString(getLocale(), {
         day: "numeric",
         month: "long",
         year: "numeric",
@@ -78,7 +79,7 @@ function renderCalendar() {
                 </span>
 
                 <span class="nutrition-calendar-load">
-                    ${data.kcal} ккал
+                    ${data.kcal} ${nutrition_t("units.kcal")}
                 </span>
             `;
             item.addEventListener("click", () => {
@@ -88,7 +89,9 @@ function renderCalendar() {
         else {
             item.disabled =
                 true;
-            item.setAttribute("aria-label", `${date.getDate()} число, немає даних`);
+            item.setAttribute("aria-label", nutrition_t("calendar.noData", {
+                day: date.getDate(),
+            }));
             item.innerHTML = `
                 <span class="nutrition-calendar-date">
                     ${date.getDate()}
@@ -122,13 +125,13 @@ function renderStats(data) {
         <div class="nutrition-day-stat">
 
             <span class="nutrition-day-stat-label">
-                Калорії
+                ${nutrition_t("stats.calories")}
             </span>
 
             <strong>
                 ${formatNumber(data.calories)}
                 <small>
-                    / ${formatNumber(data.calorie_goal)} ккал
+                    / ${formatNumber(data.calorie_goal)} ${nutrition_t("units.kcal")}
                 </small>
             </strong>
 
@@ -142,13 +145,13 @@ function renderStats(data) {
         <div class="nutrition-day-stat">
 
             <span class="nutrition-day-stat-label">
-                Білки
+                ${nutrition_t("stats.protein")}
             </span>
 
             <strong>
                 ${formatNumber(data.protein)}
                 <small>
-                    / ${formatNumber(data.protein_goal)} г
+                    / ${formatNumber(data.protein_goal)} ${nutrition_t("units.grams")}
                 </small>
             </strong>
 
@@ -158,13 +161,13 @@ function renderStats(data) {
         <div class="nutrition-day-stat">
 
             <span class="nutrition-day-stat-label">
-                Жири
+                ${nutrition_t("stats.fat")}
             </span>
 
             <strong>
                 ${formatNumber(data.fat)}
                 <small>
-                    / ${formatNumber(data.fat_goal)} г
+                    / ${formatNumber(data.fat_goal)} ${nutrition_t("units.grams")}
                 </small>
             </strong>
 
@@ -174,13 +177,13 @@ function renderStats(data) {
         <div class="nutrition-day-stat">
 
             <span class="nutrition-day-stat-label">
-                Вуглеводи
+                ${nutrition_t("stats.carbs")}
             </span>
 
             <strong>
                 ${formatNumber(data.carbs)}
                 <small>
-                    / ${formatNumber(data.carbs_goal)} г
+                    / ${formatNumber(data.carbs_goal)} ${nutrition_t("units.grams")}
                 </small>
             </strong>
 
@@ -190,13 +193,13 @@ function renderStats(data) {
         <div class="nutrition-day-stat">
 
             <span class="nutrition-day-stat-label">
-                Вода
+                ${nutrition_t("stats.water")}
             </span>
 
             <strong>
                 ${formatNumber(data.water)}
                 <small>
-                    / ${formatNumber(data.water_goal)} л
+                    / ${formatNumber(data.water_goal)} ${nutrition_t("units.liters")}
                 </small>
             </strong>
 
@@ -206,12 +209,12 @@ function renderStats(data) {
         <div class="nutrition-day-stat">
 
             <span class="nutrition-day-stat-label">
-                Вага
+                ${nutrition_t("stats.weight")}
             </span>
 
             <strong>
                 ${data.current_weight !== null
-        ? `${formatNumber(data.current_weight)} кг`
+        ? `${formatNumber(data.current_weight)} ${nutrition_t("units.kg")}`
         : "—"}
             </strong>
 
@@ -237,7 +240,7 @@ function renderMeal(meal) {
             item.weight !== undefined
             ? `
                                         <span class="nutrition-day-food-weight">
-                                            ${formatNumber(item.weight)} г
+                                            ${formatNumber(item.weight)} ${nutrition_t("units.grams")}
                                         </span>
                                     `
             : ""}
@@ -245,14 +248,14 @@ function renderMeal(meal) {
                         </div>
 
                         <span class="nutrition-day-food-kcal">
-                            ${item.calories} ккал
+                            ${item.calories} ${nutrition_t("units.kcal")}
                         </span>
 
                     </div>
                 `).join("")
         : `
                 <div class="nutrition-day-empty-items">
-                    Немає доданих продуктів
+                    ${nutrition_t("dayDetails.noProducts")}
                 </div>
             `;
     element.innerHTML = `
@@ -266,17 +269,18 @@ function renderMeal(meal) {
 
                 <div class="nutrition-day-meal-meta">
                     ${meal.category ||
-        "Прийом їжі"}
+        nutrition_t("meal.defaultCategory")}
 
                     ${meal.time
         ? ` · ${meal.time}`
         : ""}
+
                 </div>
 
             </div>
 
             <div class="nutrition-day-meal-kcal">
-                ${meal.total_calories || 0} ккал
+                ${meal.total_calories || 0} ${nutrition_t("units.kcal")}
             </div>
 
         </div>
@@ -300,11 +304,11 @@ function renderMeals(data) {
             <div class="nutrition-day-no-meals">
 
                 <strong>
-                    Немає прийомів їжі
+                    ${nutrition_t("dayDetails.noMeals")}
                 </strong>
 
                 <span>
-                    Цього дня харчування ще не записано.
+                    ${nutrition_t("dayDetails.noMealsDescription")}
                 </span>
 
             </div>
@@ -315,7 +319,7 @@ function renderMeals(data) {
     title.className =
         "nutrition-day-section-title";
     title.textContent =
-        "Прийоми їжі";
+        nutrition_t("dayDetails.mealsTitle");
     container.appendChild(title);
     data.meals.forEach((meal) => {
         container.appendChild(renderMeal(meal));
@@ -335,7 +339,7 @@ async function openDayDetails(date) {
     }
     if (subtitle) {
         subtitle.textContent =
-            "Завантаження даних...";
+            nutrition_t("dayDetails.loading");
     }
     if (stats) {
         stats.innerHTML =
@@ -351,7 +355,9 @@ async function openDayDetails(date) {
         const data = await NutritionAPI.getDayDetails(date);
         if (subtitle) {
             subtitle.textContent =
-                `${data.meals.length} прийомів їжі`;
+                nutrition_t("dayDetails.mealsCount", {
+                    count: data.meals.length,
+                });
         }
         renderStats(data);
         renderMeals(data);
@@ -360,7 +366,7 @@ async function openDayDetails(date) {
         console.error("Failed to load nutrition day:", error);
         if (subtitle) {
             subtitle.textContent =
-                "Не вдалося завантажити дані";
+                nutrition_t("dayDetails.loadError");
         }
     }
 }

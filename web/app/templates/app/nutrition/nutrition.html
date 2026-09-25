@@ -1,7 +1,7 @@
 {% extends "app/base_app.html" %}
 
 {% block title %}
-    Харчування — Nosi Fit
+    {{ translate("nutrition", "page.title") }} — Nosi Fit
 {% endblock %}
 
 {% block styles %}
@@ -13,7 +13,6 @@
         filename='css/pages/nutrition/nutrition.css'
     ) }}"
 />
-
 
 {% endblock %}
 
@@ -63,11 +62,11 @@
             <div class="nutrition-header-text">
 
                 <h1 class="nutrition-title">
-                    Харчування
+                    {{ translate("nutrition", "page.title") }}
                 </h1>
 
                 <div class="nutrition-subtitle">
-                    Відстежуйте раціон • Контролюйте баланс • Покращуйте звички
+                    {{ translate("nutrition", "page.subtitle") }}
                 </div>
 
             </div>
@@ -79,7 +78,7 @@
             <div class="nutrition-header-info">
 
                 <div class="nutrition-header-label">
-                    Сьогодні
+                    {{ translate("nutrition", "page.today") }}
                 </div>
 
                 <div
@@ -105,7 +104,7 @@
                     <div>
 
                         <div class="widget-eyebrow">
-                            Сьогоднішній прийом їжі
+                            {{ translate("nutrition", "meals.todayTitle") }}
                         </div>
 
                     </div>
@@ -115,7 +114,7 @@
                         class="cmp-btn cmp-btn-primary"
                         id="open-add-meal"
                     >
-                        Новий прийом
+                        {{ translate("nutrition", "meals.newMeal") }}
                     </button>
 
                 </div>
@@ -142,11 +141,11 @@
                     <div>
 
                         <div class="widget-eyebrow">
-                            ІСТОРІЯ
+                            {{ translate("nutrition", "history.title") }}
                         </div>
 
                         <h2 class="widget-title">
-                            Баланс харчування
+                            {{ translate("nutrition", "history.balanceTitle") }}
                         </h2>
 
                     </div>
@@ -156,7 +155,7 @@
                         <select
                             id="heatmap-year"
                             class="heatmap-select"
-                            aria-label="Рік"
+                            aria-label="{{ translate("nutrition", "history.year") }}"
                         >
 
                             {% for year in range(2024, 2031) %}
@@ -176,7 +175,7 @@
                             class="heatmap-calendar-button"
                             id="open-nutrition-calendar"
                         >
-                            Календар
+                            {{ translate("nutrition", "history.calendar") }}
                         </button>
 
                     </div>
@@ -202,7 +201,7 @@
                     <div class="quick-stat-top">
 
                         <div class="quick-stat-label">
-                            Вага
+                            {{ translate("nutrition", "stats.weight") }}
                         </div>
 
                         <div class="quick-stat-icon">
@@ -249,7 +248,7 @@
                             </div>
 
                             <div class="weight-unit">
-                                кг
+                                {{ translate("nutrition", "units.kg") }}
                             </div>
 
                         </div>
@@ -283,7 +282,7 @@
                                 </span>
 
                                 <span>
-                                    Оновити
+                                    {{ translate("nutrition", "weight.update") }}
                                 </span>
 
                             </button>
@@ -303,7 +302,7 @@
                     <div class="quick-stat-top">
 
                         <div class="quick-stat-label">
-                            Вода
+                            {{ translate("nutrition", "stats.water") }}
                         </div>
 
                         <div class="quick-stat-icon">
@@ -351,7 +350,7 @@
                             </div>
 
                             <div class="water-unit">
-                                л
+                                {{ translate("nutrition", "units.liters") }}
                             </div>
 
                         </div>
@@ -363,7 +362,11 @@
                                 class="water-progress"
                                 id="water-progress"
                             >
-                                0% від рекомендованого
+                                {{ translate(
+                                    "nutrition",
+                                    "water.progress",
+                                    value=0
+                                ) }}
                             </div>
 
                             <button
@@ -377,7 +380,7 @@
                                 </span>
 
                                 <span>
-                                    Додати воду
+                                    {{ translate("nutrition", "water.add") }}
                                 </span>
 
                             </button>
@@ -398,15 +401,15 @@
                     <div>
 
                         <div class="widget-eyebrow">
-                            РЕКОМЕНДАЦІЇ
+                            {{ translate("nutrition", "recommendations.title") }}
                         </div>
 
                         <h2 class="widget-title">
-                            Що варто врахувати
+                            {{ translate("nutrition", "recommendations.heading") }}
                         </h2>
 
                         <p class="widget-subtitle">
-                            Персональні підказки на основі вашого харчування
+                            {{ translate("nutrition", "recommendations.subtitle") }}
                         </p>
 
                     </div>
@@ -427,11 +430,17 @@
                         <div class="recommendation-content">
 
                             <div class="recommendation-title">
-                                Аналізуємо ваш раціон
+                                {{ translate(
+                                    "nutrition",
+                                    "recommendations.initial.title"
+                                ) }}
                             </div>
 
                             <div class="recommendation-text">
-                                Додавайте прийоми їжі, щоб отримувати персональні рекомендації.
+                                {{ translate(
+                                    "nutrition",
+                                    "recommendations.initial.message"
+                                ) }}
                             </div>
 
                         </div>

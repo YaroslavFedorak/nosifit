@@ -1,5 +1,5 @@
-import { translate } from "./loader.js";
-export { getLocale, loadTranslations } from "./loader.js";
+import { translate, } from "./loader.js";
+export { getLocale, loadTranslations, } from "./loader.js";
 export function t(key, params = {}) {
     return translate("training", key, params);
 }
@@ -8,4 +8,7 @@ export function exercise_t(slug) {
 }
 export function recovery_t(key, params = {}) {
     return translate("recovery", key, params);
+}
+export function nutrition_t(key, params = {}) {
+    return translate("nutrition", key, params);
 }
