@@ -1,3 +1,5 @@
+import { profile_t } from "../i18n/index.js";
+
 const OPEN_CLASS = "is-open";
 
 const getModal = (
@@ -167,8 +169,12 @@ const bindPasswordToggles = (): void => {
 
                     button.textContent =
                         visible
-                            ? "Показати"
-                            : "Сховати";
+                            ? profile_t(
+                                "password.show"
+                            )
+                            : profile_t(
+                                "password.hide"
+                            );
                 }
             );
         });
@@ -220,25 +226,33 @@ const bindPasswordForm = (): void => {
                         "wrong_old"
                     ) {
                         alert(
-                            "Поточний пароль введено неправильно."
+                            profile_t(
+                                "password.errors.wrongOld"
+                            )
                         );
                     } else if (
                         data.message ===
                         "mismatch"
                     ) {
                         alert(
-                            "Нові паролі не збігаються."
+                            profile_t(
+                                "password.errors.mismatch"
+                            )
                         );
                     } else if (
                         data.message ===
                         "same"
                     ) {
                         alert(
-                            "Новий пароль має відрізнятися від поточного."
+                            profile_t(
+                                "password.errors.same"
+                            )
                         );
                     } else {
                         alert(
-                            "Не вдалося змінити пароль."
+                            profile_t(
+                                "password.errors.changeFailed"
+                            )
                         );
                     }
 
@@ -250,7 +264,9 @@ const bindPasswordForm = (): void => {
                     "success"
                 ) {
                     alert(
-                        "Пароль успішно змінено."
+                        profile_t(
+                            "password.success"
+                        )
                     );
 
                     const modal =
@@ -264,7 +280,9 @@ const bindPasswordForm = (): void => {
                 }
             } catch {
                 alert(
-                    "Не вдалося змінити пароль. Спробуй ще раз."
+                    profile_t(
+                        "password.errors.tryAgain"
+                    )
                 );
             } finally {
                 if (submitButton) {

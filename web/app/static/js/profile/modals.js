@@ -1,3 +1,4 @@
+import { profile_t } from "../i18n/index.js";
 const OPEN_CLASS = "is-open";
 const getModal = (id) => {
     return document.getElementById(id);
@@ -90,8 +91,8 @@ const bindPasswordToggles = () => {
                     : "text";
             button.textContent =
                 visible
-                    ? "Показати"
-                    : "Сховати";
+                    ? profile_t("password.show")
+                    : profile_t("password.hide");
         });
     });
 };
@@ -116,24 +117,24 @@ const bindPasswordForm = () => {
             if (!response.ok) {
                 if (data.message ===
                     "wrong_old") {
-                    alert("Поточний пароль введено неправильно.");
+                    alert(profile_t("password.errors.wrongOld"));
                 }
                 else if (data.message ===
                     "mismatch") {
-                    alert("Нові паролі не збігаються.");
+                    alert(profile_t("password.errors.mismatch"));
                 }
                 else if (data.message ===
                     "same") {
-                    alert("Новий пароль має відрізнятися від поточного.");
+                    alert(profile_t("password.errors.same"));
                 }
                 else {
-                    alert("Не вдалося змінити пароль.");
+                    alert(profile_t("password.errors.changeFailed"));
                 }
                 return;
             }
             if (data.status ===
                 "success") {
-                alert("Пароль успішно змінено.");
+                alert(profile_t("password.success"));
                 const modal = form.closest(".profile-modal-backdrop");
                 if (modal) {
                     closeModal(modal);
@@ -141,7 +142,7 @@ const bindPasswordForm = () => {
             }
         }
         catch {
-            alert("Не вдалося змінити пароль. Спробуй ще раз.");
+            alert(profile_t("password.errors.tryAgain"));
         }
         finally {
             if (submitButton) {

@@ -1,7 +1,11 @@
+import { profile_t } from "../i18n/index.js";
+
 const ACTIVE_CLASS = "active";
 
 const getDeleteModal = (): HTMLElement | null => {
-    return document.getElementById("modal-delete-account");
+    return document.getElementById(
+        "modal-delete-account"
+    );
 };
 
 const getStep = (
@@ -64,7 +68,9 @@ const bindSendCode = (
             setButtonLoading(
                 button,
                 true,
-                "Надсилання..."
+                profile_t(
+                    "deleteAccount.sending"
+                )
             );
 
             try {
@@ -72,11 +78,13 @@ const bindSendCode = (
                     "/profile/delete/request",
                     {
                         method: "POST",
-                        credentials: "same-origin"
+                        credentials:
+                            "same-origin"
                     }
                 );
 
-                const data = await response.json();
+                const data =
+                    await response.json();
 
                 if (
                     response.ok &&
@@ -88,12 +96,16 @@ const bindSendCode = (
 
                 showError(
                     button,
-                    "Спробувати ще раз"
+                    profile_t(
+                        "deleteAccount.tryAgain"
+                    )
                 );
             } catch {
                 showError(
                     button,
-                    "Спробувати ще раз"
+                    profile_t(
+                        "deleteAccount.tryAgain"
+                    )
                 );
             }
         }
@@ -120,7 +132,8 @@ const bindConfirmCode = (
     button.addEventListener(
         "click",
         async () => {
-            const code = input.value.trim();
+            const code =
+                input.value.trim();
 
             if (!code) {
                 input.focus();
@@ -135,26 +148,32 @@ const bindConfirmCode = (
             setButtonLoading(
                 button,
                 true,
-                "Перевірка..."
+                profile_t(
+                    "deleteAccount.checking"
+                )
             );
 
             try {
-                const response = await fetch(
-                    "/profile/delete/confirm",
-                    {
-                        method: "POST",
-                        credentials: "same-origin",
-                        headers: {
-                            "Content-Type":
-                                "application/json"
-                        },
-                        body: JSON.stringify({
-                            code
-                        })
-                    }
-                );
+                const response =
+                    await fetch(
+                        "/profile/delete/confirm",
+                        {
+                            method: "POST",
+                            credentials:
+                                "same-origin",
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+                            body:
+                                JSON.stringify({
+                                    code
+                                })
+                        }
+                    );
 
-                const data = await response.json();
+                const data =
+                    await response.json();
 
                 if (
                     response.ok &&
@@ -164,18 +183,28 @@ const bindConfirmCode = (
                     return;
                 }
 
-                if (data.status === "expired") {
+                if (
+                    data.status ===
+                    "expired"
+                ) {
                     showError(
                         button,
-                        "Код прострочений"
+                        profile_t(
+                            "deleteAccount.errors.expired"
+                        )
                     );
                     return;
                 }
 
-                if (data.status === "wrong") {
+                if (
+                    data.status ===
+                    "wrong"
+                ) {
                     showError(
                         button,
-                        "Неправильний код"
+                        profile_t(
+                            "deleteAccount.errors.wrongCode"
+                        )
                     );
                     return;
                 }
@@ -186,19 +215,25 @@ const bindConfirmCode = (
                 ) {
                     showError(
                         button,
-                        "Email не збігається"
+                        profile_t(
+                            "deleteAccount.errors.emailMismatch"
+                        )
                     );
                     return;
                 }
 
                 showError(
                     button,
-                    "Спробувати ще раз"
+                    profile_t(
+                        "deleteAccount.tryAgain"
+                    )
                 );
             } catch {
                 showError(
                     button,
-                    "Спробувати ще раз"
+                    profile_t(
+                        "deleteAccount.tryAgain"
+                    )
                 );
             }
         }
@@ -253,27 +288,33 @@ const bindFinalDelete = (
             setButtonLoading(
                 button,
                 true,
-                "Видалення..."
+                profile_t(
+                    "deleteAccount.deleting"
+                )
             );
 
             try {
-                const response = await fetch(
-                    "/profile/delete/final",
-                    {
-                        method: "POST",
-                        credentials: "same-origin",
-                        headers: {
-                            "Content-Type":
-                                "application/json"
-                        },
-                        body: JSON.stringify({
-                            email,
-                            password
-                        })
-                    }
-                );
+                const response =
+                    await fetch(
+                        "/profile/delete/final",
+                        {
+                            method: "POST",
+                            credentials:
+                                "same-origin",
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+                            body:
+                                JSON.stringify({
+                                    email,
+                                    password
+                                })
+                        }
+                    );
 
-                const data = await response.json();
+                const data =
+                    await response.json();
 
                 if (
                     response.ok &&
@@ -290,7 +331,9 @@ const bindFinalDelete = (
                 ) {
                     showError(
                         button,
-                        "Неправильний пароль"
+                        profile_t(
+                            "deleteAccount.errors.wrongPassword"
+                        )
                     );
                     return;
                 }
@@ -301,7 +344,9 @@ const bindFinalDelete = (
                 ) {
                     showError(
                         button,
-                        "Неправильний email"
+                        profile_t(
+                            "deleteAccount.errors.wrongEmail"
+                        )
                     );
                     return;
                 }
@@ -312,19 +357,25 @@ const bindFinalDelete = (
                 ) {
                     showError(
                         button,
-                        "Код прострочений"
+                        profile_t(
+                            "deleteAccount.errors.expired"
+                        )
                     );
                     return;
                 }
 
                 showError(
                     button,
-                    "Спробувати ще раз"
+                    profile_t(
+                        "deleteAccount.tryAgain"
+                    )
                 );
             } catch {
                 showError(
                     button,
-                    "Спробувати ще раз"
+                    profile_t(
+                        "deleteAccount.tryAgain"
+                    )
                 );
             }
         }
@@ -411,19 +462,25 @@ const resetDeleteModal = (
     if (sendButton) {
         sendButton.disabled = false;
         sendButton.textContent =
-            "Надіслати код";
+            profile_t(
+                "deleteAccount.sendCode"
+            );
     }
 
     if (confirmButton) {
         confirmButton.disabled = false;
         confirmButton.textContent =
-            "Підтвердити код";
+            profile_t(
+                "deleteAccount.confirmCode"
+            );
     }
 
     if (finalButton) {
         finalButton.disabled = false;
         finalButton.textContent =
-            "Видалити акаунт";
+            profile_t(
+                "deleteAccount.delete"
+            );
     }
 };
 

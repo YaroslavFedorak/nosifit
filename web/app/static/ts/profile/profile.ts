@@ -1,3 +1,6 @@
+import {
+    loadTranslations,
+} from "../i18n/index.js";
 import { ICONS } from "../icons/index.js";
 import { initProgress } from "./progress.js";
 import { initModals } from "./modals.js";
@@ -31,7 +34,9 @@ const initProfileIcon = (): void => {
     iconElement.innerHTML = icon;
 };
 
-const initProfile = (): void => {
+const initProfile = async (): Promise<void> => {
+    await loadTranslations("profile");
+
     initProfileIcon();
     initProgress();
     initModals();
@@ -44,11 +49,13 @@ if (
 ) {
     document.addEventListener(
         "DOMContentLoaded",
-        initProfile,
+        () => {
+            void initProfile();
+        },
         {
             once: true
         }
     );
 } else {
-    initProfile();
+    void initProfile();
 }

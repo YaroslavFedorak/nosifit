@@ -1,3 +1,4 @@
+import { loadTranslations, } from "../i18n/index.js";
 import { ICONS } from "../icons/index.js";
 import { initProgress } from "./progress.js";
 import { initModals } from "./modals.js";
@@ -17,7 +18,8 @@ const initProfileIcon = () => {
     }
     iconElement.innerHTML = icon;
 };
-const initProfile = () => {
+const initProfile = async () => {
+    await loadTranslations("profile");
     initProfileIcon();
     initProgress();
     initModals();
@@ -25,10 +27,12 @@ const initProfile = () => {
 };
 if (document.readyState ===
     "loading") {
-    document.addEventListener("DOMContentLoaded", initProfile, {
+    document.addEventListener("DOMContentLoaded", () => {
+        void initProfile();
+    }, {
         once: true
     });
 }
 else {
-    initProfile();
+    void initProfile();
 }
