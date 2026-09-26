@@ -3,11 +3,11 @@
     <div class="profile-card-header">
         <div>
             <h2 class="profile-card-title">
-                Параметри тіла
+                {{ profile_t("body.title") }}
             </h2>
 
             <p class="profile-card-subtitle">
-                Дані, які використовуються для персоналізації
+                {{ profile_t("body.subtitle") }}
             </p>
         </div>
     </div>
@@ -16,7 +16,7 @@
 
         <div class="profile-info-item">
             <span class="profile-info-label">
-                Вік
+                {{ profile_t("body.age") }}
             </span>
 
             <span class="profile-info-value">
@@ -26,14 +26,14 @@
 
         <div class="profile-info-item">
             <span class="profile-info-label">
-                Стать
+                {{ profile_t("body.gender") }}
             </span>
 
             <span class="profile-info-value">
                 {% if profile.gender == "male" %}
-                    Чоловіча
+                    {{ profile_t("body.genderMale") }}
                 {% elif profile.gender == "female" %}
-                    Жіноча
+                    {{ profile_t("body.genderFemale") }}
                 {% else %}
                     —
                 {% endif %}
@@ -42,12 +42,12 @@
 
         <div class="profile-info-item">
             <span class="profile-info-label">
-                Зріст
+                {{ profile_t("body.height") }}
             </span>
 
             <span class="profile-info-value">
                 {% if profile.height is not none %}
-                    {{ profile.height|int }} см
+                    {{ profile.height|int }} {{ profile_t("body.heightUnit") }}
                 {% else %}
                     —
                 {% endif %}
@@ -56,12 +56,12 @@
 
         <div class="profile-info-item">
             <span class="profile-info-label">
-                Вага
+                {{ profile_t("body.weight") }}
             </span>
 
             <span class="profile-info-value">
                 {% if profile.weight is not none %}
-                    {{ profile.weight }} кг
+                    {{ profile.weight }} {{ profile_t("body.weightUnit") }}
                 {% else %}
                     —
                 {% endif %}
@@ -70,18 +70,18 @@
 
         <div class="profile-info-item">
             <span class="profile-info-label">
-                Активність
+                {{ profile_t("body.activity") }}
             </span>
 
             <span class="profile-info-value">
                 {% if profile.activity == "sedentary" %}
-                    Низька
+                    {{ profile_t("body.activitySedentary") }}
                 {% elif profile.activity == "light" %}
-                    Легка
+                    {{ profile_t("body.activityLight") }}
                 {% elif profile.activity == "moderate" %}
-                    Помірна
+                    {{ profile_t("body.activityModerate") }}
                 {% elif profile.activity == "active" %}
-                    Висока
+                    {{ profile_t("body.activityActive") }}
                 {% else %}
                     —
                 {% endif %}
@@ -90,16 +90,16 @@
 
         <div class="profile-info-item">
             <span class="profile-info-label">
-                Досвід
+                {{ profile_t("body.experience") }}
             </span>
 
             <span class="profile-info-value">
                 {% if profile.experience == "beginner" %}
-                    Початківець
+                    {{ profile_t("body.experienceBeginner") }}
                 {% elif profile.experience == "intermediate" %}
-                    Середній
+                    {{ profile_t("body.experienceIntermediate") }}
                 {% elif profile.experience == "experienced" %}
-                    Досвідчений
+                    {{ profile_t("body.experienceExperienced") }}
                 {% else %}
                     —
                 {% endif %}

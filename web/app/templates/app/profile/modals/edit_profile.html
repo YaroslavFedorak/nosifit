@@ -16,14 +16,14 @@
                 class="profile-modal-title"
                 id="edit-profile-title"
             >
-                Редагувати профіль
+                {{ profile_t("editProfile.title") }}
             </h2>
 
             <button
                 type="button"
                 class="profile-modal-close"
                 data-modal-close
-                aria-label="Закрити"
+                aria-label="{{ profile_t('modal.close') }}"
             >
                 &times;
             </button>
@@ -38,7 +38,7 @@
             <div class="profile-modal-body">
 
                 <h3 class="profile-section-title">
-                    Основна інформація
+                    {{ profile_t("editProfile.accountInfo") }}
                 </h3>
 
                 <div class="profile-modal-grid">
@@ -49,7 +49,7 @@
                             class="profile-field-label"
                             for="edit-username"
                         >
-                            Ім'я користувача
+                            {{ profile_t("editProfile.username") }}
                         </label>
 
                         <input
@@ -69,7 +69,7 @@
                             class="profile-field-label"
                             for="edit-email"
                         >
-                            Email
+                            {{ profile_t("editProfile.email") }}
                         </label>
 
                         <input
@@ -86,7 +86,7 @@
                 </div>
 
                 <h3 class="profile-section-title">
-                    Параметри тіла
+                    {{ profile_t("editProfile.bodyParameters") }}
                 </h3>
 
                 <div class="profile-modal-grid">
@@ -97,7 +97,7 @@
                             class="profile-field-label"
                             for="edit-age"
                         >
-                            Вік
+                            {{ profile_t("editProfile.age") }}
                         </label>
 
                         <input
@@ -118,7 +118,7 @@
                             class="profile-field-label"
                             for="edit-gender"
                         >
-                            Стать
+                            {{ profile_t("editProfile.gender") }}
                         </label>
 
                         <select
@@ -127,21 +127,21 @@
                             name="gender"
                         >
                             <option value="">
-                                Не вказано
+                                {{ profile_t("editProfile.notSpecified") }}
                             </option>
 
                             <option
                                 value="male"
                                 {% if profile.gender == "male" %}selected{% endif %}
                             >
-                                Чоловіча
+                                {{ profile_t("editProfile.male") }}
                             </option>
 
                             <option
                                 value="female"
                                 {% if profile.gender == "female" %}selected{% endif %}
                             >
-                                Жіноча
+                                {{ profile_t("editProfile.female") }}
                             </option>
                         </select>
 
@@ -153,7 +153,7 @@
                             class="profile-field-label"
                             for="edit-height"
                         >
-                            Зріст
+                            {{ profile_t("editProfile.height") }}
                         </label>
 
                         <input
@@ -174,7 +174,7 @@
                             class="profile-field-label"
                             for="edit-weight"
                         >
-                            Вага
+                            {{ profile_t("editProfile.weight") }}
                         </label>
 
                         <input
@@ -193,7 +193,7 @@
                 </div>
 
                 <h3 class="profile-section-title">
-                    Тренування
+                    {{ profile_t("editProfile.training") }}
                 </h3>
 
                 <div class="profile-modal-grid">
@@ -204,7 +204,7 @@
                             class="profile-field-label"
                             for="edit-goal"
                         >
-                            Ціль
+                            {{ profile_t("editProfile.goal") }}
                         </label>
 
                         <select
@@ -213,35 +213,35 @@
                             name="goal"
                         >
                             <option value="">
-                                Не вказано
+                                {{ profile_t("editProfile.notSpecified") }}
                             </option>
 
                             <option
                                 value="maintenance"
                                 {% if profile.goal == "maintenance" %}selected{% endif %}
                             >
-                                Підтримка форми
+                                {{ profile_t("editProfile.maintenance") }}
                             </option>
 
                             <option
                                 value="strength"
                                 {% if profile.goal == "strength" %}selected{% endif %}
                             >
-                                Сила
+                                {{ profile_t("editProfile.strength") }}
                             </option>
 
                             <option
                                 value="muscle_gain"
                                 {% if profile.goal == "muscle_gain" %}selected{% endif %}
                             >
-                                Набір м'язів
+                                {{ profile_t("editProfile.muscleGain") }}
                             </option>
 
                             <option
                                 value="fat_loss"
                                 {% if profile.goal == "fat_loss" %}selected{% endif %}
                             >
-                                Зниження ваги
+                                {{ profile_t("editProfile.fatLoss") }}
                             </option>
                         </select>
 
@@ -253,7 +253,7 @@
                             class="profile-field-label"
                             for="edit-activity"
                         >
-                            Активність
+                            {{ profile_t("editProfile.activity") }}
                         </label>
 
                         <select
@@ -262,35 +262,35 @@
                             name="activity"
                         >
                             <option value="">
-                                Не вказано
+                                {{ profile_t("editProfile.notSpecified") }}
                             </option>
 
                             <option
                                 value="sedentary"
                                 {% if profile.activity == "sedentary" %}selected{% endif %}
                             >
-                                Низька
+                                {{ profile_t("editProfile.sedentary") }}
                             </option>
 
                             <option
                                 value="light"
                                 {% if profile.activity == "light" %}selected{% endif %}
                             >
-                                Легка
+                                {{ profile_t("editProfile.light") }}
                             </option>
 
                             <option
                                 value="moderate"
                                 {% if profile.activity == "moderate" %}selected{% endif %}
                             >
-                                Помірна
+                                {{ profile_t("editProfile.moderate") }}
                             </option>
 
                             <option
                                 value="active"
                                 {% if profile.activity == "active" %}selected{% endif %}
                             >
-                                Висока
+                                {{ profile_t("editProfile.active") }}
                             </option>
 
                         </select>
@@ -303,7 +303,7 @@
                             class="profile-field-label"
                             for="edit-experience"
                         >
-                            Досвід
+                            {{ profile_t("editProfile.experience") }}
                         </label>
 
                         <select
@@ -312,28 +312,28 @@
                             name="experience"
                         >
                             <option value="">
-                                Не вказано
+                                {{ profile_t("editProfile.notSpecified") }}
                             </option>
 
                             <option
                                 value="beginner"
                                 {% if profile.experience == "beginner" %}selected{% endif %}
                             >
-                                Початківець
+                                {{ profile_t("editProfile.beginner") }}
                             </option>
 
                             <option
                                 value="intermediate"
                                 {% if profile.experience == "intermediate" %}selected{% endif %}
                             >
-                                Середній
+                                {{ profile_t("editProfile.intermediate") }}
                             </option>
 
                             <option
                                 value="experienced"
                                 {% if profile.experience == "experienced" %}selected{% endif %}
                             >
-                                Досвідчений
+                                {{ profile_t("editProfile.experienced") }}
                             </option>
 
                         </select>
@@ -346,7 +346,7 @@
                             class="profile-field-label"
                             for="edit-workouts"
                         >
-                            Тренувань / тиждень
+                            {{ profile_t("editProfile.workoutsPerWeek") }}
                         </label>
 
                         <input
@@ -367,7 +367,7 @@
                             class="profile-field-label"
                             for="edit-location"
                         >
-                            Локація
+                            {{ profile_t("editProfile.location") }}
                         </label>
 
                         <select
@@ -380,21 +380,21 @@
                                 value="gym"
                                 {% if profile.training_location == "gym" %}selected{% endif %}
                             >
-                                Зал
+                                {{ profile_t("editProfile.gym") }}
                             </option>
 
                             <option
                                 value="home"
                                 {% if profile.training_location == "home" %}selected{% endif %}
                             >
-                                Дім
+                                {{ profile_t("editProfile.home") }}
                             </option>
 
                             <option
                                 value="outdoor"
                                 {% if profile.training_location == "outdoor" %}selected{% endif %}
                             >
-                                Вулиця
+                                {{ profile_t("editProfile.outdoor") }}
                             </option>
                         </select>
 
@@ -403,7 +403,7 @@
                 </div>
 
                 <h3 class="profile-section-title">
-                    Додаткові можливості
+                    {{ profile_t("editProfile.additionalFeatures") }}
                 </h3>
 
                 <div class="profile-modal-grid">
@@ -414,7 +414,7 @@
                             class="profile-field-label"
                             for="edit-nutrition"
                         >
-                            Харчування
+                            {{ profile_t("editProfile.nutrition") }}
                         </label>
 
                         <select
@@ -426,14 +426,14 @@
                                 value="1"
                                 {% if profile.wants_nutrition %}selected{% endif %}
                             >
-                                Увімкнено
+                                {{ profile_t("editProfile.enabled") }}
                             </option>
 
                             <option
                                 value="0"
                                 {% if not profile.wants_nutrition %}selected{% endif %}
                             >
-                                Вимкнено
+                                {{ profile_t("editProfile.disabled") }}
                             </option>
                         </select>
 
@@ -445,7 +445,7 @@
                             class="profile-field-label"
                             for="edit-recovery"
                         >
-                            Відновлення
+                            {{ profile_t("editProfile.recovery") }}
                         </label>
 
                         <select
@@ -457,14 +457,14 @@
                                 value="1"
                                 {% if profile.wants_recovery %}selected{% endif %}
                             >
-                                Увімкнено
+                                {{ profile_t("editProfile.enabled") }}
                             </option>
 
                             <option
                                 value="0"
                                 {% if not profile.wants_recovery %}selected{% endif %}
                             >
-                                Вимкнено
+                                {{ profile_t("editProfile.disabled") }}
                             </option>
                         </select>
 
@@ -481,14 +481,14 @@
                     class="profile-btn profile-btn-ghost"
                     data-modal-close
                 >
-                    Скасувати
+                    {{ profile_t("modal.cancel") }}
                 </button>
 
                 <button
                     type="submit"
                     class="profile-btn profile-btn-primary"
                 >
-                    Зберегти зміни
+                    {{ profile_t("modal.saveChanges") }}
                 </button>
 
             </div>

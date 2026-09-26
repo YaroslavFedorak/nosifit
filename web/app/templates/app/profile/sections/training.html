@@ -3,11 +3,11 @@
     <div class="profile-card-header">
         <div>
             <h2 class="profile-card-title">
-                Тренувальний профіль
+                {{ profile_t("training.title") }}
             </h2>
 
             <p class="profile-card-subtitle">
-                Налаштування та статуси персоналізації
+                {{ profile_t("training.subtitle") }}
             </p>
         </div>
     </div>
@@ -16,16 +16,16 @@
 
         <div class="profile-training-item">
             <span class="profile-training-label">
-                Локація
+                {{ profile_t("training.location") }}
             </span>
 
             <span class="profile-training-value">
                 {% if profile.training_location == "gym" %}
-                    Зал
+                    {{ profile_t("training.locationGym") }}
                 {% elif profile.training_location == "home" %}
-                    Дім
+                    {{ profile_t("training.locationHome") }}
                 {% elif profile.training_location == "outdoor" %}
-                    Вулиця
+                    {{ profile_t("training.locationOutdoor") }}
                 {% else %}
                     —
                 {% endif %}
@@ -34,48 +34,48 @@
 
         <div class="profile-training-item">
             <span class="profile-training-label">
-                Харчування
+                {{ profile_t("training.nutrition") }}
             </span>
 
             {% if profile.wants_nutrition %}
                 <span class="profile-pill profile-pill-active">
-                    Активне
+                    {{ profile_t("training.active") }}
                 </span>
             {% else %}
                 <span class="profile-pill">
-                    Вимкнено
+                    {{ profile_t("training.disabled") }}
                 </span>
             {% endif %}
         </div>
 
         <div class="profile-training-item">
             <span class="profile-training-label">
-                Відновлення
+                {{ profile_t("training.recovery") }}
             </span>
 
             {% if profile.wants_recovery %}
                 <span class="profile-pill profile-pill-active">
-                    Активне
+                    {{ profile_t("training.active") }}
                 </span>
             {% else %}
                 <span class="profile-pill">
-                    Вимкнено
+                    {{ profile_t("training.disabled") }}
                 </span>
             {% endif %}
         </div>
 
         <div class="profile-training-item">
             <span class="profile-training-label">
-                Онбординг
+                {{ profile_t("training.onboarding") }}
             </span>
 
             {% if profile.onboarding_completed %}
                 <span class="profile-pill profile-pill-active">
-                    Завершено
+                    {{ profile_t("training.completed") }}
                 </span>
             {% else %}
                 <span class="profile-pill">
-                    Не завершено
+                    {{ profile_t("training.notCompleted") }}
                 </span>
             {% endif %}
         </div>

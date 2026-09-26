@@ -17,14 +17,14 @@
                 class="profile-modal-title"
                 id="delete-account-title"
             >
-                Видалити акаунт
+                {{ profile_t("deleteAccount.delete") }}
             </h2>
 
             <button
                 type="button"
                 class="profile-modal-close"
                 data-modal-close
-                aria-label="Закрити"
+                aria-label="{{ profile_t('modal.close') }}"
             >
                 &times;
             </button>
@@ -39,13 +39,12 @@
             >
 
                 <div class="profile-danger-box">
-                    Видалення акаунта є незворотною дією.
-                    Усі пов'язані з акаунтом дані буде видалено.
+                    {{ profile_t("deleteAccount.dangerTitle") }}
+                    {{ profile_t("deleteAccount.dangerDescription") }}
                 </div>
 
                 <p class="profile-hint">
-                    Для продовження ми надішлемо код підтвердження
-                    на адресу електронної пошти акаунта.
+                    {{ profile_t("deleteAccount.sendCodeHint") }}
                 </p>
 
                 <button
@@ -53,7 +52,7 @@
                     class="profile-btn profile-btn-danger profile-delete-action"
                     id="delete-send-code"
                 >
-                    Надіслати код
+                    {{ profile_t("deleteAccount.sendCode") }}
                 </button>
 
             </div>
@@ -69,7 +68,7 @@
                         class="profile-field-label"
                         for="delete-confirm-code"
                     >
-                        Код підтвердження
+                        {{ profile_t("deleteAccount.confirmationCode") }}
                     </label>
 
                     <input
@@ -84,8 +83,7 @@
                 </div>
 
                 <p class="profile-hint">
-                    Введи 6-значний код, який було надіслано
-                    на твою пошту.
+                    {{ profile_t("deleteAccount.confirmationCodeHint") }}
                 </p>
 
                 <button
@@ -93,7 +91,7 @@
                     class="profile-btn profile-btn-danger profile-delete-action"
                     id="delete-confirm-btn"
                 >
-                    Підтвердити код
+                    {{ profile_t("deleteAccount.confirmCode") }}
                 </button>
 
                 <button
@@ -101,7 +99,7 @@
                     class="profile-delete-back"
                     data-delete-back="1"
                 >
-                    Повернутися назад
+                    {{ profile_t("deleteAccount.back") }}
                 </button>
 
             </div>
@@ -112,8 +110,8 @@
             >
 
                 <div class="profile-danger-box">
-                    Останній крок. Підтверди email і пароль,
-                    щоб остаточно видалити акаунт.
+                    {{ profile_t("deleteAccount.finalTitle") }}
+                    {{ profile_t("deleteAccount.finalDescription") }}
                 </div>
 
                 <div class="profile-field">
@@ -122,7 +120,7 @@
                         class="profile-field-label"
                         for="delete-final-email"
                     >
-                        Email
+                        {{ profile_t("deleteAccount.email") }}
                     </label>
 
                     <input
@@ -141,7 +139,7 @@
                         class="profile-field-label"
                         for="delete-final-password"
                     >
-                        Пароль
+                        {{ profile_t("deleteAccount.password") }}
                     </label>
 
                     <div class="profile-password-wrapper">
@@ -159,7 +157,7 @@
                             class="profile-password-toggle"
                             data-password-toggle
                         >
-                            Показати
+                            {{ profile_t("password.show") }}
                         </button>
 
                     </div>
@@ -171,7 +169,7 @@
                     class="profile-btn profile-btn-danger profile-delete-action"
                     id="delete-final-btn"
                 >
-                    Видалити акаунт
+                    {{ profile_t("deleteAccount.delete") }}
                 </button>
 
                 <button
@@ -179,7 +177,7 @@
                     class="profile-delete-back"
                     data-delete-back="2"
                 >
-                    Повернутися назад
+                    {{ profile_t("deleteAccount.back") }}
                 </button>
 
             </div>
@@ -193,7 +191,7 @@
                 class="profile-btn profile-btn-ghost"
                 data-modal-close
             >
-                Скасувати
+                {{ profile_t("modal.cancel") }}
             </button>
 
         </div>

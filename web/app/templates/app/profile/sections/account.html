@@ -3,11 +3,11 @@
     <div class="profile-card-header">
         <div>
             <h2 class="profile-card-title">
-                Обліковий запис
+                {{ profile_t("account.title") }}
             </h2>
 
             <p class="profile-card-subtitle">
-                Основна інформація про акаунт
+                {{ profile_t("account.subtitle") }}
             </p>
         </div>
     </div>
@@ -18,27 +18,27 @@
 
             <div class="profile-data-row">
                 <span class="profile-data-label">
-                    Ім'я користувача
+                    {{ profile_t("account.username") }}
                 </span>
 
                 <span class="profile-data-value">
-                    {{ user.username or "Не вказано" }}
+                    {{ user.username or profile_t("common.notSpecified") }}
                 </span>
             </div>
 
             <div class="profile-data-row">
                 <span class="profile-data-label">
-                    Email
+                    {{ profile_t("account.email") }}
                 </span>
 
                 <span class="profile-data-value">
-                    {{ user.email or "Не вказано" }}
+                    {{ user.email or profile_t("common.notSpecified") }}
                 </span>
             </div>
 
             <div class="profile-data-row">
                 <span class="profile-data-label">
-                    Реєстрація
+                    {{ profile_t("account.registration") }}
                 </span>
 
                 <span class="profile-data-value">
@@ -48,7 +48,7 @@
 
             <div class="profile-data-row">
                 <span class="profile-data-label">
-                    Оновлено
+                    {{ profile_t("account.updated") }}
                 </span>
 
                 <span class="profile-data-value">
@@ -58,7 +58,7 @@
 
             <div class="profile-data-row">
                 <span class="profile-data-label">
-                    План
+                    {{ profile_t("account.plan") }}
                 </span>
 
                 {% if user.is_premium %}
@@ -74,11 +74,11 @@
 
             <div class="profile-data-row">
                 <span class="profile-data-label">
-                    Безпека
+                    {{ profile_t("account.security") }}
                 </span>
 
                 <span class="profile-status profile-status-success">
-                    Активна
+                    {{ profile_t("account.active") }}
                 </span>
             </div>
 

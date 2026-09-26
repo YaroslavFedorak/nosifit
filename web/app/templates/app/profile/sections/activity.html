@@ -1,63 +1,120 @@
 <section class="profile-card">
-  <div class="profile-card-header">
-    <div>
-      <h2 class="profile-card-title">Тренувальна активність</h2>
 
-      <p class="profile-card-subtitle">Коротка статистика твоїх тренувань</p>
-    </div>
-  </div>
+    <div class="profile-card-header">
+        <div>
+            <h2 class="profile-card-title">
+                {{ profile_t("activity.title") }}
+            </h2>
 
-  {% set ns = namespace( completed=0, last_session=None, total_load=0,
-  load_count=0, total_rpe=0, rpe_count=0 ) %} {% for session in
-  user.training_sessions %} {% if session.finished_at %} {% set ns.completed =
-  ns.completed + 1 %} {% if ns.last_session is none or session.finished_at >
-  ns.last_session %} {% set ns.last_session = session.finished_at %} {% endif %}
-  {% if session.internal_load is not none %} {% set ns.total_load =
-  ns.total_load + session.internal_load %} {% set ns.load_count = ns.load_count
-  + 1 %} {% endif %} {% if session.rpe_avg is not none %} {% set ns.total_rpe =
-  ns.total_rpe + session.rpe_avg %} {% set ns.rpe_count = ns.rpe_count + 1 %} {%
-  endif %} {% endif %} {% endfor %}
-
-  <div class="profile-activity-grid">
-    <div class="profile-activity-item">
-      <span class="profile-activity-label"> Тренувань </span>
-
-      <span class="profile-activity-value"> {{ ns.completed }} </span>
-
-      <span class="profile-activity-unit"> завершено </span>
+            <p class="profile-card-subtitle">
+                {{ profile_t("activity.subtitle") }}
+            </p>
+        </div>
     </div>
 
-    <div class="profile-activity-item">
-      <span class="profile-activity-label"> Останнє </span>
+    {% set ns = namespace(
+        completed=0,
+        last_session=None,
+        total_load=0,
+        load_count=0,
+        total_rpe=0,
+        rpe_count=0
+    ) %}
 
-      <span class="profile-activity-value">
-        {% if ns.last_session %} {{ ns.last_session.strftime("%d.%m") }} {% else
-        %} — {% endif %}
-      </span>
+    {% for session in user.training_sessions %}
 
-      <span class="profile-activity-unit"> тренування </span>
+        {% if session.finished_at %}
+
+            {% set ns.completed = ns.completed + 1 %}
+
+            {% if ns.last_session is none or session.finished_at > ns.last_session %}
+                {% set ns.last_session = session.finished_at %}
+            {% endif %}
+
+            {% if session.internal_load is not none %}
+                {% set ns.total_load = ns.total_load + session.internal_load %}
+                {% set ns.load_count = ns.load_count + 1 %}
+            {% endif %}
+
+            {% if session.rpe_avg is not none %}
+                {% set ns.total_rpe = ns.total_rpe + session.rpe_avg %}
+                {% set ns.rpe_count = ns.rpe_count + 1 %}
+            {% endif %}
+
+        {% endif %}
+
+    {% endfor %}
+
+    <div class="profile-activity-grid">
+
+        <div class="profile-activity-item">
+            <span class="profile-activity-label">
+                {{ profile_t("activity.workouts") }}
+            </span>
+
+            <span class="profile-activity-value">
+                {{ ns.completed }}
+            </span>
+
+            <span class="profile-activity-unit">
+                {{ profile_t("activity.completed") }}
+            </span>
+        </div>
+
+        <div class="profile-activity-item">
+            <span class="profile-activity-label">
+                {{ profile_t("activity.last") }}
+            </span>
+
+            <span class="profile-activity-value">
+                {% if ns.last_session %}
+                    {{ ns.last_session.strftime("%d.%m") }}
+                {% else %}
+                    —
+                {% endif %}
+            </span>
+
+            <span class="profile-activity-unit">
+                {{ profile_t("activity.workout") }}
+            </span>
+        </div>
+
+        <div class="profile-activity-item">
+            <span class="profile-activity-label">
+                {{ profile_t("activity.avgLoad") }}
+            </span>
+
+            <span class="profile-activity-value">
+                {% if ns.load_count %}
+                    {{ "%.1f"|format(ns.total_load / ns.load_count) }}
+                {% else %}
+                    —
+                {% endif %}
+            </span>
+
+            <span class="profile-activity-unit">
+                {{ profile_t("activity.internalLoad") }}
+            </span>
+        </div>
+
+        <div class="profile-activity-item">
+            <span class="profile-activity-label">
+                {{ profile_t("activity.avgRpe") }}
+            </span>
+
+            <span class="profile-activity-value">
+                {% if ns.rpe_count %}
+                    {{ "%.1f"|format(ns.total_rpe / ns.rpe_count) }}
+                {% else %}
+                    —
+                {% endif %}
+            </span>
+
+            <span class="profile-activity-unit">
+                {{ profile_t("activity.outOfTen") }}
+            </span>
+        </div>
+
     </div>
 
-    <div class="profile-activity-item">
-      <span class="profile-activity-label"> Сер. навантаження </span>
-
-      <span class="profile-activity-value">
-        {% if ns.load_count %} {{ "%.1f"|format(ns.total_load / ns.load_count)
-        }} {% else %} — {% endif %}
-      </span>
-
-      <span class="profile-activity-unit"> internal load </span>
-    </div>
-
-    <div class="profile-activity-item">
-      <span class="profile-activity-label"> Сер. RPE </span>
-
-      <span class="profile-activity-value">
-        {% if ns.rpe_count %} {{ "%.1f"|format(ns.total_rpe / ns.rpe_count) }}
-        {% else %} — {% endif %}
-      </span>
-
-      <span class="profile-activity-unit"> з 10 </span>
-    </div>
-  </div>
 </section>

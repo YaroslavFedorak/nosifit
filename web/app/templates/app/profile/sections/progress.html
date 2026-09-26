@@ -5,11 +5,11 @@
     >
         <div>
             <h2 class="profile-card-title">
-                Заповнення профілю
+                {{ profile_t("progress.title") }}
             </h2>
 
             <p class="profile-card-subtitle">
-                Наскільки повними є твої дані
+                {{ profile_t("progress.subtitle") }}
             </p>
         </div>
 
@@ -34,7 +34,7 @@
                 </span>
 
                 <span class="profile-progress-label">
-                    профіль
+                    {{ profile_t("progress.profile") }}
                 </span>
 
             </div>
@@ -48,7 +48,7 @@
                 ></span>
 
                 <span class="profile-progress-text">
-                    Основна інформація
+                    {{ profile_t("progress.account") }}
                 </span>
             </div>
 
@@ -58,7 +58,7 @@
                 ></span>
 
                 <span class="profile-progress-text">
-                    Параметри тіла
+                    {{ profile_t("progress.body") }}
                 </span>
             </div>
 
@@ -68,7 +68,7 @@
                 ></span>
 
                 <span class="profile-progress-text">
-                    Цілі та активність
+                    {{ profile_t("progress.goalsActivity") }}
                 </span>
             </div>
 
@@ -78,7 +78,7 @@
                 ></span>
 
                 <span class="profile-progress-text">
-                    Тренувальний профіль
+                    {{ profile_t("progress.training") }}
                 </span>
             </div>
 

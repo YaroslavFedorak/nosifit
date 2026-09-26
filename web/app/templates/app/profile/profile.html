@@ -1,7 +1,7 @@
 {% extends "app/base_app.html" %}
 
 {% block title %}
-Профіль
+{{ profile_t("page.title") }}
 {% endblock %}
 
 {% block styles %}
@@ -81,11 +81,11 @@
 
             <div class="profile-header-text">
                 <h1 class="profile-title">
-                    Профіль
+                    {{ profile_t("page.title") }}
                 </h1>
 
                 <p class="profile-subtitle">
-                    Особисті дані та налаштування тренувань
+                    {{ profile_t("page.subtitle") }}
                 </p>
             </div>
 
@@ -94,7 +94,7 @@
         {% if user.id %}
         <div class="profile-header-id">
             <span class="profile-header-id-label">
-                ID
+                {{ profile_t("account.id") }}
             </span>
 
             <span class="profile-header-id-value">

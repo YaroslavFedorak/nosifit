@@ -3,11 +3,11 @@
     <div class="profile-card-header">
         <div>
             <h2 class="profile-card-title">
-                Дії
+                {{ profile_t("actions.title") }}
             </h2>
 
             <p class="profile-card-subtitle">
-                Керування особистими даними та безпекою
+                {{ profile_t("actions.subtitle") }}
             </p>
         </div>
     </div>
@@ -19,7 +19,7 @@
             class="profile-btn profile-btn-primary"
             data-modal-open="modal-edit-profile"
         >
-            Редагувати профіль
+            {{ profile_t("actions.editProfile") }}
         </button>
 
         <button
@@ -27,7 +27,7 @@
             class="profile-btn profile-btn-secondary"
             data-modal-open="modal-change-email"
         >
-            Змінити email
+            {{ profile_t("actions.changeEmail") }}
         </button>
 
         <button
@@ -35,7 +35,7 @@
             class="profile-btn profile-btn-secondary"
             data-modal-open="modal-change-password"
         >
-            Змінити пароль
+            {{ profile_t("actions.changePassword") }}
         </button>
 
         <button
@@ -43,7 +43,7 @@
             class="profile-btn profile-btn-danger"
             data-modal-open="modal-delete-account"
         >
-            Видалити акаунт
+            {{ profile_t("actions.deleteAccount") }}
         </button>
 
     </div>
