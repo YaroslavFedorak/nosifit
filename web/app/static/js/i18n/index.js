@@ -12,3 +12,6 @@ export function recovery_t(key, params = {}) {
 export function nutrition_t(key, params = {}) {
     return translate("nutrition", key, params);
 }
+export function profile_t(key, params = {}) {
+    return translate("profile", key, params);
+}

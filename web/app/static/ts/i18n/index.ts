@@ -55,3 +55,14 @@ export function nutrition_t(
         params,
     );
 }
+
+export function profile_t(
+    key: string,
+    params: Record<string, string | number> = {},
+): string {
+    return translate(
+        "profile",
+        key,
+        params,
+    );
+}

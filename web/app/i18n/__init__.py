@@ -70,6 +70,16 @@ def init_i18n(app):
                 **params,
             )
 
+        def profile_t(
+            key: str,
+            **params,
+        ) -> str:
+            return translate(
+                "profile",
+                key,
+                **params,
+            )
+
         return {
             "locale": locale,
             "supported_locales": SUPPORTED_LOCALES,
@@ -77,4 +87,5 @@ def init_i18n(app):
             "translate": translate,
             "training_t": training_t,
             "nutrition_t": nutrition_t,
+            "profile_t": profile_t,
         }
