@@ -1,5 +1,5 @@
-{% extends "app/base_app.html" %} {% block title %} Дашборд — Nosi Fit {%
-endblock %} {% block styles %}
+{% extends "app/base_app.html" %} {% block title %}{{ dashboard_t("page.title")
+}}{% endblock %} {% block styles %}
 
 <link
   rel="stylesheet"
@@ -9,8 +9,8 @@ endblock %} {% block styles %}
     ) }}"
 />
 
-{% endblock %} {% block body_class %} dashboard-page {% endblock %} {% block
-body %}
+{% endblock %} {% block body_class %}dashboard-page{% endblock %} {% block body
+%}
 
 <div class="dashboard-page-wrapper">
   <div class="dashboard-header">
@@ -40,17 +40,17 @@ body %}
       </div>
 
       <div class="dashboard-header-text">
-        <h1 class="dashboard-title">Дашборд</h1>
+        <h1 class="dashboard-title">{{ dashboard_t("page.heading") }}</h1>
 
-        <div class="dashboard-subtitle">
-          Керуйте навантаженням • Контролюйте відновлення • Аналізуйте прогрес
-        </div>
+        <div class="dashboard-subtitle">{{ dashboard_t("page.subtitle") }}</div>
       </div>
     </div>
 
     <div class="dashboard-header-right">
       <div class="dashboard-header-info">
-        <div class="dashboard-header-label">Сьогодні</div>
+        <div class="dashboard-header-label">
+          {{ dashboard_t("page.today") }}
+        </div>
 
         <div id="dashboard-header-date" class="dashboard-header-value"></div>
       </div>
@@ -63,7 +63,7 @@ body %}
         <section class="db-card db-card-session">
           <div class="db-card-header">
             <div class="db-card-heading">
-              <h2 class="db-card-title">Сьогоднішнє тренування</h2>
+              <h2 class="db-card-title">{{ dashboard_t("workout.title") }}</h2>
             </div>
 
             <div class="db-session-header-actions">
@@ -71,7 +71,7 @@ body %}
                 id="dashboard-workout-title"
                 class="db-session-title-input"
                 type="text"
-                placeholder="Назва тренування"
+                placeholder="{{ dashboard_t('workout.titlePlaceholder') }}"
                 autocomplete="off"
               />
 
@@ -80,7 +80,7 @@ body %}
                 class="db-btn db-btn-secondary"
                 type="button"
               >
-                План тренувань
+                {{ dashboard_t("workout.planButton") }}
               </button>
             </div>
           </div>
@@ -99,7 +99,7 @@ body %}
                 class="db-btn db-btn-secondary"
                 type="button"
               >
-                + Додати вправу
+                + {{ dashboard_t("workout.addExercise") }}
               </button>
 
               <button
@@ -107,7 +107,7 @@ body %}
                 class="db-btn db-btn-primary"
                 type="button"
               >
-                Зберегти тренування
+                {{ dashboard_t("workout.save") }}
               </button>
             </div>
           </div>
@@ -116,7 +116,9 @@ body %}
         <section class="db-card db-card-nutrition">
           <div class="db-card-header">
             <div class="db-card-heading">
-              <h2 class="db-card-title">Сьогоднішнє харчування</h2>
+              <h2 class="db-card-title">
+                {{ dashboard_t("nutrition.title") }}
+              </h2>
             </div>
 
             <div class="db-nutrition-header-actions">
@@ -125,7 +127,7 @@ body %}
                 class="db-btn db-btn-secondary"
                 id="dashboard-open-add-meal"
               >
-                Новий прийом
+                {{ dashboard_t("nutrition.newMeal") }}
               </button>
             </div>
           </div>
@@ -141,7 +143,9 @@ body %}
             <div class="db-nutrition-footer">
               <div class="db-nutrition-footer-group">
                 <div class="db-nutrition-stat">
-                  <span class="db-nutrition-stat-label">Вода</span>
+                  <span class="db-nutrition-stat-label">
+                    {{ dashboard_t("nutrition.water") }}
+                  </span>
 
                   <strong id="dashboard-water" class="db-nutrition-stat-value">
                     —
@@ -153,13 +157,15 @@ body %}
                   class="db-btn db-btn-secondary"
                   type="button"
                 >
-                  + Вода
+                  + {{ dashboard_t("nutrition.addWater") }}
                 </button>
               </div>
 
               <div class="db-nutrition-footer-group db-nutrition-weight-group">
                 <div class="db-nutrition-stat">
-                  <span class="db-nutrition-stat-label">Вага</span>
+                  <span class="db-nutrition-stat-label">
+                    {{ dashboard_t("nutrition.weight") }}
+                  </span>
 
                   <strong id="dashboard-weight" class="db-nutrition-stat-value">
                     —
@@ -171,7 +177,7 @@ body %}
                   class="db-btn db-btn-secondary"
                   type="button"
                 >
-                  Змінити вагу
+                  {{ dashboard_t("nutrition.updateWeight") }}
                 </button>
               </div>
             </div>
@@ -188,14 +194,16 @@ body %}
       <section class="db-card db-card-recovery">
         <div class="db-card-header">
           <div class="db-card-heading">
-            <h2 class="db-card-title">Відновлення</h2>
+            <h2 class="db-card-title">{{ dashboard_t("recovery.title") }}</h2>
           </div>
         </div>
 
         <div id="dashboard-recovery" class="db-recovery-content">
           <div class="db-recovery-sleep">
             <div class="db-recovery-section-header">
-              <div class="db-recovery-section-title">Сон</div>
+              <div class="db-recovery-section-title">
+                {{ dashboard_t("recovery.sleep") }}
+              </div>
             </div>
 
             <div class="sleep-top">
@@ -218,7 +226,7 @@ body %}
                 class="sleep-add-btn"
                 type="button"
               >
-                Додати сон
+                {{ dashboard_t("recovery.addSleep") }}
               </button>
             </div>
 
@@ -231,7 +239,9 @@ body %}
 
           <div class="db-recovery-habits">
             <div class="db-recovery-section-header">
-              <div class="db-recovery-section-title">Звички</div>
+              <div class="db-recovery-section-title">
+                {{ dashboard_t("recovery.habits") }}
+              </div>
 
               <div class="db-recovery-habits-header-actions">
                 <button
@@ -240,7 +250,7 @@ body %}
                   type="button"
                   data-user-id="{{ current_user.id }}"
                 >
-                  Додати звичку
+                  {{ dashboard_t("recovery.addHabit") }}
                 </button>
               </div>
             </div>
@@ -256,7 +266,9 @@ body %}
       <section class="db-card db-card-recommendations">
         <div class="db-card-header">
           <div class="db-card-heading">
-            <h2 class="db-card-title">Рекомендації</h2>
+            <h2 class="db-card-title">
+              {{ dashboard_t("recommendations.title") }}
+            </h2>
           </div>
         </div>
 

@@ -1,12 +1,13 @@
 import * as api from "./api.js";
 import * as state from "./state.js";
+import { dashboard_t, loadTranslations, } from "../i18n/index.js";
 import { renderRecommendations } from "./widgets/recommendations.js";
 import * as trainingEditor from "./widgets/training/index.js";
 import { saveWorkout } from "./widgets/training/controller.js";
 import { initRecoveryWidget } from "./widgets/recovery/index.js";
 import { renderHeatmap } from "./heatmap/render.js";
-import { openExerciseModal, initExerciseModal } from "./modals/exercise.js";
-import { openPlanModal, initPlanModal } from "./modals/plan/index.js";
+import { openExerciseModal, initExerciseModal, } from "./modals/exercise.js";
+import { openPlanModal, initPlanModal, } from "./modals/plan/index.js";
 import { initHabitModal } from "./modals/recovery/habit.js";
 import { initSleepModal } from "./modals/recovery/sleep.js";
 import { initCalendarModal } from "./modals/heatmap/calendar.js";
@@ -14,11 +15,13 @@ import { initDayDetailsModal } from "./modals/heatmap/day_details.js";
 import { formatDashboardDate } from "./utils/date.js";
 function setMetricValue(id, value) {
     const container = document.getElementById(id);
-    if (!container)
+    if (!container) {
         return;
+    }
     const element = container.querySelector(".dashboard-metric-value");
-    if (!element)
+    if (!element) {
         return;
+    }
     element.textContent =
         value == null || value === ""
             ? "—"
@@ -26,8 +29,9 @@ function setMetricValue(id, value) {
 }
 function bindHeaderDate() {
     const element = document.getElementById("dashboard-header-date");
-    if (!element)
+    if (!element) {
         return;
+    }
     element.textContent =
         formatDashboardDate(new Date());
 }
@@ -46,7 +50,7 @@ function bindOverview(overview) {
     const sleep = overview.recovery?.sleep_hours ??
         overview.sleep_hours;
     setMetricValue("sleep-score", sleep != null
-        ? `${sleep} год`
+        ? `${sleep} ${dashboard_t("units.hours")}`
         : "—");
     bindRecoverySummary(overview);
     bindNutritionSummary(overview);
@@ -66,7 +70,7 @@ function bindRecoverySummary(overview) {
         const value = overview?.recovery?.sleep_hours;
         sleep.textContent =
             value != null
-                ? `${value} год`
+                ? `${value} ${dashboard_t("units.hours")}`
                 : "—";
     }
     if (habits) {
@@ -99,39 +103,42 @@ function bindNutritionSummary(overview) {
         const value = Number(nutrition.calories);
         calories.textContent =
             Number.isFinite(value)
-                ? `${Math.round(value)} ккал`
+                ? `${Math.round(value)} ${dashboard_t("units.calories")}`
                 : "—";
     }
     if (protein) {
         const value = Number(nutrition.protein);
         protein.textContent =
             Number.isFinite(value)
-                ? `${Math.round(value)} г`
+                ? `${Math.round(value)} ${dashboard_t("units.grams")}`
                 : "—";
     }
     if (water) {
         const value = Number(nutrition.water);
         water.textContent =
             Number.isFinite(value)
-                ? `${Math.round(value)} мл`
+                ? `${Math.round(value)} ${dashboard_t("units.milliliters")}`
                 : "—";
     }
 }
 function bindHeatmap(data) {
     const container = document.getElementById("dashboard-heatmap");
-    if (!container)
+    if (!container) {
         return;
+    }
     renderHeatmap(container, data);
 }
 function bindRecommendations(recommendations) {
     const container = document.getElementById("dashboard-recommendations");
-    if (!container)
+    if (!container) {
         return;
+    }
     renderRecommendations(container, recommendations);
 }
 function getTrainingPlan(training) {
-    if (!training)
+    if (!training) {
         return null;
+    }
     return (training.plan ??
         training.training_plan ??
         training.program ??
@@ -145,7 +152,7 @@ function getCurrentPlanExercises(plan) {
         "wed",
         "thu",
         "fri",
-        "sat"
+        "sat",
     ];
     const currentDay = dayKeys[new Date().getDay()];
     const day = plan?.days?.[currentDay];
@@ -164,7 +171,7 @@ function applyPlanToWorkout(plan) {
     if (titleInput) {
         titleInput.value =
             plan?.name ??
-                "Тренування";
+                dashboard_t("workout.defaultTitle");
     }
 }
 function loadPersistedExercises() {
@@ -179,8 +186,9 @@ function loadPersistedExercises() {
             return [];
         }
         const raw = window.localStorage.getItem("dashboard_training_exercises");
-        if (!raw)
+        if (!raw) {
             return [];
+        }
         const parsed = JSON.parse(raw);
         return Array.isArray(parsed)
             ? parsed
@@ -214,8 +222,9 @@ function restoreTodayExercises(overview) {
     trainingEditor.replaceExercises(exercises);
 }
 function handleExerciseSelected(exercise) {
-    if (!exercise)
+    if (!exercise) {
         return;
+    }
     const added = trainingEditor.addExercise(exercise);
     if (!added) {
         console.error("Failed to add exercise:", exercise);
@@ -229,27 +238,27 @@ async function handleSaveWorkout() {
             onSuccess: async (result) => {
                 await loadAll();
                 window.dispatchEvent(new CustomEvent("dashboard:training-saved", {
-                    detail: result
+                    detail: result,
                 }));
-            }
+            },
         });
         if (finished) {
-            alert("Тренування успішно збережено!");
+            alert(dashboard_t("workout.saveSuccess"));
         }
     }
     catch (error) {
         console.error("Failed to save workout:", error);
         alert(error instanceof Error
             ? error.message
-            : "Не вдалося зберегти тренування.");
+            : dashboard_t("workout.errors.saveFailed"));
     }
 }
 async function loadAll() {
     try {
-        const [overview, heatmap, recommendations] = await Promise.all([
+        const [overview, heatmap, recommendations,] = await Promise.all([
             api.getToday(),
             api.getHeatmap(),
-            api.getRecommendation()
+            api.getRecommendation(),
         ]);
         restoreTodayExercises(overview);
         state.setOverview(overview);
@@ -262,8 +271,9 @@ async function loadAll() {
 }
 function bindNavigation() {
     const trainingButton = document.getElementById("dashboard-open-training");
-    if (!trainingButton)
+    if (!trainingButton) {
         return;
+    }
     trainingButton.addEventListener("click", () => {
         const overview = state.getState().overview;
         const plan = getTrainingPlan(overview?.training);
@@ -273,8 +283,8 @@ function bindNavigation() {
                 ...overview,
                 training: {
                     ...overview?.training,
-                    plan: savedPlan
-                }
+                    plan: savedPlan,
+                },
             });
         });
     });
@@ -314,8 +324,9 @@ function bindRecoveryNavigation() {
             return;
         }
         const habitModal = document.getElementById("habit-modal-backdrop");
-        if (!habitModal)
+        if (!habitModal) {
             return;
+        }
         habitModal.hidden = false;
         habitModal.classList.add("open");
     });
@@ -346,6 +357,10 @@ function initSubscriptions() {
     state.subscribe("recommendations", bindRecommendations);
 }
 async function init() {
+    await Promise.all([
+        loadTranslations("dashboard"),
+        loadTranslations("exercises"),
+    ]);
     bindHeaderDate();
     initSubscriptions();
     trainingEditor.init();
