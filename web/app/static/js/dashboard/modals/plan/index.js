@@ -1,6 +1,7 @@
 import { openExerciseModal } from "../exercise.js";
 import { TrainingAPI } from "../../widgets/training/api.js";
-import { DAYS } from "./constants.js";
+import { dashboard_t } from "../../../i18n/index.js";
+import { getPlanDays } from "./constants.js";
 import { dom } from "./dom.js";
 import { addExercise, setPlan, state } from "./state.js";
 import { savePlan } from "./services/save.js";
@@ -16,7 +17,8 @@ function renderDays() {
         return;
     }
     dom.days.innerHTML = "";
-    DAYS.forEach(day => {
+    const days = getPlanDays();
+    days.forEach(day => {
         const button = document.createElement("button");
         button.type = "button";
         button.className =
@@ -77,7 +79,7 @@ export async function openPlanModal(plan = null, onSaved = null) {
     if (dom.titleInput) {
         dom.titleInput.value =
             resolvedPlan?.name ??
-                "Мій план";
+                dashboard_t("plan.defaultTitle");
     }
     renderDays();
     renderExercises(openExercisePicker);

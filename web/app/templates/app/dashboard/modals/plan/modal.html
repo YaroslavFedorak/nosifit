@@ -1,9 +1,21 @@
 <div id="db-plan-modal" class="db-modal" aria-hidden="true">
-  <div class="db-modal-panel db-plan-modern" role="dialog" aria-modal="true" aria-labelledby="db-plan-modal-title">
+  <div
+    class="db-modal-panel db-plan-modern"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="db-plan-modal-title"
+  >
     <header class="db-plan-header">
       <div class="db-plan-title-block">
         <span class="db-plan-title-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
             <path d="M2 6h4" />
             <path d="M2 10h4" />
             <path d="M2 14h4" />
@@ -15,32 +27,63 @@
             <path d="M15 17h5" />
           </svg>
         </span>
-        <h3 id="db-plan-modal-title">Мій план тренувань</h3>
+
+        <h3 id="db-plan-modal-title">{{ dashboard_t("plan.title") }}</h3>
       </div>
 
       <div class="db-plan-header-actions">
-        <button id="db-plan-help-toggle" class="db-plan-help-btn" type="button" aria-label="Допомога" aria-expanded="false">
-          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" stroke="currentColor" fill="none" stroke-width="2">
+        <button
+          id="db-plan-help-toggle"
+          class="db-plan-help-btn"
+          type="button"
+          aria-label="{{ dashboard_t('plan.help') }}"
+          aria-expanded="false"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            stroke="currentColor"
+            fill="none"
+            stroke-width="2"
+          >
             <circle cx="9" cy="9" r="8" />
             <path d="M9 13v-2a2 2 0 1 0-2-2" />
             <circle cx="9" cy="16" r="1" />
           </svg>
         </button>
-        <button class="db-plan-close" data-close-plan-modal type="button">&times;</button>
+
+        <button
+          class="db-plan-close"
+          data-close-plan-modal
+          type="button"
+          aria-label="{{ dashboard_t('exerciseModal.close') }}"
+        >
+          &times;
+        </button>
       </div>
     </header>
 
     <div id="db-plan-help" class="db-plan-help-popover">
       <ul class="db-plan-help-list">
-        <li>Оберіть день, додайте вправи, налаштуйте повтори, підходи та вагу</li>
-        <li>Перетягуйте вправи за ручку, щоб змінити порядок</li>
+        <li>{{ dashboard_t("plan.helpItems.setup") }}</li>
+
+        <li>{{ dashboard_t("plan.helpItems.reorder") }}</li>
       </ul>
     </div>
 
     <div class="db-plan-body">
       <div class="db-plan-name-block">
-        <label for="db-plan-title" class="db-plan-name-label">Назва плану</label>
-        <input id="db-plan-title" class="db-plan-title" placeholder="Наприклад: Full Body" maxlength="80" />
+        <label for="db-plan-title" class="db-plan-name-label">
+          {{ dashboard_t("plan.name") }}
+        </label>
+
+        <input
+          id="db-plan-title"
+          class="db-plan-title"
+          placeholder="{{ dashboard_t('plan.namePlaceholder') }}"
+          maxlength="80"
+        />
       </div>
 
       <div class="db-plan-days" id="db-plan-days"></div>
@@ -48,40 +91,102 @@
       <section class="db-plan-column">
         <div class="db-plan-toolbar">
           <div class="db-plan-toolbar-left">
-            <span class="db-plan-toolbar-title">Вправи цього дня</span>
-            <span id="db-plan-day-summary" class="db-plan-toolbar-subtitle"></span>
+            <span class="db-plan-toolbar-title">
+              {{ dashboard_t("plan.dayExercises") }}
+            </span>
+
+            <span
+              id="db-plan-day-summary"
+              class="db-plan-toolbar-subtitle"
+            ></span>
           </div>
-          <button class="db-plan-button db-plan-button-primary db-plan-add-exercise" type="button">+ Додати вправу</button>
+
+          <button
+            class="db-plan-button db-plan-button-primary db-plan-add-exercise"
+            type="button"
+          >
+            + {{ dashboard_t("plan.addExercise") }}
+          </button>
         </div>
 
         <div class="db-plan-exercises" id="db-plan-exercises"></div>
 
-        <div id="db-plan-empty" class="db-plan-empty" role="status" aria-live="polite">
+        <div
+          id="db-plan-empty"
+          class="db-plan-empty"
+          role="status"
+          aria-live="polite"
+        >
           <div class="db-plan-empty-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M17.6 12.8a2 2 0 1 0 2.8-2.8l-1.8-1.8a2 2 0 0 0 2.8-2.8l-2.8-2.8a2 2 0 0 0-2.8 2.8l-1.8-1.8a2 2 0 1 0-2.8 2.8z" />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="40"
+              height="40"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                d="M17.6 12.8a2 2 0 1 0 2.8-2.8l-1.8-1.8a2 2 0 0 0 2.8-2.8l-2.8-2.8a2 2 0 1 0-2.8 2.8l-1.8-1.8a2 2 0 1 0-2.8 2.8z"
+              />
+
               <path d="m2.5 21.5 1.4-1.4" />
+
               <path d="m20.1 3.9 1.4-1.4" />
-              <path d="M5.3 21.5a2 2 0 1 0 2.8-2.8l1.8 1.8a2 2 0 1 0 2.8-2.8l-6.4-6.4a2 2 0 1 0-2.8 2.8l1.8 1.8a2 2 0 0 0-2.8 2.8z" />
+
+              <path
+                d="M5.3 21.5a2 2 0 1 0 2.8-2.8l1.8 1.8a2 2 0 1 0 2.8-2.8l-6.4-6.4a2 2 0 1 0-2.8 2.8l1.8 1.8a2 2 0 1 0-2.8 2.8z"
+              />
+
               <path d="m9.6 14.4 4.8-4.8" />
             </svg>
           </div>
-          <div class="db-plan-empty-text-main">План цього дня порожній</div>
-          <div class="db-plan-empty-text-sub">Додайте першу вправу, щоб почати тренування</div>
-          <button class="db-plan-button db-plan-button-primary db-plan-empty-add" type="button">+ Додати вправу</button>
+
+          <div class="db-plan-empty-text-main">
+            {{ dashboard_t("plan.empty.title") }}
+          </div>
+
+          <div class="db-plan-empty-text-sub">
+            {{ dashboard_t("plan.empty.subtitle") }}
+          </div>
+
+          <button
+            class="db-plan-button db-plan-button-primary db-plan-empty-add"
+            type="button"
+          >
+            + {{ dashboard_t("plan.empty.addExercise") }}
+          </button>
         </div>
       </section>
     </div>
 
     <footer class="db-plan-footer">
       <div class="db-plan-footer-summary">
-        <span id="db-plan-summary-count">0 вправ</span>
-        <span id="db-plan-summary-sets">0 підходів</span>
+        <span id="db-plan-summary-count">
+          {{ dashboard_t("plan.summary.exercises", count=0) }}
+        </span>
+
+        <span id="db-plan-summary-sets">
+          {{ dashboard_t("plan.summary.sets", count=0) }}
+        </span>
       </div>
+
       <div class="db-plan-footer-actions">
-        <button class="db-plan-button db-plan-button-ghost" data-close-plan-modal type="button">Скасувати</button>
-        <button id="db-plan-save" class="db-plan-button db-plan-button-primary" type="button">
-          <span class="btn-text">Зберегти план</span>
+        <button
+          class="db-plan-button db-plan-button-ghost"
+          data-close-plan-modal
+          type="button"
+        >
+          {{ dashboard_t("plan.cancel") }}
+        </button>
+
+        <button
+          id="db-plan-save"
+          class="db-plan-button db-plan-button-primary"
+          type="button"
+        >
+          <span class="btn-text"> {{ dashboard_t("plan.save") }} </span>
+
           <span class="btn-loader hidden" aria-hidden="true"></span>
         </button>
       </div>

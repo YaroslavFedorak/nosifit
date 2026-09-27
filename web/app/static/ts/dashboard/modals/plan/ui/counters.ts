@@ -1,3 +1,4 @@
+import { dashboard_t } from "../../../../i18n/index.js";
 import { ICONS } from "../../../../icons/index.js";
 import { PlanExercise } from "../state.js";
 
@@ -280,7 +281,9 @@ export function createRepsField(
 
     field.append(
         createLabel(
-            "Повтори",
+            dashboard_t(
+                "plan.fields.reps"
+            ),
             ICONS.exercise
         ),
         control

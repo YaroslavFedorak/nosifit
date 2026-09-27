@@ -2,6 +2,11 @@ import {
     TrainingAPI
 } from "../widgets/training/api.js";
 
+import {
+    dashboard_t,
+    exercise_t
+} from "../../i18n/index.js";
+
 interface ExerciseState {
     exercises: NormalizedExercise[];
     category: string;
@@ -15,7 +20,9 @@ interface ExerciseState {
 interface NormalizedExercise {
     id: string;
     databaseId: string | null;
+    slug: string;
     name: string;
+    originalName: string;
     movement_pattern: string;
     muscles_primary: string[];
     muscles_secondary: string[];
@@ -100,6 +107,19 @@ function findExerciseId(
     return null;
 }
 
+function findExerciseSlug(
+    exercise: any
+): string {
+    return String(
+        exercise?.slug ??
+        exercise?.exercise_slug ??
+        exercise?.exerciseSlug ??
+        exercise?.exercise?.slug ??
+        exercise?.data?.slug ??
+        ""
+    ).trim();
+}
+
 function normalizeArray(
     value: any
 ): string[] {
@@ -123,9 +143,40 @@ function normalizeArray(
     return [];
 }
 
+function getTranslatedName(
+    slug: string,
+    fallback: string
+): string {
+    if (!slug) {
+        return fallback;
+    }
+
+    const translated =
+        exercise_t(slug);
+
+    return translated !==
+        `${slug}.name`
+        ? translated
+        : fallback;
+}
+
 function normalizeExercise(
     exercise: any
 ): NormalizedExercise {
+    const originalName =
+        String(
+            exercise?.name ??
+            exercise?.exercise_name ??
+            exercise?.title ??
+            exercise?.exercise?.name ??
+            "Без назви"
+        );
+
+    const slug =
+        findExerciseSlug(
+            exercise
+        );
+
     return {
         id: createLocalId(),
 
@@ -134,13 +185,15 @@ function normalizeExercise(
                 exercise
             ),
 
-        name: String(
-            exercise?.name ??
-            exercise?.exercise_name ??
-            exercise?.title ??
-            exercise?.exercise?.name ??
-            "Без назви"
-        ),
+        slug,
+
+        name:
+            getTranslatedName(
+                slug,
+                originalName
+            ),
+
+        originalName,
 
         movement_pattern:
             exercise?.movement_pattern ??
@@ -249,72 +302,42 @@ function matchesCategory(
 
     if (category === "legs") {
         return (
-            pattern.includes(
-                "squat"
-            ) ||
-            pattern.includes(
-                "lunge"
-            ) ||
+            pattern.includes("squat") ||
+            pattern.includes("lunge") ||
             muscles.some(
                 muscle =>
-                    muscle.includes(
-                        "quad"
-                    ) ||
-                    muscle.includes(
-                        "glute"
-                    ) ||
-                    muscle.includes(
-                        "hamstring"
-                    ) ||
-                    muscle.includes(
-                        "calf"
-                    )
+                    muscle.includes("quad") ||
+                    muscle.includes("glute") ||
+                    muscle.includes("hamstring") ||
+                    muscle.includes("calf")
             )
         );
     }
 
     if (category === "core") {
         return (
-            pattern.includes(
-                "core"
-            ) ||
-            pattern.includes(
-                "abs"
-            ) ||
+            pattern.includes("core") ||
+            pattern.includes("abs") ||
             muscles.some(
                 muscle =>
-                    muscle.includes(
-                        "abs"
-                    ) ||
-                    muscle.includes(
-                        "oblique"
-                    )
+                    muscle.includes("abs") ||
+                    muscle.includes("oblique")
             )
         );
     }
 
-    if (
-        category === "mobility"
-    ) {
+    if (category === "mobility") {
         return (
-            pattern.includes(
-                "mobility"
-            ) ||
-            pattern.includes(
-                "stretch"
-            )
+            pattern.includes("mobility") ||
+            pattern.includes("stretch")
         );
     }
 
     return (
-        pattern.includes(
-            category
-        ) ||
+        pattern.includes(category) ||
         muscles.some(
             muscle =>
-                muscle.includes(
-                    category
-                )
+                muscle.includes(category)
         )
     );
 }
@@ -331,11 +354,22 @@ function getFilteredExercises():
             const name =
                 exercise.name.toLowerCase();
 
+            const originalName =
+                exercise.originalName
+                    .toLowerCase();
+
+            const slug =
+                exercise.slug
+                    .toLowerCase();
+
+            const matchesSearch =
+                !query ||
+                name.includes(query) ||
+                originalName.includes(query) ||
+                slug.includes(query);
+
             return (
-                (!query ||
-                    name.includes(
-                        query
-                    )) &&
+                matchesSearch &&
                 matchesCategory(
                     exercise
                 )
@@ -368,7 +402,9 @@ function renderExercises(): void {
 
     if (state.loading) {
         renderEmpty(
-            "Завантаження вправ..."
+            dashboard_t(
+                "exerciseModal.loading"
+            )
         );
 
         return;
@@ -379,7 +415,9 @@ function renderExercises(): void {
 
     if (!items.length) {
         renderEmpty(
-            "Вправи не знайдені."
+            dashboard_t(
+                "exerciseModal.empty"
+            )
         );
 
         return;
@@ -388,72 +426,92 @@ function renderExercises(): void {
     const fragment =
         document.createDocumentFragment();
 
-    items.forEach(exercise => {
-        const button =
-            document.createElement(
-                "button"
-            );
+    items.forEach(
+        exercise => {
+            const button =
+                document.createElement(
+                    "button"
+                );
 
-        button.type = "button";
-        button.className =
-            "db-session-item";
+            button.type = "button";
 
-        if (
-            exercise.databaseId
-        ) {
-            button.dataset.exerciseId =
-                exercise.databaseId;
-        }
+            button.className =
+                "db-session-item";
 
-        const name =
-            document.createElement(
-                "div"
-            );
-
-        name.className =
-            "db-session-item-name";
-
-        name.textContent =
-            exercise.name;
-
-        button.appendChild(name);
-
-        button.addEventListener(
-            "click",
-            () => {
-                if (!state.callback) {
-                    return;
-                }
-
-                state.callback({
-                    databaseId:
-                        exercise.databaseId,
-                    id:
-                        exercise.databaseId,
-                    name:
-                        exercise.name,
-                    movement_pattern:
-                        exercise.movement_pattern,
-                    muscles_primary:
-                        exercise.muscles_primary,
-                    muscles_secondary:
-                        exercise.muscles_secondary,
-                    equipment:
-                        exercise.equipment,
-                    sets: 3,
-                    reps: "10",
-                    weight: 0,
-                    completed: false
-                });
-
-                closeModal();
+            if (
+                exercise.databaseId
+            ) {
+                button.dataset.exerciseId =
+                    exercise.databaseId;
             }
-        );
 
-        fragment.appendChild(
-            button
-        );
-    });
+            const name =
+                document.createElement(
+                    "div"
+                );
+
+            name.className =
+                "db-session-item-name";
+
+            name.textContent =
+                exercise.name;
+
+            button.appendChild(
+                name
+            );
+
+            button.addEventListener(
+                "click",
+                () => {
+                    if (
+                        !state.callback
+                    ) {
+                        return;
+                    }
+
+                    state.callback({
+                        databaseId:
+                            exercise.databaseId,
+
+                        id:
+                            exercise.databaseId,
+
+                        slug:
+                            exercise.slug,
+
+                        name:
+                            exercise.originalName,
+
+                        movement_pattern:
+                            exercise.movement_pattern,
+
+                        muscles_primary:
+                            exercise.muscles_primary,
+
+                        muscles_secondary:
+                            exercise.muscles_secondary,
+
+                        equipment:
+                            exercise.equipment,
+
+                        sets: 3,
+
+                        reps: "10",
+
+                        weight: 0,
+
+                        completed: false
+                    });
+
+                    closeModal();
+                }
+            );
+
+            fragment.appendChild(
+                button
+            );
+        }
+    );
 
     list.appendChild(
         fragment
@@ -497,7 +555,9 @@ async function loadExercises():
             await TrainingAPI.getExercises();
 
         const raw =
-            extractExercises(data);
+            extractExercises(
+                data
+            );
 
         state.exercises =
             raw
@@ -508,7 +568,7 @@ async function loadExercises():
                     exercise =>
                         exercise.databaseId !==
                             null &&
-                        exercise.name !==
+                        exercise.originalName !==
                             "Без назви"
                 );
 
@@ -525,7 +585,9 @@ async function loadExercises():
         state.exercises = [];
 
         renderEmpty(
-            "Не вдалося завантажити вправи."
+            dashboard_t(
+                "exerciseModal.loadError"
+            )
         );
     } finally {
         state.loading = false;
@@ -584,41 +646,45 @@ export function initExerciseModal():
         );
     }
 
-    filters.forEach(button => {
-        button.addEventListener(
-            "click",
-            () => {
-                state.category =
-                    button.dataset
-                        .exerciseCategory ||
-                    "all";
+    filters.forEach(
+        button => {
+            button.addEventListener(
+                "click",
+                () => {
+                    state.category =
+                        button.dataset
+                            .exerciseCategory ||
+                        "all";
 
-                filters.forEach(
-                    filter =>
-                        filter.classList.remove(
-                            "active"
-                        )
-                );
+                    filters.forEach(
+                        filter =>
+                            filter.classList.remove(
+                                "active"
+                            )
+                    );
 
-                button.classList.add(
-                    "active"
-                );
+                    button.classList.add(
+                        "active"
+                    );
 
-                renderExercises();
-            }
-        );
-    });
+                    renderExercises();
+                }
+            );
+        }
+    );
 
     modal
         .querySelectorAll<HTMLElement>(
             "[data-close-exercise-modal]"
         )
-        .forEach(button => {
-            button.addEventListener(
-                "click",
-                closeModal
-            );
-        });
+        .forEach(
+            button => {
+                button.addEventListener(
+                    "click",
+                    closeModal
+                );
+            }
+        );
 
     modal.addEventListener(
         "click",

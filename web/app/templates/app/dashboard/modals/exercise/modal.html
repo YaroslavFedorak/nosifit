@@ -8,17 +8,19 @@
     <div class="db-modal-header">
       <div class="db-modal-heading">
         <h2 id="db-exercise-modal-title" class="db-modal-title">
-          Додати вправу
+          {{ dashboard_t("exerciseModal.title") }}
         </h2>
 
-        <p class="db-modal-subtitle">Оберіть вправу для поточного тренування</p>
+        <p class="db-modal-subtitle">
+          {{ dashboard_t("exerciseModal.subtitle") }}
+        </p>
       </div>
 
       <button
         type="button"
         class="db-modal-close"
         data-close-exercise-modal
-        aria-label="Закрити"
+        aria-label="{{ dashboard_t('exerciseModal.close') }}"
       >
         ×
       </button>
@@ -31,7 +33,7 @@
             id="db-exercise-search"
             class="db-session-search"
             type="search"
-            placeholder="Пошук вправи..."
+            placeholder="{{ dashboard_t('exerciseModal.searchPlaceholder') }}"
             autocomplete="off"
           />
         </div>
@@ -43,7 +45,7 @@
               class="db-session-filter active"
               data-exercise-category="all"
             >
-              Усі
+              {{ dashboard_t("exerciseModal.all") }}
             </button>
 
             <button
@@ -51,7 +53,7 @@
               class="db-session-filter"
               data-exercise-category="push"
             >
-              Push
+              {{ dashboard_t("exerciseModal.push") }}
             </button>
 
             <button
@@ -59,7 +61,7 @@
               class="db-session-filter"
               data-exercise-category="pull"
             >
-              Pull
+              {{ dashboard_t("exerciseModal.pull") }}
             </button>
 
             <button
@@ -67,7 +69,7 @@
               class="db-session-filter"
               data-exercise-category="legs"
             >
-              Ноги
+              {{ dashboard_t("exerciseModal.legs") }}
             </button>
 
             <button
@@ -75,7 +77,7 @@
               class="db-session-filter"
               data-exercise-category="core"
             >
-              Core
+              {{ dashboard_t("exerciseModal.core") }}
             </button>
 
             <button
@@ -83,7 +85,7 @@
               class="db-session-filter"
               data-exercise-category="mobility"
             >
-              Mobility
+              {{ dashboard_t("exerciseModal.mobility") }}
             </button>
           </div>
         </div>
@@ -100,7 +102,7 @@
         class="db-btn db-btn-secondary"
         data-close-exercise-modal
       >
-        Закрити
+        {{ dashboard_t("exerciseModal.close") }}
       </button>
     </div>
   </div>

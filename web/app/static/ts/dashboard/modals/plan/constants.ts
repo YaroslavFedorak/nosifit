@@ -1,35 +1,39 @@
+import { dashboard_t } from "../../../i18n/index.js";
+
 export interface PlanDay {
     key: string;
     short: string;
 }
 
-export const DAYS: PlanDay[] = [
-    {
-        key: "mon",
-        short: "Пн"
-    },
-    {
-        key: "tue",
-        short: "Вт"
-    },
-    {
-        key: "wed",
-        short: "Ср"
-    },
-    {
-        key: "thu",
-        short: "Чт"
-    },
-    {
-        key: "fri",
-        short: "Пт"
-    },
-    {
-        key: "sat",
-        short: "Сб"
-    },
-    {
-        key: "sun",
-        short: "Нд"
-    }
-];
+export function getPlanDays(): PlanDay[] {
+    return [
+        {
+            key: "mon",
+            short: dashboard_t("plan.days.mon")
+        },
+        {
+            key: "tue",
+            short: dashboard_t("plan.days.tue")
+        },
+        {
+            key: "wed",
+            short: dashboard_t("plan.days.wed")
+        },
+        {
+            key: "thu",
+            short: dashboard_t("plan.days.thu")
+        },
+        {
+            key: "fri",
+            short: dashboard_t("plan.days.fri")
+        },
+        {
+            key: "sat",
+            short: dashboard_t("plan.days.sat")
+        },
+        {
+            key: "sun",
+            short: dashboard_t("plan.days.sun")
+        }
+    ];
+}

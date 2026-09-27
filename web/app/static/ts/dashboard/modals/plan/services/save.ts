@@ -1,4 +1,5 @@
 import { TrainingAPI } from "../../../widgets/training/api.js";
+import { dashboard_t } from "../../../../i18n/index.js";
 import { dom } from "../dom.js";
 import {
     normalizeDays,
@@ -39,7 +40,9 @@ export async function savePlan(): Promise<any> {
     const payload = {
         name:
             dom.titleInput?.value.trim() ||
-            "Мій план",
+            dashboard_t(
+                "plan.defaultTitle"
+            ),
         is_active: true,
         days: state.days
     };
@@ -66,13 +69,17 @@ export async function savePlan(): Promise<any> {
             );
 
         showToast(
-            "План збережено"
+            dashboard_t(
+                "plan.saveSuccess"
+            )
         );
 
         return savedPlan;
     } catch (error) {
         showToast(
-            "Не вдалося зберегти план"
+            dashboard_t(
+                "plan.saveFailed"
+            )
         );
 
         throw error;

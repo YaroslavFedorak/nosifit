@@ -1,3 +1,4 @@
+import { dashboard_t } from "../../../../i18n/index.js";
 import { ICONS } from "../../../../icons/index.js";
 function createArrow(className, onClick) {
     const arrow = document.createElement("div");
@@ -96,6 +97,6 @@ export function createRepsField(value, onChange) {
         const [from, to] = parseRange(input.value);
         update(from, to);
     });
-    field.append(createLabel("Повтори", ICONS.exercise), control);
+    field.append(createLabel(dashboard_t("plan.fields.reps"), ICONS.exercise), control);
     return field;
 }

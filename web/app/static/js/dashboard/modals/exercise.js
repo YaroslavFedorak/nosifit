@@ -1,4 +1,5 @@
 import { TrainingAPI } from "../widgets/training/api.js";
+import { dashboard_t, exercise_t } from "../../i18n/index.js";
 const state = {
     exercises: [],
     category: "all",
@@ -54,6 +55,14 @@ function findExerciseId(exercise) {
     }
     return null;
 }
+function findExerciseSlug(exercise) {
+    return String(exercise?.slug ??
+        exercise?.exercise_slug ??
+        exercise?.exerciseSlug ??
+        exercise?.exercise?.slug ??
+        exercise?.data?.slug ??
+        "").trim();
+}
 function normalizeArray(value) {
     if (Array.isArray(value)) {
         return value;
@@ -67,15 +76,29 @@ function normalizeArray(value) {
     }
     return [];
 }
+function getTranslatedName(slug, fallback) {
+    if (!slug) {
+        return fallback;
+    }
+    const translated = exercise_t(slug);
+    return translated !==
+        `${slug}.name`
+        ? translated
+        : fallback;
+}
 function normalizeExercise(exercise) {
+    const originalName = String(exercise?.name ??
+        exercise?.exercise_name ??
+        exercise?.title ??
+        exercise?.exercise?.name ??
+        "Без назви");
+    const slug = findExerciseSlug(exercise);
     return {
         id: createLocalId(),
         databaseId: findExerciseId(exercise),
-        name: String(exercise?.name ??
-            exercise?.exercise_name ??
-            exercise?.title ??
-            exercise?.exercise?.name ??
-            "Без назви"),
+        slug,
+        name: getTranslatedName(slug, originalName),
+        originalName,
         movement_pattern: exercise?.movement_pattern ??
             exercise?.movementPattern ??
             exercise?.exercise
@@ -157,8 +180,15 @@ function getFilteredExercises() {
         .toLowerCase();
     return state.exercises.filter(exercise => {
         const name = exercise.name.toLowerCase();
-        return ((!query ||
-            name.includes(query)) &&
+        const originalName = exercise.originalName
+            .toLowerCase();
+        const slug = exercise.slug
+            .toLowerCase();
+        const matchesSearch = !query ||
+            name.includes(query) ||
+            originalName.includes(query) ||
+            slug.includes(query);
+        return (matchesSearch &&
             matchesCategory(exercise));
     });
 }
@@ -177,12 +207,12 @@ function renderExercises() {
     }
     list.innerHTML = "";
     if (state.loading) {
-        renderEmpty("Завантаження вправ...");
+        renderEmpty(dashboard_t("exerciseModal.loading"));
         return;
     }
     const items = getFilteredExercises();
     if (!items.length) {
-        renderEmpty("Вправи не знайдені.");
+        renderEmpty(dashboard_t("exerciseModal.empty"));
         return;
     }
     const fragment = document.createDocumentFragment();
@@ -208,7 +238,8 @@ function renderExercises() {
             state.callback({
                 databaseId: exercise.databaseId,
                 id: exercise.databaseId,
-                name: exercise.name,
+                slug: exercise.slug,
+                name: exercise.originalName,
                 movement_pattern: exercise.movement_pattern,
                 muscles_primary: exercise.muscles_primary,
                 muscles_secondary: exercise.muscles_secondary,
@@ -247,14 +278,14 @@ async function loadExercises() {
                 .map(normalizeExercise)
                 .filter(exercise => exercise.databaseId !==
                 null &&
-                exercise.name !==
+                exercise.originalName !==
                     "Без назви");
         console.log("Dashboard exercises loaded:", state.exercises.length);
     }
     catch (error) {
         console.error("Failed to load dashboard exercises:", error);
         state.exercises = [];
-        renderEmpty("Не вдалося завантажити вправи.");
+        renderEmpty(dashboard_t("exerciseModal.loadError"));
     }
     finally {
         state.loading = false;

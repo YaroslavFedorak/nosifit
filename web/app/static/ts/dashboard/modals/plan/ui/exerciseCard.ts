@@ -1,18 +1,28 @@
+import {
+    dashboard_t,
+    exercise_t
+} from "../../../../i18n/index.js";
+
 import { ICONS } from "../../../../icons/index.js";
+
 import { enableDragAndDrop } from "../interactions/dragdrop.js";
+
 import {
     createNumberField,
     createRepsField
 } from "./counters.js";
+
 import { PlanExercise } from "../state.js";
 
 interface ExerciseCardActions {
     replace: (
         index: number
     ) => void;
+
     remove: (
         index: number
     ) => void;
+
     move: (
         fromIndex: number,
         toIndex: number
@@ -22,10 +32,30 @@ interface ExerciseCardActions {
 function getExerciseName(
     exercise: any
 ): string {
+    const slug =
+        exercise?.slug ??
+        exercise?.exercise_slug ??
+        exercise?.original?.slug ??
+        exercise?.exercise?.slug;
+
+    if (slug) {
+        const translated =
+            exercise_t(slug);
+
+        if (
+            translated !==
+            `${slug}.name`
+        ) {
+            return translated;
+        }
+    }
+
     return (
         exercise?.name ??
         exercise?.exercise_name ??
-        "Без назви"
+        dashboard_t(
+            "workout.unnamedExercise"
+        )
     );
 }
 
@@ -41,6 +71,7 @@ function createButton(
         );
 
     button.type = "button";
+
     button.className =
         className;
 
@@ -68,36 +99,47 @@ export function createExerciseCard(
     actions: ExerciseCardActions
 ): HTMLDivElement {
     const card =
-        document.createElement("div");
+        document.createElement(
+            "div"
+        );
 
     card.className =
         "db-plan-card";
 
     const header =
-        document.createElement("div");
+        document.createElement(
+            "div"
+        );
 
     header.className =
         "db-plan-card-header";
 
     const left =
-        document.createElement("div");
+        document.createElement(
+            "div"
+        );
 
     left.className =
         "db-plan-card-header-left";
 
     const strip =
-        document.createElement("div");
+        document.createElement(
+            "div"
+        );
 
     strip.className =
         "db-plan-card-strip";
+
+    const exerciseName =
+        getExerciseName(
+            item.exercise
+        );
 
     const name =
         createButton(
             "db-plan-ex-name",
             "",
-            getExerciseName(
-                item.exercise
-            ),
+            exerciseName,
             () =>
                 actions.replace(
                     index
@@ -105,9 +147,7 @@ export function createExerciseCard(
         );
 
     name.textContent =
-        getExerciseName(
-            item.exercise
-        );
+        exerciseName;
 
     left.append(
         strip,
@@ -115,7 +155,9 @@ export function createExerciseCard(
     );
 
     const controls =
-        document.createElement("div");
+        document.createElement(
+            "div"
+        );
 
     controls.className =
         "db-plan-card-header-right";
@@ -124,12 +166,16 @@ export function createExerciseCard(
         createButton(
             "db-plan-card-drag",
             ICONS.grip,
-            "Змінити порядок"
+            dashboard_t(
+                "plan.actions.reorder"
+            )
         ),
         createButton(
             "db-plan-card-delete",
             ICONS.delete,
-            "Видалити вправу",
+            dashboard_t(
+                "plan.actions.deleteExercise"
+            ),
             () =>
                 actions.remove(
                     index
@@ -143,7 +189,9 @@ export function createExerciseCard(
     );
 
     const body =
-        document.createElement("div");
+        document.createElement(
+            "div"
+        );
 
     body.className =
         "db-plan-card-body";
@@ -157,7 +205,9 @@ export function createExerciseCard(
             }
         ),
         createNumberField(
-            "Підходи",
+            dashboard_t(
+                "plan.fields.sets"
+            ),
             ICONS.exercise,
             item.sets,
             value => {
@@ -166,7 +216,9 @@ export function createExerciseCard(
             }
         ),
         createNumberField(
-            "Вага (кг)",
+            dashboard_t(
+                "plan.fields.weight"
+            ),
             ICONS.exercise,
             item.load,
             value => {

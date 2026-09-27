@@ -1,10 +1,22 @@
+import { dashboard_t, exercise_t } from "../../../../i18n/index.js";
 import { ICONS } from "../../../../icons/index.js";
 import { enableDragAndDrop } from "../interactions/dragdrop.js";
 import { createNumberField, createRepsField } from "./counters.js";
 function getExerciseName(exercise) {
+    const slug = exercise?.slug ??
+        exercise?.exercise_slug ??
+        exercise?.original?.slug ??
+        exercise?.exercise?.slug;
+    if (slug) {
+        const translated = exercise_t(slug);
+        if (translated !==
+            `${slug}.name`) {
+            return translated;
+        }
+    }
     return (exercise?.name ??
         exercise?.exercise_name ??
-        "Без назви");
+        dashboard_t("workout.unnamedExercise"));
 }
 function createButton(className, content, label, onClick) {
     const button = document.createElement("button");
@@ -32,14 +44,15 @@ export function createExerciseCard(item, index, actions) {
     const strip = document.createElement("div");
     strip.className =
         "db-plan-card-strip";
-    const name = createButton("db-plan-ex-name", "", getExerciseName(item.exercise), () => actions.replace(index));
+    const exerciseName = getExerciseName(item.exercise);
+    const name = createButton("db-plan-ex-name", "", exerciseName, () => actions.replace(index));
     name.textContent =
-        getExerciseName(item.exercise);
+        exerciseName;
     left.append(strip, name);
     const controls = document.createElement("div");
     controls.className =
         "db-plan-card-header-right";
-    controls.append(createButton("db-plan-card-drag", ICONS.grip, "Змінити порядок"), createButton("db-plan-card-delete", ICONS.delete, "Видалити вправу", () => actions.remove(index)));
+    controls.append(createButton("db-plan-card-drag", ICONS.grip, dashboard_t("plan.actions.reorder")), createButton("db-plan-card-delete", ICONS.delete, dashboard_t("plan.actions.deleteExercise"), () => actions.remove(index)));
     header.append(left, controls);
     const body = document.createElement("div");
     body.className =
@@ -47,10 +60,10 @@ export function createExerciseCard(item, index, actions) {
     body.append(createRepsField(item.reps, value => {
         item.reps =
             value;
-    }), createNumberField("Підходи", ICONS.exercise, item.sets, value => {
+    }), createNumberField(dashboard_t("plan.fields.sets"), ICONS.exercise, item.sets, value => {
         item.sets =
             value;
-    }), createNumberField("Вага (кг)", ICONS.exercise, item.load, value => {
+    }), createNumberField(dashboard_t("plan.fields.weight"), ICONS.exercise, item.load, value => {
         item.load =
             value;
     }));

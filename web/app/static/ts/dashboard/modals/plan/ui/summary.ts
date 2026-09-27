@@ -1,5 +1,6 @@
+import { dashboard_t } from "../../../../i18n/index.js";
 import { dom } from "../dom.js";
-import { DAYS } from "../constants.js";
+import { getPlanDays } from "../constants.js";
 import { state } from "../state.js";
 
 export function updateSummary(): void {
@@ -23,15 +24,30 @@ export function updateSummary(): void {
 
     if (dom.summaryCount) {
         dom.summaryCount.textContent =
-            `${exercises.length} вправ`;
+            dashboard_t(
+                "plan.summary.exercises",
+                {
+                    count:
+                        exercises.length
+                }
+            );
     }
 
     if (dom.summarySets) {
         dom.summarySets.textContent =
-            `${sets} підходів`;
+            dashboard_t(
+                "plan.summary.sets",
+                {
+                    count:
+                        sets
+                }
+            );
     }
 
-    DAYS.forEach(
+    const days =
+        getPlanDays();
+
+    days.forEach(
         day => {
             const badge =
                 dom.days?.querySelector(

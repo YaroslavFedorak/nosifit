@@ -1,4 +1,4 @@
-import { DAYS } from "./constants.js";
+const DEFAULT_DAY = "mon";
 
 export interface PlanExercise {
     exercise: any;
@@ -27,7 +27,7 @@ export interface PlanState {
 export const state: PlanState = {
     planId: null,
     days: {},
-    currentDay: DAYS[0].key
+    currentDay: DEFAULT_DAY
 };
 
 function toNonNegativeNumber(
@@ -73,13 +73,23 @@ function normalizeExercise(
 export function normalizeDays(
     days: any = {}
 ): PlanDays {
-    return DAYS.reduce(
+    const dayKeys = [
+        "mon",
+        "tue",
+        "wed",
+        "thu",
+        "fri",
+        "sat",
+        "sun"
+    ];
+
+    return dayKeys.reduce(
         (
             normalized: PlanDays,
-            day
+            dayKey: string
         ) => {
             const rawDay =
-                days?.[day.key];
+                days?.[dayKey];
 
             const exercises =
                 Array.isArray(rawDay)
@@ -90,7 +100,7 @@ export function normalizeDays(
                         ? rawDay.exercises
                         : [];
 
-            normalized[day.key] =
+            normalized[dayKey] =
                 exercises.map(
                     normalizeExercise
                 );
@@ -113,7 +123,7 @@ export function setPlan(
         );
 
     state.currentDay =
-        DAYS[0].key;
+        DEFAULT_DAY;
 }
 
 export function addExercise(
