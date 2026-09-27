@@ -1,0 +1,127 @@
+{
+    "units": {
+        "hours": "h",
+        "calories": "kcal",
+        "grams": "g",
+        "milliliters": "ml"
+    },
+    "page": {
+        "title": "Dashboard — Nosi Fit",
+        "heading": "Dashboard",
+        "subtitle": "Manage your workload • Monitor recovery • Analyze progress",
+        "today": "Today"
+    },
+    "workout": {
+        "title": "Today's workout",
+        "defaultTitle": "Workout",
+        "titlePlaceholder": "Workout name",
+        "planButton": "Training plan",
+        "addExercise": "Add exercise",
+        "emptyExercises": "Add exercises to your workout",
+        "unnamedExercise": "Unnamed exercise",
+        "fields": {
+            "sets": "sets",
+            "reps": "reps",
+            "weight": "kg"
+        },
+        "exercise": {
+            "completed": "Completed",
+            "markCompleted": "Mark as completed"
+        },
+        "save": "Save workout",
+        "saveSuccess": "Workout saved successfully!",
+        "errors": {
+            "noCompletedExercises": "Mark at least one completed exercise.",
+            "noValidExercises": "There are no valid exercises to save.",
+            "invalidSessionId": "The server did not return a valid workout ID.",
+            "noExercisesSaved": "No exercises could be saved.",
+            "saveFailed": "Failed to save the workout."
+        }
+    },
+    "nutrition": {
+        "title": "Today's nutrition",
+        "newMeal": "New meal",
+        "water": "Water",
+        "addWater": "Add water",
+        "weight": "Weight",
+        "updateWeight": "Update weight"
+    },
+    "recovery": {
+        "title": "Recovery",
+        "sleep": "Sleep",
+        "addSleep": "Add sleep",
+        "habits": "Habits",
+        "addHabit": "Add habit"
+    },
+    "recommendations": {
+        "title": "Recommendations"
+    },
+    "heatmap": {
+        "eyebrow": "History",
+        "calendar": "Calendar",
+        "ariaLabel": "Overall status heatmap",
+        "less": "Less",
+        "more": "More",
+        "noData": "No data",
+        "level": "Level {level}"
+    },
+    "exerciseModal": {
+        "title": "Add exercise",
+        "subtitle": "Choose an exercise for your current workout",
+        "close": "Close",
+        "searchPlaceholder": "Search exercise...",
+        "all": "All",
+        "push": "Push",
+        "pull": "Pull",
+        "legs": "Legs",
+        "core": "Core",
+        "mobility": "Mobility",
+        "loading": "Loading exercises...",
+        "empty": "No exercises found.",
+        "loadError": "Failed to load exercises."
+    },
+    "plan": {
+        "defaultTitle": "My plan",
+        "saveSuccess": "Plan saved",
+        "saveFailed": "Failed to save the plan",
+        "help": "Help",
+        "helpItems": {
+            "setup": "Choose a day, add exercises, and set reps, sets, and weight",
+            "reorder": "Drag exercises by the handle to change their order"
+        },
+        "title": "My training plan",
+        "name": "Plan name",
+        "namePlaceholder": "For example: Full Body",
+        "dayExercises": "Exercises for this day",
+        "addExercise": "Add exercise",
+        "empty": {
+            "title": "This day is empty",
+            "subtitle": "Add your first exercise to start your workout",
+            "addExercise": "Add exercise"
+        },
+        "days": {
+            "mon": "Mon",
+            "tue": "Tue",
+            "wed": "Wed",
+            "thu": "Thu",
+            "fri": "Fri",
+            "sat": "Sat",
+            "sun": "Sun"
+        },
+        "fields": {
+            "reps": "Reps",
+            "sets": "Sets",
+            "weight": "Weight (kg)"
+        },
+        "actions": {
+            "reorder": "Reorder exercise",
+            "deleteExercise": "Delete exercise"
+        },
+        "summary": {
+            "exercises": "{count} exercises",
+            "sets": "{count} sets"
+        },
+        "cancel": "Cancel",
+        "save": "Save plan"
+    }
+}

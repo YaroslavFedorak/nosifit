@@ -80,6 +80,16 @@ def init_i18n(app):
                 **params,
             )
 
+        def dashboard_t(
+            key: str,
+            **params,
+        ) -> str:
+            return translate(
+                "dashboard",
+                key,
+                **params,
+            )
+
         return {
             "locale": locale,
             "supported_locales": SUPPORTED_LOCALES,
@@ -88,4 +98,5 @@ def init_i18n(app):
             "training_t": training_t,
             "nutrition_t": nutrition_t,
             "profile_t": profile_t,
+            "dashboard_t": dashboard_t,
         }

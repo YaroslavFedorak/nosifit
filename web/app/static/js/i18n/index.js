@@ -3,6 +3,9 @@ export { getLocale, loadTranslations, } from "./loader.js";
 export function t(key, params = {}) {
     return translate("training", key, params);
 }
+export function dashboard_t(key, params = {}) {
+    return translate("dashboard", key, params);
+}
 export function exercise_t(slug) {
     return translate("exercises", `${slug}.name`);
 }

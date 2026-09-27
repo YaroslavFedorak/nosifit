@@ -1,68 +1,78 @@
 import {
-    translate,
+translate,
 } from "./loader.js";
 
 export {
-    getLocale,
-    loadTranslations,
+getLocale,
+loadTranslations,
 } from "./loader.js";
 
 export type {
-    Locale,
-    TranslationMap,
-    TranslationValue,
+Locale,
+TranslationMap,
+TranslationValue,
 } from "./types.js";
 
 export function t(
-    key: string,
-    params: Record<string, string | number> = {},
+key: string,
+params: Record<string, string | number> = {},
 ): string {
-    return translate(
-        "training",
-        key,
-        params,
-    );
+return translate(
+"training",
+key,
+params,
+);
+}
+
+export function dashboard_t(
+key: string,
+params: Record<string, string | number> = {},
+): string {
+return translate(
+"dashboard",
+key,
+params,
+);
 }
 
 export function exercise_t(
-    slug: string,
+slug: string,
 ): string {
-    return translate(
-        "exercises",
-        `${slug}.name`,
-    );
+return translate(
+"exercises",
+`${slug}.name`,
+);
 }
 
 export function recovery_t(
-    key: string,
-    params: Record<string, string | number> = {},
+key: string,
+params: Record<string, string | number> = {},
 ): string {
-    return translate(
-        "recovery",
-        key,
-        params,
-    );
+return translate(
+"recovery",
+key,
+params,
+);
 }
 
-
 export function nutrition_t(
-    key: string,
-    params: Record<string, string | number> = {},
+key: string,
+params: Record<string, string | number> = {},
 ): string {
-    return translate(
-        "nutrition",
-        key,
-        params,
-    );
+return translate(
+"nutrition",
+key,
+params,
+);
 }
 
 export function profile_t(
-    key: string,
-    params: Record<string, string | number> = {},
+key: string,
+params: Record<string, string | number> = {},
 ): string {
-    return translate(
-        "profile",
-        key,
-        params,
-    );
+return translate(
+"profile",
+key,
+params,
+);
 }
