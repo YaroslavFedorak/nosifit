@@ -1,3 +1,4 @@
+import { dashboard_t } from "../../../i18n/index.js";
 import { trainingAPI } from "./api.js";
 let isSavingWorkout = false;
 function normalizeDatabaseId(value) {
@@ -18,7 +19,7 @@ function prepareExerciseForSave(exercise = {}) {
         exercise.id);
     return {
         ...exercise,
-        databaseId
+        databaseId,
     };
 }
 function isValidExercise(exercise) {
@@ -37,7 +38,7 @@ function isValidExercise(exercise) {
 function getWorkoutTitle() {
     const titleInput = document.getElementById("dashboard-workout-title");
     return (titleInput?.value?.trim() ||
-        "Тренування");
+        dashboard_t("workout.defaultTitle"));
 }
 function clearWorkoutTitle() {
     const titleInput = document.getElementById("dashboard-workout-title");
@@ -78,7 +79,7 @@ async function saveExercise(sessionId, exercise) {
             0),
         rpe: exercise.rpe != null
             ? Number(exercise.rpe)
-            : null
+            : null,
     });
 }
 async function saveExercises(sessionId, exercises) {
@@ -89,17 +90,17 @@ async function saveExercises(sessionId, exercises) {
     }
     return savedExercises;
 }
-export async function saveWorkout({ exercises, onSuccess }) {
+export async function saveWorkout({ exercises, onSuccess, }) {
     if (isSavingWorkout) {
         return null;
     }
     if (!Array.isArray(exercises) ||
         !exercises.length) {
-        throw new Error("Позначте хоча б одну виконану вправу.");
+        throw new Error(dashboard_t("workout.errors.noCompletedExercises"));
     }
     const validExercises = prepareExercises(exercises);
     if (!validExercises.length) {
-        throw new Error("Немає коректних вправ для збереження.");
+        throw new Error(dashboard_t("workout.errors.noValidExercises"));
     }
     isSavingWorkout = true;
     setSaveState(true);
@@ -107,20 +108,20 @@ export async function saveWorkout({ exercises, onSuccess }) {
         const title = getWorkoutTitle();
         const sessionResponse = await trainingAPI.startTrainingSession({
             title,
-            fatigue_before: getFatigueBefore()
+            fatigue_before: getFatigueBefore(),
         });
         const session = sessionResponse?.session ??
             sessionResponse;
         const sessionId = normalizeDatabaseId(session?.id);
         if (sessionId === null) {
-            throw new Error("Сервер не повернув коректний ID тренування.");
+            throw new Error(dashboard_t("workout.errors.invalidSessionId"));
         }
         const savedExercises = await saveExercises(sessionId, validExercises);
         if (savedExercises === 0) {
-            throw new Error("Не вдалося зберегти жодної вправи.");
+            throw new Error(dashboard_t("workout.errors.noExercisesSaved"));
         }
         const finished = await trainingAPI.finishTrainingSession(sessionId, {
-            fatigue_after: getFatigueAfter()
+            fatigue_after: getFatigueAfter(),
         });
         clearWorkoutTitle();
         if (typeof onSuccess ===

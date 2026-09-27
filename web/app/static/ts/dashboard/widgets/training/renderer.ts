@@ -1,5 +1,43 @@
 import { el } from "../../utils/dom.js";
+
+import {
+    dashboard_t,
+    exercise_t
+} from "../../../i18n/index.js";
+
 import * as state from "./state.js";
+
+function getExerciseName(
+    exercise: any
+): string {
+    const slug =
+        exercise.slug ??
+        exercise.exerciseSlug ??
+        exercise.exercise_slug ??
+        exercise.original?.slug ??
+        exercise.exercise?.slug;
+
+    if (typeof slug === "string" && slug.trim()) {
+        const translated =
+            exercise_t(slug);
+
+        if (
+            translated &&
+            translated !== `exercises.${slug}.name`
+        ) {
+            return translated;
+        }
+    }
+
+    return (
+        typeof exercise.name === "string" &&
+        exercise.name.trim()
+            ? exercise.name
+            : dashboard_t(
+                "workout.unnamedExercise"
+            )
+    );
+}
 
 function createInput(
     exercise: any,
@@ -115,8 +153,12 @@ function createCheckbox(
 
             ariaLabel:
                 exercise.completed
-                    ? "Виконано"
-                    : "Позначити виконаною"
+                    ? dashboard_t(
+                        "workout.exercise.completed"
+                    )
+                    : dashboard_t(
+                        "workout.exercise.markCompleted"
+                    )
         }) as HTMLButtonElement;
 
     button.setAttribute(
@@ -163,7 +205,9 @@ function createExerciseRow(
                         "db-session-ex-name",
 
                     text:
-                        exercise.name
+                        getExerciseName(
+                            exercise
+                        )
                 })
             ]
         ) as HTMLElement
@@ -174,7 +218,9 @@ function createExerciseRow(
             exercise,
             "sets",
             exercise.sets,
-            "під"
+            dashboard_t(
+                "workout.fields.sets"
+            )
         )
     );
 
@@ -183,7 +229,9 @@ function createExerciseRow(
             exercise,
             "reps",
             exercise.reps,
-            "пов"
+            dashboard_t(
+                "workout.fields.reps"
+            )
         )
     );
 
@@ -192,12 +240,16 @@ function createExerciseRow(
             exercise,
             "weight",
             exercise.weight,
-            "кг"
+            dashboard_t(
+                "workout.fields.weight"
+            )
         )
     );
 
     row.appendChild(
-        createCheckbox(exercise)
+        createCheckbox(
+            exercise
+        )
     );
 
     return row;
@@ -207,7 +259,9 @@ function createEmptyState(): HTMLElement {
     return el("div", {
         class: "db-session-empty",
         text:
-            "Додайте вправи до тренування"
+            dashboard_t(
+                "workout.emptyExercises"
+            )
     }) as HTMLElement;
 }
 
@@ -266,5 +320,7 @@ export function render(
         }
     );
 
-    container.appendChild(fragment);
+    container.appendChild(
+        fragment
+    );
 }

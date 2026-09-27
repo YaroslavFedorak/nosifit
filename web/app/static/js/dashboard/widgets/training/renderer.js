@@ -1,5 +1,24 @@
 import { el } from "../../utils/dom.js";
+import { dashboard_t, exercise_t } from "../../../i18n/index.js";
 import * as state from "./state.js";
+function getExerciseName(exercise) {
+    const slug = exercise.slug ??
+        exercise.exerciseSlug ??
+        exercise.exercise_slug ??
+        exercise.original?.slug ??
+        exercise.exercise?.slug;
+    if (typeof slug === "string" && slug.trim()) {
+        const translated = exercise_t(slug);
+        if (translated &&
+            translated !== `exercises.${slug}.name`) {
+            return translated;
+        }
+    }
+    return (typeof exercise.name === "string" &&
+        exercise.name.trim()
+        ? exercise.name
+        : dashboard_t("workout.unnamedExercise"));
+}
 function createInput(exercise, field, value, label) {
     const input = el("input", {
         class: "db-input-field",
@@ -45,8 +64,8 @@ function createCheckbox(exercise) {
             : ""}`,
         type: "button",
         ariaLabel: exercise.completed
-            ? "Виконано"
-            : "Позначити виконаною"
+            ? dashboard_t("workout.exercise.completed")
+            : dashboard_t("workout.exercise.markCompleted")
     });
     button.setAttribute("data-exercise-id", exercise.id);
     button.setAttribute("data-action", "toggle");
@@ -64,19 +83,19 @@ function createExerciseRow(exercise) {
     }, [
         el("div", {
             class: "db-session-ex-name",
-            text: exercise.name
+            text: getExerciseName(exercise)
         })
     ]));
-    row.appendChild(createInput(exercise, "sets", exercise.sets, "під"));
-    row.appendChild(createInput(exercise, "reps", exercise.reps, "пов"));
-    row.appendChild(createInput(exercise, "weight", exercise.weight, "кг"));
+    row.appendChild(createInput(exercise, "sets", exercise.sets, dashboard_t("workout.fields.sets")));
+    row.appendChild(createInput(exercise, "reps", exercise.reps, dashboard_t("workout.fields.reps")));
+    row.appendChild(createInput(exercise, "weight", exercise.weight, dashboard_t("workout.fields.weight")));
     row.appendChild(createCheckbox(exercise));
     return row;
 }
 function createEmptyState() {
     return el("div", {
         class: "db-session-empty",
-        text: "Додайте вправи до тренування"
+        text: dashboard_t("workout.emptyExercises")
     });
 }
 export function render(container) {

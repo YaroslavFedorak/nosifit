@@ -1,3 +1,4 @@
+import { dashboard_t } from "../../../i18n/index.js";
 import { trainingAPI } from "./api.js";
 
 let isSavingWorkout = false;
@@ -32,7 +33,7 @@ function prepareExerciseForSave(
 
     return {
         ...exercise,
-        databaseId
+        databaseId,
     };
 }
 
@@ -70,7 +71,9 @@ function getWorkoutTitle(): string {
 
     return (
         titleInput?.value?.trim() ||
-        "Тренування"
+        dashboard_t(
+            "workout.defaultTitle"
+        )
     );
 }
 
@@ -164,7 +167,7 @@ async function saveExercise(
                     ? Number(
                         exercise.rpe
                     )
-                    : null
+                    : null,
         }
     );
 }
@@ -191,7 +194,7 @@ async function saveExercises(
 
 export async function saveWorkout({
     exercises,
-    onSuccess
+    onSuccess,
 }: {
     exercises: any[];
     onSuccess?: (
@@ -207,7 +210,9 @@ export async function saveWorkout({
         !exercises.length
     ) {
         throw new Error(
-            "Позначте хоча б одну виконану вправу."
+            dashboard_t(
+                "workout.errors.noCompletedExercises"
+            )
         );
     }
 
@@ -220,7 +225,9 @@ export async function saveWorkout({
         !validExercises.length
     ) {
         throw new Error(
-            "Немає коректних вправ для збереження."
+            dashboard_t(
+                "workout.errors.noValidExercises"
+            )
         );
     }
 
@@ -236,7 +243,7 @@ export async function saveWorkout({
                 {
                     title,
                     fatigue_before:
-                        getFatigueBefore()
+                        getFatigueBefore(),
                 }
             );
 
@@ -253,7 +260,9 @@ export async function saveWorkout({
             sessionId === null
         ) {
             throw new Error(
-                "Сервер не повернув коректний ID тренування."
+                dashboard_t(
+                    "workout.errors.invalidSessionId"
+                )
             );
         }
 
@@ -267,7 +276,9 @@ export async function saveWorkout({
             savedExercises === 0
         ) {
             throw new Error(
-                "Не вдалося зберегти жодної вправи."
+                dashboard_t(
+                    "workout.errors.noExercisesSaved"
+                )
             );
         }
 
@@ -276,7 +287,7 @@ export async function saveWorkout({
                 sessionId,
                 {
                     fatigue_after:
-                        getFatigueAfter()
+                        getFatigueAfter(),
                 }
             );
 
