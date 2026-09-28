@@ -1,9 +1,19 @@
+import {
+    dashboard_t,
+    getLocale,
+    recovery_t
+} from "../../../i18n/index.js";
+
 import { ICONS } from "../../../icons/index.js";
 import { RecoveryAPI } from "./api.js";
-import { refreshRecoveryWidget } from "../../widgets/recovery/index.js";
+
+import {
+    refreshRecoveryWidget
+} from "../../widgets/recovery/index.js";
 
 interface Habit {
     id: number;
+    slug?: string;
     name: string;
     description?: string;
     category?: string;
@@ -17,27 +27,29 @@ interface UserHabit {
     user_habit_id?: number;
 }
 
-const CATEGORY_MAP: Record<string, string> = {
-    hydration: "Вода",
-    sleep: "Сон",
-    nutrition: "Харчування",
-    activity: "Активність",
-    recovery: "Відновлення",
-    stress: "Стрес",
-    massage: "Масаж"
+const CATEGORY_KEYS: Record<string, string> = {
+    hydration: "hydration",
+    sleep: "sleep",
+    nutrition: "nutrition",
+    activity: "activity",
+    recovery: "recovery",
+    stress: "stress",
+    massage: "massage"
 };
 
 let initialized = false;
 let currentSort = "points";
 
-function normalizeHabits(payload: unknown): Habit[] {
+function normalizeHabits(
+    payload: unknown
+): Habit[] {
     if (Array.isArray(payload)) {
         return payload as Habit[];
     }
 
     if (
-        payload &&
-        typeof payload === "object"
+        typeof payload === "object" &&
+        payload !== null
     ) {
         const value =
             payload as Record<string, unknown>;
@@ -66,8 +78,8 @@ function normalizeUserHabits(
     }
 
     if (
-        payload &&
-        typeof payload === "object"
+        typeof payload === "object" &&
+        payload !== null
     ) {
         const value =
             payload as Record<string, unknown>;
@@ -102,16 +114,56 @@ function getHabitId(
 function getIcon(
     iconKey?: string
 ): string {
-    if (
-        iconKey &&
-        iconKey in ICONS
-    ) {
-        return ICONS[
-            iconKey as keyof typeof ICONS
-        ];
+    if (!iconKey) {
+        return ICONS.rest;
     }
 
-    return ICONS.rest;
+    const icons =
+        ICONS as Record<string, string>;
+
+    return icons[iconKey] || ICONS.rest;
+}
+
+function getHabitName(
+    habit: Habit
+): string {
+    const slug =
+        habit.slug?.trim();
+
+    if (slug) {
+        const key =
+            `habits.${slug}.name`;
+
+        const translated =
+            recovery_t(key);
+
+        if (translated !== key) {
+            return translated;
+        }
+    }
+
+    return habit.name || "";
+}
+
+function getHabitDescription(
+    habit: Habit
+): string {
+    const slug =
+        habit.slug?.trim();
+
+    if (slug) {
+        const key =
+            `habits.${slug}.description`;
+
+        const translated =
+            recovery_t(key);
+
+        if (translated !== key) {
+            return translated;
+        }
+    }
+
+    return habit.description || "";
 }
 
 function localizeCategory(
@@ -121,10 +173,32 @@ function localizeCategory(
         return "";
     }
 
-    return (
-        CATEGORY_MAP[category] ||
-        category
-    );
+    const key =
+        CATEGORY_KEYS[category];
+
+    if (!key) {
+        return category;
+    }
+
+    const translationKey =
+        `categories.${key}`;
+
+    const translated =
+        recovery_t(translationKey);
+
+    if (translated !== translationKey) {
+        return translated;
+    }
+
+    return category;
+}
+
+function getRecoveryImpact(
+    points?: number
+): string {
+    return `${recovery_t(
+        "points.label"
+    )} +${Number(points || 0)}`;
 }
 
 function sortAvailable(
@@ -150,7 +224,7 @@ function sortAvailable(
                     localizeCategory(
                         b.category
                     ),
-                    "uk"
+                    getLocale()
                 )
         );
     }
@@ -158,9 +232,9 @@ function sortAvailable(
     if (sortKey === "name") {
         return sorted.sort(
             (a, b) =>
-                a.name.localeCompare(
-                    b.name,
-                    "uk"
+                getHabitName(a).localeCompare(
+                    getHabitName(b),
+                    getLocale()
                 )
         );
     }
@@ -173,16 +247,17 @@ function sortAdded(
 ): Habit[] {
     return [...habits].sort(
         (a, b) =>
-            a.name.localeCompare(
-                b.name,
-                "uk"
+            getHabitName(a).localeCompare(
+                getHabitName(b),
+                getLocale()
             )
     );
 }
 
 function createHabitRow(
     habit: Habit,
-    added: boolean
+    added: boolean,
+    selected: Set<number>
 ): HTMLElement {
     const category =
         habit.category ||
@@ -237,11 +312,14 @@ function createHabitRow(
         "dashboard-habit-title";
 
     title.textContent =
-        habit.name;
+        getHabitName(habit);
 
     info.appendChild(title);
 
-    if (habit.description) {
+    const descriptionText =
+        getHabitDescription(habit);
+
+    if (descriptionText) {
         const description =
             document.createElement("div");
 
@@ -249,7 +327,7 @@ function createHabitRow(
             "dashboard-habit-description";
 
         description.textContent =
-            habit.description;
+            descriptionText;
 
         info.appendChild(
             description
@@ -272,9 +350,9 @@ function createHabitRow(
         "dashboard-habit-impact";
 
     impact.textContent =
-        `Recovery +${Number(
-            habit.points || 0
-        )}`;
+        getRecoveryImpact(
+            habit.points
+        );
 
     const meta =
         document.createElement("div");
@@ -293,7 +371,10 @@ function createHabitRow(
     check.className =
         "dashboard-habit-check";
 
-    if (added) {
+    if (
+        added ||
+        selected.has(habit.id)
+    ) {
         check.classList.add(
             "dashboard-habit-checked"
         );
@@ -319,33 +400,71 @@ export function initHabitModal(
         return;
     }
 
+    if (
+        !Number.isFinite(userId) ||
+        userId <= 0
+    ) {
+        console.error(
+            "Invalid recovery user ID:",
+            userId
+        );
+
+        return;
+    }
+
+    /*
+     * Support the current dashboard modal
+     * selectors while keeping the original
+     * modal markup compatible.
+     */
     const backdropElement =
-        document.getElementById(
-            "habit-modal-backdrop"
+        document.querySelector<HTMLElement>(
+            "#dashboard-habit-modal"
+        ) ||
+        document.querySelector<HTMLElement>(
+            "#habit-modal-backdrop"
         );
 
     const openButtonElement =
-        document.getElementById(
-            "dashboard-open-recovery"
+        document.querySelector<HTMLElement>(
+            "#dashboard-open-habit-modal"
+        ) ||
+        document.querySelector<HTMLElement>(
+            "#dashboard-open-recovery"
         );
 
     const backButtonElement =
-        document.getElementById(
-            "habit-back-btn"
+        document.querySelector<HTMLButtonElement>(
+            "#habit-back-btn"
+        ) ||
+        document.querySelector<HTMLButtonElement>(
+            ".dashboard-habit-close"
         );
 
     const saveButtonElement =
-        document.getElementById(
-            "save-habit"
+        document.querySelector<HTMLButtonElement>(
+            "#save-habit"
+        ) ||
+        document.querySelector<HTMLButtonElement>(
+            ".dashboard-habit-save"
         );
 
     const listBoxElement =
-        document.getElementById(
-            "habit-modal-list"
+        document.querySelector<HTMLElement>(
+            "#habit-modal-list"
+        ) ||
+        document.querySelector<HTMLElement>(
+            ".dashboard-habit-list"
+        );
+
+    const sortButtons =
+        document.querySelectorAll<HTMLButtonElement>(
+            ".dashboard-habit-sort-btn"
         );
 
     if (
         !(backdropElement instanceof HTMLElement) ||
+        !(openButtonElement instanceof HTMLElement) ||
         !(backButtonElement instanceof HTMLButtonElement) ||
         !(saveButtonElement instanceof HTMLButtonElement) ||
         !(listBoxElement instanceof HTMLElement)
@@ -357,8 +476,15 @@ export function initHabitModal(
         return;
     }
 
+    /*
+     * Keep stable non-null references for nested
+     * functions and callbacks.
+     */
     const backdrop =
         backdropElement;
+
+    const openButton =
+        openButtonElement;
 
     const backButton =
         backButtonElement;
@@ -368,16 +494,6 @@ export function initHabitModal(
 
     const listBox =
         listBoxElement;
-
-    const openButton =
-        openButtonElement instanceof HTMLElement
-            ? openButtonElement
-            : null;
-
-    const sortButtons =
-        document.querySelectorAll<HTMLButtonElement>(
-            ".dashboard-habit-sort-btn"
-        );
 
     initialized = true;
 
@@ -401,7 +517,9 @@ export function initHabitModal(
             "dashboard-habit-loading";
 
         loading.textContent =
-            "Завантаження звичок…";
+            dashboard_t(
+                "recovery.habitModal.loading"
+            );
 
         listBox.appendChild(
             loading
@@ -409,7 +527,7 @@ export function initHabitModal(
 
         try {
             const [
-                allHabitsPayload,
+                habitsPayload,
                 userHabitsPayload
             ] = await Promise.all([
                 RecoveryAPI.getHabitsList(),
@@ -418,9 +536,9 @@ export function initHabitModal(
                 )
             ]);
 
-            const allHabits =
+            const habits =
                 normalizeHabits(
-                    allHabitsPayload
+                    habitsPayload
                 );
 
             const userHabits =
@@ -438,30 +556,28 @@ export function initHabitModal(
                 );
 
             const available =
-                allHabits.filter(
-                    habit =>
-                        !userHabitIds.has(
-                            Number(habit.id)
-                        )
-                );
-
-            const added =
-                allHabits.filter(
-                    habit =>
-                        userHabitIds.has(
-                            Number(habit.id)
-                        )
-                );
-
-            const sortedAvailable =
                 sortAvailable(
-                    available,
+                    habits.filter(
+                        habit =>
+                            !userHabitIds.has(
+                                Number(
+                                    habit.id
+                                )
+                            )
+                    ),
                     currentSort
                 );
 
-            const sortedAdded =
+            const added =
                 sortAdded(
-                    added
+                    habits.filter(
+                        habit =>
+                            userHabitIds.has(
+                                Number(
+                                    habit.id
+                                )
+                            )
+                    )
                 );
 
             listBox.innerHTML = "";
@@ -473,14 +589,16 @@ export function initHabitModal(
                 "dashboard-habit-section-title";
 
             availableHeader.textContent =
-                "Доступні звички";
+                dashboard_t(
+                    "recovery.habitModal.available"
+                );
 
             listBox.appendChild(
                 availableHeader
             );
 
             if (
-                sortedAvailable.length === 0
+                available.length === 0
             ) {
                 const empty =
                     document.createElement(
@@ -491,18 +609,21 @@ export function initHabitModal(
                     "dashboard-habit-empty";
 
                 empty.textContent =
-                    "Усі доступні звички вже додані";
+                    dashboard_t(
+                        "recovery.habitModal.emptyAvailable"
+                    );
 
                 listBox.appendChild(
                     empty
                 );
             } else {
-                sortedAvailable.forEach(
+                available.forEach(
                     habit => {
                         listBox.appendChild(
                             createHabitRow(
                                 habit,
-                                false
+                                false,
+                                new Set<number>()
                             )
                         );
                     }
@@ -516,14 +637,16 @@ export function initHabitModal(
                 "dashboard-habit-section-title";
 
             addedHeader.textContent =
-                "Вже додані";
+                dashboard_t(
+                    "recovery.habitModal.alreadyAdded"
+                );
 
             listBox.appendChild(
                 addedHeader
             );
 
             if (
-                sortedAdded.length === 0
+                added.length === 0
             ) {
                 const empty =
                     document.createElement(
@@ -534,18 +657,21 @@ export function initHabitModal(
                     "dashboard-habit-empty dashboard-habit-empty-secondary";
 
                 empty.textContent =
-                    "Ще немає доданих звичок";
+                    dashboard_t(
+                        "recovery.habitModal.emptyAdded"
+                    );
 
                 listBox.appendChild(
                     empty
                 );
             } else {
-                sortedAdded.forEach(
+                added.forEach(
                     habit => {
                         listBox.appendChild(
                             createHabitRow(
                                 habit,
-                                true
+                                true,
+                                new Set<number>()
                             )
                         );
                     }
@@ -555,7 +681,7 @@ export function initHabitModal(
             updateSaveState();
         } catch (error) {
             console.error(
-                "Failed to load recovery habits",
+                "Failed to load recovery habits:",
                 error
             );
 
@@ -570,7 +696,9 @@ export function initHabitModal(
                 "dashboard-habit-error";
 
             errorBox.textContent =
-                "Не вдалося завантажити звички";
+                dashboard_t(
+                    "recovery.habitModal.loadFailed"
+                );
 
             listBox.appendChild(
                 errorBox
@@ -645,8 +773,18 @@ export function initHabitModal(
                             )
                     )
                     .filter(
-                        id => id > 0
+                        id =>
+                            Number.isFinite(id) &&
+                            id > 0
                     );
+
+            if (
+                habitIds.length === 0
+            ) {
+                throw new Error(
+                    "No valid habit IDs selected"
+                );
+            }
 
             await Promise.all(
                 habitIds.map(
@@ -660,27 +798,34 @@ export function initHabitModal(
 
             await refreshRecoveryWidget();
 
+            window.dispatchEvent(
+                new CustomEvent(
+                    "dashboard:refresh"
+                )
+            );
+
             close();
         } catch (error) {
             console.error(
-                "Failed to save recovery habits",
+                "Failed to save recovery habits:",
                 error
             );
 
             alert(
-                "Не вдалося зберегти звички"
+                dashboard_t(
+                    "recovery.habitModal.saveFailed"
+                )
             );
 
-            saveButton.disabled = false;
+            saveButton.disabled =
+                false;
         }
     }
 
-    if (openButton) {
-        openButton.addEventListener(
-            "click",
-            open
-        );
-    }
+    openButton.addEventListener(
+        "click",
+        open
+    );
 
     backButton.addEventListener(
         "click",
@@ -698,39 +843,19 @@ export function initHabitModal(
         "click",
         event => {
             if (
-                event.target === backdrop
+                event.target ===
+                backdrop
             ) {
                 close();
             }
         }
     );
 
-    sortButtons.forEach(
-        button => {
-            button.addEventListener(
-                "click",
-                () => {
-                    sortButtons.forEach(
-                        item =>
-                            item.classList.remove(
-                                "active"
-                            )
-                    );
-
-                    button.classList.add(
-                        "active"
-                    );
-
-                    currentSort =
-                        button.dataset.sort ||
-                        "points";
-
-                    void renderList();
-                }
-            );
-        }
-    );
-
+    /*
+     * Keep the original event delegation:
+     * selecting a habit must work when clicking
+     * anywhere inside the row.
+     */
     listBox.addEventListener(
         "click",
         event => {
@@ -752,6 +877,10 @@ export function initHabitModal(
                 return;
             }
 
+            /*
+             * Already added habits are displayed
+             * but cannot be selected again.
+             */
             if (
                 row.classList.contains(
                     "dashboard-habit-added"
@@ -764,6 +893,10 @@ export function initHabitModal(
                 "dashboard-habit-selected"
             );
 
+            /*
+             * Keep the visual checked state
+             * synchronized with the selected state.
+             */
             const check =
                 row.querySelector<HTMLElement>(
                     ".dashboard-habit-check"
@@ -799,6 +932,32 @@ export function initHabitModal(
             ) {
                 close();
             }
+        }
+    );
+
+    sortButtons.forEach(
+        button => {
+            button.addEventListener(
+                "click",
+                () => {
+                    sortButtons.forEach(
+                        item =>
+                            item.classList.remove(
+                                "active"
+                            )
+                    );
+
+                    button.classList.add(
+                        "active"
+                    );
+
+                    currentSort =
+                        button.dataset.sort ||
+                        "points";
+
+                    void renderList();
+                }
+            );
         }
     );
 }

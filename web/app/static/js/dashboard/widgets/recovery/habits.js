@@ -1,15 +1,7 @@
+import { dashboard_t, recovery_t } from "../../../i18n/index.js";
 import { ICONS } from "../../../icons/index.js";
 import { RecoveryAPI } from "../../modals/recovery/api.js";
 import { refreshRecoveryWidget } from "./index.js";
-const CATEGORY_LABELS = {
-    sleep: "Сон",
-    hydration: "Вода",
-    nutrition: "Харчування",
-    activity: "Активність",
-    recovery: "Відновлення",
-    stress: "Стрес",
-    massage: "Масаж"
-};
 function getIcon(iconKey) {
     if (iconKey &&
         iconKey in ICONS) {
@@ -17,32 +9,52 @@ function getIcon(iconKey) {
     }
     return ICONS.rest;
 }
+function getHabitSlug(habit) {
+    if (habit.slug &&
+        habit.slug.trim()) {
+        return habit.slug.trim();
+    }
+    return null;
+}
+function getHabitName(habit) {
+    const slug = getHabitSlug(habit);
+    if (slug) {
+        const key = `habits.${slug}.name`;
+        const translated = recovery_t(key);
+        if (translated !== key) {
+            return translated;
+        }
+    }
+    return habit.name || "";
+}
 function getCategoryLabel(category) {
     if (!category) {
         return "";
     }
-    return (CATEGORY_LABELS[category] ||
-        category);
+    const key = `categories.${category}`;
+    const translated = recovery_t(key);
+    if (translated !== key) {
+        return translated;
+    }
+    return category;
 }
 function buildReason(habit) {
-    switch (habit.category) {
-        case "sleep":
-            return "Рекомендовано через якість сну";
-        case "hydration":
-            return "Рекомендовано через рівень гідратації";
-        case "nutrition":
-            return "Рекомендовано для підтримки харчування";
-        case "activity":
-            return "Рекомендовано після навантаження";
-        case "recovery":
-            return "Рекомендовано для покращення відновлення";
-        case "stress":
-            return "Рекомендовано через рівень стресу";
-        case "massage":
-            return "Рекомендовано для розслаблення м'язів";
-        default:
-            return "Рекомендовано для балансу відновлення";
+    const category = habit.category;
+    if (!category) {
+        return recovery_t("reasons.default");
     }
+    const key = `reasons.${category}`;
+    const translated = recovery_t(key);
+    if (translated !== key) {
+        return translated;
+    }
+    return recovery_t("reasons.default");
+}
+function getRecoveryImpact(points) {
+    if (points == null) {
+        return "";
+    }
+    return `${recovery_t("points.label")} +${points}`;
 }
 function normalizeHabits(snapshot) {
     if (!snapshot) {
@@ -74,9 +86,13 @@ function normalizeHabits(snapshot) {
             raw.habit_id ??
             raw.habitId ??
             habit?.id;
+        const slug = raw.slug ??
+            habit?.slug;
         const name = raw.name ??
             habit?.name ??
             "";
+        const description = raw.description ??
+            habit?.description;
         const category = raw.category ??
             habit?.category;
         const icon = raw.icon ??
@@ -95,7 +111,13 @@ function normalizeHabits(snapshot) {
             user_habit_id: userHabitId != null
                 ? Number(userHabitId)
                 : undefined,
+            slug: slug != null
+                ? String(slug)
+                : undefined,
             name: String(name),
+            description: description != null
+                ? String(description)
+                : undefined,
             category: category != null
                 ? String(category)
                 : undefined,
@@ -134,7 +156,7 @@ function createHabitItem(habit) {
     title.className =
         "habit-title";
     title.textContent =
-        habit.name || "";
+        getHabitName(habit);
     const metaRow = document.createElement("div");
     metaRow.className =
         "habit-meta-row";
@@ -160,10 +182,8 @@ function createHabitItem(habit) {
     const impact = document.createElement("div");
     impact.className =
         "habit-recovery-impact";
-    if (habit.points != null) {
-        impact.textContent =
-            `Recovery +${habit.points}`;
-    }
+    impact.textContent =
+        getRecoveryImpact(habit.points);
     const check = document.createElement("button");
     check.type =
         "button";
@@ -176,8 +196,8 @@ function createHabitItem(habit) {
     }
     check.title =
         habit.completed
-            ? "Відмінити"
-            : "Позначити як виконано";
+            ? dashboard_t("recovery.habits.undo")
+            : dashboard_t("recovery.habits.complete");
     check.addEventListener("click", async () => {
         const userHabitId = check.dataset
             .userHabitId;
@@ -301,7 +321,7 @@ function createContainer(habits) {
     title.className =
         "habits-widget-container-title";
     title.textContent =
-        "Ваші звички";
+        dashboard_t("recovery.habits.title");
     const count = document.createElement("div");
     count.className =
         "habits-widget-container-count";
@@ -323,7 +343,7 @@ export function renderHabitsWidget(snapshot) {
     const habits = normalizeHabits(snapshot);
     if (habits.length === 0) {
         element.textContent =
-            "Звички ще не додані";
+            dashboard_t("recovery.habits.empty");
         return;
     }
     const preview = habits.slice(0, 8);

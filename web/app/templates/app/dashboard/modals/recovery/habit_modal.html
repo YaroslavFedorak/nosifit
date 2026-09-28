@@ -10,7 +10,7 @@
         class="dashboard-habit-modal-title"
         id="dashboard-habit-modal-title"
       >
-        Додати звичку
+        {{ dashboard_t("recovery.habitModal.title") }}
       </span>
     </div>
 
@@ -20,7 +20,7 @@
         type="button"
         data-sort="points"
       >
-        Бали
+        {{ dashboard_t("recovery.habitModal.sort.points") }}
       </button>
 
       <button
@@ -28,11 +28,11 @@
         type="button"
         data-sort="category"
       >
-        Категорія
+        {{ dashboard_t("recovery.habitModal.sort.category") }}
       </button>
 
       <button class="dashboard-habit-sort-btn" type="button" data-sort="name">
-        Назва
+        {{ dashboard_t("recovery.habitModal.sort.name") }}
       </button>
     </div>
 
@@ -44,7 +44,7 @@
         class="dashboard-habit-back-btn"
         type="button"
       >
-        Назад
+        {{ dashboard_t("recovery.habitModal.back") }}
       </button>
 
       <button
@@ -53,7 +53,7 @@
         type="button"
         disabled
       >
-        Зберегти
+        {{ dashboard_t("recovery.habitModal.save") }}
       </button>
     </div>
   </div>

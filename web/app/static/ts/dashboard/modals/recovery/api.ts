@@ -3,11 +3,8 @@ import type {
     RecoverySnapshot
 } from "../../widgets/recovery/state.js";
 
-const API_BASE =
-    "/api/recovery";
-
-const DEFAULT_TIMEOUT_MS =
-    10000;
+const API_BASE = "/api/recovery";
+const DEFAULT_TIMEOUT_MS = 10000;
 
 interface RecoverySnapshotResponse {
     snapshot: RecoverySnapshot | null;
@@ -18,83 +15,55 @@ async function request<T>(
     options: RequestInit = {},
     timeoutMs = DEFAULT_TIMEOUT_MS
 ): Promise<T> {
-    const controller =
-        new AbortController();
+    const controller = new AbortController();
 
-    const timeoutId =
-        window.setTimeout(
-            () => controller.abort(),
-            timeoutMs
-        );
+    const timeoutId = window.setTimeout(
+        () => controller.abort(),
+        timeoutMs
+    );
 
     try {
-        const response =
-            await fetch(
-                url,
-                {
-                    headers: {
-                        "Content-Type":
-                            "application/json",
-                        ...(options.headers || {})
-                    },
-                    signal:
-                        controller.signal,
-                    ...options
-                }
-            );
+        const response = await fetch(url, {
+            headers: {
+                "Content-Type": "application/json",
+                ...(options.headers || {})
+            },
+            signal: controller.signal,
+            ...options
+        });
 
         if (!response.ok) {
-            let message =
-                `HTTP ${response.status}`;
+            let message = `HTTP ${response.status}`;
 
             try {
                 const contentType =
-                    response.headers.get(
-                        "content-type"
-                    ) || "";
+                    response.headers.get("content-type") || "";
 
-                if (
-                    contentType.includes(
-                        "application/json"
-                    )
-                ) {
-                    const error =
-                        await response.json();
+                if (contentType.includes("application/json")) {
+                    const error = await response.json();
 
                     if (
                         error &&
-                        typeof error.error ===
-                            "string"
+                        typeof error.error === "string"
                     ) {
-                        message =
-                            error.error;
+                        message = error.error;
                     }
                 } else {
-                    const text =
-                        await response.text();
+                    const text = await response.text();
 
                     if (text) {
-                        message =
-                            text;
+                        message = text;
                     }
                 }
             } catch {}
 
-            throw new Error(
-                message
-            );
+            throw new Error(message);
         }
 
         const contentType =
-            response.headers.get(
-                "content-type"
-            ) || "";
+            response.headers.get("content-type") || "";
 
-        if (
-            contentType.includes(
-                "application/json"
-            )
-        ) {
+        if (contentType.includes("application/json")) {
             return await response.json() as T;
         }
 
@@ -104,50 +73,35 @@ async function request<T>(
             error instanceof DOMException &&
             error.name === "AbortError"
         ) {
-            throw new Error(
-                "Request timeout"
-            );
+            throw new Error("Request timeout");
         }
 
         throw error;
     } finally {
-        window.clearTimeout(
-            timeoutId
-        );
+        window.clearTimeout(timeoutId);
     }
 }
 
 const ENDPOINTS = {
-    snapshot: (
-        userId: number | string
-    ) =>
+    snapshot: (userId: number | string) =>
         `${API_BASE}/snapshot/${userId}`,
 
-    sleep:
-        () =>
-            `${API_BASE}/sleep`,
+    sleep: () =>
+        `${API_BASE}/sleep`,
 
-    addHabit: (
-        habitId: number | string
-    ) =>
+    addHabit: (habitId: number | string) =>
         `${API_BASE}/habits/add/${habitId}`,
 
-    removeHabit: (
-        userHabitId: number | string
-    ) =>
+    removeHabit: (userHabitId: number | string) =>
         `${API_BASE}/habits/${userHabitId}`,
 
-    logHabit:
-        () =>
-            `${API_BASE}/habits/logs`,
+    logHabit: () =>
+        `${API_BASE}/habits/logs`,
 
-    habitsList:
-        () =>
-            `${API_BASE}/habits/list`,
+    habitsList: () =>
+        `${API_BASE}/habits/list`,
 
-    userHabits: (
-        userId: number | string
-    ) =>
+    userHabits: (userId: number | string) =>
         `${API_BASE}/habits/user/${userId}`
 };
 
@@ -174,28 +128,15 @@ export const RecoveryAPI = {
     async getSnapshot(
         userId: number | string
     ): Promise<RecoverySnapshot | null> {
-        const response =
-            await request<unknown>(
-                ENDPOINTS.snapshot(
-                    userId
-                )
-            );
+        const response = await request<unknown>(
+            ENDPOINTS.snapshot(userId)
+        );
 
-        if (
-            isSnapshotResponse(
-                response
-            )
-        ) {
-            return (
-                response.snapshot
-            );
+        if (isSnapshotResponse(response)) {
+            return response.snapshot;
         }
 
-        if (
-            isRecoverySnapshot(
-                response
-            )
-        ) {
+        if (isRecoverySnapshot(response)) {
             return response;
         }
 
@@ -205,12 +146,8 @@ export const RecoveryAPI = {
     getUserHabits(
         userId: number | string
     ): Promise<RecoveryHabit[]> {
-        return request<
-            RecoveryHabit[]
-        >(
-            ENDPOINTS.userHabits(
-                userId
-            )
+        return request<RecoveryHabit[]>(
+            ENDPOINTS.userHabits(userId)
         );
     },
 
@@ -224,12 +161,9 @@ export const RecoveryAPI = {
             {
                 method: "POST",
                 body: JSON.stringify({
-                    user_id:
-                        userId,
-                    sleep_start:
-                        sleepStart,
-                    sleep_end:
-                        sleepEnd
+                    user_id: userId,
+                    sleep_start: sleepStart,
+                    sleep_end: sleepEnd
                 })
             }
         );
@@ -240,27 +174,21 @@ export const RecoveryAPI = {
         habitId: number | string
     ) {
         return request<unknown>(
-            ENDPOINTS.addHabit(
-                habitId
-            ),
+            ENDPOINTS.addHabit(habitId),
             {
                 method: "POST",
                 body: JSON.stringify({
-                    user_id:
-                        userId
+                    user_id: userId
                 })
             }
         );
     },
 
     removeHabit(
-        userHabitId:
-            number | string
+        userHabitId: number | string
     ) {
         return request<unknown>(
-            ENDPOINTS.removeHabit(
-                userHabitId
-            ),
+            ENDPOINTS.removeHabit(userHabitId),
             {
                 method: "DELETE"
             }
@@ -268,25 +196,21 @@ export const RecoveryAPI = {
     },
 
     logHabit(
-        userHabitId:
-            number | string
+        userHabitId: number | string
     ) {
         return request<unknown>(
             ENDPOINTS.logHabit(),
             {
                 method: "POST",
                 body: JSON.stringify({
-                    user_habit_id:
-                        userHabitId
+                    user_habit_id: userHabitId
                 })
             }
         );
     },
 
     getHabitsList() {
-        return request<
-            RecoveryHabit[]
-        >(
+        return request<RecoveryHabit[]>(
             ENDPOINTS.habitsList()
         );
     }

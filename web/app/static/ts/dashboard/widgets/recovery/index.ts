@@ -1,7 +1,11 @@
+import { dashboard_t } from "../../../i18n/index.js";
+
 import { RecoveryAPI } from "../../modals/recovery/api.js";
+
 import {
     recoveryState
 } from "./state.js";
+
 import {
     renderRecoveryWidget
 } from "./render.js";
@@ -47,7 +51,9 @@ export async function refreshRecoveryWidget(): Promise<void> {
         recoveryState.snapshot = null;
         recoveryState.loading = false;
         recoveryState.error =
-            "Recovery user id is not available";
+            dashboard_t(
+                "recovery.errors.userIdUnavailable"
+            );
 
         renderRecoveryWidget(
             recoveryState
@@ -102,7 +108,9 @@ export async function refreshRecoveryWidget(): Promise<void> {
         recoveryState.error =
             error instanceof Error
                 ? error.message
-                : "Failed to load recovery data";
+                : dashboard_t(
+                    "recovery.errors.loadFailed"
+                );
     } finally {
         recoveryState.loading = false;
 

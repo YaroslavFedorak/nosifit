@@ -1,4 +1,6 @@
+import { dashboard_t, getLocale } from "../../../i18n/index.js";
 import { RECOVERY_ICONS } from "../../../icons/recovery.js";
+import { formatDashboardDate } from "../../utils/date.js";
 function formatDuration(minutes) {
     if (minutes == null ||
         minutes <= 0) {
@@ -7,9 +9,14 @@ function formatDuration(minutes) {
     const hours = Math.floor(minutes / 60);
     const remaining = minutes % 60;
     if (remaining === 0) {
-        return `${hours} год`;
+        return dashboard_t("recovery.sleep.durationHours", {
+            hours
+        });
     }
-    return `${hours} год ${remaining} хв`;
+    return dashboard_t("recovery.sleep.durationHoursMinutes", {
+        hours,
+        minutes: remaining
+    });
 }
 function formatTime(value) {
     if (!value) {
@@ -19,7 +26,7 @@ function formatTime(value) {
     if (Number.isNaN(date.getTime())) {
         return "—";
     }
-    return date.toLocaleTimeString("uk-UA", {
+    return date.toLocaleTimeString(getLocale(), {
         hour: "2-digit",
         minute: "2-digit"
     });
@@ -50,7 +57,7 @@ export function renderSleepWidget(snapshot) {
         range.textContent =
             "—";
         quality.textContent =
-            "Дані відсутні";
+            dashboard_t("recovery.sleep.noData");
         meta.textContent =
             "";
         return;
@@ -64,20 +71,22 @@ export function renderSleepWidget(snapshot) {
     }
     else {
         range.textContent =
-            "Період сну не записаний";
+            dashboard_t("recovery.sleep.periodUnavailable");
     }
     const score = snapshot.sleep_score;
     if (score != null) {
         quality.textContent =
-            `Якість ${score}/100`;
+            dashboard_t("recovery.sleep.quality", {
+                score
+            });
     }
     else {
         quality.textContent =
-            "Якість не визначена";
+            dashboard_t("recovery.sleep.qualityUnavailable");
     }
     if (snapshot.date) {
         meta.textContent =
-            snapshot.date;
+            formatDashboardDate(snapshot.date);
     }
     else {
         meta.textContent =

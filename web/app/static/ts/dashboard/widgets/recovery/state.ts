@@ -1,6 +1,7 @@
 export interface RecoveryHabit {
     user_habit_id?: number | string;
     id?: number | string;
+    slug?: string;
     name?: string;
     description?: string;
     category?: string;

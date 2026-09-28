@@ -1,3 +1,7 @@
+import {
+    dashboard_t,
+    recovery_t
+} from "../../../i18n/index.js";
 import { ICONS } from "../../../icons/index.js";
 import { RecoveryAPI } from "../../modals/recovery/api.js";
 import { refreshRecoveryWidget } from "./index.js";
@@ -6,17 +10,6 @@ import type {
     RecoveryHabit,
     RecoverySnapshot
 } from "./state.js";
-
-const CATEGORY_LABELS:
-    Record<string, string> = {
-    sleep: "Сон",
-    hydration: "Вода",
-    nutrition: "Харчування",
-    activity: "Активність",
-    recovery: "Відновлення",
-    stress: "Стрес",
-    massage: "Масаж"
-};
 
 function getIcon(
     iconKey?: string
@@ -33,6 +26,42 @@ function getIcon(
     return ICONS.rest;
 }
 
+function getHabitSlug(
+    habit: RecoveryHabit
+): string | null {
+    if (
+        habit.slug &&
+        habit.slug.trim()
+    ) {
+        return habit.slug.trim();
+    }
+
+    return null;
+}
+
+function getHabitName(
+    habit: RecoveryHabit
+): string {
+    const slug =
+        getHabitSlug(habit);
+
+    if (slug) {
+        const key =
+            `habits.${slug}.name`;
+
+        const translated =
+            recovery_t(key);
+
+        if (
+            translated !== key
+        ) {
+            return translated;
+        }
+    }
+
+    return habit.name || "";
+}
+
 function getCategoryLabel(
     category?: string
 ): string {
@@ -40,40 +69,62 @@ function getCategoryLabel(
         return "";
     }
 
-    return (
-        CATEGORY_LABELS[category] ||
-        category
-    );
+    const key =
+        `categories.${category}`;
+
+    const translated =
+        recovery_t(key);
+
+    if (
+        translated !== key
+    ) {
+        return translated;
+    }
+
+    return category;
 }
 
 function buildReason(
     habit: RecoveryHabit
 ): string {
-    switch (habit.category) {
-        case "sleep":
-            return "Рекомендовано через якість сну";
+    const category =
+        habit.category;
 
-        case "hydration":
-            return "Рекомендовано через рівень гідратації";
-
-        case "nutrition":
-            return "Рекомендовано для підтримки харчування";
-
-        case "activity":
-            return "Рекомендовано після навантаження";
-
-        case "recovery":
-            return "Рекомендовано для покращення відновлення";
-
-        case "stress":
-            return "Рекомендовано через рівень стресу";
-
-        case "massage":
-            return "Рекомендовано для розслаблення м'язів";
-
-        default:
-            return "Рекомендовано для балансу відновлення";
+    if (!category) {
+        return recovery_t(
+            "reasons.default"
+        );
     }
+
+    const key =
+        `reasons.${category}`;
+
+    const translated =
+        recovery_t(key);
+
+    if (
+        translated !== key
+    ) {
+        return translated;
+    }
+
+    return recovery_t(
+        "reasons.default"
+    );
+}
+
+function getRecoveryImpact(
+    points?: number
+): string {
+    if (
+        points == null
+    ) {
+        return "";
+    }
+
+    return `${recovery_t(
+        "points.label"
+    )} +${points}`;
 }
 
 function normalizeHabits(
@@ -136,10 +187,18 @@ function normalizeHabits(
                 raw.habitId ??
                 habit?.id;
 
+            const slug =
+                raw.slug ??
+                habit?.slug;
+
             const name =
                 raw.name ??
                 habit?.name ??
                 "";
+
+            const description =
+                raw.description ??
+                habit?.description;
 
             const category =
                 raw.category ??
@@ -161,32 +220,53 @@ function normalizeHabits(
 
             return {
                 ...raw,
+
                 id:
                     id != null
                         ? Number(id)
                         : undefined,
+
                 user_habit_id:
                     userHabitId != null
                         ? Number(
                             userHabitId
                         )
                         : undefined,
+
+                slug:
+                    slug != null
+                        ? String(slug)
+                        : undefined,
+
                 name:
                     String(name),
+
+                description:
+                    description != null
+                        ? String(
+                            description
+                        )
+                        : undefined,
+
                 category:
                     category != null
                         ? String(
                             category
                         )
                         : undefined,
+
                 icon:
                     icon != null
-                        ? String(icon)
+                        ? String(
+                            icon
+                        )
                         : undefined,
+
                 points:
                     points != null
                         ? Number(points)
                         : undefined,
+
                 completed:
                     Boolean(
                         completed
@@ -260,7 +340,9 @@ function createHabitItem(
         "habit-title";
 
     title.textContent =
-        habit.name || "";
+        getHabitName(
+            habit
+        );
 
     const metaRow =
         document.createElement(
@@ -336,12 +418,10 @@ function createHabitItem(
     impact.className =
         "habit-recovery-impact";
 
-    if (
-        habit.points != null
-    ) {
-        impact.textContent =
-            `Recovery +${habit.points}`;
-    }
+    impact.textContent =
+        getRecoveryImpact(
+            habit.points
+        );
 
     const check =
         document.createElement(
@@ -367,8 +447,12 @@ function createHabitItem(
 
     check.title =
         habit.completed
-            ? "Відмінити"
-            : "Позначити як виконано";
+            ? dashboard_t(
+                "recovery.habits.undo"
+            )
+            : dashboard_t(
+                "recovery.habits.complete"
+            );
 
     check.addEventListener(
         "click",
@@ -649,7 +733,9 @@ function createContainer(
         "habits-widget-container-title";
 
     title.textContent =
-        "Ваші звички";
+        dashboard_t(
+            "recovery.habits.title"
+        );
 
     const count =
         document.createElement(
@@ -711,7 +797,9 @@ export function renderHabitsWidget(
         habits.length === 0
     ) {
         element.textContent =
-            "Звички ще не додані";
+            dashboard_t(
+                "recovery.habits.empty"
+            );
 
         return;
     }

@@ -1,5 +1,8 @@
+import { dashboard_t } from "../../../i18n/index.js";
 import { RecoveryAPI } from "./api.js";
-import { refreshRecoveryWidget } from "../../widgets/recovery/index.js";
+import {
+    refreshRecoveryWidget
+} from "../../widgets/recovery/index.js";
 import { RECOVERY_ICONS } from "../../../icons/recovery.js";
 
 let initialized = false;
@@ -206,7 +209,12 @@ async function saveSleep(): Promise<void> {
         !startTime ||
         !endTime
     ) {
-        alert("Заповніть всі поля");
+        alert(
+            dashboard_t(
+                "recovery.sleepModal.fillAllFields"
+            )
+        );
+
         return;
     }
 
@@ -224,15 +232,21 @@ async function saveSleep(): Promise<void> {
 
     if (!startDate) {
         alert(
-            "Некоректна дата або час початку сну"
+            dashboard_t(
+                "recovery.sleepModal.invalidStart"
+            )
         );
+
         return;
     }
 
     if (!endDate) {
         alert(
-            "Некоректна дата або час завершення сну"
+            dashboard_t(
+                "recovery.sleepModal.invalidEnd"
+            )
         );
+
         return;
     }
 
@@ -248,15 +262,21 @@ async function saveSleep(): Promise<void> {
 
     if (endDate <= startDate) {
         alert(
-            "Кінець сну має бути після початку"
+            dashboard_t(
+                "recovery.sleepModal.endBeforeStart"
+            )
         );
+
         return;
     }
 
     if (endDate > new Date()) {
         alert(
-            "Сон не може закінчуватися у майбутньому"
+            dashboard_t(
+                "recovery.sleepModal.futureEnd"
+            )
         );
+
         return;
     }
 
@@ -277,8 +297,11 @@ async function saveSleep(): Promise<void> {
         userId <= 0
     ) {
         alert(
-            "Не вдалося визначити користувача"
+            dashboard_t(
+                "recovery.sleepModal.userIdUnavailable"
+            )
         );
+
         return;
     }
 
@@ -309,7 +332,9 @@ async function saveSleep(): Promise<void> {
         alert(
             error instanceof Error
                 ? error.message
-                : "Не вдалося зберегти сон"
+                : dashboard_t(
+                    "recovery.sleepModal.saveFailed"
+                )
         );
     } finally {
         saveButton.disabled = false;

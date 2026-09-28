@@ -14,18 +14,20 @@
 
       <div class="dashboard-sleep-header-text">
         <div class="dashboard-sleep-title" id="dashboard-sleep-modal-title">
-          Додати сон
+          {{ dashboard_t("recovery.sleepModal.title") }}
         </div>
 
         <div class="dashboard-sleep-subtitle">
-          Запиши період сну для розрахунку відновлення
+          {{ dashboard_t("recovery.sleepModal.subtitle") }}
         </div>
       </div>
     </div>
 
     <div class="dashboard-sleep-body">
       <div class="dashboard-sleep-field-card">
-        <label class="dashboard-sleep-label"> Дата сну </label>
+        <label class="dashboard-sleep-label">
+          {{ dashboard_t("recovery.sleepModal.date") }}
+        </label>
 
         <div class="dashboard-sleep-input-wrapper">
           <input
@@ -37,11 +39,15 @@
       </div>
 
       <div class="dashboard-sleep-time-section">
-        <label class="dashboard-sleep-label"> Час сну </label>
+        <label class="dashboard-sleep-label">
+          {{ dashboard_t("recovery.sleepModal.time") }}
+        </label>
 
         <div class="dashboard-sleep-time-row">
           <div class="dashboard-sleep-time-field">
-            <div class="dashboard-sleep-time-label">Початок</div>
+            <div class="dashboard-sleep-time-label">
+              {{ dashboard_t("recovery.sleepModal.start") }}
+            </div>
 
             <input
               type="time"
@@ -53,7 +59,9 @@
           <div class="dashboard-sleep-time-arrow" aria-hidden="true">→</div>
 
           <div class="dashboard-sleep-time-field">
-            <div class="dashboard-sleep-time-label">Кінець</div>
+            <div class="dashboard-sleep-time-label">
+              {{ dashboard_t("recovery.sleepModal.end") }}
+            </div>
 
             <input
               type="time"
@@ -64,18 +72,18 @@
         </div>
 
         <div class="dashboard-sleep-hint">
-          Сон через опівніч буде визначено автоматично.
+          {{ dashboard_t("recovery.sleepModal.hint") }}
         </div>
       </div>
     </div>
 
     <div class="dashboard-sleep-footer">
       <button class="dashboard-sleep-btn-cancel" type="button" data-close-sleep>
-        Скасувати
+        {{ dashboard_t("recovery.sleepModal.cancel") }}
       </button>
 
       <button class="dashboard-sleep-btn-save" type="button" data-save-sleep>
-        Зберегти сон
+        {{ dashboard_t("recovery.sleepModal.save") }}
       </button>
     </div>
   </div>

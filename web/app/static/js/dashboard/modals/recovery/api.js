@@ -19,17 +19,14 @@ async function request(url, options = {}, timeoutMs = DEFAULT_TIMEOUT_MS) {
                 if (contentType.includes("application/json")) {
                     const error = await response.json();
                     if (error &&
-                        typeof error.error ===
-                            "string") {
-                        message =
-                            error.error;
+                        typeof error.error === "string") {
+                        message = error.error;
                     }
                 }
                 else {
                     const text = await response.text();
                     if (text) {
-                        message =
-                            text;
+                        message = text;
                     }
                 }
             }
@@ -75,7 +72,7 @@ export const RecoveryAPI = {
     async getSnapshot(userId) {
         const response = await request(ENDPOINTS.snapshot(userId));
         if (isSnapshotResponse(response)) {
-            return (response.snapshot);
+            return response.snapshot;
         }
         if (isRecoverySnapshot(response)) {
             return response;

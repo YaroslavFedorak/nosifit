@@ -1,3 +1,4 @@
+import { dashboard_t } from "../../../i18n/index.js";
 import { RecoveryAPI } from "./api.js";
 import { refreshRecoveryWidget } from "../../widgets/recovery/index.js";
 import { RECOVERY_ICONS } from "../../../icons/recovery.js";
@@ -97,17 +98,17 @@ async function saveSleep() {
     if (!date ||
         !startTime ||
         !endTime) {
-        alert("Заповніть всі поля");
+        alert(dashboard_t("recovery.sleepModal.fillAllFields"));
         return;
     }
     const startDate = getLocalDateTime(date, startTime);
     let endDate = getLocalDateTime(date, endTime);
     if (!startDate) {
-        alert("Некоректна дата або час початку сну");
+        alert(dashboard_t("recovery.sleepModal.invalidStart"));
         return;
     }
     if (!endDate) {
-        alert("Некоректна дата або час завершення сну");
+        alert(dashboard_t("recovery.sleepModal.invalidEnd"));
         return;
     }
     if (endDate <= startDate) {
@@ -115,18 +116,18 @@ async function saveSleep() {
         endDate.setDate(endDate.getDate() + 1);
     }
     if (endDate <= startDate) {
-        alert("Кінець сну має бути після початку");
+        alert(dashboard_t("recovery.sleepModal.endBeforeStart"));
         return;
     }
     if (endDate > new Date()) {
-        alert("Сон не може закінчуватися у майбутньому");
+        alert(dashboard_t("recovery.sleepModal.futureEnd"));
         return;
     }
     const recoveryButton = getElement("#dashboard-open-recovery");
     const userId = Number(recoveryButton?.getAttribute("data-user-id"));
     if (!Number.isFinite(userId) ||
         userId <= 0) {
-        alert("Не вдалося визначити користувача");
+        alert(dashboard_t("recovery.sleepModal.userIdUnavailable"));
         return;
     }
     saveButton.disabled = true;
@@ -140,7 +141,7 @@ async function saveSleep() {
         console.error("Failed to save sleep:", error);
         alert(error instanceof Error
             ? error.message
-            : "Не вдалося зберегти сон");
+            : dashboard_t("recovery.sleepModal.saveFailed"));
     }
     finally {
         saveButton.disabled = false;
