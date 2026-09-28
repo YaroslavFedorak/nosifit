@@ -1,0 +1,10 @@
+{
+    "nutrition": {
+        "title": "Today's nutrition",
+        "newMeal": "New meal",
+        "water": "Water",
+        "addWater": "Add water",
+        "weight": "Weight",
+        "updateWeight": "Update weight"
+    }
+}

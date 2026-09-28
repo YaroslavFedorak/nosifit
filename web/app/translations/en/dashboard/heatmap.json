@@ -1,0 +1,11 @@
+{
+    "heatmap": {
+        "eyebrow": "History",
+        "calendar": "Calendar",
+        "ariaLabel": "Overall status heatmap",
+        "less": "Less",
+        "more": "More",
+        "noData": "No data",
+        "level": "Level {level}"
+    }
+}

@@ -1,0 +1,84 @@
+﻿{
+    "recovery": {
+        "title": "Regeneracja",
+        "labels": {
+            "sleep": "Sen",
+            "habits": "Nawyki",
+            "addSleep": "Dodaj sen",
+            "addHabit": "Dodaj nawyk"
+        },
+        "habitCategories": {
+            "sleep": "Sen",
+            "hydration": "Nawodnienie",
+            "nutrition": "Odżywianie",
+            "activity": "Aktywność",
+            "recovery": "Regeneracja",
+            "stress": "Stres",
+            "massage": "Masaż"
+        },
+        "habitReasons": {
+            "sleep": "Zalecane ze względu na jakość snu",
+            "hydration": "Zalecane ze względu na poziom nawodnienia",
+            "nutrition": "Zalecane w celu wsparcia odżywiania",
+            "activity": "Zalecane po wysiłku fizycznym",
+            "recovery": "Zalecane w celu poprawy regeneracji",
+            "stress": "Zalecane ze względu na poziom stresu",
+            "massage": "Zalecane w celu rozluźnienia mięśni",
+            "default": "Zalecane dla zachowania równowagi regeneracji"
+        },
+        "habitImpact": "Regeneracja +{points}",
+        "habits": {
+            "title": "Twoje nawyki",
+            "empty": "Nie dodano jeszcze żadnych nawyków",
+            "undo": "Cofnij",
+            "complete": "Oznacz jako wykonane"
+        },
+        "sleep": {
+            "durationHours": "{hours} godz.",
+            "durationHoursMinutes": "{hours} godz. {minutes} min",
+            "noData": "Brak danych",
+            "periodUnavailable": "Okres snu nie został zarejestrowany",
+            "quality": "Jakość {score}/100",
+            "qualityUnavailable": "Nie określono jakości"
+        },
+        "errors": {
+            "userIdUnavailable": "Identyfikator użytkownika regeneracji jest niedostępny",
+            "loadFailed": "Nie udało się załadować danych regeneracji"
+        },
+        "sleepModal": {
+            "title": "Dodaj sen",
+            "subtitle": "Zapisz okres snu, aby obliczyć regenerację",
+            "date": "Data snu",
+            "time": "Godziny snu",
+            "start": "Początek",
+            "end": "Koniec",
+            "hint": "Sen przechodzący przez północ zostanie wykryty automatycznie.",
+            "cancel": "Anuluj",
+            "save": "Zapisz sen",
+            "fillAllFields": "Uzupełnij wszystkie pola",
+            "invalidStart": "Nieprawidłowa data lub godzina rozpoczęcia snu",
+            "invalidEnd": "Nieprawidłowa data lub godzina zakończenia snu",
+            "endBeforeStart": "Koniec snu musi nastąpić po jego rozpoczęciu",
+            "futureEnd": "Sen nie może kończyć się w przyszłości",
+            "userIdUnavailable": "Nie udało się zidentyfikować użytkownika",
+            "saveFailed": "Nie udało się zapisać snu"
+        },
+        "habitModal": {
+            "title": "Dodaj nawyk",
+            "sort": {
+                "points": "Punkty",
+                "category": "Kategoria",
+                "name": "Nazwa"
+            },
+            "back": "Wstecz",
+            "save": "Zapisz",
+            "available": "Dostępne nawyki",
+            "loading": "Ładowanie nawyków...",
+            "emptyAvailable": "Wszystkie dostępne nawyki zostały już dodane",
+            "alreadyAdded": "Już dodano",
+            "emptyAdded": "Nie dodano jeszcze żadnych nawyków",
+            "loadFailed": "Nie udało się załadować nawyków",
+            "saveFailed": "Nie udało się zapisać nawyków"
+        }
+    }
+}

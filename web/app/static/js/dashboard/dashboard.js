@@ -307,7 +307,8 @@ function getUserId() {
         return null;
     }
     const userId = Number(element.getAttribute("data-user-id"));
-    if (!Number.isFinite(userId)) {
+    if (!Number.isFinite(userId) ||
+        userId <= 0) {
         return null;
     }
     return userId;
@@ -360,6 +361,7 @@ async function init() {
     await Promise.all([
         loadTranslations("dashboard"),
         loadTranslations("exercises"),
+        loadTranslations("recovery"),
     ]);
     bindHeaderDate();
     initSubscriptions();

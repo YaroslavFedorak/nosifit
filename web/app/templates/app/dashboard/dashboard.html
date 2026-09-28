@@ -202,7 +202,7 @@
           <div class="db-recovery-sleep">
             <div class="db-recovery-section-header">
               <div class="db-recovery-section-title">
-                {{ dashboard_t("recovery.sleep") }}
+                {{ dashboard_t("recovery.labels.sleep") }}
               </div>
             </div>
 
@@ -226,7 +226,7 @@
                 class="sleep-add-btn"
                 type="button"
               >
-                {{ dashboard_t("recovery.addSleep") }}
+                {{ dashboard_t("recovery.labels.addSleep") }}
               </button>
             </div>
 
@@ -240,7 +240,7 @@
           <div class="db-recovery-habits">
             <div class="db-recovery-section-header">
               <div class="db-recovery-section-title">
-                {{ dashboard_t("recovery.habits") }}
+                {{ dashboard_t("recovery.labels.habits") }}
               </div>
 
               <div class="db-recovery-habits-header-actions">
@@ -250,7 +250,7 @@
                   type="button"
                   data-user-id="{{ current_user.id }}"
                 >
-                  {{ dashboard_t("recovery.addHabit") }}
+                  {{ dashboard_t("recovery.labels.addHabit") }}
                 </button>
               </div>
             </div>
@@ -296,17 +296,17 @@
 
 <script
   type="module"
-  src="{{ url_for(
-        'static',
-        filename='js/dashboard/dashboard.js'
+  src="{{ url_for( 
+        'static', 
+        filename='js/dashboard/dashboard.js' 
     ) }}"
 ></script>
 
 <script
   type="module"
-  src="{{ url_for(
-        'static',
-        filename='js/dashboard/widgets/nutrition/index.js'
+  src="{{ url_for( 
+        'static', 
+        filename='js/dashboard/widgets/nutrition/index.js' 
     ) }}"
 ></script>
 

@@ -1,0 +1,10 @@
+﻿{
+    "nutrition": {
+        "title": "Dzisiejsze odżywianie",
+        "newMeal": "Nowy posiłek",
+        "water": "Woda",
+        "addWater": "Dodaj wodę",
+        "weight": "Waga",
+        "updateWeight": "Aktualizuj wagę"
+    }
+}

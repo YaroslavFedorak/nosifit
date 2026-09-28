@@ -1,0 +1,14 @@
+{
+    "units": {
+        "hours": "h",
+        "calories": "kcal",
+        "grams": "g",
+        "milliliters": "ml"
+    },
+    "page": {
+        "title": "Dashboard — Nosi Fit",
+        "heading": "Dashboard",
+        "subtitle": "Manage your workload • Monitor recovery • Analyze progress",
+        "today": "Today"
+    }
+}

@@ -1,0 +1,14 @@
+﻿{
+    "units": {
+        "hours": "godz.",
+        "calories": "kcal",
+        "grams": "g",
+        "milliliters": "ml"
+    },
+    "page": {
+        "title": "Panel — Nosi Fit",
+        "heading": "Panel",
+        "subtitle": "Zarządzaj obciążeniem • Monitoruj regenerację • Analizuj postępy",
+        "today": "Dzisiaj"
+    }
+}

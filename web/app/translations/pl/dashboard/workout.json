@@ -1,0 +1,88 @@
+﻿{
+    "workout": {
+        "title": "Dzisiejszy trening",
+        "defaultTitle": "Trening",
+        "titlePlaceholder": "Nazwa treningu",
+        "planButton": "Plan treningowy",
+        "addExercise": "Dodaj ćwiczenie",
+        "emptyExercises": "Dodaj ćwiczenia do swojego treningu",
+        "unnamedExercise": "Ćwiczenie bez nazwy",
+        "fields": {
+            "sets": "serie",
+            "reps": "powt.",
+            "weight": "kg"
+        },
+        "exercise": {
+            "completed": "Wykonane",
+            "markCompleted": "Oznacz jako wykonane"
+        },
+        "save": "Zapisz trening",
+        "saveSuccess": "Trening został pomyślnie zapisany!",
+        "errors": {
+            "noCompletedExercises": "Oznacz co najmniej jedno wykonane ćwiczenie.",
+            "noValidExercises": "Brak prawidłowych ćwiczeń do zapisania.",
+            "invalidSessionId": "Serwer nie zwrócił prawidłowego identyfikatora treningu.",
+            "noExercisesSaved": "Nie udało się zapisać żadnych ćwiczeń.",
+            "saveFailed": "Nie udało się zapisać treningu."
+        }
+    },
+    "exerciseModal": {
+        "title": "Dodaj ćwiczenie",
+        "subtitle": "Wybierz ćwiczenie do bieżącego treningu",
+        "close": "Zamknij",
+        "searchPlaceholder": "Szukaj ćwiczenia...",
+        "all": "Wszystkie",
+        "push": "Pchanie",
+        "pull": "Przyciąganie",
+        "legs": "Nogi",
+        "core": "Core",
+        "mobility": "Mobilność",
+        "loading": "Ładowanie ćwiczeń...",
+        "empty": "Nie znaleziono ćwiczeń.",
+        "loadError": "Nie udało się załadować ćwiczeń."
+    },
+    "plan": {
+        "defaultTitle": "Mój plan",
+        "saveSuccess": "Plan został zapisany",
+        "saveFailed": "Nie udało się zapisać planu",
+        "help": "Pomoc",
+        "helpItems": {
+            "setup": "Wybierz dzień, dodaj ćwiczenia i ustaw powtórzenia, serie oraz ciężar",
+            "reorder": "Przeciągaj ćwiczenia za uchwyt, aby zmienić ich kolejność"
+        },
+        "title": "Mój plan treningowy",
+        "name": "Nazwa planu",
+        "namePlaceholder": "Na przykład: Full Body",
+        "dayExercises": "Ćwiczenia na ten dzień",
+        "addExercise": "Dodaj ćwiczenie",
+        "empty": {
+            "title": "Ten dzień jest pusty",
+            "subtitle": "Dodaj pierwsze ćwiczenie, aby rozpocząć trening",
+            "addExercise": "Dodaj ćwiczenie"
+        },
+        "days": {
+            "mon": "Pon",
+            "tue": "Wt",
+            "wed": "Śr",
+            "thu": "Czw",
+            "fri": "Pt",
+            "sat": "Sob",
+            "sun": "Nie"
+        },
+        "fields": {
+            "reps": "Powtórzenia",
+            "sets": "Serie",
+            "weight": "Ciężar (kg)"
+        },
+        "actions": {
+            "reorder": "Zmień kolejność ćwiczenia",
+            "deleteExercise": "Usuń ćwiczenie"
+        },
+        "summary": {
+            "exercises": "{count} ćwiczeń",
+            "sets": "{count} serii"
+        },
+        "cancel": "Anuluj",
+        "save": "Zapisz plan"
+    }
+}

@@ -1,0 +1,11 @@
+﻿{
+    "heatmap": {
+        "eyebrow": "Historia",
+        "calendar": "Kalendarz",
+        "ariaLabel": "Mapa aktywności ogólnego stanu",
+        "less": "Mniej",
+        "more": "Więcej",
+        "noData": "Brak danych",
+        "level": "Poziom {level}"
+    }
+}

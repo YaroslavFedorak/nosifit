@@ -640,7 +640,10 @@ function getUserId(): number | null {
             )
         );
 
-    if (!Number.isFinite(userId)) {
+    if (
+        !Number.isFinite(userId) ||
+        userId <= 0
+    ) {
         return null;
     }
 
@@ -744,6 +747,7 @@ async function init(): Promise<void> {
     await Promise.all([
         loadTranslations("dashboard"),
         loadTranslations("exercises"),
+        loadTranslations("recovery"),
     ]);
 
     bindHeaderDate();

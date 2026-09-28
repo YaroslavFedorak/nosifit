@@ -1,0 +1,84 @@
+{
+    "recovery": {
+        "title": "Recovery",
+        "labels": {
+            "sleep": "Sleep",
+            "habits": "Habits",
+            "addSleep": "Add sleep",
+            "addHabit": "Add habit"
+        },
+        "habitCategories": {
+            "sleep": "Sleep",
+            "hydration": "Hydration",
+            "nutrition": "Nutrition",
+            "activity": "Activity",
+            "recovery": "Recovery",
+            "stress": "Stress",
+            "massage": "Massage"
+        },
+        "habitReasons": {
+            "sleep": "Recommended because of sleep quality",
+            "hydration": "Recommended because of hydration level",
+            "nutrition": "Recommended to support nutrition",
+            "activity": "Recommended after physical load",
+            "recovery": "Recommended to improve recovery",
+            "stress": "Recommended because of stress level",
+            "massage": "Recommended for muscle relaxation",
+            "default": "Recommended for recovery balance"
+        },
+        "habitImpact": "Recovery +{points}",
+        "habits": {
+            "title": "Your habits",
+            "empty": "No habits added yet",
+            "undo": "Undo",
+            "complete": "Mark as completed"
+        },
+        "sleep": {
+            "durationHours": "{hours} h",
+            "durationHoursMinutes": "{hours} h {minutes} min",
+            "noData": "No data available",
+            "periodUnavailable": "Sleep period not recorded",
+            "quality": "Quality {score}/100",
+            "qualityUnavailable": "Quality not determined"
+        },
+        "errors": {
+            "userIdUnavailable": "Recovery user ID is not available",
+            "loadFailed": "Failed to load recovery data"
+        },
+        "sleepModal": {
+            "title": "Add sleep",
+            "subtitle": "Record your sleep period to calculate recovery",
+            "date": "Sleep date",
+            "time": "Sleep time",
+            "start": "Start",
+            "end": "End",
+            "hint": "Sleep through midnight will be detected automatically.",
+            "cancel": "Cancel",
+            "save": "Save sleep",
+            "fillAllFields": "Fill in all fields",
+            "invalidStart": "Invalid sleep start date or time",
+            "invalidEnd": "Invalid sleep end date or time",
+            "endBeforeStart": "Sleep end must be after sleep start",
+            "futureEnd": "Sleep cannot end in the future",
+            "userIdUnavailable": "User could not be identified",
+            "saveFailed": "Failed to save sleep"
+        },
+        "habitModal": {
+            "title": "Add habit",
+            "sort": {
+                "points": "Points",
+                "category": "Category",
+                "name": "Name"
+            },
+            "back": "Back",
+            "save": "Save",
+            "available": "Available habits",
+            "loading": "Loading habits...",
+            "emptyAvailable": "All available habits have already been added",
+            "alreadyAdded": "Already added",
+            "emptyAdded": "No habits added yet",
+            "loadFailed": "Failed to load habits",
+            "saveFailed": "Failed to save habits"
+        }
+    }
+}

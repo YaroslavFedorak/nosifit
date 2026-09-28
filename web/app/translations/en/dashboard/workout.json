@@ -1,16 +1,4 @@
 {
-    "units": {
-        "hours": "h",
-        "calories": "kcal",
-        "grams": "g",
-        "milliliters": "ml"
-    },
-    "page": {
-        "title": "Dashboard — Nosi Fit",
-        "heading": "Dashboard",
-        "subtitle": "Manage your workload • Monitor recovery • Analyze progress",
-        "today": "Today"
-    },
     "workout": {
         "title": "Today's workout",
         "defaultTitle": "Workout",
@@ -37,33 +25,6 @@
             "noExercisesSaved": "No exercises could be saved.",
             "saveFailed": "Failed to save the workout."
         }
-    },
-    "nutrition": {
-        "title": "Today's nutrition",
-        "newMeal": "New meal",
-        "water": "Water",
-        "addWater": "Add water",
-        "weight": "Weight",
-        "updateWeight": "Update weight"
-    },
-    "recovery": {
-        "title": "Recovery",
-        "sleep": "Sleep",
-        "addSleep": "Add sleep",
-        "habits": "Habits",
-        "addHabit": "Add habit"
-    },
-    "recommendations": {
-        "title": "Recommendations"
-    },
-    "heatmap": {
-        "eyebrow": "History",
-        "calendar": "Calendar",
-        "ariaLabel": "Overall status heatmap",
-        "less": "Less",
-        "more": "More",
-        "noData": "No data",
-        "level": "Level {level}"
     },
     "exerciseModal": {
         "title": "Add exercise",
