@@ -14,7 +14,10 @@ i18n_bp = Blueprint(
 
 
 @i18n_bp.get("/<locale>/<namespace>")
-def get_translation(locale, namespace):
+def get_translation(
+    locale,
+    namespace,
+):
     if locale not in SUPPORTED_LOCALES:
         locale = DEFAULT_LOCALE
 

@@ -27,12 +27,55 @@ def resolve_locale() -> str:
     return browser_locale or DEFAULT_LOCALE
 
 
+def _merge_translations(
+    target: dict,
+    source: dict,
+) -> None:
+    for key, value in source.items():
+        if key in target and isinstance(target[key], dict) and isinstance(value, dict):
+            _merge_translations(
+                target[key],
+                value,
+            )
+        else:
+            target[key] = value
+
+
+def _load_translation_directory(
+    path: Path,
+) -> dict:
+    translations: dict = {}
+
+    for file_path in sorted(path.glob("*.json")):
+        with file_path.open(
+            "r",
+            encoding="utf-8",
+        ) as file:
+            data = json.load(file)
+
+        if isinstance(data, dict):
+            _merge_translations(
+                translations,
+                data,
+            )
+
+    return translations
+
+
 def load_translation(
     locale: str,
     namespace: str,
 ) -> dict:
     if locale not in SUPPORTED_LOCALES:
         locale = DEFAULT_LOCALE
+
+    directory = TRANSLATIONS_DIR / locale / namespace
+
+    if directory.is_dir():
+        translations = _load_translation_directory(directory)
+
+        if translations:
+            return translations
 
     path = TRANSLATIONS_DIR / locale / f"{namespace}.json"
 

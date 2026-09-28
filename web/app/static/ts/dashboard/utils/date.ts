@@ -1,3 +1,7 @@
+import {
+    getLocale
+} from "../../i18n/index.js";
+
 export function formatDashboardDate(
     value: string | Date
 ): string {
@@ -15,7 +19,7 @@ export function formatDashboardDate(
     }
 
     return new Intl.DateTimeFormat(
-        "uk-UA",
+        getLocale(),
         {
             weekday: "long",
             day: "numeric",

@@ -2,7 +2,7 @@ const SUPPORTED_LOCALES = [
     "uk",
     "en",
     "pl",
-    "ru"
+    "ru",
 ];
 const DEFAULT_LOCALE = "uk";
 const LOCALE_COOKIE = "nosifit_locale";
@@ -22,7 +22,7 @@ function getCookieLocale() {
 function getBrowserLocale() {
     const languages = [
         navigator.language,
-        ...navigator.languages
+        ...navigator.languages,
     ];
     for (const language of languages) {
         const locale = language
@@ -42,7 +42,7 @@ export async function loadTranslations(namespace) {
         getBrowserLocale();
     currentLocale = locale;
     const response = await fetch(`/api/i18n/${locale}/${namespace}`, {
-        credentials: "same-origin"
+        credentials: "same-origin",
     });
     if (!response.ok) {
         throw new Error(`Failed to load translations: ${namespace}`);
@@ -62,8 +62,7 @@ export function translate(namespace, key, params = {}) {
             value === null) {
             return key;
         }
-        value =
-            value[part];
+        value = value[part];
     }
     if (typeof value !== "string") {
         return key;
