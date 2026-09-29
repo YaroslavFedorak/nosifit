@@ -122,7 +122,8 @@ export function openDayModal(data) {
     const modal = document.getElementById("dashboard-day-details-modal");
     const content = document.getElementById("dashboard-day-details-content");
     const date = document.getElementById("dashboard-day-details-date");
-    if (!modal || !content) {
+    if (!modal ||
+        !content) {
         return;
     }
     if (date) {

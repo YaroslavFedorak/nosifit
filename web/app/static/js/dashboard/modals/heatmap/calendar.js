@@ -1,4 +1,4 @@
-import { dashboard_t } from "../../../i18n/index.js";
+import { dashboard_t, } from "../../../i18n/index.js";
 const MONTHS = [
     "january",
     "february",
@@ -22,14 +22,6 @@ const WEEKDAYS = [
     "saturday",
     "sunday",
 ];
-function formatDate(dateString) {
-    const date = new Date(`${dateString}T12:00:00`);
-    return date.toLocaleDateString(undefined, {
-        day: "numeric",
-        month: "long",
-        year: "numeric",
-    });
-}
 function formatDateKey(date) {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, "0");
