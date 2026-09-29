@@ -41,6 +41,7 @@
     />
 
     {% block styles %}{% endblock %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/core/system.css') }}" />
   </head>
 
   <body class="app-page app-layout {% block body_class %}{% endblock %}">
