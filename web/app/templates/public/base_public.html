@@ -21,62 +21,18 @@
       href="{{ url_for('static', filename='css/core/variables.css') }}"
     />
 
-    {% if current_user.is_authenticated %}
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='css/core/layout.css') }}"
-    />
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='css/components/sidebar.css') }}"
-    />
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='css/components/buttons.css') }}"
-    />
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='css/components/forms.css') }}"
-    />
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='css/components/cards.css') }}"
-    />
-    {% else %}
     <link
       rel="stylesheet"
       href="{{ url_for('static', filename='css/components/navbar.css') }}"
     />
-    {% endif %}
 
     {% block styles %}{% endblock %}
   </head>
 
-  <body
-    class="{% if current_user.is_authenticated %}app-page app-layout{% else %}public-layout{% endif %}"
-  >
-    {% if current_user.is_authenticated %}
-    <div class="bg-glow-static glow-purple" aria-hidden="true"></div>
-    <div class="bg-glow-static glow-teal" aria-hidden="true"></div>
-    <div class="bg-glow-static glow-yellow" aria-hidden="true"></div>
-    <div class="bg-glow-dynamic" aria-hidden="true"></div>
-
-    <div
-      class="core-sidebar-shell"
-      role="navigation"
-      aria-label="{{ common_t('navigation.menu') }}"
-    >
-      {% include "components/sidebar.html" %}
-    </div>
-
-    <main class="main-content" role="main">
-      <div class="page-content">{% block body %}{% endblock %}</div>
-    </main>
-    {% else %}
+  <body class="public-layout">
     {% include "components/public_nav.html" %}
 
     <main class="public-wrapper">{% block body %}{% endblock %}</main>
-    {% endif %}
 
     {% block scripts %}{% endblock %}
   </body>
