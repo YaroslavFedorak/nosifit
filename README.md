@@ -4,7 +4,7 @@ NosiFit is a full-stack web application for managing training, nutrition and rec
 
 I started the project as a way to build something more than a simple workout tracker. The application combines workout planning, training load analysis, recovery data, nutrition tracking and daily dashboard analytics.
 
-The project is still under active development, but the main application modules are already connected and working together.
+NosiFit is currently at **v0.1.0-beta**. The core application modules are connected and working together, while the project continues to evolve toward a stable release.
 
 ## Features
 
