@@ -1,92 +1,101 @@
 .public-layout .nav-root {
-    width: 100%;
-    height: 70px;
-    background: rgba(10, 12, 20, 0.9);
-    border-bottom: 1px solid var(--nf-border-subtle);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 var(--nf-page-padding-x);
-    backdrop-filter: blur(16px);
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 40;
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 200;
+  min-height: 68px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 0 max(18px, calc((100vw - var(--nf-content-max)) / 2));
+  border-bottom: 1px solid var(--nf-border-subtle);
+  background: rgba(8,10,14,.84);
+  backdrop-filter: blur(18px);
 }
 
-.public-layout .nav-left {
-    display: flex;
-    align-items: center;
-    gap: 22px;
+.public-layout .nav-left,
+.public-layout .nav-right,
+.public-layout .nav-links {
+  display: flex;
+  align-items: center;
 }
+
+.public-layout .nav-left { gap: 28px; }
+.public-layout .nav-links { gap: 20px; }
+.public-layout .nav-right { gap: 8px; }
 
 .public-layout .nav-logo-img {
-    max-width: 130px;
-    height: auto;
-}
-
-.public-layout .nav-links {
-    display: flex;
-    gap: 18px;
+  width: 124px;
+  max-width: 124px;
 }
 
 .public-layout .nav-link {
-    color: var(--nf-text-soft);
-    font-size: 14px;
-    text-decoration: none;
-    transition: color var(--nf-transition-fast),
-        opacity var(--nf-transition-fast), transform var(--nf-transition-fast);
-    opacity: 0.9;
+  position: relative;
+  padding: 22px 0;
+  color: var(--nf-text-muted);
+  font-size: 13px;
+  font-weight: 540;
+  transition: color var(--nf-transition-fast);
+}
+
+.public-layout .nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 100%;
+  bottom: 17px;
+  height: 1px;
+  background: var(--nf-yellow);
+  transition: right var(--nf-transition);
 }
 
 .public-layout .nav-link:hover {
-    color: var(--nf-text-main);
-    opacity: 1;
-    transform: translateY(-1px);
+  color: var(--nf-text-main);
 }
 
-.public-layout .nav-right {
-    display: flex;
-    gap: 10px;
+.public-layout .nav-link:hover::after {
+  right: 0;
+}
+
+.public-layout .nav-btn-login,
+.public-layout .nav-btn-register {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  padding: 8px 13px;
+  border-radius: var(--nf-radius-pill);
+  font-size: 12px;
+  font-weight: 620;
+  transition: transform var(--nf-transition-fast), background var(--nf-transition-fast), border-color var(--nf-transition-fast), box-shadow var(--nf-transition-fast);
 }
 
 .public-layout .nav-btn-login {
-    border-radius: var(--nf-radius-pill);
-    padding: 8px 16px;
-    font-size: 13px;
-    font-weight: 500;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.16);
-    color: var(--nf-text-main);
-    transition: background var(--nf-transition-fast),
-        border-color var(--nf-transition-fast), transform var(--nf-transition-fast);
+  color: var(--nf-text-main);
+  border: 1px solid var(--nf-border-strong);
+  background: rgba(255,255,255,.025);
 }
 
 .public-layout .nav-btn-login:hover {
-    background: rgba(255, 255, 255, 0.08);
-    transform: translateY(-1px);
+  background: rgba(255,255,255,.055);
+  transform: translateY(-1px);
 }
 
 .public-layout .nav-btn-register {
-    border-radius: var(--nf-radius-pill);
-    padding: 8px 18px;
-    font-size: 13px;
-    font-weight: 600;
-    background: var(--nf-yellow);
-    color: #151515;
-    box-shadow: var(--nf-shadow-yellow);
-    transition: box-shadow var(--nf-transition-fast),
-        transform var(--nf-transition-fast), background var(--nf-transition-fast);
+  color: var(--nf-text-inverse);
+  background: var(--nf-yellow);
+  box-shadow: 0 8px 24px rgba(244,200,74,.12);
 }
 
 .public-layout .nav-btn-register:hover {
-    background: #ffe063;
-    transform: translateY(-1px);
-    box-shadow: 0 18px 40px rgba(255, 212, 59, 0.75);
+  background: var(--nf-yellow-soft);
+  transform: translateY(-1px);
+  box-shadow: var(--nf-glow-yellow);
 }
 
-@media (max-width: 768px) {
-    .public-layout .nav-links {
-        display: none;
-    }
+@media (max-width: 760px) {
+  .public-layout .nav-root { min-height: 60px; }
+  .public-layout .nav-links { display: none; }
+  .public-layout .nav-left { gap: 0; }
+  .public-layout .nav-logo-img { width: 112px; }
 }
