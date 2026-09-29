@@ -10,7 +10,8 @@
         "eyebrow": "Daily overview",
         "title": "Dashboard",
         "dateLabel": "Today",
-        "date": "28 Sep"
+        "date": "28 Sep",
+        "description": "This is not a collection of isolated mockups. It is one day in context: training, nutrition, recovery and balance history work together."
     },
     "scores": {
         "balance": {
@@ -38,7 +39,21 @@
         "month1": "Aug",
         "month2": "Sep",
         "less": "Less",
-        "more": "More"
+        "more": "More",
+        "months": {
+            "january": "Jan",
+            "february": "Feb",
+            "march": "Mar",
+            "april": "Apr",
+            "may": "May",
+            "june": "Jun",
+            "july": "Jul",
+            "august": "Aug",
+            "september": "Sep",
+            "october": "Oct",
+            "november": "Nov",
+            "december": "Dec"
+        }
     },
     "training": {
         "eyebrow": "Training",
@@ -47,7 +62,8 @@
         "plan": "Upper Body",
         "duration": "42 min",
         "load": "Load 64",
-        "progress": "Workout progress"
+        "progress": "Workout progress",
+        "description": "The session keeps the same structure as the real dashboard: exercises, sets, reps and load. The demo checkboxes are interactive."
     },
     "nutrition": {
         "eyebrow": "Nutrition",
@@ -63,7 +79,9 @@
         "protein": "Protein",
         "carbs": "Carbs",
         "fats": "Fats",
-        "water": "Water"
+        "water": "Water",
+        "description": "Meals open the same way as the dashboard widget: a compact summary first, then individual foods and macros.",
+        "waterGoal": "1 650 of 2 000 ml"
     },
     "recovery": {
         "eyebrow": "Recovery",
@@ -74,7 +92,8 @@
         "energyStatus": "stable",
         "stress": "Stress",
         "stressValue": "Low",
-        "stressStatus": "no sharp changes"
+        "stressStatus": "no sharp changes",
+        "description": "Recovery is more than one number. NosiFit places sleep, energy and stress next to training load."
     },
     "habits": {
         "eyebrow": "Recovery habits",
@@ -83,12 +102,15 @@
         "water": "Enough water",
         "mobility": "Light mobility",
         "recovery": "Recovery session",
-        "stress": "Screen-free rest"
+        "stress": "Screen-free rest",
+        "count": "4 / 5",
+        "description": "Habits turn recovery into concrete daily actions. You can toggle them in this demo."
     },
     "recommendation": {
         "eyebrow": "Recommendation",
         "title": "Keep today's intensity moderate",
-        "text": "Recent training load is stable and recovery looks good. You can train, but avoid a sudden increase in volume. After training, pay attention to sleep and hydration."
+        "text": "Recent training load is stable and recovery looks good. You can train, but avoid a sudden increase in volume. After training, pay attention to sleep and hydration.",
+        "note": "The recommendation is based on the context of the day, not one metric."
     },
     "register": {
         "eyebrow": "After registration",
@@ -115,6 +137,23 @@
         "analysis": {
             "title": "See the trend",
             "text": "The heatmap turns individual days into a history. Open a day to connect training, recovery and nutrition."
+        }
+    },
+    "explainer": {
+        "eyebrow": "What happens inside",
+        "title": "Your data does not stay isolated",
+        "text": "As you regularly log training, food and recovery, NosiFit can show more than what happened today. It can make relationships between those inputs visible.",
+        "data": {
+            "title": "You log facts",
+            "text": "Exercises, meals, water, sleep and habits are simple entries you can add throughout the day."
+        },
+        "context": {
+            "title": "The dashboard adds context",
+            "text": "The system puts those entries together so training load, nutrition and recovery can be understood in one place."
+        },
+        "trend": {
+            "title": "The heatmap shows history",
+            "text": "Day by day, your balance becomes a history. That makes changes easier to notice than judging progress from a single day."
         }
     }
 }
