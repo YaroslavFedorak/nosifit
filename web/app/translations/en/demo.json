@@ -9,7 +9,8 @@
     "dashboard": {
         "eyebrow": "Daily overview",
         "title": "Dashboard",
-        "dateLabel": "Today"
+        "dateLabel": "Today",
+        "date": "28 Sep"
     },
     "scores": {
         "balance": {
