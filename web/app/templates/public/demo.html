@@ -1,14 +1,14 @@
 {% extends "public/base_public.html" %} {% block content %}
 
 <section class="pub-section">
-  <h1 class="pub-section-title">Демо</h1>
+  <h1 class="pub-section-title">{{ public_t("demo.title") }}</h1>
   <p class="pub-section-text">
-    Переглянь, як виглядає робота системи перед реєстрацією.
+    {{ public_t("demo.description") }}
   </p>
 
   <div class="pub-demo-box">
     <a href="/dashboard" class="btn-root btn-register" data-glow="yellow">
-      Відкрити демо-дашборд
+      {{ public_t("demo.openDashboard") }}
     </a>
   </div>
 </section>

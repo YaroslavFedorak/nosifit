@@ -1,5 +1,4 @@
-{% extends "public/base_public.html" %} {% block title %}NosiFit — Твій
-персональний фітнес‑помічник{% endblock %} {% block styles %}
+{% extends "public/base_public.html" %} {% block title %}{{ public_t("meta.landingTitle") }}{% endblock %} {% block styles %}
 <link
   rel="stylesheet"
   href="{{ url_for('static', filename='css/pages/landing.css') }}"
@@ -20,11 +19,10 @@
         <span class="pub-logo-fit">Fit</span>
       </div>
 
-      <h1 class="pub-landing-title">Твій персональний<br />фітнес‑помічник</h1>
+      <h1 class="pub-landing-title">{{ public_t("landing.title") | safe }}</h1>
 
       <p class="pub-landing-sub">
-        Мінімалістичний, динамічний та розумний сервіс для тренувань,
-        харчування, відновлення та аналітики. Все в одному місці.
+        {{ public_t("landing.subtitle") }}
       </p>
 
       <div class="pub-landing-actions">
@@ -33,11 +31,11 @@
           class="pub-btn pub-btn-register"
           data-glow="yellow"
         >
-          Почати зараз
+          {{ public_t("landing.startNow") }}
         </a>
 
         <a href="/demo" class="pub-btn pub-btn-login" data-glow="blue">
-          Спробувати демо
+          {{ public_t("landing.tryDemo") }}
         </a>
       </div>
     </div>
@@ -45,7 +43,7 @@
     <div class="pub-landing-right">
       <div class="pub-progress-card">
         <div class="pub-progress-header">
-          <div class="pub-progress-label">Прогрес сьогодні</div>
+          <div class="pub-progress-label">{{ public_t("landing.progressToday") }}</div>
           <div class="pub-progress-tag">+32%</div>
         </div>
 
@@ -59,26 +57,26 @@
       <div class="pub-features-grid">
         <div class="pub-feature-item pub-feature-training" data-glow="yellow">
           <div class="pub-feature-icon">💪</div>
-          <div class="pub-feature-title">Тренування</div>
-          <div class="pub-feature-sub">Структура і прогрес</div>
+          <div class="pub-feature-title">{{ public_t("landing.features.training.title") }}</div>
+          <div class="pub-feature-sub">{{ public_t("landing.features.training.subtitle") }}</div>
         </div>
 
         <div class="pub-feature-item pub-feature-nutrition" data-glow="violet">
           <div class="pub-feature-icon">🍽️</div>
-          <div class="pub-feature-title">Харчування</div>
-          <div class="pub-feature-sub">Калорії та макроси</div>
+          <div class="pub-feature-title">{{ public_t("landing.features.nutrition.title") }}</div>
+          <div class="pub-feature-sub">{{ public_t("landing.features.nutrition.subtitle") }}</div>
         </div>
 
         <div class="pub-feature-item pub-feature-recovery" data-glow="blue">
           <div class="pub-feature-icon">💤</div>
-          <div class="pub-feature-title">Відновлення</div>
-          <div class="pub-feature-sub">Сон і баланс</div>
+          <div class="pub-feature-title">{{ public_t("landing.features.recovery.title") }}</div>
+          <div class="pub-feature-sub">{{ public_t("landing.features.recovery.subtitle") }}</div>
         </div>
 
         <div class="pub-feature-item pub-feature-analytics" data-glow="mix">
           <div class="pub-feature-icon">📊</div>
-          <div class="pub-feature-title">Аналітика</div>
-          <div class="pub-feature-sub">Графіки та інсайти</div>
+          <div class="pub-feature-title">{{ public_t("landing.features.analytics.title") }}</div>
+          <div class="pub-feature-sub">{{ public_t("landing.features.analytics.subtitle") }}</div>
         </div>
       </div>
     </div>

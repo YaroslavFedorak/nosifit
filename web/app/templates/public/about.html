@@ -1,4 +1,4 @@
-{% extends "app/base_app.html" %} {% block title %}Про NosiFit{% endblock %} {%
+{% extends "app/base_app.html" %} {% block title %}{{ public_t("about.title") }}{% endblock %} {%
 block styles %}
 <link
   rel="stylesheet"
@@ -10,21 +10,20 @@ block styles %}
     <div class="about-hero-left">
       <h1 class="about-title">NosiFit</h1>
       <p class="about-lead">
-        Записуйте тренування, стежте за відновленням і дивіться, як змінюються
-        ваші показники.
+        {{ public_t("about.lead") }}
       </p>
       <div class="about-cta">
         {% if current_user.is_authenticated %}
         <a class="btn btn-primary" href="{{ url_for('dashboard.dashboard') }}"
-          >Відкрити NosiFit</a
+          >{{ public_t("common.openNosiFit") }}</a
         >
         {% else %}
         <a class="btn btn-primary" href="{{ url_for('auth.register') }}"
-          >Створити акаунт</a
+          >{{ public_t("common.createAccount") }}</a
         >
         {% endif %}
         <a class="btn btn-ghost" href="{{ url_for('info.info_page') }}"
-          >Як це працює</a
+          >{{ public_t("common.howItWorks") }}</a
         >
       </div>
     </div>
@@ -46,26 +45,24 @@ block styles %}
   </header>
 
   <section class="about-section about-problem">
-    <h2>Яку проблему вирішує NosiFit</h2>
+    <h2>{{ public_t("about.problem.title") }}</h2>
     <p>
-      Тренування — це не лише вправи. Важливо бачити, як навантаження впливає на
-      сон, енергію та відновлення. NosiFit збирає базові записи і показує
-      зв'язки між ними, щоб простіше приймати рішення про навантаження.
+      {{ public_t("about.problem.text") }}
     </p>
   </section>
 
   <section class="about-section about-flow">
-    <h2>Як це працює</h2>
+    <h2>{{ public_t("about.flow.title") }}</h2>
     <div class="about-flow-row">
-      <div class="about-step">Дані →</div>
-      <div class="about-step">Аналіз →</div>
-      <div class="about-step">Показники →</div>
-      <div class="about-step">Рекомендації</div>
+      <div class="about-step">{{ public_t("about.flow.data") }} →</div>
+      <div class="about-step">{{ public_t("about.flow.analysis") }} →</div>
+      <div class="about-step">{{ public_t("about.flow.metrics") }} →</div>
+      <div class="about-step">{{ public_t("about.flow.recommendations") }}</div>
     </div>
   </section>
 
   <section class="about-section about-what">
-    <h2>Що аналізуємо</h2>
+    <h2>{{ public_t("about.what.title") }}</h2>
     <div class="about-grid">
       <div class="about-chip">Training</div>
       <div class="about-chip">Sleep</div>
@@ -77,20 +74,16 @@ block styles %}
   <section class="about-section about-score">
     <h2>Recovery Score</h2>
     <p>
-      Recovery Score — зведена метрика для швидкої оцінки стану відновлення.
-      Вона допомагає вирішити, чи планувати інтенсивне тренування або віддати
-      перевагу відновленню.
+      {{ public_t("about.score.text") }}
     </p>
   </section>
 
   <section class="about-section about-audience">
-    <h2>Кому підійде</h2>
+    <h2>{{ public_t("about.audience.title") }}</h2>
     <ul class="about-list">
-      <li>
-        Тим, хто регулярно тренується і хоче бачити вплив навантаження на стан.
-      </li>
-      <li>Тим, хто стежить за сном і відновленням.</li>
-      <li>Тим, хто любить працювати з даними і бачити зміни з часом.</li>
+      <li>{{ public_t("about.audience.training") }}</li>
+      <li>{{ public_t("about.audience.recovery") }}</li>
+      <li>{{ public_t("about.audience.data") }}</li>
     </ul>
   </section>
 
@@ -98,15 +91,15 @@ block styles %}
     <div class="about-cta">
       {% if current_user.is_authenticated %}
       <a class="btn btn-primary" href="{{ url_for('dashboard.dashboard') }}"
-        >Відкрити NosiFit</a
+        >{{ public_t("common.openNosiFit") }}</a
       >
       {% else %}
       <a class="btn btn-primary" href="{{ url_for('auth.register') }}"
-        >Створити акаунт</a
+        >{{ public_t("common.createAccount") }}</a
       >
       {% endif %}
       <a class="btn btn-ghost" href="{{ url_for('info.info_page') }}"
-        >Як це працює</a
+        >{{ public_t("common.howItWorks") }}</a
       >
     </div>
   </footer>

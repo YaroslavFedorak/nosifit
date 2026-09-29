@@ -1,21 +1,21 @@
 {% extends "public/base_public.html" %} {% block content %}
 
 <section class="pub-section">
-  <h1 class="pub-section-title">Контакти</h1>
+  <h1 class="pub-section-title">{{ public_t("contact.title") }}</h1>
 
   <div class="pub-contact-grid">
     <div class="pub-contact-card">
-      <h3 class="pub-contact-title">Email</h3>
+      <h3 class="pub-contact-title">{{ public_t("contact.email") }}</h3>
       <p class="pub-contact-text">support@nosi.fit</p>
     </div>
 
     <div class="pub-contact-card">
-      <h3 class="pub-contact-title">Instagram</h3>
+      <h3 class="pub-contact-title">{{ public_t("contact.instagram") }}</h3>
       <p class="pub-contact-text">@nosi.fit</p>
     </div>
 
     <div class="pub-contact-card">
-      <h3 class="pub-contact-title">Telegram</h3>
+      <h3 class="pub-contact-title">{{ public_t("contact.telegram") }}</h3>
       <p class="pub-contact-text">@nosi_support</p>
     </div>
   </div>

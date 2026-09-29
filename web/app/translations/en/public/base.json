@@ -1,0 +1,120 @@
+{
+  "meta": {
+    "title": "NosiFit",
+    "landingTitle": "NosiFit — Your personal fitness assistant"
+  },
+  "nav": {
+    "home": "Home",
+    "about": "About us",
+    "contact": "Contact",
+    "demo": "Demo",
+    "login": "Log in",
+    "register": "Register"
+  },
+  "landing": {
+    "title": "Your personal<br />fitness assistant",
+    "subtitle": "A minimalist, dynamic and smart service for training, nutrition, recovery and analytics. Everything in one place.",
+    "startNow": "Get started",
+    "tryDemo": "Try demo",
+    "progressToday": "Today's progress",
+    "features": {
+      "training": {
+        "title": "Training",
+        "subtitle": "Structure and progress"
+      },
+      "nutrition": {
+        "title": "Nutrition",
+        "subtitle": "Calories and macros"
+      },
+      "recovery": {
+        "title": "Recovery",
+        "subtitle": "Sleep and balance"
+      },
+      "analytics": {
+        "title": "Analytics",
+        "subtitle": "Charts and insights"
+      }
+    }
+  },
+  "contact": {
+    "title": "Contact",
+    "email": "Email",
+    "instagram": "Instagram",
+    "telegram": "Telegram"
+  },
+  "demo": {
+    "title": "Demo",
+    "description": "See how the system works before creating an account.",
+    "openDashboard": "Open demo dashboard"
+  },
+  "common": {
+    "openNosiFit": "Open NosiFit",
+    "createAccount": "Create an account",
+    "howItWorks": "How it works"
+  },
+  "about": {
+    "title": "About NosiFit",
+    "lead": "Record your workouts, track recovery and see how your metrics change over time.",
+    "problem": {
+      "title": "What problem does NosiFit solve?",
+      "text": "Training is not only about exercises. It is important to see how workload affects sleep, energy and recovery. NosiFit brings basic records together and shows the connections between them, making workload decisions easier."
+    },
+    "flow": {
+      "title": "How it works",
+      "data": "Data",
+      "analysis": "Analysis",
+      "metrics": "Metrics",
+      "recommendations": "Recommendations"
+    },
+    "what": {
+      "title": "What we analyze"
+    },
+    "score": {
+      "text": "Recovery Score is a combined metric for a quick view of your recovery state. It helps you decide whether to plan a demanding workout or prioritize recovery."
+    },
+    "audience": {
+      "title": "Who is it for?",
+      "training": "People who train regularly and want to see how workload affects their state.",
+      "recovery": "People who track sleep and recovery.",
+      "data": "People who like working with data and seeing changes over time."
+    }
+  },
+  "info": {
+    "title": "What's in NosiFit",
+    "lead": "A quick overview of the main features and how data becomes useful metrics.",
+    "backToAbout": "About NosiFit",
+    "actions": {
+      "title": "What you can do",
+      "training": "Record exercises, sets, repetitions and workload.",
+      "sleep": "Record sleep start and end times. NosiFit handles crossing midnight.",
+      "nutrition": "Track meals, calories and macronutrients.",
+      "water": "Track your water intake.",
+      "habits": "Track regular actions that affect recovery.",
+      "recommendations": "Get short recommendations based on your records."
+    },
+    "dataFlow": {
+      "title": "How NosiFit uses data",
+      "data": "Data",
+      "dataText": "workouts, sleep, nutrition, water and habits.",
+      "analysis": "Analysis",
+      "analysisText": "processing and comparing your records.",
+      "metrics": "Metrics",
+      "metricsText": "Recovery Score and other metrics.",
+      "recommendations": "Recommendations",
+      "recommendationsText": "short suggestions based on your current state."
+    },
+    "sections": {
+      "title": "Main sections",
+      "dashboard": "an overview of your metrics.",
+      "training": "training history.",
+      "recovery": "sleep, energy and habits.",
+      "nutrition": "nutrition and water.",
+      "progress": "changes over time."
+    },
+    "purpose": {
+      "title": "Why use it?",
+      "text": "NosiFit brings core training and recovery data together in one place. This helps you see the relationship between workload and your state and make simpler decisions."
+    },
+    "aboutNosiFit": "About NosiFit"
+  }
+}

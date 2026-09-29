@@ -1,4 +1,4 @@
-{% extends "app/base_app.html" %} {% block title %}Що є в NosiFit{% endblock %}
+{% extends "app/base_app.html" %} {% block title %}{{ public_t("info.title") }}{% endblock %}
 {% block styles %}
 <link
   rel="stylesheet"
@@ -7,81 +7,76 @@
 {% endblock %} {% block body %}
 <main class="info-root">
   <header class="info-header">
-    <h1 class="info-title">Що є в NosiFit</h1>
+    <h1 class="info-title">{{ public_t("info.title") }}</h1>
     <p class="info-lead">
-      Коротко про основні можливості і як дані перетворюються на показники.
+      {{ public_t("info.lead") }}
     </p>
     <div class="info-nav">
       <a class="link-back" href="{{ url_for('public.about') }}"
-        >← Про NosiFit</a
+        >← {{ public_t("info.backToAbout") }}</a
       >
     </div>
   </header>
 
   <section class="info-section info-actions">
-    <h2>Що можна робити</h2>
+    <h2>{{ public_t("info.actions.title") }}</h2>
     <div class="info-grid">
       <div class="info-card">
         <h3>Training</h3>
-        <p>Запис вправ, підходів, повторень і навантаження.</p>
+        <p>{{ public_t("info.actions.training") }}</p>
       </div>
       <div class="info-card">
         <h3>Sleep</h3>
-        <p>
-          Записуйте час початку і кінця сну, NosiFit врахує перехід через
-          опівніч.
-        </p>
+        <p>{{ public_t("info.actions.sleep") }}</p>
       </div>
       <div class="info-card">
         <h3>Nutrition</h3>
-        <p>Фіксуйте прийоми їжі, калорії та макроси.</p>
+        <p>{{ public_t("info.actions.nutrition") }}</p>
       </div>
       <div class="info-card">
         <h3>Water</h3>
-        <p>Відстежуйте споживання води.</p>
+        <p>{{ public_t("info.actions.water") }}</p>
       </div>
       <div class="info-card">
         <h3>Habits</h3>
-        <p>Регулярні дії, що впливають на відновлення.</p>
+        <p>{{ public_t("info.actions.habits") }}</p>
       </div>
       <div class="info-card">
         <h3>Recommendations</h3>
-        <p>Короткі поради на основі ваших записів.</p>
+        <p>{{ public_t("info.actions.recommendations") }}</p>
       </div>
     </div>
   </section>
 
   <section class="info-section info-flow">
-    <h2>Як NosiFit використовує дані</h2>
+    <h2>{{ public_t("info.dataFlow.title") }}</h2>
     <ol class="info-steps">
       <li>
-        <strong>Дані</strong> — тренування, сон, харчування, вода, звички.
+        <strong>{{ public_t("info.dataFlow.data") }}</strong> — {{ public_t("info.dataFlow.dataText") }}
       </li>
-      <li><strong>Аналіз</strong> — обробка та порівняння записів.</li>
-      <li><strong>Показники</strong> — Recovery Score та інші метрики.</li>
+      <li><strong>{{ public_t("info.dataFlow.analysis") }}</strong> — {{ public_t("info.dataFlow.analysisText") }}</li>
+      <li><strong>{{ public_t("info.dataFlow.metrics") }}</strong> — {{ public_t("info.dataFlow.metricsText") }}</li>
       <li>
-        <strong>Рекомендації</strong> — короткі підказки залежно від стану.
+        <strong>{{ public_t("info.dataFlow.recommendations") }}</strong> — {{ public_t("info.dataFlow.recommendationsText") }}
       </li>
     </ol>
   </section>
 
   <section class="info-section info-sections">
-    <h2>Основні розділи</h2>
+    <h2>{{ public_t("info.sections.title") }}</h2>
     <ul class="info-list">
-      <li><strong>Dashboard</strong> — огляд показників.</li>
-      <li><strong>Training</strong> — історія тренувань.</li>
-      <li><strong>Recovery</strong> — сон, енергія, звички.</li>
-      <li><strong>Nutrition</strong> — харчування та вода.</li>
-      <li><strong>Progress / Tracker</strong> — зміни з часом.</li>
+      <li><strong>Dashboard</strong> — {{ public_t("info.sections.dashboard") }}</li>
+      <li><strong>Training</strong> — {{ public_t("info.sections.training") }}</li>
+      <li><strong>Recovery</strong> — {{ public_t("info.sections.recovery") }}</li>
+      <li><strong>Nutrition</strong> — {{ public_t("info.sections.nutrition") }}</li>
+      <li><strong>Progress / Tracker</strong> — {{ public_t("info.sections.progress") }}</li>
     </ul>
   </section>
 
   <section class="info-section info-purpose">
-    <h2>Для чого це потрібно</h2>
+    <h2>{{ public_t("info.purpose.title") }}</h2>
     <p>
-      NosiFit збирає основні дані про тренування та відновлення в одному місці.
-      Це допомагає бачити зв’язок між навантаженням і станом та приймати прості
-      рішення.
+      {{ public_t("info.purpose.text") }}
     </p>
   </section>
 
@@ -89,15 +84,15 @@
     <div class="info-actions-cta">
       {% if current_user.is_authenticated %}
       <a class="btn btn-primary" href="{{ url_for('dashboard.dashboard') }}"
-        >Відкрити NosiFit</a
+        >{{ public_t("common.openNosiFit") }}</a
       >
       {% else %}
       <a class="btn btn-primary" href="{{ url_for('auth.register') }}"
-        >Створити акаунт</a
+        >{{ public_t("common.createAccount") }}</a
       >
       {% endif %}
       <a class="btn btn-ghost" href="{{ url_for('public.about') }}"
-        >Про NosiFit</a
+        >{{ public_t("info.aboutNosiFit") }}</a
       >
     </div>
   </footer>

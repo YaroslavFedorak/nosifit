@@ -1,0 +1,120 @@
+{
+  "meta": {
+    "title": "NosiFit",
+    "landingTitle": "NosiFit — Twój osobisty asystent fitness"
+  },
+  "nav": {
+    "home": "Strona główna",
+    "about": "O nas",
+    "contact": "Kontakt",
+    "demo": "Demo",
+    "login": "Zaloguj się",
+    "register": "Rejestracja"
+  },
+  "landing": {
+    "title": "Twój osobisty<br />asystent fitness",
+    "subtitle": "Minimalistyczny, dynamiczny i inteligentny serwis do treningów, odżywiania, regeneracji i analityki. Wszystko w jednym miejscu.",
+    "startNow": "Zacznij teraz",
+    "tryDemo": "Wypróbuj demo",
+    "progressToday": "Dzisiejszy postęp",
+    "features": {
+      "training": {
+        "title": "Trening",
+        "subtitle": "Struktura i postęp"
+      },
+      "nutrition": {
+        "title": "Odżywianie",
+        "subtitle": "Kalorie i makroskładniki"
+      },
+      "recovery": {
+        "title": "Regeneracja",
+        "subtitle": "Sen i równowaga"
+      },
+      "analytics": {
+        "title": "Analityka",
+        "subtitle": "Wykresy i informacje"
+      }
+    }
+  },
+  "contact": {
+    "title": "Kontakt",
+    "email": "Email",
+    "instagram": "Instagram",
+    "telegram": "Telegram"
+  },
+  "demo": {
+    "title": "Demo",
+    "description": "Zobacz, jak działa system przed rejestracją.",
+    "openDashboard": "Otwórz demo dashboardu"
+  },
+  "common": {
+    "openNosiFit": "Otwórz NosiFit",
+    "createAccount": "Utwórz konto",
+    "howItWorks": "Jak to działa"
+  },
+  "about": {
+    "title": "O NosiFit",
+    "lead": "Zapisuj treningi, śledź regenerację i obserwuj, jak zmieniają się Twoje wyniki.",
+    "problem": {
+      "title": "Jaki problem rozwiązuje NosiFit?",
+      "text": "Trening to nie tylko ćwiczenia. Ważne jest, aby widzieć, jak obciążenie wpływa na sen, energię i regenerację. NosiFit łączy podstawowe dane i pokazuje zależności między nimi, ułatwiając podejmowanie decyzji dotyczących obciążenia."
+    },
+    "flow": {
+      "title": "Jak to działa",
+      "data": "Dane",
+      "analysis": "Analiza",
+      "metrics": "Wskaźniki",
+      "recommendations": "Rekomendacje"
+    },
+    "what": {
+      "title": "Co analizujemy"
+    },
+    "score": {
+      "text": "Recovery Score to zbiorczy wskaźnik szybkiej oceny stanu regeneracji. Pomaga zdecydować, czy zaplanować intensywny trening, czy postawić na regenerację."
+    },
+    "audience": {
+      "title": "Dla kogo?",
+      "training": "Dla osób, które regularnie trenują i chcą widzieć wpływ obciążenia na swój stan.",
+      "recovery": "Dla osób, które śledzą sen i regenerację.",
+      "data": "Dla osób, które lubią pracować z danymi i obserwować zmiany w czasie."
+    }
+  },
+  "info": {
+    "title": "Co jest w NosiFit",
+    "lead": "Krótki przegląd głównych możliwości i sposobu, w jaki dane stają się wskaźnikami.",
+    "backToAbout": "O NosiFit",
+    "actions": {
+      "title": "Co możesz robić",
+      "training": "Zapisuj ćwiczenia, serie, powtórzenia i obciążenie.",
+      "sleep": "Zapisuj godziny rozpoczęcia i zakończenia snu. NosiFit uwzględnia przejście przez północ.",
+      "nutrition": "Rejestruj posiłki, kalorie i makroskładniki.",
+      "water": "Śledź spożycie wody.",
+      "habits": "Śledź regularne działania wpływające na regenerację.",
+      "recommendations": "Otrzymuj krótkie rekomendacje na podstawie swoich danych."
+    },
+    "dataFlow": {
+      "title": "Jak NosiFit wykorzystuje dane",
+      "data": "Dane",
+      "dataText": "treningi, sen, odżywianie, woda i nawyki.",
+      "analysis": "Analiza",
+      "analysisText": "przetwarzanie i porównywanie zapisów.",
+      "metrics": "Wskaźniki",
+      "metricsText": "Recovery Score i inne metryki.",
+      "recommendations": "Rekomendacje",
+      "recommendationsText": "krótkie wskazówki zależne od aktualnego stanu."
+    },
+    "sections": {
+      "title": "Główne sekcje",
+      "dashboard": "przegląd wskaźników.",
+      "training": "historia treningów.",
+      "recovery": "sen, energia i nawyki.",
+      "nutrition": "odżywianie i woda.",
+      "progress": "zmiany w czasie."
+    },
+    "purpose": {
+      "title": "Po co to jest?",
+      "text": "NosiFit zbiera najważniejsze dane dotyczące treningu i regeneracji w jednym miejscu. Pomaga to zobaczyć zależność między obciążeniem a stanem organizmu i podejmować prostsze decyzje."
+    },
+    "aboutNosiFit": "O NosiFit"
+  }
+}
