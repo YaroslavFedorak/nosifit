@@ -1,7 +1,7 @@
-import { getLocale, loadTranslations, translate } from "../i18n/index.js";
+import { demo_t, getLocale, loadTranslations } from "../i18n/index.js";
 import { ICONS } from "../icons/index.js";
 
-const t = (key) => translate("demo", key);
+const t = (key) => demo_t(key);
 
 const trainingData = [
   { name: "Bench Press", sets: 3, reps: 10, weight: 50, completed: true },
