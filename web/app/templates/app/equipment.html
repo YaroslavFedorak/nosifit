@@ -1,7 +1,6 @@
-{% extends "app/base_app.html" %} {% block title %}Обладнання — NOSIFIT{%
-endblock %} {% block body %}
+{% extends "app/base_app.html" %} {% block title %}{{ app_t("equipment.title") }}{% endblock %} {% block body %}
 
-<h2 class="page-title">Обладнання</h2>
-<p class="page-sub">Тут буде список доступного обладнання.</p>
+<h2 class="page-title">{{ app_t("equipment.heading") }}</h2>
+<p class="page-sub">{{ app_t("equipment.subtitle") }}</p>
 
 {% endblock %}

@@ -1,8 +1,8 @@
 <!doctype html>
-<html lang="uk">
+<html lang="{{ locale }}">
   <head>
     <meta charset="UTF-8" />
-    <title>Заповнення профілю — NOSI FIT</title>
+    <title>{{ auth_t("profile.title") }} — NOSI FIT</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link
       rel="stylesheet"
@@ -31,13 +31,13 @@
           </h1>
         </div>
 
-        <h2 class="title">Заповніть профіль</h2>
+        <h2 class="title">{{ auth_t("profile.heading") }}</h2>
       </div>
 
       <form method="POST" class="auth-form">
         <div class="row two-cols">
           <div class="field" data-anim>
-            <label>Вік</label>
+            <label>{{ auth_t("fields.age") }}</label>
             <input
               class="cmp-input"
               type="number"
@@ -50,7 +50,7 @@
           </div>
 
           <div class="field" data-anim>
-            <label>Зріст (см)</label>
+            <label>{{ auth_t("fields.height") }}</label>
             <input
               class="cmp-input"
               type="number"
@@ -65,7 +65,7 @@
 
         <div class="row two-cols">
           <div class="field" data-anim>
-            <label>Вага (кг)</label>
+            <label>{{ auth_t("fields.weight") }}</label>
             <input
               class="cmp-input"
               type="number"
@@ -78,52 +78,52 @@
           </div>
 
           <div class="field" data-anim>
-            <label>Стать</label>
+            <label>{{ auth_t("fields.gender") }}</label>
             <select class="cmp-input" name="gender" required>
-              <option value="" disabled selected>Оберіть</option>
-              <option value="male">Чоловік</option>
-              <option value="female">Жінка</option>
-              <option value="other">Інше</option>
+              <option value="" disabled selected>{{ auth_t("common.select") }}</option>
+              <option value="male">{{ auth_t("fields.male") }}</option>
+              <option value="female">{{ auth_t("fields.female") }}</option>
+              <option value="other">{{ auth_t("fields.other") }}</option>
             </select>
           </div>
         </div>
 
         <div class="field" data-anim>
-          <label>Активність</label>
+          <label>{{ auth_t("fields.activity") }}</label>
           <select class="cmp-input" name="activity" required>
-            <option value="" disabled selected>Оберіть</option>
-            <option value="1.2">Мінімальна</option>
-            <option value="1.375">Легка</option>
-            <option value="1.55">Середня</option>
-            <option value="1.725">Висока</option>
-            <option value="1.9">Екстремальна</option>
+            <option value="" disabled selected>{{ auth_t("common.select") }}</option>
+            <option value="1.2">{{ auth_t("activity.minimum") }}</option>
+            <option value="1.375">{{ auth_t("activity.light") }}</option>
+            <option value="1.55">{{ auth_t("activity.medium") }}</option>
+            <option value="1.725">{{ auth_t("activity.high") }}</option>
+            <option value="1.9">{{ auth_t("activity.extreme") }}</option>
           </select>
         </div>
 
         <div class="row two-cols">
           <div class="field" data-anim>
-            <label>Ціль</label>
+            <label>{{ auth_t("fields.goal") }}</label>
             <select class="cmp-input" name="goal" required>
-              <option value="" disabled selected>Оберіть</option>
-              <option value="lose">Схуднення</option>
-              <option value="maintain">Підтримка</option>
-              <option value="gain">Набір</option>
+              <option value="" disabled selected>{{ auth_t("common.select") }}</option>
+              <option value="lose">{{ auth_t("goals.lose") }}</option>
+              <option value="maintain">{{ auth_t("goals.maintain") }}</option>
+              <option value="gain">{{ auth_t("goals.gain") }}</option>
             </select>
           </div>
 
           <div class="field" data-anim>
-            <label>Досвід</label>
+            <label>{{ auth_t("fields.experience") }}</label>
             <select class="cmp-input" name="experience" required>
-              <option value="" disabled selected>Оберіть</option>
-              <option value="beginner">Початківець</option>
+              <option value="" disabled selected>{{ auth_t("common.select") }}</option>
+              <option value="beginner">{{ auth_t("experience.beginner") }}</option>
               <option value="intermediate">Середній</option>
-              <option value="advanced">Просунутий</option>
+              <option value="advanced">{{ auth_t("experience.advanced") }}</option>
             </select>
           </div>
         </div>
 
         <div class="field" data-anim>
-          <label>Тренувань на тиждень</label>
+          <label>{{ auth_t("fields.workouts") }}</label>
           <input
             class="cmp-input"
             type="number"
@@ -136,8 +136,8 @@
         </div>
 
         <div class="auth-actions">
-          <a href="{{ url_for('root.landing') }}" class="btn-back">Назад</a>
-          <button class="btn-save" type="submit">Зберегти</button>
+          <a href="{{ url_for('root.landing') }}" class="btn-back">{{ auth_t("common.back") }}</a>
+          <button class="btn-save" type="submit">{{ auth_t("common.save") }}</button
         </div>
       </form>
     </div>

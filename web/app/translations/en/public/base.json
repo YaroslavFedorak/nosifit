@@ -1,0 +1,159 @@
+{
+  "meta": {
+    "title": "NosiFit",
+    "landingTitle": "NosiFit — Your personal fitness assistant"
+  },
+  "nav": {
+    "home": "Home",
+    "about": "About us",
+    "contact": "Contact",
+    "demo": "Demo",
+    "login": "Log in",
+    "register": "Register"
+  },
+  "landing": {
+    "title": "Your personal<br />fitness assistant",
+    "subtitle": "A minimalist, dynamic and smart service for training, nutrition, recovery and analytics. Everything in one place.",
+    "startNow": "Get started",
+    "tryDemo": "Try demo",
+    "progressToday": "Today's progress",
+    "features": {
+      "training": {
+        "title": "Training",
+        "subtitle": "Structure and progress"
+      },
+      "nutrition": {
+        "title": "Nutrition",
+        "subtitle": "Calories and macros"
+      },
+      "recovery": {
+        "title": "Recovery",
+        "subtitle": "Sleep and balance"
+      },
+      "analytics": {
+        "title": "Analytics",
+        "subtitle": "Charts and insights"
+      }
+    }
+  },
+  "contact": {
+    "title": "Contact",
+    "email": "Email",
+    "instagram": "Instagram",
+    "telegram": "Telegram"
+  },
+  "demo": {
+    "title": "Demo",
+    "description": "See how the system works before creating an account.",
+    "openDashboard": "Open demo dashboard"
+  },
+  "common": {
+    "openNosiFit": "Open NosiFit",
+    "createAccount": "Create an account",
+    "howItWorks": "How it works"
+  },
+  "about": {
+    "title": "About NosiFit",
+    "lead": "Record your workouts, track recovery and see how your metrics change over time.",
+    "problem": {
+      "title": "Training does not happen in isolation.",
+      "text": "A workout is one part of your day. Sleep, nutrition, water and habits can change how that workload feels. NosiFit puts these records together so you can see the bigger picture without turning it into a game."
+    },
+    "flow": {
+      "title": "From records to context",
+      "text": "NosiFit collects everyday data, compares it over time and turns it into a few practical signals.",
+      "data": "Records",
+      "analysis": "Analysis",
+      "metrics": "Metrics",
+      "recommendations": "Recommendations"
+    },
+    "what": {
+      "title": "The basics, in one place",
+      "text": "The main areas NosiFit brings together for a clearer view of your routine.",
+      "training": "Training",
+      "sleep": "Sleep",
+      "nutrition": "Nutrition",
+      "habits": "Habits"
+    },
+    "score": {
+      "title": "Recovery Score",
+      "text": "Recovery Score combines selected recovery signals into one number. It is a quick reference, not a medical measure or a replacement for your own judgment.",
+      "noteTitle": "Keep the context",
+      "noteText": "A score is useful when you look at the records behind it."
+    },
+    "audience": {
+      "title": "Built for people who track their routine",
+      "text": "NosiFit is for people who want a simple place to record training and recovery data.",
+      "training": "Regular training and workload tracking.",
+      "recovery": "Sleep and recovery tracking.",
+      "data": "A preference for seeing changes over time."
+    },
+    "headline": "Training is only one part of the picture.",
+    "snapshot": {
+      "title": "Example overview",
+      "status": "Tracked",
+      "recovery": "Recovery",
+      "training": "Training load",
+      "sleep": "Sleep"
+    },
+    "footer": {
+      "title": "Start with the data you already have.",
+      "text": "Record a few things, use the dashboard, and build from there."
+    }
+  },
+  "info": {
+    "title": "How NosiFit works",
+    "lead": "A closer look at what you can record, how it is processed and where it appears in the app.",
+    "backToAbout": "About NosiFit",
+    "actions": {
+      "title": "What you can track",
+      "lead": "NosiFit focuses on a small set of records that are useful together.",
+      "trainingTitle": "Training",
+      "training": "Exercises, sets, repetitions and workload.",
+      "sleepTitle": "Sleep",
+      "sleep": "Sleep start and end times, including overnight sessions.",
+      "nutritionTitle": "Nutrition",
+      "nutrition": "Meals, calories and macronutrients.",
+      "waterTitle": "Water",
+      "water": "Daily water intake.",
+      "habitsTitle": "Habits",
+      "habits": "Regular actions that can affect recovery.",
+      "recommendationsTitle": "Recommendations",
+      "recommendations": "Short suggestions based on your recent records."
+    },
+    "dataFlow": {
+      "title": "How the data is used",
+      "lead": "The app turns individual records into a more useful overview.",
+      "data": "Records",
+      "dataText": "Training, sleep, nutrition, water and habits are stored as separate pieces of your routine.",
+      "analysis": "Analysis",
+      "analysisText": "Recent records are processed and compared with your previous data.",
+      "metrics": "Metrics",
+      "metricsText": "The dashboard presents Recovery Score and other useful indicators.",
+      "recommendations": "Recommendations",
+      "recommendationsText": "Suggestions use the available context rather than a single data point."
+    },
+    "sections": {
+      "title": "Main areas",
+      "lead": "Each section has a specific role in the overall picture.",
+      "dashboardTitle": "Dashboard",
+      "dashboard": "A quick overview of your current data.",
+      "trainingTitle": "Training",
+      "training": "Your training records and workload.",
+      "recoveryTitle": "Recovery",
+      "recovery": "Sleep, habits and recovery-related data.",
+      "nutritionTitle": "Nutrition",
+      "nutrition": "Meals, macros and water.",
+      "progressTitle": "Progress / Tracker",
+      "progress": "Changes in your records over time."
+    },
+    "purpose": {
+      "title": "The idea is simple",
+      "text": "NosiFit is built to make your own data easier to read. Instead of keeping training and recovery records in separate places, you can view them together and decide what makes sense for your next day."
+    },
+    "aboutNosiFit": "About NosiFit",
+    "footer": {
+      "title": "See it in practice."
+    }
+  }
+}

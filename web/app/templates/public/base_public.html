@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="uk">
+<html lang="{{ locale }}">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>{% block title %}NosiFit{% endblock %}</title>
+    <title>{% block title %}{{ public_t("meta.title") }}{% endblock %}</title>
 
     <link
       rel="icon"

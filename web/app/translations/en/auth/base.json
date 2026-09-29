@@ -1,0 +1,121 @@
+{
+  "common": {
+    "email": "Email",
+    "login": "Log in",
+    "back": "Back",
+    "backToLogin": "Back to login",
+    "save": "Save",
+    "select": "Select",
+    "show": "Show",
+    "hide": "Hide",
+    "or": "or",
+    "togglePassword": "Toggle password"
+  },
+  "steps": {
+    "account": "Account setup",
+    "verification": "Email verification",
+    "profile": "Profile info"
+  },
+  "login": {
+    "title": "Log in",
+    "heading": "Log in to your account",
+    "email": "Email",
+    "password": "Password",
+    "passwordPlaceholder": "Your password",
+    "submit": "Log in",
+    "forgotPassword": "Forgot password?",
+    "google": "Log in with Google",
+    "github": "Log in with GitHub",
+    "noAccount": "Don't have an account?",
+    "create": "Create"
+  },
+  "register": {
+    "title": "Registration",
+    "heading": "Create an account",
+    "namePlaceholder": "Your name",
+    "passwordPlaceholder": "Minimum 8 characters",
+    "confirmPlaceholder": "Repeat password",
+    "privacyPrefix": "I agree to the",
+    "privacyLink": "privacy policy",
+    "submit": "Create account",
+    "already": "Already have an account?"
+  },
+  "fields": {
+    "name": "Name",
+    "password": "Password",
+    "confirmPassword": "Confirm password",
+    "age": "Age",
+    "height": "Height (cm)",
+    "weight": "Weight (kg)",
+    "gender": "Gender",
+    "male": "Male",
+    "female": "Female",
+    "other": "Other",
+    "activity": "Activity",
+    "goal": "Goal",
+    "experience": "Experience",
+    "workouts": "Workouts per week"
+  },
+  "activity": {
+    "minimum": "Minimal",
+    "light": "Light",
+    "medium": "Moderate",
+    "high": "High",
+    "veryHigh": "Very high",
+    "extreme": "Very high"
+  },
+  "goals": {
+    "lose": "Weight loss",
+    "maintain": "Maintenance",
+    "gain": "Muscle gain",
+    "muscleGain": "Muscle gain",
+    "recomposition": "Recomposition",
+    "performance": "Performance"
+  },
+  "experience": {
+    "beginner": "Beginner",
+    "intermediate": "Intermediate",
+    "advanced": "Advanced"
+  },
+  "reset": {
+    "title": "Password recovery",
+    "heading": "Recover access",
+    "submit": "Send email",
+    "step": "Reset",
+    "done": "Done"
+  },
+  "newPassword": {
+    "title": "New password",
+    "heading": "New password",
+    "password": "New password",
+    "confirmation": "Confirmation",
+    "submit": "Save password"
+  },
+  "status": {
+    "sentTitle": "Email sent",
+    "sentText": "We sent instructions to {email}. Check your inbox.",
+    "resend": "Send again",
+    "doneTitle": "Password changed"
+  },
+  "verify": {
+    "title": "Code verification",
+    "subtitle": "We sent a code to {email}. Enter it below.",
+    "code": "Verification code",
+    "submit": "Confirm",
+    "resend": "Send code again",
+    "timer": "Send again in"
+  },
+  "registerComplete": {
+    "title": "Confirm your details",
+    "text": "Check your information and click the button to finish creating your account.",
+    "submit": "Complete registration"
+  },
+  "profile": {
+    "title": "Complete profile",
+    "heading": "Complete your profile"
+  },
+  "profileEdit": {
+    "title": "Edit profile",
+    "heading": "Edit profile"
+  }
+}

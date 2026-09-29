@@ -1,8 +1,8 @@
 <!doctype html>
-<html lang="uk">
+<html lang="{{ locale }}">
   <head>
     <meta charset="UTF-8" />
-    <title>Реєстрація — NosiFit</title>
+    <title>{{ auth_t("register.title") }} — NosiFit</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="/static/css/auth/register.css" />
   </head>
@@ -23,11 +23,11 @@
 
         <div class="progress-steps">
           <!-- current step -->
-          <div class="step active" data-label="Account setup"></div>
+          <div class="step active" data-label="{{ auth_t("steps.account") }}"></div>
 
           <!-- next steps -->
-          <div class="step" data-label="Email verification"></div>
-          <div class="step" data-label="Profile info"></div>
+          <div class="step" data-label="{{ auth_t("steps.verification") }}"></div>
+          <div class="step" data-label="{{ auth_t("steps.profile") }}"></div>
         </div>
       </div>
 
@@ -43,7 +43,7 @@
             <span class="nos">Nosi</span><span class="fit">Fit</span>
           </h1>
         </div>
-        <h2 class="title">Створити акаунт</h2>
+        <h2 class="title">{{ auth_t("register.heading") }}</h2>
       </div>
 
       <!-- form centered -->
@@ -67,55 +67,55 @@
             </div>
 
             <div class="field" data-anim>
-              <label for="username">Ім’я</label>
+              <label for="username">{{ auth_t("fields.name") }}</label>
               <input
                 id="username"
                 type="text"
                 name="username"
-                placeholder="Твоє ім’я"
+                placeholder="{{ auth_t("register.namePlaceholder") }}"
                 required
               />
             </div>
 
             <div class="row two-cols">
               <div class="field" data-anim>
-                <label for="p1">Пароль</label>
+                <label for="p1">{{ auth_t("fields.password") }}</label>
                 <div class="pass-wrap">
                   <input
                     id="p1"
                     type="password"
                     name="password"
-                    placeholder="Мінімум 8 символів"
+                    placeholder="{{ auth_t("register.passwordPlaceholder") }}"
                     required
                   />
                   <button
                     type="button"
                     class="toggle"
                     data-target="p1"
-                    aria-label="Toggle password"
+                    aria-label="{{ auth_t("common.togglePassword") }}"
                   >
-                    Показати
+                    {{ auth_t("common.show") }}
                   </button>
                 </div>
               </div>
 
               <div class="field" data-anim>
-                <label for="p2">Підтвердження пароля</label>
+                <label for="p2">{{ auth_t("fields.confirmPassword") }}</label>
                 <div class="pass-wrap">
                   <input
                     id="p2"
                     type="password"
                     name="confirm_password"
-                    placeholder="Повтори пароль"
+                    placeholder="{{ auth_t("register.confirmPlaceholder") }}"
                     required
                   />
                   <button
                     type="button"
                     class="toggle"
                     data-target="p2"
-                    aria-label="Toggle password"
+                    aria-label="{{ auth_t("common.togglePassword") }}"
                   >
-                    Показати
+                    {{ auth_t("common.show") }}
                   </button>
                 </div>
               </div>
@@ -123,7 +123,7 @@
 
             <div class="row three-cols">
               <div class="field small" data-anim>
-                <label for="age">Вік</label>
+                <label for="age">{{ auth_t("fields.age") }}</label>
                 <input
                   id="age"
                   type="number"
@@ -136,7 +136,7 @@
               </div>
 
               <div class="field small" data-anim>
-                <label for="height">Зріст (см)</label>
+                <label for="height">{{ auth_t("fields.height") }}</label>
                 <input
                   id="height"
                   type="number"
@@ -149,7 +149,7 @@
               </div>
 
               <div class="field small" data-anim>
-                <label for="weight">Вага (кг)</label>
+                <label for="weight">{{ auth_t("fields.weight") }}</label>
                 <input
                   id="weight"
                   type="number"
@@ -164,22 +164,22 @@
 
             <div class="quad-grid">
               <div class="field" data-anim>
-                <label for="gender">Стать</label>
+                <label for="gender">{{ auth_t("fields.gender") }}</label>
                 <select id="gender" name="gender" required>
-                  <option value="" disabled selected>Оберіть</option>
-                  <option value="male">Чоловіча</option>
-                  <option value="female">Жіноча</option>
+                  <option value="" disabled selected>{{ auth_t("common.select") }}</option>
+                  <option value="male">{{ auth_t("fields.male") }}</option>
+                  <option value="female">{{ auth_t("fields.female") }}</option>
                 </select>
               </div>
 
               <div class="field" data-anim>
-                <label for="workouts_per_week">Тренувань на тиждень</label>
+                <label for="workouts_per_week">{{ auth_t("fields.workouts") }}</label>
                 <select
                   id="workouts_per_week"
                   name="workouts_per_week"
                   required
                 >
-                  <option value="" disabled selected>Оберіть</option>
+                  <option value="" disabled selected>{{ auth_t("common.select") }}</option>
                   <option value="2">2</option>
                   <option value="3">3</option>
                   <option value="4">4</option>
@@ -189,32 +189,32 @@
               </div>
 
               <div class="field" data-anim>
-                <label for="activity">Активність</label>
+                <label for="activity">{{ auth_t("fields.activity") }}</label>
                 <select id="activity" name="activity" required>
-                  <option value="" disabled selected>Оберіть</option>
-                  <option value="1.2">Мінімальна</option>
-                  <option value="1.375">Легка</option>
-                  <option value="1.55">Середня</option>
-                  <option value="1.725">Висока</option>
-                  <option value="1.9">Дуже висока</option>
+                  <option value="" disabled selected>{{ auth_t("common.select") }}</option>
+                  <option value="1.2">{{ auth_t("activity.minimum") }}</option>
+                  <option value="1.375">{{ auth_t("activity.light") }}</option>
+                  <option value="1.55">{{ auth_t("activity.medium") }}</option>
+                  <option value="1.725">{{ auth_t("activity.high") }}</option>
+                  <option value="1.9">{{ auth_t("activity.veryHigh") }}</option>
                 </select>
               </div>
 
               <div class="field" data-anim>
-                <label for="goal">Ціль</label>
+                <label for="goal">{{ auth_t("fields.goal") }}</label>
                 <select id="goal" name="goal" required>
-                  <option value="" disabled selected>Оберіть</option>
-                  <option value="fat_loss">Схуднення</option>
-                  <option value="muscle_gain">Набір м’язів</option>
-                  <option value="recomposition">Рекомпозиція</option>
-                  <option value="performance">Продуктивність</option>
+                  <option value="" disabled selected>{{ auth_t("common.select") }}</option>
+                  <option value="fat_loss">{{ auth_t("goals.lose") }}</option>
+                  <option value="muscle_gain">{{ auth_t("goals.muscleGain") }}</option>
+                  <option value="recomposition">{{ auth_t("goals.recomposition") }}</option>
+                  <option value="performance">{{ auth_t("goals.performance") }}</option>
                 </select>
               </div>
             </div>
 
             <label class="check" data-anim>
               <input type="checkbox" required />
-              Я погоджуюсь з <a href="/privacy">політикою конфіденційності</a>
+              {{ auth_t("register.privacyPrefix") }} <a href="/privacy">{{ auth_t("register.privacyLink") }}</a>
             </label>
           </form>
         </div>
@@ -239,7 +239,7 @@
                   d="M32.582 370.734C15.127 336.291 5.12 297.425 5.12 256c0-41.426 10.007-80.291 27.462-114.735C74.705 57.484 161.047 0 261.12 0c69.12 0 126.836 25.367 171.287 66.793l-73.31 73.309c-26.763-25.135-60.276-38.168-97.977-38.168-66.56 0-123.113 44.917-143.36 105.426-5.12 15.36-8.146 31.65-8.146 48.64 0 16.989 3.026 33.28 8.146 48.64l-.303.232h.303c20.247 60.51 76.8 105.426 143.36 105.426 34.443 0 63.534-9.31 86.341-24.67 27.23-18.152 45.382-45.148 51.433-77.032H261.12v-99.142h241.105c3.025 16.757 4.654 34.211 4.654 52.364 0 77.963-27.927 143.592-76.334 188.276-42.356 39.098-100.305 61.905-169.425 61.905-100.073 0-186.415-57.483-228.538-141.032v-.233z"
                 />
               </svg>
-              <span>Увійти через Google</span>
+              <span>{{ auth_t("login.google") }}</span>
             </a>
           </div>
 
@@ -259,7 +259,7 @@
                   d="M319.988 7.973C143.293 7.973 0 151.242 0 327.96c0 141.392 91.678 261.298 218.826 303.63 16.004 2.964 21.886-6.957 21.886-15.414 0-7.63-.319-32.835-.449-59.552-89.032 19.359-107.8-37.772-107.8-37.772-14.552-36.993-35.529-46.831-35.529-46.831-29.032-19.879 2.209-19.442 2.209-19.442 32.126 2.245 49.04 32.954 49.04 32.954 28.56 48.922 74.883 34.76 93.131 26.598 2.882-20.681 11.15-34.807 20.315-42.803-71.08-8.067-145.797-35.516-145.797-158.14 0-34.926 12.52-63.485 32.965-85.88-3.33-8.078-14.291-40.606 3.083-84.674 0 0 26.87-8.61 88.029 32.8 25.512-7.075 52.878-10.642 80.056-10.76 27.2.118 54.614 3.673 80.162 10.76 61.076-41.386 87.922-32.8 87.922-32.8 17.398 44.08 6.485 76.631 3.154 84.675 20.516 22.394 32.93 50.953 32.93 85.879 0 122.907-74.883 149.93-146.117 157.856 11.481 9.921 21.733 29.398 21.733 59.233 0 42.792-.366 77.28-.366 87.804 0 8.516 5.764 18.473 21.992 15.354 127.076-42.354 218.637-162.274 218.637-303.582 0-176.695-143.269-319.988-320-319.988l-.023.107z"
                 />
               </svg>
-              <span>Увійти через GitHub</span>
+              <span>{{ auth_t("login.github") }}</span>
             </a>
           </div>
 
@@ -268,9 +268,9 @@
               type="submit"
               form="register-form"
               class="action-btn primary submit-large"
-              aria-label="Створити акаунт"
+              aria-label="{{ auth_t("register.submit") }}"
             >
-              <span>Створити акаунт</span>
+              <span>{{ auth_t("register.submit") }}</span>
             </button>
           </div>
         </div>
@@ -278,7 +278,7 @@
 
       <!-- note bottom -->
       <div class="account-note" aria-hidden="false">
-        <span>Вже маєш акаунт? <a href="/auth/login">Увійти</a></span>
+        <span>{{ auth_t("register.already") }} <a href="/auth/login">{{ auth_t("common.login") }}</a></span>
       </div>
     </div>
 
@@ -291,7 +291,7 @@
             const input = document.getElementById(id);
             input.type = input.type === "password" ? "text" : "password";
             btn.textContent =
-              input.type === "password" ? "Показати" : "Приховати";
+              input.type === "password" ? "{{ auth_t("common.show") }}" : "Приховати";
           });
         });
 

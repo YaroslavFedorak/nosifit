@@ -1,19 +1,18 @@
-{% extends "app/base_app.html" %} {% block title %}Тест фізичної підготовки —
-NOSIFIT{% endblock %} {% block body %}
+{% extends "app/base_app.html" %} {% block title %}{{ app_t("assessment.title") }}{% endblock %} {% block body %}
 
-<h2 class="page-title">Тест фізичної підготовки</h2>
+<h2 class="page-title">{{ app_t("assessment.heading") }}</h2>
 
 <form method="POST" class="form-card">
-  <label>Максимум віджимань за 1 підхід:</label>
+  <label>{{ app_t("assessment.pushups") }}</label>
   <input type="number" name="pushups" required />
 
-  <label>Максимум присідань за 1 підхід:</label>
+  <label>{{ app_t("assessment.squats") }}</label>
   <input type="number" name="squats" required />
 
-  <label>Планка (секунди):</label>
+  <label>{{ app_t("assessment.plank") }}</label>
   <input type="number" name="plank" required />
 
-  <button type="submit" class="btn-primary">Завершити тест</button>
+  <button type="submit" class="btn-primary">{{ app_t("assessment.submit") }}</button>
 </form>
 
 {% endblock %}

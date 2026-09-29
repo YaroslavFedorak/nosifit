@@ -50,6 +50,36 @@ def init_i18n(app):
                 **params,
             )
 
+        def auth_t(
+            key: str,
+            **params,
+        ) -> str:
+            return translate(
+                "auth",
+                key,
+                **params,
+            )
+
+        def public_t(
+            key: str,
+            **params,
+        ) -> str:
+            return translate(
+                "public",
+                key,
+                **params,
+            )
+
+        def app_t(
+            key: str,
+            **params,
+        ) -> str:
+            return translate(
+                "app",
+                key,
+                **params,
+            )
+
         def training_t(
             key: str,
             **params,
@@ -95,6 +125,10 @@ def init_i18n(app):
             "supported_locales": SUPPORTED_LOCALES,
             "t": common_t,
             "translate": translate,
+            "common_t": common_t,
+            "auth_t": auth_t,
+            "public_t": public_t,
+            "app_t": app_t,
             "training_t": training_t,
             "nutrition_t": nutrition_t,
             "profile_t": profile_t,

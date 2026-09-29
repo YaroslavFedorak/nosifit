@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="uk">
+<html lang="{{ locale }}">
   <head>
     <meta charset="UTF-8" />
     <title>Завершення реєстрації — NosiFit</title>
@@ -20,9 +20,9 @@
         </div>
 
         <div class="progress-steps">
-          <div class="step completed" data-label="Account setup"></div>
-          <div class="step completed" data-label="Email verification"></div>
-          <div class="step active" data-label="Profile info"></div>
+          <div class="step completed" data-label="{{ auth_t("steps.account") }}"></div>
+          <div class="step completed" data-label="{{ auth_t("steps.verification") }}"></div>
+          <div class="step active" data-label="{{ auth_t("steps.profile") }}"></div>
         </div>
       </div>
 
@@ -33,21 +33,20 @@
         </h1>
       </div>
 
-      <h2 class="auth-card-title">Підтвердження даних</h2>
+      <h2 class="auth-card-title">{{ auth_t("registerComplete.title") }}</h2>
 
       <p class="muted">
-        Перевірте інформацію та натисніть кнопку, щоб завершити створення
-        акаунта.
+        {{ auth_t("registerComplete.text") }}
       </p>
 
       <form method="POST" action="{{ url_for('auth.register_complete') }}">
         <div class="auth-actions">
           <button class="cmp-btn-primary" type="submit">
-            Завершити реєстрацію
+            {{ auth_t("registerComplete.submit") }}
           </button>
 
           <a class="link-muted" href="{{ url_for('auth.register') }}">
-            Повернутися
+            {{ auth_t("common.back") }}
           </a>
         </div>
       </form>

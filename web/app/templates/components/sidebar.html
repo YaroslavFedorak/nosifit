@@ -1,14 +1,18 @@
 <div class="cmp-sidebar">
   <div class="cmp-sidebar-header">
     <a href="/" class="cmp-sidebar-brand">
-      <img src="/static/img/Nosi_Logo.png" class="cmp-sidebar-brand-img" />
+      <img
+        src="{{ url_for('static', filename='img/Nosi_Logo.png') }}"
+        class="cmp-sidebar-brand-img"
+        alt="NosiFit"
+      />
 
       <div class="cmp-sidebar-brand-text">
         <span class="brand-nos">Nosi</span><span class="brand-fit">Fit</span>
       </div>
     </a>
 
-    <a href="/" class="cmp-sidebar-home-link">Головна</a>
+    <a href="/" class="cmp-sidebar-home-link">{{ common_t("navigation.home") }}</a>
   </div>
 
   <nav class="cmp-sidebar-nav">
@@ -20,12 +24,12 @@
         <svg viewBox="0 0 24 24">
           <path d="M15 13a3 3 0 1 0-6 0" />
           <path
-            d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5a1 1 0 0 1 0-5H20"
+            d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5a2.5 2.5 0 0 0 0-5H20"
           />
           <circle cx="12" cy="8" r="2" />
         </svg>
       </div>
-      <span>Профіль</span>
+      <span>{{ common_t("navigation.profile") }}</span>
     </a>
 
     <a
@@ -41,7 +45,7 @@
           <path d="M19 22v-6" />
         </svg>
       </div>
-      <span>Дашборд</span>
+      <span>{{ common_t("navigation.dashboard") }}</span>
     </a>
 
     <a
@@ -61,7 +65,7 @@
           <path d="m9.6 14.4 4.8-4.8" />
         </svg>
       </div>
-      <span>Тренування</span>
+      <span>{{ common_t("navigation.training") }}</span>
     </a>
 
     <a
@@ -80,7 +84,7 @@
           <path d="m7.5 4.27 8.997 5.148" />
         </svg>
       </div>
-      <span>Обладнання</span>
+      <span>{{ common_t("navigation.equipment") }}</span>
     </a>
 
     <a
@@ -98,7 +102,7 @@
           <path d="M10.9 7.25A3.99 3.99 0 0 0 4 10c0 .73.2 1.41.54 2" />
         </svg>
       </div>
-      <span>Харчування</span>
+      <span>{{ common_t("navigation.nutrition") }}</span>
     </a>
 
     <a
@@ -119,7 +123,7 @@
           <path d="M16 18h.01" />
         </svg>
       </div>
-      <span>Трекер</span>
+      <span>{{ common_t("navigation.tracker") }}</span>
     </a>
 
     <a
@@ -133,7 +137,7 @@
           />
         </svg>
       </div>
-      <span>Відновлення</span>
+      <span>{{ common_t("navigation.recovery") }}</span>
     </a>
 
     <div class="cmp-sidebar-separator"></div>
@@ -151,11 +155,11 @@
           <path d="M2 9h20" />
         </svg>
       </div>
-      <span>Premium</span>
+      <span>{{ common_t("navigation.premium") }}</span>
     </a>
 
     <a
-      href="/about"
+      href="/about?layout=app"
       class="cmp-sidebar-item {% if active=='about' %}active{% endif %}"
     >
       <div class="cmp-sidebar-icon">
@@ -167,11 +171,11 @@
           <line x1="12" x2="12.01" y1="17" y2="17" />
         </svg>
       </div>
-      <span>Про застосунок</span>
+      <span>{{ common_t("navigation.aboutApp") }}</span>
     </a>
 
     <a
-      href="/info"
+      href="/info?layout=app"
       class="cmp-sidebar-item {% if active=='info' %}active{% endif %}"
     >
       <div class="cmp-sidebar-icon">
@@ -183,7 +187,7 @@
           <line x1="12" x2="12.01" y1="17" y2="17" />
         </svg>
       </div>
-      <span>Про сайт</span>
+      <span>{{ common_t("navigation.info") }}</span>
     </a>
   </nav>
 
@@ -196,7 +200,7 @@
           <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
         </svg>
       </div>
-      Вийти
+      {{ common_t("navigation.logout") }}
     </a>
   </div>
 </div>

@@ -24,6 +24,50 @@ params,
 );
 }
 
+export function common_t(
+key: string,
+params: Record<string, string | number> = {},
+): string {
+return translate(
+"common",
+key,
+params,
+);
+}
+
+export function auth_t(
+key: string,
+params: Record<string, string | number> = {},
+): string {
+return translate(
+"auth",
+key,
+params,
+);
+}
+
+export function public_t(
+key: string,
+params: Record<string, string | number> = {},
+): string {
+return translate(
+"public",
+key,
+params,
+);
+}
+
+export function app_t(
+key: string,
+params: Record<string, string | number> = {},
+): string {
+return translate(
+"app",
+key,
+params,
+);
+}
+
 export function dashboard_t(
 key: string,
 params: Record<string, string | number> = {},

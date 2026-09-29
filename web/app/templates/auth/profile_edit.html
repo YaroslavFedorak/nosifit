@@ -1,128 +1,118 @@
-{% extends "auth/auth_base.html" %} {% block title %}Редагування профілю — NOSI
-FIT{% endblock %} {% block styles %}
-<link
-  rel="stylesheet"
-  href="{{ url_for('static', filename='css/auth/profile_edit.css') }}"
-/>
-{% endblock %} {% block body %}
-<div class="auth-card">
-  <h2 class="auth-card-title">Редагування профілю</h2>
+<!doctype html>
+<html lang="{{ locale }}">
+  <head>
+    <meta charset="UTF-8" />
+    <title>{{ auth_t("profileEdit.title") }} — NOSI FIT</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/auth/profile_edit.css') }}"
+    />
+  </head>
 
-  <form method="POST" class="auth-form">
-    <label class="form-label"
-      >Ім'я
-      <input
-        class="cmp-input"
-        name="username"
-        value="{{ user.username or '' }}"
-      />
-    </label>
+  <body>
+    <div class="auth-card">
+      <h2 class="auth-card-title">{{ auth_t("profileEdit.heading") }}</h2>
 
-    <label class="form-label"
-      >Email
-      <input
-        class="cmp-input"
-        name="email"
-        type="email"
-        value="{{ user.email or '' }}"
-      />
-    </label>
+      <form method="POST" class="auth-form">
+        <label class="form-label"
+          >{{ auth_t("fields.name") }}
+          <input
+            class="cmp-input"
+            name="username"
+            value="{{ user.username or '' }}"
+          />
+        </label>
 
-    <div class="grid-3">
-      <label class="form-label"
-        >Вік
-        <input
-          class="cmp-input"
-          name="age"
-          type="number"
-          value="{{ user.age or '' }}"
-        />
-      </label>
+        <label class="form-label"
+          >{{ auth_t("common.email") }}
+          <input
+            class="cmp-input"
+            name="email"
+            type="email"
+            value="{{ user.email or '' }}"
+          />
+        </label>
 
-      <label class="form-label"
-        >Зріст (см)
-        <input
-          class="cmp-input"
-          name="height"
-          type="number"
-          value="{{ user.height or '' }}"
-        />
-      </label>
+        <div class="grid-3">
+          <label class="form-label"
+            >{{ auth_t("fields.age") }}
+            <input
+              class="cmp-input"
+              name="age"
+              type="number"
+              value="{{ user.age or '' }}"
+            />
+          </label>
 
-      <label class="form-label"
-        >Вага (кг)
-        <input
-          class="cmp-input"
-          name="weight"
-          type="number"
-          value="{{ user.weight or '' }}"
-        />
-      </label>
+          <label class="form-label"
+            >{{ auth_t("fields.height") }}
+            <input
+              class="cmp-input"
+              name="height"
+              type="number"
+              value="{{ user.height or '' }}"
+            />
+          </label>
+
+          <label class="form-label"
+            >{{ auth_t("fields.weight") }}
+            <input
+              class="cmp-input"
+              name="weight"
+              type="number"
+              value="{{ user.weight or '' }}"
+            />
+          </label>
+        </div>
+
+        <label class="form-label"
+          >{{ auth_t("fields.gender") }}
+          <select class="cmp-input" name="gender">
+            <option value="male" {% if user.gender == "male" %}selected{% endif %}>
+              {{ auth_t("fields.male") }}
+            </option>
+            <option value="female" {% if user.gender == "female" %}selected{% endif %}>
+              {{ auth_t("fields.female") }}
+            </option>
+            <option value="other" {% if user.gender == "other" %}selected{% endif %}>
+              {{ auth_t("fields.other") }}
+            </option>
+          </select>
+        </label>
+
+        <div class="grid-2">
+          <label class="form-label"
+            >{{ auth_t("fields.activity") }}
+            <input
+              class="cmp-input"
+              name="activity"
+              type="number"
+              step="0.01"
+              value="{{ user.activity or '' }}"
+            />
+          </label>
+
+          <label class="form-label"
+            >{{ auth_t("fields.workouts") }}
+            <input
+              class="cmp-input"
+              name="workouts_per_week"
+              type="number"
+              value="{{ user.workouts_per_week or '' }}"
+            />
+          </label>
+        </div>
+
+        <div class="auth-actions">
+          <button class="cmp-btn-primary" type="submit">
+            {{ auth_t("common.save") }}
+          </button>
+          <a class="cmp-btn-ghost" href="{{ url_for('profile.view') }}">
+            {{ auth_t("common.cancel") }}
+          </a>
+        </div>
+      </form>
     </div>
-
-    <label class="form-label"
-      >Стать
-      <select class="cmp-input" name="gender">
-        <option value="male" {% if user.gender="" ="male" %}selected{% endif %}>
-          Чоловік
-        </option>
-        <option
-          value="female"
-          {%
-          if
-          user.gender=""
-          ="female"
-          %}selected{%
-          endif
-          %}
-        >
-          Жінка
-        </option>
-        <option
-          value="other"
-          {%
-          if
-          user.gender=""
-          ="other"
-          %}selected{%
-          endif
-          %}
-        >
-          Інше
-        </option>
-      </select>
-    </label>
-
-    <div class="grid-2">
-      <label class="form-label"
-        >Активність
-        <input
-          class="cmp-input"
-          name="activity"
-          type="number"
-          step="0.01"
-          value="{{ user.activity or '' }}"
-        />
-      </label>
-
-      <label class="form-label"
-        >Тренувань на тиждень
-        <input
-          class="cmp-input"
-          name="workouts_per_week"
-          type="number"
-          value="{{ user.workouts_per_week or '' }}"
-        />
-      </label>
-    </div>
-
-    <div class="auth-actions">
-      <button class="cmp-btn-primary" type="submit">Зберегти</button>
-      <a class="cmp-btn-ghost" href="{{ url_for('profile.view') }}">Скасувати</a>
-    </div>
-  </form>
-</div>
-{% endblock %}
-
-
-
+  </body>
+</html>

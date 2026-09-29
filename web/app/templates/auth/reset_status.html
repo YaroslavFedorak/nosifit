@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="uk">
+<html lang="{{ locale }}">
   <head>
     <meta charset="UTF-8" />
     <title>NosiFit — Статус</title>
@@ -20,9 +20,9 @@
         </div>
 
         <div class="progress-steps">
-          <div class="step completed" data-label="Email"></div>
-          <div class="step completed" data-label="Reset"></div>
-          <div class="step active" data-label="Done"></div>
+          <div class="step completed" data-label="{{ auth_t("common.email") }}"></div>
+          <div class="step completed" data-label="{{ auth_t("reset.step") }}"></div>
+          <div class="step active" data-label="{{ auth_t("reset.done") }}"></div>
         </div>
       </div>
 
@@ -34,28 +34,28 @@
       </div>
 
       {% if mode == "sent" %}
-      <h2 class="auth-card-title">Лист надіслано</h2>
+      <h2 class="auth-card-title">{{ auth_t("status.sentTitle") }}</h2>
       <p class="muted">
-        Ми надіслали інструкцію на <b>{{ email }}</b>. Перевірте пошту.
+        {{ auth_t("status.sentText", email=email) }}
       </p>
 
       <div class="status-icon sent">✉</div>
 
       <div class="auth-actions">
         <a class="cmp-btn-primary" href="{{ url_for('auth.login') }}"
-          >Перейти до входу</a
+          >{{ auth_t("common.login") }}</a
         >
         <a class="link-muted" href="{{ url_for('auth.reset_password') }}"
-          >Надіслати повторно</a
+          >{{ auth_t("status.resend") }}</a
         >
       </div>
       {% endif %} {% if mode == "done" %}
-      <h2 class="auth-card-title">Пароль змінено</h2>
+      <h2 class="auth-card-title">{{ auth_t("status.doneTitle") }}</h2>
 
       <div class="status-icon done">✔</div>
 
       <div class="auth-actions">
-        <a class="cmp-btn-primary" href="{{ url_for('auth.login') }}">Увійти</a>
+        <a class="cmp-btn-primary" href="{{ url_for('auth.login') }}">{{ auth_t("common.login") }}</a>
       </div>
       {% endif %}
     </div>

@@ -1,7 +1,6 @@
-{% extends "app/base_app.html" %} {% block title %}Трекінг — NOSIFIT{% endblock
-%} {% block body %}
+{% extends "app/base_app.html" %} {% block title %}{{ app_t("tracker.title") }}{% endblock %} {% block body %}
 
-<h2 class="page-title">Ваш графік</h2>
-<p class="page-sub">Тут будуть ваші трекери.</p>
+<h2 class="page-title">{{ app_t("tracker.heading") }}</h2>
+<p class="page-sub">{{ app_t("tracker.subtitle") }}</p>
 
 {% endblock %}
