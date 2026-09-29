@@ -1,4 +1,4 @@
-{% extends "public/base_public.html" %} {% block title %}{{ public_t("info.title") }}{% endblock %}
+{% extends base_template %} {% block title %}{{ public_t("info.title") }}{% endblock %}
 {% block styles %}
 <link
   rel="stylesheet"
@@ -7,7 +7,7 @@
 {% endblock %} {% block body %}
 <div class="info-root">
   <header class="info-header">
-    <a class="info-back" href="{{ url_for('public.about') }}"
+    <a class="info-back" href="{{ url_for('public.about', layout=layout_mode) }}"
       >← {{ public_t("info.backToAbout") }}</a
     >
     <span class="info-eyebrow">NosiFit</span>
@@ -127,7 +127,7 @@
         >{{ public_t("common.createAccount") }}</a
       >
       {% endif %}
-      <a class="info-btn info-btn-secondary" href="{{ url_for('public.about') }}"
+      <a class="info-btn info-btn-secondary" href="{{ url_for('public.about', layout=layout_mode) }}"
         >{{ public_t("info.aboutNosiFit") }}</a
       >
     </div>
