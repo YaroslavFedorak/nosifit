@@ -1,31 +1,38 @@
-{% extends base_template %} {% block title %}Про NosiFit{% endblock %} {%
-block styles %}
+{% extends base_template %}
+
+{% block title %}{{ public_t("about.title") }} — NosiFit{% endblock %}
+
+{% block styles %}
 <link
   rel="stylesheet"
   href="{{ url_for('static', filename='css/pages/about.css') }}"
 />
-{% endblock %} {% block body %}
+{% endblock %}
+
+{% block body %}
 <main class="about-root">
   <header class="about-hero">
     <div class="about-hero-left">
       <h1 class="about-title">NosiFit</h1>
-      <p class="about-lead">
-        Записуйте тренування, стежте за відновленням і дивіться, як змінюються
-        ваші показники.
-      </p>
+      <p class="about-lead">{{ public_t("about.lead") }}</p>
+
       <div class="about-cta">
         {% if current_user.is_authenticated %}
-        <a class="btn btn-primary" href="{{ url_for('dashboard.dashboard') }}"
-          >Відкрити NosiFit</a
-        >
+        <a class="btn btn-primary" href="{{ url_for('dashboard.dashboard') }}">
+          {{ public_t("common.openNosiFit") }}
+        </a>
         {% else %}
-        <a class="btn btn-primary" href="{{ url_for('auth.register') }}"
-          >Створити акаунт</a
-        >
+        <a class="btn btn-primary" href="{{ url_for('auth.register') }}">
+          {{ public_t("common.createAccount") }}
+        </a>
         {% endif %}
-        <a class="btn btn-ghost" href="{{ url_for('info.info_page') }}"
-          >Як це працює</a
+
+        <a
+          class="btn btn-ghost"
+          href="{{ url_for('info.info_page', layout=request.args.get('layout', 'public')) }}"
         >
+          {{ public_t("common.howItWorks") }}
+        </a>
       </div>
     </div>
 
@@ -33,11 +40,15 @@ block styles %}
       <div class="about-visual">
         <div class="about-visual-row">
           <div class="about-visual-card">
-            <div class="about-visual-label">Recovery</div>
+            <div class="about-visual-label">
+              {{ public_t("about.snapshot.recovery") }}
+            </div>
             <div class="about-visual-value">78%</div>
           </div>
           <div class="about-visual-card">
-            <div class="about-visual-label">Training</div>
+            <div class="about-visual-label">
+              {{ public_t("about.snapshot.training") }}
+            </div>
             <div class="about-visual-value">64%</div>
           </div>
         </div>
@@ -46,68 +57,66 @@ block styles %}
   </header>
 
   <section class="about-section about-problem">
-    <h2>Яку проблему вирішує NosiFit</h2>
-    <p>
-      Тренування — це не лише вправи. Важливо бачити, як навантаження впливає на
-      сон, енергію та відновлення. NosiFit збирає базові записи і показує
-      зв'язки між ними, щоб простіше приймати рішення про навантаження.
-    </p>
+    <h2>{{ public_t("about.problem.title") }}</h2>
+    <p>{{ public_t("about.problem.text") }}</p>
   </section>
 
   <section class="about-section about-flow">
-    <h2>Як це працює</h2>
+    <h2>{{ public_t("about.flow.title") }}</h2>
+    <p>{{ public_t("about.flow.text") }}</p>
     <div class="about-flow-row">
-      <div class="about-step">Дані →</div>
-      <div class="about-step">Аналіз →</div>
-      <div class="about-step">Показники →</div>
-      <div class="about-step">Рекомендації</div>
+      <div class="about-step">{{ public_t("about.flow.data") }} →</div>
+      <div class="about-step">{{ public_t("about.flow.analysis") }} →</div>
+      <div class="about-step">{{ public_t("about.flow.metrics") }} →</div>
+      <div class="about-step">{{ public_t("about.flow.recommendations") }}</div>
     </div>
   </section>
 
   <section class="about-section about-what">
-    <h2>Що аналізуємо</h2>
+    <h2>{{ public_t("about.what.title") }}</h2>
+    <p>{{ public_t("about.what.text") }}</p>
     <div class="about-grid">
-      <div class="about-chip">Training</div>
-      <div class="about-chip">Sleep</div>
-      <div class="about-chip">Energy</div>
-      <div class="about-chip">Habits</div>
+      <div class="about-chip">{{ public_t("about.what.training") }}</div>
+      <div class="about-chip">{{ public_t("about.what.sleep") }}</div>
+      <div class="about-chip">{{ public_t("about.what.nutrition") }}</div>
+      <div class="about-chip">{{ public_t("about.what.habits") }}</div>
     </div>
   </section>
 
   <section class="about-section about-score">
-    <h2>Recovery Score</h2>
-    <p>
-      Recovery Score — зведена метрика для швидкої оцінки стану відновлення.
-      Вона допомагає вирішити, чи планувати інтенсивне тренування або віддати
-      перевагу відновленню.
-    </p>
+    <h2>{{ public_t("about.score.title") }}</h2>
+    <p>{{ public_t("about.score.text") }}</p>
+    <h3>{{ public_t("about.score.noteTitle") }}</h3>
+    <p>{{ public_t("about.score.noteText") }}</p>
   </section>
 
   <section class="about-section about-audience">
-    <h2>Кому підійде</h2>
+    <h2>{{ public_t("about.audience.title") }}</h2>
+    <p>{{ public_t("about.audience.text") }}</p>
     <ul class="about-list">
-      <li>
-        Тим, хто регулярно тренується і хоче бачити вплив навантаження на стан.
-      </li>
-      <li>Тим, хто стежить за сном і відновленням.</li>
-      <li>Тим, хто любить працювати з даними і бачити зміни з часом.</li>
+      <li>{{ public_t("about.audience.training") }}</li>
+      <li>{{ public_t("about.audience.recovery") }}</li>
+      <li>{{ public_t("about.audience.data") }}</li>
     </ul>
   </section>
 
   <footer class="about-footer">
     <div class="about-cta">
       {% if current_user.is_authenticated %}
-      <a class="btn btn-primary" href="{{ url_for('dashboard.dashboard') }}"
-        >Відкрити NosiFit</a
-      >
+      <a class="btn btn-primary" href="{{ url_for('dashboard.dashboard') }}">
+        {{ public_t("common.openNosiFit") }}
+      </a>
       {% else %}
-      <a class="btn btn-primary" href="{{ url_for('auth.register') }}"
-        >Створити акаунт</a
-      >
+      <a class="btn btn-primary" href="{{ url_for('auth.register') }}">
+        {{ public_t("common.createAccount") }}
+      </a>
       {% endif %}
-      <a class="btn btn-ghost" href="{{ url_for('info.info_page') }}"
-        >Як це працює</a
+      <a
+        class="btn btn-ghost"
+        href="{{ url_for('info.info_page', layout=request.args.get('layout', 'public')) }}"
       >
+        {{ public_t("common.howItWorks") }}
+      </a>
     </div>
   </footer>
 </main>
