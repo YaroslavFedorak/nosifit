@@ -1,79 +1,70 @@
-body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: Inter, sans-serif;
-}
-
 .training-page-wrapper {
-    max-width: 1600px;
-    margin: 0 auto;
-    padding: 24px;
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
+  width: min(100%, 1440px);
+  margin: 0 auto;
+  padding: 4px 0 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 .training-header-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
 }
 
 .training-header-left {
-    width: 60%;
+  min-width: 0;
+  flex: 1;
 }
 
 .page-title {
-    font-size: 36px;
-    font-weight: 700;
+  margin: 0;
+  color: var(--nf-text-main);
+  font-size: clamp(25px, 3vw, 34px);
+  line-height: 1.08;
+  font-weight: 680;
+  letter-spacing: -.035em;
 }
 
 .page-subtitle {
-    font-size: 15px;
-    opacity: 0.7;
-    margin-top: 4px;
+  margin-top: 7px;
+  color: var(--nf-text-muted);
+  font-size: 13px;
 }
 
 .date-display {
-    font-size: 16px;
-    opacity: 0.7;
+  color: var(--nf-text-muted);
+  font-size: 13px;
+  white-space: nowrap;
 }
 
 .training-main-grid {
-    display: grid;
-    grid-template-columns: 58% 42%;
-    gap: 24px;
-    align-items: start;
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(340px, .9fr);
+  gap: var(--nf-content-gap);
+  align-items: start;
 }
 
-.training-left {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
+.training-left,
 .training-right {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
 }
 
-.training-main-grid>* {
-    height: auto;
+.training-main-grid > * { min-width: 0; }
+
+@media (max-width: 1180px) {
+  .training-main-grid { grid-template-columns: 1fr; }
 }
 
-@media (max-width: 1400px) {
-    .training-main-grid {
-        grid-template-columns: 1fr;
-    }
-}
-
-@media (max-width: 900px) {
-    .training-header-left {
-        width: 100%;
-    }
-
-    .training-main-grid {
-        grid-template-columns: 1fr;
-    }
+@media (max-width: 720px) {
+  .training-page-wrapper { gap: 16px; }
+  .training-header-row { flex-direction: column; gap: 10px; }
+  .date-display { white-space: normal; }
+  .training-left,
+  .training-right { gap: 14px; }
 }
