@@ -1,31 +1,34 @@
-from telegram import Update
-from telegram.ext import ContextTypes
-
+from aiogram import Router
+from aiogram.filters import Command, CommandStart
+from aiogram.types import Message
 from telegram_bot.keyboards.main import main_menu
 
+router = Router()
 
 WELCOME_TEXT = (
-    "NosiFit\n\n"
-    "Швидко додавай дані про свій день — аналіз залишаємо вебзастосунку.\n\n"
+    "NosiFit
+
+"
+    "Швидко додавай дані про свій день — аналіз залишаємо вебзастосунку.
+
+"
     "Оберіть, що хочете додати:"
 )
 
+@router.message(CommandStart())
+async def start(message: Message) -> None:
+    await message.answer(WELCOME_TEXT, reply_markup=main_menu())
 
-async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    if update.message is None:
-        return
+@router.message(Command("help"))
+async def help_command(message: Message) -> None:
+    await message.answer(
+        "Оберіть потрібний розділ у меню.
 
-    await update.message.reply_text(WELCOME_TEXT, reply_markup=main_menu())
-
-
-async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    if update.message is None:
-        return
-
-    await update.message.reply_text(
-        "Оберіть потрібний розділ у меню.\n\n"
-        "/start — відкрити головне меню\n"
-        "/help — показати цю підказку\n"
+"
+        "/start — відкрити головне меню
+"
+        "/help — показати цю підказку
+"
         "/cancel — скасувати поточну дію",
         reply_markup=main_menu(),
     )

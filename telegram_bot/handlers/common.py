@@ -1,25 +1,14 @@
-from telegram import Update
-from telegram.ext import ContextTypes
-
+from aiogram import Router
+from aiogram.filters import Command
+from aiogram.types import Message
 from telegram_bot.keyboards.main import main_menu
 
+router = Router()
 
-async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    if update.message is None:
-        return
+@router.message(Command("cancel"))
+async def cancel(message: Message) -> None:
+    await message.answer("Дію скасовано.", reply_markup=main_menu())
 
-    context.user_data.clear()
-    await update.message.reply_text(
-        "Дію скасовано.",
-        reply_markup=main_menu(),
-    )
-
-
-async def unknown(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    if update.message is None:
-        return
-
-    await update.message.reply_text(
-        "Оберіть дію через кнопки нижче або введіть /help.",
-        reply_markup=main_menu(),
-    )
+@router.message()
+async def unknown(message: Message) -> None:
+    await message.answer("Оберіть дію через кнопки нижче або введіть /help.", reply_markup=main_menu())

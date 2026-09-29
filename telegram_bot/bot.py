@@ -1,56 +1,34 @@
+import asyncio
 import logging
 
-from telegram import Update
-from telegram.ext import Application, CommandHandler, MessageHandler, filters
+from aiogram import Bot, Dispatcher
 
 from telegram_bot.config import TelegramConfig
-from telegram_bot.handlers.common import cancel, unknown
-from telegram_bot.handlers.nutrition import nutrition
-from telegram_bot.handlers.start import help_command, start
-from telegram_bot.handlers.water import water
-from telegram_bot.handlers.weight import weight
-from telegram_bot.keyboards.main import NUTRITION, WATER, WEIGHT
+from telegram_bot.handlers import common, nutrition, start, water, weight
 
-
-logging.basicConfig(
-    format="%(asctime)s | %(levelname)s | %(name)s | %(message)s",
-    level=logging.INFO,
-)
+logging.basicConfig(format="%(asctime)s | %(levelname)s | %(name)s | %(message)s", level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+def create_dispatcher() -> Dispatcher:
+    dispatcher = Dispatcher()
+    dispatcher.include_router(start.router)
+    dispatcher.include_router(nutrition.router)
+    dispatcher.include_router(water.router)
+    dispatcher.include_router(weight.router)
+    dispatcher.include_router(common.router)
+    return dispatcher
 
-def create_application(config: TelegramConfig) -> Application:
-    application = Application.builder().token(config.bot_token).build()
-
-    application.add_handler(CommandHandler("start", start))
-    application.add_handler(CommandHandler("help", help_command))
-    application.add_handler(CommandHandler("cancel", cancel))
-
-    application.add_handler(
-        MessageHandler(filters.Regex(f"^{NUTRITION}$"), nutrition)
-    )
-    application.add_handler(
-        MessageHandler(filters.Regex(f"^{WATER}$"), water)
-    )
-    application.add_handler(
-        MessageHandler(filters.Regex(f"^{WEIGHT}$"), weight)
-    )
-    application.add_handler(
-        MessageHandler(filters.TEXT & ~filters.COMMAND, unknown)
-    )
-
-    return application
-
-
-def main() -> None:
+async def main() -> None:
     config = TelegramConfig.from_env()
-    application = create_application(config)
-
+    bot = Bot(token=config.bot_token)
+    dispatcher = create_dispatcher()
     logger.info("Starting NosiFit Telegram bot")
     logger.info("NosiFit API: %s", config.nosi_fit_base_url)
-
-    application.run_polling(allowed_updates=Update.ALL_TYPES)
-
+    try:
+        await bot.delete_webhook(drop_pending_updates=True)
+        await dispatcher.start_polling(bot)
+    finally:
+        await bot.session.close()
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())

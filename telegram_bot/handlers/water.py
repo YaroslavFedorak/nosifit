@@ -1,15 +1,11 @@
-from telegram import Update
-from telegram.ext import ContextTypes
+from aiogram import F, Router
+from aiogram.types import Message
+from telegram_bot.keyboards.main import WATER, main_menu
 
-from telegram_bot.keyboards.main import main_menu
+router = Router()
 
+@router.message(F.text == WATER)
+async def water(message: Message) -> None:
+    await message.answer("💧 Вода
 
-async def water(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    if update.message is None:
-        return
-
-    await update.message.reply_text(
-        "💧 Вода\n\n"
-        "Введення води підключимо наступним етапом.",
-        reply_markup=main_menu(),
-    )
+Введення води підключимо наступним етапом.", reply_markup=main_menu())

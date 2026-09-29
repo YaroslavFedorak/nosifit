@@ -1,15 +1,11 @@
-from telegram import Update
-from telegram.ext import ContextTypes
+from aiogram import F, Router
+from aiogram.types import Message
+from telegram_bot.keyboards.main import NUTRITION, main_menu
 
-from telegram_bot.keyboards.main import main_menu
+router = Router()
 
+@router.message(F.text == NUTRITION)
+async def nutrition(message: Message) -> None:
+    await message.answer("🍽 Харчування
 
-async def nutrition(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    if update.message is None:
-        return
-
-    await update.message.reply_text(
-        "🍽 Харчування\n\n"
-        "Введення харчування підключимо наступним етапом.",
-        reply_markup=main_menu(),
-    )
+Введення харчування підключимо наступним етапом.", reply_markup=main_menu())

@@ -1,15 +1,11 @@
-from telegram import Update
-from telegram.ext import ContextTypes
+from aiogram import F, Router
+from aiogram.types import Message
+from telegram_bot.keyboards.main import WEIGHT, main_menu
 
-from telegram_bot.keyboards.main import main_menu
+router = Router()
 
+@router.message(F.text == WEIGHT)
+async def weight(message: Message) -> None:
+    await message.answer("⚖️ Вага
 
-async def weight(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    if update.message is None:
-        return
-
-    await update.message.reply_text(
-        "⚖️ Вага\n\n"
-        "Введення ваги підключимо наступним етапом.",
-        reply_markup=main_menu(),
-    )
+Введення ваги підключимо наступним етапом.", reply_markup=main_menu())
