@@ -13,5 +13,25 @@
   "status": {
     "loading": "Ładowanie...",
     "error": "Coś poszło nie tak"
+  },
+  "navigation": {
+    "home": "Strona główna",
+    "profile": "Profil",
+    "dashboard": "Dashboard",
+    "training": "Trening",
+    "equipment": "Sprzęt",
+    "nutrition": "Odżywianie",
+    "tracker": "Tracker",
+    "recovery": "Regeneracja",
+    "premium": "Premium",
+    "aboutApp": "O aplikacji",
+    "info": "O stronie",
+    "logout": "Wyloguj się"
+  },
+  "footer": {
+    "rights": "Wszelkie prawa zastrzeżone.",
+    "support": "Wsparcie",
+    "privacy": "Polityka prywatności",
+    "terms": "Warunki korzystania"
   }
 }

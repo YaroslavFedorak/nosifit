@@ -13,5 +13,25 @@
   "status": {
     "loading": "Loading...",
     "error": "Something went wrong"
+  },
+  "navigation": {
+    "home": "Home",
+    "profile": "Profile",
+    "dashboard": "Dashboard",
+    "training": "Training",
+    "equipment": "Equipment",
+    "nutrition": "Nutrition",
+    "tracker": "Tracker",
+    "recovery": "Recovery",
+    "premium": "Premium",
+    "aboutApp": "About the app",
+    "info": "About the site",
+    "logout": "Log out"
+  },
+  "footer": {
+    "rights": "All rights reserved.",
+    "support": "Support",
+    "privacy": "Privacy policy",
+    "terms": "Terms of use"
   }
 }

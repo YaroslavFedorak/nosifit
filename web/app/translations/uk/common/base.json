@@ -13,5 +13,25 @@
   "status": {
     "loading": "Завантаження...",
     "error": "Щось пішло не так"
+  },
+  "navigation": {
+    "home": "Головна",
+    "profile": "Профіль",
+    "dashboard": "Дашборд",
+    "training": "Тренування",
+    "equipment": "Обладнання",
+    "nutrition": "Харчування",
+    "tracker": "Трекер",
+    "recovery": "Відновлення",
+    "premium": "Premium",
+    "aboutApp": "Про застосунок",
+    "info": "Про сайт",
+    "logout": "Вийти"
+  },
+  "footer": {
+    "rights": "Всі права захищено.",
+    "support": "Підтримка",
+    "privacy": "Політика конфіденційності",
+    "terms": "Умови користування"
   }
 }

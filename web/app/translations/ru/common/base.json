@@ -13,5 +13,25 @@
   "status": {
     "loading": "Загрузка...",
     "error": "Что-то пошло не так"
+  },
+  "navigation": {
+    "home": "Главная",
+    "profile": "Профиль",
+    "dashboard": "Дашборд",
+    "training": "Тренировки",
+    "equipment": "Оборудование",
+    "nutrition": "Питание",
+    "tracker": "Трекер",
+    "recovery": "Восстановление",
+    "premium": "Premium",
+    "aboutApp": "О приложении",
+    "info": "О сайте",
+    "logout": "Выйти"
+  },
+  "footer": {
+    "rights": "Все права защищены.",
+    "support": "Поддержка",
+    "privacy": "Политика конфиденциальности",
+    "terms": "Условия использования"
   }
 }
