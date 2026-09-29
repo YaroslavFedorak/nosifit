@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="uk">
+<html lang="{{ locale }}">
   <head>
     <meta charset="UTF-8" />
     <title>Підтвердження коду — NOSI FIT</title>
@@ -24,11 +24,11 @@
         </div>
 
         <div class="progress-steps">
-          <div class="step completed" data-label="Account setup"></div>
+          <div class="step completed" data-label="{{ auth_t("steps.account") }}"></div>
 
-          <div class="step active" data-label="Email verification"></div>
+          <div class="step active" data-label="{{ auth_t("steps.verification") }}"></div>
 
-          <div class="step" data-label="Profile info"></div>
+          <div class="step" data-label="{{ auth_t("steps.profile") }}"></div>
         </div>
       </div>
 
@@ -44,11 +44,10 @@
           </h1>
         </div>
 
-        <h2 class="title">Підтвердження коду</h2>
+        <h2 class="title">{{ auth_t("verify.title") }}</h2>
 
         <p class="subtitle">
-          Ми надіслали код на <b>{{ session.get('pending_email') }}</b>. Введіть
-          його нижче.
+          {{ auth_t("verify.subtitle", email=session.get('pending_email')) }}
         </p>
       </div>
 
@@ -58,7 +57,7 @@
 
       <form method="POST" class="auth-form" id="verify-form">
         <div class="field" data-anim>
-          <label>Код підтвердження</label>
+          <label>{{ auth_t("verify.code") }}</label>
           <input
             class="cmp-input code-input"
             type="text"
@@ -71,19 +70,19 @@
         </div>
 
         <div class="auth-actions">
-          <button class="btn-save" type="submit">Підтвердити</button>
+          <button class="btn-save" type="submit">{{ auth_t("verify.submit") }}</button>
 
           <a
             class="btn-back disabled"
             id="resend-btn"
             href="{{ url_for('email_verification.resend') }}"
           >
-            Надіслати код повторно
+            {{ auth_t("verify.resend") }}
           </a>
         </div>
 
         <p class="timer">
-          Надіслати повторно через <span id="timer">30</span> сек
+          {{ auth_t("verify.timer") }} <span id="timer">30</span> сек
         </p>
       </form>
     </div>

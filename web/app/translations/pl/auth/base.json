@@ -1,0 +1,117 @@
+{
+  "common": {
+    "email": "Email",
+    "login": "Zaloguj się",
+    "back": "Wstecz",
+    "backToLogin": "Wróć do logowania",
+    "save": "Zapisz",
+    "select": "Wybierz",
+    "show": "Pokaż",
+    "hide": "Ukryj",
+    "or": "lub",
+    "togglePassword": "Pokaż/ukryj hasło"
+  },
+  "steps": {
+    "account": "Konfiguracja konta",
+    "verification": "Weryfikacja email",
+    "profile": "Dane profilu"
+  },
+  "login": {
+    "title": "Logowanie",
+    "heading": "Zaloguj się na konto",
+    "email": "Email",
+    "password": "Hasło",
+    "passwordPlaceholder": "Twoje hasło",
+    "submit": "Zaloguj się",
+    "forgotPassword": "Nie pamiętasz hasła?",
+    "google": "Zaloguj przez Google",
+    "github": "Zaloguj przez GitHub",
+    "noAccount": "Nie masz konta?",
+    "create": "Utwórz"
+  },
+  "register": {
+    "title": "Rejestracja",
+    "heading": "Utwórz konto",
+    "namePlaceholder": "Twoje imię",
+    "passwordPlaceholder": "Minimum 8 znaków",
+    "confirmPlaceholder": "Powtórz hasło",
+    "privacyPrefix": "Akceptuję",
+    "privacyLink": "politykę prywatności",
+    "submit": "Utwórz konto",
+    "already": "Masz już konto?"
+  },
+  "fields": {
+    "name": "Imię",
+    "password": "Hasło",
+    "confirmPassword": "Potwierdzenie hasła",
+    "age": "Wiek",
+    "height": "Wzrost (cm)",
+    "weight": "Waga (kg)",
+    "gender": "Płeć",
+    "male": "Mężczyzna",
+    "female": "Kobieta",
+    "other": "Inne",
+    "activity": "Aktywność",
+    "goal": "Cel",
+    "experience": "Doświadczenie",
+    "workouts": "Treningów tygodniowo"
+  },
+  "activity": {
+    "minimum": "Minimalna",
+    "light": "Lekka",
+    "medium": "Umiarkowana",
+    "high": "Wysoka",
+    "veryHigh": "Bardzo wysoka",
+    "extreme": "Ekstremalna"
+  },
+  "goals": {
+    "lose": "Redukcja",
+    "maintain": "Utrzymanie",
+    "gain": "Budowanie masy",
+    "muscleGain": "Budowanie masy",
+    "recomposition": "Rekompozycja",
+    "performance": "Wydolność"
+  },
+  "experience": {
+    "beginner": "Początkujący",
+    "intermediate": "Średniozaawansowany",
+    "advanced": "Zaawansowany"
+  },
+  "reset": {
+    "title": "Odzyskiwanie hasła",
+    "heading": "Odzyskaj dostęp",
+    "submit": "Wyślij wiadomość",
+    "step": "Reset",
+    "done": "Gotowe"
+  },
+  "newPassword": {
+    "title": "Nowe hasło",
+    "heading": "Nowe hasło",
+    "password": "Nowe hasło",
+    "confirmation": "Potwierdzenie",
+    "submit": "Zapisz hasło"
+  },
+  "status": {
+    "sentTitle": "Wiadomość wysłana",
+    "sentText": "Instrukcje zostały wysłane na {email}. Sprawdź pocztę.",
+    "resend": "Wyślij ponownie",
+    "doneTitle": "Hasło zmienione"
+  },
+  "verify": {
+    "title": "Weryfikacja kodu",
+    "subtitle": "Kod został wysłany na {email}. Wpisz go poniżej.",
+    "code": "Kod weryfikacyjny",
+    "submit": "Potwierdź",
+    "resend": "Wyślij kod ponownie",
+    "timer": "Wyślij ponownie za"
+  },
+  "registerComplete": {
+    "title": "Potwierdzenie danych",
+    "text": "Sprawdź informacje i kliknij przycisk, aby zakończyć tworzenie konta.",
+    "submit": "Zakończ rejestrację"
+  },
+  "profile": {
+    "title": "Uzupełnianie profilu",
+    "heading": "Uzupełnij profil"
+  }
+}

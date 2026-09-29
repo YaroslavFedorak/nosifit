@@ -1,0 +1,117 @@
+{
+  "common": {
+    "email": "Email",
+    "login": "Войти",
+    "back": "Назад",
+    "backToLogin": "Вернуться ко входу",
+    "save": "Сохранить",
+    "select": "Выберите",
+    "show": "Показать",
+    "hide": "Скрыть",
+    "or": "или",
+    "togglePassword": "Показать/скрыть пароль"
+  },
+  "steps": {
+    "account": "Настройка аккаунта",
+    "verification": "Подтверждение email",
+    "profile": "Данные профиля"
+  },
+  "login": {
+    "title": "Вход",
+    "heading": "Вход в аккаунт",
+    "email": "Email",
+    "password": "Пароль",
+    "passwordPlaceholder": "Ваш пароль",
+    "submit": "Войти",
+    "forgotPassword": "Забыли пароль?",
+    "google": "Войти через Google",
+    "github": "Войти через GitHub",
+    "noAccount": "Нет аккаунта?",
+    "create": "Создать"
+  },
+  "register": {
+    "title": "Регистрация",
+    "heading": "Создать аккаунт",
+    "namePlaceholder": "Ваше имя",
+    "passwordPlaceholder": "Минимум 8 символов",
+    "confirmPlaceholder": "Повторите пароль",
+    "privacyPrefix": "Я согласен с",
+    "privacyLink": "политикой конфиденциальности",
+    "submit": "Создать аккаунт",
+    "already": "Уже есть аккаунт?"
+  },
+  "fields": {
+    "name": "Имя",
+    "password": "Пароль",
+    "confirmPassword": "Подтверждение пароля",
+    "age": "Возраст",
+    "height": "Рост (см)",
+    "weight": "Вес (кг)",
+    "gender": "Пол",
+    "male": "Мужской",
+    "female": "Женский",
+    "other": "Другое",
+    "activity": "Активность",
+    "goal": "Цель",
+    "experience": "Опыт",
+    "workouts": "Тренировок в неделю"
+  },
+  "activity": {
+    "minimum": "Минимальная",
+    "light": "Лёгкая",
+    "medium": "Средняя",
+    "high": "Высокая",
+    "veryHigh": "Очень высокая",
+    "extreme": "Экстремальная"
+  },
+  "goals": {
+    "lose": "Снижение веса",
+    "maintain": "Поддержание",
+    "gain": "Набор массы",
+    "muscleGain": "Набор мышц",
+    "recomposition": "Рекомпозиция",
+    "performance": "Производительность"
+  },
+  "experience": {
+    "beginner": "Начинающий",
+    "intermediate": "Средний",
+    "advanced": "Продвинутый"
+  },
+  "reset": {
+    "title": "Восстановление пароля",
+    "heading": "Восстановить доступ",
+    "submit": "Отправить письмо",
+    "step": "Сброс",
+    "done": "Готово"
+  },
+  "newPassword": {
+    "title": "Новый пароль",
+    "heading": "Новый пароль",
+    "password": "Новый пароль",
+    "confirmation": "Подтверждение",
+    "submit": "Сохранить пароль"
+  },
+  "status": {
+    "sentTitle": "Письмо отправлено",
+    "sentText": "Инструкции отправлены на {email}. Проверьте почту.",
+    "resend": "Отправить повторно",
+    "doneTitle": "Пароль изменён"
+  },
+  "verify": {
+    "title": "Подтверждение кода",
+    "subtitle": "Код отправлен на {email}. Введите его ниже.",
+    "code": "Код подтверждения",
+    "submit": "Подтвердить",
+    "resend": "Отправить код повторно",
+    "timer": "Повторно через"
+  },
+  "registerComplete": {
+    "title": "Подтверждение данных",
+    "text": "Проверьте информацию и нажмите кнопку, чтобы завершить создание аккаунта.",
+    "submit": "Завершить регистрацию"
+  },
+  "profile": {
+    "title": "Заполнение профиля",
+    "heading": "Заполните профиль"
+  }
+}
