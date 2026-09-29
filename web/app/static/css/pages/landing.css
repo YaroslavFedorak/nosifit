@@ -42,8 +42,8 @@
 }
 
 .landing {
-  background: var(--nf-bg);
   color: var(--nf-text-main);
+  background: transparent;
 }
 
 .landing-container {

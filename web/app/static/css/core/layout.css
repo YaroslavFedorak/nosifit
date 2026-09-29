@@ -77,28 +77,28 @@
 }
 
 .bg-glow-static {
-  width: 430px;
-  height: 430px;
-  filter: blur(115px);
-  opacity: .20;
+  width: 520px;
+  height: 520px;
+  filter: blur(105px);
+  opacity: .34;
 }
 
 .bg-glow-static.glow-purple {
   top: -155px;
   left: -115px;
-  background: rgba(157, 123, 234, .78);
+  background: rgba(157, 123, 234, .92);
 }
 
 .bg-glow-static.glow-teal {
   top: 8%;
   right: -155px;
-  background: rgba(66, 199, 216, .64);
+  background: rgba(66, 199, 216, .78);
 }
 
 .bg-glow-static.glow-yellow {
   right: 25%;
   bottom: -235px;
-  background: rgba(244, 200, 74, .52);
+  background: rgba(244, 200, 74, .68);
 }
 
 .bg-glow-dynamic {
@@ -107,8 +107,8 @@
   left: 45%;
   top: 34%;
   background: rgba(255, 255, 255, .45);
-  opacity: .045;
-  filter: blur(90px);
+  opacity: .07;
+  filter: blur(82px);
   animation: nf-ambient-drift 18s ease-in-out infinite alternate;
 }
 
@@ -129,11 +129,11 @@
 @keyframes nf-ambient-drift {
   from {
     transform: translate3d(-12px, -8px, 0) scale(1);
-    opacity: .035;
+    opacity: .055;
   }
   to {
     transform: translate3d(14px, 10px, 0) scale(1.04);
-    opacity: .06;
+    opacity: .085;
   }
 }
 
