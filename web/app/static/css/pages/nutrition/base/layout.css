@@ -1,72 +1,50 @@
 .nutrition-page-wrapper {
-    max-width: 1600px;
-    margin: 0 auto;
-    padding: 24px;
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
+  width: min(100%, 1440px);
+  margin: 0 auto;
+  padding: 4px 0 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 .nutrition-main-grid {
-    display: grid;
-    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
-    gap: 24px;
-    align-items: start;
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(320px, .9fr);
+  gap: var(--nf-content-gap);
+  align-items: start;
 }
 
-.nutrition-left {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    min-width: 0;
-}
-
+.nutrition-left,
 .nutrition-right {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    min-width: 0;
-}
-
-.nutrition-main-grid>* {
-    height: auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
 }
 
 .nutrition-page .cmp-card {
-    background: var(--nutrition-surface);
-    border: 1px solid var(--nutrition-border);
-    border-radius: var(--nf-radius-md);
-    box-shadow: none;
+  background: var(--nf-surface);
+  border: 1px solid var(--nf-border-subtle);
+  border-radius: var(--nf-radius-lg);
+  box-shadow: var(--nf-shadow-sm);
 }
 
-.nutrition-page .cmp-card::before {
-    display: none;
+.nutrition-page .cmp-card::before,
+.nutrition-page .cmp-card::after {
+  display: none;
 }
 
 .nutrition-page .cmp-card:hover {
-    background: var(--nutrition-surface-hover);
-    border-color: var(--nutrition-border-soft);
+  border-color: var(--nf-border-strong);
+  background: var(--nf-surface-soft);
 }
 
-.nutrition-page .cmp-card.heatmap-widget {
-    overflow: visible;
-}
-
-@media (max-width: 1400px) {
-    .nutrition-main-grid {
-        grid-template-columns: 1fr;
-    }
-}
-
-@media (max-width: 900px) {
-    .nutrition-main-grid {
-        grid-template-columns: 1fr;
-    }
+@media (max-width: 1180px) {
+  .nutrition-main-grid { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 720px) {
-    .nutrition-page-wrapper {
-        padding: 16px;
-        gap: 20px;
-    }
+  .nutrition-page-wrapper { padding: 0 0 16px; gap: 16px; }
+  .nutrition-left,
+  .nutrition-right { gap: 14px; }
 }
