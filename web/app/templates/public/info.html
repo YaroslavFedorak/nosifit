@@ -5,7 +5,7 @@
   href="{{ url_for('static', filename='css/pages/info.css') }}"
 />
 {% endblock %} {% block body %}
-<main class="info-root">
+<div class="info-root">
   <header class="info-header">
     <a class="info-back" href="{{ url_for('public.about') }}"
       >← {{ public_t("info.backToAbout") }}</a
@@ -132,5 +132,5 @@
       >
     </div>
   </footer>
-</main>
+</div>
 {% endblock %}

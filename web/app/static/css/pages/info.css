@@ -5,8 +5,8 @@
 .info-root {
     max-width: var(--info-max-width);
     margin: 0 auto;
-    padding: 76px 32px 80px;
-    color: var(--core-text-main);
+    padding: 56px 8px 64px;
+    color: var(--nf-text-main);
 }
 
 .info-header {
@@ -17,14 +17,14 @@
 .info-back {
     display: inline-flex;
     margin-bottom: 32px;
-    color: var(--core-text-muted);
+    color: var(--nf-text-muted);
     font-size: 13px;
     text-decoration: none;
-    transition: color var(--core-transition-fast);
+    transition: color var(--nf-transition-fast);
 }
 
 .info-back:hover {
-    color: var(--core-text-main);
+    color: var(--nf-text-main);
 }
 
 .info-title {
@@ -38,7 +38,7 @@
 .info-lead {
     max-width: 680px;
     margin: 22px 0 0;
-    color: var(--core-text-muted);
+    color: var(--nf-text-muted);
     font-size: 17px;
     line-height: 1.7;
 }
@@ -46,8 +46,8 @@
 .info-section {
     margin-top: 20px;
     padding: 30px;
-    border: 1px solid var(--core-border-subtle);
-    border-radius: var(--core-radius-lg);
+    border: 1px solid var(--nf-border-subtle);
+    border-radius: var(--nf-radius-lg);
     background: rgba(16, 18, 34, 0.74);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.28);
 }
@@ -60,7 +60,7 @@
 }
 
 .info-section-number {
-    color: var(--core-yellow);
+    color: var(--nf-yellow);
     font-size: 12px;
     font-weight: 800;
     letter-spacing: 0.08em;
@@ -77,7 +77,7 @@
 .info-section-heading p {
     max-width: 760px;
     margin: 10px 0 0;
-    color: var(--core-text-muted);
+    color: var(--nf-text-muted);
     line-height: 1.7;
 }
 
@@ -90,10 +90,10 @@
 .info-card {
     min-height: 150px;
     padding: 20px;
-    border: 1px solid var(--core-border-subtle);
-    border-radius: var(--core-radius-md);
+    border: 1px solid var(--nf-border-subtle);
+    border-radius: var(--nf-radius-md);
     background: rgba(255, 255, 255, 0.025);
-    transition: transform var(--core-transition), border-color var(--core-transition), background var(--core-transition);
+    transition: transform var(--nf-transition), border-color var(--nf-transition), background var(--nf-transition);
 }
 
 .info-card:hover {
@@ -105,7 +105,7 @@
 .info-card-index {
     display: block;
     margin-bottom: 24px;
-    color: var(--core-text-muted);
+    color: var(--nf-text-muted);
     font-size: 10px;
     letter-spacing: 0.08em;
 }
@@ -118,7 +118,7 @@
 
 .info-card p {
     margin: 10px 0 0;
-    color: var(--core-text-muted);
+    color: var(--nf-text-muted);
     font-size: 13px;
     line-height: 1.65;
 }
@@ -135,15 +135,15 @@
 .info-steps li {
     min-height: 180px;
     padding: 20px;
-    border: 1px solid var(--core-border-subtle);
-    border-radius: var(--core-radius-md);
+    border: 1px solid var(--nf-border-subtle);
+    border-radius: var(--nf-radius-md);
     background: rgba(255, 255, 255, 0.025);
 }
 
 .info-steps li > span {
     display: block;
     margin-bottom: 28px;
-    color: var(--core-yellow);
+    color: var(--nf-yellow);
     font-size: 11px;
     font-weight: 800;
 }
@@ -154,7 +154,7 @@
 
 .info-steps p {
     margin: 9px 0 0;
-    color: var(--core-text-muted);
+    color: var(--nf-text-muted);
     font-size: 13px;
     line-height: 1.65;
 }
@@ -162,7 +162,7 @@
 .info-module-list {
     display: grid;
     gap: 0;
-    border-top: 1px solid var(--core-border-subtle);
+    border-top: 1px solid var(--nf-border-subtle);
 }
 
 .info-module-list div {
@@ -170,7 +170,7 @@
     grid-template-columns: 220px 1fr;
     gap: 24px;
     padding: 18px 0;
-    border-bottom: 1px solid var(--core-border-subtle);
+    border-bottom: 1px solid var(--nf-border-subtle);
 }
 
 .info-module-list strong {
@@ -178,7 +178,7 @@
 }
 
 .info-module-list span {
-    color: var(--core-text-muted);
+    color: var(--nf-text-muted);
     font-size: 13px;
     line-height: 1.6;
 }
@@ -196,7 +196,7 @@
 .info-purpose p {
     max-width: 760px;
     margin: 12px 0 0;
-    color: var(--core-text-muted);
+    color: var(--nf-text-muted);
     line-height: 1.7;
 }
 
@@ -207,8 +207,8 @@
     gap: 32px;
     margin-top: 20px;
     padding: 34px 30px;
-    border: 1px solid var(--core-border-subtle);
-    border-radius: var(--core-radius-lg);
+    border: 1px solid var(--nf-border-subtle);
+    border-radius: var(--nf-radius-lg);
     background: linear-gradient(135deg, rgba(255, 212, 59, 0.07), rgba(155, 93, 229, 0.05));
 }
 
@@ -224,7 +224,7 @@
 
 @media (max-width: 900px) {
     .info-root {
-        padding: 60px 20px;
+        padding: 44px 0 56px;
     }
 
     .info-grid,
