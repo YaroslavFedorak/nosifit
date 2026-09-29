@@ -1,4 +1,5 @@
 import { NutritionAPI, } from "../../../nutrition/api.js";
+import { dashboard_t, } from "../../../i18n/index.js";
 import { renderMeals, } from "./render.js";
 import { setNutritionDay, } from "./state.js";
 import { setupMealModals, } from "../../modals/nutrition/meals.js";
@@ -16,7 +17,7 @@ function renderWater(value) {
         return;
     }
     element.textContent =
-        `${Math.round(water)} мл`;
+        `${Math.round(water)} ${dashboard_t("units.milliliters")}`;
 }
 function renderWeight(data) {
     const element = document.getElementById("dashboard-weight");
@@ -29,7 +30,7 @@ function renderWeight(data) {
         return;
     }
     element.textContent =
-        `${data.weight.toFixed(1)} кг`;
+        `${data.weight.toFixed(1)} ${dashboard_t("nutrition.weightUnit")}`;
 }
 async function loadNutrition() {
     try {

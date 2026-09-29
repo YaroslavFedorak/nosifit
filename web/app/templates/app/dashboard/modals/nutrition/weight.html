@@ -2,14 +2,18 @@
   <div class="modal-content">
     <div class="modal-header">
       <div>
-        <span class="modal-eyebrow">Вага</span>
+        <span class="modal-eyebrow">
+          {{ dashboard_t("nutrition.weight") }}
+        </span>
 
-        <h2>Оновити вагу</h2>
+        <h2>{{ dashboard_t("nutrition.updateWeight") }}</h2>
       </div>
     </div>
 
     <div class="modal-field">
-      <label for="update-weight-value"> Поточна вага </label>
+      <label for="update-weight-value">
+        {{ dashboard_t("nutrition.currentWeight") }}
+      </label>
 
       <div class="modal-input-wrapper">
         <input
@@ -23,17 +27,19 @@
           autocomplete="off"
         />
 
-        <span class="modal-input-unit"> кг </span>
+        <span class="modal-input-unit">
+          {{ dashboard_t("nutrition.weightUnit") }}
+        </span>
       </div>
     </div>
 
     <div class="modal-actions">
       <button type="button" class="btn" id="close-update-weight">
-        Скасувати
+        {{ dashboard_t("nutrition.cancel") }}
       </button>
 
       <button type="button" class="btn primary" id="save-update-weight">
-        Оновити
+        {{ dashboard_t("nutrition.update") }}
       </button>
     </div>
   </div>

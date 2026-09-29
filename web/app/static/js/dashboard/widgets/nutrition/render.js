@@ -1,3 +1,4 @@
+import { dashboard_t, } from "../../../i18n/index.js";
 import { NutritionAPI, } from "../../../nutrition/api.js";
 import { openModal, } from "../../modals/nutrition/modal.js";
 const ICONS = {
@@ -60,7 +61,7 @@ export function renderMeals(meals, onRefresh) {
         empty.className =
             "db-session-empty";
         empty.textContent =
-            "Ще немає прийомів за сьогодні";
+            dashboard_t("nutrition.emptyMeals");
         list.appendChild(empty);
         return;
     }
@@ -106,7 +107,7 @@ function createMealInfo(meal, card, content) {
     meta.className =
         "meal-meta-large";
     meta.textContent = [
-        `${meal.total_calories ?? 0} ккал`,
+        `${meal.total_calories ?? 0} ${dashboard_t("units.calories")}`,
         `Б ${meal.total_protein ?? 0}`,
         `Ж ${meal.total_fat ?? 0}`,
         `В ${meal.total_carbs ?? 0}`,
@@ -127,7 +128,7 @@ function createMealActions(meal, onRefresh) {
     addItem.className =
         "meal-action-add";
     addItem.textContent =
-        "+ Продукт";
+        dashboard_t("nutrition.addProduct");
     addItem.addEventListener("click", () => {
         const mealId = document.getElementById("add-item-meal-id");
         const name = document.getElementById("add-item-name");
@@ -152,7 +153,7 @@ function createMealActions(meal, onRefresh) {
         carb.value = "0";
         openModal("modal-add-item");
     });
-    const edit = createIconButton("meal-action-icon", ICONS.pencil, "Редагувати прийом");
+    const edit = createIconButton("meal-action-icon", ICONS.pencil, dashboard_t("nutrition.editMeal"));
     edit.addEventListener("click", () => {
         const id = document.getElementById("edit-meal-id");
         const name = document.getElementById("edit-meal-name");
@@ -169,12 +170,12 @@ function createMealActions(meal, onRefresh) {
         name.value =
             meal.name || "";
         category.value =
-            meal.category || "Сніданок";
+            meal.category || "breakfast";
         time.value =
             meal.time || "";
         openModal("modal-edit-meal");
     });
-    const remove = createIconButton("meal-action-icon meal-action-delete", ICONS.delete, "Подвійний клік для видалення");
+    const remove = createIconButton("meal-action-icon meal-action-delete", ICONS.delete, dashboard_t("nutrition.delete"));
     remove.addEventListener("dblclick", async () => {
         await NutritionAPI.deleteMeal(meal.id);
         await onRefresh();
@@ -191,7 +192,7 @@ function createMealItems(meal, onRefresh) {
         empty.className =
             "meal-items-empty";
         empty.textContent =
-            "Продукти ще не додані.";
+            dashboard_t("nutrition.emptyItems");
         container.appendChild(empty);
         return container;
     }
@@ -216,7 +217,7 @@ function createItemRow(item, onRefresh) {
     macros.className =
         "meal-item-macros-large";
     macros.textContent = [
-        `${item.calories ?? 0} ккал`,
+        `${item.calories ?? 0} ${dashboard_t("units.calories")}`,
         `Б ${item.protein ?? 0}`,
         `Ж ${item.fat ?? 0}`,
         `В ${item.carbs ?? 0}`,
@@ -225,7 +226,7 @@ function createItemRow(item, onRefresh) {
     const actions = document.createElement("div");
     actions.className =
         "meal-item-actions-large";
-    const edit = createIconButton("meal-item-action", ICONS.pencil, "Редагувати продукт");
+    const edit = createIconButton("meal-item-action", ICONS.pencil, dashboard_t("nutrition.editProduct"));
     edit.addEventListener("click", () => {
         const id = document.getElementById("edit-item-id");
         const name = document.getElementById("edit-item-name");
@@ -255,7 +256,7 @@ function createItemRow(item, onRefresh) {
             String(item.carbs ?? 0);
         openModal("modal-edit-item");
     });
-    const remove = createIconButton("meal-item-action meal-item-delete", ICONS.delete, "Подвійний клік для видалення");
+    const remove = createIconButton("meal-item-action meal-item-delete", ICONS.delete, dashboard_t("nutrition.delete"));
     remove.addEventListener("dblclick", async () => {
         await NutritionAPI.deleteItem(item.id);
         await onRefresh();

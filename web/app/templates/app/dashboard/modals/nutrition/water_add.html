@@ -1,8 +1,8 @@
 <div class="modal" id="modal-water">
   <div class="modal-content">
-    <h2>Додати воду</h2>
+    <h2>{{ dashboard_t("nutrition.addWater") }}</h2>
 
-    <label for="water-amount"> Обʼєм </label>
+    <label for="water-amount"> {{ dashboard_t("nutrition.volume") }} </label>
 
     <div class="water-input-wrapper">
       <input
@@ -16,15 +16,19 @@
         autocomplete="off"
       />
 
-      <span class="water-input-unit"> л </span>
+      <span class="water-input-unit">
+        {{ dashboard_t("nutrition.liters") }}
+      </span>
     </div>
 
     <div class="modal-actions">
       <button type="button" class="btn" id="close-water-modal">
-        Скасувати
+        {{ dashboard_t("nutrition.cancel") }}
       </button>
 
-      <button type="button" class="btn primary" id="save-water">Додати</button>
+      <button type="button" class="btn primary" id="save-water">
+        {{ dashboard_t("nutrition.add") }}
+      </button>
     </div>
   </div>
 </div>

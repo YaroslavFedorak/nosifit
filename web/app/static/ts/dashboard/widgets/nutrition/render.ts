@@ -1,4 +1,8 @@
 import {
+    dashboard_t,
+} from "../../../i18n/index.js";
+
+import {
     NutritionAPI,
 } from "../../../nutrition/api.js";
 
@@ -92,8 +96,11 @@ export function renderMeals(
 
         empty.className =
             "db-session-empty";
+
         empty.textContent =
-            "Ще немає прийомів за сьогодні";
+            dashboard_t(
+                "nutrition.emptyMeals",
+            );
 
         list.appendChild(
             empty,
@@ -230,7 +237,9 @@ function createMealInfo(
         "meal-meta-large";
 
     meta.textContent = [
-        `${meal.total_calories ?? 0} ккал`,
+        `${meal.total_calories ?? 0} ${dashboard_t(
+            "units.calories",
+        )}`,
         `Б ${meal.total_protein ?? 0}`,
         `Ж ${meal.total_fat ?? 0}`,
         `В ${meal.total_carbs ?? 0}`,
@@ -283,7 +292,9 @@ function createMealActions(
         "meal-action-add";
 
     addItem.textContent =
-        "+ Продукт";
+        dashboard_t(
+            "nutrition.addProduct",
+        );
 
     addItem.addEventListener(
         "click",
@@ -348,7 +359,9 @@ function createMealActions(
         createIconButton(
             "meal-action-icon",
             ICONS.pencil,
-            "Редагувати прийом",
+            dashboard_t(
+                "nutrition.editMeal",
+            ),
         );
 
     edit.addEventListener(
@@ -390,7 +403,7 @@ function createMealActions(
                 meal.name || "";
 
             category.value =
-                meal.category || "Сніданок";
+                meal.category || "breakfast";
 
             time.value =
                 meal.time || "";
@@ -405,7 +418,9 @@ function createMealActions(
         createIconButton(
             "meal-action-icon meal-action-delete",
             ICONS.delete,
-            "Подвійний клік для видалення",
+            dashboard_t(
+                "nutrition.delete",
+            ),
         );
 
     remove.addEventListener(
@@ -451,7 +466,9 @@ function createMealItems(
             "meal-items-empty";
 
         empty.textContent =
-            "Продукти ще не додані.";
+            dashboard_t(
+                "nutrition.emptyItems",
+            );
 
         container.appendChild(
             empty,
@@ -515,7 +532,9 @@ function createItemRow(
         "meal-item-macros-large";
 
     macros.textContent = [
-        `${item.calories ?? 0} ккал`,
+        `${item.calories ?? 0} ${dashboard_t(
+            "units.calories",
+        )}`,
         `Б ${item.protein ?? 0}`,
         `Ж ${item.fat ?? 0}`,
         `В ${item.carbs ?? 0}`,
@@ -538,7 +557,9 @@ function createItemRow(
         createIconButton(
             "meal-item-action",
             ICONS.pencil,
-            "Редагувати продукт",
+            dashboard_t(
+                "nutrition.editProduct",
+            ),
         );
 
     edit.addEventListener(
@@ -613,7 +634,9 @@ function createItemRow(
         createIconButton(
             "meal-item-action meal-item-delete",
             ICONS.delete,
-            "Подвійний клік для видалення",
+            dashboard_t(
+                "nutrition.delete",
+            ),
         );
 
     remove.addEventListener(

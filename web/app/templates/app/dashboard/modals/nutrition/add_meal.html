@@ -1,30 +1,41 @@
 <div class="modal" id="modal-add-meal">
   <div class="modal-content">
-    <h2>Новий прийом їжі</h2>
+    <h2>{{ dashboard_t("nutrition.newMeal") }}</h2>
 
-    <p class="modal-hint">
-      Це лише назва прийому. Продукти та КБЖВ додаються після створення.
-    </p>
+    <p class="modal-hint">{{ dashboard_t("nutrition.addMealHint") }}</p>
 
-    <label for="add-meal-name">Назва</label>
+    <label for="add-meal-name"> {{ dashboard_t("nutrition.name") }} </label>
     <input type="text" id="add-meal-name" autocomplete="off" />
 
-    <label for="add-meal-category">Категорія</label>
+    <label for="add-meal-category">
+      {{ dashboard_t("nutrition.category") }}
+    </label>
+
     <select id="add-meal-category">
-      <option value="Сніданок">Сніданок</option>
-      <option value="Обід">Обід</option>
-      <option value="Вечеря">Вечеря</option>
-      <option value="Перекус">Перекус</option>
+      <option value="breakfast">
+        {{ dashboard_t("nutrition.mealCategories.breakfast") }}
+      </option>
+      <option value="lunch">
+        {{ dashboard_t("nutrition.mealCategories.lunch") }}
+      </option>
+      <option value="dinner">
+        {{ dashboard_t("nutrition.mealCategories.dinner") }}
+      </option>
+      <option value="snack">
+        {{ dashboard_t("nutrition.mealCategories.snack") }}
+      </option>
     </select>
 
-    <label for="add-meal-time">Час</label>
+    <label for="add-meal-time"> {{ dashboard_t("nutrition.time") }} </label>
     <input type="time" id="add-meal-time" />
 
     <div class="modal-actions">
-      <button type="button" class="btn" id="close-add-meal">Скасувати</button>
+      <button type="button" class="btn" id="close-add-meal">
+        {{ dashboard_t("nutrition.cancel") }}
+      </button>
 
       <button type="button" class="btn primary" id="save-add-meal">
-        Створити
+        {{ dashboard_t("nutrition.create") }}
       </button>
     </div>
   </div>

@@ -1,13 +1,13 @@
 <div class="modal" id="modal-add-item">
   <div class="modal-content">
-    <h2>Додати продукт</h2>
+    <h2>{{ dashboard_t("nutrition.addProductTitle") }}</h2>
 
     <input type="hidden" id="add-item-meal-id" />
 
-    <label for="add-item-name">Назва</label>
+    <label for="add-item-name"> {{ dashboard_t("nutrition.name") }} </label>
     <input type="text" id="add-item-name" autocomplete="off" />
 
-    <label for="add-item-kcal">Калорії</label>
+    <label for="add-item-kcal"> {{ dashboard_t("nutrition.calories") }} </label>
     <input
       type="number"
       id="add-item-kcal"
@@ -17,7 +17,9 @@
       inputmode="numeric"
     />
 
-    <label for="add-item-protein">Білки</label>
+    <label for="add-item-protein">
+      {{ dashboard_t("nutrition.protein") }}
+    </label>
     <input
       type="number"
       id="add-item-protein"
@@ -27,7 +29,7 @@
       inputmode="decimal"
     />
 
-    <label for="add-item-fat">Жири</label>
+    <label for="add-item-fat"> {{ dashboard_t("nutrition.fat") }} </label>
     <input
       type="number"
       id="add-item-fat"
@@ -37,7 +39,7 @@
       inputmode="decimal"
     />
 
-    <label for="add-item-carb">Вуглеводи</label>
+    <label for="add-item-carb"> {{ dashboard_t("nutrition.carbs") }} </label>
     <input
       type="number"
       id="add-item-carb"
@@ -48,10 +50,12 @@
     />
 
     <div class="modal-actions">
-      <button type="button" class="btn" id="close-add-item">Скасувати</button>
+      <button type="button" class="btn" id="close-add-item">
+        {{ dashboard_t("nutrition.cancel") }}
+      </button>
 
       <button type="button" class="btn primary" id="save-add-item">
-        Додати
+        {{ dashboard_t("nutrition.add") }}
       </button>
     </div>
   </div>

@@ -2,9 +2,40 @@
     "nutrition": {
         "title": "Dzisiejsze odżywianie",
         "newMeal": "Nowy posiłek",
+        "addMealHint": "To tylko nazwa posiłku. Produkty i makroskładniki można dodać po jego utworzeniu.",
         "water": "Woda",
         "addWater": "Dodaj wodę",
         "weight": "Waga",
-        "updateWeight": "Aktualizuj wagę"
+        "updateWeight": "Aktualizuj wagę",
+        "currentWeight": "Aktualna waga",
+        "weightUnit": "kg",
+        "emptyMeals": "Brak posiłków zapisanych na dziś",
+        "emptyItems": "Nie dodano jeszcze żadnych produktów",
+        "addProduct": "+ Produkt",
+        "addProductTitle": "Dodaj produkt",
+        "editMeal": "Edytuj posiłek",
+        "editProduct": "Edytuj produkt",
+        "name": "Nazwa",
+        "calories": "Kalorie",
+        "protein": "Białko",
+        "fat": "Tłuszcze",
+        "carbs": "Węglowodany",
+        "category": "Kategoria",
+        "time": "Czas",
+        "volume": "Objętość",
+        "liters": "L",
+        "mealCategories": {
+            "breakfast": "Śniadanie",
+            "lunch": "Obiad",
+            "dinner": "Kolacja",
+            "snack": "Przekąska"
+        },
+        "cancel": "Anuluj",
+        "add": "Dodaj",
+        "create": "Utwórz",
+        "save": "Zapisz",
+        "update": "Aktualizuj",
+        "editMealHint": "Zmień nazwę, kategorię lub godzinę. Makroskładniki są obliczane automatycznie na podstawie produktów.",
+        "delete": "Kliknij dwukrotnie, aby usunąć"
     }
 }

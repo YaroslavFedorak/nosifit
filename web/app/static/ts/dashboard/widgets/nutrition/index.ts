@@ -7,6 +7,10 @@ import type {
 } from "../../../nutrition/types.js";
 
 import {
+    dashboard_t,
+} from "../../../i18n/index.js";
+
+import {
     renderMeals,
 } from "./render.js";
 
@@ -52,7 +56,9 @@ function renderWater(
     }
 
     element.textContent =
-        `${Math.round(water)} мл`;
+        `${Math.round(water)} ${dashboard_t(
+            "units.milliliters",
+        )}`;
 }
 
 
@@ -77,7 +83,9 @@ function renderWeight(
     }
 
     element.textContent =
-        `${data.weight.toFixed(1)} кг`;
+        `${data.weight.toFixed(1)} ${dashboard_t(
+            "nutrition.weightUnit",
+        )}`;
 }
 
 

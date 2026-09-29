@@ -2,9 +2,40 @@
     "nutrition": {
         "title": "Today's nutrition",
         "newMeal": "New meal",
+        "addMealHint": "This is only the name of the meal. Products and macros can be added after creation.",
         "water": "Water",
         "addWater": "Add water",
         "weight": "Weight",
-        "updateWeight": "Update weight"
+        "updateWeight": "Update weight",
+        "currentWeight": "Current weight",
+        "weightUnit": "kg",
+        "emptyMeals": "No meals recorded today",
+        "emptyItems": "No products added yet",
+        "addProduct": "+ Product",
+        "addProductTitle": "Add product",
+        "editMeal": "Edit meal",
+        "editProduct": "Edit product",
+        "name": "Name",
+        "calories": "Calories",
+        "protein": "Protein",
+        "fat": "Fat",
+        "carbs": "Carbohydrates",
+        "category": "Category",
+        "time": "Time",
+        "volume": "Volume",
+        "liters": "L",
+        "mealCategories": {
+            "breakfast": "Breakfast",
+            "lunch": "Lunch",
+            "dinner": "Dinner",
+            "snack": "Snack"
+        },
+        "cancel": "Cancel",
+        "add": "Add",
+        "create": "Create",
+        "save": "Save",
+        "update": "Update",
+        "editMealHint": "Change the name, category, or time. Macros are calculated automatically from the products.",
+        "delete": "Double-click to delete"
     }
 }
