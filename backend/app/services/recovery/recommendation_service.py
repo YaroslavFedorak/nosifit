@@ -138,10 +138,11 @@ class RecommendationService:
                         "type": "recovery",
                         "id": "full_recovery",
                         "priority": "high",
-                        "text": (
-                            "Зосередьтеся сьогодні на відновленні "
-                            "та уникайте високоінтенсивних тренувань"
-                        ),
+                        "title_key": "recommendations.recovery.fullRecovery.title",
+                        "message_key": "recommendations.recovery.fullRecovery.message",
+                        "params": {
+                            "score": recovery_score,
+                        },
                         "reason": {
                             "recovery_score": recovery_score,
                         },
@@ -154,10 +155,11 @@ class RecommendationService:
                         "type": "recovery",
                         "id": "light_training",
                         "priority": "medium",
-                        "text": (
-                            "Сьогодні краще провести легке тренування "
-                            "та зосередитися на техніці"
-                        ),
+                        "title_key": "recommendations.recovery.lightTraining.title",
+                        "message_key": "recommendations.recovery.lightTraining.message",
+                        "params": {
+                            "score": recovery_score,
+                        },
                         "reason": {
                             "recovery_score": recovery_score,
                         },
@@ -170,10 +172,11 @@ class RecommendationService:
                     "type": "recovery",
                     "id": "low_energy",
                     "priority": "medium",
-                    "text": (
-                        "Рівень енергії низький — оберіть легку активність "
-                        "або активне відновлення"
-                    ),
+                    "title_key": "recommendations.recovery.lowEnergy.title",
+                    "message_key": "recommendations.recovery.lowEnergy.message",
+                    "params": {
+                        "score": energy_score,
+                    },
                     "reason": {
                         "energy_score": energy_score,
                     },
@@ -194,10 +197,11 @@ class RecommendationService:
                 "type": "habit",
                 "id": "complete_habits",
                 "priority": "medium",
-                "text": (
-                    "Виконайте свої звички для відновлення, "
-                    "щоб покращити відновлення"
-                ),
+                "title_key": "recommendations.recovery.completeHabits.title",
+                "message_key": "recommendations.recovery.completeHabits.message",
+                "params": {
+                    "score": habit_score,
+                },
                 "reason": {
                     "habit_score": habit_score,
                 },
@@ -217,11 +221,11 @@ class RecommendationService:
                     "type": "training",
                     "id": "very_high_daily_load",
                     "priority": "high",
-                    "text": (
-                        "Сьогоднішнє тренувальне навантаження дуже високе. "
-                        "Зосередьтеся на відновленні перед наступним "
-                        "інтенсивним тренуванням."
-                    ),
+                    "title_key": "recommendations.recovery.veryHighLoad.title",
+                    "message_key": "recommendations.recovery.veryHighLoad.message",
+                    "params": {
+                        "load": round(daily_load, 2),
+                    },
                     "reason": {
                         "daily_load": round(daily_load, 2),
                     },
@@ -234,10 +238,11 @@ class RecommendationService:
                     "type": "training",
                     "id": "high_daily_load",
                     "priority": "medium",
-                    "text": (
-                        "Сьогоднішнє тренувальне навантаження високе. "
-                        "Уникайте додавання зайвого обсягу."
-                    ),
+                    "title_key": "recommendations.recovery.highLoad.title",
+                    "message_key": "recommendations.recovery.highLoad.message",
+                    "params": {
+                        "load": round(daily_load, 2),
+                    },
                     "reason": {
                         "daily_load": round(daily_load, 2),
                     },
@@ -279,10 +284,11 @@ class RecommendationService:
                         "id": f"rest_{muscle}",
                         "muscle": muscle,
                         "priority": "high",
-                        "text": (
-                            f"Дайте {muscle} більше часу на відновлення "
-                            "після значного недавнього навантаження"
-                        ),
+                        "title_key": "recommendations.recovery.muscleRest.title",
+                        "message_key": "recommendations.recovery.muscleRest.message",
+                        "params": {
+                            "muscle": muscle,
+                        },
                         "reason": {
                             "recent_load": round(recent_load, 2),
                             "days_since": days_since_training,
@@ -307,18 +313,19 @@ class RecommendationService:
                         "id": f"train_{muscle}",
                         "muscle": muscle,
                         "priority": "medium",
-                        "text": (
-                            f"Розгляньте тренування {muscle} "
-                            "(низький недавній обсяг)"
-                        ),
+                        "title_key": "recommendations.recovery.muscleTraining.title",
+                        "message_key": "recommendations.recovery.muscleTraining.message",
+                        "params": {
+                            "muscle": muscle,
+                        },
+                        "suggested_sets": 3,
+                        "suggested_reps": "8-12",
+                        "suggested_rpe": 7,
                         "reason": {
                             "recent_load": round(recent_load, 2),
                             "days_since": days_since_training,
                             "relative": round(relative_load, 2),
                         },
-                        "suggested_sets": 3,
-                        "suggested_reps": "8-12",
-                        "suggested_rpe": 7,
                     }
                 )
 
@@ -410,4 +417,3 @@ class RecommendationService:
         )
 
         return recommendations[:MAX_RECOMMENDATIONS]
-

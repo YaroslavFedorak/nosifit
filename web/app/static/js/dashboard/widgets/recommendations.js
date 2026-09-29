@@ -1,3 +1,4 @@
+import { translate } from "../../i18n/loader.js";
 const ICONS = {
     training: `
         <svg
@@ -58,14 +59,14 @@ const ICONS = {
     `
 };
 const CATEGORY_LABELS = {
-    training: "Тренування",
-    recovery: "Відновлення",
-    nutrition: "Харчування"
+    training: "recommendations.categories.training",
+    recovery: "recommendations.categories.recovery",
+    nutrition: "recommendations.categories.nutrition"
 };
 const CATEGORY_EMPTY_TEXT = {
-    training: "Наразі без рекомендації",
-    recovery: "Наразі без рекомендації",
-    nutrition: "Наразі без рекомендації"
+    training: "recommendations.emptyCategory",
+    recovery: "recommendations.emptyCategory",
+    nutrition: "recommendations.emptyCategory"
 };
 const TECHNICAL_TITLES = new Set([
     "",
@@ -79,23 +80,85 @@ function createElement(tag, className) {
         className;
     return element;
 }
+function translateRecommendation(key, fallback, params = {}) {
+    if (!key) {
+        return fallback;
+    }
+    return translate("dashboard", key, params);
+}
+function translateExercise(name) {
+    const normalizedName = name.trim();
+    if (!normalizedName) {
+        return name;
+    }
+    const translated = translate("exercises", normalizedName);
+    if (translated !==
+        normalizedName) {
+        return translated;
+    }
+    return name;
+}
+function getCategoryLabel(category) {
+    return translate("dashboard", CATEGORY_LABELS[category]);
+}
+function getCategoryEmptyText(category) {
+    return translate("dashboard", CATEGORY_EMPTY_TEXT[category]);
+}
 function getRecommendationTitle(recommendation, category) {
     const title = recommendation.title?.trim();
+    if (recommendation.title_key) {
+        return translateRecommendation(recommendation.title_key, title || "", recommendation.params ?? {});
+    }
     if (title &&
         !TECHNICAL_TITLES.has(title.toLowerCase()) &&
         title.toLowerCase() !==
             category) {
+        if (category ===
+            "training") {
+            return translateExercise(title);
+        }
         return title;
     }
     const description = recommendation.description?.trim();
+    if (recommendation.description_key) {
+        return translateRecommendation(recommendation.description_key, description || "", recommendation.params ?? {});
+    }
     if (description) {
         return description;
     }
     const reason = recommendation.reason?.trim();
+    if (recommendation.reason_key) {
+        return translateRecommendation(recommendation.reason_key, reason || "", recommendation.params ?? {});
+    }
     if (reason) {
         return reason;
     }
-    return CATEGORY_EMPTY_TEXT[category];
+    return getCategoryEmptyText(category);
+}
+function getRecommendationDescription(recommendation, displayTitle) {
+    const description = recommendation.description?.trim();
+    if (recommendation.description_key) {
+        const translated = translateRecommendation(recommendation.description_key, description || "", recommendation.params ?? {});
+        if (translated !== displayTitle) {
+            return translated;
+        }
+    }
+    else if (description &&
+        description !== displayTitle) {
+        return description;
+    }
+    const reason = recommendation.reason?.trim();
+    if (recommendation.reason_key) {
+        const translated = translateRecommendation(recommendation.reason_key, reason || "", recommendation.params ?? {});
+        if (translated !== displayTitle) {
+            return translated;
+        }
+    }
+    else if (reason &&
+        reason !== displayTitle) {
+        return reason;
+    }
+    return "";
 }
 function createCategoryCard(category, recommendation) {
     const card = createElement("div", `db-recommendation-category db-recommendation-category-${category}`);
@@ -106,12 +169,12 @@ function createCategoryCard(category, recommendation) {
     const body = createElement("div", "db-recommendation-category-body");
     const label = createElement("div", "db-recommendation-category-label");
     label.textContent =
-        CATEGORY_LABELS[category];
+        getCategoryLabel(category);
     const title = createElement("div", "db-recommendation-category-title");
     title.textContent =
         recommendation
             ? getRecommendationTitle(recommendation, category)
-            : CATEGORY_EMPTY_TEXT[category];
+            : getCategoryEmptyText(category);
     body.appendChild(label);
     body.appendChild(title);
     inner.appendChild(icon);
@@ -135,7 +198,7 @@ function createDailyRecommendation(recommendation) {
     if (!recommendation) {
         const empty = createElement("div", "db-recommendations-empty");
         empty.textContent =
-            "Немає головної рекомендації на сьогодні";
+            translate("dashboard", "recommendations.emptyDaily");
         daily.appendChild(empty);
         return daily;
     }
@@ -147,32 +210,23 @@ function createDailyRecommendation(recommendation) {
     const body = createElement("div", "db-recommendation-daily-body");
     const label = createElement("div", "db-recommendation-daily-label");
     label.textContent =
-        "Головна рекомендація";
+        translate("dashboard", "recommendations.dailyTitle");
     const title = createElement("div", "db-recommendation-daily-title");
     const displayTitle = getRecommendationTitle(recommendation, category);
     title.textContent =
         displayTitle;
     const description = createElement("div", "db-recommendation-daily-description");
-    const recommendationDescription = recommendation.description?.trim();
-    const recommendationReason = recommendation.reason?.trim();
-    if (recommendationDescription &&
-        recommendationDescription !== displayTitle) {
+    const recommendationDescription = getRecommendationDescription(recommendation, displayTitle);
+    if (recommendationDescription) {
         description.textContent =
             recommendationDescription;
-    }
-    else if (recommendationReason &&
-        recommendationReason !== displayTitle) {
-        description.textContent =
-            recommendationReason;
+        body.appendChild(description);
     }
     const source = createElement("div", "db-recommendation-daily-source");
     source.textContent =
-        CATEGORY_LABELS[category];
+        getCategoryLabel(category);
     body.appendChild(label);
     body.appendChild(title);
-    if (description.textContent) {
-        body.appendChild(description);
-    }
     inner.appendChild(icon);
     inner.appendChild(body);
     inner.appendChild(source);
@@ -205,7 +259,7 @@ export function renderRecommendations(container, recommendations) {
     if (!isDashboardRecommendations(recommendations)) {
         const empty = createElement("div", "db-recommendations-empty");
         empty.textContent =
-            "Немає рекомендацій";
+            translate("dashboard", "recommendations.empty");
         container.appendChild(empty);
         return;
     }

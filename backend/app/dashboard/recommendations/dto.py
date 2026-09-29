@@ -21,6 +21,10 @@ class Recommendation:
     suggested_reps: Optional[int] = None
     suggested_rpe: Optional[float] = None
     score: float = 0.0
+    title_key: Optional[str] = None
+    description_key: Optional[str] = None
+    reason_key: Optional[str] = None
+    params: Optional[dict[str, Any]] = None
 
     def to_dict(self) -> dict[str, Any]:
         data = asdict(self)
@@ -50,4 +54,3 @@ class DashboardRecommendations:
                 ),
             },
         }
-

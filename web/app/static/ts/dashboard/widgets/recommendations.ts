@@ -1,3 +1,5 @@
+import { translate } from "../../i18n/loader.js";
+
 export type RecommendationCategory =
     | "training"
     | "recovery"
@@ -14,6 +16,10 @@ export interface Recommendation {
     suggested_sets?: number | null;
     suggested_reps?: number | null;
     suggested_rpe?: number | null;
+    title_key?: string | null;
+    description_key?: string | null;
+    reason_key?: string | null;
+    params?: Record<string, string | number>;
 }
 
 export interface DashboardRecommendations {
@@ -94,18 +100,18 @@ const CATEGORY_LABELS: Record<
     RecommendationCategory,
     string
 > = {
-    training: "Тренування",
-    recovery: "Відновлення",
-    nutrition: "Харчування"
+    training: "recommendations.categories.training",
+    recovery: "recommendations.categories.recovery",
+    nutrition: "recommendations.categories.nutrition"
 };
 
 const CATEGORY_EMPTY_TEXT: Record<
     RecommendationCategory,
     string
 > = {
-    training: "Наразі без рекомендації",
-    recovery: "Наразі без рекомендації",
-    nutrition: "Наразі без рекомендації"
+    training: "recommendations.emptyCategory",
+    recovery: "recommendations.emptyCategory",
+    nutrition: "recommendations.emptyCategory"
 };
 
 const TECHNICAL_TITLES = new Set([
@@ -128,12 +134,82 @@ function createElement(
     return element;
 }
 
+function translateRecommendation(
+    key: string | null | undefined,
+    fallback: string,
+    params: Record<string, string | number> = {}
+): string {
+    if (!key) {
+        return fallback;
+    }
+
+    return translate(
+        "dashboard",
+        key,
+        params
+    );
+}
+
+function translateExercise(
+    name: string
+): string {
+    const normalizedName =
+        name.trim();
+
+    if (!normalizedName) {
+        return name;
+    }
+
+    const translated =
+        translate(
+            "exercises",
+            normalizedName
+        );
+
+    if (
+        translated !==
+        normalizedName
+    ) {
+        return translated;
+    }
+
+    return name;
+}
+
+function getCategoryLabel(
+    category: RecommendationCategory
+): string {
+    return translate(
+        "dashboard",
+        CATEGORY_LABELS[category]
+    );
+}
+
+function getCategoryEmptyText(
+    category: RecommendationCategory
+): string {
+    return translate(
+        "dashboard",
+        CATEGORY_EMPTY_TEXT[category]
+    );
+}
+
 function getRecommendationTitle(
     recommendation: Recommendation,
     category: RecommendationCategory
 ): string {
     const title =
         recommendation.title?.trim();
+
+    if (
+        recommendation.title_key
+    ) {
+        return translateRecommendation(
+            recommendation.title_key,
+            title || "",
+            recommendation.params ?? {}
+        );
+    }
 
     if (
         title &&
@@ -143,11 +219,30 @@ function getRecommendationTitle(
         title.toLowerCase() !==
             category
     ) {
+        if (
+            category ===
+            "training"
+        ) {
+            return translateExercise(
+                title
+            );
+        }
+
         return title;
     }
 
     const description =
         recommendation.description?.trim();
+
+    if (
+        recommendation.description_key
+    ) {
+        return translateRecommendation(
+            recommendation.description_key,
+            description || "",
+            recommendation.params ?? {}
+        );
+    }
 
     if (description) {
         return description;
@@ -156,11 +251,74 @@ function getRecommendationTitle(
     const reason =
         recommendation.reason?.trim();
 
+    if (
+        recommendation.reason_key
+    ) {
+        return translateRecommendation(
+            recommendation.reason_key,
+            reason || "",
+            recommendation.params ?? {}
+        );
+    }
+
     if (reason) {
         return reason;
     }
 
-    return CATEGORY_EMPTY_TEXT[category];
+    return getCategoryEmptyText(category);
+}
+
+function getRecommendationDescription(
+    recommendation: Recommendation,
+    displayTitle: string
+): string {
+    const description =
+        recommendation.description?.trim();
+
+    if (
+        recommendation.description_key
+    ) {
+        const translated =
+            translateRecommendation(
+                recommendation.description_key,
+                description || "",
+                recommendation.params ?? {}
+            );
+
+        if (translated !== displayTitle) {
+            return translated;
+        }
+    } else if (
+        description &&
+        description !== displayTitle
+    ) {
+        return description;
+    }
+
+    const reason =
+        recommendation.reason?.trim();
+
+    if (
+        recommendation.reason_key
+    ) {
+        const translated =
+            translateRecommendation(
+                recommendation.reason_key,
+                reason || "",
+                recommendation.params ?? {}
+            );
+
+        if (translated !== displayTitle) {
+            return translated;
+        }
+    } else if (
+        reason &&
+        reason !== displayTitle
+    ) {
+        return reason;
+    }
+
+    return "";
 }
 
 function createCategoryCard(
@@ -203,7 +361,7 @@ function createCategoryCard(
         );
 
     label.textContent =
-        CATEGORY_LABELS[category];
+        getCategoryLabel(category);
 
     const title =
         createElement(
@@ -217,7 +375,7 @@ function createCategoryCard(
                 recommendation,
                 category
             )
-            : CATEGORY_EMPTY_TEXT[category];
+            : getCategoryEmptyText(category);
 
     body.appendChild(
         label
@@ -281,7 +439,10 @@ function createDailyRecommendation(
             );
 
         empty.textContent =
-            "Немає головної рекомендації на сьогодні";
+            translate(
+                "dashboard",
+                "recommendations.emptyDaily"
+            );
 
         daily.appendChild(
             empty
@@ -323,7 +484,10 @@ function createDailyRecommendation(
         );
 
     label.textContent =
-        "Головна рекомендація";
+        translate(
+            "dashboard",
+            "recommendations.dailyTitle"
+        );
 
     const title =
         createElement(
@@ -347,23 +511,18 @@ function createDailyRecommendation(
         );
 
     const recommendationDescription =
-        recommendation.description?.trim();
+        getRecommendationDescription(
+            recommendation,
+            displayTitle
+        );
 
-    const recommendationReason =
-        recommendation.reason?.trim();
-
-    if (
-        recommendationDescription &&
-        recommendationDescription !== displayTitle
-    ) {
+    if (recommendationDescription) {
         description.textContent =
             recommendationDescription;
-    } else if (
-        recommendationReason &&
-        recommendationReason !== displayTitle
-    ) {
-        description.textContent =
-            recommendationReason;
+
+        body.appendChild(
+            description
+        );
     }
 
     const source =
@@ -373,7 +532,7 @@ function createDailyRecommendation(
         );
 
     source.textContent =
-        CATEGORY_LABELS[category];
+        getCategoryLabel(category);
 
     body.appendChild(
         label
@@ -382,12 +541,6 @@ function createDailyRecommendation(
     body.appendChild(
         title
     );
-
-    if (description.textContent) {
-        body.appendChild(
-            description
-        );
-    }
 
     inner.appendChild(
         icon
@@ -465,7 +618,10 @@ export function renderRecommendations(
             );
 
         empty.textContent =
-            "Немає рекомендацій";
+            translate(
+                "dashboard",
+                "recommendations.empty"
+            );
 
         container.appendChild(
             empty

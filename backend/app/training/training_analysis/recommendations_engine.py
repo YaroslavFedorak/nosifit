@@ -137,7 +137,7 @@ def _reason_muscles(
     primary = set(primary_muscles(ex))
 
     if primary.intersection(muscles["weak"]):
-        reasons.append("improves weak muscle group")
+        reasons.append("recommendations.training.reasons.weakMuscle")
 
     return reasons
 
@@ -149,7 +149,7 @@ def _reason_profile(
     primary = set(primary_muscles(ex))
 
     if primary.intersection(weak_points):
-        return ["targets your weak point"]
+        return ["recommendations.training.reasons.weakPoint"]
 
     return []
 
@@ -161,7 +161,7 @@ def _reason_patterns(
     movement = movement_pattern(ex)
 
     if movement in patterns["weak_patterns"]:
-        return ["improves weak movement pattern"]
+        return ["recommendations.training.reasons.weakPattern"]
 
     return []
 
@@ -178,10 +178,10 @@ def _reason_progression(
     change = details["change"]
 
     if change < 0:
-        return ["helps reverse regression"]
+        return ["recommendations.training.reasons.regression"]
 
     if abs(change) < PROGRESSION_PLATEAU_THRESHOLD:
-        return ["helps break plateau"]
+        return ["recommendations.training.reasons.plateau"]
 
     return []
 
@@ -197,7 +197,7 @@ def _reason_frequency(
 
     for muscle in primary_muscles(ex):
         if counts.get(muscle, 0) <= FREQUENCY_LOW:
-            return ["supports an undertrained muscle"]
+            return ["recommendations.training.reasons.frequency"]
 
     return []
 
@@ -206,7 +206,7 @@ def _reason_diversity(
     diversity: DiversityResult,
 ) -> List[str]:
     if diversity["status"] == "low":
-        return ["adds exercise variety"]
+        return ["recommendations.training.reasons.diversity"]
 
     return []
 
@@ -488,26 +488,46 @@ def _build_summary(
     messages = []
 
     if recovery["status"] == "low":
-        messages.append(("recovery", "recovery should be prioritized"))
+        messages.append(
+            (
+                "recovery",
+                "recommendations.training.summary.recoveryPriority",
+            )
+        )
 
     if load["status"] in {"hard", "very_hard"}:
-        messages.append(("load", "training load is high"))
+        messages.append(
+            (
+                "load",
+                "recommendations.training.summary.highLoad",
+            )
+        )
 
     if muscles["weak"]:
-        messages.append(("muscles", "some muscle groups need more attention"))
+        messages.append(
+            (
+                "muscles",
+                "recommendations.training.summary.muscleAttention",
+            )
+        )
 
     if patterns["weak_patterns"]:
-        messages.append(("patterns", "some movement patterns need more work"))
+        messages.append(
+            (
+                "patterns",
+                "recommendations.training.summary.patternAttention",
+            )
+        )
 
     if not messages:
-        return "training looks balanced."
+        return "recommendations.training.summary.balanced"
 
     messages.sort(
         key=lambda item: SUMMARY_PRIORITY[item[0]],
         reverse=True,
     )
 
-    return ". ".join(message for _, message in messages) + "."
+    return ". ".join(message for _, message in messages)
 
 
 def build_recommendations(
@@ -675,4 +695,3 @@ def build_recommendations(
         "recommended_exercises": recommended,
         "summary": summary,
     }
-

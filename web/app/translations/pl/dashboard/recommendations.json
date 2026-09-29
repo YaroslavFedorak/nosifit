@@ -1,5 +1,72 @@
 ﻿{
     "recommendations": {
-        "title": "Rekomendacje"
+        "title": "Zalecenia",
+        "categories": {
+            "training": "Trening",
+            "recovery": "Regeneracja",
+            "nutrition": "Odżywianie"
+        },
+        "emptyCategory": "Brak zaleceń w tej chwili",
+        "dailyTitle": "Główne zalecenie",
+        "emptyDaily": "Brak głównego zalecenia na dziś",
+        "empty": "Brak zaleceń",
+        "training": {
+            "reasons": {
+                "weakMuscle": "Poprawia słabą grupę mięśniową",
+                "weakPoint": "Ukierunkowuje trening na słaby punkt",
+                "weakPattern": "Poprawia słaby wzorzec ruchowy",
+                "regression": "Pomaga odwrócić regres",
+                "plateau": "Pomaga przełamać stagnację",
+                "frequency": "Wspiera niedotrenowaną grupę mięśniową",
+                "diversity": "Zwiększa różnorodność treningu"
+            },
+            "summary": {
+                "recovery": "Warto nadać priorytet regeneracji",
+                "highLoad": "Obciążenie treningowe jest wysokie",
+                "muscles": "Niektóre grupy mięśniowe wymagają większej uwagi",
+                "patterns": "Niektóre wzorce ruchowe wymagają większej uwagi",
+                "balanced": "Trening wygląda na zrównoważony."
+            }
+        },
+        "recovery": {
+            "fullRecovery": {
+                "title": "Skup się na regeneracji",
+                "message": "Skup się dziś na regeneracji i unikaj treningów o wysokiej intensywności"
+            },
+            "lightTraining": {
+                "title": "Wybierz lekki trening",
+                "message": "Dziś lepiej wykonać lekki trening i skupić się na technice"
+            },
+            "lowEnergy": {
+                "title": "Niski poziom energii",
+                "message": "Poziom energii jest niski — wybierz lekką aktywność lub aktywną regenerację"
+            },
+            "completeHabits": {
+                "title": "Uzupełnij nawyki regeneracyjne",
+                "message": "Wykonaj swoje nawyki regeneracyjne, aby wspierać lepszą regenerację"
+            },
+            "veryHighLoad": {
+                "title": "Bardzo wysokie obciążenie treningowe",
+                "message": "Dzisiejsze obciążenie treningowe jest bardzo wysokie. Skup się na regeneracji przed kolejnym intensywnym treningiem."
+            },
+            "highLoad": {
+                "title": "Wysokie obciążenie treningowe",
+                "message": "Dzisiejsze obciążenie treningowe jest wysokie. Unikaj dodawania niepotrzebnej objętości."
+            },
+            "muscleRest": {
+                "title": "Pozwól mięśniom lepiej się zregenerować",
+                "message": "Daj mięśniowi {muscle} więcej czasu na regenerację po znacznym niedawnym obciążeniu"
+            },
+            "muscleTraining": {
+                "title": "Trenuj {muscle}",
+                "message": "Rozważ trening mięśnia {muscle} ze względu na jego niską niedawną objętość treningową"
+            }
+        },
+        "items": {
+            "empty": {
+                "title": "Brak zaleceń żywieniowych",
+                "message": "Twoje odżywianie wygląda na zbilansowane"
+            }
+        }
     }
 }

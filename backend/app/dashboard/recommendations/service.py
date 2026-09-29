@@ -98,6 +98,15 @@ class DashboardRecommendationService:
         except (TypeError, ValueError):
             score = 0.0
 
+        params = item.get("params")
+
+        if not isinstance(params, dict):
+            params = {}
+
+        title_key = item.get("title_key")
+        description_key = item.get("description_key") or item.get("message_key")
+        reason_key = item.get("reason_key")
+
         return Recommendation(
             category=category,
             id=str(item_id),
@@ -114,6 +123,10 @@ class DashboardRecommendationService:
             ),
             suggested_rpe=(float(suggested_rpe) if suggested_rpe is not None else None),
             score=score,
+            title_key=(str(title_key) if title_key else None),
+            description_key=(str(description_key) if description_key else None),
+            reason_key=(str(reason_key) if reason_key else None),
+            params=params,
         )
 
     @staticmethod
@@ -152,22 +165,41 @@ class DashboardRecommendationService:
             if isinstance(reasons, str):
                 reasons = [reasons]
 
-            reason_text = str(reasons[0]) if reasons else None
+            reason = reasons[0] if reasons else None
+
+            summary = package.get("summary")
+
+            reason_key = None
+            if isinstance(reason, str) and reason.startswith("recommendations."):
+                reason_key = reason
+
+            summary_key = None
+            if isinstance(summary, str) and summary.startswith("recommendations."):
+                summary_key = summary
 
             description = (
-                reason_text
-                or package.get("summary")
+                reason_key
+                or summary_key
                 or "Recommended based on your recent training."
             )
 
+            recommendation_item = dict(item)
+
+            if reason_key:
+                recommendation_item["reason_key"] = reason_key
+                recommendation_item["description_key"] = reason_key
+
+            elif summary_key:
+                recommendation_item["description_key"] = summary_key
+
             recommendation = DashboardRecommendationService._make_recommendation(
                 category=DashboardRecommendationService.TRAINING_CATEGORY,
-                item=item,
+                item=recommendation_item,
                 index=index,
                 title=str(exercise_name),
                 description=description,
                 recommendation_type="exercise",
-                reason=reason_text,
+                reason=reason_key or reason,
             )
 
             if recommendation is not None:
@@ -393,4 +425,3 @@ class DashboardRecommendationService:
         return categories.get(
             str(category).lower(),
         )
-
