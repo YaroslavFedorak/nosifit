@@ -1,6 +1,6 @@
 {% extends base_template %}
 
-{% block title %}Контакти — NosiFit{% endblock %}
+{% block title %}{{ public_t("contact.title") }} — NosiFit{% endblock %}
 
 {% block styles %}
 <link
@@ -13,17 +13,18 @@
 <section class="public-contact">
   <div class="public-contact-header">
     <span class="public-contact-eyebrow">NosiFit</span>
-    <h1 class="public-contact-title">Зв'яжіться з нами</h1>
-    <p class="public-contact-lead">
-      Якщо маєте питання, пропозицію або знайшли проблему — напишіть нам.
-    </p>
+    <h1 class="public-contact-title">{{ public_t("contact.title") }}</h1>
+    <p class="public-contact-lead">{{ public_t("contact.lead") }}</p>
   </div>
 
   <div class="public-contact-grid">
-    <a class="public-contact-card public-contact-card-email" href="mailto:support@nosi.fit">
-      <span class="public-contact-label">Email</span>
+    <a
+      class="public-contact-card public-contact-card-email"
+      href="mailto:support@nosi.fit"
+    >
+      <span class="public-contact-label">{{ public_t("contact.email") }}</span>
       <strong>support@nosi.fit</strong>
-      <span class="public-contact-action">Написати →</span>
+      <span class="public-contact-action">{{ public_t("contact.emailAction") }} →</span>
     </a>
 
     <a
@@ -32,9 +33,9 @@
       target="_blank"
       rel="noopener noreferrer"
     >
-      <span class="public-contact-label">Instagram</span>
+      <span class="public-contact-label">{{ public_t("contact.instagram") }}</span>
       <strong>@nosi.fit</strong>
-      <span class="public-contact-action">Відкрити профіль →</span>
+      <span class="public-contact-action">{{ public_t("contact.instagramAction") }} →</span>
     </a>
 
     <a
@@ -43,9 +44,9 @@
       target="_blank"
       rel="noopener noreferrer"
     >
-      <span class="public-contact-label">Telegram</span>
+      <span class="public-contact-label">{{ public_t("contact.telegram") }}</span>
       <strong>@nosi_support</strong>
-      <span class="public-contact-action">Написати →</span>
+      <span class="public-contact-action">{{ public_t("contact.telegramAction") }} →</span>
     </a>
   </div>
 </section>
