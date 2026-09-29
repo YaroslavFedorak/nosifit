@@ -40,7 +40,11 @@
     "title": "Contact",
     "email": "Email",
     "instagram": "Instagram",
-    "telegram": "Telegram"
+    "telegram": "Telegram",
+    "lead": "If you have a question, suggestion, or found a problem, send us a message.",
+    "emailAction": "Send a message",
+    "instagramAction": "Open profile",
+    "telegramAction": "Send a message"
   },
   "demo": {
     "title": "Demo",
