@@ -9,10 +9,12 @@
   <div class="db-modal-panel">
     <div class="db-modal-header">
       <div class="db-modal-heading">
-        <div class="widget-eyebrow">Історія дня</div>
+        <div class="widget-eyebrow">
+          {{ dashboard_t("heatmap.modal.dayHistory") }}
+        </div>
 
         <h2 id="dashboard-day-details-title" class="db-modal-title">
-          Деталі дня
+          {{ dashboard_t("heatmap.modal.dayDetails") }}
         </h2>
 
         <p id="dashboard-day-details-date" class="db-modal-subtitle">—</p>
@@ -22,7 +24,7 @@
         type="button"
         class="db-modal-close"
         id="dashboard-day-details-modal-close"
-        aria-label="Закрити"
+        aria-label="{{ dashboard_t('heatmap.modal.close') }}"
         data-modal-close
       >
         ×

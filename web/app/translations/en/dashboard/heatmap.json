@@ -6,6 +6,46 @@
         "less": "Less",
         "more": "More",
         "noData": "No data",
-        "level": "Level {level}"
+        "level": "Level {level}",
+        "previousMonth": "Previous month",
+        "nextMonth": "Next month",
+        "date": "Date",
+        "currentMetric": "Current metric",
+        "dayUnavailable": "Information for this day is unavailable",
+        "metrics": {
+            "balance": "Daily balance",
+            "training": "Training",
+            "recovery": "Recovery",
+            "nutrition": "Nutrition"
+        },
+        "months": {
+            "january": "Jan",
+            "february": "Feb",
+            "march": "Mar",
+            "april": "Apr",
+            "may": "May",
+            "june": "Jun",
+            "july": "Jul",
+            "august": "Aug",
+            "september": "Sep",
+            "october": "Oct",
+            "november": "Nov",
+            "december": "Dec"
+        },
+        "weekdays": {
+            "monday": "Mon",
+            "tuesday": "Tue",
+            "wednesday": "Wed",
+            "thursday": "Thu",
+            "friday": "Fri",
+            "saturday": "Sat",
+            "sunday": "Sun"
+        },
+        "modal": {
+            "dayHistory": "Day history",
+            "dayDetails": "Day details",
+            "close": "Close",
+            "balance": "Daily balance"
+        }
     }
 }

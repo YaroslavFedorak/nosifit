@@ -1,26 +1,35 @@
+import { dashboard_t } from "../../../i18n/index.js";
 const MONTHS = [
-    "Січень",
-    "Лютий",
-    "Березень",
-    "Квітень",
-    "Травень",
-    "Червень",
-    "Липень",
-    "Серпень",
-    "Вересень",
-    "Жовтень",
-    "Листопад",
-    "Грудень",
+    "january",
+    "february",
+    "march",
+    "april",
+    "may",
+    "june",
+    "july",
+    "august",
+    "september",
+    "october",
+    "november",
+    "december",
 ];
 const WEEKDAYS = [
-    "Пн",
-    "Вт",
-    "Ср",
-    "Чт",
-    "Пт",
-    "Сб",
-    "Нд",
+    "monday",
+    "tuesday",
+    "wednesday",
+    "thursday",
+    "friday",
+    "saturday",
+    "sunday",
 ];
+function formatDate(dateString) {
+    const date = new Date(`${dateString}T12:00:00`);
+    return date.toLocaleDateString(undefined, {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+    });
+}
 function formatDateKey(date) {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -90,8 +99,8 @@ function createCalendarDay(day, month, year) {
         element.classList.add("is-today");
     }
     element.setAttribute("aria-label", day.date
-        ? `${date.getDate()} ${MONTHS[month]} ${year}`
-        : "Немає даних");
+        ? `${date.getDate()} ${dashboard_t(`heatmap.months.${MONTHS[month]}`)} ${year}`
+        : dashboard_t("heatmap.noData"));
     const number = document.createElement("span");
     number.className =
         "heatmap-calendar-day-number";
@@ -130,7 +139,7 @@ function createCalendar(year, month, dayMap, onMonthChange) {
         "button";
     previous.className =
         "heatmap-calendar-nav-button";
-    previous.setAttribute("aria-label", "Попередній місяць");
+    previous.setAttribute("aria-label", dashboard_t("heatmap.previousMonth"));
     previous.textContent =
         "‹";
     previous.addEventListener("click", () => {
@@ -140,13 +149,13 @@ function createCalendar(year, month, dayMap, onMonthChange) {
     title.className =
         "heatmap-calendar-month";
     title.textContent =
-        `${MONTHS[month]} ${year}`;
+        `${dashboard_t(`heatmap.months.${MONTHS[month]}`)} ${year}`;
     const next = document.createElement("button");
     next.type =
         "button";
     next.className =
         "heatmap-calendar-nav-button";
-    next.setAttribute("aria-label", "Наступний місяць");
+    next.setAttribute("aria-label", dashboard_t("heatmap.nextMonth"));
     next.textContent =
         "›";
     next.addEventListener("click", () => {
@@ -161,7 +170,7 @@ function createCalendar(year, month, dayMap, onMonthChange) {
         element.className =
             "heatmap-calendar-weekday";
         element.textContent =
-            weekday;
+            dashboard_t(`heatmap.weekdays.${weekday}`);
         weekdays.appendChild(element);
     });
     const grid = document.createElement("div");
@@ -185,7 +194,7 @@ function createCalendar(year, month, dayMap, onMonthChange) {
         "heatmap-calendar-legend";
     const less = document.createElement("span");
     less.textContent =
-        "Менше";
+        dashboard_t("heatmap.less");
     legend.appendChild(less);
     for (let level = 0; level <= 6; level += 1) {
         const box = document.createElement("span");
@@ -196,7 +205,7 @@ function createCalendar(year, month, dayMap, onMonthChange) {
     }
     const more = document.createElement("span");
     more.textContent =
-        "Більше";
+        dashboard_t("heatmap.more");
     legend.appendChild(more);
     wrapper.append(navigation, weekdays, grid, legend);
     return wrapper;

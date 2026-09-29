@@ -2,30 +2,33 @@ import type {
 HeatmapData,
 HeatmapDay,
 } from "../../heatmap/render";
+import {
+dashboard_t,
+} from "../../../i18n/index.js";
 
 const MONTHS = [
-"Січень",
-"Лютий",
-"Березень",
-"Квітень",
-"Травень",
-"Червень",
-"Липень",
-"Серпень",
-"Вересень",
-"Жовтень",
-"Листопад",
-"Грудень",
+"january",
+"february",
+"march",
+"april",
+"may",
+"june",
+"july",
+"august",
+"september",
+"october",
+"november",
+"december",
 ];
 
 const WEEKDAYS = [
-"Пн",
-"Вт",
-"Ср",
-"Чт",
-"Пт",
-"Сб",
-"Нд",
+"monday",
+"tuesday",
+"wednesday",
+"thursday",
+"friday",
+"saturday",
+"sunday",
 ];
 
 function formatDateKey(
@@ -197,8 +200,12 @@ if (
 element.setAttribute(
     "aria-label",
     day.date
-        ? `${date.getDate()} ${MONTHS[month]} ${year}`
-        : "Немає даних",
+        ? `${date.getDate()} ${dashboard_t(
+            `heatmap.months.${MONTHS[month]}`,
+        )} ${year}`
+        : dashboard_t(
+            "heatmap.noData",
+        ),
 );
 
 const number =
@@ -297,7 +304,9 @@ previous.className =
 
 previous.setAttribute(
     "aria-label",
-    "Попередній місяць",
+    dashboard_t(
+        "heatmap.previousMonth",
+    ),
 );
 
 previous.textContent =
@@ -322,12 +331,14 @@ title.className =
     "heatmap-calendar-month";
 
 title.textContent =
-    `${MONTHS[month]} ${year}`;
+    `${dashboard_t(
+        `heatmap.months.${MONTHS[month]}`,
+    )} ${year}`;
 
 const next =
     document.createElement(
-        "button",
-    );
+    "button",
+);
 
 next.type =
     "button";
@@ -337,7 +348,9 @@ next.className =
 
 next.setAttribute(
     "aria-label",
-    "Наступний місяць",
+    dashboard_t(
+        "heatmap.nextMonth",
+    ),
 );
 
 next.textContent =
@@ -380,7 +393,9 @@ WEEKDAYS.forEach(
             "heatmap-calendar-weekday";
 
         element.textContent =
-            weekday;
+            dashboard_t(
+                `heatmap.weekdays.${weekday}`,
+            );
 
         weekdays.appendChild(
             element,
@@ -473,7 +488,9 @@ const less =
     );
 
 less.textContent =
-    "Менше";
+    dashboard_t(
+        "heatmap.less",
+    );
 
 legend.appendChild(
     less,
@@ -507,7 +524,9 @@ const more =
     );
 
 more.textContent =
-    "Більше";
+    dashboard_t(
+        "heatmap.more",
+    );
 
 legend.appendChild(
     more,
@@ -630,8 +649,8 @@ if (!modal) {
 }
 
 setModalState(
-    modal,
-    false,
+modal,
+false,
 );
 
 }

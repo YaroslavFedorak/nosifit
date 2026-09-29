@@ -1,3 +1,5 @@
+import { dashboard_t } from "../../i18n/index.js";
+
 export interface HeatmapDay {
 date?: string;
 daily_score?: number | null;
@@ -20,18 +22,18 @@ end_date?: string;
 }
 
 const MONTHS = [
-"Січ",
-"Лют",
-"Бер",
-"Кві",
-"Тра",
-"Чер",
-"Лип",
-"Сер",
-"Вер",
-"Жов",
-"Лис",
-"Гру",
+"january",
+"february",
+"march",
+"april",
+"may",
+"june",
+"july",
+"august",
+"september",
+"october",
+"november",
+"december",
 ];
 
 function formatDate(
@@ -43,7 +45,7 @@ new Date(
 );
 
 return date.toLocaleDateString(
-    "uk-UA",
+    undefined,
     {
         day: "numeric",
         month: "long",
@@ -100,7 +102,9 @@ date.textContent =
         ? formatDate(
             day.date,
         )
-        : "Немає даних";
+        : dashboard_t(
+            "heatmap.noData",
+        );
 
 const score =
     document.createElement(
@@ -109,8 +113,8 @@ const score =
 
 score.textContent =
     day.daily_score == null
-        ? "Баланс дня —"
-        : `Баланс дня ${day.daily_score}`;
+        ? `${dashboard_t("heatmap.metrics.balance")} —`
+        : `${dashboard_t("heatmap.metrics.balance")} ${day.daily_score}`;
 
 const training =
     document.createElement(
@@ -119,8 +123,8 @@ const training =
 
 training.textContent =
     day.training?.score == null
-        ? "Тренування —"
-        : `Тренування ${day.training.score}`;
+        ? `${dashboard_t("heatmap.metrics.training")} —`
+        : `${dashboard_t("heatmap.metrics.training")} ${day.training.score}`;
 
 const recovery =
     document.createElement(
@@ -129,8 +133,8 @@ const recovery =
 
 recovery.textContent =
     day.recovery?.score == null
-        ? "Відновлення —"
-        : `Відновлення ${day.recovery.score}`;
+        ? `${dashboard_t("heatmap.metrics.recovery")} —`
+        : `${dashboard_t("heatmap.metrics.recovery")} ${day.recovery.score}`;
 
 const nutrition =
     document.createElement(
@@ -139,8 +143,8 @@ const nutrition =
 
 nutrition.textContent =
     day.nutrition?.score == null
-        ? "Харчування —"
-        : `Харчування ${day.nutrition.score}`;
+        ? `${dashboard_t("heatmap.metrics.nutrition")} —`
+        : `${dashboard_t("heatmap.metrics.nutrition")} ${day.nutrition.score}`;
 
 tooltip.append(
     date,
@@ -207,8 +211,8 @@ cell.setAttribute(
 if (day.date) {
     cell.setAttribute(
         "aria-label",
-        `${formatDate(day.date)}, баланс дня ${
-            day.daily_score ?? "немає даних"
+        `${formatDate(day.date)}, ${dashboard_t("heatmap.metrics.balance")} ${
+            day.daily_score ?? dashboard_t("heatmap.noData")
         }`,
     );
 
@@ -308,7 +312,9 @@ for (
         );
 
     element.textContent =
-        MONTHS[month];
+        dashboard_t(
+            `heatmap.months.${MONTHS[month]}`,
+        );
 
     element.dataset.month =
         String(month);
@@ -460,7 +466,7 @@ container: HTMLElement,
 data: HeatmapData | null,
 ): void {
 renderGrid(
-container,
-data,
+    container,
+    data,
 );
 }

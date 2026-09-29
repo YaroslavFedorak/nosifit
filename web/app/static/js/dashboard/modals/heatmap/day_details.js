@@ -1,3 +1,4 @@
+import { dashboard_t } from "../../../i18n/index.js";
 function formatScore(value) {
     return value == null
         ? "—"
@@ -5,7 +6,7 @@ function formatScore(value) {
 }
 function formatDate(dateString) {
     const date = new Date(`${dateString}T12:00:00`);
-    return date.toLocaleDateString("uk-UA", {
+    return date.toLocaleDateString(undefined, {
         day: "numeric",
         month: "long",
         year: "numeric",
@@ -56,7 +57,7 @@ function createSection(title, score) {
     const metrics = document.createElement("div");
     metrics.className =
         "heatmap-day-details-metrics";
-    metrics.appendChild(createMetric("Поточний показник", score));
+    metrics.appendChild(createMetric(dashboard_t("heatmap.currentMetric"), score));
     section.append(header, metrics);
     return section;
 }
@@ -68,7 +69,7 @@ function renderDay(content, data) {
         empty.className =
             "heatmap-day-details-empty";
         empty.textContent =
-            "Інформація про цей день недоступна.";
+            dashboard_t("heatmap.dayUnavailable");
         content.appendChild(empty);
         return;
     }
@@ -85,7 +86,7 @@ function renderDay(content, data) {
     dateLabel.className =
         "heatmap-day-details-date-label";
     dateLabel.textContent =
-        "Дата";
+        dashboard_t("heatmap.date");
     const dateValue = document.createElement("span");
     dateValue.className =
         "heatmap-day-details-date-value";
@@ -99,7 +100,7 @@ function renderDay(content, data) {
     scoreLabel.className =
         "heatmap-day-details-score-label";
     scoreLabel.textContent =
-        "Баланс дня";
+        dashboard_t("heatmap.metrics.balance");
     const scoreValue = document.createElement("span");
     scoreValue.className =
         "heatmap-day-details-score-value";
@@ -113,7 +114,7 @@ function renderDay(content, data) {
     const sections = document.createElement("div");
     sections.className =
         "heatmap-day-details-sections";
-    sections.append(createSection("Тренування", data.training?.score), createSection("Відновлення", data.recovery?.score), createSection("Харчування", data.nutrition?.score));
+    sections.append(createSection(dashboard_t("heatmap.metrics.training"), data.training?.score), createSection(dashboard_t("heatmap.metrics.recovery"), data.recovery?.score), createSection(dashboard_t("heatmap.metrics.nutrition"), data.nutrition?.score));
     wrapper.append(overview, sections);
     content.appendChild(wrapper);
 }
@@ -121,8 +122,7 @@ export function openDayModal(data) {
     const modal = document.getElementById("dashboard-day-details-modal");
     const content = document.getElementById("dashboard-day-details-content");
     const date = document.getElementById("dashboard-day-details-date");
-    if (!modal ||
-        !content) {
+    if (!modal || !content) {
         return;
     }
     if (date) {

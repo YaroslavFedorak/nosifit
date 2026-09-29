@@ -6,6 +6,46 @@
         "less": "Меньше",
         "more": "Больше",
         "noData": "Нет данных",
-        "level": "Уровень {level}"
+        "level": "Уровень {level}",
+        "previousMonth": "Предыдущий месяц",
+        "nextMonth": "Следующий месяц",
+        "date": "Дата",
+        "currentMetric": "Текущий показатель",
+        "dayUnavailable": "Информация об этом дне недоступна",
+        "metrics": {
+            "balance": "Баланс дня",
+            "training": "Тренировка",
+            "recovery": "Восстановление",
+            "nutrition": "Питание"
+        },
+        "months": {
+            "january": "Янв",
+            "february": "Фев",
+            "march": "Мар",
+            "april": "Апр",
+            "may": "Май",
+            "june": "Июн",
+            "july": "Июл",
+            "august": "Авг",
+            "september": "Сен",
+            "october": "Окт",
+            "november": "Ноя",
+            "december": "Дек"
+        },
+        "weekdays": {
+            "monday": "Пн",
+            "tuesday": "Вт",
+            "wednesday": "Ср",
+            "thursday": "Чт",
+            "friday": "Пт",
+            "saturday": "Сб",
+            "sunday": "Вс"
+        },
+        "modal": {
+            "dayHistory": "История дня",
+            "dayDetails": "Детали дня",
+            "close": "Закрыть",
+            "balance": "Баланс дня"
+        }
     }
 }

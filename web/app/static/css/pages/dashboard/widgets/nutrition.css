@@ -343,6 +343,7 @@
 
 .db-nutrition-weight-group {
     justify-content: flex-end;
+    padding-right: 2px;
 }
 
 .db-nutrition-stat {

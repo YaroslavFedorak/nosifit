@@ -6,6 +6,46 @@
         "less": "Менше",
         "more": "Більше",
         "noData": "Немає даних",
-        "level": "Рівень {level}"
+        "level": "Рівень {level}",
+        "previousMonth": "Попередній місяць",
+        "nextMonth": "Наступний місяць",
+        "date": "Дата",
+        "currentMetric": "Поточний показник",
+        "dayUnavailable": "Інформація про цей день недоступна",
+        "metrics": {
+            "balance": "Баланс дня",
+            "training": "Тренування",
+            "recovery": "Відновлення",
+            "nutrition": "Харчування"
+        },
+        "months": {
+            "january": "Січ",
+            "february": "Лют",
+            "march": "Бер",
+            "april": "Кві",
+            "may": "Тра",
+            "june": "Чер",
+            "july": "Лип",
+            "august": "Сер",
+            "september": "Вер",
+            "october": "Жов",
+            "november": "Лис",
+            "december": "Гру"
+        },
+        "weekdays": {
+            "monday": "Пн",
+            "tuesday": "Вт",
+            "wednesday": "Ср",
+            "thursday": "Чт",
+            "friday": "Пт",
+            "saturday": "Сб",
+            "sunday": "Нд"
+        },
+        "modal": {
+            "dayHistory": "Історія дня",
+            "dayDetails": "Деталі дня",
+            "close": "Закрити",
+            "balance": "Баланс дня"
+        }
     }
 }

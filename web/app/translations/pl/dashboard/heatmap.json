@@ -2,10 +2,50 @@
     "heatmap": {
         "eyebrow": "Historia",
         "calendar": "Kalendarz",
-        "ariaLabel": "Mapa aktywności ogólnego stanu",
+        "ariaLabel": "Mapa ogólnego stanu",
         "less": "Mniej",
         "more": "Więcej",
         "noData": "Brak danych",
-        "level": "Poziom {level}"
+        "level": "Poziom {level}",
+        "previousMonth": "Poprzedni miesiąc",
+        "nextMonth": "Następny miesiąc",
+        "date": "Data",
+        "currentMetric": "Bieżący wskaźnik",
+        "dayUnavailable": "Informacje o tym dniu są niedostępne",
+        "metrics": {
+            "balance": "Bilans dnia",
+            "training": "Trening",
+            "recovery": "Regeneracja",
+            "nutrition": "Odżywianie"
+        },
+        "months": {
+            "january": "Sty",
+            "february": "Lut",
+            "march": "Mar",
+            "april": "Kwi",
+            "may": "Maj",
+            "june": "Cze",
+            "july": "Lip",
+            "august": "Sie",
+            "september": "Wrz",
+            "october": "Paź",
+            "november": "Lis",
+            "december": "Gru"
+        },
+        "weekdays": {
+            "monday": "Pon",
+            "tuesday": "Wt",
+            "wednesday": "Śr",
+            "thursday": "Czw",
+            "friday": "Pt",
+            "saturday": "Sob",
+            "sunday": "Nd"
+        },
+        "modal": {
+            "dayHistory": "Historia dnia",
+            "dayDetails": "Szczegóły dnia",
+            "close": "Zamknij",
+            "balance": "Bilans dnia"
+        }
     }
 }

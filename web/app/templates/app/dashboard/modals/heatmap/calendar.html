@@ -9,20 +9,22 @@
   <div class="db-modal-panel">
     <div class="db-modal-header">
       <div class="db-modal-heading">
-        <div class="widget-eyebrow">Історія</div>
+        <div class="widget-eyebrow">{{ dashboard_t("heatmap.eyebrow") }}</div>
 
         <h2 id="dashboard-calendar-modal-title" class="db-modal-title">
-          Календар
+          {{ dashboard_t("heatmap.calendar") }}
         </h2>
 
-        <p class="db-modal-subtitle">Перегляд історії балансу</p>
+        <p class="db-modal-subtitle">
+          {{ dashboard_t("heatmap.modal.dayHistory") }}
+        </p>
       </div>
 
       <button
         type="button"
         class="db-modal-close"
         id="dashboard-calendar-modal-close"
-        aria-label="Закрити"
+        aria-label="{{ dashboard_t('heatmap.modal.close') }}"
         data-modal-close
       >
         ×

@@ -1,3 +1,5 @@
+import { dashboard_t } from "../../../i18n/index.js";
+
 import type {
 HeatmapDay,
 } from "../../heatmap/render";
@@ -19,7 +21,7 @@ new Date(
 );
 
 return date.toLocaleDateString(
-    "uk-UA",
+    undefined,
     {
         day: "numeric",
         month: "long",
@@ -155,7 +157,9 @@ metrics.className =
 
 metrics.appendChild(
     createMetric(
-        "Поточний показник",
+        dashboard_t(
+            "heatmap.currentMetric",
+        ),
         score,
     ),
 );
@@ -186,7 +190,9 @@ if (!data.date) {
         "heatmap-day-details-empty";
 
     empty.textContent =
-        "Інформація про цей день недоступна.";
+        dashboard_t(
+            "heatmap.dayUnavailable",
+        );
 
     content.appendChild(
         empty,
@@ -228,7 +234,9 @@ dateLabel.className =
     "heatmap-day-details-date-label";
 
 dateLabel.textContent =
-    "Дата";
+    dashboard_t(
+        "heatmap.date",
+    );
 
 const dateValue =
     document.createElement(
@@ -265,7 +273,9 @@ scoreLabel.className =
     "heatmap-day-details-score-label";
 
 scoreLabel.textContent =
-    "Баланс дня";
+    dashboard_t(
+        "heatmap.metrics.balance",
+    );
 
 const scoreValue =
     document.createElement(
@@ -308,15 +318,21 @@ sections.className =
 
 sections.append(
     createSection(
-        "Тренування",
+        dashboard_t(
+            "heatmap.metrics.training",
+        ),
         data.training?.score,
     ),
     createSection(
-        "Відновлення",
+        dashboard_t(
+            "heatmap.metrics.recovery",
+        ),
         data.recovery?.score,
     ),
     createSection(
-        "Харчування",
+        dashboard_t(
+            "heatmap.metrics.nutrition",
+        ),
         data.nutrition?.score,
     ),
 );
