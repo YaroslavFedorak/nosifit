@@ -1,13 +1,13 @@
-{% extends "app/base_app.html" %} {% block content %}
+{% extends "app/base_app.html" %} {% block title %}{{ app_t("premium.title") }}{% endblock %} {% block body %}
 <div style="padding: 40px">
-  <h1>Premium</h1>
+  <h1>{{ app_t("premium.title") }}</h1>
 
   {% if user.is_premium %}
-  <p>Ваш акаунт: <strong>Premium</strong></p>
-  <p>Дякуємо за підтримку!</p>
+  <p>{{ app_t("premium.accountPremium") }}</p>
+  <p>{{ app_t("premium.thanks") }}</p>
   {% else %}
-  <p>Ваш акаунт: <strong>Free</strong></p>
-  <a href="/premium/activate" class="btn btn-primary">Активувати Premium</a>
+  <p>{{ app_t("premium.accountFree") }}</p>
+  <a href="/premium/activate" class="btn btn-primary">{{ app_t("premium.activate") }}</a>
   {% endif %}
 </div>
 {% endblock %}

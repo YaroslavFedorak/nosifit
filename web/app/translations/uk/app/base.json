@@ -1,0 +1,54 @@
+{
+  "assessment": {
+    "title": "Тест фізичної підготовки — NOSIFIT",
+    "heading": "Тест фізичної підготовки",
+    "pushups": "Максимум віджимань за 1 підхід:",
+    "squats": "Максимум присідань за 1 підхід:",
+    "plank": "Планка (секунди):",
+    "submit": "Завершити тест"
+  },
+  "equipment": {
+    "title": "Обладнання — NOSIFIT",
+    "heading": "Обладнання",
+    "subtitle": "Тут буде список доступного обладнання."
+  },
+  "premium": {
+    "title": "Premium",
+    "accountPremium": "Ваш акаунт: Premium",
+    "thanks": "Дякуємо за підтримку!",
+    "accountFree": "Ваш акаунт: Free",
+    "activate": "Активувати Premium"
+  },
+  "questionnaire": {
+    "title": "Анкета",
+    "heading": "Персональна анкета",
+    "environment": "Де ти тренуєшся",
+    "gym": "Зал",
+    "home": "Дім",
+    "outdoor": "Вулиця",
+    "aesthetic": "Естетична ціль",
+    "none": "Немає",
+    "chest": "Груди",
+    "back": "Спина",
+    "shoulders": "Плечі",
+    "arms": "Руки",
+    "legs": "Ноги",
+    "glutes": "Сідниці",
+    "core": "Прес",
+    "performance": "Фізична ціль",
+    "strength": "Сила",
+    "endurance": "Витривалість",
+    "mobility": "Мобільність",
+    "morePushups": "Більше віджимань",
+    "morePullups": "Більше підтягувань",
+    "strong": "Сильні сторони",
+    "weak": "Слабкі сторони",
+    "lowerBack": "Поперек",
+    "save": "Зберегти"
+  },
+  "tracker": {
+    "title": "Трекінг — NOSIFIT",
+    "heading": "Ваш графік",
+    "subtitle": "Тут будуть ваші трекери."
+  }
+}

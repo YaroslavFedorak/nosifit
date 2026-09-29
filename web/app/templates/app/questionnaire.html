@@ -1,81 +1,81 @@
-{% extends "app/base_app.html" %} {% block title %}Анкета{% endblock %} {% block
-body %}
+{% extends "app/base_app.html" %} {% block title %}{{ app_t("questionnaire.title") }}{% endblock %} {% block body %}
 
-<h2 class="page-title">Персональна анкета</h2>
+<h2 class="page-title">{{ app_t("questionnaire.heading") }}</h2>
 
 <form method="POST" class="form-card">
   <div class="form-section">
-    <h3>Де ти тренуєшся</h3>
+    <h3>{{ app_t("questionnaire.environment") }}</h3>
     <select name="environment" required>
-      <option value="gym">Зал</option>
-      <option value="home">Дім</option>
-      <option value="outdoor">Вулиця</option>
+      <option value="gym">{{ app_t("questionnaire.gym") }}</option>
+      <option value="home">{{ app_t("questionnaire.home") }}</option>
+      <option value="outdoor">{{ app_t("questionnaire.outdoor") }}</option>
     </select>
   </div>
 
   <div class="form-section">
-    <h3>Естетична ціль</h3>
+    <h3>{{ app_t("questionnaire.aesthetic") }}</h3>
     <select name="aesthetic_focus">
-      <option value="">Немає</option>
-      <option value="chest">Груди</option>
-      <option value="back">Спина</option>
-      <option value="shoulders">Плечі</option>
-      <option value="arms">Руки</option>
-      <option value="legs">Ноги</option>
-      <option value="glutes">Сідниці</option>
-      <option value="core">Прес</option>
+      <option value="">{{ app_t("questionnaire.none") }}</option>
+      <option value="chest">{{ app_t("questionnaire.chest") }}</option>
+      <option value="back">{{ app_t("questionnaire.back") }}</option>
+      <option value="shoulders">{{ app_t("questionnaire.shoulders") }}</option>
+      <option value="arms">{{ app_t("questionnaire.arms") }}</option>
+      <option value="legs">{{ app_t("questionnaire.legs") }}</option>
+      <option value="glutes">{{ app_t("questionnaire.glutes") }}</option>
+      <option value="core">{{ app_t("questionnaire.core") }}</option>
     </select>
   </div>
 
   <div class="form-section">
-    <h3>Фізична ціль</h3>
+    <h3>{{ app_t("questionnaire.performance") }}</h3>
     <select name="performance_focus">
-      <option value="">Немає</option>
-      <option value="strength">Сила</option>
-      <option value="endurance">Витривалість</option>
-      <option value="mobility">Мобільність</option>
-      <option value="pushups">Більше віджимань</option>
-      <option value="pullups">Більше підтягувань</option>
+      <option value="">{{ app_t("questionnaire.none") }}</option>
+      <option value="strength">{{ app_t("questionnaire.strength") }}</option>
+      <option value="endurance">{{ app_t("questionnaire.endurance") }}</option>
+      <option value="mobility">{{ app_t("questionnaire.mobility") }}</option>
+      <option value="pushups">{{ app_t("questionnaire.morePushups") }}</option>
+      <option value="pullups">{{ app_t("questionnaire.morePullups") }}</option>
     </select>
   </div>
 
   <div class="form-section">
-    <h3>Сильні сторони</h3>
+    <h3>{{ app_t("questionnaire.strong") }}</h3>
 
     <label
-      ><input type="checkbox" name="strong_points" value="chest" /> Груди</label
+      ><input type="checkbox" name="strong_points" value="chest" /> {{ app_t("questionnaire.chest") }}</label
     >
     <label
-      ><input type="checkbox" name="strong_points" value="back" /> Спина</label
+      ><input type="checkbox" name="strong_points" value="back" /> {{ app_t("questionnaire.back") }}</label
     >
     <label
-      ><input type="checkbox" name="strong_points" value="legs" /> Ноги</label
+      ><input type="checkbox" name="strong_points" value="legs" /> {{ app_t("questionnaire.legs") }}</label
     >
     <label
-      ><input type="checkbox" name="strong_points" value="core" /> Кор</label
+      ><input type="checkbox" name="strong_points" value="core" /> {{ app_t("questionnaire.core") }}</label
     >
   </div>
 
   <div class="form-section">
-    <h3>Слабкі сторони</h3>
+    <h3>{{ app_t("questionnaire.weak") }}</h3>
 
     <label
-      ><input type="checkbox" name="weak_points" value="chest" /> Груди</label
+      ><input type="checkbox" name="weak_points" value="chest" /> {{ app_t("questionnaire.chest") }}</label
     >
     <label
-      ><input type="checkbox" name="weak_points" value="back" /> Спина</label
+      ><input type="checkbox" name="weak_points" value="back" /> {{ app_t("questionnaire.back") }}</label
     >
     <label
-      ><input type="checkbox" name="weak_points" value="legs" /> Ноги</label
+      ><input type="checkbox" name="weak_points" value="legs" /> {{ app_t("questionnaire.legs") }}</label
     >
-    <label><input type="checkbox" name="weak_points" value="core" /> Кор</label>
+    <label
+      ><input type="checkbox" name="weak_points" value="core" /> {{ app_t("questionnaire.core") }}</label>
     <label
       ><input type="checkbox" name="weak_points" value="lower_back" />
-      Поперек</label
+      {{ app_t("questionnaire.lowerBack") }}</label
     >
   </div>
 
-  <button type="submit" class="btn-primary">Зберегти</button>
+  <button type="submit" class="btn-primary">{{ app_t("questionnaire.save") }}</button>
 </form>
 
 {% endblock %}

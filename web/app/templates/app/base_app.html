@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="uk">
+<html lang="{{ locale }}">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -49,7 +49,7 @@
     <div class="bg-glow-static glow-yellow" aria-hidden="true"></div>
     <div class="bg-glow-dynamic" aria-hidden="true"></div>
 
-    <div class="core-sidebar-shell" role="navigation" aria-label="Головне меню">
+    <div class="core-sidebar-shell" role="navigation" aria-label="{{ common_t("navigation.menu") }}">
       {% include "components/sidebar.html" %}
     </div>
 

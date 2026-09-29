@@ -26,7 +26,8 @@
     "premium": "Premium",
     "aboutApp": "О приложении",
     "info": "О сайте",
-    "logout": "Выйти"
+    "logout": "Выйти",
+    "menu": "Главное меню"
   },
   "footer": {
     "rights": "Все права защищены.",

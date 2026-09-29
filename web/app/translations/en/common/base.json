@@ -26,7 +26,8 @@
     "premium": "Premium",
     "aboutApp": "About the app",
     "info": "About the site",
-    "logout": "Log out"
+    "logout": "Log out",
+    "menu": "Main menu"
   },
   "footer": {
     "rights": "All rights reserved.",
