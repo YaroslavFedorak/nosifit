@@ -30,6 +30,3 @@ export function nutrition_t(key, params = {}) {
 export function profile_t(key, params = {}) {
     return translate("profile", key, params);
 }
-export function demo_t(key, params = {}) {
-    return translate("demo", key, params);
-}

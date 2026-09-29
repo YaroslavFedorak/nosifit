@@ -120,3 +120,14 @@ key,
 params,
 );
 }
+
+export function demo_t(
+key: string,
+params: Record<string, string | number> = {},
+): string {
+return translate(
+"demo",
+key,
+params,
+);
+}
