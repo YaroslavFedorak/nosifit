@@ -1,34 +1,32 @@
 from aiogram import Router
 from aiogram.filters import Command, CommandStart
 from aiogram.types import Message
+
 from telegram_bot.keyboards.main import main_menu
+
 
 router = Router()
 
+
 WELCOME_TEXT = (
-    "NosiFit
-
-"
-    "Швидко додавай дані про свій день — аналіз залишаємо вебзастосунку.
-
-"
+    "NosiFit\n\n"
+    "Швидко додавай дані про свій день — "
+    "аналіз залишаємо вебзастосунку.\n\n"
     "Оберіть, що хочете додати:"
 )
+
 
 @router.message(CommandStart())
 async def start(message: Message) -> None:
     await message.answer(WELCOME_TEXT, reply_markup=main_menu())
 
+
 @router.message(Command("help"))
 async def help_command(message: Message) -> None:
     await message.answer(
-        "Оберіть потрібний розділ у меню.
-
-"
-        "/start — відкрити головне меню
-"
-        "/help — показати цю підказку
-"
+        "Оберіть потрібний розділ у меню.\n\n"
+        "/start — відкрити головне меню\n"
+        "/help — показати цю підказку\n"
         "/cancel — скасувати поточну дію",
         reply_markup=main_menu(),
     )
