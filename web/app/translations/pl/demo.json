@@ -95,5 +95,26 @@
         "title": "Te dane będą Twoje",
         "text": "Będziesz zapisywać własne treningi, posiłki, wodę, sen i nawyki regeneracyjne. NosiFit połączy je w jednym panelu i pokaże zmiany w czasie.",
         "cta": "Zacznij z NosiFit"
+    },
+    "guide": {
+        "eyebrow": "Jak to działa",
+        "title": "Jeden dzień — jeden czytelny obraz",
+        "text": "NosiFit to nie tylko zbiór liczb. Zapisujesz najważniejsze elementy dnia, a panel łączy je w jeden kontekst.",
+        "training": {
+            "title": "Zapisz trening",
+            "text": "Dodawaj ćwiczenia, serie i powtórzenia. Sesja pokazuje, co naprawdę zrobiłeś dzisiaj i jakie obciążenie otrzymałeś."
+        },
+        "nutrition": {
+            "title": "Śledź odżywianie",
+            "text": "Dodawaj posiłki, produkty, wodę i wagę. Dzięki temu widzisz cały dzień, a nie pojedyncze posiłki."
+        },
+        "recovery": {
+            "title": "Dbaj o regenerację",
+            "text": "Sen i nawyki regeneracyjne pomagają zrozumieć, czy organizm jest gotowy na kolejne obciążenie."
+        },
+        "analysis": {
+            "title": "Obserwuj zmiany",
+            "text": "Heatmapa zamienia pojedyncze dni w historię. Otwórz dzień, aby połączyć trening, regenerację i odżywianie."
+        }
     }
 }
