@@ -1,3 +1,46 @@
+/* Landing uses the same three-light system as the rest of the public UI,
+   but with slightly stronger lights so the first screen does not feel flat. */
+.public-layout:has(.landing) .bg-glow-static {
+  width: 540px;
+  height: 540px;
+  filter: blur(125px);
+  opacity: .27;
+}
+
+.public-layout:has(.landing) .glow-purple {
+  top: -185px;
+  left: -125px;
+  background: rgba(157, 123, 234, .88);
+}
+
+.public-layout:has(.landing) .glow-teal {
+  top: 5%;
+  right: -175px;
+  background: rgba(66, 199, 216, .74);
+}
+
+.public-layout:has(.landing) .glow-yellow {
+  right: 26%;
+  bottom: -265px;
+  background: rgba(244, 200, 74, .64);
+}
+
+.public-layout:has(.landing-area-card:nth-child(1):hover) .glow-yellow {
+  background: rgba(66, 199, 216, .82);
+}
+
+.public-layout:has(.landing-area-card:nth-child(2):hover) .glow-yellow {
+  background: rgba(157, 123, 234, .84);
+}
+
+.public-layout:has(.landing-area-card:nth-child(3):hover) .glow-yellow {
+  background: rgba(101, 214, 160, .80);
+}
+
+.public-layout:has(.landing-area-card:nth-child(4):hover) .glow-yellow {
+  background: rgba(243, 164, 93, .80);
+}
+
 .landing {
   background: var(--nf-bg);
   color: var(--nf-text-main);

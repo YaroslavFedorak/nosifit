@@ -20,7 +20,10 @@
       rel="stylesheet"
       href="{{ url_for('static', filename='css/core/variables.css') }}"
     />
-
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/core/layout.css') }}"
+    />
     <link
       rel="stylesheet"
       href="{{ url_for('static', filename='css/components/navbar.css') }}"
@@ -31,6 +34,11 @@
   </head>
 
   <body class="public-layout">
+    <div class="bg-glow-static glow-purple" aria-hidden="true"></div>
+    <div class="bg-glow-static glow-teal" aria-hidden="true"></div>
+    <div class="bg-glow-static glow-yellow" aria-hidden="true"></div>
+    <div class="bg-glow-dynamic" aria-hidden="true"></div>
+
     {% include "components/public_nav.html" %}
 
     <main class="public-wrapper">{% block body %}{% endblock %}</main>
