@@ -40,7 +40,11 @@
     "title": "Контакти",
     "email": "Email",
     "instagram": "Instagram",
-    "telegram": "Telegram"
+    "telegram": "Telegram",
+    "lead": "Якщо маєте питання, пропозицію або знайшли проблему — напишіть нам.",
+    "emailAction": "Написати повідомлення",
+    "instagramAction": "Відкрити профіль",
+    "telegramAction": "Написати повідомлення"
   },
   "demo": {
     "title": "Демо",
