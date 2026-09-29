@@ -1,54 +1,62 @@
 :root {
-    /* Brand palette */
-    --nf-bg: #020308;
-    --nf-bg-soft: #050712;
-    --nf-bg-softer: #050509;
+  --nf-bg: #07090d;
+  --nf-bg-soft: #0b0e14;
+  --nf-bg-elevated: #10141c;
 
-    --nf-surface: #070918;
-    --nf-surface-soft: #090b1c;
-    --nf-surface-deep: #05050c;
+  --nf-surface: #0f131a;
+  --nf-surface-soft: #131821;
+  --nf-surface-strong: #171d27;
+  --nf-surface-deep: #090c11;
 
-    /* Core colors */
-    --nf-yellow: #ffd43b;
-    --nf-yellow-soft: #ffe680;
-    --nf-blue: #00c2ff;
-    --nf-blue-soft: #4dd9ff;
-    --nf-violet: #9b5de5;
-    --nf-violet-soft: #c79bff;
+  --nf-yellow: #f4c84a;
+  --nf-yellow-soft: #ffe39a;
+  --nf-blue: #42c7d8;
+  --nf-blue-soft: #8be3ec;
+  --nf-violet: #9d7bea;
+  --nf-violet-soft: #c8b7ff;
+  --nf-green: #65d6a0;
+  --nf-red: #f06f7a;
+  --nf-orange: #f3a45d;
 
-    /* Text */
-    --nf-text-main: #f7f7ff;
-    --nf-text-muted: #9ca0c2;
-    --nf-text-soft: #a9a9b5;
+  --nf-text-main: #f3f5f7;
+  --nf-text-muted: #9da6b3;
+  --nf-text-soft: #707b89;
+  --nf-text-inverse: #101318;
 
-    /* Borders */
-    --nf-border-subtle: rgba(255, 255, 255, 0.06);
-    --nf-border-soft: rgba(255, 255, 255, 0.04);
+  --nf-border-subtle: rgba(255, 255, 255, 0.075);
+  --nf-border-soft: rgba(255, 255, 255, 0.045);
+  --nf-border-strong: rgba(255, 255, 255, 0.13);
 
-    /* Radii */
-    --nf-radius-lg: 22px;
-    --nf-radius-md: 16px;
-    --nf-radius-sm: 10px;
-    --nf-radius-xs: 8px;
-    --nf-radius-pill: 999px;
+  --nf-radius-xl: 24px;
+  --nf-radius-lg: 18px;
+  --nf-radius-md: 14px;
+  --nf-radius-sm: 10px;
+  --nf-radius-xs: 7px;
+  --nf-radius-pill: 999px;
 
-    /* Shadows */
-    --nf-shadow-soft: 0 18px 45px rgba(0, 0, 0, 0.85);
-    --nf-shadow-inner: 0 0 40px rgba(0, 0, 0, 0.9);
-    --nf-shadow-yellow: 0 0 32px rgba(255, 212, 59, 0.55);
-    --nf-shadow-blue: 0 0 32px rgba(0, 194, 255, 0.55);
-    --nf-shadow-violet: 0 0 32px rgba(155, 93, 229, 0.55);
+  --nf-shadow-sm: 0 8px 24px rgba(0, 0, 0, 0.18);
+  --nf-shadow-md: 0 16px 42px rgba(0, 0, 0, 0.28);
+  --nf-shadow-lg: 0 28px 70px rgba(0, 0, 0, 0.38);
 
-    /* Blur */
-    --nf-blur-strong: 40px;
-    --nf-blur-soft: 18px;
+  --nf-glow-yellow: 0 0 0 1px rgba(244, 200, 74, 0.16), 0 12px 36px rgba(244, 200, 74, 0.10);
+  --nf-glow-violet: 0 0 0 1px rgba(157, 123, 234, 0.16), 0 12px 36px rgba(157, 123, 234, 0.10);
+  --nf-glow-blue: 0 0 0 1px rgba(66, 199, 216, 0.14), 0 12px 36px rgba(66, 199, 216, 0.08);
 
-    /* Transitions */
-    --nf-transition-fast: 0.18s cubic-bezier(0.22, 1, 0.36, 1);
-    --nf-transition: 0.28s cubic-bezier(0.22, 1, 0.36, 1);
-    --nf-transition-slow: 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  --nf-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --nf-transition-fast: 180ms var(--nf-ease);
+  --nf-transition: 280ms var(--nf-ease);
+  --nf-transition-slow: 420ms var(--nf-ease);
 
-    /* Layout */
-    --nf-max-width: 1200px;
-    --nf-page-padding-x: 24px;
+  --nf-max-width: 1440px;
+  --nf-page-padding-x: 28px;
+  --nf-sidebar-width: 248px;
+  --nf-content-gap: 24px;
+
+  /* Compatibility aliases for older page styles. */
+  --bg: var(--nf-bg);
+  --text: var(--nf-text-main);
+  --text-muted: var(--nf-text-muted);
+  --surface: var(--nf-surface);
+  --surface-soft: var(--nf-surface-soft);
+  --border: var(--nf-border-subtle);
 }
