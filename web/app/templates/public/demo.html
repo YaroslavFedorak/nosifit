@@ -13,85 +13,75 @@
 <section class="public-demo">
   <header class="public-demo-hero">
     <div class="public-demo-hero-copy">
-      <span class="public-demo-eyebrow" data-i18n="hero.eyebrow">NosiFit Demo</span>
-      <h1 class="public-demo-title" data-i18n="hero.title">
-        Побачте, як NosiFit об'єднує тренування, харчування та відновлення
-      </h1>
-      <p class="public-demo-lead" data-i18n="hero.lead">
-        Це реалістичний приклад дашборду NosiFit. Тут видно, які дані можна
-        заносити щодня та як вони перетворюються на зрозумілу картину вашого стану.
-      </p>
+      <span class="public-demo-eyebrow" data-i18n="hero.eyebrow"></span>
+      <h1 class="public-demo-title" data-i18n="hero.title"></h1>
+      <p class="public-demo-lead" data-i18n="hero.lead"></p>
     </div>
 
     <div class="public-demo-hero-actions">
-      <span class="public-demo-demo-badge" data-i18n="hero.badge">Лише демо-дані</span>
+      <span class="public-demo-demo-badge" data-i18n="hero.badge"></span>
       <a
         href="{{ url_for('auth.register') }}"
         class="public-demo-register"
         data-glow="yellow"
         data-i18n="hero.cta"
-      >
-        Створити акаунт
-      </a>
+      ></a>
     </div>
   </header>
 
   <div class="public-demo-dashboard">
     <header class="public-demo-dashboard-header">
       <div>
-        <span class="public-demo-muted" data-i18n="dashboard.eyebrow">Огляд дня</span>
-        <h2 data-i18n="dashboard.title">Dashboard</h2>
+        <span class="public-demo-muted" data-i18n="dashboard.eyebrow"></span>
+        <h2 data-i18n="dashboard.title"></h2>
       </div>
 
       <div class="public-demo-date">
-        <span data-i18n="dashboard.dateLabel">Сьогодні</span>
-        <strong>28 вересня</strong>
+        <span data-i18n="dashboard.dateLabel"></span>
+        <strong data-i18n="dashboard.date">28 Sep</strong>
       </div>
     </header>
 
     <section class="public-demo-score-grid" aria-label="Daily overview">
       <article class="public-demo-score-card public-demo-score-card-balance">
-        <span class="public-demo-muted" data-i18n="scores.balance.label">Баланс дня</span>
+        <span class="public-demo-muted" data-i18n="scores.balance.label"></span>
         <div class="public-demo-score-value">84</div>
-        <span class="public-demo-score-note" data-i18n="scores.balance.note">стабільний день</span>
+        <span class="public-demo-score-note" data-i18n="scores.balance.note"></span>
       </article>
 
       <article class="public-demo-score-card public-demo-score-card-training">
-        <span class="public-demo-muted" data-i18n="scores.training.label">Тренування</span>
+        <span class="public-demo-muted" data-i18n="scores.training.label"></span>
         <div class="public-demo-score-value">72</div>
-        <span class="public-demo-score-note" data-i18n="scores.training.note">помірне навантаження</span>
+        <span class="public-demo-score-note" data-i18n="scores.training.note"></span>
       </article>
 
       <article class="public-demo-score-card public-demo-score-card-recovery">
-        <span class="public-demo-muted" data-i18n="scores.recovery.label">Відновлення</span>
+        <span class="public-demo-muted" data-i18n="scores.recovery.label"></span>
         <div class="public-demo-score-value">82</div>
-        <span class="public-demo-score-note" data-i18n="scores.recovery.note">добрий стан</span>
+        <span class="public-demo-score-note" data-i18n="scores.recovery.note"></span>
       </article>
 
       <article class="public-demo-score-card public-demo-score-card-nutrition">
-        <span class="public-demo-muted" data-i18n="scores.nutrition.label">Харчування</span>
+        <span class="public-demo-muted" data-i18n="scores.nutrition.label"></span>
         <div class="public-demo-score-value">88</div>
-        <span class="public-demo-score-note" data-i18n="scores.nutrition.note">ціль майже виконана</span>
+        <span class="public-demo-score-note" data-i18n="scores.nutrition.note"></span>
       </article>
     </section>
 
     <section class="public-demo-card public-demo-heatmap-card">
       <div class="public-demo-card-header">
         <div>
-          <span class="public-demo-muted" data-i18n="heatmap.eyebrow">Активність</span>
-          <h3 data-i18n="heatmap.title">Твій ритм за останні тижні</h3>
+          <span class="public-demo-muted" data-i18n="heatmap.eyebrow"></span>
+          <h3 data-i18n="heatmap.title"></h3>
         </div>
-        <span class="public-demo-accent" data-i18n="heatmap.badge">Баланс дня</span>
+        <span class="public-demo-accent" data-i18n="heatmap.badge"></span>
       </div>
 
-      <p class="public-demo-card-description" data-i18n="heatmap.description">
-        Кожна клітинка показує загальний баланс дня. Натискаючи на день у
-        справжньому дашборді, можна переглянути тренування, відновлення та харчування.
-      </p>
+      <p class="public-demo-card-description" data-i18n="heatmap.description"></p>
 
       <div class="public-demo-months" aria-hidden="true">
-        <span data-i18n="heatmap.month1">Сер</span>
-        <span data-i18n="heatmap.month2">Вер</span>
+        <span data-i18n="heatmap.month1"></span>
+        <span data-i18n="heatmap.month2"></span>
       </div>
 
       <div class="public-demo-heatmap" aria-label="Activity heatmap">
@@ -108,14 +98,14 @@
       </div>
 
       <div class="public-demo-heatmap-legend">
-        <span data-i18n="heatmap.less">Менше</span>
+        <span data-i18n="heatmap.less"></span>
         <i class="heat-0"></i>
         <i class="heat-1"></i>
         <i class="heat-2"></i>
         <i class="heat-3"></i>
         <i class="heat-4"></i>
         <i class="heat-5"></i>
-        <span data-i18n="heatmap.more">Більше</span>
+        <span data-i18n="heatmap.more"></span>
       </div>
     </section>
 
@@ -123,16 +113,16 @@
       <section class="public-demo-card public-demo-training-card">
         <div class="public-demo-card-header">
           <div>
-            <span class="public-demo-muted" data-i18n="training.eyebrow">Тренування</span>
-            <h3 data-i18n="training.title">Сьогоднішнє тренування</h3>
+            <span class="public-demo-muted" data-i18n="training.eyebrow"></span>
+            <h3 data-i18n="training.title"></h3>
           </div>
-          <span class="public-demo-accent" data-i18n="training.status">Збережено</span>
+          <span class="public-demo-accent" data-i18n="training.status"></span>
         </div>
 
         <div class="public-demo-workout-meta">
-          <strong data-i18n="training.plan">Upper Body</strong>
-          <span data-i18n="training.duration">42 хв</span>
-          <span data-i18n="training.load">Навантаження 64</span>
+          <strong data-i18n="training.plan"></strong>
+          <span data-i18n="training.duration"></span>
+          <span data-i18n="training.load"></span>
         </div>
 
         <div class="public-demo-list">
@@ -144,7 +134,7 @@
 
         <div class="public-demo-progress">
           <div class="public-demo-progress-head">
-            <span data-i18n="training.progress">Прогрес тренування</span>
+            <span data-i18n="training.progress"></span>
             <strong>75%</strong>
           </div>
           <div class="public-demo-progress-track"><i></i></div>
@@ -154,8 +144,8 @@
       <section class="public-demo-card public-demo-nutrition-card">
         <div class="public-demo-card-header">
           <div>
-            <span class="public-demo-muted" data-i18n="nutrition.eyebrow">Харчування</span>
-            <h3 data-i18n="nutrition.title">Що з'їдено сьогодні</h3>
+            <span class="public-demo-muted" data-i18n="nutrition.eyebrow"></span>
+            <h3 data-i18n="nutrition.title"></h3>
           </div>
           <span class="public-demo-accent">1 840 kcal</span>
         </div>
@@ -163,42 +153,42 @@
         <div class="public-demo-meals">
           <div>
             <span>
-              <strong data-i18n="nutrition.meal1">Сніданок</strong>
-              <small data-i18n="nutrition.meal1Food">Вівсянка · банан · йогурт</small>
+              <strong data-i18n="nutrition.meal1"></strong>
+              <small data-i18n="nutrition.meal1Food"></small>
             </span>
             <strong>420 kcal</strong>
           </div>
           <div>
             <span>
-              <strong data-i18n="nutrition.meal2">Обід</strong>
-              <small data-i18n="nutrition.meal2Food">Рис · курка · овочі</small>
+              <strong data-i18n="nutrition.meal2"></strong>
+              <small data-i18n="nutrition.meal2Food"></small>
             </span>
             <strong>640 kcal</strong>
           </div>
           <div>
             <span>
-              <strong data-i18n="nutrition.meal3">Вечеря</strong>
-              <small data-i18n="nutrition.meal3Food">Паста · тунець · салат</small>
+              <strong data-i18n="nutrition.meal3"></strong>
+              <small data-i18n="nutrition.meal3Food"></small>
             </span>
             <strong>510 kcal</strong>
           </div>
           <div>
             <span>
-              <strong data-i18n="nutrition.meal4">Перекус</strong>
-              <small data-i18n="nutrition.meal4Food">Фрукти · горіхи</small>
+              <strong data-i18n="nutrition.meal4"></strong>
+              <small data-i18n="nutrition.meal4Food"></small>
             </span>
             <strong>270 kcal</strong>
           </div>
         </div>
 
         <div class="public-demo-macros">
-          <div><span data-i18n="nutrition.protein">Білки</span><strong>126 g</strong><i class="macro-protein"></i></div>
-          <div><span data-i18n="nutrition.carbs">Вуглеводи</span><strong>208 g</strong><i class="macro-carbs"></i></div>
-          <div><span data-i18n="nutrition.fats">Жири</span><strong>58 g</strong><i class="macro-fats"></i></div>
+          <div><span data-i18n="nutrition.protein"></span><strong>126 g</strong><i class="macro-protein"></i></div>
+          <div><span data-i18n="nutrition.carbs"></span><strong>208 g</strong><i class="macro-carbs"></i></div>
+          <div><span data-i18n="nutrition.fats"></span><strong>58 g</strong><i class="macro-fats"></i></div>
         </div>
 
         <div class="public-demo-water">
-          <span data-i18n="nutrition.water">Вода</span>
+          <span data-i18n="nutrition.water"></span>
           <strong>1 650 / 2 000 ml</strong>
         </div>
       </section>
@@ -208,27 +198,27 @@
       <section class="public-demo-card public-demo-recovery-card">
         <div class="public-demo-card-header">
           <div>
-            <span class="public-demo-muted" data-i18n="recovery.eyebrow">Відновлення</span>
-            <h3 data-i18n="recovery.title">Сон та стан організму</h3>
+            <span class="public-demo-muted" data-i18n="recovery.eyebrow"></span>
+            <h3 data-i18n="recovery.title"></h3>
           </div>
           <span class="public-demo-score-pill">82</span>
         </div>
 
         <div class="public-demo-recovery-stats">
           <div>
-            <span data-i18n="recovery.sleep">Сон</span>
+            <span data-i18n="recovery.sleep"></span>
             <strong>7h 42m</strong>
-            <small data-i18n="recovery.sleepQuality">добра якість</small>
+            <small data-i18n="recovery.sleepQuality"></small>
           </div>
           <div>
-            <span data-i18n="recovery.energy">Енергія</span>
+            <span data-i18n="recovery.energy"></span>
             <strong>78%</strong>
-            <small data-i18n="recovery.energyStatus">стабільна</small>
+            <small data-i18n="recovery.energyStatus"></small>
           </div>
           <div>
-            <span data-i18n="recovery.stress">Стрес</span>
-            <strong data-i18n="recovery.stressValue">Низький</strong>
-            <small data-i18n="recovery.stressStatus">без різких змін</small>
+            <span data-i18n="recovery.stress"></span>
+            <strong data-i18n="recovery.stressValue"></strong>
+            <small data-i18n="recovery.stressStatus"></small>
           </div>
         </div>
       </section>
@@ -236,18 +226,18 @@
       <section class="public-demo-card public-demo-habits-card">
         <div class="public-demo-card-header">
           <div>
-            <span class="public-demo-muted" data-i18n="habits.eyebrow">Звички відновлення</span>
-            <h3 data-i18n="habits.title">Щоденні дії</h3>
+            <span class="public-demo-muted" data-i18n="habits.eyebrow"></span>
+            <h3 data-i18n="habits.title"></h3>
           </div>
           <span class="public-demo-accent">4 / 5</span>
         </div>
 
         <div class="public-demo-habits">
-          <div class="habit-done"><span data-i18n="habits.sleep">Сон за графіком</span><b>✓</b></div>
-          <div class="habit-done"><span data-i18n="habits.water">Достатньо води</span><b>✓</b></div>
-          <div class="habit-done"><span data-i18n="habits.mobility">Легка рухливість</span><b>✓</b></div>
-          <div class="habit-done"><span data-i18n="habits.recovery">Відновлення</span><b>✓</b></div>
-          <div class="habit-pending"><span data-i18n="habits.stress">Відпочинок від екранів</span><b>○</b></div>
+          <div class="habit-done"><span data-i18n="habits.sleep"></span><b>✓</b></div>
+          <div class="habit-done"><span data-i18n="habits.water"></span><b>✓</b></div>
+          <div class="habit-done"><span data-i18n="habits.mobility"></span><b>✓</b></div>
+          <div class="habit-done"><span data-i18n="habits.recovery"></span><b>✓</b></div>
+          <div class="habit-pending"><span data-i18n="habits.stress"></span><b>○</b></div>
         </div>
       </section>
     </div>
@@ -255,31 +245,23 @@
     <section class="public-demo-card public-demo-recommendation">
       <div class="public-demo-recommendation-mark">→</div>
       <div>
-        <span class="public-demo-muted" data-i18n="recommendation.eyebrow">Рекомендація</span>
-        <h3 data-i18n="recommendation.title">Сьогодні тримай інтенсивність помірною</h3>
-        <p data-i18n="recommendation.text">
-          Нещодавнє навантаження стабільне, а відновлення хороше. Можна тренуватися,
-          але без різкого збільшення об'єму. Після тренування зверни увагу на сон та воду.
-        </p>
+        <span class="public-demo-muted" data-i18n="recommendation.eyebrow"></span>
+        <h3 data-i18n="recommendation.title"></h3>
+        <p data-i18n="recommendation.text"></p>
       </div>
     </section>
 
     <section class="public-demo-register-panel">
       <div>
-        <span class="public-demo-eyebrow" data-i18n="register.eyebrow">Після реєстрації</span>
-        <h3 data-i18n="register.title">Ці дані стануть твоїми</h3>
-        <p data-i18n="register.text">
-          Ти зможеш заносити власні тренування, прийоми їжі, воду, сон і звички,
-          а NosiFit буде збирати їх у єдиний дашборд та показувати динаміку.
-        </p>
+        <span class="public-demo-eyebrow" data-i18n="register.eyebrow"></span>
+        <h3 data-i18n="register.title"></h3>
+        <p data-i18n="register.text"></p>
       </div>
       <a
         href="{{ url_for('auth.register') }}"
         class="public-demo-register public-demo-register-secondary"
         data-i18n="register.cta"
-      >
-        Почати з NosiFit
-      </a>
+      ></a>
     </section>
   </div>
 </section>
