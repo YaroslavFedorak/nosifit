@@ -1,91 +1,86 @@
 .app-layout .cmp-modal-overlay,
 .auth-layout .cmp-modal-overlay {
-    position: fixed;
-    inset: 0;
-    background: radial-gradient(circle at top,
-            rgba(155, 93, 229, 0.35),
-            transparent 55%),
-        rgba(0, 0, 0, 0.78);
-    display: none;
-    align-items: center;
-    justify-content: center;
-    z-index: 50;
-}
-
-.app-layout .cmp-modal,
-.auth-layout .cmp-modal {
-    background: radial-gradient(circle at top left, #0b0d1c 0, #050509 60%);
-    border-radius: var(--nf-radius-md);
-    padding: 22px 22px 18px;
-    width: 420px;
-    max-width: 92%;
-    border: 1px solid var(--nf-border-subtle);
-    box-shadow: var(--nf-shadow-soft);
-    position: relative;
-    transform: translateY(8px) scale(0.98);
-    opacity: 0;
-    transition: opacity var(--nf-transition), transform var(--nf-transition);
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  display: none;
+  place-items: center;
+  padding: 20px;
+  background: rgba(3,5,8,.72);
+  backdrop-filter: blur(10px);
 }
 
 .app-layout .cmp-modal-overlay.is-open,
 .auth-layout .cmp-modal-overlay.is-open {
-    display: flex;
+  display: grid;
+}
+
+.app-layout .cmp-modal,
+.auth-layout .cmp-modal {
+  width: min(520px, 100%);
+  max-height: min(760px, calc(100vh - 40px));
+  overflow: auto;
+  padding: 22px;
+  border: 1px solid var(--nf-border-strong);
+  border-radius: var(--nf-radius-lg);
+  background: linear-gradient(145deg, rgba(255,255,255,.045), rgba(255,255,255,.015)), var(--nf-surface);
+  box-shadow: var(--nf-shadow-lg);
+  transform: translateY(8px) scale(.985);
+  opacity: 0;
+  transition: transform var(--nf-transition), opacity var(--nf-transition);
 }
 
 .app-layout .cmp-modal-overlay.is-open .cmp-modal,
 .auth-layout .cmp-modal-overlay.is-open .cmp-modal {
-    opacity: 1;
-    transform: translateY(0) scale(1);
+  transform: translateY(0) scale(1);
+  opacity: 1;
 }
 
 .app-layout .cmp-modal-header,
 .auth-layout .cmp-modal-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-    margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 12px;
 }
 
 .app-layout .cmp-modal-title,
 .auth-layout .cmp-modal-title {
-    font-size: 16px;
-    font-weight: 600;
+  font-size: 17px;
+  font-weight: 650;
 }
 
 .app-layout .cmp-modal-body,
 .auth-layout .cmp-modal-body {
-    margin-top: 8px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
 
 .app-layout .cmp-modal-footer,
 .auth-layout .cmp-modal-footer {
-    margin-top: 16px;
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 20px;
 }
 
 .app-layout .cmp-modal-close,
 .auth-layout .cmp-modal-close {
-    width: 26px;
-    height: 26px;
-    border-radius: 999px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--nf-text-muted);
-    background: rgba(255, 255, 255, 0.02);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    transition: background var(--nf-transition-fast),
-        color var(--nf-transition-fast), border-color var(--nf-transition-fast);
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--nf-border-subtle);
+  border-radius: 50%;
+  color: var(--nf-text-muted);
+  background: rgba(255,255,255,.025);
+  transition: color var(--nf-transition-fast), background var(--nf-transition-fast), border-color var(--nf-transition-fast);
 }
 
-.app-layout .cmp-modal-close:hover,
-.auth-layout .cmp-modal-close:hover {
-    background: rgba(255, 255, 255, 0.06);
-    color: var(--nf-text-main);
+.app-layout .cmp-modal-close:hover {
+  color: var(--nf-text-main);
+  background: rgba(255,255,255,.06);
+  border-color: var(--nf-border-strong);
 }
