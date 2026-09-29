@@ -1,24 +1,52 @@
-{% extends "public/base_public.html" %} {% block content %}
+{% extends base_template %}
 
-<section class="pub-section">
-  <h1 class="pub-section-title">Контакти</h1>
+{% block title %}Контакти — NosiFit{% endblock %}
 
-  <div class="pub-contact-grid">
-    <div class="pub-contact-card">
-      <h3 class="pub-contact-title">Email</h3>
-      <p class="pub-contact-text">support@nosi.fit</p>
-    </div>
+{% block styles %}
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/pages/contact.css') }}"
+/>
+{% endblock %}
 
-    <div class="pub-contact-card">
-      <h3 class="pub-contact-title">Instagram</h3>
-      <p class="pub-contact-text">@nosi.fit</p>
-    </div>
+{% block body %}
+<section class="public-contact">
+  <div class="public-contact-header">
+    <span class="public-contact-eyebrow">NosiFit</span>
+    <h1 class="public-contact-title">Зв'яжіться з нами</h1>
+    <p class="public-contact-lead">
+      Якщо маєте питання, пропозицію або знайшли проблему — напишіть нам.
+    </p>
+  </div>
 
-    <div class="pub-contact-card">
-      <h3 class="pub-contact-title">Telegram</h3>
-      <p class="pub-contact-text">@nosi_support</p>
-    </div>
+  <div class="public-contact-grid">
+    <a class="public-contact-card public-contact-card-email" href="mailto:support@nosi.fit">
+      <span class="public-contact-label">Email</span>
+      <strong>support@nosi.fit</strong>
+      <span class="public-contact-action">Написати →</span>
+    </a>
+
+    <a
+      class="public-contact-card public-contact-card-instagram"
+      href="https://www.instagram.com/nosi.fit/"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      <span class="public-contact-label">Instagram</span>
+      <strong>@nosi.fit</strong>
+      <span class="public-contact-action">Відкрити профіль →</span>
+    </a>
+
+    <a
+      class="public-contact-card public-contact-card-telegram"
+      href="https://t.me/nosi_support"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      <span class="public-contact-label">Telegram</span>
+      <strong>@nosi_support</strong>
+      <span class="public-contact-action">Написати →</span>
+    </a>
   </div>
 </section>
-
 {% endblock %}
