@@ -1,4 +1,4 @@
-import { recovery_t } from "../../i18n/index.js";
+import { recovery_t } from "../../../i18n/index.js";
 import { createMiniCard } from "./modal.js";
 
 function formatScore(value) {
