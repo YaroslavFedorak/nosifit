@@ -24,16 +24,28 @@
 
 .dashboard-right {
   display: grid;
-  grid-template-rows: auto auto;
+  grid-template-rows: 440px 300px;
+  gap: 20px;
 }
 
 @media (max-width: 1180px) {
-  .dashboard-main-grid { grid-template-columns: 1fr; }
-  .dashboard-right { grid-template-rows: auto; }
+  .dashboard-main-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-right {
+    grid-template-rows: auto;
+  }
 }
 
 @media (max-width: 720px) {
-  .dashboard-page-wrapper { padding: 0 0 16px; gap: 16px; }
+  .dashboard-page-wrapper {
+    padding: 0 0 16px;
+    gap: 16px;
+  }
+
   .dashboard-left,
-  .dashboard-right { gap: 14px; }
+  .dashboard-right {
+    gap: 14px;
+  }
 }
