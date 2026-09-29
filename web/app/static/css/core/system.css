@@ -1,0 +1,274 @@
+/* NosiFit unified visual system.
+   Loaded after page styles so shared primitives have one final contract. */
+
+body.app-page {
+  --nf-page-bg: var(--nf-bg);
+  --nf-panel: var(--nf-surface);
+  --nf-panel-soft: var(--nf-surface-soft);
+}
+
+body.app-page .dashboard-header,
+body.app-page .training-header,
+body.app-page .nutrition-header,
+body.app-page .recovery-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  min-width: 0;
+  margin-bottom: 20px;
+}
+
+body.app-page .dashboard-header-left,
+body.app-page .training-header-left,
+body.app-page .nutrition-header-left,
+body.app-page .recovery-header-left {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  min-width: 0;
+}
+
+body.app-page .dashboard-header-icon-box,
+body.app-page .training-header-icon-box,
+body.app-page .nutrition-header-icon-box,
+body.app-page .recovery-header-icon-box {
+  width: 42px;
+  height: 42px;
+  flex: 0 0 42px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--nf-border-subtle);
+  border-radius: var(--nf-radius-md);
+  background: var(--nf-surface);
+  box-shadow: var(--nf-shadow-sm);
+}
+
+body.app-page .dashboard-header-icon,
+body.app-page .training-header-icon,
+body.app-page .nutrition-header-icon,
+body.app-page .recovery-header-icon {
+  display: grid;
+  place-items: center;
+  color: var(--nf-yellow);
+}
+
+body.app-page .dashboard-header-icon svg,
+body.app-page .training-header-icon svg,
+body.app-page .nutrition-header-icon svg,
+body.app-page .recovery-header-icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+body.app-page .dashboard-header-text,
+body.app-page .training-header-text,
+body.app-page .nutrition-header-text,
+body.app-page .recovery-header-text {
+  min-width: 0;
+}
+
+body.app-page .dashboard-title,
+body.app-page .training-title,
+body.app-page .nutrition-title,
+body.app-page .recovery-title {
+  margin: 0;
+  color: var(--nf-text-main);
+  font-size: clamp(24px, 2.6vw, 31px);
+  line-height: 1.1;
+  font-weight: 680;
+  letter-spacing: -.035em;
+}
+
+body.app-page .dashboard-subtitle,
+body.app-page .training-subtitle,
+body.app-page .nutrition-subtitle,
+body.app-page .recovery-subtitle {
+  margin-top: 6px;
+  color: var(--nf-text-muted);
+  font-size: 12px;
+}
+
+body.app-page .dashboard-header-right,
+body.app-page .training-header-right,
+body.app-page .nutrition-header-right,
+body.app-page .recovery-header-right {
+  flex: 0 0 auto;
+}
+
+body.app-page .dashboard-header-info,
+body.app-page .training-header-info,
+body.app-page .nutrition-header-info,
+body.app-page .recovery-header-info {
+  min-width: 120px;
+  padding: 9px 12px;
+  border: 1px solid var(--nf-border-subtle);
+  border-radius: var(--nf-radius-md);
+  background: rgba(255,255,255,.018);
+  text-align: right;
+}
+
+body.app-page .dashboard-header-label,
+body.app-page .training-header-label,
+body.app-page .nutrition-header-label,
+body.app-page .recovery-header-label {
+  color: var(--nf-text-soft);
+  font-size: 9px;
+  font-weight: 650;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+body.app-page .dashboard-header-value,
+body.app-page .training-header-value,
+body.app-page .nutrition-header-value,
+body.app-page .recovery-header-value {
+  margin-top: 2px;
+  color: var(--nf-text-main);
+  font-size: 12px;
+  font-weight: 620;
+}
+
+body.app-page .db-card,
+body.app-page .tr-card,
+body.app-page .widget-card,
+body.app-page .panel-content {
+  min-width: 0;
+  border: 1px solid var(--nf-border-subtle);
+  border-radius: var(--nf-radius-lg);
+  background: linear-gradient(145deg, rgba(255,255,255,.028), rgba(255,255,255,.008)), var(--nf-surface);
+  box-shadow: var(--nf-shadow-sm);
+}
+
+body.app-page .db-card,
+body.app-page .tr-card {
+  position: relative;
+  overflow: hidden;
+  padding: 18px;
+  transition: border-color var(--nf-transition), background var(--nf-transition), box-shadow var(--nf-transition);
+}
+
+body.app-page .db-card:hover,
+body.app-page .tr-card:hover,
+body.app-page .widget-card:hover {
+  border-color: var(--nf-border-strong);
+  box-shadow: var(--nf-shadow-md);
+}
+
+body.app-page .db-card-header,
+body.app-page .tr-card-header,
+body.app-page .section-header,
+body.app-page .habits-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+body.app-page .db-card-title,
+body.app-page .tr-card-title,
+body.app-page .section-header h2 {
+  color: var(--nf-text-main);
+  font-size: 14px;
+  font-weight: 650;
+  letter-spacing: -.01em;
+}
+
+body.app-page .db-card-heading,
+body.app-page .tr-card-header > *,
+body.app-page .section-header > * {
+  min-width: 0;
+}
+
+body.app-page .db-btn,
+body.app-page .tr-btn,
+body.app-page .habits-add-btn,
+body.app-page .sleep-add-btn,
+body.app-page .weight-update-button,
+body.app-page .water-add-button {
+  min-height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 8px 12px;
+  border: 1px solid var(--nf-border-strong);
+  border-radius: var(--nf-radius-sm);
+  color: var(--nf-text-main);
+  background: rgba(255,255,255,.025);
+  font-size: 12px;
+  font-weight: 620;
+  transition: transform var(--nf-transition-fast), background var(--nf-transition-fast), border-color var(--nf-transition-fast), box-shadow var(--nf-transition-fast);
+}
+
+body.app-page .db-btn:hover,
+body.app-page .tr-btn:hover,
+body.app-page .habits-add-btn:hover,
+body.app-page .sleep-add-btn:hover,
+body.app-page .weight-update-button:hover,
+body.app-page .water-add-button:hover {
+  transform: translateY(-1px);
+  background: rgba(255,255,255,.055);
+  border-color: rgba(255,255,255,.19);
+}
+
+body.app-page .db-btn-primary,
+body.app-page .tr-btn-primary {
+  color: var(--nf-text-inverse);
+  background: var(--nf-yellow);
+  border-color: rgba(244,200,74,.58);
+  box-shadow: 0 8px 24px rgba(244,200,74,.10);
+}
+
+body.app-page .db-btn-primary:hover,
+body.app-page .tr-btn-primary:hover {
+  background: var(--nf-yellow-soft);
+  box-shadow: var(--nf-glow-yellow);
+}
+
+body.app-page input:not([type="checkbox"]):not([type="radio"]),
+body.app-page select,
+body.app-page textarea {
+  border-radius: var(--nf-radius-sm);
+  border-color: var(--nf-border-subtle);
+  background: rgba(255,255,255,.022);
+}
+
+body.app-page input:not([type="checkbox"]):not([type="radio"]):focus,
+body.app-page select:focus,
+body.app-page textarea:focus {
+  border-color: rgba(244,200,74,.55);
+  box-shadow: 0 0 0 3px rgba(244,200,74,.08);
+  outline: none;
+}
+
+body.app-page ::-webkit-scrollbar { width: 7px; height: 7px; }
+body.app-page ::-webkit-scrollbar-track { background: transparent; }
+body.app-page ::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,.09);
+  border-radius: var(--nf-radius-pill);
+}
+body.app-page ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,.15); }
+
+@media (max-width: 720px) {
+  body.app-page .dashboard-header,
+  body.app-page .training-header,
+  body.app-page .nutrition-header,
+  body.app-page .recovery-header {
+    align-items: flex-start;
+    margin-bottom: 16px;
+  }
+
+  body.app-page .dashboard-header-right,
+  body.app-page .training-header-right,
+  body.app-page .nutrition-header-right,
+  body.app-page .recovery-header-right {
+    display: none;
+  }
+
+  body.app-page .db-card,
+  body.app-page .tr-card {
+    padding: 15px;
+    border-radius: var(--nf-radius-md);
+  }
+}
