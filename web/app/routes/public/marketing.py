@@ -16,6 +16,7 @@ def about():
         "public/about.html",
         base_template=get_base(),
         active="about",
+        layout_mode="app" if current_user.is_authenticated and request.args.get("layout") == "app" else "public",
     )
 
 
