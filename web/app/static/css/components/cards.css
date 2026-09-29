@@ -1,61 +1,63 @@
 .app-layout .cmp-card,
 .public-layout .cmp-card {
-    background: radial-gradient(circle at top left, #0b0d1c 0, #050509 60%);
-    border-radius: var(--nf-radius-md);
-    border: 1px solid var(--nf-border-subtle);
-    padding: 18px 18px 16px;
-    box-shadow: var(--nf-shadow-soft);
-    position: relative;
-    overflow: hidden;
+  position: relative;
+  overflow: hidden;
+  padding: 18px;
+  border: 1px solid var(--nf-border-subtle);
+  border-radius: var(--nf-radius-lg);
+  background: linear-gradient(145deg, rgba(255,255,255,.035), rgba(255,255,255,.012)), var(--nf-surface);
+  box-shadow: var(--nf-shadow-sm);
+  transition: transform var(--nf-transition), border-color var(--nf-transition), background var(--nf-transition), box-shadow var(--nf-transition);
 }
 
-.app-layout .cmp-card::before,
-.public-layout .cmp-card::before {
-    content: "";
-    position: absolute;
-    inset: -40%;
-    background: radial-gradient(circle at top right,
-            rgba(155, 93, 229, 0.18),
-            transparent 55%);
-    opacity: 0;
-    transition: opacity var(--nf-transition-slow);
-    pointer-events: none;
+.app-layout .cmp-card::after,
+.public-layout .cmp-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  background: linear-gradient(120deg, rgba(255,255,255,.035), transparent 34%);
+  opacity: .55;
 }
 
-.app-layout .cmp-card:hover::before,
-.public-layout .cmp-card:hover::before {
-    opacity: 1;
+.app-layout .cmp-card:hover,
+.public-layout .cmp-card:hover {
+  border-color: var(--nf-border-strong);
+  box-shadow: var(--nf-shadow-md);
 }
 
 .app-layout .cmp-card-header,
 .public-layout .cmp-card-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-    margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
 }
 
 .app-layout .cmp-card-title,
 .public-layout .cmp-card-title {
-    font-size: 15px;
-    font-weight: 600;
-    color: var(--nf-text-main);
+  color: var(--nf-text-main);
+  font-size: 14px;
+  font-weight: 650;
 }
 
 .app-layout .cmp-card-sub,
 .public-layout .cmp-card-sub {
-    font-size: 13px;
-    color: var(--nf-text-muted);
+  color: var(--nf-text-muted);
+  font-size: 12px;
 }
 
 .app-layout .cmp-card-body,
 .public-layout .cmp-card-body {
-    margin-top: 6px;
+  position: relative;
+  z-index: 1;
+  margin-top: 8px;
 }
 
 .app-layout .cmp-card-compact,
 .public-layout .cmp-card-compact {
-    padding: 14px 14px 12px;
-    border-radius: var(--nf-radius-sm);
+  padding: 14px;
+  border-radius: var(--nf-radius-md);
 }
