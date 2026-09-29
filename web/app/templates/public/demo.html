@@ -11,45 +11,131 @@
 
 {% block body %}
 <section class="public-demo">
-  <div class="public-demo-header">
-    <div>
-      <span class="public-demo-eyebrow">NosiFit Demo</span>
-      <h1 class="public-demo-title">Подивись, як працює NosiFit</h1>
-      <p class="public-demo-lead">
-        Інтерактивний інтерфейс застосунку без реєстрації. Це демонстраційні
-        дані, тому вони не зберігаються у вашому акаунті.
+  <header class="public-demo-hero">
+    <div class="public-demo-hero-copy">
+      <span class="public-demo-eyebrow" data-i18n="hero.eyebrow">NosiFit Demo</span>
+      <h1 class="public-demo-title" data-i18n="hero.title">
+        Побачте, як NosiFit об'єднує тренування, харчування та відновлення
+      </h1>
+      <p class="public-demo-lead" data-i18n="hero.lead">
+        Це реалістичний приклад дашборду NosiFit. Тут видно, які дані можна
+        заносити щодня та як вони перетворюються на зрозумілу картину вашого стану.
       </p>
     </div>
 
-    <a
-      href="{{ url_for('auth.register') }}"
-      class="public-demo-register"
-      data-glow="yellow"
-    >
-      Створити акаунт
-    </a>
-  </div>
+    <div class="public-demo-hero-actions">
+      <span class="public-demo-demo-badge" data-i18n="hero.badge">Лише демо-дані</span>
+      <a
+        href="{{ url_for('auth.register') }}"
+        class="public-demo-register"
+        data-glow="yellow"
+        data-i18n="hero.cta"
+      >
+        Створити акаунт
+      </a>
+    </div>
+  </header>
 
   <div class="public-demo-dashboard">
     <header class="public-demo-dashboard-header">
       <div>
-        <span class="public-demo-muted">Today</span>
-        <h2>Dashboard</h2>
+        <span class="public-demo-muted" data-i18n="dashboard.eyebrow">Огляд дня</span>
+        <h2 data-i18n="dashboard.title">Dashboard</h2>
       </div>
-      <span class="public-demo-status">Demo data</span>
+
+      <div class="public-demo-date">
+        <span data-i18n="dashboard.dateLabel">Сьогодні</span>
+        <strong>28 вересня</strong>
+      </div>
     </header>
 
-    <div class="public-demo-top-grid">
-      <section class="public-demo-card public-demo-workout">
+    <section class="public-demo-score-grid" aria-label="Daily overview">
+      <article class="public-demo-score-card public-demo-score-card-balance">
+        <span class="public-demo-muted" data-i18n="scores.balance.label">Баланс дня</span>
+        <div class="public-demo-score-value">84</div>
+        <span class="public-demo-score-note" data-i18n="scores.balance.note">стабільний день</span>
+      </article>
+
+      <article class="public-demo-score-card public-demo-score-card-training">
+        <span class="public-demo-muted" data-i18n="scores.training.label">Тренування</span>
+        <div class="public-demo-score-value">72</div>
+        <span class="public-demo-score-note" data-i18n="scores.training.note">помірне навантаження</span>
+      </article>
+
+      <article class="public-demo-score-card public-demo-score-card-recovery">
+        <span class="public-demo-muted" data-i18n="scores.recovery.label">Відновлення</span>
+        <div class="public-demo-score-value">82</div>
+        <span class="public-demo-score-note" data-i18n="scores.recovery.note">добрий стан</span>
+      </article>
+
+      <article class="public-demo-score-card public-demo-score-card-nutrition">
+        <span class="public-demo-muted" data-i18n="scores.nutrition.label">Харчування</span>
+        <div class="public-demo-score-value">88</div>
+        <span class="public-demo-score-note" data-i18n="scores.nutrition.note">ціль майже виконана</span>
+      </article>
+    </section>
+
+    <section class="public-demo-card public-demo-heatmap-card">
+      <div class="public-demo-card-header">
+        <div>
+          <span class="public-demo-muted" data-i18n="heatmap.eyebrow">Активність</span>
+          <h3 data-i18n="heatmap.title">Твій ритм за останні тижні</h3>
+        </div>
+        <span class="public-demo-accent" data-i18n="heatmap.badge">Баланс дня</span>
+      </div>
+
+      <p class="public-demo-card-description" data-i18n="heatmap.description">
+        Кожна клітинка показує загальний баланс дня. Натискаючи на день у
+        справжньому дашборді, можна переглянути тренування, відновлення та харчування.
+      </p>
+
+      <div class="public-demo-months" aria-hidden="true">
+        <span data-i18n="heatmap.month1">Сер</span>
+        <span data-i18n="heatmap.month2">Вер</span>
+      </div>
+
+      <div class="public-demo-heatmap" aria-label="Activity heatmap">
+        {% for level in [
+          0,1,2,3,2,4,5,3,1,2,4,5,4,3,2,1,
+          0,2,4,5,3,2,1,3,4,5,4,2,3,5,4,3,
+          1,2,4,5,3,2,1,4,5,4,3,2,1,3,4,5,
+          4,3,2,4,5,3,2,1,4,5,4,3,2,1,3,4,
+          5,4,2,3,5,4,3,2,4,5,3,2,1,4,5,4,
+          3,2,1,3,4,5,4,2,3,5,4,3,2,4,5,3
+        ] %}
+        <i class="heat-{{ level }}"></i>
+        {% endfor %}
+      </div>
+
+      <div class="public-demo-heatmap-legend">
+        <span data-i18n="heatmap.less">Менше</span>
+        <i class="heat-0"></i>
+        <i class="heat-1"></i>
+        <i class="heat-2"></i>
+        <i class="heat-3"></i>
+        <i class="heat-4"></i>
+        <i class="heat-5"></i>
+        <span data-i18n="heatmap.more">Більше</span>
+      </div>
+    </section>
+
+    <div class="public-demo-main-grid">
+      <section class="public-demo-card public-demo-training-card">
         <div class="public-demo-card-header">
           <div>
-            <span class="public-demo-muted">Training</span>
-            <h3>Upper Body</h3>
+            <span class="public-demo-muted" data-i18n="training.eyebrow">Тренування</span>
+            <h3 data-i18n="training.title">Сьогоднішнє тренування</h3>
           </div>
-          <span class="public-demo-accent">4 exercises</span>
+          <span class="public-demo-accent" data-i18n="training.status">Збережено</span>
         </div>
 
-        <div class="public-demo-exercises">
+        <div class="public-demo-workout-meta">
+          <strong data-i18n="training.plan">Upper Body</strong>
+          <span data-i18n="training.duration">42 хв</span>
+          <span data-i18n="training.load">Навантаження 64</span>
+        </div>
+
+        <div class="public-demo-list">
           <div><span>Bench Press</span><strong>3 × 10</strong></div>
           <div><span>Lat Pulldown</span><strong>3 × 12</strong></div>
           <div><span>Shoulder Press</span><strong>3 × 10</strong></div>
@@ -57,74 +143,148 @@
         </div>
 
         <div class="public-demo-progress">
-          <span>Workout progress</span>
-          <strong>75%</strong>
-          <div><i></i></div>
+          <div class="public-demo-progress-head">
+            <span data-i18n="training.progress">Прогрес тренування</span>
+            <strong>75%</strong>
+          </div>
+          <div class="public-demo-progress-track"><i></i></div>
         </div>
       </section>
 
-      <section class="public-demo-card">
+      <section class="public-demo-card public-demo-nutrition-card">
         <div class="public-demo-card-header">
           <div>
-            <span class="public-demo-muted">Recovery</span>
-            <h3>Good balance</h3>
+            <span class="public-demo-muted" data-i18n="nutrition.eyebrow">Харчування</span>
+            <h3 data-i18n="nutrition.title">Що з'їдено сьогодні</h3>
           </div>
-          <span class="public-demo-score">82</span>
+          <span class="public-demo-accent">1 840 kcal</span>
         </div>
 
-        <div class="public-demo-recovery">
-          <div><span>Sleep</span><strong>7h 42m</strong></div>
-          <div><span>Recovery</span><strong>82%</strong></div>
-          <div><span>Stress</span><strong>Low</strong></div>
+        <div class="public-demo-meals">
+          <div>
+            <span>
+              <strong data-i18n="nutrition.meal1">Сніданок</strong>
+              <small data-i18n="nutrition.meal1Food">Вівсянка · банан · йогурт</small>
+            </span>
+            <strong>420 kcal</strong>
+          </div>
+          <div>
+            <span>
+              <strong data-i18n="nutrition.meal2">Обід</strong>
+              <small data-i18n="nutrition.meal2Food">Рис · курка · овочі</small>
+            </span>
+            <strong>640 kcal</strong>
+          </div>
+          <div>
+            <span>
+              <strong data-i18n="nutrition.meal3">Вечеря</strong>
+              <small data-i18n="nutrition.meal3Food">Паста · тунець · салат</small>
+            </span>
+            <strong>510 kcal</strong>
+          </div>
+          <div>
+            <span>
+              <strong data-i18n="nutrition.meal4">Перекус</strong>
+              <small data-i18n="nutrition.meal4Food">Фрукти · горіхи</small>
+            </span>
+            <strong>270 kcal</strong>
+          </div>
+        </div>
+
+        <div class="public-demo-macros">
+          <div><span data-i18n="nutrition.protein">Білки</span><strong>126 g</strong><i class="macro-protein"></i></div>
+          <div><span data-i18n="nutrition.carbs">Вуглеводи</span><strong>208 g</strong><i class="macro-carbs"></i></div>
+          <div><span data-i18n="nutrition.fats">Жири</span><strong>58 g</strong><i class="macro-fats"></i></div>
+        </div>
+
+        <div class="public-demo-water">
+          <span data-i18n="nutrition.water">Вода</span>
+          <strong>1 650 / 2 000 ml</strong>
         </div>
       </section>
     </div>
 
-    <div class="public-demo-bottom-grid">
-      <section class="public-demo-card">
+    <div class="public-demo-main-grid public-demo-recovery-grid">
+      <section class="public-demo-card public-demo-recovery-card">
         <div class="public-demo-card-header">
           <div>
-            <span class="public-demo-muted">Nutrition</span>
-            <h3>Today's intake</h3>
+            <span class="public-demo-muted" data-i18n="recovery.eyebrow">Відновлення</span>
+            <h3 data-i18n="recovery.title">Сон та стан організму</h3>
           </div>
-          <span class="public-demo-accent">1,840 kcal</span>
+          <span class="public-demo-score-pill">82</span>
         </div>
 
-        <div class="public-demo-macros">
-          <div><span>Protein</span><strong>126 g</strong><i class="macro-protein"></i></div>
-          <div><span>Carbs</span><strong>208 g</strong><i class="macro-carbs"></i></div>
-          <div><span>Fats</span><strong>58 g</strong><i class="macro-fats"></i></div>
+        <div class="public-demo-recovery-stats">
+          <div>
+            <span data-i18n="recovery.sleep">Сон</span>
+            <strong>7h 42m</strong>
+            <small data-i18n="recovery.sleepQuality">добра якість</small>
+          </div>
+          <div>
+            <span data-i18n="recovery.energy">Енергія</span>
+            <strong>78%</strong>
+            <small data-i18n="recovery.energyStatus">стабільна</small>
+          </div>
+          <div>
+            <span data-i18n="recovery.stress">Стрес</span>
+            <strong data-i18n="recovery.stressValue">Низький</strong>
+            <small data-i18n="recovery.stressStatus">без різких змін</small>
+          </div>
         </div>
       </section>
 
-      <section class="public-demo-card">
+      <section class="public-demo-card public-demo-habits-card">
         <div class="public-demo-card-header">
           <div>
-            <span class="public-demo-muted">Weekly activity</span>
-            <h3>Consistency</h3>
+            <span class="public-demo-muted" data-i18n="habits.eyebrow">Звички відновлення</span>
+            <h3 data-i18n="habits.title">Щоденні дії</h3>
           </div>
-          <span class="public-demo-accent">6 / 7 days</span>
+          <span class="public-demo-accent">4 / 5</span>
         </div>
 
-        <div class="public-demo-heatmap" aria-label="Weekly activity preview">
-          {% for level in [1, 2, 3, 2, 4, 5, 3, 1, 2, 4, 5, 4, 3, 2, 1, 3, 4, 5, 4, 2, 3, 5, 4, 3, 2, 4, 5, 3, 2, 1, 4, 5, 4, 3, 2, 1] %}
-          <i class="heat-{{ level }}"></i>
-          {% endfor %}
+        <div class="public-demo-habits">
+          <div class="habit-done"><span data-i18n="habits.sleep">Сон за графіком</span><b>✓</b></div>
+          <div class="habit-done"><span data-i18n="habits.water">Достатньо води</span><b>✓</b></div>
+          <div class="habit-done"><span data-i18n="habits.mobility">Легка рухливість</span><b>✓</b></div>
+          <div class="habit-done"><span data-i18n="habits.recovery">Відновлення</span><b>✓</b></div>
+          <div class="habit-pending"><span data-i18n="habits.stress">Відпочинок від екранів</span><b>○</b></div>
         </div>
       </section>
     </div>
 
     <section class="public-demo-card public-demo-recommendation">
+      <div class="public-demo-recommendation-mark">→</div>
       <div>
-        <span class="public-demo-muted">Recommendation</span>
-        <h3>Keep today's intensity moderate</h3>
-        <p>
-          Your recent training load is stable. Focus on controlled sets and
-          allow enough recovery before the next heavy session.
+        <span class="public-demo-muted" data-i18n="recommendation.eyebrow">Рекомендація</span>
+        <h3 data-i18n="recommendation.title">Сьогодні тримай інтенсивність помірною</h3>
+        <p data-i18n="recommendation.text">
+          Нещодавнє навантаження стабільне, а відновлення хороше. Можна тренуватися,
+          але без різкого збільшення об'єму. Після тренування зверни увагу на сон та воду.
         </p>
       </div>
-      <span class="public-demo-recommendation-icon">→</span>
+    </section>
+
+    <section class="public-demo-register-panel">
+      <div>
+        <span class="public-demo-eyebrow" data-i18n="register.eyebrow">Після реєстрації</span>
+        <h3 data-i18n="register.title">Ці дані стануть твоїми</h3>
+        <p data-i18n="register.text">
+          Ти зможеш заносити власні тренування, прийоми їжі, воду, сон і звички,
+          а NosiFit буде збирати їх у єдиний дашборд та показувати динаміку.
+        </p>
+      </div>
+      <a
+        href="{{ url_for('auth.register') }}"
+        class="public-demo-register public-demo-register-secondary"
+        data-i18n="register.cta"
+      >
+        Почати з NosiFit
+      </a>
     </section>
   </div>
 </section>
+{% endblock %}
+
+{% block scripts %}
+<script type="module" src="{{ url_for('static', filename='js/pages/demo.js') }}"></script>
 {% endblock %}

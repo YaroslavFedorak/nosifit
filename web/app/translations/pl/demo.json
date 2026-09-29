@@ -1,0 +1,98 @@
+{
+    "hero": {
+        "eyebrow": "Demo NosiFit",
+        "title": "Zobacz, jak NosiFit łączy trening, odżywianie i regenerację",
+        "lead": "To realistyczny podgląd panelu NosiFit. Pokazuje, co możesz zapisywać każdego dnia i jak dane tworzą czytelny obraz Twojego stanu.",
+        "badge": "Tylko dane demo",
+        "cta": "Utwórz konto"
+    },
+    "dashboard": {
+        "eyebrow": "Podsumowanie dnia",
+        "title": "Dashboard",
+        "dateLabel": "Dzisiaj"
+    },
+    "scores": {
+        "balance": {
+            "label": "Bilans dnia",
+            "note": "stabilny dzień"
+        },
+        "training": {
+            "label": "Trening",
+            "note": "umiarkowane obciążenie"
+        },
+        "recovery": {
+            "label": "Regeneracja",
+            "note": "dobry stan"
+        },
+        "nutrition": {
+            "label": "Odżywianie",
+            "note": "cel prawie osiągnięty"
+        }
+    },
+    "heatmap": {
+        "eyebrow": "Aktywność",
+        "title": "Twój rytm z ostatnich tygodni",
+        "badge": "Bilans dnia",
+        "description": "Każde pole pokazuje ogólny bilans dnia. W prawdziwym panelu możesz otworzyć dzień i zobaczyć trening, regenerację oraz odżywianie.",
+        "month1": "Sie",
+        "month2": "Wrz",
+        "less": "Mniej",
+        "more": "Więcej"
+    },
+    "training": {
+        "eyebrow": "Trening",
+        "title": "Dzisiejszy trening",
+        "status": "Zapisano",
+        "plan": "Upper Body",
+        "duration": "42 min",
+        "load": "Obciążenie 64",
+        "progress": "Postęp treningu"
+    },
+    "nutrition": {
+        "eyebrow": "Odżywianie",
+        "title": "Co zjedzono dzisiaj",
+        "meal1": "Śniadanie",
+        "meal1Food": "Owsianka · banan · jogurt",
+        "meal2": "Obiad",
+        "meal2Food": "Ryż · kurczak · warzywa",
+        "meal3": "Kolacja",
+        "meal3Food": "Makaron · tuńczyk · sałatka",
+        "meal4": "Przekąska",
+        "meal4Food": "Owoce · orzechy",
+        "protein": "Białko",
+        "carbs": "Węglowodany",
+        "fats": "Tłuszcze",
+        "water": "Woda"
+    },
+    "recovery": {
+        "eyebrow": "Regeneracja",
+        "title": "Sen i stan organizmu",
+        "sleep": "Sen",
+        "sleepQuality": "dobra jakość",
+        "energy": "Energia",
+        "energyStatus": "stabilna",
+        "stress": "Stres",
+        "stressValue": "Niski",
+        "stressStatus": "bez nagłych zmian"
+    },
+    "habits": {
+        "eyebrow": "Nawyki regeneracyjne",
+        "title": "Codzienne działania",
+        "sleep": "Sen zgodnie z planem",
+        "water": "Wystarczająco wody",
+        "mobility": "Lekka mobilność",
+        "recovery": "Sesja regeneracyjna",
+        "stress": "Odpoczynek bez ekranów"
+    },
+    "recommendation": {
+        "eyebrow": "Rekomendacja",
+        "title": "Utrzymaj dziś umiarkowaną intensywność",
+        "text": "Niedawne obciążenie treningowe jest stabilne, a regeneracja wygląda dobrze. Możesz trenować, ale unikaj nagłego zwiększania objętości. Po treningu zwróć uwagę na sen i nawodnienie."
+    },
+    "register": {
+        "eyebrow": "Po rejestracji",
+        "title": "Te dane będą Twoje",
+        "text": "Będziesz zapisywać własne treningi, posiłki, wodę, sen i nawyki regeneracyjne. NosiFit połączy je w jednym panelu i pokaże zmiany w czasie.",
+        "cta": "Zacznij z NosiFit"
+    }
+}

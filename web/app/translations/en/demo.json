@@ -1,0 +1,98 @@
+{
+    "hero": {
+        "eyebrow": "NosiFit Demo",
+        "title": "See how NosiFit brings training, nutrition and recovery together",
+        "lead": "This is a realistic NosiFit dashboard preview. It shows what you can log every day and how those entries become a clear picture of your current state.",
+        "badge": "Demo data only",
+        "cta": "Create account"
+    },
+    "dashboard": {
+        "eyebrow": "Daily overview",
+        "title": "Dashboard",
+        "dateLabel": "Today"
+    },
+    "scores": {
+        "balance": {
+            "label": "Daily balance",
+            "note": "stable day"
+        },
+        "training": {
+            "label": "Training",
+            "note": "moderate load"
+        },
+        "recovery": {
+            "label": "Recovery",
+            "note": "good state"
+        },
+        "nutrition": {
+            "label": "Nutrition",
+            "note": "goal nearly reached"
+        }
+    },
+    "heatmap": {
+        "eyebrow": "Activity",
+        "title": "Your rhythm over the last weeks",
+        "badge": "Daily balance",
+        "description": "Each cell shows the overall balance for a day. In the real dashboard, you can open a day to see training, recovery and nutrition details.",
+        "month1": "Aug",
+        "month2": "Sep",
+        "less": "Less",
+        "more": "More"
+    },
+    "training": {
+        "eyebrow": "Training",
+        "title": "Today's workout",
+        "status": "Saved",
+        "plan": "Upper Body",
+        "duration": "42 min",
+        "load": "Load 64",
+        "progress": "Workout progress"
+    },
+    "nutrition": {
+        "eyebrow": "Nutrition",
+        "title": "What you ate today",
+        "meal1": "Breakfast",
+        "meal1Food": "Oatmeal · banana · yogurt",
+        "meal2": "Lunch",
+        "meal2Food": "Rice · chicken · vegetables",
+        "meal3": "Dinner",
+        "meal3Food": "Pasta · tuna · salad",
+        "meal4": "Snack",
+        "meal4Food": "Fruit · nuts",
+        "protein": "Protein",
+        "carbs": "Carbs",
+        "fats": "Fats",
+        "water": "Water"
+    },
+    "recovery": {
+        "eyebrow": "Recovery",
+        "title": "Sleep and body state",
+        "sleep": "Sleep",
+        "sleepQuality": "good quality",
+        "energy": "Energy",
+        "energyStatus": "stable",
+        "stress": "Stress",
+        "stressValue": "Low",
+        "stressStatus": "no sharp changes"
+    },
+    "habits": {
+        "eyebrow": "Recovery habits",
+        "title": "Daily actions",
+        "sleep": "Sleep on schedule",
+        "water": "Enough water",
+        "mobility": "Light mobility",
+        "recovery": "Recovery session",
+        "stress": "Screen-free rest"
+    },
+    "recommendation": {
+        "eyebrow": "Recommendation",
+        "title": "Keep today's intensity moderate",
+        "text": "Recent training load is stable and recovery looks good. You can train, but avoid a sudden increase in volume. After training, pay attention to sleep and hydration."
+    },
+    "register": {
+        "eyebrow": "After registration",
+        "title": "These data become yours",
+        "text": "You can log your own workouts, meals, water, sleep and recovery habits. NosiFit brings them into one dashboard and shows how they change over time.",
+        "cta": "Start with NosiFit"
+    }
+}
