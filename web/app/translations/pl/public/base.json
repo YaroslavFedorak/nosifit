@@ -12,28 +12,61 @@
     "register": "Rejestracja"
   },
   "landing": {
-    "title": "Twój osobisty<br />asystent fitness",
-    "subtitle": "Minimalistyczny, dynamiczny i inteligentny serwis do treningów, odżywiania, regeneracji i analityki. Wszystko w jednym miejscu.",
-    "startNow": "Zacznij teraz",
-    "tryDemo": "Wypróbuj demo",
-    "progressToday": "Dzisiejszy postęp",
-    "features": {
+    "title": "Wszystko, czego potrzebujesz, aby<br>lepiej trenować, regenerować się i żyć",
+    "subtitle": "NosiFit łączy trening, odżywianie, sen, nawyki i regenerację w jednej aplikacji. Analizuje Twoje dane i podpowiada, co ma znaczenie w danym momencie.",
+    "startNow": "Utwórz konto",
+    "tryDemo": "Zobacz demo",
+    "note": "Zacznij od własnych danych. Bez zbędnej komplikacji.",
+    "overview": {
+      "label": "Przykładowy dzień",
+      "title": "Twój stan dzisiaj",
+      "status": "W normie",
+      "recovery": "Regeneracja",
+      "training": "Obciążenie",
+      "trainingValue": "Umiarkowane",
+      "sleep": "Sen",
+      "water": "Woda",
+      "meals": "Posiłki",
+      "recommendationLabel": "Rekomendacja",
+      "recommendation": "Dzisiejsze obciążenie jest umiarkowane. Kontynuuj zgodnie z planem i zwróć uwagę na regenerację."
+    },
+    "areas": {
+      "eyebrow": "W jednym miejscu",
+      "title": "Najważniejsze elementy Twojej rutyny",
+      "text": "NosiFit nie ogranicza się do treningów. Pomaga zobaczyć zależność między obciążeniem, odżywianiem i regeneracją.",
+      "open": "Dowiedz się więcej",
       "training": {
         "title": "Trening",
-        "subtitle": "Struktura i postęp"
+        "text": "Zapisuj ćwiczenia, serie, powtórzenia i obciążenie. Obserwuj historię oraz zmiany w czasie."
       },
       "nutrition": {
         "title": "Odżywianie",
-        "subtitle": "Kalorie i makroskładniki"
+        "text": "Dodawaj posiłki, kalorie, makroskładniki i wodę, aby widzieć odżywianie razem z resztą danych."
       },
       "recovery": {
         "title": "Regeneracja",
-        "subtitle": "Sen i równowaga"
+        "text": "Śledź sen, regenerację i inne sygnały pomagające ocenić gotowość do treningu."
       },
-      "analytics": {
-        "title": "Analityka",
-        "subtitle": "Wykresy i informacje"
+      "habits": {
+        "title": "Nawyki",
+        "text": "Zapisuj regularne działania i obserwuj, jak wiążą się z Twoją rutyną i regeneracją."
       }
+    },
+    "context": {
+      "eyebrow": "Jak to działa",
+      "title": "Od pojedynczych zapisów do pełniejszego obrazu",
+      "text": "Zapisujesz to, co dzieje się w ciągu dnia. NosiFit łączy dane, analizuje je i wykorzystuje dostępny kontekst do tworzenia rekomendacji.",
+      "records": "Zapisy",
+      "recordsText": "Trening, odżywianie, sen, woda i nawyki.",
+      "analysis": "Analiza",
+      "analysisText": "Dane są porównywane i analizowane razem, a nie osobno.",
+      "recommendations": "Rekomendacje",
+      "recommendationsText": "Otrzymuj praktyczne wskazówki na podstawie najnowszych danych."
+    },
+    "cta": {
+      "eyebrow": "NosiFit",
+      "title": "Zobacz, jak działa w praktyce",
+      "text": "Zobacz rzeczywisty przykład aplikacji albo utwórz własne konto i zacznij zapisywać swoje dane."
     }
   },
   "contact": {

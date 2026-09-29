@@ -1,104 +1,147 @@
-{% extends "public/base_public.html" %} {% block title %}{{ public_t("meta.landingTitle") }}{% endblock %} {% block styles %}
-<link
-  rel="stylesheet"
-  href="{{ url_for('static', filename='css/pages/landing.css') }}"
-/>
-{% endblock %} {% block body %}
-<section class="pub-landing">
-  <div class="pub-landing-bg">
-    <div class="pub-blob pub-blob-1"></div>
-    <div class="pub-blob pub-blob-2"></div>
-    <div class="pub-blob pub-blob-3"></div>
-    <div class="pub-grid-lines"></div>
-  </div>
+{% extends "public/base_public.html" %}
 
-  <div class="pub-landing-container">
-    <div class="pub-landing-left">
-      <div class="pub-logo">
-        <span class="pub-logo-nos">Nosi</span>
-        <span class="pub-logo-fit">Fit</span>
+{% block title %}{{ public_t("meta.landingTitle") }}{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/pages/landing.css') }}" />
+{% endblock %}
+
+{% block body %}
+<main class="landing">
+  <section class="landing-hero">
+    <div class="landing-container landing-hero-grid">
+      <div class="landing-hero-copy">
+        <span class="landing-eyebrow">NosiFit</span>
+        <h1 class="landing-title">{{ public_t("landing.title") | safe }}</h1>
+        <p class="landing-lead">{{ public_t("landing.subtitle") }}</p>
+
+        <div class="landing-actions">
+          <a href="{{ url_for('auth.register') }}" class="landing-button landing-button-primary">
+            {{ public_t("landing.startNow") }}
+          </a>
+          <a href="{{ url_for('public.demo') }}" class="landing-button landing-button-secondary">
+            {{ public_t("landing.tryDemo") }}
+          </a>
+        </div>
+
+        <p class="landing-note">{{ public_t("landing.note") }}</p>
       </div>
 
-      <h1 class="pub-landing-title">{{ public_t("landing.title") | safe }}</h1>
-
-      <p class="pub-landing-sub">
-        {{ public_t("landing.subtitle") }}
-      </p>
-
-      <div class="pub-landing-actions">
-        <a
-          href="/auth/register"
-          class="pub-btn pub-btn-register"
-          data-glow="yellow"
-        >
-          {{ public_t("landing.startNow") }}
-        </a>
-
-        <a href="/demo" class="pub-btn pub-btn-login" data-glow="blue">
-          {{ public_t("landing.tryDemo") }}
-        </a>
-      </div>
-    </div>
-
-    <div class="pub-landing-right">
-      <div class="pub-progress-card">
-        <div class="pub-progress-header">
-          <div class="pub-progress-label">{{ public_t("landing.progressToday") }}</div>
-          <div class="pub-progress-tag">+32%</div>
+      <div class="landing-overview">
+        <div class="landing-overview-header">
+          <div>
+            <span class="landing-overview-label">{{ public_t("landing.overview.label") }}</span>
+            <h2>{{ public_t("landing.overview.title") }}</h2>
+          </div>
+          <span class="landing-status">{{ public_t("landing.overview.status") }}</span>
         </div>
 
-        <div class="pub-progress-main">
-          <div class="pub-progress-value">32%</div>
+        <div class="landing-overview-score">
+          <div>
+            <span>{{ public_t("landing.overview.recovery") }}</span>
+            <strong>82</strong>
+          </div>
+          <div class="landing-score-meta">
+            <span>{{ public_t("landing.overview.training") }}</span>
+            <strong>{{ public_t("landing.overview.trainingValue") }}</strong>
+          </div>
         </div>
 
-        <div class="pub-progress-bar"><span></span></div>
-      </div>
-
-      <div class="pub-features-grid">
-        <div class="pub-feature-item pub-feature-training" data-glow="yellow">
-          <div class="pub-feature-icon">💪</div>
-          <div class="pub-feature-title">{{ public_t("landing.features.training.title") }}</div>
-          <div class="pub-feature-sub">{{ public_t("landing.features.training.subtitle") }}</div>
+        <div class="landing-overview-row">
+          <div>
+            <span>{{ public_t("landing.overview.sleep") }}</span>
+            <strong>7h 42m</strong>
+          </div>
+          <div>
+            <span>{{ public_t("landing.overview.water") }}</span>
+            <strong>1.8 L</strong>
+          </div>
+          <div>
+            <span>{{ public_t("landing.overview.meals") }}</span>
+            <strong>3</strong>
+          </div>
         </div>
 
-        <div class="pub-feature-item pub-feature-nutrition" data-glow="violet">
-          <div class="pub-feature-icon">🍽️</div>
-          <div class="pub-feature-title">{{ public_t("landing.features.nutrition.title") }}</div>
-          <div class="pub-feature-sub">{{ public_t("landing.features.nutrition.subtitle") }}</div>
-        </div>
-
-        <div class="pub-feature-item pub-feature-recovery" data-glow="blue">
-          <div class="pub-feature-icon">💤</div>
-          <div class="pub-feature-title">{{ public_t("landing.features.recovery.title") }}</div>
-          <div class="pub-feature-sub">{{ public_t("landing.features.recovery.subtitle") }}</div>
-        </div>
-
-        <div class="pub-feature-item pub-feature-analytics" data-glow="mix">
-          <div class="pub-feature-icon">📊</div>
-          <div class="pub-feature-title">{{ public_t("landing.features.analytics.title") }}</div>
-          <div class="pub-feature-sub">{{ public_t("landing.features.analytics.subtitle") }}</div>
+        <div class="landing-overview-recommendation">
+          <span class="landing-recommendation-label">{{ public_t("landing.overview.recommendationLabel") }}</span>
+          <p>{{ public_t("landing.overview.recommendation") }}</p>
         </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<script>
-  document.querySelectorAll(".pub-feature-item").forEach((card) => {
-    card.addEventListener("mouseenter", () => {
-      const bg = document.querySelector(".pub-landing-bg");
-      bg.className = "pub-landing-bg";
+  <section class="landing-section landing-areas">
+    <div class="landing-container">
+      <div class="landing-section-heading">
+        <span class="landing-eyebrow">{{ public_t("landing.areas.eyebrow") }}</span>
+        <h2>{{ public_t("landing.areas.title") }}</h2>
+        <p>{{ public_t("landing.areas.text") }}</p>
+      </div>
 
-      if (card.dataset.glow === "yellow") bg.classList.add("pub-glow-yellow");
-      if (card.dataset.glow === "blue") bg.classList.add("pub-glow-blue");
-      if (card.dataset.glow === "violet") bg.classList.add("pub-glow-violet");
-      if (card.dataset.glow === "mix") bg.classList.add("pub-glow-mix");
-    });
+      <div class="landing-area-grid">
+        {% for key in ["training", "nutrition", "recovery", "habits"] %}
+        <a href="{{ url_for('auth.register') }}" class="landing-area-card">
+          <span class="landing-area-number">0{{ loop.index }}</span>
+          <div>
+            <h3>{{ public_t("landing.areas." ~ key ~ ".title") }}</h3>
+            <p>{{ public_t("landing.areas." ~ key ~ ".text") }}</p>
+          </div>
+          <span class="landing-area-link">{{ public_t("landing.areas.open") }}</span>
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
 
-    card.addEventListener("mouseleave", () => {
-      const bg = document.querySelector(".pub-landing-bg");
-      bg.className = "pub-landing-bg";
-    });
-  });
-</script>
+  <section class="landing-section landing-context">
+    <div class="landing-container landing-context-grid">
+      <div class="landing-section-heading">
+        <span class="landing-eyebrow">{{ public_t("landing.context.eyebrow") }}</span>
+        <h2>{{ public_t("landing.context.title") }}</h2>
+        <p>{{ public_t("landing.context.text") }}</p>
+      </div>
+
+      <div class="landing-flow">
+        <div class="landing-flow-item">
+          <span>01</span>
+          <strong>{{ public_t("landing.context.records") }}</strong>
+          <p>{{ public_t("landing.context.recordsText") }}</p>
+        </div>
+        <div class="landing-flow-line"></div>
+        <div class="landing-flow-item">
+          <span>02</span>
+          <strong>{{ public_t("landing.context.analysis") }}</strong>
+          <p>{{ public_t("landing.context.analysisText") }}</p>
+        </div>
+        <div class="landing-flow-line"></div>
+        <div class="landing-flow-item">
+          <span>03</span>
+          <strong>{{ public_t("landing.context.recommendations") }}</strong>
+          <p>{{ public_t("landing.context.recommendationsText") }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="landing-section landing-cta">
+    <div class="landing-container">
+      <div class="landing-cta-card">
+        <div>
+          <span class="landing-eyebrow">{{ public_t("landing.cta.eyebrow") }}</span>
+          <h2>{{ public_t("landing.cta.title") }}</h2>
+          <p>{{ public_t("landing.cta.text") }}</p>
+        </div>
+
+        <div class="landing-cta-actions">
+          <a href="{{ url_for('public.demo') }}" class="landing-button landing-button-secondary">
+            {{ public_t("landing.tryDemo") }}
+          </a>
+          <a href="{{ url_for('auth.register') }}" class="landing-button landing-button-primary">
+            {{ public_t("landing.startNow") }}
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
 {% endblock %}

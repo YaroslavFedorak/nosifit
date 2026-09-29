@@ -12,28 +12,61 @@
     "register": "Register"
   },
   "landing": {
-    "title": "Your personal<br />fitness assistant",
-    "subtitle": "A minimalist, dynamic and smart service for training, nutrition, recovery and analytics. Everything in one place.",
-    "startNow": "Get started",
-    "tryDemo": "Try demo",
-    "progressToday": "Today's progress",
-    "features": {
+    "title": "Everything you need to<br>train, recover and live better",
+    "subtitle": "NosiFit brings training, nutrition, sleep, habits and recovery together in one app. It uses your data to provide recommendations based on what is happening now.",
+    "startNow": "Create an account",
+    "tryDemo": "View demo",
+    "note": "Start with your own data. No unnecessary complexity.",
+    "overview": {
+      "label": "Example day",
+      "title": "Your state today",
+      "status": "On track",
+      "recovery": "Recovery",
+      "training": "Training load",
+      "trainingValue": "Moderate",
+      "sleep": "Sleep",
+      "water": "Water",
+      "meals": "Meals",
+      "recommendationLabel": "Recommendation",
+      "recommendation": "Today's workload is moderate. Continue as planned and give recovery some attention."
+    },
+    "areas": {
+      "eyebrow": "In one place",
+      "title": "The parts of your daily state",
+      "text": "NosiFit goes beyond workouts. It helps you see the relationship between training load, nutrition and recovery.",
+      "open": "Learn more",
       "training": {
         "title": "Training",
-        "subtitle": "Structure and progress"
+        "text": "Record exercises, sets, repetitions and workload. Follow your history and changes over time."
       },
       "nutrition": {
         "title": "Nutrition",
-        "subtitle": "Calories and macros"
+        "text": "Log meals, calories, macros and water so nutrition can be viewed alongside the rest of your data."
       },
       "recovery": {
         "title": "Recovery",
-        "subtitle": "Sleep and balance"
+        "text": "Track sleep, recovery and other signals that help you understand your readiness for training."
       },
-      "analytics": {
-        "title": "Analytics",
-        "subtitle": "Charts and insights"
+      "habits": {
+        "title": "Habits",
+        "text": "Record regular actions and see how they relate to your routine and recovery."
       }
+    },
+    "context": {
+      "eyebrow": "How it works",
+      "title": "From separate records to a clearer picture",
+      "text": "You record what happens throughout your day. NosiFit brings the data together, analyzes it and uses the available context for recommendations.",
+      "records": "Records",
+      "recordsText": "Training, nutrition, sleep, water and habits.",
+      "analysis": "Analysis",
+      "analysisText": "Data is compared and considered together rather than in isolation.",
+      "recommendations": "Recommendations",
+      "recommendationsText": "Get practical suggestions based on your latest data."
+    },
+    "cta": {
+      "eyebrow": "NosiFit",
+      "title": "See how it works in practice",
+      "text": "View a real example of the app or create your own account and start tracking your data."
     }
   },
   "contact": {
