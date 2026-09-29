@@ -1,16 +1,130 @@
-{% extends "public/base_public.html" %} {% block content %}
+{% extends base_template %}
 
-<section class="pub-section">
-  <h1 class="pub-section-title">Демо</h1>
-  <p class="pub-section-text">
-    Переглянь, як виглядає робота системи перед реєстрацією.
-  </p>
+{% block title %}Демо — NosiFit{% endblock %}
 
-  <div class="pub-demo-box">
-    <a href="/dashboard" class="btn-root btn-register" data-glow="yellow">
-      Відкрити демо-дашборд
+{% block styles %}
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/pages/demo.css') }}"
+/>
+{% endblock %}
+
+{% block body %}
+<section class="public-demo">
+  <div class="public-demo-header">
+    <div>
+      <span class="public-demo-eyebrow">NosiFit Demo</span>
+      <h1 class="public-demo-title">Подивись, як працює NosiFit</h1>
+      <p class="public-demo-lead">
+        Інтерактивний інтерфейс застосунку без реєстрації. Це демонстраційні
+        дані, тому вони не зберігаються у вашому акаунті.
+      </p>
+    </div>
+
+    <a
+      href="{{ url_for('auth.register') }}"
+      class="public-demo-register"
+      data-glow="yellow"
+    >
+      Створити акаунт
     </a>
   </div>
-</section>
 
+  <div class="public-demo-dashboard">
+    <header class="public-demo-dashboard-header">
+      <div>
+        <span class="public-demo-muted">Today</span>
+        <h2>Dashboard</h2>
+      </div>
+      <span class="public-demo-status">Demo data</span>
+    </header>
+
+    <div class="public-demo-top-grid">
+      <section class="public-demo-card public-demo-workout">
+        <div class="public-demo-card-header">
+          <div>
+            <span class="public-demo-muted">Training</span>
+            <h3>Upper Body</h3>
+          </div>
+          <span class="public-demo-accent">4 exercises</span>
+        </div>
+
+        <div class="public-demo-exercises">
+          <div><span>Bench Press</span><strong>3 × 10</strong></div>
+          <div><span>Lat Pulldown</span><strong>3 × 12</strong></div>
+          <div><span>Shoulder Press</span><strong>3 × 10</strong></div>
+          <div><span>Biceps Curl</span><strong>3 × 12</strong></div>
+        </div>
+
+        <div class="public-demo-progress">
+          <span>Workout progress</span>
+          <strong>75%</strong>
+          <div><i></i></div>
+        </div>
+      </section>
+
+      <section class="public-demo-card">
+        <div class="public-demo-card-header">
+          <div>
+            <span class="public-demo-muted">Recovery</span>
+            <h3>Good balance</h3>
+          </div>
+          <span class="public-demo-score">82</span>
+        </div>
+
+        <div class="public-demo-recovery">
+          <div><span>Sleep</span><strong>7h 42m</strong></div>
+          <div><span>Recovery</span><strong>82%</strong></div>
+          <div><span>Stress</span><strong>Low</strong></div>
+        </div>
+      </section>
+    </div>
+
+    <div class="public-demo-bottom-grid">
+      <section class="public-demo-card">
+        <div class="public-demo-card-header">
+          <div>
+            <span class="public-demo-muted">Nutrition</span>
+            <h3>Today's intake</h3>
+          </div>
+          <span class="public-demo-accent">1,840 kcal</span>
+        </div>
+
+        <div class="public-demo-macros">
+          <div><span>Protein</span><strong>126 g</strong><i class="macro-protein"></i></div>
+          <div><span>Carbs</span><strong>208 g</strong><i class="macro-carbs"></i></div>
+          <div><span>Fats</span><strong>58 g</strong><i class="macro-fats"></i></div>
+        </div>
+      </section>
+
+      <section class="public-demo-card">
+        <div class="public-demo-card-header">
+          <div>
+            <span class="public-demo-muted">Weekly activity</span>
+            <h3>Consistency</h3>
+          </div>
+          <span class="public-demo-accent">6 / 7 days</span>
+        </div>
+
+        <div class="public-demo-heatmap" aria-label="Weekly activity preview">
+          {% for level in [1, 2, 3, 2, 4, 5, 3, 1, 2, 4, 5, 4, 3, 2, 1, 3, 4, 5, 4, 2, 3, 5, 4, 3, 2, 4, 5, 3, 2, 1, 4, 5, 4, 3, 2, 1] %}
+          <i class="heat-{{ level }}"></i>
+          {% endfor %}
+        </div>
+      </section>
+    </div>
+
+    <section class="public-demo-card public-demo-recommendation">
+      <div>
+        <span class="public-demo-muted">Recommendation</span>
+        <h3>Keep today's intensity moderate</h3>
+        <p>
+          Your recent training load is stable. Focus on controlled sets and
+          allow enough recovery before the next heavy session.
+        </p>
+      </div>
+      <span class="public-demo-recommendation-icon">→</span>
+    </section>
+  </div>
+</section>
 {% endblock %}
