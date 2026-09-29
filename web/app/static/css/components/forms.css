@@ -1,10 +1,11 @@
 .app-layout .cmp-label,
 .public-layout .cmp-label,
 .auth-layout .cmp-label {
-    font-size: 13px;
-    color: var(--nf-text-muted);
-    margin-bottom: 6px;
-    display: block;
+  display: block;
+  margin-bottom: 7px;
+  color: var(--nf-text-muted);
+  font-size: 12px;
+  font-weight: 560;
 }
 
 .app-layout .cmp-input,
@@ -16,24 +17,26 @@
 .auth-layout .cmp-input,
 .auth-layout .cmp-select,
 .auth-layout .cmp-textarea {
-    width: 100%;
-    padding: 10px 12px;
-    border-radius: var(--nf-radius-sm);
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid var(--nf-border-subtle);
-    color: var(--nf-text-main);
-    font-size: 14px;
-    transition: border-color var(--nf-transition),
-        box-shadow var(--nf-transition), background var(--nf-transition);
+  width: 100%;
+  min-height: 42px;
+  padding: 9px 12px;
+  border: 1px solid var(--nf-border-subtle);
+  border-radius: var(--nf-radius-sm);
+  color: var(--nf-text-main);
+  background: rgba(255,255,255,.025);
+  transition: border-color var(--nf-transition-fast), background var(--nf-transition-fast), box-shadow var(--nf-transition-fast);
 }
 
-.app-layout .cmp-input::placeholder,
-.app-layout .cmp-textarea::placeholder,
-.public-layout .cmp-input::placeholder,
-.public-layout .cmp-textarea::placeholder,
-.auth-layout .cmp-input::placeholder,
-.auth-layout .cmp-textarea::placeholder {
-    color: var(--nf-text-soft);
+.app-layout .cmp-input:hover,
+.app-layout .cmp-select:hover,
+.app-layout .cmp-textarea:hover,
+.public-layout .cmp-input:hover,
+.public-layout .cmp-select:hover,
+.public-layout .cmp-textarea:hover,
+.auth-layout .cmp-input:hover,
+.auth-layout .cmp-select:hover,
+.auth-layout .cmp-textarea:hover {
+  border-color: var(--nf-border-strong);
 }
 
 .app-layout .cmp-input:focus,
@@ -45,39 +48,35 @@
 .auth-layout .cmp-input:focus,
 .auth-layout .cmp-select:focus,
 .auth-layout .cmp-textarea:focus {
-    outline: none;
-    border-color: var(--nf-violet);
-    box-shadow: 0 0 0 1px rgba(155, 93, 229, 0.6),
-        0 14px 40px rgba(0, 0, 0, 0.85);
-    background: rgba(255, 255, 255, 0.05);
+  outline: none;
+  border-color: rgba(244,200,74,.58);
+  background: rgba(244,200,74,.035);
+  box-shadow: 0 0 0 3px rgba(244,200,74,.09);
+}
+
+.app-layout .cmp-input::placeholder,
+.app-layout .cmp-textarea::placeholder,
+.public-layout .cmp-input::placeholder,
+.public-layout .cmp-textarea::placeholder,
+.auth-layout .cmp-input::placeholder,
+.auth-layout .cmp-textarea::placeholder {
+  color: var(--nf-text-soft);
 }
 
 .app-layout .cmp-textarea,
 .public-layout .cmp-textarea,
 .auth-layout .cmp-textarea {
-    min-height: 90px;
-    resize: vertical;
+  min-height: 100px;
+  resize: vertical;
 }
 
-.app-layout .form-field,
-.public-layout .form-field,
-.auth-layout .form-field {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
 }
 
-.app-layout .u-small,
-.public-layout .u-small,
-.auth-layout .u-small {
-    font-size: 12px;
-    color: var(--nf-text-soft);
-}
-
-.app-layout .u-container,
-.public-layout .u-container {
-    width: 100%;
-    max-width: var(--nf-max-width);
-    margin: 0 auto;
-    padding: 0 var(--nf-page-padding-x);
+.u-small {
+  color: var(--nf-text-soft);
+  font-size: 12px;
 }
