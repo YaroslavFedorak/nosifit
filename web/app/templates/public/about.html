@@ -1,4 +1,4 @@
-{% extends "public/base_public.html" %} {% block title %}{{ public_t("about.title") }}{% endblock %} {%
+{% extends base_template %} {% block title %}{{ public_t("about.title") }}{% endblock %} {%
 block styles %}
 <link
   rel="stylesheet"
@@ -23,7 +23,7 @@ block styles %}
           >{{ public_t("common.createAccount") }}</a
         >
         {% endif %}
-        <a class="about-btn about-btn-secondary" href="{{ url_for('info.info_page') }}"
+        <a class="about-btn about-btn-secondary" href="{{ url_for('info.info_page', layout=layout_mode) }}"
           >{{ public_t("common.howItWorks") }}</a
         >
       </div>
@@ -154,7 +154,7 @@ block styles %}
         >{{ public_t("common.createAccount") }}</a
       >
       {% endif %}
-      <a class="about-btn about-btn-secondary" href="{{ url_for('info.info_page') }}"
+      <a class="about-btn about-btn-secondary" href="{{ url_for('info.info_page', layout=layout_mode) }}"
         >{{ public_t("common.howItWorks") }}</a
       >
     </div>
