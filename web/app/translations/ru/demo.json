@@ -9,7 +9,8 @@
     "dashboard": {
         "eyebrow": "Обзор дня",
         "title": "Dashboard",
-        "dateLabel": "Сегодня"
+        "dateLabel": "Сегодня",
+        "date": "28 сен"
     },
     "scores": {
         "balance": {
