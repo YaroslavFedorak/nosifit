@@ -95,5 +95,26 @@
         "title": "These data become yours",
         "text": "You can log your own workouts, meals, water, sleep and recovery habits. NosiFit brings them into one dashboard and shows how they change over time.",
         "cta": "Start with NosiFit"
+    },
+    "guide": {
+        "eyebrow": "How it works",
+        "title": "One day — one clear picture",
+        "text": "NosiFit is not just a collection of numbers. You log the important parts of your day and the dashboard brings them into one context.",
+        "training": {
+            "title": "Log your workout",
+            "text": "Add exercises, sets and reps. The session shows what you actually did today and the load you received."
+        },
+        "nutrition": {
+            "title": "Track your nutrition",
+            "text": "Add meals, foods, water and weight. This gives you a view of the whole day instead of isolated meals."
+        },
+        "recovery": {
+            "title": "Support recovery",
+            "text": "Sleep and recovery habits help you understand whether your body is ready for the next training load."
+        },
+        "analysis": {
+            "title": "See the trend",
+            "text": "The heatmap turns individual days into a history. Open a day to connect training, recovery and nutrition."
+        }
     }
 }
