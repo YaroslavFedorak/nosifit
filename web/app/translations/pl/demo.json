@@ -10,7 +10,8 @@
         "eyebrow": "Podsumowanie dnia",
         "title": "Dashboard",
         "dateLabel": "Dzisiaj",
-        "date": "28 wrz"
+        "date": "28 wrz",
+        "description": "To nie jest zestaw osobnych makiet. To jeden dzień w kontekście: trening, odżywianie, regeneracja i historia bilansu działają razem."
     },
     "scores": {
         "balance": {
@@ -38,7 +39,21 @@
         "month1": "Sie",
         "month2": "Wrz",
         "less": "Mniej",
-        "more": "Więcej"
+        "more": "Więcej",
+        "months": {
+            "january": "Sty",
+            "february": "Lut",
+            "march": "Mar",
+            "april": "Kwi",
+            "may": "Maj",
+            "june": "Cze",
+            "july": "Lip",
+            "august": "Sie",
+            "september": "Wrz",
+            "october": "Paź",
+            "november": "Lis",
+            "december": "Gru"
+        }
     },
     "training": {
         "eyebrow": "Trening",
@@ -47,7 +62,8 @@
         "plan": "Upper Body",
         "duration": "42 min",
         "load": "Obciążenie 64",
-        "progress": "Postęp treningu"
+        "progress": "Postęp treningu",
+        "description": "Sesja zachowuje strukturę prawdziwego panelu: ćwiczenia, serie, powtórzenia i obciążenie. Pola w demo są interaktywne."
     },
     "nutrition": {
         "eyebrow": "Odżywianie",
@@ -63,7 +79,9 @@
         "protein": "Białko",
         "carbs": "Węglowodany",
         "fats": "Tłuszcze",
-        "water": "Woda"
+        "water": "Woda",
+        "description": "Posiłki rozwijają się tak jak w panelu: najpierw podsumowanie, potem produkty i makroskładniki.",
+        "waterGoal": "1 650 z 2 000 ml"
     },
     "recovery": {
         "eyebrow": "Regeneracja",
@@ -74,7 +92,8 @@
         "energyStatus": "stabilna",
         "stress": "Stres",
         "stressValue": "Niski",
-        "stressStatus": "bez nagłych zmian"
+        "stressStatus": "bez nagłych zmian",
+        "description": "Regeneracja to więcej niż jedna liczba. NosiFit pokazuje sen, energię i stres obok obciążenia treningowego."
     },
     "habits": {
         "eyebrow": "Nawyki regeneracyjne",
@@ -83,12 +102,15 @@
         "water": "Wystarczająco wody",
         "mobility": "Lekka mobilność",
         "recovery": "Sesja regeneracyjna",
-        "stress": "Odpoczynek bez ekranów"
+        "stress": "Odpoczynek bez ekranów",
+        "count": "4 / 5",
+        "description": "Nawyki zamieniają regenerację w konkretne codzienne działania. W demo możesz je przełączać."
     },
     "recommendation": {
         "eyebrow": "Rekomendacja",
         "title": "Utrzymaj dziś umiarkowaną intensywność",
-        "text": "Niedawne obciążenie treningowe jest stabilne, a regeneracja wygląda dobrze. Możesz trenować, ale unikaj nagłego zwiększania objętości. Po treningu zwróć uwagę na sen i nawodnienie."
+        "text": "Niedawne obciążenie treningowe jest stabilne, a regeneracja wygląda dobrze. Możesz trenować, ale unikaj nagłego zwiększania objętości. Po treningu zwróć uwagę na sen i nawodnienie.",
+        "note": "Rekomendacja wynika z kontekstu dnia, a nie z jednego wskaźnika."
     },
     "register": {
         "eyebrow": "Po rejestracji",
@@ -115,6 +137,23 @@
         "analysis": {
             "title": "Obserwuj zmiany",
             "text": "Heatmapa zamienia pojedyncze dni w historię. Otwórz dzień, aby połączyć trening, regenerację i odżywianie."
+        }
+    },
+    "explainer": {
+        "eyebrow": "Co dzieje się wewnątrz",
+        "title": "Twoje dane nie pozostają osobnymi wpisami",
+        "text": "Gdy regularnie zapisujesz trening, jedzenie i regenerację, NosiFit może pokazać więcej niż tylko dzisiejszy stan — może ujawnić zależności między danymi.",
+        "data": {
+            "title": "Zapisujesz fakty",
+            "text": "Ćwiczenia, posiłki, wodę, sen i nawyki dodajesz jako proste wpisy w ciągu dnia."
+        },
+        "context": {
+            "title": "Panel dodaje kontekst",
+            "text": "System łączy wpisy, dzięki czemu obciążenie treningowe, odżywianie i regenerację widać w jednym miejscu."
+        },
+        "trend": {
+            "title": "Heatmapa pokazuje historię",
+            "text": "Dzień po dniu bilans tworzy historię. Dzięki temu łatwiej zauważyć zmiany niż oceniać postęp na podstawie jednego dnia."
         }
     }
 }
