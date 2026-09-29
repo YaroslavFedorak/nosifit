@@ -1,0 +1,17 @@
+{
+  "actions": {
+    "save": "Zapisz",
+    "cancel": "Anuluj",
+    "close": "Zamknij",
+    "back": "Wstecz",
+    "continue": "Dalej",
+    "submit": "Zatwierdź",
+    "delete": "Usuń",
+    "edit": "Edytuj",
+    "confirm": "Potwierdź"
+  },
+  "status": {
+    "loading": "Ładowanie...",
+    "error": "Coś poszło nie tak"
+  }
+}
