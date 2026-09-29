@@ -113,5 +113,9 @@
   "profile": {
     "title": "Uzupełnianie profilu",
     "heading": "Uzupełnij profil"
+  },
+  "profileEdit": {
+    "title": "Edycja profilu",
+    "heading": "Edycja profilu"
   }
 }

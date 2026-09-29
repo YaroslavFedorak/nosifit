@@ -113,5 +113,9 @@
   "profile": {
     "title": "Complete profile",
     "heading": "Complete your profile"
+  },
+  "profileEdit": {
+    "title": "Edit profile",
+    "heading": "Edit profile"
   }
 }
