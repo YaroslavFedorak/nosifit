@@ -1,4 +1,4 @@
-{% extends "app/base_app.html" %} {% block title %}{{ public_t("about.title") }}{% endblock %} {%
+{% extends "public/base_public.html" %} {% block title %}{{ public_t("about.title") }}{% endblock %} {%
 block styles %}
 <link
   rel="stylesheet"
@@ -7,79 +7,131 @@ block styles %}
 {% endblock %} {% block body %}
 <main class="about-root">
   <header class="about-hero">
-    <div class="about-hero-left">
-      <h1 class="about-title">NosiFit</h1>
+    <div class="about-hero-copy">
+      <span class="about-eyebrow">NosiFit</span>
+      <h1 class="about-title">{{ public_t("about.headline") }}</h1>
       <p class="about-lead">
         {{ public_t("about.lead") }}
       </p>
       <div class="about-cta">
         {% if current_user.is_authenticated %}
-        <a class="btn btn-primary" href="{{ url_for('dashboard.dashboard') }}"
+        <a class="about-btn about-btn-primary" href="{{ url_for('dashboard.dashboard') }}"
           >{{ public_t("common.openNosiFit") }}</a
         >
         {% else %}
-        <a class="btn btn-primary" href="{{ url_for('auth.register') }}"
+        <a class="about-btn about-btn-primary" href="{{ url_for('auth.register') }}"
           >{{ public_t("common.createAccount") }}</a
         >
         {% endif %}
-        <a class="btn btn-ghost" href="{{ url_for('info.info_page') }}"
+        <a class="about-btn about-btn-secondary" href="{{ url_for('info.info_page') }}"
           >{{ public_t("common.howItWorks") }}</a
         >
       </div>
     </div>
 
-    <div class="about-hero-right">
-      <div class="about-visual">
-        <div class="about-visual-row">
-          <div class="about-visual-card">
-            <div class="about-visual-label">Recovery</div>
-            <div class="about-visual-value">78%</div>
-          </div>
-          <div class="about-visual-card">
-            <div class="about-visual-label">Training</div>
-            <div class="about-visual-value">64%</div>
-          </div>
+    <div class="about-hero-panel">
+      <div class="about-panel-header">
+        <span>{{ public_t("about.snapshot.title") }}</span>
+        <span class="about-panel-status">{{ public_t("about.snapshot.status") }}</span>
+      </div>
+      <div class="about-score-main">
+        <span class="about-score-label">{{ public_t("about.snapshot.recovery") }}</span>
+        <strong>78</strong>
+        <span>%</span>
+      </div>
+      <div class="about-score-bar"><span></span></div>
+      <div class="about-panel-grid">
+        <div>
+          <span>{{ public_t("about.snapshot.training") }}</span>
+          <strong>64%</strong>
+        </div>
+        <div>
+          <span>{{ public_t("about.snapshot.sleep") }}</span>
+          <strong>7h 42m</strong>
         </div>
       </div>
     </div>
   </header>
 
   <section class="about-section about-problem">
-    <h2>{{ public_t("about.problem.title") }}</h2>
-    <p>
-      {{ public_t("about.problem.text") }}
-    </p>
+    <div class="about-section-heading">
+      <span class="about-section-number">01</span>
+      <div>
+        <h2>{{ public_t("about.problem.title") }}</h2>
+        <p>{{ public_t("about.problem.text") }}</p>
+      </div>
+    </div>
   </section>
 
   <section class="about-section about-flow">
-    <h2>{{ public_t("about.flow.title") }}</h2>
+    <div class="about-section-heading">
+      <span class="about-section-number">02</span>
+      <div>
+        <h2>{{ public_t("about.flow.title") }}</h2>
+        <p>{{ public_t("about.flow.text") }}</p>
+      </div>
+    </div>
     <div class="about-flow-row">
-      <div class="about-step">{{ public_t("about.flow.data") }} →</div>
-      <div class="about-step">{{ public_t("about.flow.analysis") }} →</div>
-      <div class="about-step">{{ public_t("about.flow.metrics") }} →</div>
-      <div class="about-step">{{ public_t("about.flow.recommendations") }}</div>
+      <div class="about-flow-step">
+        <span>01</span>
+        <strong>{{ public_t("about.flow.data") }}</strong>
+      </div>
+      <div class="about-flow-line"></div>
+      <div class="about-flow-step">
+        <span>02</span>
+        <strong>{{ public_t("about.flow.analysis") }}</strong>
+      </div>
+      <div class="about-flow-line"></div>
+      <div class="about-flow-step">
+        <span>03</span>
+        <strong>{{ public_t("about.flow.metrics") }}</strong>
+      </div>
+      <div class="about-flow-line"></div>
+      <div class="about-flow-step">
+        <span>04</span>
+        <strong>{{ public_t("about.flow.recommendations") }}</strong>
+      </div>
     </div>
   </section>
 
   <section class="about-section about-what">
-    <h2>{{ public_t("about.what.title") }}</h2>
+    <div class="about-section-heading">
+      <span class="about-section-number">03</span>
+      <div>
+        <h2>{{ public_t("about.what.title") }}</h2>
+        <p>{{ public_t("about.what.text") }}</p>
+      </div>
+    </div>
     <div class="about-grid">
-      <div class="about-chip">Training</div>
-      <div class="about-chip">Sleep</div>
-      <div class="about-chip">Energy</div>
-      <div class="about-chip">Habits</div>
+      <div class="about-chip">{{ public_t("about.what.training") }}</div>
+      <div class="about-chip">{{ public_t("about.what.sleep") }}</div>
+      <div class="about-chip">{{ public_t("about.what.nutrition") }}</div>
+      <div class="about-chip">{{ public_t("about.what.habits") }}</div>
     </div>
   </section>
 
   <section class="about-section about-score">
-    <h2>Recovery Score</h2>
-    <p>
-      {{ public_t("about.score.text") }}
-    </p>
+    <div class="about-score-copy">
+      <span class="about-section-number">04</span>
+      <div>
+        <h2>{{ public_t("about.score.title") }}</h2>
+        <p>{{ public_t("about.score.text") }}</p>
+      </div>
+    </div>
+    <div class="about-score-note">
+      <strong>{{ public_t("about.score.noteTitle") }}</strong>
+      <span>{{ public_t("about.score.noteText") }}</span>
+    </div>
   </section>
 
   <section class="about-section about-audience">
-    <h2>{{ public_t("about.audience.title") }}</h2>
+    <div class="about-section-heading">
+      <span class="about-section-number">05</span>
+      <div>
+        <h2>{{ public_t("about.audience.title") }}</h2>
+        <p>{{ public_t("about.audience.text") }}</p>
+      </div>
+    </div>
     <ul class="about-list">
       <li>{{ public_t("about.audience.training") }}</li>
       <li>{{ public_t("about.audience.recovery") }}</li>
@@ -88,17 +140,21 @@ block styles %}
   </section>
 
   <footer class="about-footer">
+    <div>
+      <h2>{{ public_t("about.footer.title") }}</h2>
+      <p>{{ public_t("about.footer.text") }}</p>
+    </div>
     <div class="about-cta">
       {% if current_user.is_authenticated %}
-      <a class="btn btn-primary" href="{{ url_for('dashboard.dashboard') }}"
+      <a class="about-btn about-btn-primary" href="{{ url_for('dashboard.dashboard') }}"
         >{{ public_t("common.openNosiFit") }}</a
       >
       {% else %}
-      <a class="btn btn-primary" href="{{ url_for('auth.register') }}"
+      <a class="about-btn about-btn-primary" href="{{ url_for('auth.register') }}"
         >{{ public_t("common.createAccount") }}</a
       >
       {% endif %}
-      <a class="btn btn-ghost" href="{{ url_for('info.info_page') }}"
+      <a class="about-btn about-btn-secondary" href="{{ url_for('info.info_page') }}"
         >{{ public_t("common.howItWorks") }}</a
       >
     </div>

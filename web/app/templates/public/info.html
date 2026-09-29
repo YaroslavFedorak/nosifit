@@ -1,4 +1,4 @@
-{% extends "app/base_app.html" %} {% block title %}{{ public_t("info.title") }}{% endblock %}
+{% extends "public/base_public.html" %} {% block title %}{{ public_t("info.title") }}{% endblock %}
 {% block styles %}
 <link
   rel="stylesheet"
@@ -7,91 +7,127 @@
 {% endblock %} {% block body %}
 <main class="info-root">
   <header class="info-header">
+    <a class="info-back" href="{{ url_for('public.about') }}"
+      >← {{ public_t("info.backToAbout") }}</a
+    >
+    <span class="info-eyebrow">NosiFit</span>
     <h1 class="info-title">{{ public_t("info.title") }}</h1>
-    <p class="info-lead">
-      {{ public_t("info.lead") }}
-    </p>
-    <div class="info-nav">
-      <a class="link-back" href="{{ url_for('public.about') }}"
-        >← {{ public_t("info.backToAbout") }}</a
-      >
-    </div>
+    <p class="info-lead">{{ public_t("info.lead") }}</p>
   </header>
 
   <section class="info-section info-actions">
-    <h2>{{ public_t("info.actions.title") }}</h2>
+    <div class="info-section-heading">
+      <span class="info-section-number">01</span>
+      <div>
+        <h2>{{ public_t("info.actions.title") }}</h2>
+        <p>{{ public_t("info.actions.lead") }}</p>
+      </div>
+    </div>
     <div class="info-grid">
-      <div class="info-card">
-        <h3>Training</h3>
+      <article class="info-card">
+        <span class="info-card-index">01</span>
+        <h3>{{ public_t("info.actions.trainingTitle") }}</h3>
         <p>{{ public_t("info.actions.training") }}</p>
-      </div>
-      <div class="info-card">
-        <h3>Sleep</h3>
+      </article>
+      <article class="info-card">
+        <span class="info-card-index">02</span>
+        <h3>{{ public_t("info.actions.sleepTitle") }}</h3>
         <p>{{ public_t("info.actions.sleep") }}</p>
-      </div>
-      <div class="info-card">
-        <h3>Nutrition</h3>
+      </article>
+      <article class="info-card">
+        <span class="info-card-index">03</span>
+        <h3>{{ public_t("info.actions.nutritionTitle") }}</h3>
         <p>{{ public_t("info.actions.nutrition") }}</p>
-      </div>
-      <div class="info-card">
-        <h3>Water</h3>
+      </article>
+      <article class="info-card">
+        <span class="info-card-index">04</span>
+        <h3>{{ public_t("info.actions.waterTitle") }}</h3>
         <p>{{ public_t("info.actions.water") }}</p>
-      </div>
-      <div class="info-card">
-        <h3>Habits</h3>
+      </article>
+      <article class="info-card">
+        <span class="info-card-index">05</span>
+        <h3>{{ public_t("info.actions.habitsTitle") }}</h3>
         <p>{{ public_t("info.actions.habits") }}</p>
-      </div>
-      <div class="info-card">
-        <h3>Recommendations</h3>
+      </article>
+      <article class="info-card">
+        <span class="info-card-index">06</span>
+        <h3>{{ public_t("info.actions.recommendationsTitle") }}</h3>
         <p>{{ public_t("info.actions.recommendations") }}</p>
-      </div>
+      </article>
     </div>
   </section>
 
   <section class="info-section info-flow">
-    <h2>{{ public_t("info.dataFlow.title") }}</h2>
+    <div class="info-section-heading">
+      <span class="info-section-number">02</span>
+      <div>
+        <h2>{{ public_t("info.dataFlow.title") }}</h2>
+        <p>{{ public_t("info.dataFlow.lead") }}</p>
+      </div>
+    </div>
     <ol class="info-steps">
       <li>
-        <strong>{{ public_t("info.dataFlow.data") }}</strong> — {{ public_t("info.dataFlow.dataText") }}
+        <span>01</span>
+        <div><strong>{{ public_t("info.dataFlow.data") }}</strong><p>{{ public_t("info.dataFlow.dataText") }}</p></div>
       </li>
-      <li><strong>{{ public_t("info.dataFlow.analysis") }}</strong> — {{ public_t("info.dataFlow.analysisText") }}</li>
-      <li><strong>{{ public_t("info.dataFlow.metrics") }}</strong> — {{ public_t("info.dataFlow.metricsText") }}</li>
       <li>
-        <strong>{{ public_t("info.dataFlow.recommendations") }}</strong> — {{ public_t("info.dataFlow.recommendationsText") }}
+        <span>02</span>
+        <div><strong>{{ public_t("info.dataFlow.analysis") }}</strong><p>{{ public_t("info.dataFlow.analysisText") }}</p></div>
+      </li>
+      <li>
+        <span>03</span>
+        <div><strong>{{ public_t("info.dataFlow.metrics") }}</strong><p>{{ public_t("info.dataFlow.metricsText") }}</p></div>
+      </li>
+      <li>
+        <span>04</span>
+        <div><strong>{{ public_t("info.dataFlow.recommendations") }}</strong><p>{{ public_t("info.dataFlow.recommendationsText") }}</p></div>
       </li>
     </ol>
   </section>
 
   <section class="info-section info-sections">
-    <h2>{{ public_t("info.sections.title") }}</h2>
-    <ul class="info-list">
-      <li><strong>Dashboard</strong> — {{ public_t("info.sections.dashboard") }}</li>
-      <li><strong>Training</strong> — {{ public_t("info.sections.training") }}</li>
-      <li><strong>Recovery</strong> — {{ public_t("info.sections.recovery") }}</li>
-      <li><strong>Nutrition</strong> — {{ public_t("info.sections.nutrition") }}</li>
-      <li><strong>Progress / Tracker</strong> — {{ public_t("info.sections.progress") }}</li>
-    </ul>
+    <div class="info-section-heading">
+      <span class="info-section-number">03</span>
+      <div>
+        <h2>{{ public_t("info.sections.title") }}</h2>
+        <p>{{ public_t("info.sections.lead") }}</p>
+      </div>
+    </div>
+    <div class="info-module-list">
+      <div><strong>{{ public_t("info.sections.dashboardTitle") }}</strong><span>{{ public_t("info.sections.dashboard") }}</span></div>
+      <div><strong>{{ public_t("info.sections.trainingTitle") }}</strong><span>{{ public_t("info.sections.training") }}</span></div>
+      <div><strong>{{ public_t("info.sections.recoveryTitle") }}</strong><span>{{ public_t("info.sections.recovery") }}</span></div>
+      <div><strong>{{ public_t("info.sections.nutritionTitle") }}</strong><span>{{ public_t("info.sections.nutrition") }}</span></div>
+      <div><strong>{{ public_t("info.sections.progressTitle") }}</strong><span>{{ public_t("info.sections.progress") }}</span></div>
+    </div>
   </section>
 
   <section class="info-section info-purpose">
-    <h2>{{ public_t("info.purpose.title") }}</h2>
-    <p>
-      {{ public_t("info.purpose.text") }}
-    </p>
+    <div class="info-purpose-copy">
+      <span class="info-section-number">04</span>
+      <div>
+        <h2>{{ public_t("info.purpose.title") }}</h2>
+        <p>{{ public_t("info.purpose.text") }}</p>
+      </div>
+    </div>
   </section>
 
   <footer class="info-footer">
+    <div>
+      <span class="info-eyebrow">NosiFit</span>
+      <h2>{{ public_t("info.footer.title") }}</h2>
+    </div>
     <div class="info-actions-cta">
       {% if current_user.is_authenticated %}
-      <a class="btn btn-primary" href="{{ url_for('dashboard.dashboard') }}"
+      <a class="info-btn info-btn-primary" href="{{ url_for('dashboard.dashboard') }}"
         >{{ public_t("common.openNosiFit") }}</a
       >
       {% else %}
-      <a class="btn btn-primary" href="{{ url_for('auth.register') }}"
+      <a class="info-btn info-btn-primary" href="{{ url_for('auth.register') }}"
         >{{ public_t("common.createAccount") }}</a
       >
       {% endif %}
-      <a class="btn btn-ghost" href="{{ url_for('public.about') }}"
+      <a class="info-btn info-btn-secondary" href="{{ url_for('public.about') }}"
         >{{ public_t("info.aboutNosiFit") }}</a
       >
     </div>
