@@ -727,3 +727,58 @@
         width: 100%;
     }
 }
+
+
+/* Final add-item modal layout */
+#modal-add-item .nutrition-product-modal {
+    display: flex;
+    flex-direction: column;
+}
+
+#modal-add-item .nutrition-add-row {
+    flex: 0 0 auto;
+    grid-template-columns: 1fr 1fr;
+}
+
+#modal-add-item .nutrition-pending-items {
+    flex: 1 1 auto;
+    min-height: 70px;
+    max-height: none;
+    overflow-y: auto;
+}
+
+#modal-add-item .nutrition-entry-row {
+    flex: 0 0 auto;
+    margin-top: auto;
+}
+
+#modal-add-item .nutrition-pending-item {
+    grid-template-columns: minmax(0, 1fr) auto;
+}
+
+#modal-add-item .nutrition-pending-item-info {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 12px;
+}
+
+#modal-add-item .nutrition-pending-item-info strong {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+#modal-add-item .nutrition-pending-item-info span {
+    justify-self: end;
+    white-space: nowrap;
+    color: var(--nutrition-text-muted);
+}
+
+@media (max-width: 700px) {
+    #modal-add-item .nutrition-pending-item-info {
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 8px;
+    }
+}
