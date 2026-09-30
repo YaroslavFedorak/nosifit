@@ -6,7 +6,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, Message
 
 from telegram_bot.keyboards.auth import auth_menu
-from telegram_bot.keyboards.main import main_menu
+from telegram_bot.keyboards.main import LOGIN, LOGOUT, main_menu
 from telegram_bot.runtime import authenticate, logout
 from telegram_bot.states.auth import AuthStates
 
@@ -20,6 +20,15 @@ async def login_start(callback: CallbackQuery, state: FSMContext) -> None:
     await state.set_state(AuthStates.entering_email)
     await callback.message.edit_text(
         "🔐 <b>Вхід у NosiFit</b>\n\n"
+        "Введіть email, який використовуєте на сайті NosiFit:"
+    )
+
+
+@router.message(F.text == LOGIN)
+async def login_button(message: Message, state: FSMContext) -> None:
+    await state.set_state(AuthStates.entering_email)
+    await message.answer(
+        "🔐 <b>Вхід у NosiFit</b>\\n\\n"
         "Введіть email, який використовуєте на сайті NosiFit:"
     )
 
@@ -78,6 +87,16 @@ async def enter_password(message: Message, state: FSMContext) -> None:
         "✅ <b>Ви успішно авторизувалися в NosiFit.</b>\n\n"
         "Тепер Telegram-бот працює з вашим акаунтом NosiFit.",
         reply_markup=main_menu(authenticated=True),
+    )
+
+
+@router.message(F.text == LOGOUT)
+async def logout_button(message: Message, state: FSMContext) -> None:
+    logout(message.from_user.id)
+    await state.clear()
+    await message.answer(
+        "Ви вийшли з акаунта NosiFit.",
+        reply_markup=main_menu(authenticated=False),
     )
 
 
