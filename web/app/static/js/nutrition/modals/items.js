@@ -2,6 +2,7 @@ import { NutritionAPI, } from "../api.js";
 import { closeModal, openModal, } from "./modal.js";
 import { getLocale, nutrition_t, } from "../../i18n/index.js";
 let selectedProductId = null;
+let selectedProduct = null;
 let pendingMealItems = [];
 let catalogMode = "all";
 let catalogProducts = { favorites: [], recent: [], mine: [] };
@@ -116,6 +117,7 @@ function renderSelectedProduct(product) {
 }
 function selectProduct(product) {
     selectedProductId = product.id;
+    selectedProduct = product;
     setSelectValue("add-item-unit", product.default_unit);
     setInputValue("add-item-amount", product.default_unit === "pcs" ? "1" : "100");
     renderSelectedProduct(product);
@@ -160,12 +162,12 @@ function queueSelectedProduct() {
     const unit = getInputValue("add-item-unit");
     if (!Number.isFinite(amount) || amount <= 0)
         return;
-    const product = [...catalogProducts.all, ...catalogProducts.favorites, ...catalogProducts.recent, ...catalogProducts.mine]
-        .find((item) => item.id === selectedProductId);
+    const product = selectedProduct;
     if (!product)
         return;
     pendingMealItems.push({ productId: product.id, product, amount, unit });
     selectedProductId = null;
+    selectedProduct = null;
     setInputValue("add-item-amount", "100");
     setSelectValue("add-item-unit", "g");
     renderSelectedProduct(null);
@@ -174,17 +176,19 @@ function queueSelectedProduct() {
 async function loadCatalog() {
     const locale = getLocale();
     try {
-        const [favorites, recent, mine] = await Promise.all([
+        const [all, favorites, recent, mine] = await Promise.all([
+            NutritionAPI.getProducts("", locale),
             NutritionAPI.getFavoriteProducts(locale),
             NutritionAPI.getRecentProducts(locale),
             NutritionAPI.getMyProducts(locale),
         ]);
         catalogProducts = {
+            all: all.products,
             favorites: favorites.products,
             recent: recent.products,
             mine: mine.products,
-            all: [],
         };
+        renderProductList("product-all", catalogProducts.all);
         renderProductList("product-favorites", catalogProducts.favorites);
         renderProductList("product-recent", catalogProducts.recent);
         renderProductList("product-mine", catalogProducts.mine);
@@ -224,6 +228,7 @@ async function searchCatalog(query) {
 }
 export function openAddItemModal(mealId) {
     selectedProductId = null;
+    selectedProduct = null;
     setInputValue("add-item-meal-id", String(mealId));
     setInputValue("add-item-search", "");
     setInputValue("add-item-amount", "100");
