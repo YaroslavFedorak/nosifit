@@ -46,25 +46,31 @@ def get_goals(user_id):
             "fiber": DEFAULT_FIBER_GOAL,
         }
 
-    goals = UserGoals.query.filter_by(
-        user_id=user.id,
-    ).first()
+    goals = UserGoals.query.filter_by(user_id=user.id).first()
+    created = goals is None
 
-    if goals is None:
-        goals = UserGoals(
-            user_id=user.id,
-        )
+    if created:
+        goals = UserGoals(user_id=user.id)
         db.session.add(goals)
+
+    changed = created or (
+        goals.calories_goal != calculated["calories"]
+        or goals.protein_goal != calculated["protein"]
+        or goals.fat_goal != calculated["fat"]
+        or goals.carbs_goal != calculated["carbs"]
+        or goals.fiber_goal is None
+    )
 
     goals.calories_goal = calculated["calories"]
     goals.protein_goal = calculated["protein"]
     goals.fat_goal = calculated["fat"]
     goals.carb_goal = calculated["carbs"]
-    if not goals.fiber_goal:
+    if goals.fiber_goal is None:
         goals.fiber_goal = DEFAULT_FIBER_GOAL
+        changed = True
 
-    db.session.commit()
+    if changed:
+        db.session.commit()
 
     calculated["fiber"] = goals.fiber_goal
     return calculated
-
