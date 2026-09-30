@@ -561,3 +561,33 @@
         grid-column: 1 / -1;
     }
 }
+
+
+.nutrition-food-header {
+    display: grid;
+    grid-template-columns: minmax(110px, .7fr) minmax(0, 2.3fr);
+    align-items: end;
+    gap: 14px;
+}
+
+.nutrition-food-header h2 {
+    margin: 0;
+    align-self: center;
+    white-space: nowrap;
+}
+
+.nutrition-food-header .nutrition-meal-details {
+    grid-template-columns: minmax(0, 1.6fr) minmax(120px, .9fr) minmax(100px, .7fr);
+}
+
+@media (max-width: 700px) {
+    .nutrition-food-header {
+        grid-template-columns: 1fr;
+        align-items: stretch;
+        gap: 10px;
+    }
+
+    .nutrition-food-header h2 {
+        align-self: auto;
+    }
+}
