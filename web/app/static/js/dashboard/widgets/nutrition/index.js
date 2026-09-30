@@ -1,5 +1,5 @@
 import { NutritionAPI, } from "../../../nutrition/api.js";
-import { dashboard_t, } from "../../../i18n/index.js";
+import { dashboard_t, getLocale, } from "../../../i18n/index.js";
 import { renderMeals, } from "./render.js";
 import { setNutritionDay, } from "./state.js";
 import { setupMealModals, } from "../../modals/nutrition/meals.js";
@@ -34,7 +34,7 @@ function renderWeight(data) {
 }
 async function loadNutrition() {
     try {
-        const data = await NutritionAPI.getDay();
+        const data = await NutritionAPI.getDay(getLocale());
         setNutritionDay(data);
         renderWater(data.water);
         renderMeals(data.meals, loadNutrition);
