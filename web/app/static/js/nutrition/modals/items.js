@@ -2,7 +2,8 @@ import { NutritionAPI, } from "../api.js";
 import { closeModal, openModal, } from "./modal.js";
 import { getLocale, nutrition_t, } from "../../i18n/index.js";
 let selectedProductId = null;
-let catalogMode = "favorites";
+let pendingMealItems = [];
+let catalogMode = "all";
 let catalogProducts = { favorites: [], recent: [], mine: [] };
 function formatMacro(value) {
     return Number(value ?? 0).toFixed(1);
@@ -119,6 +120,57 @@ function selectProduct(product) {
     setInputValue("add-item-amount", product.default_unit === "pcs" ? "1" : "100");
     renderSelectedProduct(product);
 }
+function renderPendingMealItems() {
+    const container = document.getElementById("pending-meal-items");
+    if (!container)
+        return;
+    container.innerHTML = "";
+    if (!pendingMealItems.length) {
+        container.hidden = true;
+        return;
+    }
+    container.hidden = false;
+    pendingMealItems.forEach((entry, index) => {
+        const row = document.createElement("div");
+        row.className = "nutrition-pending-item";
+        const info = document.createElement("div");
+        info.className = "nutrition-pending-item-info";
+        const name = document.createElement("strong");
+        name.textContent = entry.product.brand ? entry.product.name + " · " + entry.product.brand : entry.product.name;
+        const amount = document.createElement("span");
+        amount.textContent = entry.amount + " " + entry.unit;
+        info.append(name, amount);
+        const remove = document.createElement("button");
+        remove.type = "button";
+        remove.className = "nutrition-pending-item-remove";
+        remove.textContent = "×";
+        remove.setAttribute("aria-label", entry.product.name);
+        remove.addEventListener("click", () => {
+            pendingMealItems.splice(index, 1);
+            renderPendingMealItems();
+        });
+        row.append(info, remove);
+        container.appendChild(row);
+    });
+}
+function queueSelectedProduct() {
+    if (selectedProductId === null)
+        return;
+    const amount = Number(getInputValue("add-item-amount"));
+    const unit = getInputValue("add-item-unit");
+    if (!Number.isFinite(amount) || amount <= 0)
+        return;
+    const product = [...catalogProducts.all, ...catalogProducts.favorites, ...catalogProducts.recent, ...catalogProducts.mine]
+        .find((item) => item.id === selectedProductId);
+    if (!product)
+        return;
+    pendingMealItems.push({ productId: product.id, product, amount, unit });
+    selectedProductId = null;
+    setInputValue("add-item-amount", "100");
+    setSelectValue("add-item-unit", "g");
+    renderSelectedProduct(null);
+    renderPendingMealItems();
+}
 async function loadCatalog() {
     const locale = getLocale();
     try {
@@ -175,11 +227,14 @@ export function openAddItemModal(mealId) {
     setInputValue("add-item-meal-id", String(mealId));
     setInputValue("add-item-search", "");
     setInputValue("add-item-amount", "100");
-    catalogMode = "favorites";
+    catalogMode = "all";
+    pendingMealItems = [];
     setSelectValue("add-item-unit", "g");
     renderSelectedProduct(null);
     openModal("modal-add-item");
     setCatalogSearchState("");
+    setCatalogSortMode(catalogMode);
+    renderPendingMealItems();
     void loadCatalog();
 }
 export async function openEditItemModal(item) {
@@ -213,22 +268,31 @@ export async function openEditItemModal(item) {
     openModal("modal-edit-item");
 }
 export function setupItemModals(onRefresh) {
-    document.getElementById("close-add-item")?.addEventListener("click", () => closeModal("modal-add-item"));
+    document.getElementById("close-add-item")?.addEventListener("click", () => {
+        pendingMealItems = [];
+        renderPendingMealItems();
+        closeModal("modal-add-item");
+    });
+    document.getElementById("add-item-to-meal")?.addEventListener("click", () => queueSelectedProduct());
     document.getElementById("save-add-item")?.addEventListener("click", async () => {
-        if (selectedProductId === null)
-            return;
         const mealId = Number(getInputValue("add-item-meal-id"));
-        const amount = Number(getInputValue("add-item-amount"));
-        const unit = getInputValue("add-item-unit");
-        if (!mealId || !Number.isFinite(amount) || amount <= 0)
+        if (!mealId || !pendingMealItems.length)
             return;
         try {
-            await NutritionAPI.createEntry({ meal_id: mealId, product_id: selectedProductId, amount, unit, locale: getLocale() });
+            await Promise.all(pendingMealItems.map((entry) => NutritionAPI.createEntry({
+                meal_id: mealId,
+                product_id: entry.productId,
+                amount: entry.amount,
+                unit: entry.unit,
+                locale: getLocale(),
+            })));
+            pendingMealItems = [];
+            renderPendingMealItems();
             closeModal("modal-add-item");
             await onRefresh();
         }
         catch (error) {
-            console.error("Failed to add food entry:", error);
+            console.error("Failed to add meal items:", error);
         }
     });
     document.querySelectorAll("[data-catalog-sort]").forEach((button) => {
