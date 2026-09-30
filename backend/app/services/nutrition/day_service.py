@@ -7,6 +7,7 @@ from backend.app.models.user_profile import UserProfile
 
 from backend.app.services.nutrition.goals_service import get_goals
 from backend.app.services.nutrition.quality_service import calculate_quality
+from backend.app.services.nutrition.product_service import normalize_locale
 from backend.app.services.nutrition.serializers import serialize_meal
 from backend.app.services.nutrition.water_service import calculate_water
 
@@ -53,7 +54,8 @@ def get_meal_totals(meals):
     }
 
 
-def get_daily_nutrition_data(user_id):
+def get_daily_nutrition_data(user_id, locale="uk"):
+    locale = normalize_locale(locale)
     user = User.query.get(user_id)
     today = date.today()
     yesterday = today - timedelta(days=1)
@@ -147,7 +149,7 @@ def get_daily_nutrition_data(user_id):
     water_percent = calculate_percent(water_today, water_goal)
 
     return {
-        "meals": [serialize_meal(meal) for meal in meals],
+        "meals": [serialize_meal(meal, locale) for meal in meals],
         "goals": goals,
         "progress": progress,
         "macros_ratio": macros_ratio,
