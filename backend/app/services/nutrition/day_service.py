@@ -116,11 +116,11 @@ def get_daily_nutrition_data(user_id, locale="uk"):
     calorie_balance = totals["calories"] - goals["calories"]
 
     if calorie_balance > 150:
-        balance_status = "Перебір"
+        balance_status = "over"
     elif calorie_balance < -150:
-        balance_status = "Недобір"
+        balance_status = "under"
     else:
-        balance_status = "Норма"
+        balance_status = "normal"
 
     profile = UserProfile.query.filter_by(user_id=user_id).first()
 
