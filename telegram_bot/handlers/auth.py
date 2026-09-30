@@ -60,6 +60,11 @@ async def enter_email(message: Message, state: FSMContext) -> None:
 @router.message(AuthStates.entering_password)
 async def enter_password(message: Message, state: FSMContext) -> None:
     password = message.text or ""
+    try:
+        await message.delete()
+    except Exception:
+        pass
+
     if not password:
         await message.answer("Пароль не може бути порожнім.")
         return
