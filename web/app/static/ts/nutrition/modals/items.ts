@@ -44,9 +44,11 @@ function createProductButton(product: Product): HTMLElement {
     const favorite = document.createElement("button");
     favorite.type = "button";
     favorite.className = "nutrition-product-favorite";
-    favorite.textContent = product.is_favorite ? "★" : "☆";
+    favorite.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.8l2.55 5.16 5.7.83-4.13 4.03.98 5.69L12 16.82 6.9 19.51l.98-5.69L3.75 9.79l5.7-.83L12 3.8z"></path></svg>';
     favorite.setAttribute("aria-label", product.name);
 
+    favorite.setAttribute("aria-pressed", String(product.is_favorite));
+    favorite.setAttribute("aria-label", product.is_favorite ? "Remove from favorites" : "Add to favorites");
     favorite.addEventListener("click", async (event) => {
         event.stopPropagation();
         try {
@@ -59,6 +61,14 @@ function createProductButton(product: Product): HTMLElement {
 
     wrapper.append(select, favorite);
     return wrapper;
+}
+
+function setCatalogSearchState(query: string): void {
+    const searching = query.trim().length > 0;
+    document.querySelectorAll<HTMLElement>("[data-catalog-section]").forEach((section) => {
+        section.hidden = searching && section.dataset.catalogSection !== "search";
+    });
+    document.querySelector(".nutrition-product-sections")?.classList.toggle("is-searching", searching);
 }
 
 function renderProductList(elementId: string, products: Product[]): void {
@@ -125,6 +135,7 @@ async function loadCatalog(): Promise<void> {
 }
 
 async function searchCatalog(query: string): Promise<void> {
+    setCatalogSearchState(query);
     if (!query.trim()) {
         await loadCatalog();
         const results = document.getElementById("product-search-results");
@@ -148,6 +159,7 @@ export function openAddItemModal(mealId: number): void {
     setSelectValue("add-item-unit", "g");
     renderSelectedProduct(null);
     openModal("modal-add-item");
+    setCatalogSearchState("");
     void loadCatalog();
 }
 
