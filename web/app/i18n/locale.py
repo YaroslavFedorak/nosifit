@@ -49,7 +49,7 @@ def _load_translation_directory(
     for file_path in sorted(path.glob("*.json")):
         with file_path.open(
             "r",
-            encoding="utf-8",
+            encoding="utf-8-sig",
         ) as file:
             data = json.load(file)
 
@@ -87,7 +87,7 @@ def load_translation(
 
     with path.open(
         "r",
-        encoding="utf-8",
+        encoding="utf-8-sig",
     ) as file:
         return json.load(file)
 
