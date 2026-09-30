@@ -2,6 +2,26 @@
   <div class="modal-content nutrition-product-modal">
     <h2>{{ translate("nutrition", "items.addTitle") }}</h2>
     <input type="hidden" id="add-item-meal-id" />
+
+    <div class="nutrition-meal-details">
+      <div>
+        <label for="add-meal-name">{{ translate("nutrition", "fields.name") }}</label>
+        <input type="text" id="add-meal-name" autocomplete="off" />
+      </div>
+      <div>
+        <label for="add-meal-category">{{ translate("nutrition", "fields.category") }}</label>
+        <select id="add-meal-category">
+          <option value="Сніданок">{{ translate("nutrition", "meal_categories.breakfast") }}</option>
+          <option value="Обід">{{ translate("nutrition", "meal_categories.lunch") }}</option>
+          <option value="Вечеря">{{ translate("nutrition", "meal_categories.dinner") }}</option>
+          <option value="Перекус">{{ translate("nutrition", "meal_categories.snack") }}</option>
+        </select>
+      </div>
+      <div>
+        <label for="add-meal-time">{{ translate("nutrition", "fields.time") }}</label>
+        <input type="time" id="add-meal-time" />
+      </div>
+    </div>
     <label for="add-item-search">{{ translate("nutrition", "catalog.search") }}</label>
     <input type="search" id="add-item-search" class="nutrition-product-search" placeholder="{{ translate("nutrition", "catalog.searchPlaceholder") }}" autocomplete="off" />
     <div class="nutrition-product-sort" role="group" aria-label="{{ translate("nutrition", "catalog.search") }}">
