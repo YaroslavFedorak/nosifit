@@ -39,9 +39,12 @@ class NosiFitAPI:
         )
 
     def _request(self, method: str, path: str, **kwargs) -> requests.Response:
-        response = self.session.request(
-            method, f"{self.base_url}{path}", timeout=10, **kwargs
-        )
+        try:
+            response = self.session.request(
+                method, f"{self.base_url}{path}", timeout=10, **kwargs
+            )
+        except requests.RequestException as exc:
+            raise NosiFitAPIError("Не вдалося підключитися до NosiFit.") from exc
         needs_login = (
             response.status_code in (401, 403)
             or response.url.rstrip("/").endswith("/auth/login")
@@ -85,6 +88,61 @@ class NosiFitAPI:
         ).json()
         return payload.get("products", [])
 
+    def get_products(self, locale: str = "uk", limit: int = 50) -> list[dict]:
+        self.ensure_authenticated()
+        payload = self._request(
+            "GET",
+            "/api/nutrition/products",
+            params={"q": "", "locale": locale, "limit": limit},
+        ).json()
+        return payload.get("products", [])
+
+    def get_favorite_products(self, locale: str = "uk", limit: int = 50) -> list[dict]:
+        self.ensure_authenticated()
+        payload = self._request(
+            "GET",
+            "/api/nutrition/products/favorites",
+            params={"locale": locale},
+        ).json()
+        return payload.get("products", [])[:limit]
+
+    def get_recent_products(self, locale: str = "uk", limit: int = 12) -> list[dict]:
+        self.ensure_authenticated()
+        payload = self._request(
+            "GET",
+            "/api/nutrition/products/recent",
+            params={"locale": locale},
+        ).json()
+        return payload.get("products", [])[:limit]
+
+    def get_my_products(self, locale: str = "uk", limit: int = 50) -> list[dict]:
+        self.ensure_authenticated()
+        payload = self._request(
+            "GET",
+            "/api/nutrition/products/mine",
+            params={"locale": locale},
+        ).json()
+        return payload.get("products", [])[:limit]
+
+    def set_product_favorite(
+        self, product_id: int, favorite: bool, locale: str = "uk"
+    ) -> dict:
+        self.ensure_authenticated()
+        return self._request(
+            "POST",
+            f"/api/nutrition/products/{product_id}/favorite",
+            json={"favorite": favorite, "locale": locale},
+        ).json()
+
+    def create_product(self, data: dict, locale: str = "uk") -> dict:
+        self.ensure_authenticated()
+        payload = {**data, "locale": locale}
+        return self._request(
+            "POST",
+            "/api/nutrition/products",
+            json=payload,
+        ).json()
+
     def get_product(self, product_id: int, locale: str = "uk") -> dict:
         self.ensure_authenticated()
         return self._request(
@@ -121,3 +179,4 @@ class NosiFitAPI:
                 "locale": locale,
             },
         ).json()
+
