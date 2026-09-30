@@ -5,10 +5,10 @@
     <label for="add-item-search">{{ translate("nutrition", "catalog.search") }}</label>
     <input type="search" id="add-item-search" class="nutrition-product-search" placeholder="{{ translate("nutrition", "catalog.searchPlaceholder") }}" autocomplete="off" />
     <div class="nutrition-product-sort" role="group" aria-label="{{ translate("nutrition", "catalog.search") }}">
-      <button type="button" class="nutrition-product-sort-button" data-catalog-sort="favorites" aria-pressed="true">{{ translate("nutrition", "catalog.favorites") }}</button>
+      <button type="button" class="nutrition-product-sort-button" data-catalog-sort="all" aria-pressed="true">{{ translate("nutrition", "catalog.allProducts") }}</button>
+      <button type="button" class="nutrition-product-sort-button" data-catalog-sort="favorites" aria-pressed="false">{{ translate("nutrition", "catalog.favorites") }}</button>
       <button type="button" class="nutrition-product-sort-button" data-catalog-sort="recent" aria-pressed="false">{{ translate("nutrition", "catalog.recent") }}</button>
       <button type="button" class="nutrition-product-sort-button" data-catalog-sort="mine" aria-pressed="false">{{ translate("nutrition", "catalog.myProducts") }}</button>
-      <button type="button" class="nutrition-product-sort-button" data-catalog-sort="all" aria-pressed="false">{{ translate("nutrition", "catalog.allProducts") }}</button>
     </div>
     <div class="nutrition-product-sections">
       <section data-catalog-section="favorites"><div class="nutrition-product-section-title">{{ translate("nutrition", "catalog.favorites") }}</div><div id="product-favorites" class="nutrition-product-list"></div></section>
@@ -22,8 +22,10 @@
       <div><label for="add-item-amount">{{ translate("nutrition", "catalog.amount") }}</label><input type="number" id="add-item-amount" min="0.01" step="0.01" value="100" /></div>
       <div><label for="add-item-unit">{{ translate("nutrition", "catalog.unit") }}</label><select id="add-item-unit"><option value="g">{{ translate("nutrition", "catalog.units.g") }}</option><option value="ml">{{ translate("nutrition", "catalog.units.ml") }}</option><option value="pcs">{{ translate("nutrition", "catalog.units.pcs") }}</option></select></div>
     </div>
+    <button class="btn primary nutrition-add-to-meal" type="button" id="add-item-to-meal">{{ translate("nutrition", "catalog.addToMeal") }}</button>
+    <div id="pending-meal-items" class="nutrition-pending-items" aria-live="polite"></div>
     <button class="btn" type="button" id="open-add-my-product">+ {{ translate("nutrition", "catalog.addMyProduct") }}</button>
-    <div class="modal-actions"><button class="btn" id="close-add-item">{{ translate("nutrition", "actions.cancel") }}</button><button class="btn primary" id="save-add-item">{{ translate("nutrition", "actions.add") }}</button></div>
+    <div class="modal-actions"><button class="btn" id="close-add-item">{{ translate("nutrition", "actions.cancel") }}</button><button class="btn primary" id="save-add-item">{{ translate("nutrition", "actions.saveItems") }}</button></div>
   </div>
 </div>
 <div class="modal" id="modal-add-product">
