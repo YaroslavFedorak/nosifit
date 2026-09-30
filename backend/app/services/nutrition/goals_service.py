@@ -57,7 +57,7 @@ def get_goals(user_id):
         goals.calories_goal != calculated["calories"]
         or goals.protein_goal != calculated["protein"]
         or goals.fat_goal != calculated["fat"]
-        or goals.carbs_goal != calculated["carbs"]
+        or goals.carb_goal != calculated["carbs"]
         or goals.fiber_goal is None
     )
 
