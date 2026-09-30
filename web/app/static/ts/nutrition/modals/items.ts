@@ -6,6 +6,7 @@ import type { MealItem, Product, NutritionUnit } from "../types.js";
 type RefreshCallback = () => void | Promise<void>;
 
 let selectedProductId: number | null = null;
+let selectedProduct: Product | null = null;
 
 interface PendingMealItem {
     productId: number;
@@ -163,6 +164,7 @@ function renderSelectedProduct(product: Product | null): void {
 
 function selectProduct(product: Product): void {
     selectedProductId = product.id;
+    selectedProduct = product;
     setSelectValue("add-item-unit", product.default_unit);
     setInputValue("add-item-amount", product.default_unit === "pcs" ? "1" : "100");
     renderSelectedProduct(product);
@@ -221,13 +223,7 @@ function queueSelectedProduct(): void {
 
     if (!Number.isFinite(amount) || amount <= 0) return;
 
-    const product = [
-        ...catalogProducts.all,
-        ...catalogProducts.favorites,
-        ...catalogProducts.recent,
-        ...catalogProducts.mine,
-    ].find((item) => item.id === selectedProductId);
-
+    const product = selectedProduct;
     if (!product) return;
 
     pendingMealItems.push({
@@ -238,6 +234,7 @@ function queueSelectedProduct(): void {
     });
 
     selectedProductId = null;
+    selectedProduct = null;
     setInputValue("add-item-amount", "100");
     setSelectValue("add-item-unit", "g");
     renderSelectedProduct(null);
@@ -247,18 +244,21 @@ function queueSelectedProduct(): void {
 async function loadCatalog(): Promise<void> {
     const locale = getLocale();
     try {
-        const [favorites, recent, mine] = await Promise.all([
+        const [all, favorites, recent, mine] = await Promise.all([
+            NutritionAPI.getProducts("", locale),
             NutritionAPI.getFavoriteProducts(locale),
             NutritionAPI.getRecentProducts(locale),
             NutritionAPI.getMyProducts(locale),
         ]);
 
         catalogProducts = {
+            all: all.products,
             favorites: favorites.products,
             recent: recent.products,
             mine: mine.products,
-            all: [],
         };
+
+        renderProductList("product-all", catalogProducts.all);
 
         renderProductList("product-favorites", catalogProducts.favorites);
         renderProductList("product-recent", catalogProducts.recent);
@@ -306,6 +306,7 @@ async function searchCatalog(query: string): Promise<void> {
 
 export function openAddItemModal(mealId: number): void {
     selectedProductId = null;
+    selectedProduct = null;
     setInputValue("add-item-meal-id", String(mealId));
     setInputValue("add-item-search", "");
     setInputValue("add-item-amount", "100");
