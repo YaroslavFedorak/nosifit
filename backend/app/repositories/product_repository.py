@@ -3,6 +3,7 @@ from __future__ import annotations
 from datetime import date
 
 from sqlalchemy import or_
+from sqlalchemy.orm import selectinload
 
 from backend.app.models import Meal, MealItem, Product, ProductFavorite
 
@@ -10,6 +11,7 @@ from backend.app.models import Meal, MealItem, Product, ProductFavorite
 def get_product_for_user(user_id, product_id):
     return (
         Product.query
+        .options(selectinload(Product.names))
         .filter(
             Product.id == product_id,
             Product.is_active.is_(True),
@@ -25,6 +27,7 @@ def get_product_for_user(user_id, product_id):
 def get_user_product(user_id, product_id):
     return (
         Product.query
+        .options(selectinload(Product.names))
         .filter_by(
             id=product_id,
             owner_user_id=user_id,
@@ -50,6 +53,10 @@ def get_recent_products(user_id, limit=12):
     entries = (
         MealItem.query
         .join(Meal)
+        .options(
+            selectinload(MealItem.product)
+            .selectinload(Product.names)
+        )
         .filter(
             Meal.user_id == user_id,
             MealItem.product_id.is_not(None),
@@ -83,6 +90,7 @@ def get_recent_products(user_id, limit=12):
 def get_favorite_products(user_id, limit=50):
     return (
         Product.query
+        .options(selectinload(Product.names))
         .join(ProductFavorite, ProductFavorite.product_id == Product.id)
         .filter(
             ProductFavorite.user_id == user_id,
