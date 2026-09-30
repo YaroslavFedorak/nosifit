@@ -159,6 +159,23 @@ class NosiFitAPI:
             json={"name": name, "category": category, "locale": locale},
         ).json()
 
+    def add_entries(
+        self,
+        meal_id: int,
+        items: list[dict],
+        locale: str = "uk",
+    ) -> dict:
+        self.ensure_authenticated()
+        return self._request(
+            "POST",
+            "/api/nutrition/entries/bulk",
+            json={
+                "meal_id": meal_id,
+                "locale": locale,
+                "items": items,
+            },
+        ).json()
+
     def add_entry(
         self,
         meal_id: int,
