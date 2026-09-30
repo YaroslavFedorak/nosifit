@@ -163,13 +163,12 @@ function renderPendingMealItems() {
     if (!container || !empty)
         return;
     container.innerHTML = "";
-    if (!existingMealItems.length && !pendingMealItems.length) {
-        container.hidden = true;
-        empty.hidden = false;
+    const hasItems = existingMealItems.length > 0 || pendingMealItems.length > 0;
+    container.hidden = !hasItems;
+    empty.hidden = hasItems;
+    if (!hasItems) {
         return;
     }
-    container.hidden = false;
-    empty.hidden = true;
     existingMealItems.forEach((item) => {
         container.appendChild(createMealItemRow(item, { removable: false }));
     });
