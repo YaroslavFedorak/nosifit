@@ -782,3 +782,67 @@
         gap: 8px;
     }
 }
+
+
+/* Compact meal items block */
+#modal-add-item .nutrition-pending-items-block {
+    flex: 0 0 auto;
+    min-height: 40px;
+    max-height: 150px;
+    overflow-y: auto;
+    padding-right: 3px;
+}
+
+#modal-add-item .nutrition-pending-items {
+    display: grid;
+    gap: 6px;
+    min-height: 0;
+    max-height: none;
+    overflow: visible;
+}
+
+#modal-add-item .nutrition-pending-empty {
+    min-height: 40px;
+    display: grid;
+    place-items: center;
+    padding: 9px 12px;
+    border: 1px solid var(--nutrition-border-soft);
+    border-radius: var(--nutrition-radius-md);
+    background: var(--nutrition-surface-soft);
+    color: var(--nutrition-text-muted);
+    font-size: 12px;
+}
+
+#modal-add-item .nutrition-pending-item {
+    min-height: 34px;
+    padding: 5px 8px;
+    gap: 8px;
+    border-radius: var(--nutrition-radius-md);
+}
+
+#modal-add-item .nutrition-pending-item-info {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 10px;
+}
+
+#modal-add-item .nutrition-pending-item-info strong {
+    font-size: 13px;
+}
+
+#modal-add-item .nutrition-pending-item-info span {
+    font-size: 12px;
+}
+
+#modal-add-item .nutrition-pending-item-remove,
+#modal-add-item .nutrition-pending-item-status {
+    width: 24px;
+    height: 24px;
+}
+
+#modal-add-item .nutrition-pending-item-status {
+    display: grid;
+    place-items: center;
+    color: var(--nutrition-text-muted);
+    font-size: 13px;
+    flex: 0 0 24px;
+}
