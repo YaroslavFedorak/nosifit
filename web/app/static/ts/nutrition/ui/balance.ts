@@ -76,8 +76,7 @@ export function renderBalance(
 
     safeSet(
         "kcal-balance-status",
-        data.balance_status ??
-        nutrition_t("balance.noStatus"),
+        formatBalanceStatus(data.balance_status),
     );
 
     safeSet(
