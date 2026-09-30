@@ -66,7 +66,7 @@ def _meal_load_options():
 
 def get_daily_nutrition_data(user_id, locale="uk"):
     locale = normalize_locale(locale)
-    user = User.query.get(user_id)
+    user = db.session.get(User, user_id)
     today = date.today()
     yesterday = today - timedelta(days=1)
     goals = get_goals(user_id)
