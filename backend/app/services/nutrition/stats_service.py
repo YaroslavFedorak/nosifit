@@ -1,6 +1,8 @@
 from datetime import date, timedelta
 
-from backend.app.models import Meal, UserWeight
+from sqlalchemy.orm import selectinload
+
+from backend.app.models import Meal, MealItem, Product, UserWeight
 from backend.app.models.nutrition.user_water import UserWater
 from backend.app.models.user_profile import UserProfile
 from backend.app.services.nutrition.goals_service import get_goals
@@ -34,7 +36,11 @@ def get_stats(user_id, days=7):
 
     weights = (
         UserWeight.query
-        .filter_by(user_id=user_id)
+        .filter(
+            UserWeight.user_id == user_id,
+            UserWeight.date >= start_date,
+            UserWeight.date <= today,
+        )
         .order_by(UserWeight.date.asc())
         .all()
     )
@@ -144,6 +150,11 @@ def get_day_details(user_id, target_date, locale="uk"):
     locale = normalize_locale(locale)
     meals = (
         Meal.query
+        .options(
+            selectinload(Meal.items)
+            .selectinload(MealItem.product)
+            .selectinload(Product.names)
+        )
         .filter(
             Meal.user_id == user_id,
             Meal.date == target_date,
@@ -153,11 +164,11 @@ def get_day_details(user_id, target_date, locale="uk"):
     )
 
     totals = {
-        "calories": 0,
-        "protein": 0,
-        "fat": 0,
-        "carbs": 0,
-        "fiber": 0,
+        "calories": sum(meal.total_calories or 0 for meal in meals),
+        "protein": sum(meal.total_protein or 0 for meal in meals),
+        "fat": sum(meal.total_fat or 0 for meal in meals),
+        "carbs": sum(meal.total_carbs or 0 for meal in meals),
+        "fiber": sum(meal.total_fiber or 0 for meal in meals),
     }
 
     serialized_meals = [serialize_meal(meal, locale) for meal in meals]
