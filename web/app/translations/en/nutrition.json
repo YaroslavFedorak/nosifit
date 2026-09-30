@@ -75,7 +75,8 @@
         "close": "Close",
         "editMeal": "Edit meal",
         "deleteConfirm": "Double-click to delete",
-        "editProduct": "Edit food"
+        "editProduct": "Edit food",
+        "saveItems": "Save products"
     },
     "weight": {
         "update": "Update",
@@ -220,6 +221,7 @@
             "ml": "ml",
             "pcs": "pcs"
         },
-        "allProducts": "All products"
+        "allProducts": "All products",
+        "addToMeal": "Add to meal"
     }
 }
