@@ -16,6 +16,7 @@ interface PendingMealItem {
 }
 
 let pendingMealItems: PendingMealItem[] = [];
+let existingMealItems: MealItem[] = [];
 type CatalogMode = "favorites" | "recent" | "mine" | "all";
 let catalogMode: CatalogMode = "all";
 let catalogProducts: Record<CatalogMode, Product[]> = {
@@ -170,51 +171,90 @@ function selectProduct(product: Product): void {
     renderSelectedProduct(product);
 }
 
-function renderPendingMealItems(): void {
-    const container = document.getElementById("pending-meal-items");
-    if (!container) return;
+function createMealItemRow(
+    item: MealItem,
+    options: { removable: boolean; index?: number },
+): HTMLElement {
+    const row = document.createElement("div");
+    row.className = "nutrition-pending-item";
 
-    container.innerHTML = "";
+    const info = document.createElement("div");
+    info.className = "nutrition-pending-item-info";
 
-    if (!pendingMealItems.length) {
-        container.hidden = true;
-        return;
-    }
+    const name = document.createElement("strong");
+    name.textContent = item.name;
 
-    container.hidden = false;
+    const amount = document.createElement("span");
+    amount.textContent = item.amount != null
+        ? item.amount + " " + (item.unit ?? "g")
+        : "—";
 
-    pendingMealItems.forEach((entry, index) => {
-        const row = document.createElement("div");
-        row.className = "nutrition-pending-item";
+    info.append(name, amount);
+    row.appendChild(info);
 
-        const info = document.createElement("div");
-        info.className = "nutrition-pending-item-info";
-
-        const name = document.createElement("strong");
-        name.textContent = entry.product.brand
-            ? `${entry.product.name} · ${entry.product.brand}`
-            : entry.product.name;
-
-        const amount = document.createElement("span");
-        amount.textContent = `${entry.amount} ${entry.unit}`;
-
-        info.append(name, amount);
-
+    if (options.removable && options.index !== undefined) {
         const remove = document.createElement("button");
         remove.type = "button";
         remove.className = "nutrition-pending-item-remove";
         remove.textContent = "×";
-        remove.setAttribute("aria-label", entry.product.name);
+        remove.setAttribute("aria-label", item.name);
         remove.addEventListener("click", () => {
-            pendingMealItems.splice(index, 1);
+            pendingMealItems.splice(options.index!, 1);
             renderPendingMealItems();
         });
+        row.appendChild(remove);
+    } else {
+        const status = document.createElement("span");
+        status.className = "nutrition-pending-item-status";
+        status.textContent = "✓";
+        status.setAttribute("aria-label", "Already added");
+        row.appendChild(status);
+    }
 
-        row.append(info, remove);
-        container.appendChild(row);
-    });
+    return row;
 }
 
+function renderPendingMealItems(): void {
+    const container = document.getElementById("pending-meal-items");
+    const empty = document.getElementById("pending-meal-items-empty");
+    if (!container || !empty) return;
+
+    container.innerHTML = "";
+
+    if (!existingMealItems.length && !pendingMealItems.length) {
+        container.hidden = true;
+        empty.hidden = false;
+        return;
+    }
+
+    container.hidden = false;
+    empty.hidden = true;
+
+    existingMealItems.forEach((item) => {
+        container.appendChild(
+            createMealItemRow(item, { removable: false }),
+        );
+    });
+
+    pendingMealItems.forEach((entry, index) => {
+        container.appendChild(
+            createMealItemRow(
+                {
+                    id: -index - 1,
+                    product_id: entry.productId,
+                    name: entry.product.name,
+                    amount: entry.amount,
+                    unit: entry.unit,
+                    calories: 0,
+                    protein: 0,
+                    fat: 0,
+                    carbs: 0,
+                },
+                { removable: true, index },
+            ),
+        );
+    });
+}
 function queueSelectedProduct(): void {
     if (selectedProductId === null) return;
 
@@ -307,6 +347,8 @@ async function searchCatalog(query: string): Promise<void> {
 export function openAddItemModal(mealId: number, meal?: Meal): void {
     selectedProductId = null;
     selectedProduct = null;
+    existingMealItems = meal?.items ? [...meal.items] : [];
+    pendingMealItems = [];
     setInputValue("add-item-meal-id", String(mealId));
     setInputValue("add-meal-name", meal?.name ?? "");
     setInputValue("add-meal-category", meal?.category ?? "Сніданок");
@@ -316,6 +358,7 @@ export function openAddItemModal(mealId: number, meal?: Meal): void {
     catalogMode = "all";
     setSelectValue("add-item-unit", "g");
     renderSelectedProduct(null);
+    renderPendingMealItems();
     openModal("modal-add-item");
     setCatalogSearchState("");
     setCatalogSortMode(catalogMode);
@@ -364,6 +407,7 @@ export function setupItemModals(onRefresh: RefreshCallback): void {
         "click",
         () => {
             pendingMealItems = [];
+            existingMealItems = [];
             renderPendingMealItems();
             closeModal("modal-add-item");
         },
@@ -414,6 +458,7 @@ export function setupItemModals(onRefresh: RefreshCallback): void {
                 );
 
                 pendingMealItems = [];
+                existingMealItems = [];
                 renderPendingMealItems();
                 closeModal("modal-add-item");
                 await onRefresh();
