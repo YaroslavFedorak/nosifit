@@ -39,7 +39,7 @@ function setTodayDate() {
 }
 async function loadNutritionDay() {
     try {
-        const data = await NutritionAPI.getDay();
+        const data = await NutritionAPI.getDay(getLocale());
         renderBalance(data);
         renderMeals(data.meals, loadNutritionDay);
         await loadNutritionRecommendations();
