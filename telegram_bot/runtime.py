@@ -9,11 +9,30 @@ def get_config() -> TelegramConfig:
     return TelegramConfig.from_env()
 
 
-@lru_cache(maxsize=1)
-def get_api() -> NosiFitAPI:
-    config = get_config()
-    return NosiFitAPI(
-        base_url=config.nosi_fit_base_url,
-        email=config.nosi_fit_email,
-        password=config.nosi_fit_password,
+_sessions: dict[int, NosiFitAPI] = {}
+
+
+def authenticate(user_id: int, email: str, password: str) -> NosiFitAPI:
+    api = NosiFitAPI(
+        base_url=get_config().nosi_fit_base_url,
     )
+    api.login(email.strip().lower(), password)
+    _sessions[user_id] = api
+    return api
+
+
+def get_api(user_id: int) -> NosiFitAPI:
+    try:
+        return _sessions[user_id]
+    except KeyError as exc:
+        raise RuntimeError(
+            "Telegram-користувач не авторизований у NosiFit."
+        ) from exc
+
+
+def is_authenticated(user_id: int) -> bool:
+    return user_id in _sessions
+
+
+def logout(user_id: int) -> None:
+    _sessions.pop(user_id, None)
