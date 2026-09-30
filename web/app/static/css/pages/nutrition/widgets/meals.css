@@ -420,3 +420,17 @@
         justify-content: center;
     }
 }
+
+
+.meal-action-add {
+    background: var(--nutrition-accent);
+    border-color: var(--nutrition-accent);
+    color: #fff;
+}
+
+.meal-action-add:hover {
+    background: var(--nutrition-accent-soft);
+    border-color: var(--nutrition-accent-soft);
+    color: #fff;
+    transform: translateY(-1px);
+}
