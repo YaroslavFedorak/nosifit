@@ -1,7 +1,7 @@
 import { NutritionAPI } from "../api.js";
 import { closeModal, openModal } from "./modal.js";
 import { getLocale, nutrition_t } from "../../i18n/index.js";
-import type { MealItem, Product, NutritionUnit } from "../types.js";
+import type { Meal, MealItem, Product, NutritionUnit } from "../types.js";
 
 type RefreshCallback = () => void | Promise<void>;
 
@@ -304,13 +304,16 @@ async function searchCatalog(query: string): Promise<void> {
     }
 }
 
-export function openAddItemModal(mealId: number): void {
+export function openAddItemModal(mealId: number, meal?: Meal): void {
     selectedProductId = null;
     selectedProduct = null;
     setInputValue("add-item-meal-id", String(mealId));
+    setInputValue("add-meal-name", meal?.name ?? "");
+    setInputValue("add-meal-category", meal?.category ?? "Сніданок");
+    setInputValue("add-meal-time", meal?.time ?? "");
     setInputValue("add-item-search", "");
     setInputValue("add-item-amount", "100");
-    catalogMode = "favorites";
+    catalogMode = "all";
     setSelectValue("add-item-unit", "g");
     renderSelectedProduct(null);
     openModal("modal-add-item");
@@ -371,13 +374,33 @@ export function setupItemModals(onRefresh: RefreshCallback): void {
         () => queueSelectedProduct(),
     );
 
+    document.getElementById("open-add-meal")?.addEventListener(
+        "click",
+        () => openAddItemModal(0),
+    );
+
     document.getElementById("save-add-item")?.addEventListener(
         "click",
         async () => {
-            const mealId = Number(getInputValue("add-item-meal-id"));
-            if (!mealId || !pendingMealItems.length) return;
+            let mealId = Number(getInputValue("add-item-meal-id"));
+            const mealName = getInputValue("add-meal-name").trim();
+
+            if (!mealName || !pendingMealItems.length) return;
 
             try {
+                const mealPayload = {
+                    name: mealName,
+                    category: getInputValue("add-meal-category"),
+                    time: getInputValue("add-meal-time") || null,
+                };
+
+                if (mealId) {
+                    await NutritionAPI.updateMeal(mealId, mealPayload);
+                } else {
+                    const meal = await NutritionAPI.createMeal(mealPayload);
+                    mealId = meal.id;
+                }
+
                 await Promise.all(
                     pendingMealItems.map((entry) =>
                         NutritionAPI.createEntry({
@@ -395,7 +418,7 @@ export function setupItemModals(onRefresh: RefreshCallback): void {
                 closeModal("modal-add-item");
                 await onRefresh();
             } catch (error) {
-                console.error("Failed to add meal items:", error);
+                console.error("Failed to save meal and food items:", error);
             }
         },
     );
