@@ -10,19 +10,20 @@ class NosiFitAPIError(RuntimeError):
 @dataclass
 class NosiFitAPI:
     base_url: str
-    email: str
-    password: str
     session: requests.Session = field(default_factory=requests.Session)
 
-    def _login(self) -> None:
+    def login(self, email: str, password: str) -> None:
         response = self.session.post(
             f"{self.base_url}/auth/login",
-            data={"email": self.email, "password": self.password},
+            data={"email": email, "password": password},
             timeout=10,
             allow_redirects=True,
         )
-        if not response.ok or "/dashboard" not in response.url:
-            raise NosiFitAPIError("NosiFit authentication failed")
+        if not response.ok:
+            raise NosiFitAPIError("Не вдалося підключитися до NosiFit.")
+
+        if response.url.rstrip("/").endswith("/auth/login"):
+            raise NosiFitAPIError("Невірна електронна пошта або пароль.")
 
     def _request(self, method: str, path: str, **kwargs) -> requests.Response:
         response = self.session.request(
@@ -33,9 +34,8 @@ class NosiFitAPI:
             or response.url.rstrip("/").endswith("/auth/login")
         )
         if needs_login:
-            self._login()
-            response = self.session.request(
-                method, f"{self.base_url}{path}", timeout=10, **kwargs
+            raise NosiFitAPIError(
+                "Сесія NosiFit завершилася. Виконайте вхід ще раз."
             )
         if not response.ok:
             try:
@@ -53,7 +53,7 @@ class NosiFitAPI:
 
     def ensure_authenticated(self) -> None:
         if not self.session.cookies:
-            self._login()
+            raise NosiFitAPIError("Ви не авторизовані. Виконайте вхід у NosiFit.")
 
     def get_day(self, locale: str = "uk") -> dict:
         self.ensure_authenticated()
@@ -89,8 +89,12 @@ class NosiFitAPI:
         ).json()
 
     def add_entry(
-        self, meal_id: int, product_id: int, amount: float,
-        unit: str, locale: str = "uk"
+        self,
+        meal_id: int,
+        product_id: int,
+        amount: float,
+        unit: str,
+        locale: str = "uk",
     ) -> dict:
         self.ensure_authenticated()
         return self._request(
