@@ -8,6 +8,11 @@ type RefreshCallback = () => void | Promise<void>;
 let selectedProductId: number | null = null;
 type CatalogMode = "favorites" | "recent" | "mine";
 let catalogMode: CatalogMode = "favorites";
+let catalogProducts: Record<CatalogMode, Product[]> = {
+    favorites: [],
+    recent: [],
+    mine: [],
+};
 
 function formatMacro(value: number | null | undefined): string {
     return Number(value ?? 0).toFixed(1);
@@ -71,6 +76,10 @@ function createProductButton(product: Product): HTMLElement {
 
     wrapper.append(select, favorite);
     return wrapper;
+}
+
+function getProductSearchText(product: Product): string {
+    return `${product.name} ${product.brand ?? ""}`.toLocaleLowerCase();
 }
 
 function setCatalogSortMode(mode: CatalogMode): void {
@@ -160,9 +169,15 @@ async function loadCatalog(): Promise<void> {
             NutritionAPI.getMyProducts(locale),
         ]);
 
-        renderProductList("product-favorites", favorites.products);
-        renderProductList("product-recent", recent.products);
-        renderProductList("product-mine", mine.products);
+        catalogProducts = {
+            favorites: favorites.products,
+            recent: recent.products,
+            mine: mine.products,
+        };
+
+        renderProductList("product-favorites", catalogProducts.favorites);
+        renderProductList("product-recent", catalogProducts.recent);
+        renderProductList("product-mine", catalogProducts.mine);
     } catch (error) {
         console.error("Failed to load nutrition catalog:", error);
     }
@@ -171,18 +186,16 @@ async function loadCatalog(): Promise<void> {
 async function searchCatalog(query: string): Promise<void> {
     setCatalogSearchState(query);
     if (!query.trim()) {
-        await loadCatalog();
-        const results = document.getElementById("product-search-results");
-        if (results) results.innerHTML = "";
+        renderProductList("product-search-results", []);
         return;
     }
 
-    try {
-        const data = await NutritionAPI.getProducts(query, getLocale());
-        renderProductList("product-search-results", data.products);
-    } catch (error) {
-        console.error("Failed to search products:", error);
-    }
+    const normalizedQuery = query.trim().toLocaleLowerCase();
+    const products = catalogProducts[catalogMode].filter((product) =>
+        getProductSearchText(product).includes(normalizedQuery),
+    );
+
+    renderProductList("product-search-results", products);
 }
 
 export function openAddItemModal(mealId: number): void {
@@ -275,6 +288,11 @@ export function setupItemModals(onRefresh: RefreshCallback): void {
             const mode = button.dataset.catalogSort as CatalogMode | undefined;
             if (mode) setCatalogSortMode(mode);
         });
+    });
+
+    document.getElementById("add-item-unit")?.addEventListener("change", (event) => {
+        const target = event.target as HTMLSelectElement;
+        setInputValue("add-item-amount", target.value === "pcs" ? "1" : "100");
     });
 
     document.getElementById("add-item-search")?.addEventListener(
