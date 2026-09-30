@@ -856,3 +856,8 @@
 #modal-add-item .nutrition-pending-empty {
     flex: 0 0 auto;
 }
+
+#modal-add-item .nutrition-pending-empty[hidden],
+#modal-add-item .nutrition-pending-items[hidden] {
+    display: none !important;
+}
