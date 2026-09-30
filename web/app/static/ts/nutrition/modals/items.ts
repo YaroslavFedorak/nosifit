@@ -6,8 +6,17 @@ import type { MealItem, Product, NutritionUnit } from "../types.js";
 type RefreshCallback = () => void | Promise<void>;
 
 let selectedProductId: number | null = null;
+
+interface PendingMealItem {
+    productId: number;
+    product: Product;
+    amount: number;
+    unit: NutritionUnit;
+}
+
+let pendingMealItems: PendingMealItem[] = [];
 type CatalogMode = "favorites" | "recent" | "mine" | "all";
-let catalogMode: CatalogMode = "favorites";
+let catalogMode: CatalogMode = "all";
 let catalogProducts: Record<CatalogMode, Product[]> = {
     favorites: [],
     recent: [],
@@ -159,6 +168,82 @@ function selectProduct(product: Product): void {
     renderSelectedProduct(product);
 }
 
+function renderPendingMealItems(): void {
+    const container = document.getElementById("pending-meal-items");
+    if (!container) return;
+
+    container.innerHTML = "";
+
+    if (!pendingMealItems.length) {
+        container.hidden = true;
+        return;
+    }
+
+    container.hidden = false;
+
+    pendingMealItems.forEach((entry, index) => {
+        const row = document.createElement("div");
+        row.className = "nutrition-pending-item";
+
+        const info = document.createElement("div");
+        info.className = "nutrition-pending-item-info";
+
+        const name = document.createElement("strong");
+        name.textContent = entry.product.brand
+            ? `${entry.product.name} · ${entry.product.brand}`
+            : entry.product.name;
+
+        const amount = document.createElement("span");
+        amount.textContent = `${entry.amount} ${entry.unit}`;
+
+        info.append(name, amount);
+
+        const remove = document.createElement("button");
+        remove.type = "button";
+        remove.className = "nutrition-pending-item-remove";
+        remove.textContent = "×";
+        remove.setAttribute("aria-label", entry.product.name);
+        remove.addEventListener("click", () => {
+            pendingMealItems.splice(index, 1);
+            renderPendingMealItems();
+        });
+
+        row.append(info, remove);
+        container.appendChild(row);
+    });
+}
+
+function queueSelectedProduct(): void {
+    if (selectedProductId === null) return;
+
+    const amount = Number(getInputValue("add-item-amount"));
+    const unit = getInputValue("add-item-unit") as NutritionUnit;
+
+    if (!Number.isFinite(amount) || amount <= 0) return;
+
+    const product = [
+        ...catalogProducts.all,
+        ...catalogProducts.favorites,
+        ...catalogProducts.recent,
+        ...catalogProducts.mine,
+    ].find((item) => item.id === selectedProductId);
+
+    if (!product) return;
+
+    pendingMealItems.push({
+        productId: product.id,
+        product,
+        amount,
+        unit,
+    });
+
+    selectedProductId = null;
+    setInputValue("add-item-amount", "100");
+    setSelectValue("add-item-unit", "g");
+    renderSelectedProduct(null);
+    renderPendingMealItems();
+}
+
 async function loadCatalog(): Promise<void> {
     const locale = getLocale();
     try {
@@ -273,33 +358,43 @@ export async function openEditItemModal(item: MealItem): Promise<void> {
 export function setupItemModals(onRefresh: RefreshCallback): void {
     document.getElementById("close-add-item")?.addEventListener(
         "click",
-        () => closeModal("modal-add-item"),
+        () => {
+            pendingMealItems = [];
+            renderPendingMealItems();
+            closeModal("modal-add-item");
+        },
+    );
+
+    document.getElementById("add-item-to-meal")?.addEventListener(
+        "click",
+        () => queueSelectedProduct(),
     );
 
     document.getElementById("save-add-item")?.addEventListener(
         "click",
         async () => {
-            if (selectedProductId === null) return;
-
             const mealId = Number(getInputValue("add-item-meal-id"));
-            const amount = Number(getInputValue("add-item-amount"));
-            const unit = getInputValue("add-item-unit") as NutritionUnit;
-
-            if (!mealId || !Number.isFinite(amount) || amount <= 0) return;
+            if (!mealId || !pendingMealItems.length) return;
 
             try {
-                await NutritionAPI.createEntry({
-                    meal_id: mealId,
-                    product_id: selectedProductId,
-                    amount,
-                    unit,
-                    locale: getLocale(),
-                });
+                await Promise.all(
+                    pendingMealItems.map((entry) =>
+                        NutritionAPI.createEntry({
+                            meal_id: mealId,
+                            product_id: entry.productId,
+                            amount: entry.amount,
+                            unit: entry.unit,
+                            locale: getLocale(),
+                        }),
+                    ),
+                );
 
+                pendingMealItems = [];
+                renderPendingMealItems();
                 closeModal("modal-add-item");
                 await onRefresh();
             } catch (error) {
-                console.error("Failed to add food entry:", error);
+                console.error("Failed to add meal items:", error);
             }
         },
     );
