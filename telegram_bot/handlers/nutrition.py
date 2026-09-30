@@ -20,9 +20,9 @@ from telegram_bot.states.nutrition import NutritionStates
 router = Router()
 
 
-def _api():
+def _api(user_id: int):
     from telegram_bot.runtime import get_api
-    return get_api()
+    return get_api(user_id)
 
 
 def _format_number(value: float) -> str:
@@ -64,7 +64,7 @@ def _format_pending(category: str, pending: list[dict]) -> str:
 async def nutrition(message: Message, state: FSMContext) -> None:
     await state.clear()
     try:
-        day = await asyncio.to_thread(_api().get_day)
+        day = await asyncio.to_thread(_api(message.from_user.id).get_day)
     except NosiFitAPIError as exc:
         await message.answer(
             f"Не вдалося підключитися до NosiFit: {exc}",
@@ -109,7 +109,7 @@ async def search_product(message: Message, state: FSMContext) -> None:
         return
 
     try:
-        products = await asyncio.to_thread(_api().search_products, query)
+        products = await asyncio.to_thread(_api(message.from_user.id).search_products, query)
     except NosiFitAPIError as exc:
         await message.answer(f"Не вдалося виконати пошук: {exc}")
         return
@@ -135,7 +135,7 @@ async def choose_product(callback: CallbackQuery, state: FSMContext) -> None:
     product_id = int(callback.data.rsplit(":", 1)[1])
 
     try:
-        product = await asyncio.to_thread(_api().get_product, product_id)
+        product = await asyncio.to_thread(_api(callback.from_user.id).get_product, product_id)
     except NosiFitAPIError as exc:
         await callback.message.answer(f"Не вдалося завантажити продукт: {exc}")
         return
@@ -209,7 +209,7 @@ async def save_meal(callback: CallbackQuery, state: FSMContext) -> None:
         return
 
     try:
-        api = _api()
+        api = _api(callback.from_user.id)
         day = await asyncio.to_thread(api.get_day)
         meal = await asyncio.to_thread(get_or_create_meal, api, day, category)
 
@@ -239,7 +239,7 @@ async def today(callback: CallbackQuery, state: FSMContext) -> None:
     await callback.answer()
     await state.clear()
     try:
-        day = await asyncio.to_thread(_api().get_day)
+        day = await asyncio.to_thread(_api(callback.from_user.id).get_day)
     except NosiFitAPIError as exc:
         await callback.message.answer(f"Не вдалося завантажити дані: {exc}")
         return
