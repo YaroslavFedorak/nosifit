@@ -138,7 +138,7 @@ function createMealActions(meal, onRefresh) {
     addItem.type = "button";
     addItem.className = "meal-action-add";
     addItem.textContent = nutrition_t("meals.addProduct");
-    addItem.addEventListener("click", () => openAddItemModal(meal.id));
+    addItem.addEventListener("click", () => openAddItemModal(meal.id, meal));
 
     const edit = createIconButton("meal-action-icon", ICONS.pencil, nutrition_t("actions.editMeal"));
     edit.addEventListener("click", () => {
