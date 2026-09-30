@@ -2,7 +2,7 @@ import { openModal, } from "../modals/modal.js";
 import { openAddItemModal, openEditItemModal, } from "../modals/items.js";
 import { NutritionAPI, } from "../api.js";
 import { nutrition_t, } from "../../i18n/index.js";
-const ICONS = {
+function formatMacro(value) {\n    return Number(value ?? 0).toFixed(1);\n}\nfunction formatCalories(value) {\n    return String(Math.round(Number(value ?? 0)));\n}\nconst ICONS = {
     pencil: `
         <svg
             xmlns="http://www.w3.org/2000/svg"
