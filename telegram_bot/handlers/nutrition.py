@@ -446,14 +446,18 @@ async def save_meal(callback: CallbackQuery, state: FSMContext) -> None:
             meal = await asyncio.to_thread(get_or_create_meal, api, day, category)
             meal_id = meal["id"]
 
-        for item in pending:
-            await asyncio.to_thread(
-                api.add_entry,
-                meal_id,
-                item["product_id"],
-                item["amount"],
-                item["unit"],
-            )
+        await asyncio.to_thread(
+            api.add_entries,
+            meal_id,
+            [
+                {
+                    "product_id": item["product_id"],
+                    "amount": item["amount"],
+                    "unit": item["unit"],
+                }
+                for item in pending
+            ],
+        )
         updated_day = await asyncio.to_thread(api.get_day)
     except NosiFitAPIError as exc:
         await callback.message.answer(f"Не вдалося зберегти прийом: {exc}")
