@@ -51,9 +51,15 @@ function createProductButton(product) {
 }
 function setCatalogSortMode(mode) {\n    catalogMode = mode;\n    const searching = getInputValue("add-item-search").trim().length > 0;\n    document.querySelectorAll("[data-catalog-section]").forEach((section) => {\n        const sectionMode = section.dataset.catalogSection;\n        section.hidden = searching ? sectionMode !== "search" : sectionMode !== catalogMode;\n    });\n    document.querySelectorAll("[data-catalog-sort]").forEach((button) => {\n        button.setAttribute("aria-pressed", String(button.dataset.catalogSort === catalogMode));\n    });\n}\nfunction setCatalogSearchState(query) {
     const searching = query.trim().length > 0;
-    document.querySelectorAll("[data-catalog-section]").forEach((section) => {
-        section.hidden = searching && section.dataset.catalogSection !== "search";
-    });
+    document.querySelector(".nutrition-product-sort")?.toggleAttribute("hidden", searching);
+    if (searching) {
+        document.querySelectorAll("[data-catalog-section]").forEach((section) => {
+            section.hidden = section.dataset.catalogSection !== "search";
+        });
+    }
+    else {
+        setCatalogSortMode(catalogMode);
+    }
     document.querySelector(".nutrition-product-sections")?.classList.toggle("is-searching", searching);
 }
 function renderProductList(elementId, products) {
@@ -89,6 +95,7 @@ function renderSelectedProduct(product) {
 function selectProduct(product) {
     selectedProductId = product.id;
     setSelectValue("add-item-unit", product.default_unit);
+    setInputValue("add-item-amount", product.default_unit === "pcs" ? "1" : "100");
     renderSelectedProduct(product);
 }
 async function loadCatalog() {
@@ -184,7 +191,14 @@ export function setupItemModals(onRefresh) {
             console.error("Failed to add food entry:", error);
         }
     });
-    document.querySelectorAll("[data-catalog-sort]").forEach((button) => {\n        button.addEventListener("click", () => {\n            const mode = button.dataset.catalogSort;\n            if (mode) setCatalogSortMode(mode);\n        });\n    });\n    document.getElementById("add-item-search")?.addEventListener("input", (event) => {
+    document.querySelectorAll("[data-catalog-sort]").forEach((button) => {\n        button.addEventListener("click", () => {\n            const mode = button.dataset.catalogSort;\n            if (mode) setCatalogSortMode(mode);\n        });\n    });\n    document.querySelectorAll("[data-catalog-sort]").forEach((button) => {
+        button.addEventListener("click", () => {
+            const mode = button.dataset.catalogSort;
+            if (mode)
+                setCatalogSortMode(mode);
+        });
+    });
+    document.getElementById("add-item-search")?.addEventListener("input", (event) => {
         const target = event.target;
         void searchCatalog(target.value);
     });
