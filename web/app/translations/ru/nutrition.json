@@ -29,7 +29,12 @@
     },
     "balance": {
         "kcalGoal": "из {value} ккал",
-        "noStatus": "—"
+        "noStatus": "—",
+        "status": {
+            "over": "выше цели",
+            "under": "ниже цели",
+            "normal": "в норме"
+        }
     },
     "fields": {
         "name": "Название",
