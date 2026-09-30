@@ -1,92 +1,119 @@
 const BASE_URL = "/api/nutrition";
 async function request(url, options = {}) {
     const response = await fetch(url, {
+        credentials: "same-origin",
         headers: {
             "Content-Type": "application/json",
             ...(options.headers || {}),
         },
         ...options,
     });
-    const data = await response.json();
+    const data = await response.json().catch(() => ({}));
     if (!response.ok) {
         throw new Error(data.error || "Something went wrong");
     }
     return data;
 }
 export const NutritionAPI = {
-    getDay() {
-        return request(`${BASE_URL}/day`);
+    getDay(locale = "uk") {
+        return request(BASE_URL + "/day?locale=" + encodeURIComponent(locale));
     },
     getDayDetails(date) {
-        return request(`${BASE_URL}/day/${date}`);
+        return request(BASE_URL + "/day/" + date);
     },
     getRecommendations() {
-        return request(`${BASE_URL}/recommendations`);
+        return request(BASE_URL + "/recommendations");
     },
-    getWater() {
-        return request(`${BASE_URL}/water`);
+    getProducts(query = "", locale = "uk") {
+        return request(BASE_URL + "/products?q=" + encodeURIComponent(query) + "&locale=" + encodeURIComponent(locale));
     },
-    getWeight() {
-        return request(`${BASE_URL}/weight`);
+    getRecentProducts(locale = "uk") {
+        return request(BASE_URL + "/products/recent?locale=" + encodeURIComponent(locale));
+    },
+    getFavoriteProducts(locale = "uk") {
+        return request(BASE_URL + "/products/favorites?locale=" + encodeURIComponent(locale));
+    },
+    getMyProducts(locale = "uk") {
+        return request(BASE_URL + "/products/mine?locale=" + encodeURIComponent(locale));
+    },
+    getProduct(id, locale = "uk") {
+        return request(BASE_URL + "/products/" + id + "?locale=" + encodeURIComponent(locale));
+    },
+    createProduct(data) {
+        return request(BASE_URL + "/products", {
+            method: "POST",
+            body: JSON.stringify(data),
+        });
+    },
+    updateProduct(id, data) {
+        return request(BASE_URL + "/products/" + id, {
+            method: "PATCH",
+            body: JSON.stringify(data),
+        });
+    },
+    deleteProduct(id) {
+        return request(BASE_URL + "/products/" + id, {
+            method: "DELETE",
+        });
+    },
+    setProductFavorite(id, favorite, locale = "uk") {
+        return request(BASE_URL + "/products/" + id + "/favorite", {
+            method: "POST",
+            body: JSON.stringify({ favorite, locale }),
+        });
     },
     createMeal(data) {
-        return request(`${BASE_URL}/meals`, {
+        return request(BASE_URL + "/meals", {
             method: "POST",
             body: JSON.stringify(data),
         });
     },
     updateMeal(id, data) {
-        return request(`${BASE_URL}/meals/${id}`, {
+        return request(BASE_URL + "/meals/" + id, {
             method: "PUT",
             body: JSON.stringify(data),
         });
     },
     deleteMeal(id) {
-        return request(`${BASE_URL}/meals/${id}`, {
+        return request(BASE_URL + "/meals/" + id, {
             method: "DELETE",
         });
     },
-    createItem(data) {
-        return request(`${BASE_URL}/items`, {
+    createEntry(data) {
+        return request(BASE_URL + "/entries", {
             method: "POST",
             body: JSON.stringify(data),
         });
     },
-    updateItem(id, data) {
-        return request(`${BASE_URL}/items/${id}`, {
-            method: "PUT",
+    updateEntry(id, data) {
+        return request(BASE_URL + "/entries/" + id, {
+            method: "PATCH",
             body: JSON.stringify(data),
         });
     },
-    deleteItem(id) {
-        return request(`${BASE_URL}/items/${id}`, {
+    deleteEntry(id) {
+        return request(BASE_URL + "/entries/" + id, {
             method: "DELETE",
         });
     },
     updateWeight(weight) {
-        const data = {
-            weight,
-        };
-        return request(`${BASE_URL}/weight`, {
+        return request(BASE_URL + "/weight", {
             method: "POST",
-            body: JSON.stringify(data),
+            body: JSON.stringify({ weight }),
         });
     },
     addWater(amount) {
-        const data = {
-            amount,
-        };
-        return request(`${BASE_URL}/water`, {
+        return request(BASE_URL + "/water", {
             method: "POST",
-            body: JSON.stringify(data),
+            body: JSON.stringify({ amount }),
         });
     },
     copyYesterday() {
-        return request(`${BASE_URL}/copy-yesterday`, {
+        return request(BASE_URL + "/copy-yesterday", {
             method: "POST",
         });
     },
     getHeatmap(year) {
-        return request(`${BASE_URL}/heatmap?year=${year}`);
+        return request(BASE_URL + "/heatmap?year=" + year);
     },
 };

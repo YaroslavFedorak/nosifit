@@ -1,47 +1,40 @@
 <div class="modal" id="modal-add-item">
-  <div class="modal-content">
+  <div class="modal-content nutrition-product-modal">
     <h2>{{ translate("nutrition", "items.addTitle") }}</h2>
-
     <input type="hidden" id="add-item-meal-id" />
-
-    <label for="add-item-name">
-      {{ translate("nutrition", "fields.name") }}
-    </label>
-
-    <input type="text" id="add-item-name" />
-
-    <label for="add-item-kcal">
-      {{ translate("nutrition", "fields.calories") }}
-    </label>
-
-    <input type="number" id="add-item-kcal" value="0" />
-
-    <label for="add-item-protein">
-      {{ translate("nutrition", "fields.protein") }}
-    </label>
-
-    <input type="number" id="add-item-protein" value="0" />
-
-    <label for="add-item-fat">
-      {{ translate("nutrition", "fields.fat") }}
-    </label>
-
-    <input type="number" id="add-item-fat" value="0" />
-
-    <label for="add-item-carb">
-      {{ translate("nutrition", "fields.carbs") }}
-    </label>
-
-    <input type="number" id="add-item-carb" value="0" />
-
-    <div class="modal-actions">
-      <button class="btn" id="close-add-item">
-        {{ translate("nutrition", "actions.cancel") }}
-      </button>
-
-      <button class="btn primary" id="save-add-item">
-        {{ translate("nutrition", "actions.add") }}
-      </button>
+    <label for="add-item-search">{{ translate("nutrition", "catalog.search") }}</label>
+    <input type="search" id="add-item-search" class="nutrition-product-search" placeholder="{{ translate("nutrition", "catalog.searchPlaceholder") }}" autocomplete="off" />
+    <div class="nutrition-product-sections">
+      <section><div class="nutrition-product-section-title">{{ translate("nutrition", "catalog.favorites") }}</div><div id="product-favorites" class="nutrition-product-list"></div></section>
+      <section><div class="nutrition-product-section-title">{{ translate("nutrition", "catalog.recent") }}</div><div id="product-recent" class="nutrition-product-list"></div></section>
+      <section><div class="nutrition-product-section-title">{{ translate("nutrition", "catalog.myProducts") }}</div><div id="product-mine" class="nutrition-product-list"></div></section>
+      <section><div class="nutrition-product-section-title">{{ translate("nutrition", "catalog.searchResults") }}</div><div id="product-search-results" class="nutrition-product-list"></div></section>
     </div>
+    <div id="selected-product" class="nutrition-selected-product"></div>
+    <div class="nutrition-entry-fields">
+      <div><label for="add-item-amount">{{ translate("nutrition", "catalog.amount") }}</label><input type="number" id="add-item-amount" min="0.01" step="0.01" value="100" /></div>
+      <div><label for="add-item-unit">{{ translate("nutrition", "catalog.unit") }}</label><select id="add-item-unit"><option value="g">{{ translate("nutrition", "catalog.units.g") }}</option><option value="ml">{{ translate("nutrition", "catalog.units.ml") }}</option><option value="pcs">{{ translate("nutrition", "catalog.units.pcs") }}</option></select></div>
+    </div>
+    <button class="btn" type="button" id="open-add-my-product">+ {{ translate("nutrition", "catalog.addMyProduct") }}</button>
+    <div class="modal-actions"><button class="btn" id="close-add-item">{{ translate("nutrition", "actions.cancel") }}</button><button class="btn primary" id="save-add-item">{{ translate("nutrition", "actions.add") }}</button></div>
+  </div>
+</div>
+<div class="modal" id="modal-add-product">
+  <div class="modal-content nutrition-product-modal">
+    <h2>{{ translate("nutrition", "catalog.myProductTitle") }}</h2>
+    <label for="product-name">{{ translate("nutrition", "fields.name") }}</label><input type="text" id="product-name" />
+    <label for="product-brand">{{ translate("nutrition", "catalog.brand") }}</label><input type="text" id="product-brand" />
+    <div class="nutrition-entry-fields">
+      <div><label for="product-kcal">{{ translate("nutrition", "fields.calories") }}</label><input type="number" id="product-kcal" min="0" step="0.1" /></div>
+      <div><label for="product-protein">{{ translate("nutrition", "fields.protein") }}</label><input type="number" id="product-protein" min="0" step="0.1" /></div>
+      <div><label for="product-fat">{{ translate("nutrition", "fields.fat") }}</label><input type="number" id="product-fat" min="0" step="0.1" /></div>
+      <div><label for="product-carbs">{{ translate("nutrition", "fields.carbs") }}</label><input type="number" id="product-carbs" min="0" step="0.1" /></div>
+      <div><label for="product-fiber">{{ translate("nutrition", "fields.fiber") }}</label><input type="number" id="product-fiber" min="0" step="0.1" value="0" /></div>
+    </div>
+    <div class="nutrition-entry-fields">
+      <div><label for="product-unit">{{ translate("nutrition", "catalog.unit") }}</label><select id="product-unit"><option value="g">{{ translate("nutrition", "catalog.units.g") }}</option><option value="ml">{{ translate("nutrition", "catalog.units.ml") }}</option><option value="pcs">{{ translate("nutrition", "catalog.units.pcs") }}</option></select></div>
+      <div><label for="product-grams-per-unit">{{ translate("nutrition", "catalog.gramsPerUnit") }}</label><input type="number" id="product-grams-per-unit" min="0.01" step="0.01" value="1" /></div>
+    </div>
+    <div class="modal-actions"><button class="btn" id="close-add-product">{{ translate("nutrition", "actions.cancel") }}</button><button class="btn primary" id="save-add-product">{{ translate("nutrition", "actions.create") }}</button></div>
   </div>
 </div>
