@@ -247,15 +247,52 @@ def api_delete_meal(meal_id):
     return jsonify({"status": "ok"})
 
 
+def _legacy_item_to_product(data):
+    """
+    Temporary compatibility path for the old manual nutrition modal.
+
+    The current nutrition domain is Product -> Entry. Legacy clients used to
+    submit a name plus nutrition values directly, so convert that payload into
+    a user-owned Product first and let the normal entry service calculate the
+    resulting MealItem.
+    """
+    name = (data.get("name") or "").strip()
+    if not name:
+        raise NutritionValidationError("Product name is required")
+
+    product = create_user_product(
+        current_user.id,
+        {
+            "name": name,
+            "locale": data.get("locale", "uk"),
+            "kcal_per_100g": data.get("calories", 0),
+            "protein_per_100g": data.get("protein", 0),
+            "fat_per_100g": data.get("fat", 0),
+            "carbs_per_100g": data.get("carbs", 0),
+            "fiber_per_100g": data.get("fiber", 0),
+            "default_unit": "g",
+            "grams_per_unit": 1,
+        },
+        normalize_locale(data.get("locale")),
+    )
+
+    return product["id"]
+
+
 def _create_item():
     data = request.get_json() or {}
 
-    if not data.get("meal_id") or not data.get("product_id"):
-        return jsonify({"error": "meal_id and product_id are required"}), 400
+    if not data.get("meal_id"):
+        return jsonify({"error": "meal_id is required"}), 400
 
     try:
+        if not data.get("product_id"):
+            data["product_id"] = _legacy_item_to_product(data)
+            data["amount"] = 100
+            data["unit"] = "g"
+
         item = add_item_service(current_user.id, _item_payload(data))
-    except NutritionValidationError as exc:
+    except (NutritionValidationError, ProductServiceError) as exc:
         return jsonify({"error": str(exc)}), 400
 
     if item is None:
@@ -281,13 +318,19 @@ def api_add_item():
 
 def _update_item(item_id):
     data = request.get_json() or {}
+
     try:
+        if not data.get("product_id") and "name" in data:
+            data["product_id"] = _legacy_item_to_product(data)
+            data["amount"] = 100
+            data["unit"] = "g"
+
         item = update_item_service(
             current_user.id,
             item_id,
             _entry_update_payload(data),
         )
-    except NutritionValidationError as exc:
+    except (NutritionValidationError, ProductServiceError) as exc:
         return jsonify({"error": str(exc)}), 400
 
     if item is None:
