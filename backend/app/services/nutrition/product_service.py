@@ -12,7 +12,7 @@ from backend.app.repositories.product_repository import (
 )
 
 
-SUPPORTED_LOCALES = {"uk", "en", "pl"}
+SUPPORTED_LOCALES = {"uk", "en", "pl", "ru"}
 SUPPORTED_SOURCES = {"system", "user", "imported"}
 SUPPORTED_UNITS = {"g", "ml", "pcs"}
 
