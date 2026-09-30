@@ -143,9 +143,12 @@
 }
 
 .nutrition-product-modal {
-    width: min(720px, calc(100vw - 32px));
-    max-height: min(820px, calc(100vh - 32px));
-    overflow-y: auto;
+    width: 720px;
+    height: 760px;
+    max-width: calc(100vw - 32px);
+    max-height: calc(100vh - 32px);
+    overflow: hidden;
+    box-sizing: border-box;
 }
 
 .nutrition-product-modal::-webkit-scrollbar,
@@ -176,7 +179,8 @@
 .nutrition-product-sections {
     display: grid;
     gap: 14px;
-    max-height: 310px;
+    height: 290px;
+    max-height: 290px;
     overflow-y: auto;
     padding-right: 4px;
 }
@@ -419,5 +423,74 @@
     .nutrition-product-sort-button {
         padding-inline: 6px;
         font-size: 11px;
+    }
+}
+
+.nutrition-add-to-meal {
+    width: 100%;
+}
+
+.nutrition-pending-items {
+    display: grid;
+    gap: 6px;
+    max-height: 128px;
+    overflow-y: auto;
+    padding-right: 3px;
+}
+
+.nutrition-pending-items[hidden] {
+    display: none;
+}
+
+.nutrition-pending-item {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    border: 1px solid var(--nutrition-border-soft);
+    border-radius: var(--nutrition-radius-md);
+    background: var(--nutrition-surface-soft);
+}
+
+.nutrition-pending-item-info {
+    display: grid;
+    gap: 2px;
+    min-width: 0;
+}
+
+.nutrition-pending-item-info strong {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 13px;
+}
+
+.nutrition-pending-item-info span {
+    color: var(--nutrition-text-muted);
+    font-size: 12px;
+}
+
+.nutrition-pending-item-remove {
+    width: 30px;
+    height: 30px;
+    border: 1px solid var(--nutrition-border-input);
+    border-radius: 8px;
+    background: transparent;
+    color: var(--nutrition-text-muted);
+    cursor: pointer;
+    font-size: 18px;
+}
+
+.nutrition-pending-item-remove:hover {
+    color: var(--nutrition-text);
+    border-color: var(--nutrition-accent);
+    background: var(--nutrition-surface-hover);
+}
+
+@media (max-width: 600px) {
+    .nutrition-product-modal {
+        width: calc(100vw - 32px);
+        height: calc(100vh - 32px);
     }
 }
