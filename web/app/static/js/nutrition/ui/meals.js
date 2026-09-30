@@ -51,6 +51,13 @@ const ICONS = {
         </svg>
     `,
 };
+function renderMealsSummary(meals) {
+    const element = document.getElementById("meals-day-summary");
+    if (!element)
+        return;
+    const calories = meals.reduce((sum, meal) => sum + Number(meal.total_calories ?? 0), 0);
+    element.innerHTML = `<span class="meals-summary-value">${Math.round(calories)}</span><span class="meals-summary-unit">${nutrition_t("units.kcal")}</span><span class="meals-summary-divider"></span><span class="meals-summary-count">${meals.length}</span>`;
+}
 export function renderMeals(meals, onRefresh) {
     const list = document.getElementById("meals-list");
     if (!list) {
@@ -58,6 +65,7 @@ export function renderMeals(meals, onRefresh) {
     }
     list.innerHTML =
         "";
+    renderMealsSummary(meals);
     if (!meals?.length) {
         const empty = document.createElement("div");
         empty.className =
