@@ -846,3 +846,13 @@
     font-size: 13px;
     flex: 0 0 24px;
 }
+
+
+/* Final empty-state sizing */
+#modal-add-item .nutrition-pending-items-block {
+    flex: 0 0 auto;
+}
+
+#modal-add-item .nutrition-pending-empty {
+    flex: 0 0 auto;
+}
