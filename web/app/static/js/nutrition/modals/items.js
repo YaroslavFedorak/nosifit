@@ -1,7 +1,7 @@
 import { NutritionAPI, } from "../api.js";
 import { closeModal, openModal, } from "./modal.js";
 import { getLocale, nutrition_t, } from "../../i18n/index.js";
-let selectedProductId = null;
+let selectedProductId = null;\nlet catalogMode = "favorites";\nfunction formatMacro(value) {\n    return Number(value ?? 0).toFixed(1);\n}\nfunction formatCalories(value) {\n    return String(Math.round(Number(value ?? 0)));\n}
 function getInputValue(id) {
     const element = document.getElementById(id);
     return element?.value ?? "";
@@ -27,7 +27,7 @@ function createProductButton(product) {
     text.textContent = product.brand ? product.name + " · " + product.brand : product.name;
     const meta = document.createElement("span");
     meta.className = "nutrition-product-option-meta";
-    meta.textContent = product.kcal_per_100g + " " + nutrition_t("units.kcal") + " / 100 g";
+    meta.textContent = formatCalories(product.kcal_per_100g) + " " + nutrition_t("units.kcal") + " / 100 g";
     select.append(text, meta);
     select.addEventListener("click", () => selectProduct(product));
     const favorite = document.createElement("button");
@@ -49,7 +49,7 @@ function createProductButton(product) {
     wrapper.append(select, favorite);
     return wrapper;
 }
-function setCatalogSearchState(query) {
+function setCatalogSortMode(mode) {\n    catalogMode = mode;\n    const searching = getInputValue("add-item-search").trim().length > 0;\n    document.querySelectorAll("[data-catalog-section]").forEach((section) => {\n        const sectionMode = section.dataset.catalogSection;\n        section.hidden = searching ? sectionMode !== "search" : sectionMode !== catalogMode;\n    });\n    document.querySelectorAll("[data-catalog-sort]").forEach((button) => {\n        button.setAttribute("aria-pressed", String(button.dataset.catalogSort === catalogMode));\n    });\n}\nfunction setCatalogSearchState(query) {
     const searching = query.trim().length > 0;
     document.querySelectorAll("[data-catalog-section]").forEach((section) => {
         section.hidden = searching && section.dataset.catalogSection !== "search";
@@ -128,7 +128,7 @@ export function openAddItemModal(mealId) {
     selectedProductId = null;
     setInputValue("add-item-meal-id", String(mealId));
     setInputValue("add-item-search", "");
-    setInputValue("add-item-amount", "100");
+    setInputValue("add-item-amount", "100");\n    catalogMode = "favorites";
     setSelectValue("add-item-unit", "g");
     renderSelectedProduct(null);
     openModal("modal-add-item");
@@ -184,7 +184,7 @@ export function setupItemModals(onRefresh) {
             console.error("Failed to add food entry:", error);
         }
     });
-    document.getElementById("add-item-search")?.addEventListener("input", (event) => {
+    document.querySelectorAll("[data-catalog-sort]").forEach((button) => {\n        button.addEventListener("click", () => {\n            const mode = button.dataset.catalogSort;\n            if (mode) setCatalogSortMode(mode);\n        });\n    });\n    document.getElementById("add-item-search")?.addEventListener("input", (event) => {
         const target = event.target;
         void searchCatalog(target.value);
     });
