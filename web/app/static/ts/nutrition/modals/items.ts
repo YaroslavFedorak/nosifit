@@ -1,195 +1,318 @@
-import {
-    NutritionAPI,
-} from "../api.js";
-
-import {
-    closeModal,
-    openModal,
-} from "./modal.js";
-
-import type {
-    MealItem,
-} from "../types.js";
-
+import { NutritionAPI } from "../api.js";
+import { closeModal, openModal } from "./modal.js";
+import { getLocale, nutrition_t } from "../../i18n/index.js";
+import type { MealItem, Product, NutritionUnit } from "../types.js";
 
 type RefreshCallback = () => void | Promise<void>;
 
-export function openAddItemModal(mealId: number): void {
-    const mealInput =
-        document.getElementById("add-item-meal-id") as HTMLInputElement | null;
+let selectedProductId: number | null = null;
 
-    if (!mealInput) {
-        return;
-    }
-
-    mealInput.value = String(mealId);
-    openModal("modal-add-item");
+function getInputValue(id: string): string {
+    const element = document.getElementById(id) as HTMLInputElement | null;
+    return element?.value ?? "";
 }
 
+function setInputValue(id: string, value: string): void {
+    const element = document.getElementById(id) as HTMLInputElement | null;
+    if (element) element.value = value;
+}
 
-export function openEditItemModal(item: MealItem): void {
-    const id =
-        document.getElementById("edit-item-id") as HTMLInputElement | null;
-    const name =
-        document.getElementById("edit-item-name") as HTMLInputElement | null;
-    const kcal =
-        document.getElementById("edit-item-kcal") as HTMLInputElement | null;
-    const protein =
-        document.getElementById("edit-item-protein") as HTMLInputElement | null;
-    const fat =
-        document.getElementById("edit-item-fat") as HTMLInputElement | null;
-    const carbs =
-        document.getElementById("edit-item-carb") as HTMLInputElement | null;
+function setSelectValue(id: string, value: string): void {
+    const element = document.getElementById(id) as HTMLSelectElement | null;
+    if (element) element.value = value;
+}
 
-    if (!id || !name || !kcal || !protein || !fat || !carbs) {
+function createProductButton(product: Product): HTMLElement {
+    const wrapper = document.createElement("div");
+    wrapper.className = "nutrition-product-option";
+
+    const select = document.createElement("button");
+    select.type = "button";
+    select.className = "nutrition-product-select";
+
+    const text = document.createElement("span");
+    text.className = "nutrition-product-option-text";
+    text.textContent = product.brand ? `${product.name} · ${product.brand}` : product.name;
+
+    const meta = document.createElement("span");
+    meta.className = "nutrition-product-option-meta";
+    meta.textContent = `${product.kcal_per_100g} ${nutrition_t("units.kcal")} / 100 g`;
+
+    select.append(text, meta);
+    select.addEventListener("click", () => selectProduct(product));
+
+    const favorite = document.createElement("button");
+    favorite.type = "button";
+    favorite.className = "nutrition-product-favorite";
+    favorite.textContent = product.is_favorite ? "★" : "☆";
+    favorite.setAttribute("aria-label", product.name);
+
+    favorite.addEventListener("click", async (event) => {
+        event.stopPropagation();
+        try {
+            await NutritionAPI.setProductFavorite(product.id, !product.is_favorite, getLocale());
+            await loadCatalog();
+        } catch (error) {
+            console.error("Failed to update product favorite:", error);
+        }
+    });
+
+    wrapper.append(select, favorite);
+    return wrapper;
+}
+
+function renderProductList(elementId: string, products: Product[]): void {
+    const element = document.getElementById(elementId);
+    if (!element) return;
+
+    element.innerHTML = "";
+
+    if (!products.length) {
+        const empty = document.createElement("div");
+        empty.className = "nutrition-product-empty";
+        empty.textContent = nutrition_t("catalog.noResults");
+        element.appendChild(empty);
         return;
     }
 
+    products.forEach((product) => element.appendChild(createProductButton(product)));
+}
+
+function renderSelectedProduct(product: Product | null): void {
+    const element = document.getElementById("selected-product");
+    if (!element) return;
+
+    element.innerHTML = "";
+
+    if (!product) {
+        const empty = document.createElement("span");
+        empty.textContent = nutrition_t("catalog.selectedProduct");
+        element.appendChild(empty);
+        return;
+    }
+
+    const title = document.createElement("strong");
+    title.textContent = product.name;
+
+    const meta = document.createElement("span");
+    meta.textContent =
+        `${product.kcal_per_100g} ${nutrition_t("units.kcal")} · ${nutrition_t("units.proteinShort")} ${product.protein_per_100g} · ${nutrition_t("units.fatShort")} ${product.fat_per_100g} · ${nutrition_t("units.carbsShort")} ${product.carbs_per_100g}`;
+
+    element.append(title, meta);
+}
+
+function selectProduct(product: Product): void {
+    selectedProductId = product.id;
+    setSelectValue("add-item-unit", product.default_unit);
+    renderSelectedProduct(product);
+}
+
+async function loadCatalog(): Promise<void> {
+    const locale = getLocale();
+    try {
+        const [favorites, recent, mine] = await Promise.all([
+            NutritionAPI.getFavoriteProducts(locale),
+            NutritionAPI.getRecentProducts(locale),
+            NutritionAPI.getMyProducts(locale),
+        ]);
+
+        renderProductList("product-favorites", favorites.products);
+        renderProductList("product-recent", recent.products);
+        renderProductList("product-mine", mine.products);
+    } catch (error) {
+        console.error("Failed to load nutrition catalog:", error);
+    }
+}
+
+async function searchCatalog(query: string): Promise<void> {
+    if (!query.trim()) {
+        await loadCatalog();
+        const results = document.getElementById("product-search-results");
+        if (results) results.innerHTML = "";
+        return;
+    }
+
+    try {
+        const data = await NutritionAPI.getProducts(query, getLocale());
+        renderProductList("product-search-results", data.products);
+    } catch (error) {
+        console.error("Failed to search products:", error);
+    }
+}
+
+export function openAddItemModal(mealId: number): void {
+    selectedProductId = null;
+    setInputValue("add-item-meal-id", String(mealId));
+    setInputValue("add-item-search", "");
+    setInputValue("add-item-amount", "100");
+    setSelectValue("add-item-unit", "g");
+    renderSelectedProduct(null);
+    openModal("modal-add-item");
+    void loadCatalog();
+}
+
+export async function openEditItemModal(item: MealItem): Promise<void> {
+    const id = document.getElementById("edit-item-id") as HTMLInputElement | null;
+    const product = document.getElementById("edit-item-product") as HTMLInputElement | null;
+    const meal = document.getElementById("edit-item-meal-id") as HTMLSelectElement | null;
+    const amount = document.getElementById("edit-item-amount") as HTMLInputElement | null;
+    const unit = document.getElementById("edit-item-unit") as HTMLSelectElement | null;
+
+    if (!id || !product || !meal || !amount || !unit) return;
+
     id.value = String(item.id);
-    name.value = item.name;
-    kcal.value = String(item.calories ?? 0);
-    protein.value = String(item.protein ?? 0);
-    fat.value = String(item.fat ?? 0);
-    carbs.value = String(item.carbs ?? 0);
+    product.value = item.name;
+    amount.value = String(item.amount ?? item.weight ?? 100);
+    unit.value = item.unit ?? "g";
+
+    try {
+        const day = await NutritionAPI.getDay(getLocale());
+        meal.innerHTML = "";
+
+        day.meals.forEach((entry) => {
+            const option = document.createElement("option");
+            option.value = String(entry.id);
+            option.textContent = entry.name;
+            meal.appendChild(option);
+        });
+
+        const currentMeal = day.meals.find(
+            (entry) => entry.items?.some((entryItem) => entryItem.id === item.id),
+        );
+
+        if (currentMeal) meal.value = String(currentMeal.id);
+    } catch (error) {
+        console.error("Failed to load meals:", error);
+    }
 
     openModal("modal-edit-item");
 }
 
-
-
-
-function getInputValue(id: string): string {
-    const element = document.getElementById(id) as HTMLInputElement | null;
-
-    return element?.value ?? "";
-}
-
-
-function getNumber(id: string): number {
-    return Number(
-        getInputValue(id) || 0
-    );
-}
-
-
-export function setupItemModals(
-    onRefresh: RefreshCallback,
-): void {
-    document.getElementById(
-        "close-add-item"
-    )?.addEventListener(
+export function setupItemModals(onRefresh: RefreshCallback): void {
+    document.getElementById("close-add-item")?.addEventListener(
         "click",
-        () => {
-            closeModal(
-                "modal-add-item"
-            );
-        }
+        () => closeModal("modal-add-item"),
     );
 
-    document.getElementById(
-        "save-add-item"
-    )?.addEventListener(
+    document.getElementById("save-add-item")?.addEventListener(
         "click",
         async () => {
-            const name =
-                getInputValue(
-                    "add-item-name"
-                ).trim();
+            if (selectedProductId === null) return;
 
-            if (!name) {
-                return;
+            const mealId = Number(getInputValue("add-item-meal-id"));
+            const amount = Number(getInputValue("add-item-amount"));
+            const unit = getInputValue("add-item-unit") as NutritionUnit;
+
+            if (!mealId || !Number.isFinite(amount) || amount <= 0) return;
+
+            try {
+                await NutritionAPI.createEntry({
+                    meal_id: mealId,
+                    product_id: selectedProductId,
+                    amount,
+                    unit,
+                    locale: getLocale(),
+                });
+
+                closeModal("modal-add-item");
+                await onRefresh();
+            } catch (error) {
+                console.error("Failed to add food entry:", error);
             }
-
-            await NutritionAPI.createItem({
-                meal_id: getNumber(
-                    "add-item-meal-id"
-                ),
-
-                name,
-
-                calories: getNumber(
-                    "add-item-kcal"
-                ),
-
-                protein: getNumber(
-                    "add-item-protein"
-                ),
-
-                fat: getNumber(
-                    "add-item-fat"
-                ),
-
-                carbs: getNumber(
-                    "add-item-carb"
-                ),
-            });
-
-            closeModal(
-                "modal-add-item"
-            );
-
-            await onRefresh();
-        }
+        },
     );
 
-    document.getElementById(
-        "close-edit-item"
-    )?.addEventListener(
+    document.getElementById("add-item-search")?.addEventListener(
+        "input",
+        (event) => {
+            const target = event.target as HTMLInputElement;
+            void searchCatalog(target.value);
+        },
+    );
+
+    document.getElementById("close-edit-item")?.addEventListener(
         "click",
-        () => {
-            closeModal(
-                "modal-edit-item"
-            );
-        }
+        () => closeModal("modal-edit-item"),
     );
 
-    document.getElementById(
-        "save-edit-item"
-    )?.addEventListener(
+    document.getElementById("save-edit-item")?.addEventListener(
         "click",
         async () => {
-            const id =
-                getInputValue(
-                    "edit-item-id"
-                );
+            const id = Number(getInputValue("edit-item-id"));
+            const mealId = Number(getInputValue("edit-item-meal-id"));
+            const amount = Number(getInputValue("edit-item-amount"));
+            const unit = getInputValue("edit-item-unit") as NutritionUnit;
 
-            const name =
-                getInputValue(
-                    "edit-item-name"
-                ).trim();
+            if (!id || !mealId || !Number.isFinite(amount) || amount <= 0) return;
 
-            if (!id || !name) {
-                return;
+            try {
+                await NutritionAPI.updateEntry(id, {
+                    meal_id: mealId,
+                    amount,
+                    unit,
+                    locale: getLocale(),
+                });
+
+                closeModal("modal-edit-item");
+                await onRefresh();
+            } catch (error) {
+                console.error("Failed to update food entry:", error);
             }
+        },
+    );
 
-            await NutritionAPI.updateItem(
-                Number(id),
-                {
+    document.getElementById("open-add-my-product")?.addEventListener(
+        "click",
+        () => {
+            [
+                "product-name",
+                "product-brand",
+                "product-kcal",
+                "product-protein",
+                "product-fat",
+                "product-carbs",
+            ].forEach((id) => setInputValue(id, ""));
+
+            setInputValue("product-fiber", "0");
+            setInputValue("product-grams-per-unit", "1");
+            setSelectValue("product-unit", "g");
+            openModal("modal-add-product");
+        },
+    );
+
+    document.getElementById("close-add-product")?.addEventListener(
+        "click",
+        () => closeModal("modal-add-product"),
+    );
+
+    document.getElementById("save-add-product")?.addEventListener(
+        "click",
+        async () => {
+            const name = getInputValue("product-name").trim();
+            if (!name) return;
+
+            try {
+                const product = await NutritionAPI.createProduct({
                     name,
+                    brand: getInputValue("product-brand"),
+                    locale: getLocale(),
+                    kcal_per_100g: Number(getInputValue("product-kcal") || 0),
+                    protein_per_100g: Number(getInputValue("product-protein") || 0),
+                    fat_per_100g: Number(getInputValue("product-fat") || 0),
+                    carbs_per_100g: Number(getInputValue("product-carbs") || 0),
+                    fiber_per_100g: Number(getInputValue("product-fiber") || 0),
+                    default_unit: getInputValue("product-unit") as NutritionUnit,
+                    grams_per_unit: Number(getInputValue("product-grams-per-unit") || 1),
+                });
 
-                    calories: getNumber(
-                        "edit-item-kcal"
-                    ),
-
-                    protein: getNumber(
-                        "edit-item-protein"
-                    ),
-
-                    fat: getNumber(
-                        "edit-item-fat"
-                    ),
-
-                    carbs: getNumber(
-                        "edit-item-carb"
-                    ),
-                }
-            );
-
-            closeModal(
-                "modal-edit-item"
-            );
-
-            await onRefresh();
-        }
+                selectedProductId = product.id;
+                setSelectValue("add-item-unit", product.default_unit);
+                renderSelectedProduct(product);
+                closeModal("modal-add-product");
+                await loadCatalog();
+            } catch (error) {
+                console.error("Failed to create user product:", error);
+            }
+        },
     );
 }
