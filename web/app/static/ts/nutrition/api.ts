@@ -40,8 +40,10 @@ export const NutritionAPI = {
             BASE_URL + "/day?locale=" + encodeURIComponent(locale),
         );
     },
-    getDayDetails(date: string): Promise<NutritionDayDetails> {
-        return request<NutritionDayDetails>(BASE_URL + "/day/" + date);
+    getDayDetails(date: string, locale = "uk"): Promise<NutritionDayDetails> {
+        return request<NutritionDayDetails>(
+            BASE_URL + "/day/" + date + "?locale=" + encodeURIComponent(locale),
+        );
     },
     getRecommendations(): Promise<NutritionRecommendationResponse> {
         return request<NutritionRecommendationResponse>(BASE_URL + "/recommendations");
