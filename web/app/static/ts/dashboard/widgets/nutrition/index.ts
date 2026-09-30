@@ -8,6 +8,7 @@ import type {
 
 import {
     dashboard_t,
+    getLocale,
 } from "../../../i18n/index.js";
 
 import {
@@ -92,7 +93,7 @@ function renderWeight(
 async function loadNutrition(): Promise<void> {
     try {
         const data =
-            await NutritionAPI.getDay();
+            await NutritionAPI.getDay(getLocale());
 
         setNutritionDay(
             data,
