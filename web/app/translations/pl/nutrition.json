@@ -29,7 +29,12 @@
     },
     "balance": {
         "kcalGoal": "z {value} kcal",
-        "noStatus": "—"
+        "noStatus": "—",
+        "status": {
+            "over": "powyżej celu",
+            "under": "poniżej celu",
+            "normal": "w normie"
+        }
     },
     "fields": {
         "name": "Nazwa",
