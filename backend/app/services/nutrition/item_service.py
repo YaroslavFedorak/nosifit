@@ -6,6 +6,7 @@ from backend.app.services.nutrition.calculation_service import (
     normalize_unit,
 )
 from backend.app.services.nutrition.meal_service import recalc_meal_totals
+from sqlalchemy import or_
 from sqlalchemy.orm import selectinload
 from backend.app.services.nutrition.product_service import (
     get_product_name,
@@ -94,7 +95,7 @@ def add_items_service(user_id, meal_id, items):
             Product.is_active.is_(True),
         )
         .filter(
-            db.or_(
+            or_(
                 Product.owner_user_id.is_(None),
                 Product.owner_user_id == user_id,
             )
