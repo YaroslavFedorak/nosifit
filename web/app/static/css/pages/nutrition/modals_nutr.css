@@ -786,8 +786,9 @@
 
 /* Compact meal items block */
 #modal-add-item .nutrition-pending-items-block {
-    flex: 0 0 auto;
-    min-height: 40px;
+    flex: 0 0 150px;
+    height: 150px;
+    min-height: 150px;
     max-height: 150px;
     overflow-y: auto;
     padding-right: 3px;
