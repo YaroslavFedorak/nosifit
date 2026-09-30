@@ -1,11 +1,12 @@
 from backend.app.extensions import db
-from backend.app.models import Meal, MealItem
+from backend.app.models import Meal, MealItem, Product
 from backend.app.services.nutrition.calculation_service import (
     NutritionValidationError,
     calculate_product_nutrition,
     normalize_unit,
 )
 from backend.app.services.nutrition.meal_service import recalc_meal_totals
+from sqlalchemy.orm import selectinload
 from backend.app.services.nutrition.product_service import (
     get_product_name,
 )
@@ -70,6 +71,72 @@ def add_item_service(user_id, data):
     db.session.commit()
 
     return item
+
+
+def add_items_service(user_id, meal_id, items):
+    meal = _get_meal(user_id, meal_id)
+
+    if meal is None:
+        return None
+
+    if not items:
+        return []
+
+    product_ids = {item.get("product_id") for item in items}
+    if None in product_ids:
+        raise NutritionValidationError("Product id is required")
+
+    products = (
+        Product.query
+        .options(selectinload(Product.names))
+        .filter(
+            Product.id.in_(product_ids),
+            Product.is_active.is_(True),
+        )
+        .filter(
+            db.or_(
+                Product.owner_user_id.is_(None),
+                Product.owner_user_id == user_id,
+            )
+        )
+        .all()
+    )
+    products_by_id = {product.id: product for product in products}
+
+    if len(products_by_id) != len(product_ids):
+        raise NutritionValidationError("One or more products were not found")
+
+    created_items = []
+    for data in items:
+        product = products_by_id.get(data.get("product_id"))
+        unit = normalize_unit(data.get("unit"), product.default_unit)
+        nutrition = calculate_product_nutrition(
+            product,
+            data.get("amount"),
+            unit,
+        )
+
+        item = MealItem(
+            meal_id=meal.id,
+            product_id=product.id,
+            name=get_product_name(product, data.get("locale", "uk")),
+            amount=float(data["amount"]),
+            unit=unit,
+            weight=nutrition.grams,
+            calories=int(nutrition.calories),
+            protein=nutrition.protein,
+            fat=nutrition.fat,
+            carbs=nutrition.carbs,
+            fiber=nutrition.fiber,
+        )
+        db.session.add(item)
+        created_items.append(item)
+
+    db.session.flush()
+    recalc_meal_totals(meal)
+    db.session.commit()
+
+    return created_items
 
 
 def update_item_service(user_id, item_id, data):
