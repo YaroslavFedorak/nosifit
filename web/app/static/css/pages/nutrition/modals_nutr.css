@@ -179,8 +179,8 @@
 .nutrition-product-sections {
     display: grid;
     gap: 14px;
-    height: 290px;
-    max-height: 290px;
+    height: 320px;
+    max-height: 320px;
     overflow-y: auto;
     padding-right: 4px;
 }
@@ -329,8 +329,8 @@
 
 /* Product picker refinements */
 .nutrition-product-search {
-    height: 46px;
-    padding-left: 16px !important;
+    height: 40px;
+    padding-left: 14px !important;
     border-color: rgba(155, 93, 229, .28) !important;
     box-shadow: inset 0 0 0 1px rgba(155, 93, 229, .04);
 }
@@ -342,8 +342,8 @@
     max-height: 360px;
 }
 .nutrition-product-favorite {
-    width: 46px;
-    min-height: 42px;
+    width: 36px;
+    min-height: 34px;
     display: grid;
     place-items: center;
     color: var(--nutrition-accent-soft);
@@ -386,8 +386,8 @@
 }
 
 .nutrition-product-sort-button {
-    min-height: 36px;
-    padding: 7px 10px;
+    min-height: 30px;
+    padding: 5px 8px;
     border: 1px solid transparent;
     border-radius: calc(var(--nutrition-radius-md) - 2px);
     background: transparent;
@@ -433,7 +433,7 @@
 .nutrition-pending-items {
     display: grid;
     gap: 6px;
-    max-height: 128px;
+    max-height: 180px;
     overflow-y: auto;
     padding-right: 3px;
 }
@@ -492,5 +492,72 @@
     .nutrition-product-modal {
         width: calc(100vw - 32px);
         height: calc(100vh - 32px);
+    }
+}
+
+
+/* Compact food-entry layout */
+.nutrition-meal-details {
+    display: grid;
+    grid-template-columns: minmax(0, 1.6fr) minmax(130px, .9fr) minmax(105px, .7fr);
+    gap: 8px;
+}
+
+.nutrition-meal-details > div {
+    min-width: 0;
+    display: grid;
+    gap: 5px;
+}
+
+.nutrition-meal-details label {
+    font-size: 11px;
+    font-weight: 650;
+    color: var(--nutrition-text-muted);
+}
+
+.nutrition-meal-details input,
+.nutrition-meal-details select {
+    height: 36px;
+    padding: 7px 9px;
+    font-size: 13px;
+}
+
+.nutrition-entry-fields {
+    gap: 8px;
+}
+
+.nutrition-entry-fields input,
+.nutrition-entry-fields select {
+    height: 36px;
+    padding: 7px 9px;
+}
+
+.nutrition-add-to-meal {
+    height: 36px;
+    padding: 7px 12px;
+}
+
+.nutrition-pending-items {
+    max-height: 180px;
+}
+
+.nutrition-pending-item {
+    padding: 6px 9px;
+    gap: 8px;
+}
+
+.nutrition-pending-item-remove {
+    width: 26px;
+    height: 26px;
+    font-size: 16px;
+}
+
+@media (max-width: 600px) {
+    .nutrition-meal-details {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .nutrition-meal-details > div:first-child {
+        grid-column: 1 / -1;
     }
 }
