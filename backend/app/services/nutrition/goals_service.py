@@ -11,7 +11,7 @@ DEFAULT_FIBER_GOAL = 30.0
 
 
 def get_goals(user_id):
-    user = User.query.get(user_id)
+    user = db.session.get(User, user_id)
 
     if not user:
         return {
