@@ -38,7 +38,8 @@
         "fat": "Fat",
         "carbs": "Carbohydrates",
         "category": "Category",
-        "time": "Time"
+        "time": "Time",
+        "fiber": "Fiber"
     },
     "meal": {
         "defaultCategory": "Meal"
@@ -197,5 +198,27 @@
         "oct": "Oct",
         "nov": "Nov",
         "dec": "Dec"
+    },
+    "catalog": {
+        "search": "Search product",
+        "searchPlaceholder": "Find a product...",
+        "favorites": "Favorites",
+        "recent": "Recent",
+        "myProducts": "My products",
+        "searchResults": "Search results",
+        "noResults": "No products found",
+        "amount": "Amount",
+        "unit": "Unit",
+        "addMyProduct": "Add my product",
+        "myProductTitle": "My product",
+        "brand": "Brand",
+        "gramsPerUnit": "Grams per unit",
+        "selectedProduct": "Selected product",
+        "moveMeal": "Move to meal",
+        "units": {
+            "g": "g",
+            "ml": "ml",
+            "pcs": "pcs"
+        }
     }
 }

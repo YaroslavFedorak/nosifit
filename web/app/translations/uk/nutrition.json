@@ -38,7 +38,8 @@
         "fat": "Жири",
         "carbs": "Вуглеводи",
         "category": "Категорія",
-        "time": "Час"
+        "time": "Час",
+        "fiber": "Клітковина"
     },
     "meal": {
         "defaultCategory": "Прийом їжі"
@@ -197,5 +198,27 @@
         "oct": "Жов",
         "nov": "Лис",
         "dec": "Гру"
+    },
+    "catalog": {
+        "search": "Пошук продукту",
+        "searchPlaceholder": "Знайти продукт...",
+        "favorites": "Обрані",
+        "recent": "Нещодавні",
+        "myProducts": "Мої продукти",
+        "searchResults": "Результати пошуку",
+        "noResults": "Нічого не знайдено",
+        "amount": "Кількість",
+        "unit": "Одиниця",
+        "addMyProduct": "Додати мій продукт",
+        "myProductTitle": "Мій продукт",
+        "brand": "Бренд",
+        "gramsPerUnit": "Грамів на одиницю",
+        "selectedProduct": "Обраний продукт",
+        "moveMeal": "Перемістити до прийому",
+        "units": {
+            "g": "г",
+            "ml": "мл",
+            "pcs": "шт."
+        }
     }
 }

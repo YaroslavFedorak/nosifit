@@ -125,3 +125,128 @@
     border-color: #ff4d4d;
     transform: translateY(-2px);
 }
+
+.nutrition-product-modal {
+    width: min(720px, calc(100vw - 32px));
+    max-height: min(820px, calc(100vh - 32px));
+    overflow-y: auto;
+}
+
+.nutrition-product-search {
+    margin-bottom: 2px;
+}
+
+.nutrition-product-sections {
+    display: grid;
+    gap: 14px;
+    max-height: 310px;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+.nutrition-product-section-title {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    color: #8d96a8;
+    margin-bottom: 7px;
+}
+
+.nutrition-product-list {
+    display: grid;
+    gap: 6px;
+}
+
+.nutrition-product-option {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 6px;
+}
+
+.nutrition-product-select {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    min-width: 0;
+    padding: 10px 12px;
+    border: 1px solid #1f2430;
+    border-radius: 10px;
+    background: #0f131a;
+    color: #fff;
+    text-align: left;
+    cursor: pointer;
+    transition: border-color .2s ease, background .2s ease, transform .2s ease;
+}
+
+.nutrition-product-select:hover {
+    border-color: #454c5c;
+    background: #141923;
+    transform: translateY(-1px);
+}
+
+.nutrition-product-option-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.nutrition-product-option-meta {
+    flex: 0 0 auto;
+    color: #8d96a8;
+    font-size: 12px;
+}
+
+.nutrition-product-favorite {
+    width: 42px;
+    border: 1px solid #1f2430;
+    border-radius: 10px;
+    background: #0f131a;
+    color: #c8ced8;
+    cursor: pointer;
+    transition: border-color .2s ease, color .2s ease, transform .2s ease;
+}
+
+.nutrition-product-favorite:hover {
+    border-color: #454c5c;
+    color: #fff;
+    transform: translateY(-1px);
+}
+
+.nutrition-product-empty {
+    color: #737d90;
+    font-size: 13px;
+    padding: 8px 2px;
+}
+
+.nutrition-selected-product {
+    display: grid;
+    gap: 4px;
+    min-height: 48px;
+    padding: 12px 14px;
+    border: 1px solid #2a3040;
+    border-radius: 12px;
+    background: rgba(255,255,255,.03);
+}
+
+.nutrition-selected-product span {
+    color: #9aa3b3;
+    font-size: 12px;
+}
+
+.nutrition-entry-fields {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+@media (max-width: 600px) {
+    .nutrition-entry-fields {
+        grid-template-columns: 1fr;
+    }
+
+    .nutrition-product-option-meta {
+        display: none;
+    }
+}

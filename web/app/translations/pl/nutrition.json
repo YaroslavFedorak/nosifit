@@ -38,7 +38,8 @@
         "fat": "Tłuszcze",
         "carbs": "Węglowodany",
         "category": "Kategoria",
-        "time": "Czas"
+        "time": "Czas",
+        "fiber": "Błonnik"
     },
     "meal": {
         "defaultCategory": "Posiłek"
@@ -197,5 +198,27 @@
         "oct": "Paź",
         "nov": "Lis",
         "dec": "Gru"
+    },
+    "catalog": {
+        "search": "Szukaj produktu",
+        "searchPlaceholder": "Znajdź produkt...",
+        "favorites": "Ulubione",
+        "recent": "Ostatnie",
+        "myProducts": "Moje produkty",
+        "searchResults": "Wyniki wyszukiwania",
+        "noResults": "Nie znaleziono produktów",
+        "amount": "Ilość",
+        "unit": "Jednostka",
+        "addMyProduct": "Dodaj własny produkt",
+        "myProductTitle": "Mój produkt",
+        "brand": "Marka",
+        "gramsPerUnit": "Gramów na jednostkę",
+        "selectedProduct": "Wybrany produkt",
+        "moveMeal": "Przenieś do posiłku",
+        "units": {
+            "g": "g",
+            "ml": "ml",
+            "pcs": "szt."
+        }
     }
 }
