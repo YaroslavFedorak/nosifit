@@ -282,8 +282,7 @@ function renderMeal(meal) {
                 </div>
 
                 <div class="nutrition-day-meal-meta">
-                    ${meal.category ||
-        nutrition_t("meal.defaultCategory")}
+                    ${formatMealCategory(meal.category)}
 
                     ${meal.time
         ? ` · ${meal.time}`
