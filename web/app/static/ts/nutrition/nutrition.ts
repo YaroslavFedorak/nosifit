@@ -120,7 +120,7 @@ function setTodayDate(): void {
 async function loadNutritionDay(): Promise<void> {
     try {
         const data =
-            await NutritionAPI.getDay();
+            await NutritionAPI.getDay(getLocale());
 
         renderBalance(
             data,
