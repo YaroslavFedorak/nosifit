@@ -171,6 +171,7 @@ def get_daily_nutrition_data(user_id):
         "carb_goal": goals["carbs"],
         "carb_percent": progress["carbs_percent"],
         "fiber": totals["fiber"],
+        "fiber_goal": goals.get("fiber", 30),
         "balance_status": balance_status,
         "kcal_yesterday": yesterday_totals["calories"],
         "protein_yesterday": yesterday_totals["protein"],

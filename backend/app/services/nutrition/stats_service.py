@@ -231,6 +231,7 @@ def get_day_details(user_id, target_date):
         "fat": round(totals["fat"], 1),
         "carbs": round(totals["carbs"], 1),
         "fiber": round(totals["fiber"], 1),
+        "fiber_goal": goals.get("fiber", 30),
         "calorie_goal": goals.get("calories", 0),
         "protein_goal": goals.get("protein", 0),
         "fat_goal": goals.get("fat", 0),

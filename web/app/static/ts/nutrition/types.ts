@@ -74,6 +74,7 @@ export interface NutritionDay {
     carb_goal?: number;
     carb_percent?: number;
     fiber?: number;
+    fiber_goal?: number;
     kcal_balance?: number;
     balance_status?: string;
     kcal_diff_label?: number;
@@ -157,6 +158,7 @@ export interface NutritionDayDetails {
     fat: number;
     carbs: number;
     fiber: number;
+    fiber_goal: number;
     calorie_goal: number;
     protein_goal: number;
     fat_goal: number;
