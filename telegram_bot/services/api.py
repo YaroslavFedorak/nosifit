@@ -28,7 +28,11 @@ class NosiFitAPI:
         response = self.session.request(
             method, f"{self.base_url}{path}", timeout=10, **kwargs
         )
-        if response.status_code in (401, 403):
+        needs_login = (
+            response.status_code in (401, 403)
+            or response.url.rstrip("/").endswith("/auth/login")
+        )
+        if needs_login:
             self._login()
             response = self.session.request(
                 method, f"{self.base_url}{path}", timeout=10, **kwargs
