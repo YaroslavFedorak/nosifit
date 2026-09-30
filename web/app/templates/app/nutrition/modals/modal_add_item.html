@@ -24,6 +24,10 @@
           <input type="time" id="add-meal-time" />
         </div>
       </div>
+
+      <button class="btn nutrition-add-product-inline" type="button" id="open-add-my-product">
+        + {{ translate("nutrition", "catalog.addMyProduct") }}
+      </button>
     </div>
     <label for="add-item-search">{{ translate("nutrition", "catalog.search") }}</label>
     <input type="search" id="add-item-search" class="nutrition-product-search" placeholder="{{ translate("nutrition", "catalog.searchPlaceholder") }}" autocomplete="off" />
@@ -47,7 +51,6 @@
     </div>
     <button class="btn primary nutrition-add-to-meal" type="button" id="add-item-to-meal">{{ translate("nutrition", "catalog.addToMeal") }}</button>
     <div id="pending-meal-items" class="nutrition-pending-items" aria-live="polite"></div>
-    <button class="btn" type="button" id="open-add-my-product">+ {{ translate("nutrition", "catalog.addMyProduct") }}</button>
     <div class="modal-actions"><button class="btn" id="close-add-item">{{ translate("nutrition", "actions.cancel") }}</button><button class="btn primary" id="save-add-item">{{ translate("nutrition", "actions.saveItems") }}</button></div>
   </div>
 </div>
