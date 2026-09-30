@@ -73,11 +73,34 @@ function createProductButton(product: Product): HTMLElement {
     return wrapper;
 }
 
-function setCatalogSortMode(mode: CatalogMode): void {\n    catalogMode = mode;\n    const searching = getInputValue("add-item-search").trim().length > 0;\n\n    document.querySelectorAll<HTMLElement>("[data-catalog-section]").forEach((section) => {\n        const sectionMode = section.dataset.catalogSection;\n        section.hidden = searching\n            ? sectionMode !== "search"\n            : sectionMode !== catalogMode;\n    });\n\n    document.querySelectorAll<HTMLButtonElement>("[data-catalog-sort]").forEach((button) => {\n        button.setAttribute("aria-pressed", String(button.dataset.catalogSort === catalogMode));\n    });\n}\n\nfunction setCatalogSearchState(query: string): void {
-    const searching = query.trim().length > 0;
+function setCatalogSortMode(mode: CatalogMode): void {
+    catalogMode = mode;
+    const searching = getInputValue("add-item-search").trim().length > 0;
+
     document.querySelectorAll<HTMLElement>("[data-catalog-section]").forEach((section) => {
-        section.hidden = searching && section.dataset.catalogSection !== "search";
+        const sectionMode = section.dataset.catalogSection;
+        section.hidden = searching
+            ? sectionMode !== "search"
+            : sectionMode !== catalogMode;
     });
+
+    document.querySelectorAll<HTMLButtonElement>("[data-catalog-sort]").forEach((button) => {
+        button.setAttribute("aria-pressed", String(button.dataset.catalogSort === catalogMode));
+    });
+}
+
+function setCatalogSearchState(query: string): void {
+    const searching = query.trim().length > 0;
+    document.querySelector(".nutrition-product-sort")?.toggleAttribute("hidden", searching);
+
+    if (searching) {
+        document.querySelectorAll<HTMLElement>("[data-catalog-section]").forEach((section) => {
+            section.hidden = section.dataset.catalogSection !== "search";
+        });
+    } else {
+        setCatalogSortMode(catalogMode);
+    }
+
     document.querySelector(".nutrition-product-sections")?.classList.toggle("is-searching", searching);
 }
 
@@ -124,6 +147,7 @@ function renderSelectedProduct(product: Product | null): void {
 function selectProduct(product: Product): void {
     selectedProductId = product.id;
     setSelectValue("add-item-unit", product.default_unit);
+    setInputValue("add-item-amount", product.default_unit === "pcs" ? "1" : "100");
     renderSelectedProduct(product);
 }
 
@@ -165,11 +189,13 @@ export function openAddItemModal(mealId: number): void {
     selectedProductId = null;
     setInputValue("add-item-meal-id", String(mealId));
     setInputValue("add-item-search", "");
-    setInputValue("add-item-amount", "100");\n    catalogMode = "favorites";
+    setInputValue("add-item-amount", "100");
+    catalogMode = "favorites";
     setSelectValue("add-item-unit", "g");
     renderSelectedProduct(null);
     openModal("modal-add-item");
     setCatalogSearchState("");
+    setCatalogSortMode(catalogMode);
     void loadCatalog();
 }
 
@@ -244,7 +270,14 @@ export function setupItemModals(onRefresh: RefreshCallback): void {
         },
     );
 
-    document.querySelectorAll<HTMLButtonElement>("[data-catalog-sort]").forEach((button) => {\n        button.addEventListener("click", () => {\n            const mode = button.dataset.catalogSort as CatalogMode | undefined;\n            if (mode) setCatalogSortMode(mode);\n        });\n    });\n\n    document.getElementById("add-item-search")?.addEventListener(
+    document.querySelectorAll<HTMLButtonElement>("[data-catalog-sort]").forEach((button) => {
+        button.addEventListener("click", () => {
+            const mode = button.dataset.catalogSort as CatalogMode | undefined;
+            if (mode) setCatalogSortMode(mode);
+        });
+    });
+
+    document.getElementById("add-item-search")?.addEventListener(
         "input",
         (event) => {
             const target = event.target as HTMLInputElement;
@@ -329,6 +362,7 @@ export function setupItemModals(onRefresh: RefreshCallback): void {
 
                 selectedProductId = product.id;
                 setSelectValue("add-item-unit", product.default_unit);
+                setInputValue("add-item-amount", product.default_unit === "pcs" ? "1" : "100");
                 renderSelectedProduct(product);
                 closeModal("modal-add-product");
                 await loadCatalog();
