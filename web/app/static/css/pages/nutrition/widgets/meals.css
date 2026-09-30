@@ -437,31 +437,3 @@
 
 
 /* Keep the widget action visually aligned with Nutrition primary actions. */
-#open-add-meal {
-    padding: 10px 16px;
-    border-radius: var(--nutrition-radius-md);
-    background: var(--nutrition-accent);
-    border: 1px solid var(--nutrition-accent);
-    color: #fff;
-    font-size: 14px;
-    font-weight: 600;
-    box-shadow: none;
-    transition:
-        background var(--nutrition-transition-fast),
-        border-color var(--nutrition-transition-fast),
-        color var(--nutrition-transition-fast),
-        transform var(--nutrition-transition-fast);
-}
-
-#open-add-meal:hover,
-#open-add-meal:focus-visible {
-    background: var(--nutrition-accent-soft);
-    border-color: var(--nutrition-accent-soft);
-    color: #fff;
-    transform: translateY(-1px);
-    box-shadow: 0 0 0 3px rgba(155, 93, 229, .14);
-}
-
-#open-add-meal:focus-visible {
-    outline: none;
-}
