@@ -73,7 +73,6 @@ function setCatalogSortMode(mode) {
 }
 function setCatalogSearchState(query) {
     const searching = query.trim().length > 0;
-    document.querySelector(".nutrition-product-sort")?.toggleAttribute("hidden", searching);
     if (searching) {
         document.querySelectorAll("[data-catalog-section]").forEach((section) => {
             section.hidden = section.dataset.catalogSection !== "search";
@@ -132,6 +131,7 @@ async function loadCatalog() {
             favorites: favorites.products,
             recent: recent.products,
             mine: mine.products,
+            all: [],
         };
         renderProductList("product-favorites", catalogProducts.favorites);
         renderProductList("product-recent", catalogProducts.recent);
@@ -141,15 +141,34 @@ async function loadCatalog() {
         console.error("Failed to load nutrition catalog:", error);
     }
 }
+let catalogSearchRequest = 0;
 async function searchCatalog(query) {
     setCatalogSearchState(query);
-    if (!query.trim()) {
+    const normalizedQuery = query.trim();
+    if (!normalizedQuery) {
         renderProductList("product-search-results", []);
         return;
     }
-    const normalizedQuery = query.trim().toLocaleLowerCase();
-    const products = catalogProducts[catalogMode].filter((product) => getProductSearchText(product).includes(normalizedQuery));
-    renderProductList("product-search-results", products);
+    const requestId = ++catalogSearchRequest;
+    if (catalogMode === "all") {
+        try {
+            const response = await NutritionAPI.getProducts(normalizedQuery, getLocale());
+            if (requestId !== catalogSearchRequest || catalogMode !== "all")
+                return;
+            renderProductList("product-search-results", response.products);
+        }
+        catch (error) {
+            if (requestId === catalogSearchRequest) {
+                console.error("Failed to search nutrition catalog:", error);
+                renderProductList("product-search-results", []);
+            }
+        }
+        return;
+    }
+    const products = catalogProducts[catalogMode].filter((product) => getProductSearchText(product).includes(normalizedQuery.toLocaleLowerCase()));
+    if (requestId === catalogSearchRequest) {
+        renderProductList("product-search-results", products);
+    }
 }
 export function openAddItemModal(mealId) {
     selectedProductId = null;
@@ -221,8 +240,10 @@ export function setupItemModals(onRefresh) {
     document.querySelectorAll("[data-catalog-sort]").forEach((button) => {
         button.addEventListener("click", () => {
             const mode = button.dataset.catalogSort;
-            if (mode)
+            if (mode) {
                 setCatalogSortMode(mode);
+                void searchCatalog(getInputValue("add-item-search"));
+            }
         });
     });
     document.getElementById("add-item-unit")?.addEventListener("change", (event) => {
