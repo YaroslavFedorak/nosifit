@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from sqlalchemy import or_
+from sqlalchemy.orm import selectinload
 
 from backend.app.extensions import db
 from backend.app.models import Product, ProductFavorite, ProductName
@@ -39,7 +40,25 @@ def get_product_name(product, locale="uk") -> str:
     )
 
 
-def serialize_product(product, user_id, locale="uk") -> dict:
+def serialize_product(
+    product,
+    user_id,
+    locale="uk",
+    favorite_ids: set[int] | None = None,
+) -> dict:
+    if favorite_ids is None:
+        is_favorite = (
+            ProductFavorite.query
+            .filter_by(
+                user_id=user_id,
+                product_id=product.id,
+            )
+            .first()
+            is not None
+        )
+    else:
+        is_favorite = product.id in favorite_ids
+
     return {
         "id": product.id,
         "name": get_product_name(product, locale),
@@ -53,28 +72,54 @@ def serialize_product(product, user_id, locale="uk") -> dict:
         "fiber_per_100g": round(product.fiber_per_100g, 2),
         "default_unit": product.default_unit,
         "grams_per_unit": product.grams_per_unit,
-        "is_favorite": (
-            ProductFavorite.query
-            .filter_by(
-                user_id=user_id,
-                product_id=product.id,
-            )
-            .first()
-            is not None
-        ),
+        "is_favorite": is_favorite,
     }
+
+
+def serialize_product_list(products, user_id, locale="uk"):
+    if not products:
+        return []
+
+    favorite_ids = {
+        product_id
+        for (product_id,) in (
+            ProductFavorite.query
+            .with_entities(ProductFavorite.product_id)
+            .filter(
+                ProductFavorite.user_id == user_id,
+                ProductFavorite.product_id.in_(
+                    [product.id for product in products]
+                ),
+            )
+            .all()
+        )
+    }
+
+    return [
+        serialize_product(
+            product,
+            user_id,
+            locale,
+            favorite_ids=favorite_ids,
+        )
+        for product in products
+    ]
 
 
 def search_products(user_id, query="", locale="uk", limit=20):
     locale = normalize_locale(locale)
     query = (query or "").strip()
 
-    product_query = Product.query.filter(
-        Product.is_active.is_(True),
-        or_(
-            Product.owner_user_id.is_(None),
-            Product.owner_user_id == user_id,
-        ),
+    product_query = (
+        Product.query
+        .options(selectinload(Product.names))
+        .filter(
+            Product.is_active.is_(True),
+            or_(
+                Product.owner_user_id.is_(None),
+                Product.owner_user_id == user_id,
+            ),
+        )
     )
 
     if query:
@@ -83,11 +128,13 @@ def search_products(user_id, query="", locale="uk", limit=20):
             product_query
             .join(ProductName)
             .filter(
+                ProductName.locale.in_({locale, "en", "uk"}),
                 or_(
                     ProductName.name.ilike(pattern),
                     Product.brand.ilike(pattern),
-                )
+                ),
             )
+            .distinct()
         )
 
     products = (
@@ -97,10 +144,7 @@ def search_products(user_id, query="", locale="uk", limit=20):
         .all()
     )
 
-    return [
-        serialize_product(product, user_id, locale)
-        for product in products
-    ]
+    return serialize_product_list(products, user_id, locale)
 
 
 def get_product(user_id, product_id, locale="uk"):
@@ -267,13 +311,6 @@ def set_favorite(user_id, product_id, favorite, locale="uk"):
     return serialize_product(product, user_id, locale)
 
 
-def serialize_product_list(products, user_id, locale="uk"):
-    return [
-        serialize_product(product, user_id, locale)
-        for product in products
-    ]
-
-
 def get_recent(user_id, locale="uk", limit=12):
     return serialize_product_list(
         get_recent_products(user_id, limit),
@@ -293,6 +330,7 @@ def get_favorites(user_id, locale="uk", limit=50):
 def get_user_products(user_id, locale="uk"):
     products = (
         Product.query
+        .options(selectinload(Product.names))
         .filter_by(
             owner_user_id=user_id,
             source="user",
