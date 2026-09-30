@@ -40,6 +40,18 @@ def _item_payload(data):
     }
 
 
+def _entry_update_payload(data):
+    payload = {
+        "locale": data.get("locale", "uk"),
+    }
+
+    for key in ("meal_id", "product_id", "amount", "unit"):
+        if key in data:
+            payload[key] = data[key]
+
+    return payload
+
+
 @nutrition_api.get("/day")
 @login_required
 def api_day():
@@ -273,7 +285,7 @@ def _update_item(item_id):
         item = update_item_service(
             current_user.id,
             item_id,
-            _item_payload(data),
+            _entry_update_payload(data),
         )
     except NutritionValidationError as exc:
         return jsonify({"error": str(exc)}), 400
