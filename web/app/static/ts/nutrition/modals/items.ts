@@ -6,12 +6,13 @@ import type { MealItem, Product, NutritionUnit } from "../types.js";
 type RefreshCallback = () => void | Promise<void>;
 
 let selectedProductId: number | null = null;
-type CatalogMode = "favorites" | "recent" | "mine";
+type CatalogMode = "favorites" | "recent" | "mine" | "all";
 let catalogMode: CatalogMode = "favorites";
 let catalogProducts: Record<CatalogMode, Product[]> = {
     favorites: [],
     recent: [],
     mine: [],
+    all: [],
 };
 
 function formatMacro(value: number | null | undefined): string {
@@ -100,8 +101,6 @@ function setCatalogSortMode(mode: CatalogMode): void {
 
 function setCatalogSearchState(query: string): void {
     const searching = query.trim().length > 0;
-    document.querySelector(".nutrition-product-sort")?.toggleAttribute("hidden", searching);
-
     if (searching) {
         document.querySelectorAll<HTMLElement>("[data-catalog-section]").forEach((section) => {
             section.hidden = section.dataset.catalogSection !== "search";
@@ -173,6 +172,7 @@ async function loadCatalog(): Promise<void> {
             favorites: favorites.products,
             recent: recent.products,
             mine: mine.products,
+            all: [],
         };
 
         renderProductList("product-favorites", catalogProducts.favorites);
@@ -183,19 +183,40 @@ async function loadCatalog(): Promise<void> {
     }
 }
 
+let catalogSearchRequest = 0;
+
 async function searchCatalog(query: string): Promise<void> {
     setCatalogSearchState(query);
-    if (!query.trim()) {
+
+    const normalizedQuery = query.trim();
+    if (!normalizedQuery) {
         renderProductList("product-search-results", []);
         return;
     }
 
-    const normalizedQuery = query.trim().toLocaleLowerCase();
+    const requestId = ++catalogSearchRequest;
+
+    if (catalogMode === "all") {
+        try {
+            const response = await NutritionAPI.getProducts(normalizedQuery, getLocale());
+            if (requestId !== catalogSearchRequest || catalogMode !== "all") return;
+            renderProductList("product-search-results", response.products);
+        } catch (error) {
+            if (requestId === catalogSearchRequest) {
+                console.error("Failed to search nutrition catalog:", error);
+                renderProductList("product-search-results", []);
+            }
+        }
+        return;
+    }
+
     const products = catalogProducts[catalogMode].filter((product) =>
-        getProductSearchText(product).includes(normalizedQuery),
+        getProductSearchText(product).includes(normalizedQuery.toLocaleLowerCase()),
     );
 
-    renderProductList("product-search-results", products);
+    if (requestId === catalogSearchRequest) {
+        renderProductList("product-search-results", products);
+    }
 }
 
 export function openAddItemModal(mealId: number): void {
@@ -286,7 +307,10 @@ export function setupItemModals(onRefresh: RefreshCallback): void {
     document.querySelectorAll<HTMLButtonElement>("[data-catalog-sort]").forEach((button) => {
         button.addEventListener("click", () => {
             const mode = button.dataset.catalogSort as CatalogMode | undefined;
-            if (mode) setCatalogSortMode(mode);
+            if (mode) {
+                setCatalogSortMode(mode);
+                void searchCatalog(getInputValue("add-item-search"));
+            }
         });
     });
 
