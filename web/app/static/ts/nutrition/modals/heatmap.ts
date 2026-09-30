@@ -629,6 +629,7 @@ async function openDayDetails(
         const data =
             await NutritionAPI.getDayDetails(
                 date,
+                getLocale(),
             );
 
         if (subtitle) {
