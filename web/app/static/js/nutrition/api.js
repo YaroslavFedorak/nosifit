@@ -18,8 +18,8 @@ export const NutritionAPI = {
     getDay(locale = "uk") {
         return request(BASE_URL + "/day?locale=" + encodeURIComponent(locale));
     },
-    getDayDetails(date) {
-        return request(BASE_URL + "/day/" + date);
+    getDayDetails(date, locale = "uk") {
+        return request(BASE_URL + "/day/" + date + "?locale=" + encodeURIComponent(locale));
     },
     getRecommendations() {
         return request(BASE_URL + "/recommendations");
