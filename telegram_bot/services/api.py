@@ -13,17 +13,30 @@ class NosiFitAPI:
     session: requests.Session = field(default_factory=requests.Session)
 
     def login(self, email: str, password: str) -> None:
-        response = self.session.post(
-            f"{self.base_url}/auth/login",
-            data={"email": email, "password": password},
-            timeout=10,
-            allow_redirects=True,
-        )
-        if not response.ok:
-            raise NosiFitAPIError("Не вдалося підключитися до NosiFit.")
+        try:
+            response = self.session.post(
+                f"{self.base_url}/auth/login",
+                data={"email": email, "password": password},
+                timeout=10,
+                allow_redirects=False,
+            )
+        except requests.RequestException as exc:
+            raise NosiFitAPIError(
+                "Не вдалося підключитися до NosiFit."
+            ) from exc
 
-        if response.url.rstrip("/").endswith("/auth/login"):
+        if response.status_code in (301, 302, 303, 307, 308):
+            location = response.headers.get("Location", "")
+            if "/dashboard" in location and self.session.cookies:
+                return
             raise NosiFitAPIError("Невірна електронна пошта або пароль.")
+
+        if response.status_code in (200, 401, 403):
+            raise NosiFitAPIError("Невірна електронна пошта або пароль.")
+
+        raise NosiFitAPIError(
+            f"NosiFit повернув помилку авторизації (HTTP {response.status_code})."
+        )
 
     def _request(self, method: str, path: str, **kwargs) -> requests.Response:
         response = self.session.request(
