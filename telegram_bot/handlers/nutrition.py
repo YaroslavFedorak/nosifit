@@ -1,4 +1,5 @@
 import asyncio
+import html
 import re
 
 from aiogram import F, Router
@@ -51,11 +52,11 @@ def _format_day(day: dict) -> str:
 
 
 def _format_pending(category: str, pending: list[dict]) -> str:
-    lines = [f"🍽 <b>{category}</b>", "", "Додано:"]
+    lines = [f"🍽 <b>{html.escape(category)}</b>", "", "Додано:"]
     for item in pending:
         unit_label = "шт." if item["unit"] == "pcs" else item["unit"]
         lines.append(
-            f"✓ {item['name']} — {_format_number(item['amount'])} {unit_label}"
+            f"✓ {html.escape(item['name'])} — {_format_number(item['amount'])} {unit_label}"
         )
     return "\n".join(lines)
 
@@ -121,7 +122,7 @@ async def search_product(message: Message, state: FSMContext) -> None:
         return
 
     await message.answer(
-        f"🔎 <b>{query}</b>\n\nОберіть продукт:",
+        f"🔎 <b>{html.escape(query)}</b>\n\nОберіть продукт:",
         reply_markup=product_results(products),
     )
 
@@ -152,7 +153,7 @@ async def choose_product(callback: CallbackQuery, state: FSMContext) -> None:
 
     unit_label = "шт." if unit == "pcs" else unit
     await callback.message.edit_text(
-        f"🍽 <b>{product.get('name', 'Продукт')}</b>\n\n"
+        f"🍽 <b>{html.escape(product.get('name', 'Продукт'))}</b>\n\n"
         f"На 100 г: {product.get('kcal_per_100g', 0):.0f} kcal · "
         f"{product.get('protein_per_100g', 0):.1f} г білка\n\n"
         f"Введіть кількість у {unit_label}. "
@@ -251,4 +252,5 @@ async def today(callback: CallbackQuery, state: FSMContext) -> None:
 async def cancel_nutrition(callback: CallbackQuery, state: FSMContext) -> None:
     await callback.answer()
     await state.clear()
-    await callback.message.edit_text("Дію скасовано.", reply_markup=main_menu(authenticated=True))
+    await callback.message.edit_text("Дію скасовано.")
+    await callback.message.answer("Оберіть дію:", reply_markup=main_menu(authenticated=True))
