@@ -251,4 +251,4 @@ async def today(callback: CallbackQuery, state: FSMContext) -> None:
 async def cancel_nutrition(callback: CallbackQuery, state: FSMContext) -> None:
     await callback.answer()
     await state.clear()
-    await callback.message.edit_text("Дію скасовано.", reply_markup=main_menu())
+    await callback.message.edit_text("Дію скасовано.", reply_markup=main_menu(authenticated=True))
