@@ -25,13 +25,13 @@
         </div>
       </div>
     </div>
-    <input type="search" id="add-item-search" class="nutrition-product-search" placeholder="{{ translate("nutrition", "catalog.searchPlaceholder") }}" autocomplete="off" />
     <div class="nutrition-product-sort" role="group" aria-label="{{ translate("nutrition", "catalog.search") }}">
       <button type="button" class="nutrition-product-sort-button" data-catalog-sort="all" aria-pressed="true">{{ translate("nutrition", "catalog.allProducts") }}</button>
       <button type="button" class="nutrition-product-sort-button" data-catalog-sort="favorites" aria-pressed="false">{{ translate("nutrition", "catalog.favorites") }}</button>
       <button type="button" class="nutrition-product-sort-button" data-catalog-sort="recent" aria-pressed="false">{{ translate("nutrition", "catalog.recent") }}</button>
       <button type="button" class="nutrition-product-sort-button" data-catalog-sort="mine" aria-pressed="false">{{ translate("nutrition", "catalog.myProducts") }}</button>
     </div>
+    <input type="search" id="add-item-search" class="nutrition-product-search" placeholder="{{ translate("nutrition", "catalog.searchPlaceholder") }}" autocomplete="off" />
     <div class="nutrition-product-sections">
       <section data-catalog-section="favorites"><div class="nutrition-product-section-title">{{ translate("nutrition", "catalog.favorites") }}</div><div id="product-favorites" class="nutrition-product-list"></div></section>
       <section data-catalog-section="recent"><div class="nutrition-product-section-title">{{ translate("nutrition", "catalog.recent") }}</div><div id="product-recent" class="nutrition-product-list"></div></section>
