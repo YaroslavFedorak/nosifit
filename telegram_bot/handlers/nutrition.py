@@ -337,14 +337,27 @@ async def toggle_favorite(callback: CallbackQuery, state: FSMContext) -> None:
 async def choose_product(callback: CallbackQuery, state: FSMContext) -> None:
     await callback.answer()
     product_id = int(callback.data.rsplit(":", 1)[1])
-    try:
-        product = await asyncio.to_thread(
-            _api(callback.from_user.id).get_product,
-            product_id,
-        )
-    except NosiFitAPIError as exc:
-        await callback.message.answer(f"Не вдалося завантажити продукт: {exc}")
-        return
+    data = await state.get_data()
+    catalogs = data.get("catalogs", {})
+    product = next(
+        (
+            product
+            for products in catalogs.values()
+            for product in products
+            if product.get("id") == product_id
+        ),
+        None,
+    )
+
+    if product is None:
+        try:
+            product = await asyncio.to_thread(
+                _api(callback.from_user.id).get_product,
+                product_id,
+            )
+        except NosiFitAPIError as exc:
+            await callback.message.answer(f"Не вдалося завантажити продукт: {exc}")
+            return
 
     unit = product.get("default_unit") or "g"
     default_amount = 1 if unit == "pcs" else 100
