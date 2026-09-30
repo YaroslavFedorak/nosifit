@@ -434,3 +434,19 @@
     color: #fff;
     transform: translateY(-1px);
 }
+
+
+/* Keep the widget action visually aligned with Nutrition primary actions. */
+.meal-action-add {
+    background: var(--nutrition-accent) !important;
+    border: 1px solid var(--nutrition-accent) !important;
+    color: #fff !important;
+    box-shadow: none !important;
+}
+.meal-action-add:hover,
+.meal-action-add:focus-visible {
+    background: var(--nutrition-accent-soft) !important;
+    border-color: var(--nutrition-accent-soft) !important;
+    color: #fff !important;
+    box-shadow: 0 0 0 3px rgba(155, 93, 229, .14) !important;
+}
