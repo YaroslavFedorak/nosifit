@@ -352,7 +352,7 @@ async function openDayDetails(date) {
     closeModal(calendarModal);
     openModal(dayModal);
     try {
-        const data = await NutritionAPI.getDayDetails(date);
+        const data = await NutritionAPI.getDayDetails(date, getLocale());
         if (subtitle) {
             subtitle.textContent =
                 nutrition_t("dayDetails.mealsCount", {
