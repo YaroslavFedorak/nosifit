@@ -101,13 +101,19 @@
 
                 <div class="meals-widget-header">
 
-                    <div>
+                    <div class="meals-widget-title">
 
                         <div class="widget-eyebrow">
                             {{ translate("nutrition", "meals.todayTitle") }}
                         </div>
 
+                        <h2 class="widget-title">
+                            {{ translate("nutrition", "meals.todayTitle") }}
+                        </h2>
+
                     </div>
+
+                    <div id="meals-day-summary" class="meals-day-summary" aria-live="polite"></div>
 
                     <button
                         type="button"
