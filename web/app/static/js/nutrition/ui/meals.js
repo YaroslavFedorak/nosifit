@@ -2,7 +2,7 @@ import { openModal, } from "../modals/modal.js";
 import { openAddItemModal, openEditItemModal, } from "../modals/items.js";
 import { NutritionAPI, } from "../api.js";
 import { nutrition_t, } from "../../i18n/index.js";
-function formatMacro(value) {\n    return Number(value ?? 0).toFixed(1);\n}\nfunction formatCalories(value) {\n    return String(Math.round(Number(value ?? 0)));\n}\nconst ICONS = {
+const ICONS = {
     pencil: `
         <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -51,12 +51,23 @@ function formatMacro(value) {\n    return Number(value ?? 0).toFixed(1);\n}\nfun
         </svg>
     `,
 };
+function formatMacro(value) {
+    return Number(value ?? 0).toFixed(1);
+}
+function formatCalories(value) {
+    return String(Math.round(Number(value ?? 0)));
+}
 function renderMealsSummary(meals) {
     const element = document.getElementById("meals-day-summary");
     if (!element)
         return;
     const calories = meals.reduce((sum, meal) => sum + Number(meal.total_calories ?? 0), 0);
-    element.innerHTML = `<span class="meals-summary-value">${Math.round(calories)}</span><span class="meals-summary-unit">${nutrition_t("units.kcal")}</span><span class="meals-summary-divider"></span><span class="meals-summary-count">${meals.length}</span>`;
+    element.innerHTML = `
+        <span class="meals-summary-value">${Math.round(calories)}</span>
+        <span class="meals-summary-unit">${nutrition_t("units.kcal")}</span>
+        <span class="meals-summary-divider"></span>
+        <span class="meals-summary-count">${meals.length}</span>
+    `;
 }
 export function renderMeals(meals, onRefresh) {
     const list = document.getElementById("meals-list");
@@ -118,10 +129,10 @@ function createMealInfo(meal, card, content) {
     meta.className =
         "meal-meta-large";
     meta.textContent = [
-        `${meal.total_calories ?? 0} ${nutrition_t("units.kcal")}`,
-        `${nutrition_t("units.proteinShort")} ${meal.total_protein ?? 0}`,
-        `${nutrition_t("units.fatShort")} ${meal.total_fat ?? 0}`,
-        `${nutrition_t("units.carbsShort")} ${meal.total_carbs ?? 0}`,
+        `${formatCalories(meal.total_calories)} ${nutrition_t("units.kcal")}`,
+        `${nutrition_t("units.proteinShort")} ${formatMacro(meal.total_protein)}`,
+        `${nutrition_t("units.fatShort")} ${formatMacro(meal.total_fat)}`,
+        `${nutrition_t("units.carbsShort")} ${formatMacro(meal.total_carbs)}`,
     ].join(" · ");
     wrapper.append(titleRow, meta);
     wrapper.addEventListener("click", () => {
@@ -135,11 +146,15 @@ function createMealActions(meal, onRefresh) {
     actions.className =
         "meal-actions-large";
     const addItem = document.createElement("button");
-    addItem.type = "button";
-    addItem.className = "meal-action-add";
-    addItem.textContent = nutrition_t("meals.addProduct");
-    addItem.addEventListener("click", () => openAddItemModal(meal.id, meal));
-
+    addItem.type =
+        "button";
+    addItem.className =
+        "meal-action-add";
+    addItem.textContent =
+        nutrition_t("meals.addProduct");
+    addItem.addEventListener("click", () => {
+        openAddItemModal(meal.id, meal);
+    });
     const edit = createIconButton("meal-action-icon", ICONS.pencil, nutrition_t("actions.editMeal"));
     edit.addEventListener("click", () => {
         const id = document.getElementById("edit-meal-id");
@@ -208,10 +223,10 @@ function createItemRow(item, onRefresh) {
         ? item.amount + " " + (item.unit ?? "g") + " · "
         : "";
     macros.textContent = amount + [
-        `${item.calories ?? 0} ${nutrition_t("units.kcal")}`,
-        `${nutrition_t("units.proteinShort")} ${item.protein ?? 0}`,
-        `${nutrition_t("units.fatShort")} ${item.fat ?? 0}`,
-        `${nutrition_t("units.carbsShort")} ${item.carbs ?? 0}`,
+        `${formatCalories(item.calories)} ${nutrition_t("units.kcal")}`,
+        `${nutrition_t("units.proteinShort")} ${formatMacro(item.protein)}`,
+        `${nutrition_t("units.fatShort")} ${formatMacro(item.fat)}`,
+        `${nutrition_t("units.carbsShort")} ${formatMacro(item.carbs)}`,
     ].join(" · ");
     info.append(name, macros);
     const actions = document.createElement("div");
@@ -221,10 +236,9 @@ function createItemRow(item, onRefresh) {
     edit.addEventListener("click", () => {
         void openEditItemModal(item);
     });
-
     const remove = createIconButton("meal-item-action meal-item-delete", ICONS.delete, nutrition_t("actions.deleteConfirm"));
     remove.addEventListener("dblclick", async () => {
-        await NutritionAPI.deleteItem(item.id);
+        await NutritionAPI.deleteEntry(item.id);
         await onRefresh();
     });
     actions.append(edit, remove);

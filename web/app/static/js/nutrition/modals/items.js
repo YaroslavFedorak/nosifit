@@ -1,12 +1,17 @@
-import { NutritionAPI, } from "../api.js";
-import { closeModal, openModal, } from "./modal.js";
-import { getLocale, nutrition_t, } from "../../i18n/index.js";
+import { NutritionAPI } from "../api.js";
+import { closeModal, openModal } from "./modal.js";
+import { getLocale, nutrition_t } from "../../i18n/index.js";
 let selectedProductId = null;
 let selectedProduct = null;
 let pendingMealItems = [];
 let existingMealItems = [];
 let catalogMode = "all";
-let catalogProducts = { favorites: [], recent: [], mine: [] };
+let catalogProducts = {
+    favorites: [],
+    recent: [],
+    mine: [],
+    all: [],
+};
 function formatMacro(value) {
     return Number(value ?? 0).toFixed(1);
 }
@@ -35,16 +40,17 @@ function createProductButton(product) {
     select.className = "nutrition-product-select";
     const text = document.createElement("span");
     text.className = "nutrition-product-option-text";
-    text.textContent = product.brand ? product.name + " · " + product.brand : product.name;
+    text.textContent = product.brand ? `${product.name} · ${product.brand}` : product.name;
     const meta = document.createElement("span");
     meta.className = "nutrition-product-option-meta";
-    meta.textContent = formatCalories(product.kcal_per_100g) + " " + nutrition_t("units.kcal") + " / 100 g";
+    meta.textContent = `${formatCalories(product.kcal_per_100g)} ${nutrition_t("units.kcal")} / 100 g`;
     select.append(text, meta);
     select.addEventListener("click", () => selectProduct(product));
     const favorite = document.createElement("button");
     favorite.type = "button";
     favorite.className = "nutrition-product-favorite";
     favorite.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.8l2.55 5.16 5.7.83-4.13 4.03.98 5.69L12 16.82 6.9 19.51l.98-5.69L3.75 9.79l5.7-.83L12 3.8z"></path></svg>';
+    favorite.setAttribute("aria-label", product.name);
     favorite.setAttribute("aria-pressed", String(product.is_favorite));
     favorite.setAttribute("aria-label", product.is_favorite ? "Remove from favorites" : "Add to favorites");
     favorite.addEventListener("click", async (event) => {
@@ -68,7 +74,9 @@ function setCatalogSortMode(mode) {
     const searching = getInputValue("add-item-search").trim().length > 0;
     document.querySelectorAll("[data-catalog-section]").forEach((section) => {
         const sectionMode = section.dataset.catalogSection;
-        section.hidden = searching ? sectionMode !== "search" : sectionMode !== catalogMode;
+        section.hidden = searching
+            ? sectionMode !== "search"
+            : sectionMode !== catalogMode;
     });
     document.querySelectorAll("[data-catalog-sort]").forEach((button) => {
         button.setAttribute("aria-pressed", String(button.dataset.catalogSort === catalogMode));
@@ -105,15 +113,17 @@ function renderSelectedProduct(product) {
     if (!element)
         return;
     element.innerHTML = "";
-    if (!product)
+    if (!product) {
+        const empty = document.createElement("span");
+        empty.textContent = nutrition_t("catalog.selectedProduct");
+        element.appendChild(empty);
         return;
+    }
     const title = document.createElement("strong");
     title.textContent = product.name;
     const meta = document.createElement("span");
-    meta.textContent = product.kcal_per_100g + " " + nutrition_t("units.kcal") + " · "
-        + nutrition_t("units.proteinShort") + " " + product.protein_per_100g + " · "
-        + nutrition_t("units.fatShort") + " " + product.fat_per_100g + " · "
-        + nutrition_t("units.carbsShort") + " " + product.carbs_per_100g;
+    meta.textContent =
+        `${product.kcal_per_100g} ${nutrition_t("units.kcal")} · ${nutrition_t("units.proteinShort")} ${product.protein_per_100g} · ${nutrition_t("units.fatShort")} ${product.fat_per_100g} · ${nutrition_t("units.carbsShort")} ${product.carbs_per_100g}`;
     element.append(title, meta);
 }
 function selectProduct(product) {
@@ -147,7 +157,8 @@ function createMealItemRow(item, options) {
             renderPendingMealItems();
         });
         row.appendChild(remove);
-    } else {
+    }
+    else {
         const status = document.createElement("span");
         status.className = "nutrition-pending-item-status";
         status.textContent = "✓";
@@ -156,7 +167,6 @@ function createMealItemRow(item, options) {
     }
     return row;
 }
-
 function renderPendingMealItems() {
     const container = document.getElementById("pending-meal-items");
     const empty = document.getElementById("pending-meal-items-empty");
@@ -196,7 +206,12 @@ function queueSelectedProduct() {
     const product = selectedProduct;
     if (!product)
         return;
-    pendingMealItems.push({ productId: product.id, product, amount, unit });
+    pendingMealItems.push({
+        productId: product.id,
+        product,
+        amount,
+        unit,
+    });
     selectedProductId = null;
     selectedProduct = null;
     setInputValue("add-item-amount", "100");
@@ -269,14 +284,12 @@ export function openAddItemModal(mealId, meal) {
     setInputValue("add-item-search", "");
     setInputValue("add-item-amount", "100");
     catalogMode = "all";
-    pendingMealItems = [];
     setSelectValue("add-item-unit", "g");
     renderSelectedProduct(null);
     renderPendingMealItems();
     openModal("modal-add-item");
     setCatalogSearchState("");
     setCatalogSortMode(catalogMode);
-    renderPendingMealItems();
     void loadCatalog();
 }
 export async function openEditItemModal(item) {
@@ -312,6 +325,7 @@ export async function openEditItemModal(item) {
 export function setupItemModals(onRefresh) {
     document.getElementById("close-add-item")?.addEventListener("click", () => {
         pendingMealItems = [];
+        existingMealItems = [];
         renderPendingMealItems();
         closeModal("modal-add-item");
     });
@@ -378,7 +392,12 @@ export function setupItemModals(onRefresh) {
         if (!id || !mealId || !Number.isFinite(amount) || amount <= 0)
             return;
         try {
-            await NutritionAPI.updateEntry(id, { meal_id: mealId, amount, unit, locale: getLocale() });
+            await NutritionAPI.updateEntry(id, {
+                meal_id: mealId,
+                amount,
+                unit,
+                locale: getLocale(),
+            });
             closeModal("modal-edit-item");
             await onRefresh();
         }
@@ -387,7 +406,14 @@ export function setupItemModals(onRefresh) {
         }
     });
     document.getElementById("open-add-my-product")?.addEventListener("click", () => {
-        ["product-name", "product-brand", "product-kcal", "product-protein", "product-fat", "product-carbs"].forEach((id) => setInputValue(id, ""));
+        [
+            "product-name",
+            "product-brand",
+            "product-kcal",
+            "product-protein",
+            "product-fat",
+            "product-carbs",
+        ].forEach((id) => setInputValue(id, ""));
         setInputValue("product-fiber", "0");
         setInputValue("product-grams-per-unit", "1");
         setSelectValue("product-unit", "g");
@@ -413,6 +439,7 @@ export function setupItemModals(onRefresh) {
             });
             selectedProductId = product.id;
             setSelectValue("add-item-unit", product.default_unit);
+            setInputValue("add-item-amount", product.default_unit === "pcs" ? "1" : "100");
             renderSelectedProduct(product);
             closeModal("modal-add-product");
             await loadCatalog();

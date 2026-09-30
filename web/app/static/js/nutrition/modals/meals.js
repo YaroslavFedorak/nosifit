@@ -1,5 +1,5 @@
 import { NutritionAPI, } from "../api.js";
-import { closeModal, openModal, } from "./modal.js";
+import { closeModal, } from "./modal.js";
 function getInputValue(id) {
     const element = document.getElementById(id);
     return element?.value ?? "";

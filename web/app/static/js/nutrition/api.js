@@ -85,9 +85,29 @@ export const NutritionAPI = {
             body: JSON.stringify(data),
         });
     },
+    /**
+     * Compatibility alias for legacy nutrition UI.
+     * New code should use createEntry().
+     */
+    createItem(data) {
+        return request(BASE_URL + "/items", {
+            method: "POST",
+            body: JSON.stringify(data),
+        });
+    },
     updateEntry(id, data) {
         return request(BASE_URL + "/entries/" + id, {
             method: "PATCH",
+            body: JSON.stringify(data),
+        });
+    },
+    /**
+     * Compatibility alias for legacy nutrition UI.
+     * New code should use updateEntry().
+     */
+    updateItem(id, data) {
+        return request(BASE_URL + "/items/" + id, {
+            method: "PUT",
             body: JSON.stringify(data),
         });
     },
@@ -96,11 +116,26 @@ export const NutritionAPI = {
             method: "DELETE",
         });
     },
+    /**
+     * Compatibility alias for legacy nutrition UI.
+     * New code should use deleteEntry().
+     */
+    deleteItem(id) {
+        return request(BASE_URL + "/items/" + id, {
+            method: "DELETE",
+        });
+    },
+    getWeight() {
+        return request(BASE_URL + "/weight");
+    },
     updateWeight(weight) {
         return request(BASE_URL + "/weight", {
             method: "POST",
             body: JSON.stringify({ weight }),
         });
+    },
+    getWater() {
+        return request(BASE_URL + "/water");
     },
     addWater(amount) {
         return request(BASE_URL + "/water", {
