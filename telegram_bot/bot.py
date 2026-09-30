@@ -2,6 +2,8 @@ import asyncio
 import logging
 
 from aiogram import Bot, Dispatcher
+from aiogram.client.default import DefaultBotProperties
+from aiogram.enums import ParseMode
 from aiogram.fsm.storage.memory import MemoryStorage
 
 from telegram_bot.config import TelegramConfig
@@ -27,7 +29,7 @@ def create_dispatcher() -> Dispatcher:
 
 async def main() -> None:
     config = TelegramConfig.from_env()
-    bot = Bot(token=config.bot_token)
+    bot = Bot(token=config.bot_token, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
     dispatcher = create_dispatcher()
     logger.info("Starting NosiFit Telegram bot")
     logger.info("NosiFit API: %s", config.nosi_fit_base_url)
