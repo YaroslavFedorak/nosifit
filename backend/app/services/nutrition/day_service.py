@@ -166,8 +166,8 @@ def get_daily_nutrition_data(user_id, locale="uk"):
         "macros_ratio": macros_ratio,
         "quality": quality,
         "current_weight": (
-            user.profile.weight
-            if user and user.profile and user.profile.weight is not None
+            profile.weight
+            if profile is not None and profile.weight is not None
             else None
         ),
         "kcal": totals["calories"],
