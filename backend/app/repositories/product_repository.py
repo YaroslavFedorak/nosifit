@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from datetime import date
 
+from sqlalchemy import or_
+
 from backend.app.models import Meal, MealItem, Product, ProductFavorite
 
 
@@ -11,9 +13,9 @@ def get_product_for_user(user_id, product_id):
         .filter(
             Product.id == product_id,
             Product.is_active.is_(True),
-            (
-                Product.owner_user_id.is_(None)
-                | (Product.owner_user_id == user_id)
+            or_(
+                Product.owner_user_id.is_(None),
+                Product.owner_user_id == user_id,
             ),
         )
         .first()

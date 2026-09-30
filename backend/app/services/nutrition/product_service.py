@@ -24,13 +24,11 @@ class ProductServiceError(ValueError):
 def normalize_locale(locale: str | None) -> str:
     normalized = (locale or "uk").strip().lower().replace("_", "-")
     normalized = normalized.split("-")[0]
-
     return normalized if normalized in SUPPORTED_LOCALES else "uk"
 
 
 def get_product_name(product, locale="uk") -> str:
     locale = normalize_locale(locale)
-
     names = {name.locale: name.name for name in product.names}
 
     return (
@@ -71,36 +69,30 @@ def search_products(user_id, query="", locale="uk", limit=20):
     locale = normalize_locale(locale)
     query = (query or "").strip()
 
-    name_filter = ProductName.locale == locale
-
-    product_query = (
-        Product.query
-        .join(ProductName)
-        .filter(
-            Product.is_active.is_(True),
-            name_filter,
-            (
-                Product.owner_user_id.is_(None)
-                | (Product.owner_user_id == user_id)
-            ),
-        )
+    product_query = Product.query.filter(
+        Product.is_active.is_(True),
+        or_(
+            Product.owner_user_id.is_(None),
+            Product.owner_user_id == user_id,
+        ),
     )
 
     if query:
         pattern = f"%{query}%"
-        product_query = product_query.filter(
-            or_(
-                ProductName.name.ilike(pattern),
-                Product.brand.ilike(pattern),
+        product_query = (
+            product_query
+            .join(ProductName)
+            .filter(
+                or_(
+                    ProductName.name.ilike(pattern),
+                    Product.brand.ilike(pattern),
+                )
             )
         )
 
     products = (
         product_query
-        .order_by(
-            Product.source.desc(),
-            ProductName.name.asc(),
-        )
+        .order_by(Product.source.desc(), Product.id.desc())
         .limit(min(max(limit, 1), 50))
         .all()
     )
@@ -113,11 +105,22 @@ def search_products(user_id, query="", locale="uk", limit=20):
 
 def get_product(user_id, product_id, locale="uk"):
     product = get_product_for_user(user_id, product_id)
-
     if product is None:
         return None
 
     return serialize_product(product, user_id, locale)
+
+
+def _nutrition_value(data, key):
+    try:
+        value = float(data.get(key, 0))
+    except (TypeError, ValueError):
+        raise ProductServiceError(f"Invalid {key}")
+
+    if value < 0:
+        raise ProductServiceError(f"{key} cannot be negative")
+
+    return value
 
 
 def create_user_product(user_id, data, locale="uk"):
@@ -128,7 +131,6 @@ def create_user_product(user_id, data, locale="uk"):
         raise ProductServiceError("Product name is required")
 
     unit = (data.get("default_unit") or "g").strip().lower()
-
     if unit not in SUPPORTED_UNITS:
         raise ProductServiceError("Unsupported default unit")
 
@@ -140,27 +142,16 @@ def create_user_product(user_id, data, locale="uk"):
     if grams_per_unit <= 0:
         raise ProductServiceError("grams_per_unit must be positive")
 
-    def nutrition_value(key):
-        try:
-            value = float(data.get(key, 0))
-        except (TypeError, ValueError):
-            raise ProductServiceError(f"Invalid {key}")
-
-        if value < 0:
-            raise ProductServiceError(f"{key} cannot be negative")
-
-        return value
-
     product = Product(
         owner_user_id=user_id,
         source="user",
         brand=(data.get("brand") or "").strip() or None,
         barcode=(data.get("barcode") or "").strip() or None,
-        kcal_per_100g=nutrition_value("kcal_per_100g"),
-        protein_per_100g=nutrition_value("protein_per_100g"),
-        fat_per_100g=nutrition_value("fat_per_100g"),
-        carbs_per_100g=nutrition_value("carbs_per_100g"),
-        fiber_per_100g=nutrition_value("fiber_per_100g"),
+        kcal_per_100g=_nutrition_value(data, "kcal_per_100g"),
+        protein_per_100g=_nutrition_value(data, "protein_per_100g"),
+        fat_per_100g=_nutrition_value(data, "fat_per_100g"),
+        carbs_per_100g=_nutrition_value(data, "carbs_per_100g"),
+        fiber_per_100g=_nutrition_value(data, "fiber_per_100g"),
         default_unit=unit,
         grams_per_unit=grams_per_unit,
     )
@@ -177,25 +168,24 @@ def create_user_product(user_id, data, locale="uk"):
     )
 
     db.session.commit()
-
     return serialize_product(product, user_id, locale)
 
 
 def update_user_product(user_id, product_id, data, locale="uk"):
     product = get_user_product(user_id, product_id)
-
     if product is None:
         return None
 
+    locale = normalize_locale(locale)
+
     if "name" in data:
         name = (data.get("name") or "").strip()
-
         if not name:
             raise ProductServiceError("Product name cannot be empty")
 
         localized = ProductName.query.filter_by(
             product_id=product.id,
-            locale=normalize_locale(locale),
+            locale=locale,
         ).first()
 
         if localized:
@@ -204,7 +194,7 @@ def update_user_product(user_id, product_id, data, locale="uk"):
             db.session.add(
                 ProductName(
                     product_id=product.id,
-                    locale=normalize_locale(locale),
+                    locale=locale,
                     name=name,
                 )
             )
@@ -217,25 +207,15 @@ def update_user_product(user_id, product_id, data, locale="uk"):
         "fiber_per_100g",
     ):
         if key in data:
-            try:
-                value = float(data[key])
-            except (TypeError, ValueError):
-                raise ProductServiceError(f"Invalid {key}")
-
-            if value < 0:
-                raise ProductServiceError(f"{key} cannot be negative")
-
-            setattr(product, key, value)
+            setattr(product, key, _nutrition_value(data, key))
 
     if "brand" in data:
         product.brand = (data.get("brand") or "").strip() or None
 
     if "default_unit" in data:
         unit = (data.get("default_unit") or "").strip().lower()
-
         if unit not in SUPPORTED_UNITS:
             raise ProductServiceError("Unsupported default unit")
-
         product.default_unit = unit
 
     if "grams_per_unit" in data:
@@ -250,25 +230,21 @@ def update_user_product(user_id, product_id, data, locale="uk"):
         product.grams_per_unit = grams_per_unit
 
     db.session.commit()
-
     return serialize_product(product, user_id, locale)
 
 
 def archive_user_product(user_id, product_id):
     product = get_user_product(user_id, product_id)
-
     if product is None:
         return False
 
     product.is_active = False
     db.session.commit()
-
     return True
 
 
-def set_favorite(user_id, product_id, favorite):
+def set_favorite(user_id, product_id, favorite, locale="uk"):
     product = get_product_for_user(user_id, product_id)
-
     if product is None:
         return None
 
@@ -284,13 +260,11 @@ def set_favorite(user_id, product_id, favorite):
                 product_id=product.id,
             )
         )
-
     elif not favorite and entry is not None:
         db.session.delete(entry)
 
     db.session.commit()
-
-    return serialize_product(product, user_id)
+    return serialize_product(product, user_id, locale)
 
 
 def serialize_product_list(products, user_id, locale="uk"):

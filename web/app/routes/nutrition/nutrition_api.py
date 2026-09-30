@@ -4,43 +4,41 @@ from flask import Blueprint, jsonify, request
 from flask_login import current_user, login_required
 
 from backend.app.models import Meal
-
-from backend.app.services.nutrition.day_service import (
-    get_daily_nutrition_data,
-)
-
+from backend.app.services.nutrition.calculation_service import NutritionValidationError
+from backend.app.services.nutrition.day_service import get_daily_nutrition_data
 from backend.app.services.nutrition.item_service import (
     add_item_service,
     delete_item_service,
     update_item_service,
 )
-
 from backend.app.services.nutrition.meal_service import (
     add_meal_service,
     copy_meal_service,
     delete_meal_service,
     update_meal_service,
 )
-
-from backend.app.services.nutrition.recommendation_service import (
-    get_nutrition_recommendations,
+from backend.app.services.nutrition.product_service import (
+    ProductServiceError,
+    archive_user_product,
+    create_user_product,
+    get_favorites,
+    get_product,
+    get_recent,
+    get_user_products,
+    normalize_locale,
+    search_products,
+    set_favorite,
+    update_user_product,
 )
-
+from backend.app.services.nutrition.recommendation_service import get_nutrition_recommendations
+from backend.app.services.nutrition.serializers import serialize_meal
 from backend.app.services.nutrition.stats_service import (
     get_day_details,
     get_stats,
     get_year_heatmap,
 )
-
-from backend.app.services.nutrition.water_service import (
-    add_water_service,
-    get_water_data,
-)
-
-from backend.app.services.nutrition.weight_service import (
-    get_weight_data,
-    update_user_weight,
-)
+from backend.app.services.nutrition.water_service import add_water_service, get_water_data
+from backend.app.services.nutrition.weight_service import get_weight_data, update_user_weight
 
 nutrition_api = Blueprint(
     "nutrition_api",
@@ -49,69 +47,180 @@ nutrition_api = Blueprint(
 )
 
 
+def _locale():
+    return normalize_locale(request.args.get("locale") or request.json.get("locale") if request.is_json else request.args.get("locale"))
+
+
+def _item_payload(data):
+    return {
+        "meal_id": data.get("meal_id"),
+        "product_id": data.get("product_id"),
+        "amount": data.get("amount"),
+        "unit": data.get("unit"),
+        "locale": data.get("locale", "uk"),
+    }
+
+
 @nutrition_api.get("/day")
 @login_required
 def api_day():
-    data = get_daily_nutrition_data(
-        current_user.id,
-    )
+    return jsonify(get_daily_nutrition_data(current_user.id))
 
-    return jsonify(data)
+
+@nutrition_api.get("/today")
+@login_required
+def api_today():
+    return jsonify(get_daily_nutrition_data(current_user.id))
 
 
 @nutrition_api.get("/day/<date_string>")
 @login_required
 def api_day_details(date_string):
     try:
-        target_date = date.fromisoformat(
-            date_string,
-        )
-
+        target_date = date.fromisoformat(date_string)
     except ValueError:
-        return (
-            jsonify(
-                {
-                    "error": "Invalid date",
-                }
-            ),
-            400,
-        )
+        return jsonify({"error": "Invalid date"}), 400
 
-    data = get_day_details(
-        current_user.id,
-        target_date,
-    )
-
-    return jsonify(data)
+    return jsonify(get_day_details(current_user.id, target_date))
 
 
 @nutrition_api.get("/recommendations")
 @login_required
 def api_recommendations():
-    data = get_nutrition_recommendations(
-        current_user.id,
+    return jsonify(get_nutrition_recommendations(current_user.id))
+
+
+@nutrition_api.get("/products")
+@login_required
+def api_products():
+    locale = normalize_locale(request.args.get("locale"))
+    query = request.args.get("q", "")
+    limit = request.args.get("limit", 20)
+
+    try:
+        limit = int(limit)
+    except (TypeError, ValueError):
+        limit = 20
+
+    return jsonify(
+        {
+            "products": search_products(
+                current_user.id,
+                query=query,
+                locale=locale,
+                limit=limit,
+            )
+        }
     )
 
-    return jsonify(data)
+
+@nutrition_api.get("/products/recent")
+@login_required
+def api_recent_products():
+    locale = normalize_locale(request.args.get("locale"))
+    return jsonify({"products": get_recent(current_user.id, locale)})
+
+
+@nutrition_api.get("/products/favorites")
+@login_required
+def api_favorite_products():
+    locale = normalize_locale(request.args.get("locale"))
+    return jsonify({"products": get_favorites(current_user.id, locale)})
+
+
+@nutrition_api.get("/products/mine")
+@login_required
+def api_my_products():
+    locale = normalize_locale(request.args.get("locale"))
+    return jsonify({"products": get_user_products(current_user.id, locale)})
+
+
+@nutrition_api.get("/products/<int:product_id>")
+@login_required
+def api_product(product_id):
+    locale = normalize_locale(request.args.get("locale"))
+    product = get_product(current_user.id, product_id, locale)
+
+    if product is None:
+        return jsonify({"error": "Product not found"}), 404
+
+    return jsonify(product)
+
+
+@nutrition_api.post("/products")
+@login_required
+def api_create_product():
+    data = request.get_json() or {}
+    try:
+        product = create_user_product(
+            current_user.id,
+            data,
+            normalize_locale(data.get("locale")),
+        )
+    except ProductServiceError as exc:
+        return jsonify({"error": str(exc)}), 400
+
+    return jsonify(product), 201
+
+
+@nutrition_api.patch("/products/<int:product_id>")
+@login_required
+def api_update_product(product_id):
+    data = request.get_json() or {}
+    try:
+        product = update_user_product(
+            current_user.id,
+            product_id,
+            data,
+            normalize_locale(data.get("locale")),
+        )
+    except ProductServiceError as exc:
+        return jsonify({"error": str(exc)}), 400
+
+    if product is None:
+        return jsonify({"error": "Product not found"}), 404
+
+    return jsonify(product)
+
+
+@nutrition_api.delete("/products/<int:product_id>")
+@login_required
+def api_delete_product(product_id):
+    if not archive_user_product(current_user.id, product_id):
+        return jsonify({"error": "User product not found"}), 404
+
+    return jsonify({"status": "ok"})
+
+
+@nutrition_api.post("/products/<int:product_id>/favorite")
+@login_required
+def api_favorite_product(product_id):
+    data = request.get_json() or {}
+    favorite = bool(data.get("favorite", True))
+    locale = normalize_locale(data.get("locale"))
+
+    product = set_favorite(
+        current_user.id,
+        product_id,
+        favorite,
+        locale,
+    )
+
+    if product is None:
+        return jsonify({"error": "Product not found"}), 404
+
+    return jsonify(product)
 
 
 @nutrition_api.post("/meals")
 @login_required
 def api_add_meal():
     data = request.get_json() or {}
-
     name = (data.get("name") or "").strip()
     category = (data.get("category") or "").strip()
 
     if not name or not category:
-        return (
-            jsonify(
-                {
-                    "error": "Name and category are required",
-                }
-            ),
-            400,
-        )
+        return jsonify({"error": "Name and category are required"}), 400
 
     meal = add_meal_service(
         current_user.id,
@@ -119,179 +228,122 @@ def api_add_meal():
             "name": name,
             "category": category,
             "time": data.get("time"),
+            "date": data.get("date"),
         },
     )
 
-    return (
-        jsonify(
-            {
-                "status": "ok",
-                "meal_id": meal.id,
-            }
-        ),
-        201,
-    )
+    return jsonify(serialize_meal(meal, data.get("locale", "uk"))), 201
 
 
 @nutrition_api.put("/meals/<int:meal_id>")
 @login_required
 def api_edit_meal(meal_id):
-    data = request.get_json() or {}
-
     meal = update_meal_service(
         current_user.id,
         meal_id,
-        data,
+        request.get_json() or {},
     )
 
     if meal is None:
-        return (
-            jsonify(
-                {
-                    "error": "Meal not found",
-                }
-            ),
-            404,
-        )
+        return jsonify({"error": "Meal not found"}), 404
 
-    return jsonify(
-        {
-            "status": "ok",
-        }
-    )
+    return jsonify(serialize_meal(meal)), 200
 
 
 @nutrition_api.delete("/meals/<int:meal_id>")
 @login_required
 def api_delete_meal(meal_id):
-    deleted = delete_meal_service(
-        current_user.id,
-        meal_id,
-    )
+    if not delete_meal_service(current_user.id, meal_id):
+        return jsonify({"error": "Meal not found"}), 404
 
-    if not deleted:
-        return (
-            jsonify(
-                {
-                    "error": "Meal not found",
-                }
-            ),
-            404,
-        )
+    return jsonify({"status": "ok"})
+
+
+def _create_item():
+    data = request.get_json() or {}
+
+    if not data.get("meal_id") or not data.get("product_id"):
+        return jsonify({"error": "meal_id and product_id are required"}), 400
+
+    try:
+        item = add_item_service(current_user.id, _item_payload(data))
+    except NutritionValidationError as exc:
+        return jsonify({"error": str(exc)}), 400
+
+    if item is None:
+        return jsonify({"error": "Meal not found"}), 404
 
     return jsonify(
         {
+            "id": item.id,
             "status": "ok",
         }
-    )
+    ), 201
+
+
+@nutrition_api.post("/entries")
+@login_required
+def api_add_entry():
+    return _create_item()
 
 
 @nutrition_api.post("/items")
 @login_required
 def api_add_item():
+    return _create_item()
+
+
+def _update_item(item_id):
     data = request.get_json() or {}
-
-    meal_id = data.get("meal_id")
-    name = (data.get("name") or "").strip()
-
-    if not meal_id or not name:
-        return (
-            jsonify(
-                {
-                    "error": "meal_id and name are required",
-                }
-            ),
-            400,
+    try:
+        item = update_item_service(
+            current_user.id,
+            item_id,
+            _item_payload(data),
         )
-
-    item = add_item_service(
-        current_user.id,
-        {
-            "meal_id": meal_id,
-            "name": name,
-            "weight": data.get("weight"),
-            "calories": data.get("calories", 0),
-            "protein": data.get("protein", 0),
-            "fat": data.get("fat", 0),
-            "carbs": data.get("carbs", 0),
-            "fiber": data.get("fiber", 0),
-            "category_label": data.get("category_label"),
-            "category_id": data.get("category_id"),
-        },
-    )
+    except NutritionValidationError as exc:
+        return jsonify({"error": str(exc)}), 400
 
     if item is None:
-        return (
-            jsonify(
-                {
-                    "error": "Meal not found",
-                }
-            ),
-            404,
-        )
+        return jsonify({"error": "Entry not found"}), 404
 
-    return (
-        jsonify(
-            {
-                "status": "ok",
-                "item_id": item.id,
-            }
-        ),
-        201,
+    return jsonify(
+        {
+            "id": item.id,
+            "status": "ok",
+        }
     )
+
+
+@nutrition_api.patch("/entries/<int:item_id>")
+@login_required
+def api_update_entry(item_id):
+    return _update_item(item_id)
 
 
 @nutrition_api.put("/items/<int:item_id>")
 @login_required
 def api_edit_item(item_id):
-    data = request.get_json() or {}
+    return _update_item(item_id)
 
-    item = update_item_service(
-        current_user.id,
-        item_id,
-        data,
-    )
 
-    if item is None:
-        return (
-            jsonify(
-                {
-                    "error": "Item not found",
-                }
-            ),
-            404,
-        )
+def _delete_item(item_id):
+    if not delete_item_service(current_user.id, item_id):
+        return jsonify({"error": "Entry not found"}), 404
 
-    return jsonify(
-        {
-            "status": "ok",
-        }
-    )
+    return jsonify({"status": "ok"})
+
+
+@nutrition_api.delete("/entries/<int:item_id>")
+@login_required
+def api_delete_entry(item_id):
+    return _delete_item(item_id)
 
 
 @nutrition_api.delete("/items/<int:item_id>")
 @login_required
 def api_delete_item(item_id):
-    deleted = delete_item_service(
-        current_user.id,
-        item_id,
-    )
-
-    if not deleted:
-        return (
-            jsonify(
-                {
-                    "error": "Item not found",
-                }
-            ),
-            404,
-        )
-
-    return jsonify(
-        {
-            "status": "ok",
-        }
-    )
+    return _delete_item(item_id)
 
 
 @nutrition_api.post("/copy-yesterday")
@@ -305,142 +357,66 @@ def api_copy_yesterday():
     ).all()
 
     if not meals:
-        return (
-            jsonify(
-                {
-                    "error": "No meals found yesterday",
-                }
-            ),
-            400,
-        )
+        return jsonify({"error": "No meals found yesterday"}), 400
 
-    copied = []
+    copied = [
+        copy_meal_service(current_user.id, meal.id).id
+        for meal in meals
+        if copy_meal_service(current_user.id, meal.id)
+    ]
 
-    for meal in meals:
-        new_meal = copy_meal_service(
-            current_user.id,
-            meal.id,
-        )
-
-        if new_meal:
-            copied.append(new_meal.id)
-
-    return jsonify(
-        {
-            "status": "ok",
-            "copied": len(copied),
-        }
-    )
+    return jsonify({"status": "ok", "copied": len(copied)})
 
 
 @nutrition_api.post("/weight")
 @login_required
 def api_update_weight():
     data = request.get_json() or {}
-
     try:
         weight = float(data.get("weight"))
-
     except (TypeError, ValueError):
-        return (
-            jsonify(
-                {
-                    "error": "Invalid weight",
-                }
-            ),
-            400,
-        )
+        return jsonify({"error": "Invalid weight"}), 400
 
     if weight <= 0:
-        return (
-            jsonify(
-                {
-                    "error": "Weight must be positive",
-                }
-            ),
-            400,
-        )
+        return jsonify({"error": "Weight must be positive"}), 400
 
-    entry = update_user_weight(
-        current_user,
-        weight,
-    )
-
-    return jsonify(
-        {
-            "status": "ok",
-            "weight": entry.weight,
-        }
-    )
+    entry = update_user_weight(current_user, weight)
+    return jsonify({"status": "ok", "weight": entry.weight})
 
 
 @nutrition_api.get("/weight")
 @login_required
 def api_get_weight():
-    return jsonify(
-        get_weight_data(
-            current_user.id,
-        )
-    )
+    return jsonify(get_weight_data(current_user.id))
 
 
 @nutrition_api.get("/stats")
 @login_required
 def api_stats():
     try:
-        days = int(
-            request.args.get(
-                "days",
-                7,
-            )
-        )
-
+        days = int(request.args.get("days", 7))
     except ValueError:
         days = 7
 
-    days = max(
-        1,
-        min(days, 365),
-    )
-
-    data = get_stats(
-        current_user.id,
-        days,
-    )
-
-    return jsonify(data)
+    days = max(1, min(days, 365))
+    return jsonify(get_stats(current_user.id, days))
 
 
 @nutrition_api.get("/heatmap")
 @login_required
 def api_heatmap():
     try:
-        year = int(
-            request.args.get(
-                "year",
-                date.today().year,
-            )
-        )
-
+        year = int(request.args.get("year", date.today().year))
     except ValueError:
         year = date.today().year
 
-    data = get_year_heatmap(
-        current_user.id,
-        year,
-    )
-
-    return jsonify(data)
+    return jsonify(get_year_heatmap(current_user.id, year))
 
 
 @nutrition_api.get("/water")
 @login_required
 def api_get_water():
-    return jsonify(
-        get_water_data(
-            current_user.id,
-        )
-    )
+    return jsonify(get_water_data(current_user.id))
 
 
 @nutrition_api.post("/water")
@@ -450,35 +426,14 @@ def api_add_water():
 
     try:
         amount = float(data.get("amount"))
-
     except (TypeError, ValueError):
-        return (
-            jsonify(
-                {
-                    "error": "Invalid amount",
-                }
-            ),
-            400,
-        )
+        return jsonify({"error": "Invalid amount"}), 400
 
     if amount <= 0:
-        return (
-            jsonify(
-                {
-                    "error": "Amount must be positive",
-                }
-            ),
-            400,
-        )
+        return jsonify({"error": "Amount must be positive"}), 400
 
-    entry = add_water_service(
-        current_user.id,
-        amount,
-    )
-
-    water_data = get_water_data(
-        current_user.id,
-    )
+    add_water_service(current_user.id, amount)
+    water_data = get_water_data(current_user.id)
 
     return jsonify(
         {
@@ -487,4 +442,3 @@ def api_add_water():
             "recommended": water_data["recommended"],
         }
     )
-
