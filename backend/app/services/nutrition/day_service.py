@@ -1,6 +1,8 @@
 from datetime import date, timedelta
 
-from backend.app.models.nutrition.meal import Meal
+from sqlalchemy.orm import selectinload
+
+from backend.app.models import Meal, MealItem, Product
 from backend.app.models.nutrition.user_water import UserWater
 from backend.app.models.user import User
 from backend.app.models.user_profile import UserProfile
@@ -54,6 +56,14 @@ def get_meal_totals(meals):
     }
 
 
+def _meal_load_options():
+    return (
+        selectinload(Meal.items)
+        .selectinload(MealItem.product)
+        .selectinload(Product.names)
+    )
+
+
 def get_daily_nutrition_data(user_id, locale="uk"):
     locale = normalize_locale(locale)
     user = User.query.get(user_id)
@@ -63,6 +73,7 @@ def get_daily_nutrition_data(user_id, locale="uk"):
 
     meals = (
         Meal.query
+        .options(_meal_load_options())
         .filter(Meal.user_id == user_id, Meal.date == today)
         .order_by(Meal.time.asc().nullsfirst(), Meal.id.asc())
         .all()
