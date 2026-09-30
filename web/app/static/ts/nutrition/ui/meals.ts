@@ -3,6 +3,11 @@ import {
 } from "../modals/modal.js";
 
 import {
+    openAddItemModal,
+    openEditItemModal,
+} from "../modals/items.js";
+
+import {
     NutritionAPI,
 } from "../api.js";
 
@@ -300,67 +305,8 @@ function createMealActions(
     addItem.addEventListener(
         "click",
         () => {
-            const mealId =
-                document.getElementById(
-                    "add-item-meal-id",
-                ) as HTMLInputElement | null;
-
-            const name =
-                document.getElementById(
-                    "add-item-name",
-                ) as HTMLInputElement | null;
-
-            const kcal =
-                document.getElementById(
-                    "add-item-kcal",
-                ) as HTMLInputElement | null;
-
-            const protein =
-                document.getElementById(
-                    "add-item-protein",
-                ) as HTMLInputElement | null;
-
-            const fat =
-                document.getElementById(
-                    "add-item-fat",
-                ) as HTMLInputElement | null;
-
-            const carb =
-                document.getElementById(
-                    "add-item-carb",
-                ) as HTMLInputElement | null;
-
-            if (
-                !mealId
-                || !name
-                || !kcal
-                || !protein
-                || !fat
-                || !carb
-            ) {
-                return;
-            }
-
-            mealId.value =
-                String(meal.id);
-
-            name.value =
-                "";
-
-            kcal.value =
-                "0";
-
-            protein.value =
-                "0";
-
-            fat.value =
-                "0";
-
-            carb.value =
-                "0";
-
-            openModal(
-                "modal-add-item",
+            openAddItemModal(
+                meal.id,
             );
         },
     );
@@ -544,7 +490,12 @@ function createItemRow(
     macros.className =
         "meal-item-macros-large";
 
-    macros.textContent = [
+    const amount =
+        item.amount != null
+            ? item.amount + " " + (item.unit ?? "g") + " · "
+            : "";
+
+    macros.textContent = amount + [
         `${item.calories ?? 0} ${nutrition_t("units.kcal")}`,
         `${nutrition_t("units.proteinShort")} ${item.protein ?? 0}`,
         `${nutrition_t("units.fatShort")} ${item.fat ?? 0}`,
@@ -576,75 +527,8 @@ function createItemRow(
     edit.addEventListener(
         "click",
         () => {
-            const id =
-                document.getElementById(
-                    "edit-item-id",
-                ) as HTMLInputElement | null;
-
-            const name =
-                document.getElementById(
-                    "edit-item-name",
-                ) as HTMLInputElement | null;
-
-            const kcal =
-                document.getElementById(
-                    "edit-item-kcal",
-                ) as HTMLInputElement | null;
-
-            const protein =
-                document.getElementById(
-                    "edit-item-protein",
-                ) as HTMLInputElement | null;
-
-            const fat =
-                document.getElementById(
-                    "edit-item-fat",
-                ) as HTMLInputElement | null;
-
-            const carb =
-                document.getElementById(
-                    "edit-item-carb",
-                ) as HTMLInputElement | null;
-
-            if (
-                !id
-                || !name
-                || !kcal
-                || !protein
-                || !fat
-                || !carb
-            ) {
-                return;
-            }
-
-            id.value =
-                String(item.id);
-
-            name.value =
-                item.name || "";
-
-            kcal.value =
-                String(
-                    item.calories ?? 0,
-                );
-
-            protein.value =
-                String(
-                    item.protein ?? 0,
-                );
-
-            fat.value =
-                String(
-                    item.fat ?? 0,
-                );
-
-            carb.value =
-                String(
-                    item.carbs ?? 0,
-                );
-
-            openModal(
-                "modal-edit-item",
+            void openEditItemModal(
+                item,
             );
         },
     );
@@ -661,7 +545,7 @@ function createItemRow(
     remove.addEventListener(
         "dblclick",
         async () => {
-            await NutritionAPI.deleteItem(
+            await NutritionAPI.deleteEntry(
                 item.id,
             );
 
