@@ -4,6 +4,8 @@ from backend.app.models import Meal, UserWeight
 from backend.app.models.nutrition.user_water import UserWater
 from backend.app.models.user_profile import UserProfile
 from backend.app.services.nutrition.goals_service import get_goals
+from backend.app.services.nutrition.product_service import normalize_locale
+from backend.app.services.nutrition.serializers import serialize_meal
 from backend.app.services.nutrition.water_service import calculate_water
 
 
@@ -138,7 +140,8 @@ def get_year_heatmap(user_id, year):
     return {"year": year, "days": days}
 
 
-def get_day_details(user_id, target_date):
+def get_day_details(user_id, target_date, locale="uk"):
+    locale = normalize_locale(locale)
     meals = (
         Meal.query
         .filter(
@@ -157,44 +160,7 @@ def get_day_details(user_id, target_date):
         "fiber": 0,
     }
 
-    serialized_meals = []
-
-    for meal in meals:
-        totals["calories"] += meal.total_calories or 0
-        totals["protein"] += meal.total_protein or 0
-        totals["fat"] += meal.total_fat or 0
-        totals["carbs"] += meal.total_carbs or 0
-        totals["fiber"] += meal.total_fiber or 0
-
-        serialized_meals.append(
-            {
-                "id": meal.id,
-                "name": meal.name,
-                "category": meal.category,
-                "time": meal.time.strftime("%H:%M") if meal.time else None,
-                "total_calories": meal.total_calories or 0,
-                "total_protein": meal.total_protein or 0,
-                "total_fat": meal.total_fat or 0,
-                "total_carbs": meal.total_carbs or 0,
-                "total_fiber": meal.total_fiber or 0,
-                "items": [
-                    {
-                        "id": item.id,
-                        "product_id": item.product_id,
-                        "name": item.name,
-                        "amount": item.amount,
-                        "unit": item.unit,
-                        "weight": item.weight,
-                        "calories": item.calories or 0,
-                        "protein": item.protein or 0,
-                        "fat": item.fat or 0,
-                        "carbs": item.carbs or 0,
-                        "fiber": item.fiber or 0,
-                    }
-                    for item in meal.items
-                ],
-            }
-        )
+    serialized_meals = [serialize_meal(meal, locale) for meal in meals]
 
     goals = get_goals(user_id)
 
