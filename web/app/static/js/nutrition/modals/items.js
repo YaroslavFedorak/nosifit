@@ -234,12 +234,6 @@ export function setupItemModals(onRefresh) {
     document.querySelectorAll("[data-catalog-sort]").forEach((button) => {
         button.addEventListener("click", () => {
             const mode = button.dataset.catalogSort;
-            if (mode) setCatalogSortMode(mode);
-        });
-    });
-    document.querySelectorAll("[data-catalog-sort]").forEach((button) => {
-        button.addEventListener("click", () => {
-            const mode = button.dataset.catalogSort;
             if (mode) {
                 setCatalogSortMode(mode);
                 void searchCatalog(getInputValue("add-item-search"));
