@@ -12,6 +12,20 @@ function formatDate(dateString) {
         year: "numeric",
     });
 }
+function formatMealCategory(category) {
+    const keyMap = {
+        breakfast: "meal_categories.breakfast",
+        "Сніданок": "meal_categories.breakfast",
+        lunch: "meal_categories.lunch",
+        "Обід": "meal_categories.lunch",
+        dinner: "meal_categories.dinner",
+        "Вечеря": "meal_categories.dinner",
+        snack: "meal_categories.snack",
+        "Перекус": "meal_categories.snack",
+    };
+    const key = keyMap[category ?? ""];
+    return key ? nutrition_t(key) : (category || nutrition_t("meal.defaultCategory"));
+}
 function formatNumber(value) {
     return Number.isInteger(value)
         ? String(value)
