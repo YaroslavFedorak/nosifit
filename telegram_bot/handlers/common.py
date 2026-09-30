@@ -4,6 +4,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
 
 from telegram_bot.keyboards.main import main_menu
+from telegram_bot.runtime import is_authenticated
 
 
 router = Router()
@@ -14,7 +15,7 @@ async def cancel(message: Message, state: FSMContext) -> None:
     await state.clear()
     await message.answer(
         "Дію скасовано.",
-        reply_markup=main_menu(),
+        reply_markup=main_menu(authenticated=is_authenticated(message.from_user.id)),
     )
 
 
