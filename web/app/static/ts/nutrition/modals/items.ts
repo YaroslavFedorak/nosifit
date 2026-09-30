@@ -6,6 +6,16 @@ import type { MealItem, Product, NutritionUnit } from "../types.js";
 type RefreshCallback = () => void | Promise<void>;
 
 let selectedProductId: number | null = null;
+type CatalogMode = "favorites" | "recent" | "mine";
+let catalogMode: CatalogMode = "favorites";
+
+function formatMacro(value: number | null | undefined): string {
+    return Number(value ?? 0).toFixed(1);
+}
+
+function formatCalories(value: number | null | undefined): string {
+    return String(Math.round(Number(value ?? 0)));
+}
 
 function getInputValue(id: string): string {
     const element = document.getElementById(id) as HTMLInputElement | null;
@@ -36,7 +46,7 @@ function createProductButton(product: Product): HTMLElement {
 
     const meta = document.createElement("span");
     meta.className = "nutrition-product-option-meta";
-    meta.textContent = `${product.kcal_per_100g} ${nutrition_t("units.kcal")} / 100 g`;
+    meta.textContent = `${formatCalories(product.kcal_per_100g)} ${nutrition_t("units.kcal")} / 100 g`;
 
     select.append(text, meta);
     select.addEventListener("click", () => selectProduct(product));
@@ -63,7 +73,7 @@ function createProductButton(product: Product): HTMLElement {
     return wrapper;
 }
 
-function setCatalogSearchState(query: string): void {
+function setCatalogSortMode(mode: CatalogMode): void {\n    catalogMode = mode;\n    const searching = getInputValue("add-item-search").trim().length > 0;\n\n    document.querySelectorAll<HTMLElement>("[data-catalog-section]").forEach((section) => {\n        const sectionMode = section.dataset.catalogSection;\n        section.hidden = searching\n            ? sectionMode !== "search"\n            : sectionMode !== catalogMode;\n    });\n\n    document.querySelectorAll<HTMLButtonElement>("[data-catalog-sort]").forEach((button) => {\n        button.setAttribute("aria-pressed", String(button.dataset.catalogSort === catalogMode));\n    });\n}\n\nfunction setCatalogSearchState(query: string): void {
     const searching = query.trim().length > 0;
     document.querySelectorAll<HTMLElement>("[data-catalog-section]").forEach((section) => {
         section.hidden = searching && section.dataset.catalogSection !== "search";
@@ -155,7 +165,7 @@ export function openAddItemModal(mealId: number): void {
     selectedProductId = null;
     setInputValue("add-item-meal-id", String(mealId));
     setInputValue("add-item-search", "");
-    setInputValue("add-item-amount", "100");
+    setInputValue("add-item-amount", "100");\n    catalogMode = "favorites";
     setSelectValue("add-item-unit", "g");
     renderSelectedProduct(null);
     openModal("modal-add-item");
@@ -234,7 +244,7 @@ export function setupItemModals(onRefresh: RefreshCallback): void {
         },
     );
 
-    document.getElementById("add-item-search")?.addEventListener(
+    document.querySelectorAll<HTMLButtonElement>("[data-catalog-sort]").forEach((button) => {\n        button.addEventListener("click", () => {\n            const mode = button.dataset.catalogSort as CatalogMode | undefined;\n            if (mode) setCatalogSortMode(mode);\n        });\n    });\n\n    document.getElementById("add-item-search")?.addEventListener(
         "input",
         (event) => {
             const target = event.target as HTMLInputElement;
