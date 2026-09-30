@@ -28,7 +28,7 @@ async def login_start(callback: CallbackQuery, state: FSMContext) -> None:
 async def login_button(message: Message, state: FSMContext) -> None:
     await state.set_state(AuthStates.entering_email)
     await message.answer(
-        "🔐 <b>Вхід у NosiFit</b>\\n\\n"
+        "🔐 <b>Вхід у NosiFit</b>\n\n"
         "Введіть email, який використовуєте на сайті NosiFit:"
     )
 
