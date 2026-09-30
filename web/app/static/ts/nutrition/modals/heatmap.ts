@@ -607,10 +607,7 @@ async function openDayDetails(
 
     if (title) {
         title.textContent =
-            formatDate(
-                date,
-                getLocale(),
-            );
+            formatDate(date);
     }
 
     if (subtitle) {
