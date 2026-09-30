@@ -1,66 +1,72 @@
 from backend.app.extensions import db
 from backend.app.models import Meal, MealItem
-
-from backend.app.services.nutrition.meal_service import (
-    recalc_meal_totals,
+from backend.app.services.nutrition.calculation_service import (
+    NutritionValidationError,
+    calculate_product_nutrition,
+    normalize_unit,
+)
+from backend.app.services.nutrition.meal_service import recalc_meal_totals
+from backend.app.services.nutrition.product_service import (
+    get_product_name,
+)
+from backend.app.repositories.product_repository import (
+    get_product_for_user,
 )
 
 
-def _parse_float(value, default=0):
-    if value in (None, ""):
-        return default
-
-    try:
-        return float(value)
-    except (TypeError, ValueError):
-        return default
+def _get_meal(user_id, meal_id):
+    return Meal.query.filter_by(
+        id=meal_id,
+        user_id=user_id,
+    ).first()
 
 
 def add_item_service(user_id, data):
-    meal = Meal.query.filter_by(
-        id=data["meal_id"],
-        user_id=user_id,
-    ).first()
+    meal = _get_meal(user_id, data.get("meal_id"))
 
     if meal is None:
         return None
 
+    product = get_product_for_user(
+        user_id,
+        data.get("product_id"),
+    )
+
+    if product is None:
+        raise NutritionValidationError("Product not found")
+
+    unit = normalize_unit(
+        data.get("unit"),
+        product.default_unit,
+    )
+
+    nutrition = calculate_product_nutrition(
+        product,
+        data.get("amount"),
+        unit,
+    )
+
     item = MealItem(
         meal_id=meal.id,
-        name=data["name"],
-        weight=(
-            float(data["weight"]) if data.get("weight") not in (None, "") else None
+        product_id=product.id,
+        name=get_product_name(
+            product,
+            data.get("locale", "uk"),
         ),
-        calories=int(
-            _parse_float(
-                data.get("calories"),
-                0,
-            )
-        ),
-        protein=_parse_float(
-            data.get("protein"),
-            0,
-        ),
-        fat=_parse_float(
-            data.get("fat"),
-            0,
-        ),
-        carbs=_parse_float(
-            data.get("carbs"),
-            0,
-        ),
-        fiber=_parse_float(
-            data.get("fiber"),
-            0,
-        ),
-        category_id=data.get("category_id"),
+        amount=float(data["amount"]),
+        unit=unit,
+        weight=nutrition.grams,
+        calories=int(nutrition.calories),
+        protein=nutrition.protein,
+        fat=nutrition.fat,
+        carbs=nutrition.carbs,
+        fiber=nutrition.fiber,
     )
 
     db.session.add(item)
     db.session.flush()
 
     recalc_meal_totals(meal)
-
     db.session.commit()
 
     return item
@@ -68,7 +74,8 @@ def add_item_service(user_id, data):
 
 def update_item_service(user_id, item_id, data):
     item = (
-        MealItem.query.join(Meal)
+        MealItem.query
+        .join(Meal)
         .filter(
             MealItem.id == item_id,
             Meal.user_id == user_id,
@@ -79,53 +86,70 @@ def update_item_service(user_id, item_id, data):
     if item is None:
         return None
 
-    if "name" in data:
-        name = (data["name"] or "").strip()
+    old_meal = item.meal
+    target_meal = old_meal
 
-        if name:
-            item.name = name
+    if "meal_id" in data:
+        target_meal = _get_meal(user_id, data.get("meal_id"))
 
-    if "weight" in data:
-        item.weight = (
-            float(data["weight"]) if data["weight"] not in (None, "") else None
+        if target_meal is None:
+            raise NutritionValidationError("Target meal not found")
+
+    product = item.product
+
+    if "product_id" in data:
+        product = get_product_for_user(
+            user_id,
+            data.get("product_id"),
         )
 
-    if "calories" in data:
-        item.calories = int(
-            _parse_float(
-                data["calories"],
-                0,
-            )
+        if product is None:
+            raise NutritionValidationError("Product not found")
+
+        item.product_id = product.id
+
+    if product is not None and (
+        "amount" in data
+        or "unit" in data
+        or "product_id" in data
+    ):
+        amount = (
+            data.get("amount")
+            if "amount" in data
+            else item.amount
         )
 
-    if "protein" in data:
-        item.protein = _parse_float(
-            data["protein"],
-            0,
+        unit = normalize_unit(
+            data.get("unit") if "unit" in data else item.unit,
+            product.default_unit,
         )
 
-    if "fat" in data:
-        item.fat = _parse_float(
-            data["fat"],
-            0,
+        nutrition = calculate_product_nutrition(
+            product,
+            amount,
+            unit,
         )
 
-    if "carbs" in data:
-        item.carbs = _parse_float(
-            data["carbs"],
-            0,
+        item.amount = float(amount)
+        item.unit = unit
+        item.weight = nutrition.grams
+        item.name = get_product_name(
+            product,
+            data.get("locale", "uk"),
         )
+        item.calories = int(nutrition.calories)
+        item.protein = nutrition.protein
+        item.fat = nutrition.fat
+        item.carbs = nutrition.carbs
+        item.fiber = nutrition.fiber
 
-    if "fiber" in data:
-        item.fiber = _parse_float(
-            data["fiber"],
-            0,
-        )
+    if target_meal.id != old_meal.id:
+        item.meal_id = target_meal.id
 
-    if "category_id" in data:
-        item.category_id = data["category_id"]
+    recalc_meal_totals(old_meal)
 
-    recalc_meal_totals(item.meal)
+    if target_meal.id != old_meal.id:
+        recalc_meal_totals(target_meal)
 
     db.session.commit()
 
@@ -134,7 +158,8 @@ def update_item_service(user_id, item_id, data):
 
 def delete_item_service(user_id, item_id):
     item = (
-        MealItem.query.join(Meal)
+        MealItem.query
+        .join(Meal)
         .filter(
             MealItem.id == item_id,
             Meal.user_id == user_id,
@@ -151,8 +176,6 @@ def delete_item_service(user_id, item_id):
     db.session.flush()
 
     recalc_meal_totals(meal)
-
     db.session.commit()
 
     return True
-

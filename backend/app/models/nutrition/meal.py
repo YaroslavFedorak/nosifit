@@ -15,49 +15,17 @@ class Meal(db.Model):
         index=True,
     )
 
-    date = db.Column(
-        db.Date,
-        nullable=False,
-    )
+    date = db.Column(db.Date, nullable=False)
+    time = db.Column(db.Time, nullable=True)
 
-    time = db.Column(
-        db.Time,
-        nullable=True,
-    )
+    name = db.Column(db.String(120), nullable=False)
+    category = db.Column(db.String(50), nullable=False)
 
-    name = db.Column(
-        db.String(120),
-        nullable=False,
-    )
-
-    category = db.Column(
-        db.String(50),
-        nullable=False,
-    )
-
-    total_calories = db.Column(
-        db.Integer,
-        nullable=False,
-        default=0,
-    )
-
-    total_protein = db.Column(
-        db.Float,
-        nullable=False,
-        default=0,
-    )
-
-    total_fat = db.Column(
-        db.Float,
-        nullable=False,
-        default=0,
-    )
-
-    total_carbs = db.Column(
-        db.Float,
-        nullable=False,
-        default=0,
-    )
+    total_calories = db.Column(db.Integer, nullable=False, default=0)
+    total_protein = db.Column(db.Float, nullable=False, default=0)
+    total_fat = db.Column(db.Float, nullable=False, default=0)
+    total_carbs = db.Column(db.Float, nullable=False, default=0)
+    total_fiber = db.Column(db.Float, nullable=False, default=0)
 
     created_at = db.Column(
         db.DateTime,
@@ -85,7 +53,4 @@ class Meal(db.Model):
     )
 
     def __repr__(self):
-        return (
-            f"<Meal " f"id={self.id} " f"user_id={self.user_id} " f"name={self.name}>"
-        )
-
+        return f"<Meal id={self.id} user_id={self.user_id} name={self.name}>"

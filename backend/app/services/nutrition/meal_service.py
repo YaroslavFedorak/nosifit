@@ -1,7 +1,7 @@
 from datetime import date, datetime, time
 
 from backend.app.extensions import db
-from backend.app.models import Meal
+from backend.app.models import Meal, MealItem
 
 
 def _parse_time(value):
@@ -12,22 +12,17 @@ def _parse_time(value):
         return value
 
     try:
-        return datetime.strptime(
-            value,
-            "%H:%M",
-        ).time()
+        return datetime.strptime(value, "%H:%M").time()
     except (TypeError, ValueError):
         return None
 
 
 def recalc_meal_totals(meal):
     meal.total_calories = sum(item.calories or 0 for item in meal.items)
-
     meal.total_protein = sum(item.protein or 0 for item in meal.items)
-
     meal.total_fat = sum(item.fat or 0 for item in meal.items)
-
     meal.total_carbs = sum(item.carbs or 0 for item in meal.items)
+    meal.total_fiber = sum(item.fiber or 0 for item in meal.items)
 
 
 def add_meal_service(user_id, data):
@@ -46,23 +41,18 @@ def add_meal_service(user_id, data):
 
 
 def update_meal_service(user_id, meal_id, data):
-    meal = Meal.query.filter_by(
-        id=meal_id,
-        user_id=user_id,
-    ).first()
+    meal = Meal.query.filter_by(id=meal_id, user_id=user_id).first()
 
     if meal is None:
         return None
 
     if "name" in data:
         name = (data["name"] or "").strip()
-
         if name:
             meal.name = name
 
     if "category" in data:
         category = (data["category"] or "").strip()
-
         if category:
             meal.category = category
 
@@ -84,10 +74,7 @@ def update_meal_service(user_id, meal_id, data):
 
 
 def delete_meal_service(user_id, meal_id):
-    meal = Meal.query.filter_by(
-        id=meal_id,
-        user_id=user_id,
-    ).first()
+    meal = Meal.query.filter_by(id=meal_id, user_id=user_id).first()
 
     if meal is None:
         return False
@@ -113,21 +100,18 @@ def copy_meal_service(user_id, meal_id):
         time=source_meal.time,
         name=source_meal.name,
         category=source_meal.category,
-        total_calories=0,
-        total_protein=0,
-        total_fat=0,
-        total_carbs=0,
     )
 
     db.session.add(new_meal)
     db.session.flush()
 
     for source_item in source_meal.items:
-        from backend.app.models import MealItem
-
         new_item = MealItem(
             meal_id=new_meal.id,
+            product_id=source_item.product_id,
             name=source_item.name,
+            amount=source_item.amount,
+            unit=source_item.unit,
             weight=source_item.weight,
             calories=source_item.calories,
             protein=source_item.protein,
@@ -136,14 +120,10 @@ def copy_meal_service(user_id, meal_id):
             fiber=source_item.fiber,
             category_id=source_item.category_id,
         )
-
         db.session.add(new_item)
 
     db.session.flush()
-
     recalc_meal_totals(new_meal)
-
     db.session.commit()
 
     return new_meal
-

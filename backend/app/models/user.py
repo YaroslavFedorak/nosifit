@@ -47,6 +47,22 @@ class User(db.Model, UserMixin):
         cascade="all, delete-orphan",
     )
 
+    nutrition_products = db.relationship(
+        "Product",
+        back_populates="owner",
+        cascade="all, delete-orphan",
+        lazy="dynamic",
+        foreign_keys="Product.owner_user_id",
+    )
+
+    nutrition_favorites = db.relationship(
+        "ProductFavorite",
+        back_populates="user",
+        cascade="all, delete-orphan",
+        lazy="dynamic",
+        foreign_keys="ProductFavorite.user_id",
+    )
+
     sleep_entries = db.relationship(
         "SleepEntry",
         back_populates="user",
@@ -143,4 +159,3 @@ class User(db.Model, UserMixin):
 
     def __repr__(self):
         return f"<User id={self.id} username={self.username}>"
-

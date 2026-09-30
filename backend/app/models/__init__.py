@@ -11,6 +11,9 @@ from backend.app.models.nutrition.user_goals import UserGoals
 from backend.app.models.nutrition.user_weight import UserWeight
 from backend.app.models.nutrition.saved_meal import SavedMeal
 from backend.app.models.nutrition.user_water import UserWater
+from backend.app.models.nutrition.product import Product
+from backend.app.models.nutrition.product_name import ProductName
+from backend.app.models.nutrition.product_favorite import ProductFavorite
 
 # Training Session Engine
 from backend.app.models.training_session import TrainingSession, SessionExercise
@@ -28,4 +31,3 @@ from backend.app.models.recovery.habit import RecoveryHabit
 from backend.app.models.recovery.user_habit import UserRecoveryHabit
 from backend.app.models.recovery.habit_log import RecoveryHabitLog
 from backend.app.models.recovery.daily_recovery_snapshot import DailyRecoverySnapshot
-

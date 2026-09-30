@@ -1,4 +1,9 @@
-def serialize_meal(meal):
+from backend.app.services.nutrition.product_service import (
+    get_product_name,
+)
+
+
+def serialize_meal(meal, locale="uk"):
     return {
         "id": meal.id,
         "name": meal.name,
@@ -8,10 +13,19 @@ def serialize_meal(meal):
         "total_protein": meal.total_protein,
         "total_fat": meal.total_fat,
         "total_carbs": meal.total_carbs,
+        "total_fiber": meal.total_fiber,
         "items": [
             {
                 "id": item.id,
-                "name": item.name,
+                "product_id": item.product_id,
+                "name": (
+                    get_product_name(item.product, locale)
+                    if item.product is not None
+                    else item.name
+                ),
+                "amount": item.amount,
+                "unit": item.unit,
+                "weight": item.weight,
                 "calories": item.calories,
                 "protein": item.protein,
                 "fat": item.fat,
@@ -21,4 +35,3 @@ def serialize_meal(meal):
             for item in meal.items
         ],
     }
-
