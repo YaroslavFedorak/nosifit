@@ -75,7 +75,8 @@
         "close": "Zamknij",
         "editMeal": "Edytuj posiłek",
         "deleteConfirm": "Kliknij dwukrotnie, aby usunąć",
-        "editProduct": "Edytuj produkt"
+        "editProduct": "Edytuj produkt",
+        "saveItems": "Zapisz produkty"
     },
     "weight": {
         "update": "Aktualizuj",
@@ -220,6 +221,7 @@
             "ml": "ml",
             "pcs": "szt."
         },
-        "allProducts": "Cała baza"
+        "allProducts": "Cała baza",
+        "addToMeal": "Dodaj do posiłku"
     }
 }
