@@ -29,7 +29,12 @@
     },
     "balance": {
         "kcalGoal": "з {value} ккал",
-        "noStatus": "—"
+        "noStatus": "—",
+        "status": {
+            "over": "Перебір",
+            "under": "Недобір",
+            "normal": "Норма"
+        }
     },
     "fields": {
         "name": "Назва",
