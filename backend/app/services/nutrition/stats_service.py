@@ -36,11 +36,7 @@ def get_stats(user_id, days=7):
 
     weights = (
         UserWeight.query
-        .filter(
-            UserWeight.user_id == user_id,
-            UserWeight.date >= start_date,
-            UserWeight.date <= today,
-        )
+        .filter_by(user_id=user_id)
         .order_by(UserWeight.date.asc())
         .all()
     )
