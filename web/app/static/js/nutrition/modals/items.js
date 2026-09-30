@@ -1,7 +1,15 @@
 import { NutritionAPI, } from "../api.js";
 import { closeModal, openModal, } from "./modal.js";
 import { getLocale, nutrition_t, } from "../../i18n/index.js";
-let selectedProductId = null;\nlet catalogMode = "favorites";\nfunction formatMacro(value) {\n    return Number(value ?? 0).toFixed(1);\n}\nfunction formatCalories(value) {\n    return String(Math.round(Number(value ?? 0)));\n}
+let selectedProductId = null;
+let catalogMode = "favorites";
+let catalogProducts = { favorites: [], recent: [], mine: [] };
+function formatMacro(value) {
+    return Number(value ?? 0).toFixed(1);
+}
+function formatCalories(value) {
+    return String(Math.round(Number(value ?? 0)));
+}
 function getInputValue(id) {
     const element = document.getElementById(id);
     return element?.value ?? "";
@@ -49,7 +57,21 @@ function createProductButton(product) {
     wrapper.append(select, favorite);
     return wrapper;
 }
-function setCatalogSortMode(mode) {\n    catalogMode = mode;\n    const searching = getInputValue("add-item-search").trim().length > 0;\n    document.querySelectorAll("[data-catalog-section]").forEach((section) => {\n        const sectionMode = section.dataset.catalogSection;\n        section.hidden = searching ? sectionMode !== "search" : sectionMode !== catalogMode;\n    });\n    document.querySelectorAll("[data-catalog-sort]").forEach((button) => {\n        button.setAttribute("aria-pressed", String(button.dataset.catalogSort === catalogMode));\n    });\n}\nfunction setCatalogSearchState(query) {
+function getProductSearchText(product) {
+    return `${product.name} ${product.brand ?? ""}`.toLocaleLowerCase();
+}
+function setCatalogSortMode(mode) {
+    catalogMode = mode;
+    const searching = getInputValue("add-item-search").trim().length > 0;
+    document.querySelectorAll("[data-catalog-section]").forEach((section) => {
+        const sectionMode = section.dataset.catalogSection;
+        section.hidden = searching ? sectionMode !== "search" : sectionMode !== catalogMode;
+    });
+    document.querySelectorAll("[data-catalog-sort]").forEach((button) => {
+        button.setAttribute("aria-pressed", String(button.dataset.catalogSort === catalogMode));
+    });
+}
+function setCatalogSearchState(query) {
     const searching = query.trim().length > 0;
     document.querySelector(".nutrition-product-sort")?.toggleAttribute("hidden", searching);
     if (searching) {
@@ -106,9 +128,14 @@ async function loadCatalog() {
             NutritionAPI.getRecentProducts(locale),
             NutritionAPI.getMyProducts(locale),
         ]);
-        renderProductList("product-favorites", favorites.products);
-        renderProductList("product-recent", recent.products);
-        renderProductList("product-mine", mine.products);
+        catalogProducts = {
+            favorites: favorites.products,
+            recent: recent.products,
+            mine: mine.products,
+        };
+        renderProductList("product-favorites", catalogProducts.favorites);
+        renderProductList("product-recent", catalogProducts.recent);
+        renderProductList("product-mine", catalogProducts.mine);
     }
     catch (error) {
         console.error("Failed to load nutrition catalog:", error);
@@ -117,25 +144,19 @@ async function loadCatalog() {
 async function searchCatalog(query) {
     setCatalogSearchState(query);
     if (!query.trim()) {
-        await loadCatalog();
-        const results = document.getElementById("product-search-results");
-        if (results)
-            results.innerHTML = "";
+        renderProductList("product-search-results", []);
         return;
     }
-    try {
-        const data = await NutritionAPI.getProducts(query, getLocale());
-        renderProductList("product-search-results", data.products);
-    }
-    catch (error) {
-        console.error("Failed to search products:", error);
-    }
+    const normalizedQuery = query.trim().toLocaleLowerCase();
+    const products = catalogProducts[catalogMode].filter((product) => getProductSearchText(product).includes(normalizedQuery));
+    renderProductList("product-search-results", products);
 }
 export function openAddItemModal(mealId) {
     selectedProductId = null;
     setInputValue("add-item-meal-id", String(mealId));
     setInputValue("add-item-search", "");
-    setInputValue("add-item-amount", "100");\n    catalogMode = "favorites";
+    setInputValue("add-item-amount", "100");
+    catalogMode = "favorites";
     setSelectValue("add-item-unit", "g");
     renderSelectedProduct(null);
     openModal("modal-add-item");
@@ -191,12 +212,22 @@ export function setupItemModals(onRefresh) {
             console.error("Failed to add food entry:", error);
         }
     });
-    document.querySelectorAll("[data-catalog-sort]").forEach((button) => {\n        button.addEventListener("click", () => {\n            const mode = button.dataset.catalogSort;\n            if (mode) setCatalogSortMode(mode);\n        });\n    });\n    document.querySelectorAll("[data-catalog-sort]").forEach((button) => {
+    document.querySelectorAll("[data-catalog-sort]").forEach((button) => {
+        button.addEventListener("click", () => {
+            const mode = button.dataset.catalogSort;
+            if (mode) setCatalogSortMode(mode);
+        });
+    });
+    document.querySelectorAll("[data-catalog-sort]").forEach((button) => {
         button.addEventListener("click", () => {
             const mode = button.dataset.catalogSort;
             if (mode)
                 setCatalogSortMode(mode);
         });
+    });
+    document.getElementById("add-item-unit")?.addEventListener("change", (event) => {
+        const target = event.target;
+        setInputValue("add-item-amount", target.value === "pcs" ? "1" : "100");
     });
     document.getElementById("add-item-search")?.addEventListener("input", (event) => {
         const target = event.target;
