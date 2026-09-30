@@ -55,13 +55,19 @@ def _entry_update_payload(data):
 @nutrition_api.get("/day")
 @login_required
 def api_day():
-    return jsonify(get_daily_nutrition_data(current_user.id))
+    return jsonify(get_daily_nutrition_data(
+        current_user.id,
+        normalize_locale(request.args.get("locale")),
+    ))
 
 
 @nutrition_api.get("/today")
 @login_required
 def api_today():
-    return jsonify(get_daily_nutrition_data(current_user.id))
+    return jsonify(get_daily_nutrition_data(
+        current_user.id,
+        normalize_locale(request.args.get("locale")),
+    ))
 
 
 @nutrition_api.get("/day/<date_string>")
@@ -71,7 +77,11 @@ def api_day_details(date_string):
         target_date = date.fromisoformat(date_string)
     except ValueError:
         return jsonify({"error": "Invalid date"}), 400
-    return jsonify(get_day_details(current_user.id, target_date))
+    return jsonify(get_day_details(
+        current_user.id,
+        target_date,
+        normalize_locale(request.args.get("locale")),
+    ))
 
 
 @nutrition_api.get("/recommendations")
