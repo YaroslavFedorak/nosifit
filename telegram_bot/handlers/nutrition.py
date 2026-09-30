@@ -69,7 +69,7 @@ async def nutrition(message: Message, state: FSMContext) -> None:
     except NosiFitAPIError as exc:
         await message.answer(
             f"Не вдалося підключитися до NosiFit: {exc}",
-            reply_markup=main_menu(),
+            reply_markup=main_menu(authenticated=True),
         )
         return
 
@@ -96,7 +96,7 @@ async def choose_meal(callback: CallbackQuery, state: FSMContext) -> None:
     await state.update_data(category=category, pending=[])
     await state.set_state(NutritionStates.searching_product)
     await callback.message.edit_text(
-        f"🍽 <b>{category}</b>\n\n"
+        f"🍽 <b>{html.escape(category)}</b>\n\n"
         "Напишіть назву продукту для пошуку.\n"
         "Наприклад: <i>рис</i>, <i>куряча грудка</i>, <i>банан</i>.",
     )
@@ -193,7 +193,7 @@ async def add_more(callback: CallbackQuery, state: FSMContext) -> None:
     await state.set_state(NutritionStates.searching_product)
     data = await state.get_data()
     await callback.message.edit_text(
-        f"🍽 <b>{data['category']}</b>\n\n"
+        f"🍽 <b>{html.escape(data['category'])}</b>\n\n"
         "Напишіть назву наступного продукту.",
     )
 
