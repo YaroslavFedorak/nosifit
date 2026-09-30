@@ -4,6 +4,21 @@ The Telegram bot is a lightweight client for quick NosiFit data entry.
 
 The bot is built with aiogram 3 and communicates with the NosiFit backend through its API. It does not access PostgreSQL directly.
 
+## Authentication
+
+Each Telegram user signs in with their own NosiFit account.
+
+The flow is:
+
+1. Open the bot with /start.
+2. Press **🔐 Увійти**.
+3. Enter the same email and password used on the NosiFit website.
+4. The bot creates an authenticated NosiFit HTTP session for that Telegram user.
+5. Nutrition actions use that user's NosiFit account.
+6. Press **🚪 Вийти** or use /logout to remove the session.
+
+The password is used only during login and is not stored after authentication. Active sessions are kept in memory, so users need to sign in again after a bot restart.
+
 ## Nutrition
 
 Nutrition entry follows the same Product -> Entry -> Meal -> Day model as the web application.
@@ -26,15 +41,9 @@ Create a .env file with:
 
 TELEGRAM_BOT_TOKEN=your_bot_token
 NOSI_FIT_BASE_URL=http://localhost:5000
-NOSI_FIT_EMAIL=your_nosifit_email
-NOSI_FIT_PASSWORD=your_nosifit_password
-
-The Telegram bot authenticates against the normal NosiFit login endpoint and keeps the resulting session in memory. Do not commit credentials.
 
 Run the bot:
 
 python -m telegram_bot.bot
 
-The current nutrition integration uses one configured NosiFit account. A multi-account Telegram to NosiFit linking flow should be added before exposing the bot to multiple independent users.
-
-FSM state currently uses aiogram MemoryStorage, so an in-progress meal is lost if the bot process restarts.
+FSM state currently uses aiogram MemoryStorage, so an in-progress login or meal is lost if the bot process restarts.
