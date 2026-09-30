@@ -18,6 +18,8 @@ class UserGoals(db.Model):
 
     carb_goal = db.Column(db.Float, nullable=False, default=0)
 
+    fiber_goal = db.Column(db.Float, nullable=False, default=30)
+
     def __repr__(self):
         return f"<UserGoals user_id={self.user_id}>"
 
