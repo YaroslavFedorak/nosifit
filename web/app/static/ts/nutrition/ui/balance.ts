@@ -2,6 +2,20 @@ import {
     nutrition_t,
 } from "../../i18n/index.js";
 
+function formatBalanceStatus(status: string | null | undefined): string {
+    switch (status) {
+        case "over":
+            return nutrition_t("balance.status.over");
+        case "under":
+            return nutrition_t("balance.status.under");
+        case "normal":
+            return nutrition_t("balance.status.normal");
+        default:
+            return nutrition_t("balance.noStatus");
+    }
+}
+
+
 import type {
     NutritionDay,
 } from "../types.js";
