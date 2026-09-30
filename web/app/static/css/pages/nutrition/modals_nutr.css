@@ -565,7 +565,7 @@
 
 .nutrition-food-header {
     display: grid;
-    grid-template-columns: auto minmax(170px, 1.45fr) minmax(120px, .9fr) minmax(105px, .7fr) auto;
+    grid-template-columns: auto minmax(170px, 1.45fr) minmax(120px, .9fr) minmax(105px, .7fr);
     align-items: end;
     gap: 8px;
 }
@@ -584,26 +584,86 @@
     min-width: 0;
 }
 
+.nutrition-food-header .nutrition-meal-details label {
+    font-size: 10px;
+}
+
+.nutrition-entry-row {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) minmax(120px, .7fr) auto;
+    align-items: end;
+    gap: 8px;
+}
+
+.nutrition-entry-row > div {
+    min-width: 0;
+    display: grid;
+    gap: 5px;
+}
+
+.nutrition-entry-row label {
+    font-size: 10px;
+    font-weight: 650;
+    color: var(--nutrition-text-muted);
+}
+
+.nutrition-entry-row input,
+.nutrition-entry-row select,
+.nutrition-entry-action {
+    height: 36px;
+    padding: 7px 11px;
+    font-size: 13px;
+}
+
+.nutrition-entry-action {
+    white-space: nowrap;
+}
+
+.nutrition-add-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 8px;
+}
+
+.nutrition-add-to-meal {
+    width: 100%;
+    height: 36px;
+    padding: 7px 12px;
+}
+
 .nutrition-add-product-inline {
     height: 36px;
     padding: 7px 11px;
     white-space: nowrap;
 }
 
-.nutrition-food-header .nutrition-meal-details label {
-    font-size: 10px;
+.nutrition-pending-items {
+    max-height: 250px;
+    min-height: 70px;
+    overflow-y: auto;
+}
+
+.nutrition-pending-item {
+    padding: 8px 10px;
+    gap: 10px;
+}
+
+.nutrition-pending-item-info strong {
+    font-size: 14px;
+}
+
+.nutrition-pending-item-info span {
+    font-size: 12px;
+}
+
+.nutrition-pending-item-remove {
+    width: 30px;
+    height: 30px;
 }
 
 .modal-actions {
     justify-content: center;
     gap: 8px;
-}
-
-.modal-actions .btn {
-    height: 34px;
-    min-width: 0;
-    padding: 7px 12px;
-    font-size: 13px;
 }
 
 #modal-add-product .modal-actions {
@@ -619,8 +679,8 @@
         grid-column: 2;
     }
 
-    .nutrition-add-product-inline {
-        grid-column: 4;
+    .nutrition-entry-row {
+        grid-template-columns: auto minmax(0, 1fr) minmax(100px, .7fr) auto;
     }
 }
 
@@ -644,7 +704,25 @@
         grid-column: 1 / -1;
     }
 
+    .nutrition-entry-row {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .nutrition-entry-action:first-child {
+        grid-column: 1;
+        grid-row: 2;
+    }
+
+    .nutrition-entry-action:last-child {
+        grid-column: 2;
+        grid-row: 2;
+    }
+
+    .nutrition-add-row {
+        grid-template-columns: 1fr;
+    }
+
     .nutrition-add-product-inline {
-        grid-column: 1 / -1;
+        width: 100%;
     }
 }
