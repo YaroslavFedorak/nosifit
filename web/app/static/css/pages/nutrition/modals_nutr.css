@@ -322,3 +322,49 @@
         padding: 20px;
     }
 }
+
+/* Product picker refinements */
+.nutrition-product-search {
+    height: 46px;
+    padding-left: 16px !important;
+    border-color: rgba(155, 93, 229, .28) !important;
+    box-shadow: inset 0 0 0 1px rgba(155, 93, 229, .04);
+}
+.nutrition-product-search:focus {
+    border-color: var(--nutrition-accent) !important;
+    box-shadow: 0 0 0 3px rgba(155, 93, 229, .14), inset 0 0 0 1px rgba(155, 93, 229, .08) !important;
+}
+.nutrition-product-sections.is-searching {
+    max-height: 360px;
+}
+.nutrition-product-favorite {
+    width: 46px;
+    min-height: 42px;
+    display: grid;
+    place-items: center;
+    color: var(--nutrition-accent-soft);
+}
+.nutrition-product-favorite svg {
+    width: 22px;
+    height: 22px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linejoin: round;
+    transition: transform var(--nutrition-transition-fast), fill var(--nutrition-transition-fast);
+}
+.nutrition-product-favorite:hover svg,
+.nutrition-product-favorite:focus-visible svg {
+    transform: scale(1.08);
+}
+.nutrition-product-favorite[aria-pressed="true"] svg {
+    fill: currentColor;
+}
+.nutrition-product-option:has(.nutrition-product-favorite:hover) .nutrition-product-select {
+    border-color: rgba(155, 93, 229, .35);
+}
+@media (max-width: 600px) {
+    .nutrition-product-favorite {
+        width: 42px;
+    }
+}
