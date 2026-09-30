@@ -596,6 +596,7 @@ async function openDayDetails(
         title.textContent =
             formatDate(
                 date,
+                getLocale(),
             );
     }
 
