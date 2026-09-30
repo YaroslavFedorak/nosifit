@@ -11,29 +11,6 @@ function setInputValue(id, value) {
     }
 }
 export function setupMealModals(onRefresh) {
-    const openButton = document.getElementById("open-add-meal");
-    openButton?.addEventListener("click", () => {
-        setInputValue("add-meal-name", "");
-        setInputValue("add-meal-category", "Сніданок");
-        setInputValue("add-meal-time", "");
-        openModal("modal-add-meal");
-    });
-    document.getElementById("close-add-meal")?.addEventListener("click", () => {
-        closeModal("modal-add-meal");
-    });
-    document.getElementById("save-add-meal")?.addEventListener("click", async () => {
-        const name = getInputValue("add-meal-name").trim();
-        if (!name) {
-            return;
-        }
-        await NutritionAPI.createMeal({
-            name,
-            category: getInputValue("add-meal-category"),
-            time: getInputValue("add-meal-time") || null,
-        });
-        closeModal("modal-add-meal");
-        await onRefresh();
-    });
     document.getElementById("close-edit-meal")?.addEventListener("click", () => {
         closeModal("modal-edit-meal");
     });
