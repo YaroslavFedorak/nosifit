@@ -848,6 +848,72 @@
 }
 
 
+
+/* Compact product and selected-product rows */
+#modal-add-item .nutrition-product-select {
+    min-height: 34px;
+    padding: 7px 10px;
+}
+
+#modal-add-item .nutrition-selected-product {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    min-height: 38px;
+    padding: 8px 10px;
+}
+
+#modal-add-item .nutrition-selected-product strong {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+#modal-add-item .nutrition-selected-product span {
+    flex: 0 0 auto;
+    white-space: nowrap;
+    font-size: 11px;
+}
+
+#modal-add-item .nutrition-pending-item {
+    min-height: 34px;
+    padding: 7px 10px;
+}
+
+#modal-add-item .nutrition-pending-item-info {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+}
+
+#modal-add-item .nutrition-pending-item-info strong,
+#modal-add-item .nutrition-pending-item-info span {
+    white-space: nowrap;
+}
+
+#modal-add-item .nutrition-pending-item-info strong {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#modal-add-item .nutrition-pending-item-info span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+@media (max-width: 600px) {
+    #modal-add-item .nutrition-selected-product {
+        align-items: center;
+    }
+
+    #modal-add-item .nutrition-selected-product span {
+        max-width: 58%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}
+
 /* Final empty-state sizing */
 #modal-add-item .nutrition-pending-items-block {
     flex: 0 0 auto;
