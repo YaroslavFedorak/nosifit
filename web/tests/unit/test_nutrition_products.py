@@ -11,6 +11,7 @@ from backend.app.services.nutrition.product_service import (
     set_favorite,
 )
 from backend.app.services.nutrition.serializers import serialize_meal
+from backend.app.services.nutrition.stats_service import get_day_details
 
 
 def make_system_product():
@@ -27,13 +28,18 @@ def make_system_product():
     db.session.add(product)
     db.session.flush()
 
-    db.session.add(
+    db.session.add_all([
         ProductName(
             product_id=product.id,
             locale="uk",
             name="Куряче філе",
-        )
-    )
+        ),
+        ProductName(
+            product_id=product.id,
+            locale="en",
+            name="Chicken breast",
+        ),
+    ])
     db.session.commit()
     return product
 
@@ -193,3 +199,30 @@ def test_favorite_and_serialization(app, user):
         serialized = serialize_meal(meal, "uk")
         assert serialized["items"][0]["product_id"] == product.id
         assert serialized["items"][0]["amount"] == 100
+
+    
+def test_product_names_are_localized_in_meal_and_day_serializers(app, user):
+    with app.app_context():
+        product = make_system_product()
+        meal = make_meal(user.id)
+
+        add_item_service(
+            user.id,
+            {
+                "meal_id": meal.id,
+                "product_id": product.id,
+                "amount": 100,
+                "unit": "g",
+                "locale": "uk",
+            },
+        )
+
+        meal_data = serialize_meal(meal, "en")
+        day_data = get_day_details(
+            user.id,
+            meal.date,
+            "en",
+        )
+
+        assert meal_data["items"][0]["name"] == "Chicken breast"
+        assert day_data["meals"][0]["items"][0]["name"] == "Chicken breast"
