@@ -335,6 +335,7 @@ function createMealActions(
         () => {
             openAddItemModal(
                 meal.id,
+                meal,
             );
         },
     );
