@@ -1,3 +1,4 @@
+from backend.app.extensions import db
 from datetime import date, timedelta
 
 from sqlalchemy.orm import selectinload
