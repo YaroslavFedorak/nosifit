@@ -724,6 +724,8 @@ def get_nutrition_recommendations(
                 1,
             ),
             "carbs_goal": targets["carbs"],
+            "fiber": round(totals["fiber"], 1),
+            "fiber_goal": goals.get("fiber", 30),
             "quality_score": quality.get(
                 "score",
                 0,
