@@ -2,21 +2,27 @@ import asyncio
 import logging
 
 from aiogram import Bot, Dispatcher
+from aiogram.fsm.storage.memory import MemoryStorage
 
 from telegram_bot.config import TelegramConfig
 from telegram_bot.handlers import common, nutrition, start, water, weight
 
-logging.basicConfig(format="%(asctime)s | %(levelname)s | %(name)s | %(message)s", level=logging.INFO)
+logging.basicConfig(
+    format="%(asctime)s | %(levelname)s | %(name)s | %(message)s",
+    level=logging.INFO,
+)
 logger = logging.getLogger(__name__)
 
+
 def create_dispatcher() -> Dispatcher:
-    dispatcher = Dispatcher()
+    dispatcher = Dispatcher(storage=MemoryStorage())
     dispatcher.include_router(start.router)
     dispatcher.include_router(nutrition.router)
     dispatcher.include_router(water.router)
     dispatcher.include_router(weight.router)
     dispatcher.include_router(common.router)
     return dispatcher
+
 
 async def main() -> None:
     config = TelegramConfig.from_env()
@@ -29,6 +35,7 @@ async def main() -> None:
         await dispatcher.start_polling(bot)
     finally:
         await bot.session.close()
+
 
 if __name__ == "__main__":
     asyncio.run(main())
