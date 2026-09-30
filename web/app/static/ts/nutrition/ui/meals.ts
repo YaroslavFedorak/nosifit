@@ -77,6 +77,15 @@ const ICONS = {
 type RefreshCallback =
     () => Promise<void> | void;
 
+function formatMacro(value: number | null | undefined): string {
+    return Number(value ?? 0).toFixed(1);
+}
+
+function formatCalories(value: number | null | undefined): string {
+    return String(Math.round(Number(value ?? 0)));
+}
+
+
 function renderMealsSummary(meals: Meal[]): void {
     const element = document.getElementById("meals-day-summary");
     if (!element) return;
@@ -263,10 +272,10 @@ function createMealInfo(
         "meal-meta-large";
 
     meta.textContent = [
-        `${meal.total_calories ?? 0} ${nutrition_t("units.kcal")}`,
-        `${nutrition_t("units.proteinShort")} ${meal.total_protein ?? 0}`,
-        `${nutrition_t("units.fatShort")} ${meal.total_fat ?? 0}`,
-        `${nutrition_t("units.carbsShort")} ${meal.total_carbs ?? 0}`,
+        `${formatCalories(meal.total_calories)} ${nutrition_t("units.kcal")}`,
+        `${nutrition_t("units.proteinShort")} ${formatMacro(meal.total_protein)}`,
+        `${nutrition_t("units.fatShort")} ${formatMacro(meal.total_fat)}`,
+        `${nutrition_t("units.carbsShort")} ${formatMacro(meal.total_carbs)}`,
     ].join(" · ");
 
     wrapper.append(
@@ -515,10 +524,10 @@ function createItemRow(
             : "";
 
     macros.textContent = amount + [
-        `${item.calories ?? 0} ${nutrition_t("units.kcal")}`,
-        `${nutrition_t("units.proteinShort")} ${item.protein ?? 0}`,
-        `${nutrition_t("units.fatShort")} ${item.fat ?? 0}`,
-        `${nutrition_t("units.carbsShort")} ${item.carbs ?? 0}`,
+        `${formatCalories(item.calories)} ${nutrition_t("units.kcal")}`,
+        `${nutrition_t("units.proteinShort")} ${formatMacro(item.protein)}`,
+        `${nutrition_t("units.fatShort")} ${formatMacro(item.fat)}`,
+        `${nutrition_t("units.carbsShort")} ${formatMacro(item.carbs)}`,
     ].join(" · ");
 
     info.append(
