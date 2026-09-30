@@ -6,7 +6,7 @@ from flask_login import current_user, login_required
 from backend.app.models import Meal
 from backend.app.services.nutrition.calculation_service import NutritionValidationError
 from backend.app.services.nutrition.day_service import get_daily_nutrition_data
-from backend.app.services.nutrition.item_service import add_item_service, delete_item_service, update_item_service
+from backend.app.services.nutrition.item_service import add_item_service, add_items_service, delete_item_service, update_item_service
 from backend.app.services.nutrition.meal_service import add_meal_service, copy_meal_service, delete_meal_service, update_meal_service
 from backend.app.services.nutrition.product_service import (
     ProductServiceError,
@@ -318,6 +318,43 @@ def _create_item():
 @login_required
 def api_add_entry():
     return _create_item()
+
+
+@nutrition_api.post("/entries/bulk")
+@login_required
+def api_add_entries_bulk():
+    data = request.get_json() or {}
+    meal_id = data.get("meal_id")
+    items = data.get("items")
+
+    if not meal_id:
+        return jsonify({"error": "meal_id is required"}), 400
+    if not isinstance(items, list) or not items:
+        return jsonify({"error": "items must be a non-empty list"}), 400
+
+    payload = []
+    for item in items:
+        if not isinstance(item, dict):
+            return jsonify({"error": "Each item must be an object"}), 400
+        payload.append({
+            "product_id": item.get("product_id"),
+            "amount": item.get("amount"),
+            "unit": item.get("unit"),
+            "locale": item.get("locale", data.get("locale", "uk")),
+        })
+
+    try:
+        created = add_items_service(current_user.id, meal_id, payload)
+    except (NutritionValidationError, ProductServiceError, TypeError, ValueError) as exc:
+        return jsonify({"error": str(exc)}), 400
+
+    if created is None:
+        return jsonify({"error": "Meal not found"}), 404
+
+    return jsonify({
+        "status": "ok",
+        "ids": [item.id for item in created],
+    }), 201
 
 
 @nutrition_api.post("/items")
