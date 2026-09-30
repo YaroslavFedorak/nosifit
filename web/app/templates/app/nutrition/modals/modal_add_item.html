@@ -45,7 +45,10 @@
       <button class="btn primary nutrition-add-to-meal" type="button" id="add-item-to-meal">{{ translate("nutrition", "catalog.addToMeal") }}</button>
       <button class="btn nutrition-add-product-inline" type="button" id="open-add-my-product">+ {{ translate("nutrition", "catalog.addMyProduct") }}</button>
     </div>
-    <div id="pending-meal-items" class="nutrition-pending-items" aria-live="polite"></div>
+    <div class="nutrition-pending-items-block">
+      <div id="pending-meal-items-empty" class="nutrition-pending-empty">Поки не додавалось продуктів</div>
+      <div id="pending-meal-items" class="nutrition-pending-items" aria-live="polite"></div>
+    </div>
     <div class="nutrition-entry-row">
       <button class="btn nutrition-entry-action" id="close-add-item">{{ translate("nutrition", "actions.cancel") }}</button>
       <div>
