@@ -77,6 +77,23 @@ const ICONS = {
 type RefreshCallback =
     () => Promise<void> | void;
 
+function renderMealsSummary(meals: Meal[]): void {
+    const element = document.getElementById("meals-day-summary");
+    if (!element) return;
+
+    const calories = meals.reduce(
+        (sum, meal) => sum + Number(meal.total_calories ?? 0),
+        0,
+    );
+
+    element.innerHTML = `
+        <span class="meals-summary-value">${Math.round(calories)}</span>
+        <span class="meals-summary-unit">${nutrition_t("units.kcal")}</span>
+        <span class="meals-summary-divider"></span>
+        <span class="meals-summary-count">${meals.length}</span>
+    `;
+}
+
 
 export function renderMeals(
     meals: Meal[],
@@ -93,6 +110,8 @@ export function renderMeals(
 
     list.innerHTML =
         "";
+
+    renderMealsSummary(meals);
 
     if (!meals?.length) {
         const empty =
