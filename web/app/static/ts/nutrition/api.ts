@@ -109,9 +109,31 @@ export const NutritionAPI = {
             body: JSON.stringify(data),
         });
     },
+
+    /**
+     * Compatibility alias for legacy nutrition UI.
+     * New code should use createEntry().
+     */
+    createItem(data: MealItemPayload | Record<string, unknown>): Promise<{ id: number; status: string }> {
+        return request(BASE_URL + "/items", {
+            method: "POST",
+            body: JSON.stringify(data),
+        });
+    },
     updateEntry(id: number, data: EntryUpdatePayload): Promise<{ id: number; status: string }> {
         return request(BASE_URL + "/entries/" + id, {
             method: "PATCH",
+            body: JSON.stringify(data),
+        });
+    },
+
+    /**
+     * Compatibility alias for legacy nutrition UI.
+     * New code should use updateEntry().
+     */
+    updateItem(id: number, data: EntryUpdatePayload | Record<string, unknown>): Promise<{ id: number; status: string }> {
+        return request(BASE_URL + "/items/" + id, {
+            method: "PUT",
             body: JSON.stringify(data),
         });
     },
@@ -120,12 +142,30 @@ export const NutritionAPI = {
             method: "DELETE",
         });
     },
+
+    /**
+     * Compatibility alias for legacy nutrition UI.
+     * New code should use deleteEntry().
+     */
+    deleteItem(id: number): Promise<void> {
+        return request<void>(BASE_URL + "/items/" + id, {
+            method: "DELETE",
+        });
+    },
+    getWeight(): Promise<WeightResponse> {
+        return request<WeightResponse>(BASE_URL + "/weight");
+    },
+
     updateWeight(weight: number): Promise<void> {
         return request<void>(BASE_URL + "/weight", {
             method: "POST",
             body: JSON.stringify({ weight }),
         });
     },
+    getWater(): Promise<WaterResponse> {
+        return request<WaterResponse>(BASE_URL + "/water");
+    },
+
     addWater(amount: number): Promise<WaterResponse> {
         return request<WaterResponse>(BASE_URL + "/water", {
             method: "POST",
