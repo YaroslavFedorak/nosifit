@@ -368,3 +368,56 @@
         width: 42px;
     }
 }
+
+
+.nutrition-product-sort {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+    margin: 0 0 2px;
+    padding: 4px;
+    border: 1px solid var(--nutrition-border-soft);
+    border-radius: var(--nutrition-radius-md);
+    background: var(--nutrition-surface-soft);
+}
+
+.nutrition-product-sort-button {
+    min-height: 36px;
+    padding: 7px 10px;
+    border: 1px solid transparent;
+    border-radius: calc(var(--nutrition-radius-md) - 2px);
+    background: transparent;
+    color: var(--nutrition-text-muted);
+    font-size: 12px;
+    font-weight: 650;
+    cursor: pointer;
+    transition:
+        background var(--nutrition-transition-fast),
+        color var(--nutrition-transition-fast),
+        border-color var(--nutrition-transition-fast),
+        transform var(--nutrition-transition-fast);
+}
+
+.nutrition-product-sort-button:hover {
+    color: var(--nutrition-text);
+    background: var(--nutrition-surface-hover);
+}
+
+.nutrition-product-sort-button[aria-pressed="true"] {
+    color: #fff;
+    background: var(--nutrition-accent);
+    border-color: var(--nutrition-accent);
+}
+
+.nutrition-product-sort-button:focus-visible {
+    outline: none;
+    border-color: var(--nutrition-accent-soft);
+    box-shadow: 0 0 0 3px rgba(155, 93, 229, .14);
+}
+
+@media (max-width: 520px) {
+    .nutrition-product-sort-button {
+        padding-inline: 6px;
+        font-size: 11px;
+    }
+}
