@@ -155,7 +155,14 @@ export async function loadWater(): Promise<void> {
 }
 
 
-document.addEventListener(
+window.addEventListener(
+    "nutrition:updated",
+    () => {
+        void loadWater();
+    },
+);
+
+window.addEventListener(
     "nutrition:water-updated",
     () => {
         void loadWater();
