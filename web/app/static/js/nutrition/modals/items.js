@@ -400,6 +400,7 @@ export function setupItemModals(onRefresh) {
                 locale: getLocale(),
             });
             closeModal("modal-edit-item");
+            window.dispatchEvent(new CustomEvent("nutrition:updated"));
             await onRefresh();
         }
         catch (error) {
