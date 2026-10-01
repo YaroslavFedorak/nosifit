@@ -461,6 +461,9 @@ export function setupItemModals(onRefresh: RefreshCallback): void {
                 existingMealItems = [];
                 renderPendingMealItems();
                 closeModal("modal-add-item");
+                window.dispatchEvent(
+                    new CustomEvent("nutrition:updated"),
+                );
                 await onRefresh();
             } catch (error) {
                 console.error("Failed to save meal and food items:", error);
@@ -515,6 +518,9 @@ export function setupItemModals(onRefresh: RefreshCallback): void {
                 });
 
                 closeModal("modal-edit-item");
+                window.dispatchEvent(
+                    new CustomEvent("nutrition:updated"),
+                );
                 await onRefresh();
             } catch (error) {
                 console.error("Failed to update food entry:", error);
