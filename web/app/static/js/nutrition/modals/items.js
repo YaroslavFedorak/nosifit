@@ -360,6 +360,7 @@ export function setupItemModals(onRefresh) {
             existingMealItems = [];
             renderPendingMealItems();
             closeModal("modal-add-item");
+            window.dispatchEvent(new CustomEvent("nutrition:updated"));
             await onRefresh();
         }
         catch (error) {
