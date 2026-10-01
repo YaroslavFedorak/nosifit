@@ -112,6 +112,12 @@ export function setupWaterModal(
                     ),
                 );
 
+                window.dispatchEvent(
+                    new CustomEvent(
+                        "nutrition:updated",
+                    ),
+                );
+
                 await onRefresh();
 
             } catch (error) {
