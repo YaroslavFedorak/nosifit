@@ -57,6 +57,9 @@ function initializeNutritionWidget() {
     setupItemModals(loadNutrition);
     setupWaterModal(loadNutrition);
     setupWeightModal(loadWeight);
+    window.addEventListener("nutrition:updated", () => {
+        void loadNutrition();
+    });
     void loadNutrition();
     void loadWeight();
 }
