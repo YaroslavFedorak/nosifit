@@ -419,6 +419,9 @@ export function setupItemModals(onRefresh) {
         setInputValue("product-fiber", "0");
         setInputValue("product-grams-per-unit", "1");
         setSelectValue("product-unit", "g");
+        const liquidCheckbox = document.getElementById("product-is-liquid");
+        if (liquidCheckbox)
+            liquidCheckbox.checked = false;
         openModal("modal-add-product");
     });
     document.getElementById("close-add-product")?.addEventListener("click", () => closeModal("modal-add-product"));
@@ -436,6 +439,9 @@ export function setupItemModals(onRefresh) {
                 fat_per_100g: Number(getInputValue("product-fat") || 0),
                 carbs_per_100g: Number(getInputValue("product-carbs") || 0),
                 fiber_per_100g: Number(getInputValue("product-fiber") || 0),
+                liquid_ml_per_100g: (document.getElementById("product-is-liquid")?.checked
+                    ? 100
+                    : 0),
                 default_unit: getInputValue("product-unit"),
                 grams_per_unit: Number(getInputValue("product-grams-per-unit") || 1),
             });

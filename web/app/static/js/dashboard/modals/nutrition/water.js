@@ -32,7 +32,7 @@ export function setupWaterModal(onRefresh) {
             await NutritionAPI.addWater(amount);
             closeModal("modal-water");
             document.dispatchEvent(new CustomEvent("nutrition:water-updated"));
-        window.dispatchEvent(new CustomEvent("nutrition:updated"));
+            window.dispatchEvent(new CustomEvent("nutrition:updated"));
             await onRefresh();
         }
         catch (error) {
