@@ -51,6 +51,9 @@ export async function loadWater() {
         console.error("Failed to load water:", error);
     }
 }
-document.addEventListener("nutrition:water-updated", () => {
+window.addEventListener("nutrition:updated", () => {
+    void loadWater();
+});
+window.addEventListener("nutrition:water-updated", () => {
     void loadWater();
 });
