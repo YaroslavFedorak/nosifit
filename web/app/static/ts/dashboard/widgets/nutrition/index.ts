@@ -152,6 +152,13 @@ function initializeNutritionWidget(): void {
         loadWeight,
     );
 
+    window.addEventListener(
+        "nutrition:updated",
+        () => {
+            void loadNutrition();
+        },
+    );
+
     void loadNutrition();
 
     void loadWeight();
