@@ -1,7 +1,9 @@
 from datetime import date
 
+from sqlalchemy import func
+
 from backend.app.extensions import db
-from backend.app.models import User
+from backend.app.models import Meal, MealItem, User
 from backend.app.models.nutrition.user_water import UserWater
 
 
@@ -108,6 +110,36 @@ def calculate_water(
     return round(water, 2)
 
 
+def get_total_fluid_liters(user_id, target_date=None):
+    target_date = target_date or date.today()
+
+    manual_entry = UserWater.query.filter_by(
+        user_id=user_id,
+        date=target_date,
+    ).first()
+
+    manual_liters = (
+        float(manual_entry.amount)
+        if manual_entry is not None
+        else 0.0
+    )
+
+    liquid_ml = (
+        db.session.query(
+            func.coalesce(func.sum(MealItem.liquid_ml), 0.0)
+        )
+        .join(Meal, Meal.id == MealItem.meal_id)
+        .filter(
+            Meal.user_id == user_id,
+            Meal.date == target_date,
+        )
+        .scalar()
+        or 0.0
+    )
+
+    return round(manual_liters + float(liquid_ml) / 1000.0, 2)
+
+
 def get_water_data(user_id):
     user = User.query.get(user_id)
 
@@ -127,12 +159,10 @@ def get_water_data(user_id):
 
     today = date.today()
 
-    entry = UserWater.query.filter_by(
-        user_id=user_id,
-        date=today,
-    ).first()
-
-    current_amount = float(entry.amount) if entry is not None else 0.0
+    current_amount = get_total_fluid_liters(
+        user_id,
+        today,
+    )
 
     recommended = calculate_water(
         weight=getattr(profile, "weight", None),

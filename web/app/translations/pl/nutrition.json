@@ -218,6 +218,7 @@
         "addMyProduct": "Dodaj własny produkt",
         "myProductTitle": "Mój produkt",
         "brand": "Marka",
+        "countsAsFluid": "Uwzględniać w nawodnieniu",
         "gramsPerUnit": "Gramów na jednostkę",
         "selectedProduct": "Wybrany produkt",
         "moveMeal": "Przenieś do posiłku",

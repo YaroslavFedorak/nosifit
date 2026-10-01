@@ -537,6 +537,8 @@ export function setupItemModals(onRefresh: RefreshCallback): void {
             setInputValue("product-fiber", "0");
             setInputValue("product-grams-per-unit", "1");
             setSelectValue("product-unit", "g");
+            const liquidCheckbox = document.getElementById("product-is-liquid") as HTMLInputElement | null;
+            if (liquidCheckbox) liquidCheckbox.checked = false;
             openModal("modal-add-product");
         },
     );
@@ -562,6 +564,11 @@ export function setupItemModals(onRefresh: RefreshCallback): void {
                     fat_per_100g: Number(getInputValue("product-fat") || 0),
                     carbs_per_100g: Number(getInputValue("product-carbs") || 0),
                     fiber_per_100g: Number(getInputValue("product-fiber") || 0),
+                    liquid_ml_per_100g: (
+                        (document.getElementById("product-is-liquid") as HTMLInputElement | null)?.checked
+                            ? 100
+                            : 0
+                    ),
                     default_unit: getInputValue("product-unit") as NutritionUnit,
                     grams_per_unit: Number(getInputValue("product-grams-per-unit") || 1),
                 });

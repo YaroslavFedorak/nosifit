@@ -218,6 +218,7 @@
         "addMyProduct": "Add my product",
         "myProductTitle": "My product",
         "brand": "Brand",
+        "countsAsFluid": "Count toward hydration",
         "gramsPerUnit": "Grams per unit",
         "selectedProduct": "Selected product",
         "moveMeal": "Move to meal",

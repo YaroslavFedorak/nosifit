@@ -4,7 +4,6 @@ from datetime import date, timedelta
 from sqlalchemy.orm import selectinload
 
 from backend.app.models import Meal, MealItem, Product
-from backend.app.models.nutrition.user_water import UserWater
 from backend.app.models.user import User
 from backend.app.models.user_profile import UserProfile
 
@@ -12,7 +11,10 @@ from backend.app.services.nutrition.goals_service import get_goals
 from backend.app.services.nutrition.quality_service import calculate_quality
 from backend.app.services.nutrition.product_service import normalize_locale
 from backend.app.services.nutrition.serializers import serialize_meal
-from backend.app.services.nutrition.water_service import calculate_water
+from backend.app.services.nutrition.water_service import (
+    calculate_water,
+    get_total_fluid_liters,
+)
 
 
 def safe_profile_value(profile, field, default):
@@ -152,12 +154,10 @@ def get_daily_nutrition_data(user_id, locale="uk"):
         goal=goal,
     )
 
-    water_entry = UserWater.query.filter_by(
-        user_id=user_id,
-        date=today,
-    ).first()
-
-    water_today = water_entry.amount if water_entry else 0
+    water_today = get_total_fluid_liters(
+        user_id,
+        today,
+    )
     water_percent = calculate_percent(water_today, water_goal)
 
     return {

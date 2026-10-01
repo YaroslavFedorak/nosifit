@@ -3,6 +3,34 @@ from backend.app.models import Product, ProductName
 from web.app import create_app
 
 
+LIQUID_PRODUCTS = {
+    "Water",
+    "Sparkling water",
+    "Black coffee",
+    "Espresso",
+    "Americano",
+    "Black tea",
+    "Green tea",
+    "Herbal tea",
+    "Iced tea, sweetened",
+    "Milk 2.5%",
+    "Milk 1.5%",
+    "Kefir 2.5%",
+    "Ayran",
+    "Soy drink, unsweetened",
+    "Almond drink, unsweetened",
+    "Coconut water",
+    "Orange juice",
+    "Apple juice",
+    "Grape juice",
+    "Tomato juice",
+    "Lemonade",
+    "Cola",
+    "Sports drink",
+    "Energy drink",
+}
+
+
 PRODUCTS = [
     ("Куряче філе", "Chicken breast", "Pierś z kurczaka", 165, 31.0, 3.6, 0.0, 0.0, "g", 1),
     ("Куряче стегно", "Chicken thigh", "Udko z kurczaka", 209, 26.0, 10.9, 0.0, 0.0, "g", 1),
@@ -15,8 +43,6 @@ PRODUCTS = [
     ("Креветки", "Shrimp", "Krewetki", 99, 24.0, 0.3, 0.2, 0.0, "g", 1),
     ("Яйце", "Egg", "Jajko", 143, 12.6, 9.5, 0.7, 0.0, "pcs", 50),
     ("Яєчний білок", "Egg white", "Białko jaja", 52, 10.9, 0.2, 0.7, 0.0, "g", 1),
-    ("Молоко 2.5%", "Milk 2.5%", "Mleko 2,5%", 52, 3.2, 2.5, 4.8, 0.0, "ml", 1.03),
-    ("Молоко 1.5%", "Milk 1.5%", "Mleko 1,5%", 46, 3.4, 1.5, 4.8, 0.0, "ml", 1.03),
     ("Грецький йогурт", "Greek yogurt", "Jogurt grecki", 73, 9.9, 2.0, 3.9, 0.0, "g", 1),
     ("Йогурт натуральний", "Plain yogurt", "Jogurt naturalny", 61, 3.5, 3.3, 4.7, 0.0, "g", 1),
     ("Сир кисломолочний 5%", "Cottage cheese 5%", "Twaróg 5%", 121, 17.0, 5.0, 3.0, 0.0, "g", 1),
@@ -61,7 +87,28 @@ PRODUCTS = [
     ("Мед", "Honey", "Miód", 304, 0.3, 0.0, 82.4, 0.2, "g", 1),
     ("Темний шоколад 70%", "Dark chocolate 70%", "Czekolada gorzka 70%", 598, 7.8, 42.6, 45.9, 10.9, "g", 1),
     ("Кава чорна", "Black coffee", "Kawa czarna", 2, 0.3, 0.0, 0.0, 0.0, "ml", 1),
+    ("Еспресо", "Espresso", "Espresso", 9, 0.1, 0.0, 0.0, 0.0, "ml", 1),
+    ("Американо", "Americano", "Americano", 2, 0.3, 0.0, 0.0, 0.0, "ml", 1),
     ("Чай чорний", "Black tea", "Czarna herbata", 1, 0.1, 0.0, 0.2, 0.0, "ml", 1),
+    ("Чай зелений", "Green tea", "Zielona herbata", 1, 0.1, 0.0, 0.2, 0.0, "ml", 1),
+    ("Трав'яний чай", "Herbal tea", "Herbata ziołowa", 1, 0.0, 0.0, 0.2, 0.0, "ml", 1),
+    ("Холодний чай солодкий", "Iced tea, sweetened", "Herbata mrożona słodzona", 30, 0.0, 0.0, 7.5, 0.0, "ml", 1),
+    ("Молоко 2.5%", "Milk 2.5%", "Mleko 2,5%", 52, 3.2, 2.5, 4.8, 0.0, "ml", 1.03),
+    ("Молоко 1.5%", "Milk 1.5%", "Mleko 1,5%", 46, 3.4, 1.5, 4.8, 0.0, "ml", 1.03),
+    ("Кефір 2.5%", "Kefir 2.5%", "Kefir 2,5%", 52, 3.3, 2.5, 4.0, 0.0, "ml", 1.03),
+    ("Айран", "Ayran", "Ayran", 35, 2.0, 1.5, 3.0, 0.0, "ml", 1.02),
+    ("Соєвий напій без цукру", "Soy drink, unsweetened", "Napój sojowy niesłodzony", 33, 3.3, 1.8, 0.5, 0.4, "ml", 1),
+    ("Мигдальний напій без цукру", "Almond drink, unsweetened", "Napój migdałowy niesłodzony", 15, 0.5, 1.1, 0.3, 0.2, "ml", 1),
+    ("Кокосова вода", "Coconut water", "Woda kokosowa", 19, 0.7, 0.2, 3.7, 1.1, "ml", 1),
+    ("Апельсиновий сік", "Orange juice", "Sok pomarańczowy", 45, 0.7, 0.2, 10.4, 0.2, "ml", 1.04),
+    ("Яблучний сік", "Apple juice", "Sok jabłkowy", 46, 0.1, 0.1, 11.3, 0.2, "ml", 1.04),
+    ("Виноградний сік", "Grape juice", "Sok winogronowy", 60, 0.4, 0.1, 15.0, 0.2, "ml", 1.05),
+    ("Томатний сік", "Tomato juice", "Sok pomidorowy", 17, 0.9, 0.1, 3.5, 0.4, "ml", 1.02),
+    ("Лимонад", "Lemonade", "Lemoniada", 40, 0.0, 0.0, 10.0, 0.0, "ml", 1),
+    ("Кола", "Cola", "Cola", 42, 0.0, 0.0, 10.6, 0.0, "ml", 1),
+    ("Спортивний напій", "Sports drink", "Napój izotoniczny", 25, 0.0, 0.0, 6.0, 0.0, "ml", 1),
+    ("Енергетичний напій", "Energy drink", "Napój energetyczny", 45, 0.0, 0.0, 11.0, 0.0, "ml", 1),
+    ("Газована вода", "Sparkling water", "Woda gazowana", 0, 0.0, 0.0, 0.0, 0.0, "ml", 1),
     ("Вода", "Water", "Woda", 0, 0.0, 0.0, 0.0, 0.0, "ml", 1),
 ]
 
@@ -91,6 +138,8 @@ def seed_products():
             ).first()
 
             if existing:
+                if en in LIQUID_PRODUCTS:
+                    existing.product.liquid_ml_per_100g = 100
                 skipped += 1
                 continue
 
@@ -101,6 +150,9 @@ def seed_products():
                 fat_per_100g=fat,
                 carbs_per_100g=carbs,
                 fiber_per_100g=fiber,
+                liquid_ml_per_100g=(
+                    100 if en in LIQUID_PRODUCTS else 0
+                ),
                 default_unit=default_unit,
                 grams_per_unit=grams_per_unit,
             )

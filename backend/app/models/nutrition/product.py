@@ -31,6 +31,14 @@ class Product(db.Model):
     carbs_per_100g = db.Column(db.Float, nullable=False, default=0)
     fiber_per_100g = db.Column(db.Float, nullable=False, default=0)
 
+    # Milliliters of fluid represented by 100 g of the product.
+    # Zero means the product does not contribute to the hydration total.
+    liquid_ml_per_100g = db.Column(
+        db.Float,
+        nullable=False,
+        default=0,
+    )
+
     default_unit = db.Column(
         db.String(8),
         nullable=False,

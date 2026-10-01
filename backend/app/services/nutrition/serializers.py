@@ -31,6 +31,7 @@ def serialize_meal(meal, locale="uk"):
                 "fat": item.fat,
                 "carbs": item.carbs,
                 "fiber": item.fiber,
+                "liquid_ml": item.liquid_ml,
             }
             for item in meal.items
         ],

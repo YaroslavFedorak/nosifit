@@ -63,6 +63,7 @@ def add_item_service(user_id, data):
         fat=nutrition.fat,
         carbs=nutrition.carbs,
         fiber=nutrition.fiber,
+        liquid_ml=nutrition.liquid_ml,
     )
 
     db.session.add(item)
@@ -210,6 +211,7 @@ def update_item_service(user_id, item_id, data):
         item.fat = nutrition.fat
         item.carbs = nutrition.carbs
         item.fiber = nutrition.fiber
+        item.liquid_ml = nutrition.liquid_ml
 
     if target_meal.id != old_meal.id:
         item.meal_id = target_meal.id

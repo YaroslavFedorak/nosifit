@@ -35,6 +35,13 @@ class MealItem(db.Model):
     carbs = db.Column(db.Float, nullable=False, default=0)
     fiber = db.Column(db.Float, nullable=False, default=0)
 
+    # Hydration contribution captured when this entry is calculated.
+    liquid_ml = db.Column(
+        db.Float,
+        nullable=False,
+        default=0,
+    )
+
     category_id = db.Column(
         db.Integer,
         db.ForeignKey("categories.id"),

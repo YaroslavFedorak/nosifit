@@ -70,6 +70,7 @@ def serialize_product(
         "fat_per_100g": round(product.fat_per_100g, 2),
         "carbs_per_100g": round(product.carbs_per_100g, 2),
         "fiber_per_100g": round(product.fiber_per_100g, 2),
+        "liquid_ml_per_100g": round(product.liquid_ml_per_100g, 2),
         "default_unit": product.default_unit,
         "grams_per_unit": product.grams_per_unit,
         "is_favorite": is_favorite,
@@ -196,6 +197,7 @@ def create_user_product(user_id, data, locale="uk"):
         fat_per_100g=_nutrition_value(data, "fat_per_100g"),
         carbs_per_100g=_nutrition_value(data, "carbs_per_100g"),
         fiber_per_100g=_nutrition_value(data, "fiber_per_100g"),
+        liquid_ml_per_100g=_nutrition_value(data, "liquid_ml_per_100g"),
         default_unit=unit,
         grams_per_unit=grams_per_unit,
     )
@@ -249,6 +251,7 @@ def update_user_product(user_id, product_id, data, locale="uk"):
         "fat_per_100g",
         "carbs_per_100g",
         "fiber_per_100g",
+        "liquid_ml_per_100g",
     ):
         if key in data:
             setattr(product, key, _nutrition_value(data, key))

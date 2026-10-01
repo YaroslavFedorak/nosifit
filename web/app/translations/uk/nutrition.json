@@ -218,6 +218,7 @@
         "addMyProduct": "Додати мій продукт",
         "myProductTitle": "Мій продукт",
         "brand": "Бренд",
+        "countsAsFluid": "Враховувати в об’ємі води",
         "gramsPerUnit": "Грамів на одиницю",
         "selectedProduct": "Обраний продукт",
         "moveMeal": "Перемістити до прийому",

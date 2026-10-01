@@ -3,12 +3,14 @@ from datetime import date, timedelta
 from sqlalchemy.orm import selectinload
 
 from backend.app.models import Meal, MealItem, Product, UserWeight
-from backend.app.models.nutrition.user_water import UserWater
 from backend.app.models.user_profile import UserProfile
 from backend.app.services.nutrition.goals_service import get_goals
 from backend.app.services.nutrition.product_service import normalize_locale
 from backend.app.services.nutrition.serializers import serialize_meal
-from backend.app.services.nutrition.water_service import calculate_water
+from backend.app.services.nutrition.water_service import (
+    calculate_water,
+    get_total_fluid_liters,
+)
 
 
 def get_stats(user_id, days=7):
@@ -171,12 +173,10 @@ def get_day_details(user_id, target_date, locale="uk"):
 
     goals = get_goals(user_id)
 
-    water_entry = UserWater.query.filter_by(
-        user_id=user_id,
-        date=target_date,
-    ).first()
-
-    water_amount = float(water_entry.amount) if water_entry else 0.0
+    water_amount = get_total_fluid_liters(
+        user_id,
+        target_date,
+    )
 
     profile = UserProfile.query.filter_by(user_id=user_id).first()
     water_goal = (

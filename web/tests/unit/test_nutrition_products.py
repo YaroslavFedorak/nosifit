@@ -24,6 +24,7 @@ def make_system_product():
         fiber_per_100g=0,
         default_unit="g",
         grams_per_unit=1,
+        liquid_ml_per_100g=0,
     )
     db.session.add(product)
     db.session.flush()
@@ -226,3 +227,54 @@ def test_product_names_are_localized_in_meal_and_day_serializers(app, user):
 
         assert meal_data["items"][0]["name"] == "Chicken breast"
         assert day_data["meals"][0]["items"][0]["name"] == "Chicken breast"
+
+
+def test_beverage_entry_contributes_to_combined_water_total(app, user):
+    with app.app_context():
+        product = Product(
+            source="system",
+            kcal_per_100g=2,
+            protein_per_100g=0.3,
+            fat_per_100g=0,
+            carbs_per_100g=0,
+            fiber_per_100g=0,
+            liquid_ml_per_100g=100,
+            default_unit="ml",
+            grams_per_unit=1,
+        )
+        db.session.add(product)
+        db.session.flush()
+
+        db.session.add(
+            ProductName(
+                product_id=product.id,
+                locale="uk",
+                name="Кава чорна",
+            )
+        )
+
+        meal = make_meal(user.id)
+
+        entry = add_item_service(
+            user.id,
+            {
+                "meal_id": meal.id,
+                "product_id": product.id,
+                "amount": 300,
+                "unit": "ml",
+                "locale": "uk",
+            },
+        )
+
+        from backend.app.services.nutrition.water_service import add_water_service
+
+        add_water_service(user.id, 0.5)
+
+        day_data = get_day_details(
+            user.id,
+            meal.date,
+            "uk",
+        )
+
+        assert entry.liquid_ml == 300
+        assert day_data["water"] == 0.8

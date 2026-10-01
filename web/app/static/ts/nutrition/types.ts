@@ -11,6 +11,7 @@ export interface Product {
     fat_per_100g: number;
     carbs_per_100g: number;
     fiber_per_100g: number;
+    liquid_ml_per_100g: number;
     default_unit: NutritionUnit;
     grams_per_unit: number;
     is_favorite: boolean;
@@ -26,6 +27,7 @@ export interface ProductPayload {
     fat_per_100g: number;
     carbs_per_100g: number;
     fiber_per_100g: number;
+    liquid_ml_per_100g?: number;
     default_unit: NutritionUnit;
     grams_per_unit: number;
 }
@@ -46,6 +48,7 @@ export interface MealItem {
     fat: number;
     carbs: number;
     fiber?: number;
+    liquid_ml?: number;
 }
 
 export interface Meal {

@@ -18,6 +18,7 @@ class CalculatedNutrition:
     fat: float
     carbs: float
     fiber: float
+    liquid_ml: float
 
 
 def normalize_unit(unit: str | None, default: str = "g") -> str:
@@ -63,6 +64,7 @@ def amount_to_grams(amount, unit: str, grams_per_unit: float) -> float:
 
 def calculate_product_nutrition(product, amount, unit=None) -> CalculatedNutrition:
     normalized_unit = normalize_unit(unit, product.default_unit)
+    amount_value = normalize_amount(amount)
     grams = amount_to_grams(
         amount,
         normalized_unit,
@@ -71,6 +73,24 @@ def calculate_product_nutrition(product, amount, unit=None) -> CalculatedNutriti
 
     factor = grams / 100.0
 
+    liquid_ml_per_100g = max(
+        getattr(product, "liquid_ml_per_100g", 0) or 0,
+        0,
+    )
+
+    if normalized_unit == "ml" and liquid_ml_per_100g > 0:
+        # When the user enters a liquid in milliliters, preserve the
+        # consumed volume instead of converting it through density.
+        liquid_ml = round(
+            amount_value * liquid_ml_per_100g / 100.0,
+            2,
+        )
+    else:
+        liquid_ml = round(
+            liquid_ml_per_100g * factor,
+            2,
+        )
+
     return CalculatedNutrition(
         grams=round(grams, 2),
         calories=round(max(product.kcal_per_100g, 0) * factor),
@@ -78,4 +98,5 @@ def calculate_product_nutrition(product, amount, unit=None) -> CalculatedNutriti
         fat=round(max(product.fat_per_100g, 0) * factor, 2),
         carbs=round(max(product.carbs_per_100g, 0) * factor, 2),
         fiber=round(max(product.fiber_per_100g, 0) * factor, 2),
+        liquid_ml=liquid_ml,
     )
