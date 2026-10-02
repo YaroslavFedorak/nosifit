@@ -130,6 +130,7 @@ def add_items_service(user_id, meal_id, items):
             fat=nutrition.fat,
             carbs=nutrition.carbs,
             fiber=nutrition.fiber,
+            liquid_ml=nutrition.liquid_ml,
         )
         db.session.add(item)
         created_items.append(item)

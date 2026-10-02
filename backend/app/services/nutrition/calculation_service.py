@@ -62,11 +62,31 @@ def amount_to_grams(amount, unit: str, grams_per_unit: float) -> float:
     return amount_value * conversion
 
 
+def calculate_liquid_ml(
+    amount: float,
+    unit: str,
+    grams: float,
+    liquid_ml_per_100g: float,
+) -> float:
+    if liquid_ml_per_100g <= 0:
+        return 0.0
+
+    # Milliliters are already a volume. Do not route them through the
+    # product's gram conversion when calculating hydration.
+    if unit == "ml":
+        return round(amount, 2)
+
+    return round(
+        liquid_ml_per_100g * grams / 100.0,
+        2,
+    )
+
+
 def calculate_product_nutrition(product, amount, unit=None) -> CalculatedNutrition:
     normalized_unit = normalize_unit(unit, product.default_unit)
     amount_value = normalize_amount(amount)
     grams = amount_to_grams(
-        amount,
+        amount_value,
         normalized_unit,
         product.grams_per_unit,
     )
@@ -77,19 +97,12 @@ def calculate_product_nutrition(product, amount, unit=None) -> CalculatedNutriti
         getattr(product, "liquid_ml_per_100g", 0) or 0,
         0,
     )
-
-    if normalized_unit == "ml" and liquid_ml_per_100g > 0:
-        # When the user enters a liquid in milliliters, preserve the
-        # consumed volume instead of converting it through density.
-        liquid_ml = round(
-            amount_value * liquid_ml_per_100g / 100.0,
-            2,
-        )
-    else:
-        liquid_ml = round(
-            liquid_ml_per_100g * factor,
-            2,
-        )
+    liquid_ml = calculate_liquid_ml(
+        amount_value,
+        normalized_unit,
+        grams,
+        liquid_ml_per_100g,
+    )
 
     return CalculatedNutrition(
         grams=round(grams, 2),

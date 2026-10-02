@@ -1,3 +1,5 @@
+from sqlalchemy import text
+
 from backend.app.extensions import db
 from backend.app.models import Meal, Product, ProductName, User
 from backend.app.services.nutrition.item_service import (

@@ -15,6 +15,18 @@ branch_labels = None
 depends_on = None
 
 
+HISTORICAL_LIQUID_BACKFILL_SQL = """
+UPDATE meal_items
+SET liquid_ml = (
+    nutrition_products.liquid_ml_per_100g
+    * COALESCE(meal_items.weight, 0)
+    / 100.0
+)
+FROM nutrition_products
+WHERE meal_items.product_id = nutrition_products.id
+"""
+
+
 def upgrade():
     op.add_column(
         "nutrition_products",
@@ -57,19 +69,8 @@ def upgrade():
     )
 
     # Recalculate hydration for historical beverage entries as well.
-    op.execute(
-        """
-        UPDATE meal_items
-        SET liquid_ml = (
-            nutrition_products.liquid_ml_per_100g
-            * COALESCE(meal_items.weight, 0)
-            / NULLIF(nutrition_products.grams_per_unit, 0)
-            / 100.0
-        )
-        FROM nutrition_products
-        WHERE meal_items.product_id = nutrition_products.id
-        """
-    )
+    # meal_items.weight is already the normalized gram amount.
+    op.execute(HISTORICAL_LIQUID_BACKFILL_SQL)
 
     op.alter_column(
         "nutrition_products",
