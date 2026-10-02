@@ -154,22 +154,41 @@ def amount_keyboard(unit: str) -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(inline_keyboard=rows)
 
 
-def review_keyboard() -> InlineKeyboardMarkup:
-    return InlineKeyboardMarkup(
-        inline_keyboard=[
+def review_keyboard(pending: list[dict]) -> InlineKeyboardMarkup:
+    rows = []
+    for index, item in enumerate(pending):
+        name = item.get("name", "Продукт")
+        rows.append(
             [
                 InlineKeyboardButton(
-                    text="➕ Додати ще",
-                    callback_data="nutrition:more",
+                    text=f"✏️ {name[:28]}",
+                    callback_data=f"nutrition:edit:{index}",
                 ),
                 InlineKeyboardButton(
-                    text="💾 Зберегти",
-                    callback_data="nutrition:save",
+                    text="🗑",
+                    callback_data=f"nutrition:delete:{index}",
                 ),
-            ],
-            [InlineKeyboardButton(text="✕ Скасувати", callback_data="nutrition:cancel")],
-        ]
+            ]
+        )
+
+    action_row = [
+        InlineKeyboardButton(
+            text="➕ Додати ще",
+            callback_data="nutrition:more",
+        ),
+    ]
+    if pending:
+        action_row.append(
+            InlineKeyboardButton(
+                text="✅ Зберегти",
+                callback_data="nutrition:save",
+            )
+        )
+    rows.append(action_row)
+    rows.append(
+        [InlineKeyboardButton(text="✕ Скасувати", callback_data="nutrition:cancel")]
     )
+    return InlineKeyboardMarkup(inline_keyboard=rows)
 
 
 def my_product_cancel_keyboard() -> InlineKeyboardMarkup:

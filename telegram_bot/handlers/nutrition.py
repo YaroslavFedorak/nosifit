@@ -92,7 +92,26 @@ def _format_catalog(mode: str, products: list[dict], query: str = "") -> str:
     )
 
 
-def _format_pending(category: str, pending: list[dict], existing: list[dict] | None = None) -> str:
+def _pending_totals(pending: list[dict]) -> tuple[float, float, float, float]:
+    calories = protein = fat = carbs = 0.0
+    for item in pending:
+        amount = float(item["amount"])
+        unit = item["unit"]
+        grams_per_unit = float(item.get("grams_per_unit") or 1)
+        grams = amount if unit == "g" else amount * grams_per_unit
+        factor = grams / 100.0
+        calories += float(item.get("kcal_per_100g") or 0) * factor
+        protein += float(item.get("protein_per_100g") or 0) * factor
+        fat += float(item.get("fat_per_100g") or 0) * factor
+        carbs += float(item.get("carbs_per_100g") or 0) * factor
+    return calories, protein, fat, carbs
+
+
+def _format_pending(
+    category: str,
+    pending: list[dict],
+    existing: list[dict] | None = None,
+) -> str:
     lines = [f"🍽 <b>{html.escape(category)}</b>"]
     existing = existing or []
     if existing:
@@ -104,27 +123,22 @@ def _format_pending(category: str, pending: list[dict], existing: list[dict] | N
                 f"{_format_number(float(item.get('amount') or item.get('weight') or 0))} {unit}"
             )
     if pending:
-        lines.extend(["", "Додаємо:"])
-        for item in pending:
+        lines.extend(["", "Чернетка:"])
+        for index, item in enumerate(pending, start=1):
             unit = UNIT_LABELS.get(item["unit"], item["unit"])
             lines.append(
-                f"✓ {html.escape(item['name'])} — "
+                f"{index}. {html.escape(item['name'])} — "
                 f"{_format_number(item['amount'])} {unit}"
             )
+        calories, protein, fat, carbs = _pending_totals(pending)
+        lines.extend([
+            "",
+            "<b>Підсумок чернетки</b>",
+            f"🔥 {calories:.0f} kcal",
+            f"🥩 {protein:.1f} г білка · 🥑 {fat:.1f} г жирів",
+            f"🍞 {carbs:.1f} г вуглеводів",
+        ])
     return "\n".join(lines)
-
-
-def _filter_products(products: list[dict], query: str) -> list[dict]:
-    normalized = query.strip().casefold()
-    if not normalized:
-        return products[:SEARCH_LIMIT]
-
-    result = []
-    for product in products:
-        haystack = f"{product.get('name', '')} {product.get('brand') or ''}".casefold()
-        if normalized in haystack:
-            result.append(product)
-    return result[:SEARCH_LIMIT]
 
 
 async def _load_catalog(
@@ -166,7 +180,7 @@ async def _show_catalog(
             await callback.message.answer(f"Не вдалося завантажити каталог: {exc}")
             return
 
-    matches = _filter_products(products, query)
+    matches = products[:SEARCH_LIMIT] if query else products
     await state.set_state(
         NutritionStates.searching_product if query else NutritionStates.browsing_catalog
     )
@@ -283,17 +297,21 @@ async def _handle_product_query(message: Message, state: FSMContext) -> None:
 
     data = await state.get_data()
     mode = data.get("catalog_mode", "all")
-    catalogs = data.get("catalogs", {})
-    products = catalogs.get(mode)
 
-    if products is None:
-        try:
-            products = await _load_catalog(message.from_user.id, state, mode)
-        except NosiFitAPIError as exc:
-            await message.answer(f"Не вдалося завантажити каталог: {exc}")
-            return
+    try:
+        matches = await asyncio.to_thread(
+            _api(message.from_user.id).search_products,
+            query,
+            "uk",
+            SEARCH_LIMIT,
+        )
+    except NosiFitAPIError as exc:
+        await message.answer(f"Не вдалося виконати пошук: {exc}")
+        return
 
-    matches = _filter_products(products, query)
+    catalogs = dict(data.get("catalogs", {}))
+    catalogs[mode] = matches
+    await state.update_data(catalogs=catalogs)
     await state.set_state(NutritionStates.searching_product)
     if not matches:
         await message.answer(
@@ -365,6 +383,11 @@ async def choose_product(callback: CallbackQuery, state: FSMContext) -> None:
         product_id=product_id,
         product_name=product.get("name", "Продукт"),
         product_unit=unit,
+        product_kcal_per_100g=product.get("kcal_per_100g", 0),
+        product_protein_per_100g=product.get("protein_per_100g", 0),
+        product_fat_per_100g=product.get("fat_per_100g", 0),
+        product_carbs_per_100g=product.get("carbs_per_100g", 0),
+        product_grams_per_unit=product.get("grams_per_unit", 1),
     )
     await state.set_state(NutritionStates.entering_amount)
     await callback.message.edit_text(
@@ -406,15 +429,23 @@ async def enter_amount(message: Message, state: FSMContext) -> None:
 
     data = await state.get_data()
     pending = list(data.get("pending", []))
-    pending.append(
-        {
-            "product_id": data["product_id"],
-            "name": data["product_name"],
-            "amount": amount,
-            "unit": data["product_unit"],
-        }
-    )
-    await state.update_data(pending=pending)
+    item = {
+        "product_id": data["product_id"],
+        "name": data["product_name"],
+        "amount": amount,
+        "unit": data["product_unit"],
+        "kcal_per_100g": data.get("product_kcal_per_100g", 0),
+        "protein_per_100g": data.get("product_protein_per_100g", 0),
+        "fat_per_100g": data.get("product_fat_per_100g", 0),
+        "carbs_per_100g": data.get("product_carbs_per_100g", 0),
+        "grams_per_unit": data.get("product_grams_per_unit", 1),
+    }
+    editing_index = data.get("editing_index")
+    if editing_index is not None and 0 <= int(editing_index) < len(pending):
+        pending[int(editing_index)] = item
+    else:
+        pending.append(item)
+    await state.update_data(pending=pending, editing_index=None)
     await state.set_state(NutritionStates.reviewing)
     await message.answer(
         _format_pending(
@@ -422,7 +453,74 @@ async def enter_amount(message: Message, state: FSMContext) -> None:
             pending,
             data.get("existing_items", []),
         ),
-        reply_markup=review_keyboard(),
+        reply_markup=review_keyboard(pending),
+    )
+
+
+@router.callback_query(
+    NutritionStates.reviewing,
+    F.data.startswith("nutrition:edit:"),
+)
+async def edit_pending_item(callback: CallbackQuery, state: FSMContext) -> None:
+    await callback.answer()
+    index = int(callback.data.rsplit(":", 1)[1])
+    data = await state.get_data()
+    pending = list(data.get("pending", []))
+    if index < 0 or index >= len(pending):
+        await callback.message.answer("Цю позицію вже видалено.")
+        return
+
+    item = pending[index]
+    await state.update_data(
+        editing_index=index,
+        product_id=item["product_id"],
+        product_name=item["name"],
+        product_unit=item["unit"],
+        product_kcal_per_100g=item.get("kcal_per_100g", 0),
+        product_protein_per_100g=item.get("protein_per_100g", 0),
+        product_fat_per_100g=item.get("fat_per_100g", 0),
+        product_carbs_per_100g=item.get("carbs_per_100g", 0),
+        product_grams_per_unit=item.get("grams_per_unit", 1),
+    )
+    await state.set_state(NutritionStates.entering_amount)
+    await _safe_edit(
+        callback.message,
+        f"✏️ <b>{html.escape(item['name'])}</b>\n\n"
+        f"Поточна кількість: <b>{_format_number(item['amount'])} "
+        f"{UNIT_LABELS.get(item['unit'], item['unit'])}</b>\n"
+        f"Введіть нову кількість.",
+        reply_markup=amount_keyboard(item["unit"]),
+    )
+
+
+@router.callback_query(
+    NutritionStates.reviewing,
+    F.data.startswith("nutrition:delete:"),
+)
+async def delete_pending_item(callback: CallbackQuery, state: FSMContext) -> None:
+    await callback.answer()
+    index = int(callback.data.rsplit(":", 1)[1])
+    data = await state.get_data()
+    pending = list(data.get("pending", []))
+    if index < 0 or index >= len(pending):
+        await callback.message.answer("Цю позицію вже видалено.")
+        return
+
+    pending.pop(index)
+    await state.update_data(pending=pending)
+    if not pending:
+        await _safe_edit(
+            callback.message,
+            f"🍽 <b>{html.escape(data['category'])}</b>\n\n"
+            "Чернетка порожня. Додайте продукт або скасуйте.",
+            reply_markup=review_keyboard(pending),
+        )
+        return
+
+    await _safe_edit(
+        callback.message,
+        _format_pending(data["category"], pending, data.get("existing_items", [])),
+        reply_markup=review_keyboard(pending),
     )
 
 
@@ -444,6 +542,7 @@ async def add_more(callback: CallbackQuery, state: FSMContext) -> None:
 async def save_meal(callback: CallbackQuery, state: FSMContext) -> None:
     await callback.answer()
     data = await state.get_data()
+    await state.set_state(NutritionStates.saving)
     pending = data.get("pending", [])
     category = data["category"]
 
@@ -473,7 +572,11 @@ async def save_meal(callback: CallbackQuery, state: FSMContext) -> None:
         )
         updated_day = await asyncio.to_thread(api.get_day)
     except NosiFitAPIError as exc:
-        await callback.message.answer(f"Не вдалося зберегти прийом: {exc}")
+        await state.set_state(NutritionStates.reviewing)
+        await callback.message.answer(
+            f"Не вдалося зберегти прийом: {exc}\n\n"
+            "Чернетку збережено. Спробуйте ще раз."
+        )
         return
 
     await state.clear()
@@ -596,6 +699,11 @@ async def my_product_carbs(message: Message, state: FSMContext) -> None:
         product_id=product["id"],
         product_name=product["name"],
         product_unit=product.get("default_unit", "g"),
+        product_kcal_per_100g=product.get("kcal_per_100g", data["new_product_kcal"]),
+        product_protein_per_100g=product.get("protein_per_100g", data["new_product_protein"]),
+        product_fat_per_100g=product.get("fat_per_100g", data["new_product_fat"]),
+        product_carbs_per_100g=product.get("carbs_per_100g", value),
+        product_grams_per_unit=product.get("grams_per_unit", 1),
         new_product_carbs=value,
     )
     await state.set_state(NutritionStates.entering_amount)

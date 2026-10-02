@@ -441,3 +441,61 @@ def test_migration_backfill_uses_stored_weight_in_grams(app, user):
         db.session.refresh(old_item)
 
         assert old_item.liquid_ml == 240
+
+
+def test_server_product_search_finds_match_beyond_first_50(app, user):
+    with app.app_context():
+        for index in range(60):
+            product = Product(
+                source="system",
+                kcal_per_100g=100,
+                protein_per_100g=10,
+                fat_per_100g=5,
+                carbs_per_100g=10,
+                fiber_per_100g=1,
+                default_unit="g",
+                grams_per_unit=1,
+                liquid_ml_per_100g=0,
+            )
+            db.session.add(product)
+            db.session.flush()
+            db.session.add(
+                ProductName(
+                    product_id=product.id,
+                    locale="uk",
+                    name=f"Каталожний продукт {index:02d}",
+                )
+            )
+
+        target = Product(
+            source="system",
+            kcal_per_100g=120,
+            protein_per_100g=8,
+            fat_per_100g=4,
+            carbs_per_100g=12,
+            fiber_per_100g=2,
+            default_unit="g",
+            grams_per_unit=1,
+            liquid_ml_per_100g=0,
+        )
+        db.session.add(target)
+        db.session.flush()
+        db.session.add(
+            ProductName(
+                product_id=target.id,
+                locale="uk",
+                name="Рідкісний манго-продукт",
+            )
+        )
+        db.session.commit()
+
+        from backend.app.services.nutrition.product_service import search_products
+
+        results = search_products(
+            user.id,
+            query="рідкісний манго",
+            locale="uk",
+            limit=8,
+        )
+
+        assert [product["id"] for product in results] == [target.id]

@@ -7,6 +7,7 @@ class NutritionStates(StatesGroup):
     searching_product = State()
     entering_amount = State()
     reviewing = State()
+    saving = State()
     product_name = State()
     product_kcal = State()
     product_protein = State()
