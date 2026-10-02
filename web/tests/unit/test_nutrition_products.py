@@ -4,6 +4,7 @@ from backend.app.extensions import db
 from backend.app.models import Meal, Product, ProductName, User
 from backend.app.services.nutrition.item_service import (
     add_item_service,
+    add_items_service,
     delete_item_service,
     update_item_service,
 )
@@ -14,6 +15,10 @@ from backend.app.services.nutrition.product_service import (
 )
 from backend.app.services.nutrition.serializers import serialize_meal
 from backend.app.services.nutrition.stats_service import get_day_details
+from backend.app.services.nutrition.water_service import add_water_service
+from migrations.versions.c8f4a2d9e6b1_add_product_liquid_content import (
+    HISTORICAL_LIQUID_BACKFILL_SQL,
+)
 
 
 def make_system_product():
@@ -268,8 +273,6 @@ def test_beverage_entry_contributes_to_combined_water_total(app, user):
             },
         )
 
-        from backend.app.services.nutrition.water_service import add_water_service
-
         add_water_service(user.id, 0.5)
 
         day_data = get_day_details(
@@ -280,3 +283,161 @@ def test_beverage_entry_contributes_to_combined_water_total(app, user):
 
         assert entry.liquid_ml == 300
         assert day_data["water"] == 0.8
+
+
+
+def make_beverage_product(liquid_ml_per_100g=100, grams_per_unit=1):
+    product = Product(
+        source="system",
+        kcal_per_100g=2,
+        protein_per_100g=0.3,
+        fat_per_100g=0,
+        carbs_per_100g=0,
+        fiber_per_100g=0,
+        liquid_ml_per_100g=liquid_ml_per_100g,
+        default_unit="ml",
+        grams_per_unit=grams_per_unit,
+    )
+    db.session.add(product)
+    db.session.flush()
+    db.session.add(
+        ProductName(
+            product_id=product.id,
+            locale="uk",
+            name="Напій",
+        )
+    )
+    db.session.commit()
+    return product
+
+
+def test_bulk_and_regular_beverage_addition_store_same_liquid(app, user):
+    with app.app_context():
+        product = make_beverage_product()
+        regular_meal = make_meal(user.id, "Звичайне")
+        bulk_meal = make_meal(user.id, "Bulk")
+
+        regular = add_item_service(
+            user.id,
+            {
+                "meal_id": regular_meal.id,
+                "product_id": product.id,
+                "amount": 300,
+                "unit": "ml",
+            },
+        )
+        bulk = add_items_service(
+            user.id,
+            bulk_meal.id,
+            [{
+                "product_id": product.id,
+                "amount": 300,
+                "unit": "ml",
+            }],
+        )[0]
+
+        assert regular.liquid_ml == 300
+        assert bulk.liquid_ml == 300
+
+
+def test_edit_and_delete_beverage_update_daily_fluid(app, user):
+    with app.app_context():
+        product = make_beverage_product()
+        meal = make_meal(user.id)
+
+        entry = add_item_service(
+            user.id,
+            {
+                "meal_id": meal.id,
+                "product_id": product.id,
+                "amount": 300,
+                "unit": "ml",
+            },
+        )
+
+        assert get_day_details(user.id, meal.date, "uk")["water"] == 0.3
+
+        update_item_service(
+            user.id,
+            entry.id,
+            {
+                "amount": 500,
+                "unit": "ml",
+            },
+        )
+        assert get_day_details(user.id, meal.date, "uk")["water"] == 0.5
+
+        assert delete_item_service(user.id, entry.id) is True
+        assert get_day_details(user.id, meal.date, "uk")["water"] == 0.0
+
+
+def test_manual_water_is_not_duplicated_with_beverage(app, user):
+    with app.app_context():
+        product = make_beverage_product()
+        meal = make_meal(user.id)
+
+        add_item_service(
+            user.id,
+            {
+                "meal_id": meal.id,
+                "product_id": product.id,
+                "amount": 300,
+                "unit": "ml",
+            },
+        )
+        add_water_service(user.id, 0.5)
+
+        assert get_day_details(user.id, meal.date, "uk")["water"] == 0.8
+
+
+def test_liquid_volume_does_not_use_grams_per_unit_for_ml_input(app, user):
+    with app.app_context():
+        product = make_beverage_product(
+            liquid_ml_per_100g=80,
+            grams_per_unit=0.75,
+        )
+        meal = make_meal(user.id)
+
+        entry = add_item_service(
+            user.id,
+            {
+                "meal_id": meal.id,
+                "product_id": product.id,
+                "amount": 200,
+                "unit": "ml",
+            },
+        )
+
+        assert entry.liquid_ml == 200
+
+
+def test_migration_backfill_uses_stored_weight_in_grams(app, user):
+    with app.app_context():
+        product = make_beverage_product(
+            liquid_ml_per_100g=80,
+            grams_per_unit=250,
+        )
+        meal = make_meal(user.id)
+
+        old_item = MealItem(
+            meal_id=meal.id,
+            product_id=product.id,
+            name="Старий напій",
+            amount=1.2,
+            unit="pcs",
+            weight=300,
+            liquid_ml=0,
+            calories=0,
+            protein=0,
+            fat=0,
+            carbs=0,
+            fiber=0,
+        )
+        db.session.add(old_item)
+        db.session.commit()
+
+        db.session.execute(text(HISTORICAL_LIQUID_BACKFILL_SQL))
+        db.session.commit()
+        db.session.refresh(old_item)
+
+        assert old_item.liquid_ml == 240
