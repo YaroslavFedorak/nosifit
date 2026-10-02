@@ -16,8 +16,8 @@ from backend.app.services.nutrition.product_service import (
 from backend.app.services.nutrition.serializers import serialize_meal
 from backend.app.services.nutrition.stats_service import get_day_details
 from backend.app.services.nutrition.water_service import add_water_service
-from migrations.versions.c8f4a2d9e6b1_add_product_liquid_content import (
-    HISTORICAL_LIQUID_BACKFILL_SQL,
+from migrations.versions.d1a6c4e9b7f2_fix_historical_liquid_values import (
+    HISTORICAL_LIQUID_FIX_SQL,
 )
 
 
@@ -436,7 +436,7 @@ def test_migration_backfill_uses_stored_weight_in_grams(app, user):
         db.session.add(old_item)
         db.session.commit()
 
-        db.session.execute(text(HISTORICAL_LIQUID_BACKFILL_SQL))
+        db.session.execute(text(HISTORICAL_LIQUID_FIX_SQL))
         db.session.commit()
         db.session.refresh(old_item)
 
