@@ -9,10 +9,26 @@ MEAL_CATEGORIES = {
 }
 
 CATALOG_LABELS = {
-    "all": "📚 Усі",
     "favorites": "⭐ Обрані",
-    "recent": "🕘 Останні",
+    "recent": "🕘 Недавні",
     "mine": "👤 Мої",
+}
+
+PRODUCT_CATEGORIES = {
+    "meat": "🥩 М'ясо",
+    "fish": "🐟 Риба",
+    "dairy": "🥛 Молочні",
+    "eggs": "🥚 Яйця",
+    "grains": "🌾 Крупи та паста",
+    "bread": "🥖 Хліб",
+    "vegetables": "🥦 Овочі",
+    "fruits": "🍎 Фрукти",
+    "legumes": "🫘 Бобові",
+    "nuts": "🥜 Горіхи",
+    "oils": "🫒 Олії",
+    "sweets": "🍫 Солодке",
+    "beverages": "🥤 Напої",
+    "other": "📦 Інше",
 }
 
 UNIT_LABELS = {
@@ -59,51 +75,56 @@ def meal_categories() -> InlineKeyboardMarkup:
     )
 
 
-def catalog_keyboard(mode: str = "all") -> InlineKeyboardMarkup:
+def catalog_keyboard(mode: str = "search") -> InlineKeyboardMarkup:
     rows = [
         [
-            InlineKeyboardButton(
-                text=("• " if mode == "all" else "") + CATALOG_LABELS["all"],
-                callback_data="nutrition:catalog:all",
-            ),
-            InlineKeyboardButton(
-                text=("• " if mode == "favorites" else "") + CATALOG_LABELS["favorites"],
-                callback_data="nutrition:catalog:favorites",
-            ),
+            InlineKeyboardButton(text="🔎 Пошук продукту", callback_data="nutrition:search"),
+            InlineKeyboardButton(text="⭐ Обрані", callback_data="nutrition:catalog:favorites"),
         ],
         [
-            InlineKeyboardButton(
-                text=("• " if mode == "recent" else "") + CATALOG_LABELS["recent"],
-                callback_data="nutrition:catalog:recent",
-            ),
-            InlineKeyboardButton(
-                text=("• " if mode == "mine" else "") + CATALOG_LABELS["mine"],
-                callback_data="nutrition:catalog:mine",
-            ),
+            InlineKeyboardButton(text="🕘 Недавні", callback_data="nutrition:catalog:recent"),
+            InlineKeyboardButton(text="📂 Категорії", callback_data="nutrition:categories"),
         ],
         [
-            InlineKeyboardButton(
-                text="🔎 Пошук",
-                callback_data="nutrition:search",
-            ),
-            InlineKeyboardButton(
-                text="➕ Мій продукт",
-                callback_data="nutrition:my-product",
-            ),
+            InlineKeyboardButton(text="👤 Мої продукти", callback_data="nutrition:catalog:mine"),
+            InlineKeyboardButton(text="➕ Мій продукт", callback_data="nutrition:my-product"),
         ],
         [InlineKeyboardButton(text="✕ Скасувати", callback_data="nutrition:cancel")],
     ]
     return InlineKeyboardMarkup(inline_keyboard=rows)
 
 
+def category_keyboard() -> InlineKeyboardMarkup:
+    keys = list(PRODUCT_CATEGORIES)
+    rows = []
+    for index in range(0, len(keys), 2):
+        row = [
+            InlineKeyboardButton(
+                text=PRODUCT_CATEGORIES[key],
+                callback_data=f"nutrition:category:{key}",
+            )
+            for key in keys[index:index + 2]
+        ]
+        rows.append(row)
+    rows.append([
+        InlineKeyboardButton(text="← Назад", callback_data="nutrition:product_menu"),
+        InlineKeyboardButton(text="✕ Скасувати", callback_data="nutrition:cancel"),
+    ])
+    return InlineKeyboardMarkup(inline_keyboard=rows)
+
+
 def product_results(
     products: list[dict],
     *,
-    mode: str = "all",
+    mode: str = "search",
     query: str = "",
+    category: str = "",
+    offset: int = 0,
+    has_more: bool = False,
 ) -> InlineKeyboardMarkup:
     rows = []
-    for product in products[:8]:
+    page = products[offset:offset + 8]
+    for product in page:
         favorite = "★" if product.get("is_favorite") else "☆"
         rows.append(
             [
@@ -121,79 +142,24 @@ def product_results(
             ]
         )
 
+    if has_more:
+        rows.append([
+            InlineKeyboardButton(
+                text="Показати ще",
+                callback_data=f"nutrition:more_results:{offset + 8}",
+            )
+        ])
+
     if query:
-        rows.append(
-            [InlineKeyboardButton(text="🔎 Новий пошук", callback_data="nutrition:search")]
-        )
-    rows.append(
-        [
-            InlineKeyboardButton(
-                text="← Каталог",
-                callback_data=f"nutrition:catalog:{mode}",
-            ),
-            InlineKeyboardButton(
-                text="✕ Скасувати",
-                callback_data="nutrition:cancel",
-            ),
-        ]
-    )
-    return InlineKeyboardMarkup(inline_keyboard=rows)
-
-
-def amount_keyboard(unit: str) -> InlineKeyboardMarkup:
-    rows = [
-        [
-            InlineKeyboardButton(
-                text=("• " if unit == current else "") + UNIT_LABELS[current],
-                callback_data=f"nutrition:unit:{current}",
-            )
-            for current in ("g", "ml", "pcs")
-        ],
-        [InlineKeyboardButton(text="✕ Скасувати", callback_data="nutrition:cancel")],
-    ]
-    return InlineKeyboardMarkup(inline_keyboard=rows)
-
-
-def review_keyboard(pending: list[dict]) -> InlineKeyboardMarkup:
-    rows = []
-    for index, item in enumerate(pending):
-        name = item.get("name", "Продукт")
-        rows.append(
-            [
-                InlineKeyboardButton(
-                    text=f"✏️ {name[:28]}",
-                    callback_data=f"nutrition:edit:{index}",
-                ),
-                InlineKeyboardButton(
-                    text="🗑",
-                    callback_data=f"nutrition:delete:{index}",
-                ),
-            ]
-        )
-
-    action_row = [
+        rows.append([
+            InlineKeyboardButton(text="🔎 Новий пошук", callback_data="nutrition:search")
+        ])
+    rows.append([
         InlineKeyboardButton(
-            text="➕ Додати ще",
-            callback_data="nutrition:more",
+            text="← Каталог",
+            callback_data="nutrition:catalog:recent",
         ),
-    ]
-    if pending:
-        action_row.append(
-            InlineKeyboardButton(
-                text="✅ Зберегти",
-                callback_data="nutrition:save",
-            )
-        )
-    rows.append(action_row)
-    rows.append(
-        [InlineKeyboardButton(text="✕ Скасувати", callback_data="nutrition:cancel")]
-    )
+        InlineKeyboardButton(text="✕ Скасувати", callback_data="nutrition:cancel"),
+    ])
     return InlineKeyboardMarkup(inline_keyboard=rows)
 
-
-def my_product_cancel_keyboard() -> InlineKeyboardMarkup:
-    return InlineKeyboardMarkup(
-        inline_keyboard=[
-            [InlineKeyboardButton(text="✕ Скасувати", callback_data="nutrition:cancel")]
-        ]
-    )

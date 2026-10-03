@@ -10,9 +10,11 @@ from aiogram.types import CallbackQuery, Message
 from telegram_bot.keyboards.main import NUTRITION, main_menu
 from telegram_bot.keyboards.nutrition import (
     CATALOG_LABELS,
+    PRODUCT_CATEGORIES,
     UNIT_LABELS,
     amount_keyboard,
     catalog_keyboard,
+    category_keyboard,
     meal_categories,
     my_product_cancel_keyboard,
     nutrition_menu,
@@ -25,7 +27,7 @@ from telegram_bot.states.nutrition import NutritionStates
 
 
 router = Router()
-CATALOG_LIMIT = 50
+CATALOG_LIMIT = 8
 SEARCH_LIMIT = 8
 
 
@@ -79,12 +81,12 @@ def _format_product(product: dict) -> str:
 
 
 def _format_catalog(mode: str, products: list[dict], query: str = "") -> str:
-    title = CATALOG_LABELS.get(mode, CATALOG_LABELS["all"])
+    title = CATALOG_LABELS.get(mode, "🔎 Пошук")
     suffix = f' для «{html.escape(query)}»' if query else ""
     if not products:
         return (
             f"🍽 <b>{title}</b>{suffix}\n\n"
-            "Нічого не знайдено. Спробуйте інший запит."
+            "Нічого не знайдено. Спробуйте інший спосіб пошуку."
         )
     return (
         f"🍽 <b>{title}</b>{suffix}\n\n"
@@ -148,17 +150,18 @@ async def _load_catalog(
 ) -> list[dict]:
     api = _api(user_id)
     loaders = {
-        "all": api.get_products,
         "favorites": api.get_favorite_products,
         "recent": api.get_recent_products,
         "mine": api.get_my_products,
     }
-    loader = loaders[mode]
-    products = await asyncio.to_thread(loader, "uk", CATALOG_LIMIT)
-    data = await state.get_data()
-    catalogs = dict(data.get("catalogs", {}))
-    catalogs[mode] = products
-    await state.update_data(catalogs=catalogs, catalog_mode=mode)
+    products = await asyncio.to_thread(loaders[mode], "uk", CATALOG_LIMIT)
+    await state.update_data(
+        catalog_products=products,
+        catalog_mode=mode,
+        search_query="",
+        search_category="",
+        search_offset=0,
+    )
     return products
 
 
@@ -166,28 +169,118 @@ async def _show_catalog(
     callback: CallbackQuery,
     state: FSMContext,
     mode: str,
-    *,
-    query: str = "",
 ) -> None:
-    data = await state.get_data()
-    catalogs = data.get("catalogs", {})
-    products = catalogs.get(mode)
+    try:
+        products = await _load_catalog(callback.from_user.id, state, mode)
+    except NosiFitAPIError as exc:
+        await callback.message.answer(f"Не вдалося завантажити каталог: {exc}")
+        return
 
-    if products is None:
-        try:
-            products = await _load_catalog(callback.from_user.id, state, mode)
-        except NosiFitAPIError as exc:
-            await callback.message.answer(f"Не вдалося завантажити каталог: {exc}")
-            return
+    await state.set_state(NutritionStates.browsing_catalog)
+    await _safe_edit(
+        callback.message,
+        _format_catalog(mode, products),
+        reply_markup=product_results(products, mode=mode),
+    )
 
-    matches = products[:SEARCH_LIMIT] if query else products
-    await state.set_state(
-        NutritionStates.searching_product if query else NutritionStates.browsing_catalog
+
+async def _show_product_menu(callback: CallbackQuery, state: FSMContext) -> None:
+    await state.set_state(NutritionStates.browsing_catalog)
+    await state.update_data(
+        catalog_mode="search",
+        search_query="",
+        search_category="",
+        search_offset=0,
     )
     await _safe_edit(
         callback.message,
-        _format_catalog(mode, matches, query),
-        reply_markup=product_results(matches, mode=mode, query=query),
+        "🍽 <b>Додати продукт</b>\n\n"
+        "🔎 Пошук працює за частиною назви. Якщо помилитесь у написанні, "
+        "NosiFit покаже найближчі варіанти.\n\n"
+        "Також можна швидко відкрити обрані, недавні або категорії.",
+        reply_markup=catalog_keyboard(),
+    )
+
+
+async def _start_product_search(callback: CallbackQuery, state: FSMContext) -> None:
+    await state.set_state(NutritionStates.searching_product)
+    data = await state.get_data()
+    category = data.get("search_category", "")
+    category_text = PRODUCT_CATEGORIES.get(category, "")
+    await _safe_edit(
+        callback.message,
+        "🔎 <b>Пошук продукту</b>\n\n"
+        "Введіть хоча б частину назви продукту."
+        + (f"\nКатегорія: <b>{category_text}</b>" if category_text else ""),
+        reply_markup=catalog_keyboard(),
+    )
+
+
+async def _perform_product_search(
+    message: Message,
+    state: FSMContext,
+    query: str,
+    *,
+    offset: int = 0,
+) -> None:
+    data = await state.get_data()
+    category = data.get("search_category", "")
+    try:
+        matches = await asyncio.to_thread(
+            _api(message.from_user.id).search_products,
+            query,
+            "uk",
+            SEARCH_LIMIT,
+            category or None,
+            offset,
+        )
+    except NosiFitAPIError as exc:
+        await message.answer(f"Не вдалося виконати пошук: {exc}")
+        return
+
+    current = list(data.get("search_products", []))
+    if offset:
+        current.extend(matches)
+    else:
+        current = matches
+
+    await state.update_data(
+        search_products=current,
+        search_query=query,
+        search_offset=offset,
+        catalog_mode="search",
+    )
+    await state.set_state(NutritionStates.searching_product)
+
+    if not matches:
+        if offset:
+            await message.answer("Це вже всі результати.")
+        else:
+            await message.answer(
+                f"🔎 <b>{html.escape(query)}</b>\n\n"
+                "Нічого не знайдено. Спробуйте коротшу назву або відкрийте категорії.",
+                reply_markup=catalog_keyboard(),
+            )
+        return
+
+    names = [(product.get("name") or "").casefold() for product in matches]
+    brands = [(product.get("brand") or "").casefold() for product in matches]
+    is_fallback = not any(query.casefold() in value for value in names + brands)
+    prefix = (
+        "🔎 <b>Можливо, ви шукали:</b>\n\n"
+        if is_fallback and offset == 0
+        else ""
+    )
+    await message.answer(
+        prefix + _format_catalog("search", current, query),
+        reply_markup=product_results(
+            current,
+            mode="search",
+            query=query,
+            category=category,
+            offset=offset,
+            has_more=len(matches) == SEARCH_LIMIT,
+        ),
     )
 
 
@@ -198,18 +291,6 @@ async def _safe_edit(message: Message, text: str, *, reply_markup=None) -> None:
         if "message is not modified" not in str(exc).lower():
             raise
 
-
-async def _start_product_search(callback: CallbackQuery, state: FSMContext) -> None:
-    await state.set_state(NutritionStates.searching_product)
-    data = await state.get_data()
-    mode = data.get("catalog_mode", "all")
-    await _safe_edit(
-        callback.message,
-        f"🔎 <b>Пошук продукту</b>\n\n"
-        f"Каталог: <b>{CATALOG_LABELS.get(mode, 'Усі')}</b>\n"
-        "Напишіть назву продукту. Результати з'являться одразу після повідомлення.",
-        reply_markup=catalog_keyboard(mode),
-    )
 
 
 @router.message(F.text == NUTRITION)
@@ -256,10 +337,14 @@ async def choose_meal(callback: CallbackQuery, state: FSMContext) -> None:
         meal_id=meal.get("id", 0) if meal else 0,
         existing_items=meal.get("items", []) if meal else [],
         pending=[],
-        catalogs={},
-        catalog_mode="all",
+        catalog_products=[],
+        search_products=[],
+        catalog_mode="search",
+        search_query="",
+        search_category="",
+        search_offset=0,
     )
-    await _show_catalog(callback, state, "all")
+    await _show_product_menu(callback, state)
 
 
 @router.callback_query(
@@ -271,6 +356,37 @@ async def switch_catalog(callback: CallbackQuery, state: FSMContext) -> None:
     if mode not in CATALOG_LABELS:
         return
     await _show_catalog(callback, state, mode)
+
+
+@router.callback_query(F.data == "nutrition:product_menu")
+async def product_menu(callback: CallbackQuery, state: FSMContext) -> None:
+    await callback.answer()
+    await _show_product_menu(callback, state)
+
+
+@router.callback_query(F.data == "nutrition:categories")
+async def show_categories(callback: CallbackQuery, state: FSMContext) -> None:
+    await callback.answer()
+    await state.set_state(NutritionStates.browsing_catalog)
+    await _safe_edit(
+        callback.message,
+        "📂 <b>Категорії продуктів</b>\n\nОберіть категорію:",
+        reply_markup=category_keyboard(),
+    )
+
+
+@router.callback_query(F.data.startswith("nutrition:category:"))
+async def select_category(callback: CallbackQuery, state: FSMContext) -> None:
+    await callback.answer()
+    category = callback.data.rsplit(":", 1)[1]
+    if category not in PRODUCT_CATEGORIES:
+        return
+    await state.update_data(
+        search_category=category,
+        search_query="",
+        search_offset=0,
+    )
+    await _start_product_search(callback, state)
 
 
 @router.callback_query(F.data == "nutrition:search")
@@ -292,38 +408,48 @@ async def search_product(message: Message, state: FSMContext) -> None:
 async def _handle_product_query(message: Message, state: FSMContext) -> None:
     query = (message.text or "").strip()
     if not query:
-        await message.answer("Введіть назву продукту.")
+        await message.answer("Введіть хоча б частину назви продукту.")
         return
+    await _perform_product_search(message, state, query, offset=0)
 
+
+@router.callback_query(F.data.startswith("nutrition:more_results:"))
+async def more_product_results(callback: CallbackQuery, state: FSMContext) -> None:
+    await callback.answer()
+    offset = int(callback.data.rsplit(":", 1)[1])
     data = await state.get_data()
-    mode = data.get("catalog_mode", "all")
+    query = data.get("search_query", "")
+    if not query:
+        await _start_product_search(callback, state)
+        return
 
     try:
         matches = await asyncio.to_thread(
-            _api(message.from_user.id).search_products,
+            _api(callback.from_user.id).search_products,
             query,
             "uk",
             SEARCH_LIMIT,
+            data.get("search_category") or None,
+            offset,
         )
     except NosiFitAPIError as exc:
-        await message.answer(f"Не вдалося виконати пошук: {exc}")
+        await callback.message.answer(f"Не вдалося завантажити ще результати: {exc}")
         return
 
-    catalogs = dict(data.get("catalogs", {}))
-    catalogs[mode] = matches
-    await state.update_data(catalogs=catalogs)
-    await state.set_state(NutritionStates.searching_product)
-    if not matches:
-        await message.answer(
-            f"🔎 <b>{html.escape(query)}</b>\n\n"
-            "Нічого не знайдено. Спробуйте коротшу назву або інший каталог.",
-            reply_markup=catalog_keyboard(mode),
-        )
-        return
-
-    await message.answer(
-        _format_catalog(mode, matches, query),
-        reply_markup=product_results(matches, mode=mode, query=query),
+    current = list(data.get("search_products", []))
+    current.extend(matches)
+    await state.update_data(search_products=current, search_offset=offset)
+    await _safe_edit(
+        callback.message,
+        _format_catalog("search", current, query),
+        reply_markup=product_results(
+            current,
+            mode="search",
+            query=query,
+            category=data.get("search_category", ""),
+            offset=offset,
+            has_more=len(matches) == SEARCH_LIMIT,
+        ),
     )
 
 
@@ -340,11 +466,24 @@ async def toggle_favorite(callback: CallbackQuery, state: FSMContext) -> None:
             value == "1",
         )
         data = await state.get_data()
-        mode = data.get("catalog_mode", "all")
-        catalogs = dict(data.get("catalogs", {}))
-        catalogs.pop(mode, None)
-        await state.update_data(catalogs=catalogs)
-        await _show_catalog(callback, state, mode)
+        mode = data.get("catalog_mode", "search")
+        if mode in CATALOG_LABELS:
+            await _show_catalog(callback, state, mode)
+        else:
+            query = data.get("search_query", "")
+            products = data.get("search_products", [])
+            await _safe_edit(
+                callback.message,
+                _format_catalog("search", products, query),
+                reply_markup=product_results(
+                    products,
+                    mode="search",
+                    query=query,
+                    category=data.get("search_category", ""),
+                    offset=data.get("search_offset", 0),
+                    has_more=False,
+                ),
+            )
     except NosiFitAPIError as exc:
         await callback.message.answer(f"Не вдалося змінити обране: {exc}")
 
@@ -356,11 +495,14 @@ async def choose_product(callback: CallbackQuery, state: FSMContext) -> None:
     await callback.answer()
     product_id = int(callback.data.rsplit(":", 1)[1])
     data = await state.get_data()
-    catalogs = data.get("catalogs", {})
+    product_lists = [
+        data.get("catalog_products", []),
+        data.get("search_products", []),
+    ]
     product = next(
         (
             product
-            for products in catalogs.values()
+            for products in product_lists
             for product in products
             if product.get("id") == product_id
         ),
@@ -528,14 +670,7 @@ async def delete_pending_item(callback: CallbackQuery, state: FSMContext) -> Non
 async def add_more(callback: CallbackQuery, state: FSMContext) -> None:
     await callback.answer()
     await state.set_state(NutritionStates.searching_product)
-    data = await state.get_data()
-    mode = data.get("catalog_mode", "all")
-    await _safe_edit(
-        callback.message,
-        f"🍽 <b>{html.escape(data['category'])}</b>\n\n"
-        "Напишіть назву наступного продукту.",
-        reply_markup=catalog_keyboard(mode),
-    )
+    await _start_product_search(callback, state)
 
 
 @router.callback_query(NutritionStates.reviewing, F.data == "nutrition:save")

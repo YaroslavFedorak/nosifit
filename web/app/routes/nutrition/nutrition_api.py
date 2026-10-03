@@ -95,11 +95,16 @@ def api_recommendations():
 def api_products():
     locale = normalize_locale(request.args.get("locale"))
     query = request.args.get("q", "")
+    category = request.args.get("category")
 
     try:
         limit = int(request.args.get("limit", 20))
     except (TypeError, ValueError):
         limit = 20
+    try:
+        offset = int(request.args.get("offset", 0))
+    except (TypeError, ValueError):
+        offset = 0
 
     return jsonify({
         "products": search_products(
@@ -107,6 +112,8 @@ def api_products():
             query=query,
             locale=locale,
             limit=limit,
+            category=category,
+            offset=offset,
         )
     })
 

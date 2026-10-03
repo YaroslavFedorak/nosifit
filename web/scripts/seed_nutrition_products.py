@@ -113,6 +113,31 @@ PRODUCTS = [
 ]
 
 
+CATEGORY_RULES = {
+    "meat": ("chicken", "turkey", "beef", "pork"),
+    "fish": ("salmon", "tuna", "mackerel", "shrimp"),
+    "dairy": ("yogurt", "cottage cheese", "hard cheese", "mozzarella", "milk", "kefir", "ayran", "soy drink", "almond drink"),
+    "eggs": ("egg",),
+    "grains": ("oatmeal", "rice", "buckwheat", "quinoa", "pasta"),
+    "bread": ("bread", "tortilla"),
+    "vegetables": ("potato", "sweet potato", "corn", "broccoli", "cauliflower", "spinach", "tomato", "cucumber", "carrot", "bell pepper", "avocado"),
+    "fruits": ("apple", "banana", "orange", "strawber", "blueber", "raspber"),
+    "legumes": ("kidney beans", "chickpeas", "lentils"),
+    "nuts": ("peanuts", "almonds", "walnuts", "peanut butter"),
+    "oils": ("olive oil",),
+    "sweets": ("honey", "chocolate"),
+    "beverages": ("coffee", "espresso", "americano", "tea", "water", "juice", "lemonade", "cola", "sports drink", "energy drink"),
+}
+
+
+def product_category(name):
+    normalized = name.lower()
+    for category, keywords in CATEGORY_RULES.items():
+        if any(keyword in normalized for keyword in keywords):
+            return category
+    return "other"
+
+
 def seed_products():
     app = create_app()
 
@@ -138,6 +163,7 @@ def seed_products():
             ).first()
 
             if existing:
+                existing.product.category = product_category(en)
                 if en in LIQUID_PRODUCTS:
                     existing.product.liquid_ml_per_100g = 100
                 skipped += 1
@@ -153,6 +179,7 @@ def seed_products():
                 liquid_ml_per_100g=(
                     100 if en in LIQUID_PRODUCTS else 0
                 ),
+                category=product_category(en),
                 default_unit=default_unit,
                 grams_per_unit=grams_per_unit,
             )

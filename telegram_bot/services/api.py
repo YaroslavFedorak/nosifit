@@ -78,22 +78,40 @@ class NosiFitAPI:
         ).json()
 
     def search_products(
-        self, query: str, locale: str = "uk", limit: int = 8
+        self,
+        query: str,
+        locale: str = "uk",
+        limit: int = 8,
+        category: str | None = None,
+        offset: int = 0,
     ) -> list[dict]:
         self.ensure_authenticated()
         payload = self._request(
             "GET",
             "/api/nutrition/products",
-            params={"q": query, "locale": locale, "limit": limit},
+            params={
+                "q": query,
+                "locale": locale,
+                "limit": limit,
+                "offset": offset,
+                **({"category": category} if category else {}),
+            },
         ).json()
         return payload.get("products", [])
 
-    def get_products(self, locale: str = "uk", limit: int = 50) -> list[dict]:
+    def get_products(
+        self, locale: str = "uk", limit: int = 50, category: str | None = None
+    ) -> list[dict]:
         self.ensure_authenticated()
         payload = self._request(
             "GET",
             "/api/nutrition/products",
-            params={"q": "", "locale": locale, "limit": limit},
+            params={
+                "q": "",
+                "locale": locale,
+                "limit": limit,
+                **({"category": category} if category else {}),
+            },
         ).json()
         return payload.get("products", [])
 

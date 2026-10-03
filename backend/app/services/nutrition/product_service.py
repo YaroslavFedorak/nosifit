@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from sqlalchemy import or_
+from sqlalchemy import func, or_
 from sqlalchemy.orm import selectinload
 
 from backend.app.extensions import db
@@ -16,6 +16,10 @@ from backend.app.repositories.product_repository import (
 SUPPORTED_LOCALES = {"uk", "en", "pl", "ru"}
 SUPPORTED_SOURCES = {"system", "user", "imported"}
 SUPPORTED_UNITS = {"g", "ml", "pcs"}
+PRODUCT_CATEGORIES = {
+    "meat", "fish", "dairy", "eggs", "grains", "bread", "vegetables",
+    "fruits", "legumes", "nuts", "oils", "sweets", "beverages", "other",
+}
 
 
 class ProductServiceError(ValueError):
@@ -63,6 +67,7 @@ def serialize_product(
         "id": product.id,
         "name": get_product_name(product, locale),
         "brand": product.brand,
+        "category": product.category,
         "source": product.source,
         "barcode": product.barcode,
         "kcal_per_100g": round(product.kcal_per_100g, 2),
@@ -107,9 +112,19 @@ def serialize_product_list(products, user_id, locale="uk"):
     ]
 
 
-def search_products(user_id, query="", locale="uk", limit=20):
+def search_products(
+    user_id,
+    query="",
+    locale="uk",
+    limit=20,
+    category=None,
+    offset=0,
+):
     locale = normalize_locale(locale)
     query = (query or "").strip()
+    category = (category or "").strip().lower() or None
+    limit = min(max(int(limit), 1), 50)
+    offset = max(int(offset), 0)
 
     product_query = (
         Product.query
@@ -123,29 +138,61 @@ def search_products(user_id, query="", locale="uk", limit=20):
         )
     )
 
-    if query:
-        pattern = f"%{query}%"
-        product_query = (
+    if category:
+        if category not in PRODUCT_CATEGORIES:
+            return []
+        product_query = product_query.filter(Product.category == category)
+
+    if not query:
+        return serialize_product_list(
             product_query
-            .join(ProductName)
-            .filter(
-                ProductName.locale.in_({locale, "en", "uk"}),
-                or_(
-                    ProductName.name.ilike(pattern),
-                    Product.brand.ilike(pattern),
-                ),
-            )
-            .distinct()
+            .order_by(Product.source.desc(), Product.id.desc())
+            .offset(offset)
+            .limit(limit)
+            .all(),
+            user_id,
+            locale,
         )
 
-    products = (
+    name_filter = ProductName.locale.in_({locale, "en", "uk"})
+    exact_products = (
         product_query
+        .join(ProductName)
+        .filter(
+            name_filter,
+            or_(
+                ProductName.name.ilike(f"%{query}%"),
+                Product.brand.ilike(f"%{query}%"),
+            ),
+        )
+        .distinct()
         .order_by(Product.source.desc(), Product.id.desc())
-        .limit(min(max(limit, 1), 50))
+        .offset(offset)
+        .limit(limit)
         .all()
     )
+    if exact_products:
+        return serialize_product_list(exact_products, user_id, locale)
 
-    return serialize_product_list(products, user_id, locale)
+    similarity = func.greatest(
+        func.word_similarity(query, ProductName.name),
+        func.similarity(query, ProductName.name),
+        func.similarity(query, func.coalesce(Product.brand, "")),
+    )
+    fuzzy_products = (
+        product_query
+        .join(ProductName)
+        .filter(
+            name_filter,
+            similarity >= 0.35,
+        )
+        .distinct()
+        .order_by(similarity.desc(), Product.source.desc(), Product.id.desc())
+        .offset(offset)
+        .limit(limit)
+        .all()
+    )
+    return serialize_product_list(fuzzy_products, user_id, locale)
 
 
 def get_product(user_id, product_id, locale="uk"):
@@ -187,6 +234,10 @@ def create_user_product(user_id, data, locale="uk"):
     if grams_per_unit <= 0:
         raise ProductServiceError("grams_per_unit must be positive")
 
+    category = (data.get("category") or "other").strip().lower()
+    if category not in PRODUCT_CATEGORIES:
+        raise ProductServiceError("Unsupported product category")
+
     product = Product(
         owner_user_id=user_id,
         source="user",
@@ -198,6 +249,7 @@ def create_user_product(user_id, data, locale="uk"):
         carbs_per_100g=_nutrition_value(data, "carbs_per_100g"),
         fiber_per_100g=_nutrition_value(data, "fiber_per_100g"),
         liquid_ml_per_100g=_nutrition_value(data, "liquid_ml_per_100g"),
+        category=category,
         default_unit=unit,
         grams_per_unit=grams_per_unit,
     )
@@ -258,6 +310,12 @@ def update_user_product(user_id, product_id, data, locale="uk"):
 
     if "brand" in data:
         product.brand = (data.get("brand") or "").strip() or None
+
+    if "category" in data:
+        category = (data.get("category") or "other").strip().lower()
+        if category not in PRODUCT_CATEGORIES:
+            raise ProductServiceError("Unsupported product category")
+        product.category = category
 
     if "default_unit" in data:
         unit = (data.get("default_unit") or "").strip().lower()

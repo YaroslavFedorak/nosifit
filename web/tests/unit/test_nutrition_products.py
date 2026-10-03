@@ -12,6 +12,7 @@ from backend.app.services.nutrition.product_service import (
     create_user_product,
     get_product,
     set_favorite,
+    search_products,
 )
 from backend.app.services.nutrition.serializers import serialize_meal
 from backend.app.services.nutrition.stats_service import get_day_details
@@ -499,3 +500,22 @@ def test_server_product_search_finds_match_beyond_first_50(app, user):
         )
 
         assert [product["id"] for product in results] == [target.id]
+
+
+
+def test_product_search_returns_fuzzy_matches_for_typo(app, user):
+    with app.app_context():
+        product = make_system_product()
+        results = search_products(user.id, query="куряче фле", locale="uk", limit=8)
+        assert [item["id"] for item in results] == [product.id]
+
+
+def test_product_category_filter(app, user):
+    with app.app_context():
+        product = make_system_product()
+        product.category = "meat"
+        db.session.commit()
+
+        results = search_products(user.id, query="", locale="uk", limit=8, category="meat")
+        assert [item["id"] for item in results] == [product.id]
+        assert results[0]["category"] == "meat"

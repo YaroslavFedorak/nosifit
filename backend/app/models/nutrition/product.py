@@ -24,6 +24,7 @@ class Product(db.Model):
 
     brand = db.Column(db.String(120), nullable=True)
     barcode = db.Column(db.String(32), nullable=True, unique=True)
+    category = db.Column(db.String(32), nullable=False, default="other", index=True)
 
     kcal_per_100g = db.Column(db.Float, nullable=False, default=0)
     protein_per_100g = db.Column(db.Float, nullable=False, default=0)
