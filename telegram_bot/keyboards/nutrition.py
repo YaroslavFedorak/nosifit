@@ -157,7 +157,7 @@ def product_results(
     rows.append([
         InlineKeyboardButton(
             text="← Каталог",
-            callback_data="nutrition:catalog:recent",
+            callback_data="nutrition:product_menu",
         ),
         InlineKeyboardButton(text="✕ Скасувати", callback_data="nutrition:cancel"),
     ])
