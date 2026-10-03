@@ -1,4 +1,5 @@
 import pytest
+from sqlalchemy import text
 from backend.app.extensions import db
 from web.app import create_app
 from backend.app.models.user import User
@@ -25,6 +26,8 @@ def app():
     )
 
     with app.app_context():
+        db.session.execute(text("CREATE EXTENSION IF NOT EXISTS pg_trgm"))
+        db.session.commit()
         db.create_all()
         yield app
         db.session.remove()
