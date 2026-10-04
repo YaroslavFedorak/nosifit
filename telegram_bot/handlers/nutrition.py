@@ -266,7 +266,7 @@ async def _show_product_menu(callback: CallbackQuery, state: FSMContext) -> None
         "🍽 <b>Додати продукт</b>\n\n"
         "🔎 Пошук працює за частиною назви. Якщо помилитесь у написанні, "
         "NosiFit покаже найближчі варіанти.\n\n"
-        "Також можна швидко відкрити обрані, недавні або категорії.",
+        "Також можна швидко відкрити обрані, нещодавні чи свої продукти.",
         reply_markup=catalog_keyboard(),
     )
 
@@ -274,13 +274,11 @@ async def _show_product_menu(callback: CallbackQuery, state: FSMContext) -> None
 async def _start_product_search(callback: CallbackQuery, state: FSMContext) -> None:
     await state.set_state(NutritionStates.searching_product)
     data = await state.get_data()
-    category = data.get("search_category", "")
-    category_text = PRODUCT_CATEGORIES.get(category, "")
     await _safe_edit(
         callback.message,
         "🔎 <b>Пошук продукту</b>\n\n"
-        "Введіть хоча б частину назви продукту."
-        + (f"\nКатегорія: <b>{category_text}</b>" if category_text else ""),
+        "Введіть хоча б частину назви продукту.\n\n"
+        "Пошук охоплює всю базу продуктів.",
         reply_markup=catalog_keyboard(),
     )
 
@@ -293,14 +291,13 @@ async def _perform_product_search(
     offset: int = 0,
 ) -> None:
     data = await state.get_data()
-    category = data.get("search_category", "")
     try:
         matches = await asyncio.to_thread(
             _api(message.from_user.id).search_products,
             query,
             "uk",
             SEARCH_LIMIT,
-            category or None,
+            None,
             offset,
         )
     except NosiFitAPIError as exc:
