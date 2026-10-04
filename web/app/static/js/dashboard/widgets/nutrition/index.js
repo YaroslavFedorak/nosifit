@@ -3,7 +3,7 @@ import { dashboard_t, getLocale, } from "../../../i18n/index.js";
 import { renderMeals, } from "./render.js";
 import { setNutritionDay, } from "./state.js";
 import { setupMealModals, } from "../../modals/nutrition/meals.js";
-import { setupItemModals, } from "../../modals/nutrition/items.js";
+import { setupItemModals, } from "../../../nutrition/modals/items.js";
 import { setupWaterModal, } from "../../modals/nutrition/water.js";
 import { setupWeightModal, } from "../../modals/nutrition/weight.js";
 function renderWater(value) {
