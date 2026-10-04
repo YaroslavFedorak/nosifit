@@ -14,23 +14,6 @@ CATALOG_LABELS = {
     "mine": "👤 Мої продукти",
 }
 
-PRODUCT_CATEGORIES = {
-    "meat": "🥩 М'ясо",
-    "fish": "🐟 Риба",
-    "dairy": "🥛 Молочні",
-    "eggs": "🥚 Яйця",
-    "grains": "🌾 Крупи та паста",
-    "bread": "🥖 Хліб",
-    "vegetables": "🥦 Овочі",
-    "fruits": "🍎 Фрукти",
-    "legumes": "🫘 Бобові",
-    "nuts": "🥜 Горіхи",
-    "oils": "🫒 Олії",
-    "sweets": "🍫 Солодке",
-    "beverages": "🥤 Напої",
-    "other": "📦 Інше",
-}
-
 UNIT_LABELS = {
     "g": "г",
     "ml": "мл",
@@ -139,34 +122,14 @@ def catalog_keyboard(mode: str = "search") -> InlineKeyboardMarkup:
             InlineKeyboardButton(text="⭐ Обрані", callback_data="nutrition:catalog:favorites"),
         ],
         [
-            InlineKeyboardButton(text="🕘 Недавні", callback_data="nutrition:catalog:recent"),
-            InlineKeyboardButton(text="📂 За категорією", callback_data="nutrition:categories"),
+            InlineKeyboardButton(text="🕘 Нещодавні", callback_data="nutrition:catalog:recent"),
+            InlineKeyboardButton(text="👤 Мої продукти", callback_data="nutrition:catalog:mine"),
         ],
         [
-            InlineKeyboardButton(text="👤 Мої продукти", callback_data="nutrition:catalog:mine"),
             InlineKeyboardButton(text="➕ Додати свій продукт", callback_data="nutrition:my-product"),
         ],
         [InlineKeyboardButton(text="← Назад", callback_data="nutrition:product_menu"), InlineKeyboardButton(text="✕ Скасувати", callback_data="nutrition:cancel")],
     ]
-    return InlineKeyboardMarkup(inline_keyboard=rows)
-
-
-def category_keyboard() -> InlineKeyboardMarkup:
-    keys = list(PRODUCT_CATEGORIES)
-    rows = []
-    for index in range(0, len(keys), 2):
-        row = [
-            InlineKeyboardButton(
-                text=PRODUCT_CATEGORIES[key],
-                callback_data=f"nutrition:category:{key}",
-            )
-            for key in keys[index:index + 2]
-        ]
-        rows.append(row)
-    rows.append([
-        InlineKeyboardButton(text="← Назад", callback_data="nutrition:product_menu"),
-        InlineKeyboardButton(text="✕ Скасувати", callback_data="nutrition:cancel"),
-    ])
     return InlineKeyboardMarkup(inline_keyboard=rows)
 
 

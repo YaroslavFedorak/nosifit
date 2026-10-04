@@ -11,11 +11,9 @@ from aiogram.types import CallbackQuery, Message
 from telegram_bot.keyboards.main import NUTRITION, main_menu
 from telegram_bot.keyboards.nutrition import (
     CATALOG_LABELS,
-    PRODUCT_CATEGORIES,
     UNIT_LABELS,
     amount_keyboard,
     catalog_keyboard,
-    category_keyboard,
     meal_categories,
     meal_detail_keyboard,
     meal_time_keyboard,
@@ -446,49 +444,6 @@ async def product_menu(callback: CallbackQuery, state: FSMContext) -> None:
     await _show_product_menu(callback, state)
 
 
-@router.callback_query(F.data == "nutrition:categories")
-async def show_categories(callback: CallbackQuery, state: FSMContext) -> None:
-    await callback.answer()
-    await state.set_state(NutritionStates.browsing_catalog)
-    await _safe_edit(
-        callback.message,
-        "📂 <b>Категорії продуктів</b>\n\nОберіть категорію:",
-        reply_markup=category_keyboard(),
-    )
-
-
-@router.callback_query(F.data.startswith("nutrition:category:"))
-async def select_category(callback: CallbackQuery, state: FSMContext) -> None:
-    await callback.answer()
-    category = callback.data.rsplit(":", 1)[1]
-    if category not in PRODUCT_CATEGORIES:
-        return
-    try:
-        products = await asyncio.to_thread(
-            _api(callback.from_user.id).get_products,
-            "uk",
-            CATALOG_LIMIT,
-            category,
-        )
-    except NosiFitAPIError as exc:
-        await callback.message.answer(f"Не вдалося завантажити продукти: {exc}")
-        return
-    await state.update_data(
-        catalog_products=products,
-        catalog_mode="category",
-        search_category=category,
-        search_query="",
-        search_offset=0,
-    )
-    await state.set_state(NutritionStates.browsing_catalog)
-    title = PRODUCT_CATEGORIES[category]
-    await _safe_edit(
-        callback.message,
-        f"🍽 <b>{title}</b>\n\nОберіть продукт:",
-        reply_markup=product_results(products, mode="category", category=category),
-    )
-
-
 @router.callback_query(
     NutritionStates.entering_meal_time,
     F.data.startswith("nutrition:meal_time:"),
@@ -501,8 +456,7 @@ async def choose_meal_time(callback: CallbackQuery, state: FSMContext) -> None:
     await state.set_state(NutritionStates.browsing_catalog)
     await callback.message.edit_text(
         "🍽 <b>Додати продукт</b>\n\n"
-        "🔎 Знайдіть продукт за назвою або скористайтеся обраними, "
-        "недавніми чи категоріями.",
+        "🔎 Знайдіть продукт за назвою або відкрийте обрані, нещодавні чи свої продукти.",
         reply_markup=catalog_keyboard(),
     )
 
@@ -978,8 +932,9 @@ async def delete_existing_entry(callback: CallbackQuery, state: FSMContext) -> N
     try:
         await asyncio.to_thread(_api(callback.from_user.id).delete_entry, entry_id)
     except NosiFitAPIError as exc:
-        await callback.message.answer(f"Не вдалося видалити продукт: {exc}")
-        return
+        if "Entry not found" not in str(exc):
+            await callback.message.answer(f"Не вдалося видалити продукт: {exc}")
+            return
     await _show_today(callback, state)
 
 
