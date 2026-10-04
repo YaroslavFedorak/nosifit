@@ -24,3 +24,5 @@
 @import "./modals/heatmap/calendar.css";
 
 @import "./header.css";
+
+.db-nutrition-header-actions .db-nutrition-new-meal{background:#9b5de5;border-color:#9b5de5;color:#fff;font-weight:650;box-shadow:0 8px 22px rgba(155,93,229,.18);transition:background .18s ease,border-color .18s ease,box-shadow .18s ease,transform .18s ease}.db-nutrition-header-actions .db-nutrition-new-meal:hover{background:#aa72eb;border-color:#aa72eb;color:#fff;box-shadow:0 10px 26px rgba(155,93,229,.26);transform:translateY(-1px)}
