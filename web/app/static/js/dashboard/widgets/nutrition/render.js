@@ -1,6 +1,7 @@
 import { dashboard_t, } from "../../../i18n/index.js";
 import { NutritionAPI, } from "../../../nutrition/api.js";
 import { openModal, } from "../../modals/nutrition/modal.js";
+import { openAddItemModal, openEditItemModal, } from "../../../nutrition/modals/items.js";
 const ICONS = {
     pencil: `
         <svg
@@ -125,33 +126,9 @@ function createMealActions(meal, onRefresh) {
         "meal-actions-large";
     const addItem = document.createElement("button");
     addItem.type = "button";
-    addItem.className =
-        "meal-action-add";
-    addItem.textContent =
-        dashboard_t("nutrition.addProduct");
-    addItem.addEventListener("click", () => {
-        const mealId = document.getElementById("add-item-meal-id");
-        const name = document.getElementById("add-item-name");
-        const kcal = document.getElementById("add-item-kcal");
-        const protein = document.getElementById("add-item-protein");
-        const fat = document.getElementById("add-item-fat");
-        const carb = document.getElementById("add-item-carb");
-        if (!mealId
-                        || !kcal
-            || !protein
-            || !fat
-            || !carb) {
-            return;
-        }
-        mealId.value =
-            String(meal.id);
-        name.value = "";
-        kcal.value = "0";
-        protein.value = "0";
-        fat.value = "0";
-        carb.value = "0";
-        openModal("modal-add-item");
-    });
+    addItem.className = "meal-action-add";
+    addItem.textContent = dashboard_t("nutrition.addProduct");
+    addItem.addEventListener("click", () => openAddItemModal(meal.id, meal));
     const edit = createIconButton("meal-action-icon", ICONS.pencil, dashboard_t("nutrition.editMeal"));
     edit.addEventListener("click", () => {
         const id = document.getElementById("edit-meal-id");
@@ -225,35 +202,7 @@ function createItemRow(item, onRefresh) {
     actions.className =
         "meal-item-actions-large";
     const edit = createIconButton("meal-item-action", ICONS.pencil, dashboard_t("nutrition.editProduct"));
-    edit.addEventListener("click", () => {
-        const id = document.getElementById("edit-item-id");
-        const name = document.getElementById("edit-item-name");
-        const kcal = document.getElementById("edit-item-kcal");
-        const protein = document.getElementById("edit-item-protein");
-        const fat = document.getElementById("edit-item-fat");
-        const carb = document.getElementById("edit-item-carb");
-        if (!id
-            || !name
-            || !kcal
-            || !protein
-            || !fat
-            || !carb) {
-            return;
-        }
-        id.value =
-            String(item.id);
-        name.value =
-            item.name || "";
-        kcal.value =
-            String(item.calories ?? 0);
-        protein.value =
-            String(item.protein ?? 0);
-        fat.value =
-            String(item.fat ?? 0);
-        carb.value =
-            String(item.carbs ?? 0);
-        openModal("modal-edit-item");
-    });
+    edit.addEventListener("click", () => void openEditItemModal(item));
     const remove = createIconButton("meal-item-action meal-item-delete", ICONS.delete, dashboard_t("nutrition.delete"));
     remove.addEventListener("dblclick", async () => {
         await NutritionAPI.deleteItem(item.id);
