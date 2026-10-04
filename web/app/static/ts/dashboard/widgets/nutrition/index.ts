@@ -25,7 +25,7 @@ import {
 
 import {
     setupItemModals,
-} from "../../modals/nutrition/items.js";
+} from "../../../nutrition/modals/items.js";
 
 import {
     setupWaterModal,
