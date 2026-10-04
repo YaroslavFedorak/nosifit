@@ -169,12 +169,81 @@ class NosiFitAPI:
             params={"locale": locale},
         ).json()
 
-    def create_meal(self, name: str, category: str, locale: str = "uk") -> dict:
+    def create_meal(
+        self,
+        name: str,
+        category: str,
+        time: str | None = None,
+        locale: str = "uk",
+    ) -> dict:
         self.ensure_authenticated()
         return self._request(
             "POST",
             "/api/nutrition/meals",
-            json={"name": name, "category": category, "locale": locale},
+            json={
+                "name": name,
+                "category": category,
+                "time": time,
+                "locale": locale,
+            },
+        ).json()
+
+    def update_meal(
+        self,
+        meal_id: int,
+        *,
+        name: str,
+        category: str,
+        time: str | None = None,
+        locale: str = "uk",
+    ) -> dict:
+        self.ensure_authenticated()
+        return self._request(
+            "PUT",
+            f"/api/nutrition/meals/{meal_id}",
+            json={
+                "name": name,
+                "category": category,
+                "time": time,
+                "locale": locale,
+            },
+        ).json()
+
+    def delete_meal(self, meal_id: int) -> dict:
+        self.ensure_authenticated()
+        return self._request(
+            "DELETE",
+            f"/api/nutrition/meals/{meal_id}",
+        ).json()
+
+    def update_entry(
+        self,
+        entry_id: int,
+        *,
+        amount: float,
+        unit: str,
+        meal_id: int | None = None,
+        locale: str = "uk",
+    ) -> dict:
+        self.ensure_authenticated()
+        payload = {
+            "amount": amount,
+            "unit": unit,
+            "locale": locale,
+        }
+        if meal_id is not None:
+            payload["meal_id"] = meal_id
+        return self._request(
+            "PATCH",
+            f"/api/nutrition/entries/{entry_id}",
+            json=payload,
+        ).json()
+
+    def delete_entry(self, entry_id: int) -> dict:
+        self.ensure_authenticated()
+        return self._request(
+            "DELETE",
+            f"/api/nutrition/entries/{entry_id}",
         ).json()
 
     def add_entries(

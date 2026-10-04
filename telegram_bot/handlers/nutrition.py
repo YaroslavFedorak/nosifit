@@ -1,6 +1,7 @@
 import asyncio
 import html
 import re
+from datetime import datetime
 
 from aiogram import F, Router
 from aiogram.exceptions import TelegramBadRequest
@@ -16,6 +17,9 @@ from telegram_bot.keyboards.nutrition import (
     catalog_keyboard,
     category_keyboard,
     meal_categories,
+    meal_detail_keyboard,
+    meal_time_keyboard,
+    today_keyboard,
     my_product_cancel_keyboard,
     nutrition_menu,
     product_results,
@@ -51,14 +55,34 @@ def _parse_amount(text: str) -> float | None:
 def _format_day(day: dict) -> str:
     progress = day.get("progress", {})
     goals = day.get("goals", {})
-    return (
-        "🍽 <b>Харчування сьогодні</b>\n\n"
-        f"🔥 {progress.get('calories', 0):.0f} / {goals.get('calories', 0):.0f} kcal\n"
-        f"🥩 {progress.get('protein', 0):.1f} / {goals.get('protein', 0):.1f} г білка\n"
-        f"🥑 {progress.get('fat', 0):.1f} / {goals.get('fat', 0):.1f} г жирів\n"
-        f"🍞 {progress.get('carbs', 0):.1f} / {goals.get('carbs', 0):.1f} г вуглеводів\n\n"
-        f"Прийомів їжі: {len(day.get('meals', []))}"
-    )
+    lines = [
+        "🍽 <b>Харчування сьогодні</b>",
+        "",
+        f"🔥 {progress.get('calories', 0):.0f} / {goals.get('calories', 0):.0f} kcal",
+        f"🥩 {progress.get('protein', 0):.1f} / {goals.get('protein', 0):.1f} г білка",
+        f"🥑 {progress.get('fat', 0):.1f} / {goals.get('fat', 0):.1f} г жирів",
+        f"🍞 {progress.get('carbs', 0):.1f} / {goals.get('carbs', 0):.1f} г вуглеводів",
+        "",
+        f"<b>Прийоми їжі: {len(day.get('meals', []))}</b>",
+    ]
+    for meal in day.get("meals", []):
+        label = html.escape(meal.get("category") or meal.get("name") or "Прийом їжі")
+        time = meal.get("time")
+        if time:
+            label += f" · {html.escape(time)}"
+        lines.append(f"\n<b>{label}</b>")
+        items = meal.get("items", [])
+        if not items:
+            lines.append("• Продуктів ще немає")
+            continue
+        for item in items:
+            unit = UNIT_LABELS.get(item.get("unit", "g"), item.get("unit", "g"))
+            amount = item.get("amount") or item.get("weight") or 0
+            lines.append(
+                f"• {html.escape(item.get('name', 'Продукт'))} — "
+                f"{_format_number(float(amount))} {unit}"
+            )
+    return "\n".join(lines)
 
 
 def _meal_by_category(day: dict, category: str) -> dict | None:
@@ -181,6 +205,53 @@ async def _show_catalog(
         callback.message,
         _format_catalog(mode, products),
         reply_markup=product_results(products, mode=mode),
+    )
+
+
+async def _show_today(callback: CallbackQuery, state: FSMContext) -> None:
+    try:
+        day = await asyncio.to_thread(_api(callback.from_user.id).get_day)
+    except NosiFitAPIError as exc:
+        await callback.message.answer(f"Не вдалося завантажити дані: {exc}")
+        return
+    await state.clear()
+    await _safe_edit(
+        callback.message,
+        _format_day(day),
+        reply_markup=today_keyboard(day.get("meals", [])),
+    )
+
+
+async def _show_meal(callback: CallbackQuery, state: FSMContext, meal_id: int) -> None:
+    try:
+        day = await asyncio.to_thread(_api(callback.from_user.id).get_day)
+    except NosiFitAPIError as exc:
+        await callback.message.answer(f"Не вдалося завантажити дані: {exc}")
+        return
+    meal = next((item for item in day.get("meals", []) if int(item.get("id", 0)) == meal_id), None)
+    if meal is None:
+        await callback.message.answer("Прийом їжі не знайдено.")
+        return
+    category = html.escape(meal.get("category") or meal.get("name") or "Прийом їжі")
+    time = meal.get("time")
+    title = f"🍽 <b>{category}</b>" + (f" · {html.escape(time)}" if time else "")
+    lines = [title, ""]
+    items = meal.get("items", [])
+    if not items:
+        lines.append("Продуктів ще немає.")
+    else:
+        for item in items:
+            unit = UNIT_LABELS.get(item.get("unit", "g"), item.get("unit", "g"))
+            amount = item.get("amount") or item.get("weight") or 0
+            lines.append(
+                f"• {html.escape(item.get('name', 'Продукт'))} — "
+                f"{_format_number(float(amount))} {unit}"
+            )
+    await state.update_data(category=meal.get("category"), meal_id=meal_id)
+    await _safe_edit(
+        callback.message,
+        "\n".join(lines),
+        reply_markup=meal_detail_keyboard(meal),
     )
 
 
@@ -335,6 +406,7 @@ async def choose_meal(callback: CallbackQuery, state: FSMContext) -> None:
     await state.update_data(
         category=category,
         meal_id=meal.get("id", 0) if meal else 0,
+        meal_time=meal.get("time") if meal else None,
         existing_items=meal.get("items", []) if meal else [],
         pending=[],
         catalog_products=[],
@@ -344,7 +416,17 @@ async def choose_meal(callback: CallbackQuery, state: FSMContext) -> None:
         search_category="",
         search_offset=0,
     )
-    await _show_product_menu(callback, state)
+    if meal:
+        await _show_product_menu(callback, state)
+        return
+    await state.set_state(NutritionStates.entering_meal_time)
+    await _safe_edit(
+        callback.message,
+        f"🍽 <b>{html.escape(category)}</b>\n\n"
+        "Вкажіть час прийому їжі у форматі <b>HH:MM</b> "
+        "або оберіть варіант нижче.",
+        reply_markup=meal_time_keyboard(),
+    )
 
 
 @router.callback_query(
@@ -381,12 +463,68 @@ async def select_category(callback: CallbackQuery, state: FSMContext) -> None:
     category = callback.data.rsplit(":", 1)[1]
     if category not in PRODUCT_CATEGORIES:
         return
+    try:
+        products = await asyncio.to_thread(
+            _api(callback.from_user.id).get_products,
+            "uk",
+            CATALOG_LIMIT,
+            category,
+        )
+    except NosiFitAPIError as exc:
+        await callback.message.answer(f"Не вдалося завантажити продукти: {exc}")
+        return
     await state.update_data(
+        catalog_products=products,
+        catalog_mode="category",
         search_category=category,
         search_query="",
         search_offset=0,
     )
-    await _start_product_search(callback, state)
+    await state.set_state(NutritionStates.browsing_catalog)
+    title = PRODUCT_CATEGORIES[category]
+    await _safe_edit(
+        callback.message,
+        f"🍽 <b>{title}</b>\n\nОберіть продукт:",
+        reply_markup=product_results(products, mode="category", category=category),
+    )
+
+
+@router.callback_query(
+    NutritionStates.entering_meal_time,
+    F.data.startswith("nutrition:meal_time:"),
+)
+async def choose_meal_time(callback: CallbackQuery, state: FSMContext) -> None:
+    await callback.answer()
+    value = callback.data.rsplit(":", 1)[1]
+    meal_time = datetime.now().strftime("%H:%M") if value == "now" else None
+    await state.update_data(meal_time=meal_time)
+    await state.set_state(NutritionStates.browsing_catalog)
+    await callback.message.edit_text(
+        "🍽 <b>Додати продукт</b>\n\n"
+        "🔎 Знайдіть продукт за назвою або скористайтеся обраними, "
+        "недавніми чи категоріями.",
+        reply_markup=catalog_keyboard(),
+    )
+
+
+@router.message(NutritionStates.entering_meal_time)
+async def enter_meal_time(message: Message, state: FSMContext) -> None:
+    value = (message.text or "").strip()
+    if not re.fullmatch(r"(?:[01]\\d|2[0-3]):[0-5]\\d", value):
+        await message.answer(
+            "Введіть час у форматі <b>HH:MM</b>, наприклад <b>08:30</b>, "
+            "або натисніть «Поточний час».",
+            reply_markup=meal_time_keyboard(),
+        )
+        return
+    await state.update_data(meal_time=value)
+    await state.set_state(NutritionStates.browsing_catalog)
+    await message.answer(
+        "🍽 <b>Додати продукт</b>\n\n"
+        "🔎 Знайдіть продукт за назвою або скористайтеся обраними, "
+        "недавніми чи категоріями.",
+        reply_markup=catalog_keyboard(),
+    )
 
 
 @router.callback_query(F.data == "nutrition:search")
@@ -690,7 +828,7 @@ async def save_meal(callback: CallbackQuery, state: FSMContext) -> None:
         meal_id = int(data.get("meal_id") or 0)
         if not meal_id:
             day = await asyncio.to_thread(api.get_day)
-            meal = await asyncio.to_thread(get_or_create_meal, api, day, category)
+            meal = await asyncio.to_thread(get_or_create_meal, api, day, category, data.get("meal_time"))
             meal_id = meal["id"]
 
         await asyncio.to_thread(
@@ -725,6 +863,12 @@ async def save_meal(callback: CallbackQuery, state: FSMContext) -> None:
 @router.callback_query(F.data == "nutrition:today")
 async def today(callback: CallbackQuery, state: FSMContext) -> None:
     await callback.answer()
+    await _show_today(callback, state)
+
+
+@router.callback_query(F.data == "nutrition:back")
+async def back_to_nutrition(callback: CallbackQuery, state: FSMContext) -> None:
+    await callback.answer()
     await state.clear()
     try:
         day = await asyncio.to_thread(_api(callback.from_user.id).get_day)
@@ -732,6 +876,111 @@ async def today(callback: CallbackQuery, state: FSMContext) -> None:
         await callback.message.answer(f"Не вдалося завантажити дані: {exc}")
         return
     await _safe_edit(callback.message, _format_day(day), reply_markup=nutrition_menu())
+
+
+@router.callback_query(F.data.startswith("nutrition:meal_view:"))
+async def meal_view(callback: CallbackQuery, state: FSMContext) -> None:
+    await callback.answer()
+    await _show_meal(callback, state, int(callback.data.rsplit(":", 1)[1]))
+
+
+@router.callback_query(F.data.startswith("nutrition:meal_add:"))
+async def meal_add(callback: CallbackQuery, state: FSMContext) -> None:
+    await callback.answer()
+    meal_id = int(callback.data.rsplit(":", 1)[1])
+    data = await state.get_data()
+    await state.update_data(
+        meal_id=meal_id,
+        pending=[],
+        existing_items=[],
+        category=data.get("category"),
+        meal_time=data.get("meal_time"),
+    )
+    await _show_product_menu(callback, state)
+
+
+@router.callback_query(F.data.startswith("nutrition:entry_edit:"))
+async def edit_existing_entry(callback: CallbackQuery, state: FSMContext) -> None:
+    await callback.answer()
+    entry_id = int(callback.data.rsplit(":", 1)[1])
+    data = await state.get_data()
+    meal_id = int(data.get("meal_id") or 0)
+    try:
+        day = await asyncio.to_thread(_api(callback.from_user.id).get_day)
+    except NosiFitAPIError as exc:
+        await callback.message.answer(f"Не вдалося завантажити дані: {exc}")
+        return
+    item = next(
+        (
+            item
+            for meal in day.get("meals", [])
+            for item in meal.get("items", [])
+            if int(item.get("id", 0)) == entry_id
+        ),
+        None,
+    )
+    if item is None:
+        await callback.message.answer("Продукт не знайдено.")
+        return
+    unit = item.get("unit") or "g"
+    await state.update_data(
+        editing_entry_id=entry_id,
+        editing_entry_unit=unit,
+        editing_entry_meal_id=meal_id,
+    )
+    await state.set_state(NutritionStates.editing_entry)
+    await _safe_edit(
+        callback.message,
+        f"✏️ <b>{html.escape(item.get('name', 'Продукт'))}</b>\n\n"
+        f"Поточна кількість: <b>{_format_number(float(item.get('amount') or item.get('weight') or 0))} "
+        f"{UNIT_LABELS.get(unit, unit)}</b>\n"
+        "Введіть нову кількість.",
+        reply_markup=amount_keyboard(unit),
+    )
+
+
+@router.message(NutritionStates.editing_entry)
+async def save_existing_entry_amount(message: Message, state: FSMContext) -> None:
+    amount = _parse_amount(message.text or "")
+    if amount is None:
+        await message.answer("Введіть додатне число, наприклад 150 або 1,5.")
+        return
+    data = await state.get_data()
+    try:
+        await asyncio.to_thread(
+            _api(message.from_user.id).update_entry,
+            int(data["editing_entry_id"]),
+            amount=amount,
+            unit=data.get("editing_entry_unit", "g"),
+            meal_id=int(data.get("editing_entry_meal_id") or 0),
+        )
+    except NosiFitAPIError as exc:
+        await message.answer(f"Не вдалося оновити продукт: {exc}")
+        return
+    await state.clear()
+    await message.answer("✅ Кількість продукту оновлено.")
+    day = await asyncio.to_thread(_api(message.from_user.id).get_day)
+    meal = next(
+        (meal for meal in day.get("meals", []) if int(meal.get("id", 0)) == int(data.get("editing_entry_meal_id") or 0)),
+        None,
+    )
+    if meal:
+        await message.answer(
+            _format_day(day),
+            reply_markup=today_keyboard(day.get("meals", [])),
+        )
+
+
+@router.callback_query(F.data.startswith("nutrition:entry_delete:"))
+async def delete_existing_entry(callback: CallbackQuery, state: FSMContext) -> None:
+    await callback.answer()
+    entry_id = int(callback.data.rsplit(":", 1)[1])
+    try:
+        await asyncio.to_thread(_api(callback.from_user.id).delete_entry, entry_id)
+    except NosiFitAPIError as exc:
+        await callback.message.answer(f"Не вдалося видалити продукт: {exc}")
+        return
+    await _show_today(callback, state)
 
 
 @router.callback_query(F.data == "nutrition:my-product")

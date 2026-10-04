@@ -54,24 +54,21 @@ export function setupMealModals(
                     "edit-meal-id"
                 );
 
-            const name =
+            const category =
                 getInputValue(
-                    "edit-meal-name"
+                    "edit-meal-category"
                 ).trim();
 
-            if (!id || !name) {
+            if (!id || !category) {
                 return;
             }
 
             await NutritionAPI.updateMeal(
                 Number(id),
                 {
-                    name,
+                    name: category,
 
-                    category:
-                        getInputValue(
-                            "edit-meal-category"
-                        ),
+                    category,
 
                     time:
                         getInputValue(

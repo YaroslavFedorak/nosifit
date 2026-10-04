@@ -158,19 +158,15 @@ function createMealActions(meal, onRefresh) {
     const edit = createIconButton("meal-action-icon", ICONS.pencil, nutrition_t("actions.editMeal"));
     edit.addEventListener("click", () => {
         const id = document.getElementById("edit-meal-id");
-        const name = document.getElementById("edit-meal-name");
         const category = document.getElementById("edit-meal-category");
         const time = document.getElementById("edit-meal-time");
         if (!id
-            || !name
             || !category
             || !time) {
             return;
         }
         id.value =
             String(meal.id);
-        name.value =
-            meal.name || "";
         category.value =
             meal.category ||
                 nutrition_t("meal.defaultCategory");

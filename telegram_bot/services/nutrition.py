@@ -8,8 +8,8 @@ def meal_by_category(day: dict, category: str) -> dict | None:
     return None
 
 
-def get_or_create_meal(api: NosiFitAPI, day: dict, category: str) -> dict:
+def get_or_create_meal(api: NosiFitAPI, day: dict, category: str, time: str | None = None) -> dict:
     existing = meal_by_category(day, category)
     if existing is not None:
         return existing
-    return api.create_meal(name=category, category=category)
+    return api.create_meal(name=category, category=category, time=time)

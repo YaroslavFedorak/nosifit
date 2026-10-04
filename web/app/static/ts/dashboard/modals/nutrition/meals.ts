@@ -48,11 +48,6 @@ export function setupMealModals(
         "click",
         () => {
             setInputValue(
-                "add-meal-name",
-                "",
-            );
-
-            setInputValue(
                 "add-meal-category",
                 "Сніданок",
             );
@@ -84,17 +79,17 @@ export function setupMealModals(
     )?.addEventListener(
         "click",
         async () => {
-            const name =
+            const category =
                 getInputValue(
-                    "add-meal-name",
+                    "add-meal-category",
                 ).trim();
 
-            if (!name) {
+            if (!category) {
                 return;
             }
 
             await NutritionAPI.createMeal({
-                name,
+                name: category,
 
                 category:
                     getInputValue(
@@ -136,24 +131,21 @@ export function setupMealModals(
                     "edit-meal-id",
                 );
 
-            const name =
+            const category =
                 getInputValue(
-                    "edit-meal-name",
+                    "edit-meal-category",
                 ).trim();
 
-            if (!id || !name) {
+            if (!id || !category) {
                 return;
             }
 
             await NutritionAPI.updateMeal(
                 Number(id),
                 {
-                    name,
+                    name: category,
 
-                    category:
-                        getInputValue(
-                            "edit-meal-category",
-                        ),
+                    category,
 
                     time:
                         getInputValue(

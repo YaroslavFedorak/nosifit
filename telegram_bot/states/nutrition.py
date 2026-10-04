@@ -3,6 +3,8 @@ from aiogram.fsm.state import State, StatesGroup
 
 class NutritionStates(StatesGroup):
     choosing_meal = State()
+    entering_meal_time = State()
+    editing_entry = State()
     browsing_catalog = State()
     searching_product = State()
     entering_amount = State()

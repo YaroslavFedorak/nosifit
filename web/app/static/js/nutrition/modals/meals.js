@@ -16,13 +16,13 @@ export function setupMealModals(onRefresh) {
     });
     document.getElementById("save-edit-meal")?.addEventListener("click", async () => {
         const id = getInputValue("edit-meal-id");
-        const name = getInputValue("edit-meal-name").trim();
-        if (!id || !name) {
+        const category = getInputValue("edit-meal-category").trim();
+        if (!id || !category) {
             return;
         }
         await NutritionAPI.updateMeal(Number(id), {
-            name,
-            category: getInputValue("edit-meal-category"),
+            name: category,
+            category,
             time: getInputValue("edit-meal-time") || null,
         });
         closeModal("modal-edit-meal");

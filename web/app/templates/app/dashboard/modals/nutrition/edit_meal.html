@@ -6,24 +6,21 @@
 
     <input type="hidden" id="edit-meal-id" />
 
-    <label for="edit-meal-name"> {{ dashboard_t("nutrition.name") }} </label>
-    <input type="text" id="edit-meal-name" autocomplete="off" />
-
     <label for="edit-meal-category">
       {{ dashboard_t("nutrition.category") }}
     </label>
 
     <select id="edit-meal-category">
-      <option value="breakfast">
+      <option value="Сніданок">
         {{ dashboard_t("nutrition.mealCategories.breakfast") }}
       </option>
-      <option value="lunch">
+      <option value="Обід">
         {{ dashboard_t("nutrition.mealCategories.lunch") }}
       </option>
-      <option value="dinner">
+      <option value="Вечеря">
         {{ dashboard_t("nutrition.mealCategories.dinner") }}
       </option>
-      <option value="snack">
+      <option value="Перекус">
         {{ dashboard_t("nutrition.mealCategories.snack") }}
       </option>
     </select>

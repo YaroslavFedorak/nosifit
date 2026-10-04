@@ -184,7 +184,7 @@ def search_products(
         .join(ProductName)
         .filter(
             name_filter,
-            similarity >= 0.35,
+            similarity >= (0.30 if len(query) <= 3 else 0.35),
         )
         .group_by(Product.id)
         .order_by(

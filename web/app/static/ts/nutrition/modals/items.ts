@@ -350,7 +350,6 @@ export function openAddItemModal(mealId: number, meal?: Meal): void {
     existingMealItems = meal?.items ? [...meal.items] : [];
     pendingMealItems = [];
     setInputValue("add-item-meal-id", String(mealId));
-    setInputValue("add-meal-name", meal?.name ?? "");
     setInputValue("add-meal-category", meal?.category ?? "Сніданок");
     setInputValue("add-meal-time", meal?.time ?? "");
     setInputValue("add-item-search", "");
@@ -427,14 +426,14 @@ export function setupItemModals(onRefresh: RefreshCallback): void {
         "click",
         async () => {
             let mealId = Number(getInputValue("add-item-meal-id"));
-            const mealName = getInputValue("add-meal-name").trim();
+            const mealCategory = getInputValue("add-meal-category").trim();
 
-            if (!mealName || !pendingMealItems.length) return;
+            if (!mealCategory || !pendingMealItems.length) return;
 
             try {
                 const mealPayload = {
-                    name: mealName,
-                    category: getInputValue("add-meal-category"),
+                    name: mealCategory,
+                    category: mealCategory,
                     time: getInputValue("add-meal-time") || null,
                 };
 

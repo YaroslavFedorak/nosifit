@@ -4,24 +4,21 @@
 
     <p class="modal-hint">{{ dashboard_t("nutrition.addMealHint") }}</p>
 
-    <label for="add-meal-name"> {{ dashboard_t("nutrition.name") }} </label>
-    <input type="text" id="add-meal-name" autocomplete="off" />
-
     <label for="add-meal-category">
       {{ dashboard_t("nutrition.category") }}
     </label>
 
     <select id="add-meal-category">
-      <option value="breakfast">
+      <option value="Сніданок">
         {{ dashboard_t("nutrition.mealCategories.breakfast") }}
       </option>
-      <option value="lunch">
+      <option value="Обід">
         {{ dashboard_t("nutrition.mealCategories.lunch") }}
       </option>
-      <option value="dinner">
+      <option value="Вечеря">
         {{ dashboard_t("nutrition.mealCategories.dinner") }}
       </option>
-      <option value="snack">
+      <option value="Перекус">
         {{ dashboard_t("nutrition.mealCategories.snack") }}
       </option>
     </select>

@@ -137,8 +137,7 @@ function createMealActions(meal, onRefresh) {
         const fat = document.getElementById("add-item-fat");
         const carb = document.getElementById("add-item-carb");
         if (!mealId
-            || !name
-            || !kcal
+                        || !kcal
             || !protein
             || !fat
             || !carb) {
@@ -156,8 +155,7 @@ function createMealActions(meal, onRefresh) {
     const edit = createIconButton("meal-action-icon", ICONS.pencil, dashboard_t("nutrition.editMeal"));
     edit.addEventListener("click", () => {
         const id = document.getElementById("edit-meal-id");
-        const name = document.getElementById("edit-meal-name");
-        const category = document.getElementById("edit-meal-category");
+                const category = document.getElementById("edit-meal-category");
         const time = document.getElementById("edit-meal-time");
         if (!id
             || !name

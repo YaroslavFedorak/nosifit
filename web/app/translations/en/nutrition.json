@@ -60,9 +60,9 @@
         "todayTitle": "Today's meals",
         "newMeal": "New meal",
         "addTitle": "New meal",
-        "addHint": "This is only the meal name. Food items and nutrition values can be added after creating it.",
+        "addHint": "Choose a meal category and time, then add food products.",
         "editTitle": "Edit meal",
-        "editHint": "Change the name, category, or time. Nutrition values are calculated automatically from the food items.",
+        "editHint": "Change the meal category or time. Nutrition values are calculated automatically from the food items.",
         "emptyToday": "No meals recorded today",
         "addProduct": "+ Food",
         "noProducts": "No food items added yet."
@@ -228,6 +228,7 @@
             "pcs": "pcs"
         },
         "allProducts": "All products",
-        "addToMeal": "Add to meal"
+        "addToMeal": "Add to meal",
+        "noPendingProducts": "No products added yet"
     }
 }

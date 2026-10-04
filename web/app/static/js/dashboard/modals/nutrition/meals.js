@@ -12,8 +12,7 @@ function setInputValue(id, value) {
 }
 export function setupMealModals(onRefresh) {
     document.getElementById("dashboard-open-add-meal")?.addEventListener("click", () => {
-        setInputValue("add-meal-name", "");
-        setInputValue("add-meal-category", "Сніданок");
+                setInputValue("add-meal-category", "Сніданок");
         setInputValue("add-meal-time", "");
         openModal("modal-add-meal");
     });
@@ -21,12 +20,12 @@ export function setupMealModals(onRefresh) {
         closeModal("modal-add-meal");
     });
     document.getElementById("save-add-meal")?.addEventListener("click", async () => {
-        const name = getInputValue("add-meal-name").trim();
-        if (!name) {
+        const category = getInputValue("add-meal-category").trim();
+        if (!category) {
             return;
         }
         await NutritionAPI.createMeal({
-            name,
+            name: category,
             category: getInputValue("add-meal-category"),
             time: getInputValue("add-meal-time") || null,
         });
@@ -38,12 +37,12 @@ export function setupMealModals(onRefresh) {
     });
     document.getElementById("save-edit-meal")?.addEventListener("click", async () => {
         const id = getInputValue("edit-meal-id");
-        const name = getInputValue("edit-meal-name").trim();
-        if (!id || !name) {
+        const category = getInputValue("edit-meal-category").trim();
+        if (!id || !category) {
             return;
         }
         await NutritionAPI.updateMeal(Number(id), {
-            name,
+            name: category,
             category: getInputValue("edit-meal-category"),
             time: getInputValue("edit-meal-time") || null,
         });

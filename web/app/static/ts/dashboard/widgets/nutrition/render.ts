@@ -372,11 +372,6 @@ function createMealActions(
                     "edit-meal-id",
                 ) as HTMLInputElement | null;
 
-            const name =
-                document.getElementById(
-                    "edit-meal-name",
-                ) as HTMLInputElement | null;
-
             const category =
                 document.getElementById(
                     "edit-meal-category",
@@ -389,7 +384,6 @@ function createMealActions(
 
             if (
                 !id
-                || !name
                 || !category
                 || !time
             ) {
@@ -398,9 +392,6 @@ function createMealActions(
 
             id.value =
                 String(meal.id);
-
-            name.value =
-                meal.name || "";
 
             category.value =
                 meal.category || "breakfast";
