@@ -11,11 +11,6 @@ function setInputValue(id, value) {
     }
 }
 export function setupMealModals(onRefresh) {
-    document.getElementById("dashboard-open-add-meal")?.addEventListener("click", () => {
-                setInputValue("add-meal-category", "Сніданок");
-        setInputValue("add-meal-time", "");
-        openModal("modal-add-meal");
-    });
     document.getElementById("close-add-meal")?.addEventListener("click", () => {
         closeModal("modal-add-meal");
     });
