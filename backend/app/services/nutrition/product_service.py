@@ -186,8 +186,12 @@ def search_products(
             name_filter,
             similarity >= 0.35,
         )
-        .distinct()
-        .order_by(similarity.desc(), Product.source.desc(), Product.id.desc())
+        .group_by(Product.id)
+        .order_by(
+            func.max(similarity).desc(),
+            Product.source.desc(),
+            Product.id.desc(),
+        )
         .offset(offset)
         .limit(limit)
         .all()
