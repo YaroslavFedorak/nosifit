@@ -37,10 +37,10 @@
     </div>
     <div id="selected-product" class="nutrition-selected-product"></div>
     <div class="nutrition-entry-row">
-      <button class="btn nutrition-add-product-inline" type="button" id="open-add-my-product">+ {{ translate("nutrition", "catalog.addMyProduct") }}</button>
+      <button class="btn primary nutrition-add-to-meal" type="button" id="add-item-to-meal">{{ translate("nutrition", "catalog.addToMeal") }}</button>
       <div><label for="add-item-amount">{{ translate("nutrition", "catalog.amount") }}</label><input type="number" id="add-item-amount" min="0.01" step="0.01" value="100" /></div>
       <div><label for="add-item-unit">{{ translate("nutrition", "catalog.unit") }}</label><select id="add-item-unit"><option value="g">{{ translate("nutrition", "catalog.units.g") }}</option><option value="ml">{{ translate("nutrition", "catalog.units.ml") }}</option><option value="pcs">{{ translate("nutrition", "catalog.units.pcs") }}</option></select></div>
-      <button class="btn primary nutrition-add-to-meal" type="button" id="add-item-to-meal">{{ translate("nutrition", "catalog.addToMeal") }}</button>
+      <button class="btn nutrition-add-product-inline" type="button" id="open-add-my-product">+ {{ translate("nutrition", "catalog.addMyProduct") }}</button>
     </div>
     <div class="nutrition-pending-items-block">
       <div id="pending-meal-items-empty" class="nutrition-pending-empty">{{ translate("nutrition", "catalog.noPendingProducts") }}</div>
