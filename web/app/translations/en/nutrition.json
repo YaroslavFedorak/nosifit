@@ -229,6 +229,6 @@
         },
         "allProducts": "All products",
         "addToMeal": "Add to meal",
-        "noPendingProducts": "No products added yet"
+        "noPendingProducts": "Products will appear here when you add them"
     }
 }
