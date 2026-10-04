@@ -324,7 +324,7 @@ async def _perform_product_search(
         else:
             await message.answer(
                 f"🔎 <b>{html.escape(query)}</b>\n\n"
-                "Нічого не знайдено. Спробуйте коротшу назву або відкрийте категорії.",
+                "Нічого не знайдено. Спробуйте коротшу назву або скористайтеся іншим способом пошуку.",
                 reply_markup=catalog_keyboard(),
             )
         return
@@ -473,7 +473,7 @@ async def enter_meal_time(message: Message, state: FSMContext) -> None:
     await message.answer(
         "🍽 <b>Додати продукт</b>\n\n"
         "🔎 Знайдіть продукт за назвою або скористайтеся обраними, "
-        "недавніми чи категоріями.",
+        "недавніми чи своїми продуктами.",
         reply_markup=catalog_keyboard(),
     )
 
@@ -568,7 +568,7 @@ async def toggle_favorite(callback: CallbackQuery, state: FSMContext) -> None:
                     products,
                     mode="search",
                     query=query,
-                    category=data.get("search_category", ""),
+                    category=None,
                     offset=data.get("search_offset", 0),
                     has_more=False,
                 ),
