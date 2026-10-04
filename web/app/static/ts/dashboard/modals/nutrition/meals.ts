@@ -43,27 +43,6 @@ export function setupMealModals(
     onRefresh: RefreshCallback,
 ): void {
     document.getElementById(
-        "dashboard-open-add-meal",
-    )?.addEventListener(
-        "click",
-        () => {
-            setInputValue(
-                "add-meal-category",
-                "Сніданок",
-            );
-
-            setInputValue(
-                "add-meal-time",
-                "",
-            );
-
-            openModal(
-                "modal-add-meal",
-            );
-        },
-    );
-
-    document.getElementById(
         "close-add-meal",
     )?.addEventListener(
         "click",
