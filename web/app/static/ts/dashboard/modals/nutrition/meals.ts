@@ -43,53 +43,6 @@ export function setupMealModals(
     onRefresh: RefreshCallback,
 ): void {
     document.getElementById(
-        "close-add-meal",
-    )?.addEventListener(
-        "click",
-        () => {
-            closeModal(
-                "modal-add-meal",
-            );
-        },
-    );
-
-    document.getElementById(
-        "save-add-meal",
-    )?.addEventListener(
-        "click",
-        async () => {
-            const category =
-                getInputValue(
-                    "add-meal-category",
-                ).trim();
-
-            if (!category) {
-                return;
-            }
-
-            await NutritionAPI.createMeal({
-                name: category,
-
-                category:
-                    getInputValue(
-                        "add-meal-category",
-                    ),
-
-                time:
-                    getInputValue(
-                        "add-meal-time",
-                    ) || null,
-            });
-
-            closeModal(
-                "modal-add-meal",
-            );
-
-            await onRefresh();
-        },
-    );
-
-    document.getElementById(
         "close-edit-meal",
     )?.addEventListener(
         "click",
