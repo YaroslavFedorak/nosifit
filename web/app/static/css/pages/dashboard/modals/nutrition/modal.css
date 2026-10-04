@@ -240,3 +240,339 @@
         width: 100%;
     }
 }
+
+/* Shared nutrition product picker used by Dashboard */
+#modal-add-item .nutrition-product-modal,
+#modal-add-product .nutrition-product-modal {
+    width: min(720px, calc(100vw - 32px));
+    max-width: 720px;
+    height: min(760px, calc(100vh - 32px));
+    max-height: calc(100vh - 32px);
+    padding: 28px;
+    gap: 14px;
+    overflow: hidden;
+}
+
+#modal-add-item .nutrition-food-header {
+    display: grid;
+    grid-template-columns: 44px minmax(0, 1fr) minmax(130px, .8fr);
+    align-items: stretch;
+    gap: 10px;
+}
+
+#modal-add-item .nutrition-food-header-icon {
+    width: 44px;
+    height: 44px;
+    display: grid;
+    place-items: center;
+    align-self: end;
+    border: 1px solid rgba(155, 93, 229, .28);
+    border-radius: 12px;
+    background: rgba(155, 93, 229, .10);
+    color: var(--nf-violet-soft);
+}
+
+#modal-add-item .nutrition-food-header-icon svg {
+    width: 25px;
+    height: 25px;
+}
+
+#modal-add-item .nutrition-meal-details {
+    display: contents;
+}
+
+#modal-add-item .nutrition-meal-details > div,
+#modal-add-item .nutrition-entry-row > div {
+    display: grid;
+    gap: 6px;
+    min-width: 0;
+}
+
+#modal-add-item .nutrition-meal-details label,
+#modal-add-item .nutrition-entry-row label {
+    color: var(--nf-text-muted);
+    font-size: 11px;
+    font-weight: 650;
+}
+
+#modal-add-item .nutrition-meal-details input,
+#modal-add-item .nutrition-meal-details select,
+#modal-add-item .nutrition-entry-row input,
+#modal-add-item .nutrition-entry-row select {
+    width: 100%;
+    box-sizing: border-box;
+    height: 40px;
+    padding: 8px 11px;
+    background: var(--nf-surface-soft);
+    border: 1px solid var(--nf-border-soft);
+    border-radius: var(--nf-radius-md);
+    color: var(--nf-text-main);
+    outline: none;
+}
+
+#modal-add-item .nutrition-product-search {
+    width: 100%;
+    height: 40px;
+    box-sizing: border-box;
+    padding: 8px 13px;
+    background: var(--nf-surface-soft);
+    border: 1px solid rgba(155, 93, 229, .28);
+    border-radius: var(--nf-radius-md);
+    color: var(--nf-text-main);
+}
+
+#modal-add-item .nutrition-product-sort {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 6px;
+    padding: 4px;
+    border: 1px solid var(--nf-border-soft);
+    border-radius: var(--nf-radius-md);
+    background: var(--nf-surface-soft);
+}
+
+#modal-add-item .nutrition-product-sort-button {
+    min-height: 30px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--nf-text-muted);
+    cursor: pointer;
+}
+
+#modal-add-item .nutrition-product-sort-button[aria-pressed="true"] {
+    background: var(--nf-violet);
+    border-color: var(--nf-violet);
+    color: #fff;
+}
+
+#modal-add-item .nutrition-product-sections {
+    display: grid;
+    gap: 12px;
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+#modal-add-item .nutrition-product-section-title {
+    margin-bottom: 6px;
+    color: var(--nf-text-muted);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+#modal-add-item .nutrition-product-list {
+    display: grid;
+    gap: 6px;
+}
+
+#modal-add-item .nutrition-product-option {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 36px;
+    gap: 6px;
+}
+
+#modal-add-item .nutrition-product-select,
+#modal-add-item .nutrition-product-favorite {
+    min-height: 36px;
+    border: 1px solid var(--nf-border-input);
+    border-radius: var(--nf-radius-md);
+    background: var(--nf-surface-input);
+    color: var(--nf-text-main);
+}
+
+#modal-add-item .nutrition-product-select {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 7px 10px;
+    text-align: left;
+    cursor: pointer;
+}
+
+#modal-add-item .nutrition-product-select:hover,
+#modal-add-item .nutrition-product-favorite:hover {
+    border-color: var(--nf-violet);
+    background: var(--nf-surface-hover);
+}
+
+#modal-add-item .nutrition-product-option-text {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+#modal-add-item .nutrition-product-option-meta {
+    flex: 0 0 auto;
+    color: var(--nf-text-muted);
+    font-size: 11px;
+}
+
+#modal-add-item .nutrition-product-favorite {
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+}
+
+#modal-add-item .nutrition-product-favorite svg {
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: currentColor;
+}
+
+#modal-add-item .nutrition-product-favorite[aria-pressed="true"] svg {
+    fill: currentColor;
+}
+
+#modal-add-item .nutrition-selected-product {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    min-height: 38px;
+    padding: 8px 10px;
+    border: 1px solid var(--nf-border-soft);
+    border-radius: var(--nf-radius-md);
+    background: var(--nf-surface-soft);
+}
+
+#modal-add-item .nutrition-selected-product strong {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--nf-text-main);
+}
+
+#modal-add-item .nutrition-selected-product span {
+    flex: 0 0 auto;
+    color: var(--nf-text-muted);
+    font-size: 11px;
+}
+
+#modal-add-item .nutrition-entry-row {
+    display: grid;
+    grid-template-columns: minmax(150px, .95fr) minmax(0, .8fr) minmax(115px, .65fr) minmax(150px, .95fr);
+    align-items: end;
+    gap: 10px;
+    flex: 0 0 auto;
+}
+
+#modal-add-item .nutrition-entry-row button {
+    width: 100%;
+    height: 40px;
+}
+
+#modal-add-item .nutrition-add-to-meal {
+    background: var(--nf-violet);
+    border-color: var(--nf-violet);
+    color: #fff;
+}
+
+#modal-add-item .nutrition-add-to-meal:hover {
+    background: var(--nf-violet-soft);
+    border-color: var(--nf-violet-soft);
+}
+
+#modal-add-item .nutrition-add-product-inline {
+    width: 100%;
+    height: 40px;
+}
+
+#modal-add-item .nutrition-pending-items-block {
+    flex: 0 0 176px;
+    height: 176px;
+    min-height: 176px;
+    max-height: 176px;
+    overflow-y: auto;
+    padding: 10px;
+    box-sizing: border-box;
+    border: 1px solid var(--nf-border-soft);
+    border-radius: var(--nf-radius-md);
+    background: var(--nf-surface-soft);
+}
+
+#modal-add-item .nutrition-pending-items {
+    display: grid;
+    gap: 6px;
+}
+
+#modal-add-item .nutrition-pending-empty {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    place-items: center;
+    box-sizing: border-box;
+    padding: 18px;
+    color: var(--nf-text-muted);
+    font-size: 14px;
+    font-weight: 550;
+    text-align: center;
+}
+
+#modal-add-item .nutrition-pending-item {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 8px;
+    min-height: 34px;
+    padding: 7px 10px;
+    border: 1px solid var(--nf-border-soft);
+    border-radius: var(--nf-radius-md);
+    background: var(--nf-surface);
+}
+
+#modal-add-item .nutrition-pending-item-info {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 10px;
+    min-width: 0;
+}
+
+#modal-add-item .nutrition-pending-item-info strong {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--nf-text-main);
+    font-size: 13px;
+}
+
+#modal-add-item .nutrition-pending-item-info span {
+    color: var(--nf-text-muted);
+    font-size: 12px;
+}
+
+#modal-add-item .nutrition-add-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    flex: 0 0 auto;
+}
+
+#modal-add-item .nutrition-add-row .btn {
+    min-height: 38px;
+}
+
+#modal-add-product .nutrition-product-modal {
+    overflow-y: auto;
+}
+
+@media (max-width: 700px) {
+    #modal-add-item .nutrition-food-header {
+        grid-template-columns: 40px 1fr;
+    }
+
+    #modal-add-item .nutrition-entry-row {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    #modal-add-item .nutrition-entry-row > div:nth-child(2),
+    #modal-add-item .nutrition-entry-row > div:nth-child(3) {
+        grid-row: 2;
+    }
+}
