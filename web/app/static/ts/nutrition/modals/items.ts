@@ -422,6 +422,11 @@ export function setupItemModals(onRefresh: RefreshCallback): void {
         () => openAddItemModal(0),
     );
 
+    document.getElementById("dashboard-open-add-meal")?.addEventListener(
+        "click",
+        () => openAddItemModal(0),
+    );
+
     document.getElementById("save-add-item")?.addEventListener(
         "click",
         async () => {
