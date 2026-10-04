@@ -330,6 +330,7 @@ export function setupItemModals(onRefresh) {
     });
     document.getElementById("add-item-to-meal")?.addEventListener("click", () => queueSelectedProduct());
     document.getElementById("open-add-meal")?.addEventListener("click", () => openAddItemModal(0));
+    document.getElementById("dashboard-open-add-meal")?.addEventListener("click", () => openAddItemModal(0));
     document.getElementById("save-add-item")?.addEventListener("click", async () => {
         let mealId = Number(getInputValue("add-item-meal-id"));
         const mealCategory = getInputValue("add-meal-category").trim();
