@@ -163,10 +163,12 @@ function initializeNutritionPage(): void {
 
     setupWaterModal(
         loadNutritionDay,
+        ["add-water"],
     );
 
     setupWeightModal(
         loadNutritionDay,
+        ["open-update-weight"],
     );
 
     initializeNutritionHeatmap();

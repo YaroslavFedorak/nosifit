@@ -23,39 +23,47 @@
 .cmp-btn:hover { transform: translateY(-1px); }
 .cmp-btn:active { transform: translateY(0); }
 
-.cmp-btn-primary {
+.cmp-btn-primary,
+.cmp-btn.cmp-btn-primary {
   color: #17150d !important;
   background: var(--nf-yellow);
   border-color: rgba(244,200,74,.58);
   box-shadow: 0 8px 24px rgba(244,200,74,.13);
 }
-.cmp-btn-primary:hover {
+.cmp-btn-primary:hover,
+.cmp-btn.cmp-btn-primary:hover {
   background: var(--nf-yellow-soft);
   box-shadow: var(--nf-glow-yellow);
 }
 
-.cmp-btn-ghost {
+.cmp-btn-ghost,
+.cmp-btn.cmp-btn-ghost {
   color: var(--nf-text-main);
   background: rgba(255,255,255,.025);
   border-color: var(--nf-border-strong);
 }
-.cmp-btn-ghost:hover { background: rgba(255,255,255,.055); }
+.cmp-btn-ghost:hover,
+.cmp-btn.cmp-btn-ghost:hover { background: rgba(255,255,255,.055); }
 
-.cmp-btn-subtle {
+.cmp-btn-subtle,
+.cmp-btn.cmp-btn-subtle {
   color: var(--nf-text-muted);
   border-color: transparent;
 }
-.cmp-btn-subtle:hover {
+.cmp-btn-subtle:hover,
+.cmp-btn.cmp-btn-subtle:hover {
   color: var(--nf-text-main);
   background: rgba(255,255,255,.035);
 }
 
-.cmp-btn-danger {
+.cmp-btn-danger,
+.cmp-btn.cmp-btn-danger {
   color: #fff !important;
   background: var(--nf-red);
   border-color: rgba(240,111,122,.5);
 }
-.cmp-btn-danger:hover { filter: brightness(1.06); }
+.cmp-btn-danger:hover,
+.cmp-btn.cmp-btn-danger:hover { filter: brightness(1.06); }
 
 .cmp-btn-sm { min-height: 34px; padding: 7px 12px; font-size: 12px; }
 .cmp-btn-lg { min-height: 46px; padding: 11px 19px; font-size: 14px; }

@@ -1,36 +1,27 @@
-import { NutritionAPI, } from "../../../nutrition/api.js";
-import { dashboard_t, getLocale, } from "../../../i18n/index.js";
-import { renderMeals, } from "./render.js";
-import { setNutritionDay, } from "./state.js";
-import { setupMealModals, } from "../../modals/nutrition/meals.js";
-import { setupItemModals, } from "../../../nutrition/modals/items.js";
-import { setupWaterModal, } from "../../modals/nutrition/water.js";
-import { setupWeightModal, } from "../../modals/nutrition/weight.js";
+import { NutritionAPI } from "../../../nutrition/api.js";
+import { setupItemModals } from "../../../nutrition/modals/items.js";
+import { setupMealModals } from "../../../nutrition/modals/meals.js";
+import { setupWaterModal } from "../../../nutrition/modals/water.js";
+import { setupWeightModal } from "../../../nutrition/modals/weight.js";
+import { getLocale, loadTranslations, nutrition_t } from "../../../i18n/index.js";
+import { renderMeals } from "./render.js";
+import { setNutritionDay } from "./state.js";
 function renderWater(value) {
     const element = document.getElementById("dashboard-water");
-    if (!element) {
+    if (!element)
         return;
-    }
-    const water = Number(value ?? 0);
-    if (!Number.isFinite(water)) {
-        element.textContent = "—";
-        return;
-    }
-    element.textContent =
-        `${Math.round(water)} ${dashboard_t("units.milliliters")}`;
+    const liters = Number(value ?? 0);
+    element.textContent = Number.isFinite(liters)
+        ? `${liters.toFixed(1)} ${nutrition_t("units.liters")}`
+        : "—";
 }
 function renderWeight(data) {
     const element = document.getElementById("dashboard-weight");
-    if (!element) {
+    if (!element)
         return;
-    }
-    if (data.weight === null ||
-        !Number.isFinite(data.weight)) {
-        element.textContent = "—";
-        return;
-    }
-    element.textContent =
-        `${data.weight.toFixed(1)} ${dashboard_t("nutrition.weightUnit")}`;
+    element.textContent = data.weight !== null && Number.isFinite(data.weight)
+        ? `${Number(data.weight).toFixed(1)} ${nutrition_t("units.kg")}`
+        : "—";
 }
 async function loadNutrition() {
     try {
@@ -45,22 +36,28 @@ async function loadNutrition() {
 }
 async function loadWeight() {
     try {
-        const data = await NutritionAPI.getWeight();
-        renderWeight(data);
+        renderWeight(await NutritionAPI.getWeight());
     }
     catch (error) {
         console.error("Failed to load dashboard weight:", error);
     }
 }
-function initializeNutritionWidget() {
+async function initializeNutritionWidget() {
+    // The modals and the meal list are shared with the Nutrition page and
+    // read their texts from the "nutrition" namespace.
+    try {
+        await loadTranslations("nutrition");
+    }
+    catch (error) {
+        console.error("Failed to load nutrition translations:", error);
+    }
     setupMealModals(loadNutrition);
     setupItemModals(loadNutrition);
-    setupWaterModal(loadNutrition);
-    setupWeightModal(loadWeight);
-    window.addEventListener("nutrition:updated", () => {
-        void loadNutrition();
-    });
+    setupWaterModal(loadNutrition, ["dashboard-add-water"]);
+    setupWeightModal(loadWeight, ["dashboard-open-update-weight"]);
     void loadNutrition();
     void loadWeight();
 }
-document.addEventListener("DOMContentLoaded", initializeNutritionWidget);
+document.addEventListener("DOMContentLoaded", () => {
+    void initializeNutritionWidget();
+});

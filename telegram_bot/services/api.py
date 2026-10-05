@@ -4,7 +4,23 @@ import requests
 
 
 class NosiFitAPIError(RuntimeError):
-    pass
+    def __init__(self, message: str, code: str | None = None):
+        super().__init__(message)
+        self.code = code
+
+
+# Backend errors come with a stable ``code``; show users Ukrainian text
+# instead of the English ``error`` message.
+ERROR_MESSAGES = {
+    "invalid_category": "Оберіть тип прийому їжі.",
+    "invalid_entry": "Перевірте кількість продукту: до 5000 г / мл або до 100 шт.",
+    "invalid_product": "Перевірте значення продукту: калорії до 950, білки, жири й вуглеводи до 100 г на 100 г.",
+    "invalid_water": "Вкажіть об'єм від 0.05 до 5 л.",
+    "invalid_weight": "Вкажіть вагу від 20 до 400 кг.",
+    "meal_not_found": "Цей прийом їжі вже видалено.",
+    "entry_not_found": "Цей продукт уже видалено.",
+    "nothing_to_copy": "Учора не було записів.",
+}
 
 
 @dataclass
@@ -55,10 +71,12 @@ class NosiFitAPI:
             )
         if not response.ok:
             try:
-                detail = response.json().get("error", "NosiFit API request failed")
+                payload = response.json()
             except ValueError:
-                detail = "NosiFit API request failed"
-            raise NosiFitAPIError(detail)
+                payload = {}
+            code = payload.get("code")
+            detail = ERROR_MESSAGES.get(code) or "NosiFit не зміг виконати запит. Спробуйте ще раз."
+            raise NosiFitAPIError(detail, code)
         return response
 
     def health(self) -> bool:
@@ -231,7 +249,7 @@ class NosiFitAPI:
             "unit": unit,
             "locale": locale,
         }
-        if meal_id is not None:
+        if meal_id:
             payload["meal_id"] = meal_id
         return self._request(
             "PATCH",
@@ -284,3 +302,27 @@ class NosiFitAPI:
             },
         ).json()
 
+    def get_water(self) -> dict:
+        self.ensure_authenticated()
+        return self._request("GET", "/api/nutrition/water").json()
+
+    def add_water(self, liters: float) -> dict:
+        """Positive adds, negative subtracts."""
+        self.ensure_authenticated()
+        return self._request(
+            "POST",
+            "/api/nutrition/water",
+            json={"amount": liters},
+        ).json()
+
+    def get_weight(self) -> dict:
+        self.ensure_authenticated()
+        return self._request("GET", "/api/nutrition/weight").json()
+
+    def update_weight(self, weight: float) -> dict:
+        self.ensure_authenticated()
+        return self._request(
+            "POST",
+            "/api/nutrition/weight",
+            json={"weight": weight},
+        ).json()

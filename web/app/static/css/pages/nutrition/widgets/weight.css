@@ -341,3 +341,25 @@
         animation: none;
     }
 }
+
+
+/* Narrow cards: status text on top, full-width action below. */
+.weight-bottom-row,
+.water-bottom-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+}
+
+.water-progress,
+.weight-bmi {
+    justify-content: center;
+    text-align: center;
+    white-space: normal;
+}
+
+.water-add-button,
+.weight-update-button {
+    width: 100%;
+    justify-content: center;
+}

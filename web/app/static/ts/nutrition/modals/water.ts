@@ -1,132 +1,104 @@
-import {
-    NutritionAPI,
-} from "../api.js";
-
+import { NutritionAPI } from "../api.js";
+import { describeError } from "../errors.js";
+import { nutrition_t } from "../../i18n/index.js";
 import {
     closeModal,
+    emitNutritionChange,
+    getValue,
+    markInvalid,
+    onClick,
     openModal,
+    parseNumber,
+    setBusy,
+    setModalError,
+    setValue,
 } from "./modal.js";
 
+type RefreshCallback = () => void | Promise<void>;
+type WaterMode = "add" | "remove";
 
-type RefreshCallback =
-    () => void | Promise<void>;
+const MODAL_ID = "modal-water";
+const MAX_LITERS = 5;
 
+let mode: WaterMode = "add";
 
-function getInputValue(
-    id: string,
-): string {
-    const element =
-        document.getElementById(
-            id,
-        ) as HTMLInputElement | null;
+function setMode(next: WaterMode): void {
+    mode = next;
 
-    return element?.value ?? "";
-}
+    document.querySelectorAll<HTMLButtonElement>(`#${MODAL_ID} [data-water-mode]`).forEach((button) => {
+        button.setAttribute("aria-pressed", String(button.dataset.waterMode === mode));
+    });
 
-
-function setInputValue(
-    id: string,
-    value: string,
-): void {
-    const element =
-        document.getElementById(
-            id,
-        ) as HTMLInputElement | null;
-
-    if (element) {
-        element.value = value;
+    const save = document.getElementById("save-water") as HTMLButtonElement | null;
+    if (save) {
+        save.textContent = mode === "add"
+            ? (save.dataset.labelAdd ?? nutrition_t("actions.add"))
+            : (save.dataset.labelRemove ?? nutrition_t("water.modeRemove"));
     }
 }
 
-
+/**
+ * Water modal shared by the Nutrition page and the Dashboard.
+ * `triggerIds` are the buttons that open it on the current page.
+ */
 export function setupWaterModal(
     onRefresh: RefreshCallback,
+    triggerIds: string[] = ["add-water", "dashboard-add-water"],
 ): void {
-    document.getElementById(
-        "add-water",
-    )?.addEventListener(
-        "click",
-        () => {
-            setInputValue(
-                "water-amount",
-                "",
-            );
+    onClick(triggerIds, () => {
+        setMode("add");
+        setValue("water-amount", "");
+        markInvalid("water-amount", false);
+        openModal(MODAL_ID, "#water-amount");
+    });
 
-            openModal(
-                "modal-water",
-            );
-        },
-    );
+    onClick(["close-water-modal"], () => closeModal(MODAL_ID));
 
+    document.querySelectorAll<HTMLButtonElement>(`#${MODAL_ID} [data-water-mode]`).forEach((button) => {
+        button.addEventListener("click", () => setMode(button.dataset.waterMode as WaterMode));
+    });
 
-    document.getElementById(
-        "close-water-modal",
-    )?.addEventListener(
-        "click",
-        () => {
-            closeModal(
-                "modal-water",
-            );
-        },
-    );
+    document.querySelectorAll<HTMLButtonElement>(`#${MODAL_ID} [data-water-preset]`).forEach((button) => {
+        button.addEventListener("click", () => {
+            setValue("water-amount", button.dataset.waterPreset ?? "");
+            markInvalid("water-amount", false);
+            setModalError(MODAL_ID, null);
+        });
+    });
 
+    const save = document.getElementById("save-water") as HTMLButtonElement | null;
 
-    document.getElementById(
-        "save-water",
-    )?.addEventListener(
-        "click",
-        async () => {
-            const amount =
-                Number(
-                    getInputValue(
-                        "water-amount",
-                    ),
-                );
+    const submit = async (): Promise<void> => {
+        const amount = parseNumber(getValue("water-amount"));
 
-            if (
-                !Number.isFinite(amount) ||
-                amount <= 0
-            ) {
-                return;
-            }
+        if (!Number.isFinite(amount) || amount <= 0 || amount > MAX_LITERS) {
+            markInvalid("water-amount", true);
+            setModalError(MODAL_ID, nutrition_t("errors.invalid_water"));
+            return;
+        }
 
-            const saveButton =
-                document.getElementById(
-                    "save-water",
-                ) as HTMLButtonElement | null;
+        markInvalid("water-amount", false);
+        setModalError(MODAL_ID, null);
+        setBusy(save, true);
 
-            if (saveButton) {
-                saveButton.disabled = true;
-            }
+        try {
+            await NutritionAPI.addWater(mode === "add" ? amount : -amount);
+            closeModal(MODAL_ID);
+            emitNutritionChange("water");
+            await onRefresh();
+        } catch (error) {
+            setModalError(MODAL_ID, describeError(error));
+        } finally {
+            setBusy(save, false);
+        }
+    };
 
-            try {
-                await NutritionAPI.addWater(
-                    amount,
-                );
+    save?.addEventListener("click", () => void submit());
 
-                closeModal(
-                    "modal-water",
-                );
-
-                document.dispatchEvent(
-                    new CustomEvent(
-                        "nutrition:water-updated",
-                    ),
-                );
-
-                await onRefresh();
-
-            } catch (error) {
-                console.error(
-                    "Failed to save water:",
-                    error,
-                );
-
-            } finally {
-                if (saveButton) {
-                    saveButton.disabled = false;
-                }
-            }
-        },
-    );
+    document.getElementById("water-amount")?.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            void submit();
+        }
+    });
 }

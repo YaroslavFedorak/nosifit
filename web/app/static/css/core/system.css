@@ -226,16 +226,17 @@ body.app-page .tr-btn-primary:hover {
   box-shadow: var(--nf-glow-yellow);
 }
 
-body.app-page input:not([type="checkbox"]):not([type="radio"]),
-body.app-page select,
+/* .nf-input fields (shared nutrition modals) bring their own styling. */
+body.app-page input:not([type="checkbox"]):not([type="radio"]):not(.nf-input),
+body.app-page select:not(.nf-input),
 body.app-page textarea {
   border-radius: var(--nf-radius-sm);
   border-color: var(--nf-border-subtle);
   background: rgba(255,255,255,.022);
 }
 
-body.app-page input:not([type="checkbox"]):not([type="radio"]):focus,
-body.app-page select:focus,
+body.app-page input:not([type="checkbox"]):not([type="radio"]):not(.nf-input):focus,
+body.app-page select:not(.nf-input):focus,
 body.app-page textarea:focus {
   border-color: rgba(244,200,74,.55);
   box-shadow: 0 0 0 3px rgba(244,200,74,.08);

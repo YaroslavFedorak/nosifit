@@ -6,6 +6,7 @@ from flask_login import current_user, login_required
 from backend.app.models import Meal
 from backend.app.services.nutrition.calculation_service import NutritionValidationError
 from backend.app.services.nutrition.day_service import get_daily_nutrition_data
+from backend.app.services.nutrition.meal_categories import normalize_meal_category
 from backend.app.services.nutrition.item_service import add_item_service, add_items_service, delete_item_service, update_item_service
 from backend.app.services.nutrition.meal_service import add_meal_service, copy_meal_service, delete_meal_service, update_meal_service
 from backend.app.services.nutrition.product_service import (
@@ -28,6 +29,15 @@ from backend.app.services.nutrition.water_service import add_water_service, get_
 from backend.app.services.nutrition.weight_service import get_weight_data, update_user_weight
 
 nutrition_api = Blueprint("nutrition_api", __name__, url_prefix="/api/nutrition")
+
+MIN_WEIGHT_KG = 20.0
+MAX_WEIGHT_KG = 400.0
+MAX_WATER_LITERS_PER_ENTRY = 5.0
+
+
+def _error(message, code, status=400):
+    """JSON error with a stable ``code`` the clients can translate."""
+    return jsonify({"error": message, "code": code}), status
 
 
 def _item_payload(data):
@@ -175,7 +185,7 @@ def api_create_product():
             normalize_locale(data.get("locale")),
         )
     except ProductServiceError as exc:
-        return jsonify({"error": str(exc)}), 400
+        return _error(str(exc), "invalid_product")
     return jsonify(product), 201
 
 
@@ -224,36 +234,42 @@ def api_favorite_product(product_id):
 @nutrition_api.post("/meals")
 @login_required
 def api_add_meal():
-    data = request.get_json() or {}
-    name = (data.get("name") or "").strip()
-    category = (data.get("category") or "").strip()
+    data = request.get_json(silent=True) or {}
+    category = (
+        normalize_meal_category(data.get("category"))
+        or normalize_meal_category(data.get("name"))
+    )
 
-    if not name or not category:
-        return jsonify({"error": "Name and category are required"}), 400
+    if category is None:
+        return _error("Unknown meal category", "invalid_category")
 
     meal = add_meal_service(
         current_user.id,
         {
-            "name": name,
             "category": category,
             "time": data.get("time"),
             "date": data.get("date"),
         },
     )
-    return jsonify(serialize_meal(meal, data.get("locale", "uk"))), 201
+    return jsonify(serialize_meal(meal, normalize_locale(data.get("locale")))), 201
 
 
 @nutrition_api.put("/meals/<int:meal_id>")
 @login_required
 def api_edit_meal(meal_id):
+    data = request.get_json(silent=True) or {}
+
+    if "category" in data and normalize_meal_category(data.get("category")) is None:
+        return _error("Unknown meal category", "invalid_category")
+
     meal = update_meal_service(
         current_user.id,
         meal_id,
-        request.get_json() or {},
+        data,
     )
     if meal is None:
-        return jsonify({"error": "Meal not found"}), 404
-    return jsonify(serialize_meal(meal)), 200
+        return _error("Meal not found", "meal_not_found", 404)
+    return jsonify(serialize_meal(meal, normalize_locale(data.get("locale")))), 200
 
 
 @nutrition_api.delete("/meals/<int:meal_id>")
@@ -310,10 +326,10 @@ def _create_item():
 
         item = add_item_service(current_user.id, _item_payload(data))
     except (NutritionValidationError, ProductServiceError) as exc:
-        return jsonify({"error": str(exc)}), 400
+        return _error(str(exc), "invalid_entry")
 
     if item is None:
-        return jsonify({"error": "Meal not found"}), 404
+        return _error("Meal not found", "meal_not_found", 404)
 
     return jsonify({
         "id": item.id,
@@ -353,10 +369,10 @@ def api_add_entries_bulk():
     try:
         created = add_items_service(current_user.id, meal_id, payload)
     except (NutritionValidationError, ProductServiceError, TypeError, ValueError) as exc:
-        return jsonify({"error": str(exc)}), 400
+        return _error(str(exc), "invalid_entry")
 
     if created is None:
-        return jsonify({"error": "Meal not found"}), 404
+        return _error("Meal not found", "meal_not_found", 404)
 
     return jsonify({
         "status": "ok",
@@ -385,10 +401,10 @@ def _update_item(item_id):
             _entry_update_payload(data),
         )
     except (NutritionValidationError, ProductServiceError) as exc:
-        return jsonify({"error": str(exc)}), 400
+        return _error(str(exc), "invalid_entry")
 
     if item is None:
-        return jsonify({"error": "Entry not found"}), 404
+        return _error("Entry not found", "entry_not_found", 404)
 
     return jsonify({
         "id": item.id,
@@ -436,7 +452,7 @@ def api_copy_yesterday():
     ).all()
 
     if not meals:
-        return jsonify({"error": "No meals found yesterday"}), 400
+        return _error("No meals found yesterday", "nothing_to_copy")
 
     copied = []
     for meal in meals:
@@ -454,10 +470,13 @@ def api_update_weight():
     try:
         weight = float(data.get("weight"))
     except (TypeError, ValueError):
-        return jsonify({"error": "Invalid weight"}), 400
+        return _error("Invalid weight", "invalid_weight")
 
-    if weight <= 0:
-        return jsonify({"error": "Weight must be positive"}), 400
+    if not (MIN_WEIGHT_KG <= weight <= MAX_WEIGHT_KG):
+        return _error(
+            f"Weight must be between {MIN_WEIGHT_KG:g} and {MAX_WEIGHT_KG:g} kg",
+            "invalid_weight",
+        )
 
     entry = update_user_weight(current_user, weight)
     return jsonify({"status": "ok", "weight": entry.weight})
@@ -504,10 +523,14 @@ def api_add_water():
     try:
         amount = float(data.get("amount"))
     except (TypeError, ValueError):
-        return jsonify({"error": "Invalid amount"}), 400
+        return _error("Invalid amount", "invalid_water")
 
-    if amount <= 0:
-        return jsonify({"error": "Amount must be positive"}), 400
+    # Negative values subtract (fixing a mistaken entry).
+    if amount == 0 or abs(amount) > MAX_WATER_LITERS_PER_ENTRY:
+        return _error(
+            f"Amount must be between -{MAX_WATER_LITERS_PER_ENTRY:g} and {MAX_WATER_LITERS_PER_ENTRY:g} L",
+            "invalid_water",
+        )
 
     add_water_service(current_user.id, amount)
     water_data = get_water_data(current_user.id)

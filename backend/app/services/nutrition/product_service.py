@@ -154,7 +154,10 @@ def search_products(
             locale,
         )
 
-    name_filter = ProductName.locale.in_({locale, "en", "uk"})
+    # Match names in every language: people often type a product the way
+    # they know it, regardless of the interface language. Results are still
+    # displayed in the user's locale.
+    name_filter = ProductName.locale.in_(SUPPORTED_LOCALES)
     exact_products = (
         product_query
         .join(ProductName)
@@ -207,16 +210,54 @@ def get_product(user_id, product_id, locale="uk"):
     return serialize_product(product, user_id, locale)
 
 
+# Per-100 g sanity limits. Pure fat is ~900 kcal / 100 g, so anything above
+# these values is a typo.
+NUTRITION_LIMITS = {
+    "kcal_per_100g": 950.0,
+    "protein_per_100g": 100.0,
+    "fat_per_100g": 100.0,
+    "carbs_per_100g": 100.0,
+    "fiber_per_100g": 100.0,
+    "liquid_ml_per_100g": 100.0,
+}
+
+MAX_PRODUCT_NAME_LENGTH = 120
+MAX_GRAMS_PER_UNIT = 5000.0
+
+
 def _nutrition_value(data, key):
+    raw = data.get(key, 0)
+    if raw in (None, ""):
+        raw = 0
+
     try:
-        value = float(data.get(key, 0))
+        value = float(raw)
     except (TypeError, ValueError):
         raise ProductServiceError(f"Invalid {key}")
 
-    if value < 0:
+    if value != value or value < 0:
         raise ProductServiceError(f"{key} cannot be negative")
 
+    limit = NUTRITION_LIMITS.get(key)
+    if limit is not None and value > limit:
+        raise ProductServiceError(f"{key} cannot be greater than {limit:g}")
+
     return value
+
+
+def _grams_per_unit(value):
+    try:
+        grams_per_unit = float(value)
+    except (TypeError, ValueError):
+        raise ProductServiceError("Invalid grams_per_unit")
+
+    if grams_per_unit != grams_per_unit or grams_per_unit <= 0:
+        raise ProductServiceError("grams_per_unit must be positive")
+
+    if grams_per_unit > MAX_GRAMS_PER_UNIT:
+        raise ProductServiceError("grams_per_unit is too large")
+
+    return grams_per_unit
 
 
 def create_user_product(user_id, data, locale="uk"):
@@ -226,17 +267,14 @@ def create_user_product(user_id, data, locale="uk"):
     if not name:
         raise ProductServiceError("Product name is required")
 
+    if len(name) > MAX_PRODUCT_NAME_LENGTH:
+        raise ProductServiceError("Product name is too long")
+
     unit = (data.get("default_unit") or "g").strip().lower()
     if unit not in SUPPORTED_UNITS:
         raise ProductServiceError("Unsupported default unit")
 
-    try:
-        grams_per_unit = float(data.get("grams_per_unit", 1))
-    except (TypeError, ValueError):
-        raise ProductServiceError("Invalid grams_per_unit")
-
-    if grams_per_unit <= 0:
-        raise ProductServiceError("grams_per_unit must be positive")
+    grams_per_unit = _grams_per_unit(data.get("grams_per_unit", 1))
 
     category = (data.get("category") or "other").strip().lower()
     if category not in PRODUCT_CATEGORIES:
@@ -285,6 +323,9 @@ def update_user_product(user_id, product_id, data, locale="uk"):
         if not name:
             raise ProductServiceError("Product name cannot be empty")
 
+        if len(name) > MAX_PRODUCT_NAME_LENGTH:
+            raise ProductServiceError("Product name is too long")
+
         localized = ProductName.query.filter_by(
             product_id=product.id,
             locale=locale,
@@ -328,13 +369,7 @@ def update_user_product(user_id, product_id, data, locale="uk"):
         product.default_unit = unit
 
     if "grams_per_unit" in data:
-        try:
-            grams_per_unit = float(data["grams_per_unit"])
-        except (TypeError, ValueError):
-            raise ProductServiceError("Invalid grams_per_unit")
-
-        if grams_per_unit <= 0:
-            raise ProductServiceError("grams_per_unit must be positive")
+        grams_per_unit = _grams_per_unit(data["grams_per_unit"])
 
         product.grams_per_unit = grams_per_unit
 

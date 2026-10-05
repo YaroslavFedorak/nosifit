@@ -37,6 +37,6 @@ export async function loadWeight() {
         console.error("Failed to load weight:", error);
     }
 }
-document.addEventListener("nutrition:weight-updated", () => {
+window.addEventListener("nutrition:weight-updated", () => {
     void loadWeight();
 });

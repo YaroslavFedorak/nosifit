@@ -1,87 +1,61 @@
-import {
-    NutritionAPI,
-} from "../api.js";
-
+import { NutritionAPI } from "../api.js";
+import { normalizeMealCategory, suggestMealCategory } from "../categories.js";
+import { describeError } from "../errors.js";
+import { getLocale } from "../../i18n/index.js";
+import type { Meal } from "../types.js";
 import {
     closeModal,
+    emitNutritionChange,
+    getValue,
+    onClick,
     openModal,
+    setBusy,
+    setModalError,
+    setValue,
 } from "./modal.js";
-
 
 type RefreshCallback = () => void | Promise<void>;
 
+const MODAL_ID = "modal-edit-meal";
 
-function getInputValue(id: string): string {
-    const element = document.getElementById(id) as HTMLInputElement | null;
-
-    return element?.value ?? "";
-}
-
-
-function setInputValue(
-    id: string,
-    value: string,
-): void {
-    const element = document.getElementById(id) as HTMLInputElement | null;
-
-    if (element) {
-        element.value = value;
-    }
-}
-
-
-export function setupMealModals(
-    onRefresh: RefreshCallback,
-): void {
-    document.getElementById(
-        "close-edit-meal"
-    )?.addEventListener(
-        "click",
-        () => {
-            closeModal(
-                "modal-edit-meal"
-            );
-        }
+export function openEditMealModal(meal: Meal): void {
+    setValue("edit-meal-id", String(meal.id));
+    setValue(
+        "edit-meal-category",
+        normalizeMealCategory(meal.category ?? meal.name) ?? suggestMealCategory(),
     );
+    setValue("edit-meal-time", meal.time ?? "");
+    openModal(MODAL_ID, "#edit-meal-category");
+}
 
-    document.getElementById(
-        "save-edit-meal"
-    )?.addEventListener(
-        "click",
-        async () => {
-            const id =
-                getInputValue(
-                    "edit-meal-id"
-                );
+export function setupMealModals(onRefresh: RefreshCallback): void {
+    onClick(["close-edit-meal"], () => closeModal(MODAL_ID));
 
-            const category =
-                getInputValue(
-                    "edit-meal-category"
-                ).trim();
+    const save = document.getElementById("save-edit-meal") as HTMLButtonElement | null;
 
-            if (!id || !category) {
-                return;
-            }
+    save?.addEventListener("click", async () => {
+        const id = Number(getValue("edit-meal-id"));
+        const category = normalizeMealCategory(getValue("edit-meal-category"));
 
-            await NutritionAPI.updateMeal(
-                Number(id),
-                {
-                    name: category,
+        if (!id || !category) return;
 
-                    category,
+        setModalError(MODAL_ID, null);
+        setBusy(save, true);
 
-                    time:
-                        getInputValue(
-                            "edit-meal-time"
-                        ) || null,
-                }
-            );
+        try {
+            await NutritionAPI.updateMeal(id, {
+                category,
+                time: getValue("edit-meal-time") || null,
+                locale: getLocale(),
+            });
 
-            closeModal(
-                "modal-edit-meal"
-            );
-
+            closeModal(MODAL_ID);
+            emitNutritionChange("meals");
             await onRefresh();
+        } catch (error) {
+            setModalError(MODAL_ID, describeError(error));
+        } finally {
+            setBusy(save, false);
         }
-    );
+    });
 }

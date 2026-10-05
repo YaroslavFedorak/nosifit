@@ -80,11 +80,25 @@ function createElement(tag, className) {
         className;
     return element;
 }
+const RECOMMENDATION_NAMESPACES = [
+    "dashboard",
+    "nutrition",
+    "recovery",
+    "training",
+];
 function translateRecommendation(key, fallback, params = {}) {
     if (!key) {
         return fallback;
     }
-    return translate("dashboard", key, params);
+    // Recommendations come from several modules; their keys live in that
+    // module's namespace (e.g. nutrition recommendations in "nutrition").
+    for (const namespace of RECOMMENDATION_NAMESPACES) {
+        const translated = translate(namespace, key, params);
+        if (translated !== key) {
+            return translated;
+        }
+    }
+    return fallback || key;
 }
 function translateExercise(name) {
     const normalizedName = name.trim();

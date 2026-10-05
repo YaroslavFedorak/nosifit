@@ -1,0 +1,973 @@
+/*
+ * Nutrition modals — one design for every page.
+ *
+ * Used by the Nutrition page and the Dashboard (food picker, my product,
+ * edit product, edit meal, water, weight). Everything is scoped to
+ * `.modal.nf-modal`, so the generic `.modal` / `.modal-content` / `.btn`
+ * rules each page still has for its other modals don't leak in.
+ *
+ * Built on the global tokens from core/variables.css.
+ */
+
+.modal.nf-modal {
+    --nfm-accent: var(--nf-accent-nutrition, #9b5de5);
+    --nfm-accent-soft: var(--nf-accent-nutrition-soft, #c79bff);
+    --nfm-accent-tint: rgba(155, 93, 229, 0.12);
+    --nfm-accent-ring: rgba(155, 93, 229, 0.22);
+    --nfm-water: var(--nf-blue, #42c7d8);
+    --nfm-danger: var(--nf-red, #f06f7a);
+    --nfm-surface: var(--nf-surface, #0f131a);
+    --nfm-field: var(--nf-surface-soft, #131821);
+    --nfm-field-hover: var(--nf-surface-strong, #171d27);
+    --nfm-border: rgba(255, 255, 255, 0.08);
+    --nfm-border-strong: rgba(255, 255, 255, 0.14);
+    --nfm-text: var(--nf-text-main, #f3f5f7);
+    --nfm-muted: var(--nf-text-muted, #9da6b3);
+    --nfm-soft: var(--nf-text-soft, #707b89);
+    --nfm-radius: 12px;
+    --nfm-radius-lg: 18px;
+    --nfm-ease: var(--nf-ease, cubic-bezier(0.16, 1, 0.3, 1));
+    --nfm-control-h: 40px;
+
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    padding: 20px;
+    background: rgba(3, 5, 8, 0.68);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    font-family: inherit;
+}
+
+.modal.nf-modal.open {
+    display: flex;
+}
+
+.modal.nf-modal--stacked {
+    z-index: 2100;
+}
+
+.nf-modal *,
+.nf-modal *::before,
+.nf-modal *::after {
+    box-sizing: border-box;
+}
+
+/* ---------- Card ---------- */
+
+.nf-modal .nf-modal-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: min(440px, 100%);
+    max-width: 100%;
+    height: auto;
+    max-height: calc(100dvh - 40px);
+    margin: 0;
+    padding: 24px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    background: var(--nfm-surface);
+    border: 1px solid var(--nfm-border);
+    border-radius: var(--nfm-radius-lg);
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.45);
+    color: var(--nfm-text);
+    animation: nf-modal-in 0.22s var(--nfm-ease);
+}
+
+.nf-modal .nf-modal-card--medium {
+    width: min(560px, 100%);
+}
+
+.nf-modal .nf-modal-card--wide {
+    width: min(720px, 100%);
+    height: min(780px, calc(100dvh - 40px));
+    overflow: hidden;
+}
+
+@keyframes nf-modal-in {
+    from {
+        opacity: 0;
+        transform: translateY(8px) scale(0.985);
+    }
+
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+/* ---------- Header ---------- */
+
+.nf-modal .nf-modal-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    flex: 0 0 auto;
+}
+
+.nf-modal .nf-modal-heading {
+    display: grid;
+    gap: 4px;
+    min-width: 0;
+}
+
+.nf-modal .nf-modal-eyebrow {
+    color: var(--nfm-accent-soft);
+    font-size: 11px;
+    font-weight: 650;
+    letter-spacing: 0.08em;
+    line-height: 1.2;
+    text-transform: uppercase;
+}
+
+.nf-modal .nf-modal-eyebrow--water {
+    color: var(--nfm-water);
+}
+
+.nf-modal .nf-modal-title {
+    margin: 0;
+    color: var(--nfm-text);
+    font-size: 19px;
+    font-weight: 650;
+    line-height: 1.25;
+}
+
+.nf-modal .nf-modal-close {
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+    width: 32px;
+    height: 32px;
+    margin: -4px -6px 0 0;
+    padding: 0;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    background: transparent;
+    color: var(--nfm-muted);
+    cursor: pointer;
+    transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease;
+}
+
+.nf-modal .nf-modal-close svg {
+    width: 18px;
+    height: 18px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+}
+
+.nf-modal .nf-modal-close:hover {
+    background: var(--nfm-field);
+    border-color: var(--nfm-border);
+    color: var(--nfm-text);
+}
+
+.nf-modal .nf-modal-hint {
+    margin: -6px 0 0;
+    color: var(--nfm-muted);
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+/* ---------- Fields ---------- */
+
+.nf-modal .nf-field {
+    display: grid;
+    gap: 6px;
+    min-width: 0;
+}
+
+.nf-modal .nf-field[hidden] {
+    display: none;
+}
+
+.nf-modal .nf-field--wide {
+    grid-column: 1 / -1;
+}
+
+.nf-modal .nf-label {
+    color: var(--nfm-muted);
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.2;
+    opacity: 1;
+}
+
+.nf-modal .nf-field-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.nf-modal .nf-field-grid--macros {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.nf-modal .nf-fieldset {
+    display: grid;
+    gap: 10px;
+    padding: 14px;
+    border: 1px solid var(--nfm-border);
+    border-radius: var(--nfm-radius);
+    background: rgba(255, 255, 255, 0.015);
+}
+
+.nf-modal .nf-fieldset-title {
+    color: var(--nfm-soft);
+    font-size: 11px;
+    font-weight: 650;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.nf-modal .nf-input {
+    width: 100%;
+    height: var(--nfm-control-h);
+    margin: 0;
+    padding: 0 12px;
+    border: 1px solid var(--nfm-border);
+    border-radius: var(--nfm-radius);
+    background: var(--nfm-field);
+    box-shadow: none;
+    color: var(--nfm-text);
+    font: inherit;
+    font-size: 14px;
+    font-weight: 500;
+    outline: none;
+    color-scheme: dark;
+    transition: border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+}
+
+.nf-modal select.nf-input {
+    padding-right: 32px;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239da6b3' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+}
+
+.nf-modal .nf-input::placeholder {
+    color: var(--nfm-soft);
+}
+
+.nf-modal .nf-input:hover {
+    border-color: var(--nfm-border-strong);
+}
+
+.nf-modal .nf-input:focus,
+.nf-modal .nf-input:focus-visible {
+    outline: none;
+    border-color: var(--nfm-accent);
+    background: var(--nfm-surface);
+    box-shadow: 0 0 0 3px var(--nfm-accent-ring);
+}
+
+.nf-modal .nf-input[readonly] {
+    color: var(--nfm-muted);
+    cursor: default;
+}
+
+.nf-modal .nf-input[readonly]:focus {
+    border-color: var(--nfm-border);
+    box-shadow: none;
+}
+
+.nf-modal .nf-input[aria-invalid="true"] {
+    border-color: var(--nfm-danger);
+}
+
+.nf-modal input[type="number"].nf-input {
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+
+.nf-modal input[type="number"].nf-input::-webkit-inner-spin-button,
+.nf-modal input[type="number"].nf-input::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.nf-modal .nf-input-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.nf-modal .nf-input-wrap .nf-input {
+    padding-right: 46px;
+}
+
+.nf-modal .nf-input-unit {
+    position: absolute;
+    right: 12px;
+    color: var(--nfm-accent-soft);
+    font-size: 12px;
+    font-weight: 650;
+    pointer-events: none;
+}
+
+/* ---------- Checkbox ---------- */
+
+.nf-modal .nf-check {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    width: fit-content;
+    color: var(--nfm-text);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    user-select: none;
+}
+
+.nf-modal .nf-check input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.nf-modal .nf-check-box {
+    display: grid;
+    place-items: center;
+    width: 18px;
+    height: 18px;
+    border: 1px solid var(--nfm-border-strong);
+    border-radius: 6px;
+    background: var(--nfm-field);
+    transition: background 0.18s ease, border-color 0.18s ease;
+}
+
+.nf-modal .nf-check input:checked + .nf-check-box {
+    border-color: var(--nfm-accent);
+    background: var(--nfm-accent);
+}
+
+.nf-modal .nf-check input:checked + .nf-check-box::after {
+    content: "";
+    width: 5px;
+    height: 9px;
+    margin-top: -2px;
+    border: solid #fff;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+.nf-modal .nf-check input:focus-visible + .nf-check-box {
+    box-shadow: 0 0 0 3px var(--nfm-accent-ring);
+}
+
+/* ---------- Buttons ---------- */
+
+.nf-modal .nf-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-height: var(--nfm-control-h);
+    height: auto;
+    margin: 0;
+    padding: 0 16px;
+    border: 1px solid var(--nfm-border);
+    border-radius: var(--nfm-radius);
+    background: var(--nfm-field);
+    color: var(--nfm-text);
+    font: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.2;
+    white-space: nowrap;
+    cursor: pointer;
+    transform: none;
+    transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease;
+}
+
+.nf-modal .nf-btn svg {
+    width: 16px;
+    height: 16px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+}
+
+.nf-modal .nf-btn:hover {
+    border-color: var(--nfm-border-strong);
+    background: var(--nfm-field-hover);
+    color: var(--nfm-text);
+    transform: none;
+}
+
+.nf-modal .nf-btn:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--nfm-accent-ring);
+}
+
+.nf-modal .nf-btn:disabled,
+.nf-modal .nf-btn[aria-busy="true"] {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.nf-modal .nf-btn--primary {
+    border-color: var(--nfm-accent);
+    background: var(--nfm-accent);
+    color: #fff;
+}
+
+.nf-modal .nf-btn--primary:hover:not(:disabled) {
+    border-color: #a971ec;
+    background: #a971ec;
+    color: #fff;
+    box-shadow: 0 8px 22px rgba(155, 93, 229, 0.25);
+}
+
+.nf-modal .nf-btn--accent-soft {
+    border-color: rgba(155, 93, 229, 0.35);
+    background: var(--nfm-accent-tint);
+    color: var(--nfm-accent-soft);
+}
+
+.nf-modal .nf-btn--accent-soft:hover:not(:disabled) {
+    border-color: var(--nfm-accent);
+    background: rgba(155, 93, 229, 0.2);
+    color: #fff;
+}
+
+.nf-modal .nf-btn--ghost {
+    border-color: transparent;
+    background: transparent;
+    color: var(--nfm-accent-soft);
+    padding-inline: 10px;
+}
+
+.nf-modal .nf-btn--ghost:hover:not(:disabled) {
+    border-color: transparent;
+    background: var(--nfm-accent-tint);
+    color: #fff;
+}
+
+/* ---------- Segmented control & chips ---------- */
+
+.nf-modal .nf-segmented {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 4px;
+    padding: 4px;
+    border: 1px solid var(--nfm-border);
+    border-radius: var(--nfm-radius);
+    background: var(--nfm-field);
+}
+
+.nf-modal .nf-segmented--two {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.nf-modal .nf-segmented-button {
+    min-height: 30px;
+    padding: 4px 8px;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--nfm-muted);
+    font: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: pointer;
+    transition: background 0.18s ease, color 0.18s ease;
+}
+
+.nf-modal .nf-segmented-button:hover {
+    color: var(--nfm-text);
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.nf-modal .nf-segmented-button[aria-pressed="true"] {
+    background: var(--nfm-accent);
+    color: #fff;
+}
+
+.nf-modal .nf-segmented-button:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--nfm-accent-ring);
+}
+
+.nf-modal .nf-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.nf-modal .nf-chip {
+    min-height: 32px;
+    padding: 0 12px;
+    border: 1px solid var(--nfm-border);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--nfm-muted);
+    font: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: border-color 0.18s ease, color 0.18s ease, background 0.18s ease;
+}
+
+.nf-modal .nf-chip:hover,
+.nf-modal .nf-chip[aria-pressed="true"] {
+    border-color: rgba(66, 199, 216, 0.45);
+    background: rgba(66, 199, 216, 0.08);
+    color: var(--nf-blue-soft, #8be3ec);
+}
+
+/* ---------- Food picker ---------- */
+
+.nf-modal .nf-field-grid--meal {
+    flex: 0 0 auto;
+}
+
+.nf-modal .nf-catalog {
+    display: flex;
+    flex: 1 1 0;
+    flex-direction: column;
+    gap: 10px;
+    min-height: 0;
+}
+
+.nf-modal .nf-search {
+    position: relative;
+    display: flex;
+    align-items: center;
+    flex: 0 0 auto;
+}
+
+.nf-modal .nf-search-icon {
+    position: absolute;
+    left: 12px;
+    width: 16px;
+    height: 16px;
+    fill: none;
+    stroke: var(--nfm-soft);
+    stroke-width: 2;
+    stroke-linecap: round;
+    pointer-events: none;
+}
+
+.nf-modal .nf-search-input {
+    padding-left: 36px;
+}
+
+.nf-modal .nf-search-input::-webkit-search-cancel-button {
+    filter: invert(0.7);
+}
+
+.nf-modal .nf-catalog-sections {
+    flex: 1 1 0;
+    min-height: 120px;
+    margin-right: -6px;
+    padding-right: 6px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+
+.nf-modal .nf-catalog-sections section[hidden] {
+    display: none;
+}
+
+.nf-modal .nf-product-list {
+    display: grid;
+    gap: 6px;
+}
+
+.nf-modal .nf-product {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 40px;
+    gap: 6px;
+}
+
+.nf-modal .nf-product-select {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    min-width: 0;
+    min-height: 40px;
+    padding: 8px 12px;
+    border: 1px solid var(--nfm-border);
+    border-radius: var(--nfm-radius);
+    background: var(--nfm-field);
+    color: var(--nfm-text);
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+    transition: border-color 0.18s ease, background 0.18s ease;
+}
+
+.nf-modal .nf-product-select:hover {
+    border-color: var(--nfm-border-strong);
+    background: var(--nfm-field-hover);
+}
+
+.nf-modal .nf-product-select:focus-visible {
+    outline: none;
+    border-color: var(--nfm-accent);
+    box-shadow: 0 0 0 3px var(--nfm-accent-ring);
+}
+
+.nf-modal .nf-product-select[aria-pressed="true"] {
+    border-color: var(--nfm-accent);
+    background: var(--nfm-accent-tint);
+}
+
+.nf-modal .nf-product-name {
+    min-width: 0;
+    overflow: hidden;
+    color: var(--nfm-text);
+    font-size: 14px;
+    font-weight: 500;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.nf-modal .nf-product-brand {
+    color: var(--nfm-soft);
+    font-weight: 400;
+}
+
+.nf-modal .nf-product-meta {
+    flex: 0 0 auto;
+    color: var(--nfm-muted);
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+.nf-modal .nf-product-favorite {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    min-height: 40px;
+    padding: 0;
+    border: 1px solid var(--nfm-border);
+    border-radius: var(--nfm-radius);
+    background: var(--nfm-field);
+    color: var(--nfm-soft);
+    cursor: pointer;
+    transition: border-color 0.18s ease, color 0.18s ease, background 0.18s ease;
+}
+
+.nf-modal .nf-product-favorite svg {
+    width: 18px;
+    height: 18px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linejoin: round;
+}
+
+.nf-modal .nf-product-favorite:hover,
+.nf-modal .nf-product-favorite[aria-pressed="true"] {
+    border-color: rgba(244, 200, 74, 0.4);
+    color: var(--nf-yellow, #f4c84a);
+}
+
+.nf-modal .nf-product-favorite[aria-pressed="true"] svg {
+    fill: currentColor;
+}
+
+.nf-modal .nf-product-favorite:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--nfm-accent-ring);
+}
+
+.nf-modal .nf-product-empty {
+    padding: 18px 4px;
+    color: var(--nfm-muted);
+    font-size: 13px;
+    text-align: center;
+}
+
+.nf-modal .nf-entry {
+    display: grid;
+    gap: 10px;
+    flex: 0 0 auto;
+    padding: 12px;
+    border: 1px solid var(--nfm-border);
+    border-radius: var(--nfm-radius);
+    background: rgba(255, 255, 255, 0.015);
+}
+
+.nf-modal .nf-selected-product {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    min-height: 20px;
+    min-width: 0;
+}
+
+.nf-modal .nf-selected-product strong {
+    min-width: 0;
+    overflow: hidden;
+    color: var(--nfm-text);
+    font-size: 14px;
+    font-weight: 650;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.nf-modal .nf-selected-product span {
+    flex: 0 0 auto;
+    color: var(--nfm-muted);
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+.nf-modal .nf-selected-product.is-empty span {
+    color: var(--nfm-soft);
+}
+
+.nf-modal .nf-entry-controls {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.8fr) auto;
+    align-items: end;
+    gap: 10px;
+}
+
+.nf-modal .nf-pending {
+    display: grid;
+    gap: 8px;
+    flex: 0 0 auto;
+    min-height: 0;
+}
+
+.nf-modal .nf-pending-list {
+    max-height: 136px;
+}
+
+.nf-modal .nf-pending-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.nf-modal .nf-pending-total {
+    color: var(--nfm-accent-soft);
+    font-size: 12px;
+    font-weight: 650;
+}
+
+.nf-modal .nf-pending-empty {
+    display: grid;
+    place-items: center;
+    min-height: 44px;
+    padding: 12px;
+    border: 1px dashed var(--nfm-border-strong);
+    border-radius: var(--nfm-radius);
+    color: var(--nfm-soft);
+    font-size: 13px;
+    text-align: center;
+}
+
+.nf-modal .nf-pending-list {
+    display: grid;
+    align-content: start;
+    gap: 6px;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+
+.nf-modal .nf-pending-empty[hidden],
+.nf-modal .nf-pending-list[hidden] {
+    display: none;
+}
+
+.nf-modal .nf-pending-item {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto 28px;
+    align-items: center;
+    gap: 10px;
+    min-height: 38px;
+    padding: 6px 6px 6px 12px;
+    border: 1px solid var(--nfm-border);
+    border-radius: var(--nfm-radius);
+    background: var(--nfm-field);
+}
+
+.nf-modal .nf-pending-item.is-existing {
+    background: transparent;
+    border-style: dashed;
+}
+
+.nf-modal .nf-pending-name {
+    min-width: 0;
+    overflow: hidden;
+    color: var(--nfm-text);
+    font-size: 13px;
+    font-weight: 600;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.nf-modal .nf-pending-item.is-existing .nf-pending-name {
+    color: var(--nfm-muted);
+    font-weight: 500;
+}
+
+.nf-modal .nf-pending-amount {
+    color: var(--nfm-muted);
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+.nf-modal .nf-pending-remove,
+.nf-modal .nf-pending-status {
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--nfm-soft);
+}
+
+.nf-modal .nf-pending-remove {
+    cursor: pointer;
+}
+
+.nf-modal .nf-pending-remove:hover {
+    background: rgba(240, 111, 122, 0.12);
+    color: var(--nfm-danger);
+}
+
+.nf-modal .nf-pending-remove svg,
+.nf-modal .nf-pending-status svg {
+    width: 15px;
+    height: 15px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2.2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* ---------- Error & footer ---------- */
+
+.nf-modal .nf-modal-error {
+    margin: 0;
+    padding: 10px 12px;
+    border: 1px solid rgba(240, 111, 122, 0.35);
+    border-radius: var(--nfm-radius);
+    background: rgba(240, 111, 122, 0.08);
+    color: #ffb3ba;
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+.nf-modal .nf-modal-error[hidden] {
+    display: none;
+}
+
+.nf-modal .nf-modal-footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex: 0 0 auto;
+    gap: 8px;
+    margin-top: 4px;
+}
+
+.nf-modal .nf-modal-footer-start {
+    margin-right: auto;
+}
+
+/* ---------- Small screens ---------- */
+
+@media (max-width: 640px) {
+    .modal.nf-modal {
+        align-items: flex-end;
+        padding: 0;
+    }
+
+    .nf-modal .nf-modal-card,
+    .nf-modal .nf-modal-card--medium,
+    .nf-modal .nf-modal-card--wide {
+        width: 100%;
+        max-height: 92dvh;
+        padding: 20px 16px calc(16px + env(safe-area-inset-bottom));
+        border-radius: 20px 20px 0 0;
+        border-bottom: 0;
+    }
+
+    /* On phones the whole sheet scrolls; the product list keeps a usable height. */
+    .nf-modal .nf-modal-card--wide {
+        height: auto;
+        overflow-y: auto;
+    }
+
+    .nf-modal .nf-catalog {
+        flex: 0 0 auto;
+    }
+
+    .nf-modal .nf-catalog-sections {
+        flex: 0 0 auto;
+        height: 36dvh;
+        min-height: 180px;
+    }
+
+    .nf-modal .nf-field-grid--macros {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .nf-modal .nf-entry-controls {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    }
+
+    .nf-modal .nf-entry-controls .nf-btn {
+        grid-column: 1 / -1;
+    }
+
+    .nf-modal .nf-product-meta {
+        display: none;
+    }
+
+    .nf-modal .nf-pending-list {
+        max-height: 92px;
+    }
+
+    .nf-modal .nf-modal-footer {
+        flex-wrap: wrap;
+    }
+
+    .nf-modal .nf-modal-footer .nf-btn {
+        flex: 1 1 0;
+    }
+
+    .nf-modal .nf-modal-footer .nf-modal-footer-start {
+        flex: 1 0 100%;
+        margin-right: 0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .nf-modal .nf-modal-card {
+        animation: none;
+    }
+}

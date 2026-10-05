@@ -469,3 +469,137 @@
         line-height: 1.5;
     }
 }
+
+/* ---------- Consistency pass (shared meal list + modals) ---------- */
+
+/* "New meal" uses the nutrition accent, same as on the Nutrition page. */
+body.app-page .db-card-nutrition .db-nutrition-new-meal {
+    background: var(--nf-accent-nutrition);
+    border-color: var(--nf-accent-nutrition);
+    color: #fff;
+    font-weight: 650;
+    box-shadow: 0 8px 22px rgba(155, 93, 229, .18);
+}
+
+body.app-page .db-card-nutrition .db-nutrition-new-meal:hover {
+    background: #a971ec;
+    border-color: #a971ec;
+    color: #fff;
+    box-shadow: 0 10px 26px rgba(155, 93, 229, .26);
+}
+
+.db-nutrition-meals-list .meals-empty {
+    display: grid;
+    place-items: center;
+    height: 100%;
+    min-height: 120px;
+    padding: 16px;
+    color: var(--nf-text-muted);
+    font-size: 13px;
+    font-weight: 600;
+    text-align: center;
+}
+
+.db-nutrition-meals-list .meal-title-block:focus:not(:focus-visible) {
+    outline: none;
+}
+
+.db-nutrition-meals-list .meal-title-block:focus-visible {
+    outline: 2px solid rgba(155, 93, 229, .55);
+    outline-offset: 3px;
+    border-radius: 6px;
+}
+
+.db-nutrition-meals-list .meal-time {
+    flex: 0 0 auto;
+    color: var(--nf-text-muted);
+    font-size: 11px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+}
+
+/* Compact column: "add food" is an icon button here. */
+.db-nutrition-meals-list .meal-action-add {
+    display: inline-grid;
+    place-items: center;
+    width: 30px;
+    padding: 0;
+    background: rgba(155, 93, 229, .12);
+    border-color: rgba(155, 93, 229, .35);
+    color: var(--nf-accent-nutrition-soft);
+}
+
+.db-nutrition-meals-list .meal-action-add:hover {
+    background: var(--nf-accent-nutrition);
+    border-color: var(--nf-accent-nutrition);
+    color: #fff;
+}
+
+.db-nutrition-meals-list .meal-action-add-label {
+    display: none;
+}
+
+.db-nutrition-meals-list .meal-action-delete.is-confirming,
+.db-nutrition-meals-list .meal-item-delete.is-confirming {
+    background: rgba(240, 111, 122, .16);
+    border-color: rgba(240, 111, 122, .55);
+    color: #ff8f99;
+}
+
+/* Footer: two equal tiles; value and button never overlap. */
+.db-nutrition-footer {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    align-items: stretch;
+}
+
+.db-nutrition-footer-group,
+.db-nutrition-weight-group {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+    padding: 10px;
+    border: 1px solid var(--nf-border-soft);
+    border-radius: var(--nf-radius-md);
+    background: var(--nf-surface-soft);
+    justify-content: stretch;
+}
+
+.db-nutrition-stat {
+    justify-content: space-between;
+}
+
+.db-nutrition-stat-value {
+    color: var(--nf-accent-nutrition-soft);
+    font-variant-numeric: tabular-nums;
+}
+
+#dashboard-water.db-nutrition-stat-value {
+    color: var(--nf-blue);
+}
+
+body.app-page .db-nutrition-footer .db-btn {
+    width: 100%;
+    min-height: 32px;
+    padding: 6px 10px;
+    font-size: 12px;
+}
+
+@media (max-width: 700px) {
+    .db-nutrition-footer {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+/* The card has no fixed height once the dashboard stacks into one column;
+   with flex-basis 0 the content collapsed to nothing on phones. */
+.db-nutrition-content {
+    flex: 1 1 auto;
+}
+
+/* Keep the card the same height as before the footer became two tiles. */
+@media (min-width: 1101px) {
+    .db-nutrition-meals-box {
+        height: 268px;
+    }
+}

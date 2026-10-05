@@ -5,6 +5,10 @@ from dataclasses import dataclass
 
 SUPPORTED_UNITS = {"g", "ml", "pcs"}
 
+# Upper bounds for a single entry. Anything above is almost certainly a typo
+# (e.g. 50000 g instead of 500 g) and would wreck the day's totals.
+MAX_AMOUNT_BY_UNIT = {"g": 5000.0, "ml": 5000.0, "pcs": 100.0}
+
 
 class NutritionValidationError(ValueError):
     pass
@@ -38,10 +42,19 @@ def normalize_amount(amount) -> float:
     except (TypeError, ValueError):
         raise NutritionValidationError("Amount must be a number")
 
-    if value <= 0:
+    if value != value or value <= 0:
         raise NutritionValidationError("Amount must be positive")
 
     return value
+
+
+def validate_amount_for_unit(amount: float, unit: str) -> None:
+    limit = MAX_AMOUNT_BY_UNIT.get(unit)
+
+    if limit is not None and amount > limit:
+        raise NutritionValidationError(
+            f"Amount is too large (max {limit:g} {unit})"
+        )
 
 
 def amount_to_grams(amount, unit: str, grams_per_unit: float) -> float:
@@ -85,6 +98,7 @@ def calculate_liquid_ml(
 def calculate_product_nutrition(product, amount, unit=None) -> CalculatedNutrition:
     normalized_unit = normalize_unit(unit, product.default_unit)
     amount_value = normalize_amount(amount)
+    validate_amount_for_unit(amount_value, normalized_unit)
     grams = amount_to_grams(
         amount_value,
         normalized_unit,

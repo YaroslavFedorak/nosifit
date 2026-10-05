@@ -37,7 +37,4 @@ export function renderBalance(data) {
     safeSet("carb-diff", `${data.carb_diff_label ?? 0} ${nutrition_t("units.carbsShort")}`);
     safeSet("water-today", `${data.water ?? 0} ${nutrition_t("units.liters")}`);
     safeSet("water-goal", `${data.water_goal ?? 0} ${nutrition_t("units.liters")}`);
-    if (data.current_weight != null) {
-        safeSet("weight-current", `${data.current_weight} ${nutrition_t("units.kg")}`);
-    }
 }

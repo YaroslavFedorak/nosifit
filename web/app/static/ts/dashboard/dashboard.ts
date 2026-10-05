@@ -203,10 +203,8 @@ function bindNutritionSummary(
             "dashboard-protein"
         );
 
-    const water =
-        document.getElementById(
-            "dashboard-water"
-        );
+    // #dashboard-water belongs to the nutrition widget
+    // (widgets/nutrition/index.ts), which keeps it in sync after edits.
 
     if (!nutrition) {
         if (calories) {
@@ -215,10 +213,6 @@ function bindNutritionSummary(
 
         if (protein) {
             protein.textContent = "—";
-        }
-
-        if (water) {
-            water.textContent = "—";
         }
 
         return;
@@ -248,17 +242,6 @@ function bindNutritionSummary(
                 : "—";
     }
 
-    if (water) {
-        const value =
-            Number(
-                nutrition.water
-            );
-
-        water.textContent =
-            Number.isFinite(value)
-                ? `${Math.round(value)} ${dashboard_t("units.milliliters")}`
-                : "—";
-    }
 }
 
 function bindHeatmap(
@@ -748,6 +731,7 @@ async function init(): Promise<void> {
         loadTranslations("dashboard"),
         loadTranslations("exercises"),
         loadTranslations("recovery"),
+        loadTranslations("nutrition"),
     ]);
 
     bindHeaderDate();

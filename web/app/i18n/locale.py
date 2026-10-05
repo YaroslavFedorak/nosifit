@@ -62,13 +62,10 @@ def _load_translation_directory(
     return translations
 
 
-def load_translation(
+def _load_raw_translation(
     locale: str,
     namespace: str,
 ) -> dict:
-    if locale not in SUPPORTED_LOCALES:
-        locale = DEFAULT_LOCALE
-
     directory = TRANSLATIONS_DIR / locale / namespace
 
     if directory.is_dir():
@@ -80,16 +77,39 @@ def load_translation(
     path = TRANSLATIONS_DIR / locale / f"{namespace}.json"
 
     if not path.exists():
-        path = TRANSLATIONS_DIR / DEFAULT_LOCALE / f"{namespace}.json"
-
-    if not path.exists():
         return {}
 
     with path.open(
         "r",
         encoding="utf-8-sig",
     ) as file:
-        return json.load(file)
+        data = json.load(file)
+
+    return data if isinstance(data, dict) else {}
+
+
+def load_translation(
+    locale: str,
+    namespace: str,
+) -> dict:
+    """Translations for a namespace with per-key fallback.
+
+    Keys missing in the requested locale fall back to the default locale,
+    so a forgotten key shows Ukrainian text instead of a raw key such as
+    ``units.kcal``.
+    """
+    if locale not in SUPPORTED_LOCALES:
+        locale = DEFAULT_LOCALE
+
+    translations = _load_raw_translation(DEFAULT_LOCALE, namespace)
+
+    if locale != DEFAULT_LOCALE:
+        _merge_translations(
+            translations,
+            _load_raw_translation(locale, namespace),
+        )
+
+    return translations
 
 
 def get_translation(

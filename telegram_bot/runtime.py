@@ -1,4 +1,6 @@
+from datetime import datetime
 from functools import lru_cache
+from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 from telegram_bot.config import TelegramConfig
 from telegram_bot.services.api import NosiFitAPI, NosiFitAPIError
@@ -34,3 +36,11 @@ def is_authenticated(user_id: int) -> bool:
 
 def logout(user_id: int) -> None:
     _sessions.pop(user_id, None)
+
+
+def local_now() -> datetime:
+    """Current time in the users' timezone (the server may run in UTC)."""
+    try:
+        return datetime.now(ZoneInfo(get_config().timezone))
+    except (ZoneInfoNotFoundError, RuntimeError):
+        return datetime.now()

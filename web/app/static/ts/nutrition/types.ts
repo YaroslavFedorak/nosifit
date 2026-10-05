@@ -55,6 +55,7 @@ export interface Meal {
     id: number;
     name: string;
     category?: string | null;
+    date?: string | null;
     time?: string | null;
     total_calories?: number;
     total_protein?: number;
@@ -91,7 +92,7 @@ export interface NutritionDay {
 }
 
 export interface MealPayload {
-    name: string;
+    name?: string;
     category: string;
     time?: string | null;
     date?: string | null;

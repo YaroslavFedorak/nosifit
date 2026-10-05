@@ -1,47 +1,38 @@
-<div class="modal" id="modal-edit-meal">
-  <div class="modal-content">
-    <h2>{{ translate("nutrition", "meals.editTitle") }}</h2>
-
-    <p class="modal-hint">{{ translate("nutrition", "meals.editHint") }}</p>
-
+<div class="modal nf-modal" id="modal-edit-meal" role="dialog" aria-modal="true" aria-labelledby="edit-meal-title">
+  <div class="modal-content nf-modal-card">
     <input type="hidden" id="edit-meal-id" />
 
-    <label for="edit-meal-category">
-      {{ translate("nutrition", "fields.category") }}
-    </label>
+    <header class="nf-modal-header">
+      <div class="nf-modal-heading">
+        <span class="nf-modal-eyebrow">{{ translate("nutrition", "modals.eyebrow.meal") }}</span>
+        <h2 class="nf-modal-title" id="edit-meal-title">{{ translate("nutrition", "meals.editTitle") }}</h2>
+      </div>
+      {% include "app/nutrition/modals/_close_button.html" %}
+    </header>
 
-    <select id="edit-meal-category">
-      <option value="Сніданок">
-        {{ translate("nutrition", "meal_categories.breakfast") }}
-      </option>
+    <p class="nf-modal-hint">{{ translate("nutrition", "meals.editHint") }}</p>
 
-      <option value="Обід">
-        {{ translate("nutrition", "meal_categories.lunch") }}
-      </option>
-
-      <option value="Вечеря">
-        {{ translate("nutrition", "meal_categories.dinner") }}
-      </option>
-
-      <option value="Перекус">
-        {{ translate("nutrition", "meal_categories.snack") }}
-      </option>
-    </select>
-
-    <label for="edit-meal-time">
-      {{ translate("nutrition", "fields.time") }}
-    </label>
-
-    <input type="time" id="edit-meal-time" />
-
-    <div class="modal-actions">
-      <button class="btn" id="close-edit-meal">
-        {{ translate("nutrition", "actions.cancel") }}
-      </button>
-
-      <button class="btn primary" id="save-edit-meal">
-        {{ translate("nutrition", "actions.save") }}
-      </button>
+    <div class="nf-field-grid">
+      <div class="nf-field">
+        <label class="nf-label" for="edit-meal-category">{{ translate("nutrition", "fields.category") }}</label>
+        <select class="nf-input" id="edit-meal-category">
+          <option value="breakfast">{{ translate("nutrition", "meal_categories.breakfast") }}</option>
+          <option value="lunch">{{ translate("nutrition", "meal_categories.lunch") }}</option>
+          <option value="dinner">{{ translate("nutrition", "meal_categories.dinner") }}</option>
+          <option value="snack">{{ translate("nutrition", "meal_categories.snack") }}</option>
+        </select>
+      </div>
+      <div class="nf-field">
+        <label class="nf-label" for="edit-meal-time">{{ translate("nutrition", "fields.time") }}</label>
+        <input class="nf-input" type="time" id="edit-meal-time" />
+      </div>
     </div>
+
+    <p class="nf-modal-error" data-modal-error role="alert" hidden></p>
+
+    <footer class="nf-modal-footer">
+      <button class="nf-btn" type="button" id="close-edit-meal">{{ translate("nutrition", "actions.cancel") }}</button>
+      <button class="nf-btn nf-btn--primary" type="button" id="save-edit-meal">{{ translate("nutrition", "actions.save") }}</button>
+    </footer>
   </div>
 </div>

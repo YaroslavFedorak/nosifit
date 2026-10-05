@@ -55,8 +55,8 @@ function initializeNutritionPage() {
     setupNutritionHeatmapModals();
     setupMealModals(loadNutritionDay);
     setupItemModals(loadNutritionDay);
-    setupWaterModal(loadNutritionDay);
-    setupWeightModal(loadNutritionDay);
+    setupWaterModal(loadNutritionDay, ["add-water"]);
+    setupWeightModal(loadNutritionDay, ["open-update-weight"]);
     initializeNutritionHeatmap();
     void loadWater();
     void loadWeight();

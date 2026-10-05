@@ -86,16 +86,14 @@ function bindNutritionSummary(overview) {
     const nutrition = overview?.nutrition;
     const calories = document.getElementById("dashboard-calories");
     const protein = document.getElementById("dashboard-protein");
-    const water = document.getElementById("dashboard-water");
+    // #dashboard-water belongs to the nutrition widget
+    // (widgets/nutrition/index.ts), which keeps it in sync after edits.
     if (!nutrition) {
         if (calories) {
             calories.textContent = "—";
         }
         if (protein) {
             protein.textContent = "—";
-        }
-        if (water) {
-            water.textContent = "—";
         }
         return;
     }
@@ -111,13 +109,6 @@ function bindNutritionSummary(overview) {
         protein.textContent =
             Number.isFinite(value)
                 ? `${Math.round(value)} ${dashboard_t("units.grams")}`
-                : "—";
-    }
-    if (water) {
-        const value = Number(nutrition.water);
-        water.textContent =
-            Number.isFinite(value)
-                ? `${Math.round(value)} ${dashboard_t("units.milliliters")}`
                 : "—";
     }
 }
@@ -362,6 +353,7 @@ async function init() {
         loadTranslations("dashboard"),
         loadTranslations("exercises"),
         loadTranslations("recovery"),
+        loadTranslations("nutrition"),
     ]);
     bindHeaderDate();
     initSubscriptions();

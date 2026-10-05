@@ -65,10 +65,12 @@
         "editHint": "Change the meal category or time. Nutrition values are calculated automatically from the food items.",
         "emptyToday": "No meals recorded today",
         "addProduct": "+ Food",
-        "noProducts": "No food items added yet."
+        "noProducts": "No food items added yet.",
+        "count": "Meals: {count}",
+        "title": "Meals"
     },
     "items": {
-        "addTitle": "Add food",
+        "addTitle": "Add foods",
         "editTitle": "Edit food"
     },
     "actions": {
@@ -81,19 +83,27 @@
         "editMeal": "Edit meal",
         "deleteConfirm": "Double-click to delete",
         "editProduct": "Edit food",
-        "saveItems": "Save products"
+        "saveItems": "Save products",
+        "remove": "Remove",
+        "confirmDelete": "Click again to delete",
+        "deleteMeal": "Delete meal",
+        "deleteProduct": "Delete food"
     },
     "weight": {
         "update": "Update",
         "updateTitle": "Update weight",
-        "value": "Weight (kg)"
+        "value": "Weight (kg)",
+        "current": "Current weight"
     },
     "water": {
         "add": "Add water",
         "addTitle": "Add water",
         "amount": "Amount",
         "recommendation_unavailable": "Recommendation unavailable",
-        "progress": "{value}% of recommended"
+        "progress": "{value}% of recommended",
+        "modeAdd": "Add",
+        "modeRemove": "Subtract",
+        "quick": "Quick amounts"
     },
     "heatmap": {
         "ariaLabel": "Nutrition heatmap",
@@ -229,6 +239,41 @@
         },
         "allProducts": "All products",
         "addToMeal": "Add to meal",
-        "noPendingProducts": "Products will appear here when you add them"
+        "noPendingProducts": "Products will appear here when you add them",
+        "per100g": "Nutrition per 100 g",
+        "per100gShort": "/ 100 g",
+        "favoriteAdd": "Add to favorites",
+        "favoriteRemove": "Remove from favorites",
+        "alreadyAdded": "Already in this meal",
+        "selectHint": "Pick a food from the list",
+        "pendingTitle": "In this meal",
+        "emptyFavorites": "Star foods to see them here",
+        "emptyRecent": "Foods you add will show up here",
+        "emptyMine": "You haven't created any foods yet"
+    },
+    "modals": {
+        "eyebrow": {
+            "meal": "Meal",
+            "product": "Food",
+            "water": "Water",
+            "weight": "Weight"
+        }
+    },
+    "errors": {
+        "generic": "Couldn't save. Please try again.",
+        "network": "Can't reach the server. Check your connection and try again.",
+        "session_expired": "Your session has ended. Reload the page and sign in again.",
+        "invalid_category": "Choose a meal type.",
+        "invalid_entry": "Check the amount.",
+        "invalid_product": "Check the values: calories up to 950, protein, fat, carbs and fiber up to 100 g per 100 g.",
+        "invalid_water": "Enter an amount between 0.05 and 5 L.",
+        "invalid_weight": "Enter a weight between 20 and 400 kg.",
+        "meal_not_found": "This meal was already deleted. Reload the page.",
+        "entry_not_found": "This food was already deleted. Reload the page.",
+        "nothing_to_copy": "Nothing was logged yesterday.",
+        "selectProduct": "Pick a food from the list first.",
+        "noItems": "Add at least one food.",
+        "amount": "Enter an amount above 0 and up to {max} {unit}.",
+        "nameRequired": "Enter a name for the food."
     }
 }

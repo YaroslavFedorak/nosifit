@@ -20,4 +20,4 @@
 
 @import "./heatmap/calendar_widget.css";
 
-@import "./modals_nutr.css";
+@import "../../components/nutrition-modals.css";

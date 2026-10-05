@@ -196,7 +196,9 @@ def add_water_service(user_id, amount):
 
         db.session.add(entry)
 
-    entry.amount += amount
+    # Negative amounts are corrections ("I logged too much"). The manual
+    # total never goes below zero.
+    entry.amount = max(0.0, round(float(entry.amount or 0) + amount, 3))
 
     db.session.commit()
 

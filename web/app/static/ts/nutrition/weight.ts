@@ -80,7 +80,7 @@ export async function loadWeight(): Promise<void> {
 }
 
 
-document.addEventListener(
+window.addEventListener(
     "nutrition:weight-updated",
     () => {
         void loadWeight();

@@ -2,6 +2,11 @@ from backend.app.extensions import db
 from backend.app.models import Product, ProductName
 from web.app import create_app
 
+try:
+    from nutrition_product_names_ru import RU_NAMES
+except ImportError:  # executed as a module: python -m web.scripts.seed_...
+    from web.scripts.nutrition_product_names_ru import RU_NAMES
+
 
 LIQUID_PRODUCTS = {
     "Water",
@@ -166,6 +171,17 @@ def seed_products():
                 existing.product.category = product_category(en)
                 if en in LIQUID_PRODUCTS:
                     existing.product.liquid_ml_per_100g = 100
+
+                known_locales = {name.locale for name in existing.product.names}
+                for locale, value in (("uk", uk), ("pl", pl), ("ru", RU_NAMES.get(en))):
+                    if value and locale not in known_locales:
+                        db.session.add(
+                            ProductName(
+                                product_id=existing.product_id,
+                                locale=locale,
+                                name=value,
+                            )
+                        )
                 skipped += 1
                 continue
 
@@ -203,6 +219,11 @@ def seed_products():
                         product_id=product.id,
                         locale="pl",
                         name=pl,
+                    ),
+                    ProductName(
+                        product_id=product.id,
+                        locale="ru",
+                        name=RU_NAMES.get(en, en),
                     ),
                 ]
             )

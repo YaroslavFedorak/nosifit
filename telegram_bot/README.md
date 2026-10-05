@@ -35,12 +35,22 @@ The flow is:
 
 System and user-owned products are returned by the existing nutrition API, including localized product names.
 
+Meals are stored with language-independent category keys (`breakfast`, `lunch`, `dinner`, `snack`). The bot shows Ukrainian names and reuses an existing meal of the same type for today instead of creating a duplicate.
+
+Amounts are validated before they are sent (up to 5000 g / ml or 100 pcs per entry). Backend errors carry a `code` and are shown in Ukrainian.
+
+## Water and weight
+
+- **💧 Вода** shows today's total (manual water plus drinks logged in meals), quick buttons (+0.25 / +0.33 / +0.5 / +1 L), a custom amount (`0,4`, `300 мл`) and a way to subtract a mistaken entry (`-0,25`).
+- **⚖️ Вага** shows the current weight and BMI and accepts a new value (20–400 kg).
+
 ## Development
 
 Create a .env file with:
 
 TELEGRAM_BOT_TOKEN=your_bot_token
 NOSI_FIT_BASE_URL=http://localhost:5000
+NOSI_FIT_TIMEZONE=Europe/Kyiv   # used for "current time" when logging a meal
 
 Run the bot:
 

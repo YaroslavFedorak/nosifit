@@ -437,3 +437,43 @@
 
 
 /* Keep the widget action visually aligned with Nutrition primary actions. */
+
+/* Header: "New meal" uses the nutrition accent, like on the Dashboard. */
+.nutrition-page .meals-widget-header .cmp-btn.cmp-btn-primary {
+    background: var(--nutrition-accent);
+    border-color: var(--nutrition-accent);
+    color: #fff !important;
+    box-shadow: 0 8px 22px rgba(155, 93, 229, .18);
+}
+
+.nutrition-page .meals-widget-header .cmp-btn.cmp-btn-primary:hover {
+    background: #a971ec;
+    border-color: #a971ec;
+    box-shadow: 0 10px 26px rgba(155, 93, 229, .26);
+}
+
+/* Meal time next to the meal type */
+.meal-time {
+    color: var(--nutrition-text-muted);
+    font-size: 12px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+}
+
+/* Two-step delete: armed state */
+.meal-action-delete.is-confirming,
+.meal-item-delete.is-confirming {
+    background: rgba(240, 111, 122, .16);
+    border-color: rgba(240, 111, 122, .55);
+    color: #ff8f99;
+}
+
+.meal-action-add {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.meal-action-add-icon {
+    flex: 0 0 auto;
+}

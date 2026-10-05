@@ -1,5 +1,5 @@
 import { NutritionAPI, } from "../../../nutrition/api.js";
-import { closeModal, openModal, } from "./modal.js";
+import { closeModal, } from "./modal.js";
 function getInputValue(id) {
     const element = document.getElementById(id);
     return element?.value ?? "";
@@ -22,7 +22,7 @@ export function setupMealModals(onRefresh) {
         }
         await NutritionAPI.updateMeal(Number(id), {
             name: category,
-            category: getInputValue("edit-meal-category"),
+            category,
             time: getInputValue("edit-meal-time") || null,
         });
         closeModal("modal-edit-meal");

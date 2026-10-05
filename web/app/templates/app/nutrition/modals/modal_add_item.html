@@ -1,77 +1,173 @@
-<div class="modal" id="modal-add-item">
-  <div class="modal-content nutrition-product-modal">
+{# Food picker: create a meal or add products to an existing one.
+   Shared by the Nutrition page and the Dashboard. #}
+<div class="modal nf-modal" id="modal-add-item" role="dialog" aria-modal="true" aria-labelledby="add-item-title">
+  <div class="modal-content nf-modal-card nf-modal-card--wide">
     <input type="hidden" id="add-item-meal-id" />
 
-    <div class="nutrition-food-header">
-      <div class="nutrition-food-header-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 5V2l-5.89 5.89"/><circle cx="16.6" cy="15.89" r="3"/><circle cx="8.11" cy="7.4" r="3"/><circle cx="12.35" cy="11.65" r="3"/><circle cx="13.91" cy="5.85" r="3"/><circle cx="18.15" cy="10.09" r="3"/><circle cx="6.56" cy="13.2" r="3"/><circle cx="10.8" cy="17.44" r="3"/><circle cx="5" cy="19" r="3"/></svg></div>
+    <header class="nf-modal-header">
+      <div class="nf-modal-heading">
+        <span class="nf-modal-eyebrow">{{ translate("nutrition", "modals.eyebrow.meal") }}</span>
+        <h2 class="nf-modal-title" id="add-item-title"
+            data-title-new="{{ translate("nutrition", "meals.addTitle") }}"
+            data-title-existing="{{ translate("nutrition", "items.addTitle") }}">{{ translate("nutrition", "meals.addTitle") }}</h2>
+      </div>
+      {% include "app/nutrition/modals/_close_button.html" %}
+    </header>
 
-      <div class="nutrition-meal-details">
-        <div>
-          <label for="add-meal-category">{{ translate("nutrition", "fields.category") }}</label>
-          <select id="add-meal-category">
-            <option value="Сніданок">{{ translate("nutrition", "meal_categories.breakfast") }}</option>
-            <option value="Обід">{{ translate("nutrition", "meal_categories.lunch") }}</option>
-            <option value="Вечеря">{{ translate("nutrition", "meal_categories.dinner") }}</option>
-            <option value="Перекус">{{ translate("nutrition", "meal_categories.snack") }}</option>
+    <div class="nf-field-grid nf-field-grid--meal">
+      <div class="nf-field">
+        <label class="nf-label" for="add-meal-category">{{ translate("nutrition", "fields.category") }}</label>
+        <select class="nf-input" id="add-meal-category">
+          <option value="breakfast">{{ translate("nutrition", "meal_categories.breakfast") }}</option>
+          <option value="lunch">{{ translate("nutrition", "meal_categories.lunch") }}</option>
+          <option value="dinner">{{ translate("nutrition", "meal_categories.dinner") }}</option>
+          <option value="snack">{{ translate("nutrition", "meal_categories.snack") }}</option>
+        </select>
+      </div>
+      <div class="nf-field">
+        <label class="nf-label" for="add-meal-time">{{ translate("nutrition", "fields.time") }}</label>
+        <input class="nf-input" type="time" id="add-meal-time" />
+      </div>
+    </div>
+
+    <div class="nf-catalog">
+      <div class="nf-segmented" role="group" aria-label="{{ translate("nutrition", "catalog.search") }}">
+        <button type="button" class="nf-segmented-button" data-catalog-sort="all" aria-pressed="true">{{ translate("nutrition", "catalog.allProducts") }}</button>
+        <button type="button" class="nf-segmented-button" data-catalog-sort="favorites" aria-pressed="false">{{ translate("nutrition", "catalog.favorites") }}</button>
+        <button type="button" class="nf-segmented-button" data-catalog-sort="recent" aria-pressed="false">{{ translate("nutrition", "catalog.recent") }}</button>
+        <button type="button" class="nf-segmented-button" data-catalog-sort="mine" aria-pressed="false">{{ translate("nutrition", "catalog.myProducts") }}</button>
+      </div>
+
+      <div class="nf-search">
+        <svg class="nf-search-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" /></svg>
+        <input type="search" id="add-item-search" class="nf-input nf-search-input"
+               placeholder="{{ translate("nutrition", "catalog.searchPlaceholder") }}"
+               aria-label="{{ translate("nutrition", "catalog.search") }}" autocomplete="off" />
+      </div>
+
+      <div class="nf-catalog-sections">
+        <section data-catalog-section="favorites"><div id="product-favorites" class="nf-product-list"></div></section>
+        <section data-catalog-section="recent"><div id="product-recent" class="nf-product-list"></div></section>
+        <section data-catalog-section="mine"><div id="product-mine" class="nf-product-list"></div></section>
+        <section data-catalog-section="all"><div id="product-all" class="nf-product-list"></div></section>
+        <section data-catalog-section="search"><div id="product-search-results" class="nf-product-list"></div></section>
+      </div>
+    </div>
+
+    <div class="nf-entry">
+      <div id="selected-product" class="nf-selected-product" aria-live="polite"></div>
+      <div class="nf-entry-controls">
+        <div class="nf-field">
+          <label class="nf-label" for="add-item-amount">{{ translate("nutrition", "catalog.amount") }}</label>
+          <input class="nf-input" type="number" id="add-item-amount" min="0.1" step="any" value="100" inputmode="decimal" />
+        </div>
+        <div class="nf-field">
+          <label class="nf-label" for="add-item-unit">{{ translate("nutrition", "catalog.unit") }}</label>
+          <select class="nf-input" id="add-item-unit">
+            <option value="g">{{ translate("nutrition", "catalog.units.g") }}</option>
+            <option value="ml">{{ translate("nutrition", "catalog.units.ml") }}</option>
+            <option value="pcs">{{ translate("nutrition", "catalog.units.pcs") }}</option>
           </select>
         </div>
-        <div>
-          <label for="add-meal-time">{{ translate("nutrition", "fields.time") }}</label>
-          <input type="time" id="add-meal-time" />
+        <button class="nf-btn nf-btn--accent-soft" type="button" id="add-item-to-meal" disabled>{{ translate("nutrition", "catalog.addToMeal") }}</button>
+      </div>
+    </div>
+
+    <div class="nf-pending">
+      <div class="nf-pending-head">
+        <span class="nf-label">{{ translate("nutrition", "catalog.pendingTitle") }}</span>
+        <span class="nf-pending-total" id="pending-meal-total"></span>
+      </div>
+      <div id="pending-meal-items-empty" class="nf-pending-empty">{{ translate("nutrition", "catalog.noPendingProducts") }}</div>
+      <div id="pending-meal-items" class="nf-pending-list" aria-live="polite" hidden></div>
+    </div>
+
+    <p class="nf-modal-error" data-modal-error role="alert" hidden></p>
+
+    <footer class="nf-modal-footer">
+      <button class="nf-btn nf-btn--ghost nf-modal-footer-start" type="button" id="open-add-my-product">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14" /><path d="M5 12h14" /></svg>
+        <span>{{ translate("nutrition", "catalog.addMyProduct") }}</span>
+      </button>
+      <button class="nf-btn" type="button" id="close-add-item">{{ translate("nutrition", "actions.cancel") }}</button>
+      <button class="nf-btn nf-btn--primary" type="button" id="save-add-item">{{ translate("nutrition", "actions.saveItems") }}</button>
+    </footer>
+  </div>
+</div>
+
+<div class="modal nf-modal nf-modal--stacked" id="modal-add-product" role="dialog" aria-modal="true" aria-labelledby="add-product-title">
+  <div class="modal-content nf-modal-card nf-modal-card--medium">
+    <header class="nf-modal-header">
+      <div class="nf-modal-heading">
+        <span class="nf-modal-eyebrow">{{ translate("nutrition", "modals.eyebrow.product") }}</span>
+        <h2 class="nf-modal-title" id="add-product-title">{{ translate("nutrition", "catalog.myProductTitle") }}</h2>
+      </div>
+      {% include "app/nutrition/modals/_close_button.html" %}
+    </header>
+
+    <div class="nf-field-grid">
+      <div class="nf-field nf-field--wide">
+        <label class="nf-label" for="product-name">{{ translate("nutrition", "fields.name") }}</label>
+        <input class="nf-input" type="text" id="product-name" maxlength="120" autocomplete="off" />
+      </div>
+      <div class="nf-field nf-field--wide">
+        <label class="nf-label" for="product-brand">{{ translate("nutrition", "catalog.brand") }}</label>
+        <input class="nf-input" type="text" id="product-brand" maxlength="120" autocomplete="off" />
+      </div>
+    </div>
+
+    <div class="nf-fieldset">
+      <span class="nf-fieldset-title">{{ translate("nutrition", "catalog.per100g") }}</span>
+      <div class="nf-field-grid nf-field-grid--macros">
+        <div class="nf-field">
+          <label class="nf-label" for="product-kcal">{{ translate("nutrition", "fields.calories") }}</label>
+          <div class="nf-input-wrap"><input class="nf-input" type="number" id="product-kcal" min="0" max="950" step="any" inputmode="decimal" placeholder="0" /><span class="nf-input-unit">{{ translate("nutrition", "units.kcal") }}</span></div>
+        </div>
+        <div class="nf-field">
+          <label class="nf-label" for="product-protein">{{ translate("nutrition", "fields.protein") }}</label>
+          <div class="nf-input-wrap"><input class="nf-input" type="number" id="product-protein" min="0" max="100" step="any" inputmode="decimal" placeholder="0" /><span class="nf-input-unit">{{ translate("nutrition", "units.grams") }}</span></div>
+        </div>
+        <div class="nf-field">
+          <label class="nf-label" for="product-fat">{{ translate("nutrition", "fields.fat") }}</label>
+          <div class="nf-input-wrap"><input class="nf-input" type="number" id="product-fat" min="0" max="100" step="any" inputmode="decimal" placeholder="0" /><span class="nf-input-unit">{{ translate("nutrition", "units.grams") }}</span></div>
+        </div>
+        <div class="nf-field">
+          <label class="nf-label" for="product-carbs">{{ translate("nutrition", "fields.carbs") }}</label>
+          <div class="nf-input-wrap"><input class="nf-input" type="number" id="product-carbs" min="0" max="100" step="any" inputmode="decimal" placeholder="0" /><span class="nf-input-unit">{{ translate("nutrition", "units.grams") }}</span></div>
+        </div>
+        <div class="nf-field">
+          <label class="nf-label" for="product-fiber">{{ translate("nutrition", "fields.fiber") }}</label>
+          <div class="nf-input-wrap"><input class="nf-input" type="number" id="product-fiber" min="0" max="100" step="any" inputmode="decimal" placeholder="0" /><span class="nf-input-unit">{{ translate("nutrition", "units.grams") }}</span></div>
         </div>
       </div>
     </div>
-    <div class="nutrition-product-sort" role="group" aria-label="{{ translate("nutrition", "catalog.search") }}">
-      <button type="button" class="nutrition-product-sort-button" data-catalog-sort="all" aria-pressed="true">{{ translate("nutrition", "catalog.allProducts") }}</button>
-      <button type="button" class="nutrition-product-sort-button" data-catalog-sort="favorites" aria-pressed="false">{{ translate("nutrition", "catalog.favorites") }}</button>
-      <button type="button" class="nutrition-product-sort-button" data-catalog-sort="recent" aria-pressed="false">{{ translate("nutrition", "catalog.recent") }}</button>
-      <button type="button" class="nutrition-product-sort-button" data-catalog-sort="mine" aria-pressed="false">{{ translate("nutrition", "catalog.myProducts") }}</button>
+
+    <div class="nf-field-grid">
+      <div class="nf-field">
+        <label class="nf-label" for="product-unit">{{ translate("nutrition", "catalog.unit") }}</label>
+        <select class="nf-input" id="product-unit">
+          <option value="g">{{ translate("nutrition", "catalog.units.g") }}</option>
+          <option value="ml">{{ translate("nutrition", "catalog.units.ml") }}</option>
+          <option value="pcs">{{ translate("nutrition", "catalog.units.pcs") }}</option>
+        </select>
+      </div>
+      <div class="nf-field" id="product-grams-per-unit-field" hidden>
+        <label class="nf-label" for="product-grams-per-unit">{{ translate("nutrition", "catalog.gramsPerUnit") }}</label>
+        <div class="nf-input-wrap"><input class="nf-input" type="number" id="product-grams-per-unit" min="0.1" max="5000" step="any" inputmode="decimal" value="1" /><span class="nf-input-unit">{{ translate("nutrition", "units.grams") }}</span></div>
+      </div>
     </div>
-    <input type="search" id="add-item-search" class="nutrition-product-search" placeholder="{{ translate("nutrition", "catalog.searchPlaceholder") }}" autocomplete="off" />
-    <div class="nutrition-product-sections">
-      <section data-catalog-section="favorites"><div class="nutrition-product-section-title">{{ translate("nutrition", "catalog.favorites") }}</div><div id="product-favorites" class="nutrition-product-list"></div></section>
-      <section data-catalog-section="recent"><div class="nutrition-product-section-title">{{ translate("nutrition", "catalog.recent") }}</div><div id="product-recent" class="nutrition-product-list"></div></section>
-      <section data-catalog-section="mine"><div class="nutrition-product-section-title">{{ translate("nutrition", "catalog.myProducts") }}</div><div id="product-mine" class="nutrition-product-list"></div></section>
-      <section data-catalog-section="all"><div class="nutrition-product-section-title">{{ translate("nutrition", "catalog.allProducts") }}</div><div id="product-all" class="nutrition-product-list"></div></section>
-      <section data-catalog-section="search"><div class="nutrition-product-section-title">{{ translate("nutrition", "catalog.searchResults") }}</div><div id="product-search-results" class="nutrition-product-list"></div></section>
-    </div>
-    <div id="selected-product" class="nutrition-selected-product"></div>
-    <div class="nutrition-entry-row">
-      <button class="btn primary nutrition-add-to-meal" type="button" id="add-item-to-meal">{{ translate("nutrition", "catalog.addToMeal") }}</button>
-      <div><label for="add-item-amount">{{ translate("nutrition", "catalog.amount") }}</label><input type="number" id="add-item-amount" min="0.01" step="0.01" value="100" /></div>
-      <div><label for="add-item-unit">{{ translate("nutrition", "catalog.unit") }}</label><select id="add-item-unit"><option value="g">{{ translate("nutrition", "catalog.units.g") }}</option><option value="ml">{{ translate("nutrition", "catalog.units.ml") }}</option><option value="pcs">{{ translate("nutrition", "catalog.units.pcs") }}</option></select></div>
-      <button class="btn nutrition-add-product-inline" type="button" id="open-add-my-product">+ {{ translate("nutrition", "catalog.addMyProduct") }}</button>
-    </div>
-    <div class="nutrition-pending-items-block">
-      <div id="pending-meal-items-empty" class="nutrition-pending-empty">{{ translate("nutrition", "catalog.noPendingProducts") }}</div>
-      <div id="pending-meal-items" class="nutrition-pending-items" aria-live="polite"></div>
-    </div>
-    <div class="nutrition-add-row">
-      <button class="btn" type="button" id="close-add-item">{{ translate("nutrition", "actions.cancel") }}</button>
-      <button class="btn primary" type="button" id="save-add-item">{{ translate("nutrition", "actions.saveItems") }}</button>
-    </div>
-  </div>
-</div>
-<div class="modal" id="modal-add-product">
-  <div class="modal-content nutrition-product-modal">
-    <h2>{{ translate("nutrition", "catalog.myProductTitle") }}</h2>
-    <label for="product-name">{{ translate("nutrition", "fields.name") }}</label><input type="text" id="product-name" />
-    <label for="product-brand">{{ translate("nutrition", "catalog.brand") }}</label><input type="text" id="product-brand" />
-    <div class="nutrition-entry-fields">
-      <div><label for="product-kcal">{{ translate("nutrition", "fields.calories") }}</label><input type="number" id="product-kcal" min="0" step="0.1" /></div>
-      <div><label for="product-protein">{{ translate("nutrition", "fields.protein") }}</label><input type="number" id="product-protein" min="0" step="0.1" /></div>
-      <div><label for="product-fat">{{ translate("nutrition", "fields.fat") }}</label><input type="number" id="product-fat" min="0" step="0.1" /></div>
-      <div><label for="product-carbs">{{ translate("nutrition", "fields.carbs") }}</label><input type="number" id="product-carbs" min="0" step="0.1" /></div>
-      <div><label for="product-fiber">{{ translate("nutrition", "fields.fiber") }}</label><input type="number" id="product-fiber" min="0" step="0.1" value="0" /></div>
-    </div>
-    <div class="nutrition-entry-fields">
-      <div><label for="product-unit">{{ translate("nutrition", "catalog.unit") }}</label><select id="product-unit"><option value="g">{{ translate("nutrition", "catalog.units.g") }}</option><option value="ml">{{ translate("nutrition", "catalog.units.ml") }}</option><option value="pcs">{{ translate("nutrition", "catalog.units.pcs") }}</option></select></div>
-      <div><label for="product-grams-per-unit">{{ translate("nutrition", "catalog.gramsPerUnit") }}</label><input type="number" id="product-grams-per-unit" min="0.01" step="0.01" value="1" /></div>
-    </div>
-    <label class="nutrition-liquid-toggle">
+
+    <label class="nf-check">
       <input type="checkbox" id="product-is-liquid" />
+      <span class="nf-check-box" aria-hidden="true"></span>
       <span>{{ translate("nutrition", "catalog.countsAsFluid") }}</span>
     </label>
-    <div class="modal-actions"><button class="btn" id="close-add-product">{{ translate("nutrition", "actions.cancel") }}</button><button class="btn primary" id="save-add-product">{{ translate("nutrition", "actions.create") }}</button></div>
+
+    <p class="nf-modal-error" data-modal-error role="alert" hidden></p>
+
+    <footer class="nf-modal-footer">
+      <button class="nf-btn" type="button" id="close-add-product">{{ translate("nutrition", "actions.cancel") }}</button>
+      <button class="nf-btn nf-btn--primary" type="button" id="save-add-product">{{ translate("nutrition", "actions.create") }}</button>
+    </footer>
   </div>
 </div>

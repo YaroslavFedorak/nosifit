@@ -16,21 +16,42 @@ import type {
     WeightResponse,
 } from "./types.js";
 
+import { NutritionAPIError } from "./errors.js";
+
 const BASE_URL = "/api/nutrition";
 
 async function request<T>(url: string, options: RequestInit = {}): Promise<T> {
-    const response = await fetch(url, {
-        credentials: "same-origin",
-        headers: {
-            "Content-Type": "application/json",
-            ...(options.headers || {}),
-        },
-        ...options,
-    });
-    const data = await response.json().catch(() => ({}));
-    if (!response.ok) {
-        throw new Error(data.error || "Something went wrong");
+    let response: Response;
+
+    try {
+        response = await fetch(url, {
+            ...options,
+            credentials: "same-origin",
+            headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+                ...(options.headers || {}),
+            },
+        });
+    } catch {
+        throw new NutritionAPIError("Network error", "network", 0);
     }
+
+    // An expired session redirects to the login page (HTML, not JSON).
+    if (response.redirected && new URL(response.url).pathname.startsWith("/auth/login")) {
+        throw new NutritionAPIError("Session expired", "session_expired", 401);
+    }
+
+    const data = await response.json().catch(() => ({}));
+
+    if (!response.ok) {
+        throw new NutritionAPIError(
+            data.error || "Request failed",
+            data.code || (response.status === 401 ? "session_expired" : "unknown"),
+            response.status,
+        );
+    }
+
     return data as T;
 }
 
@@ -105,6 +126,16 @@ export const NutritionAPI = {
             method: "DELETE",
         });
     },
+    createEntries(
+        mealId: number,
+        items: Array<{ product_id: number; amount: number; unit: string }>,
+        locale = "uk",
+    ): Promise<{ ids: number[]; status: string }> {
+        return request(BASE_URL + "/entries/bulk", {
+            method: "POST",
+            body: JSON.stringify({ meal_id: mealId, items, locale }),
+        });
+    },
     createEntry(data: MealItemPayload): Promise<{ id: number; status: string }> {
         return request(BASE_URL + "/entries", {
             method: "POST",
@@ -168,6 +199,7 @@ export const NutritionAPI = {
         return request<WaterResponse>(BASE_URL + "/water");
     },
 
+    /** Positive adds, negative subtracts (fixing a mistaken entry). */
     addWater(amount: number): Promise<WaterResponse> {
         return request<WaterResponse>(BASE_URL + "/water", {
             method: "POST",

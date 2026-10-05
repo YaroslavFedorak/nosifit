@@ -11,6 +11,7 @@ class TelegramConfig:
     bot_token: str
     nosi_fit_base_url: str
     redis_url: str | None
+    timezone: str = "Europe/Kyiv"
 
     @classmethod
     def from_env(cls) -> "TelegramConfig":
@@ -24,4 +25,5 @@ class TelegramConfig:
                 "NOSI_FIT_BASE_URL", "http://localhost:5000"
             ).rstrip("/"),
             redis_url=os.getenv("NOSI_FIT_REDIS_URL") or None,
+            timezone=os.getenv("NOSI_FIT_TIMEZONE", "Europe/Kyiv"),
         )

@@ -8,6 +8,34 @@ MEAL_CATEGORIES = {
     "snack": "🍎 Перекус",
 }
 
+# Plain names (no emoji) for message text.
+MEAL_NAMES = {
+    "breakfast": "Сніданок",
+    "lunch": "Обід",
+    "dinner": "Вечеря",
+    "snack": "Перекус",
+}
+
+# Older meals were stored with Ukrainian labels instead of keys.
+_LEGACY_MEAL_CATEGORIES = {
+    "сніданок": "breakfast",
+    "обід": "lunch",
+    "вечеря": "dinner",
+    "перекус": "snack",
+}
+
+
+def normalize_meal_category(value: str | None) -> str | None:
+    normalized = (value or "").strip().lower()
+    if normalized in MEAL_CATEGORIES:
+        return normalized
+    return _LEGACY_MEAL_CATEGORIES.get(normalized)
+
+
+def meal_name(value: str | None) -> str:
+    category = normalize_meal_category(value)
+    return MEAL_NAMES[category] if category else (value or "Прийом їжі")
+
 CATALOG_LABELS = {
     "favorites": "⭐ Обрані",
     "recent": "🕘 Нещодавні",
@@ -33,7 +61,7 @@ def nutrition_menu() -> InlineKeyboardMarkup:
 def today_keyboard(meals: list[dict]) -> InlineKeyboardMarkup:
     rows = []
     for meal in meals:
-        category = meal.get("category") or meal.get("name") or "Прийом їжі"
+        category = meal_name(meal.get("category") or meal.get("name"))
         time = meal.get("time")
         label = f"{category}" + (f" · {time}" if time else "")
         rows.append([
@@ -93,21 +121,21 @@ def meal_categories() -> InlineKeyboardMarkup:
             [
                 InlineKeyboardButton(
                     text=MEAL_CATEGORIES["breakfast"],
-                    callback_data="nutrition:meal:Сніданок",
+                    callback_data="nutrition:meal:breakfast",
                 ),
                 InlineKeyboardButton(
                     text=MEAL_CATEGORIES["lunch"],
-                    callback_data="nutrition:meal:Обід",
+                    callback_data="nutrition:meal:lunch",
                 ),
             ],
             [
                 InlineKeyboardButton(
                     text=MEAL_CATEGORIES["dinner"],
-                    callback_data="nutrition:meal:Вечеря",
+                    callback_data="nutrition:meal:dinner",
                 ),
                 InlineKeyboardButton(
                     text=MEAL_CATEGORIES["snack"],
-                    callback_data="nutrition:meal:Перекус",
+                    callback_data="nutrition:meal:snack",
                 ),
             ],
             [InlineKeyboardButton(text="← Назад", callback_data="nutrition:back"), InlineKeyboardButton(text="✕ Скасувати", callback_data="nutrition:cancel")],

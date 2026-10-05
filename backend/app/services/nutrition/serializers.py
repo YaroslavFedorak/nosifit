@@ -1,13 +1,17 @@
+from backend.app.services.nutrition.meal_categories import normalize_meal_category
 from backend.app.services.nutrition.product_service import (
     get_product_name,
 )
 
 
 def serialize_meal(meal, locale="uk"):
+    category = normalize_meal_category(meal.category) or meal.category
+
     return {
         "id": meal.id,
-        "name": meal.name,
-        "category": meal.category,
+        "name": category,
+        "category": category,
+        "date": meal.date.isoformat() if meal.date else None,
         "time": meal.time.strftime("%H:%M") if meal.time else None,
         "total_calories": meal.total_calories,
         "total_protein": meal.total_protein,

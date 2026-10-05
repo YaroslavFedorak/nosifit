@@ -123,10 +123,4 @@ export function renderBalance(
         `${data.water_goal ?? 0} ${nutrition_t("units.liters")}`,
     );
 
-    if (data.current_weight != null) {
-        safeSet(
-            "weight-current",
-            `${data.current_weight} ${nutrition_t("units.kg")}`,
-        );
-    }
 }

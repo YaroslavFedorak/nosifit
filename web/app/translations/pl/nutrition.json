@@ -65,10 +65,12 @@
         "editHint": "Zmień nazwę, kategorię lub godzinę. Wartości odżywcze są obliczane automatycznie na podstawie produktów.",
         "emptyToday": "Brak zapisanych posiłków na dziś",
         "addProduct": "+ Produkt",
-        "noProducts": "Nie dodano jeszcze produktów."
+        "noProducts": "Nie dodano jeszcze produktów.",
+        "count": "Posiłki: {count}",
+        "title": "Posiłki"
     },
     "items": {
-        "addTitle": "Dodaj produkt",
+        "addTitle": "Dodaj produkty",
         "editTitle": "Edytuj produkt"
     },
     "actions": {
@@ -81,19 +83,27 @@
         "editMeal": "Edytuj posiłek",
         "deleteConfirm": "Kliknij dwukrotnie, aby usunąć",
         "editProduct": "Edytuj produkt",
-        "saveItems": "Zapisz produkty"
+        "saveItems": "Zapisz produkty",
+        "remove": "Usuń",
+        "confirmDelete": "Kliknij ponownie, aby usunąć",
+        "deleteMeal": "Usuń posiłek",
+        "deleteProduct": "Usuń produkt"
     },
     "weight": {
         "update": "Aktualizuj",
         "updateTitle": "Aktualizuj wagę",
-        "value": "Waga (kg)"
+        "value": "Waga (kg)",
+        "current": "Aktualna waga"
     },
     "water": {
         "add": "Dodaj wodę",
         "addTitle": "Dodaj wodę",
         "amount": "Ilość",
         "recommendation_unavailable": "Rekomendacja niedostępna",
-        "progress": "{value}% zalecanej ilości"
+        "progress": "{value}% zalecanej ilości",
+        "modeAdd": "Dodaj",
+        "modeRemove": "Odejmij",
+        "quick": "Szybki wybór"
     },
     "heatmap": {
         "ariaLabel": "Mapa cieplna odżywiania",
@@ -228,6 +238,42 @@
             "pcs": "szt."
         },
         "allProducts": "Cała baza",
-        "addToMeal": "Dodaj do posiłku"
+        "addToMeal": "Dodaj do posiłku",
+        "noPendingProducts": "Tutaj pojawią się dodane produkty",
+        "per100g": "Wartości na 100 g",
+        "per100gShort": "/ 100 g",
+        "favoriteAdd": "Dodaj do ulubionych",
+        "favoriteRemove": "Usuń z ulubionych",
+        "alreadyAdded": "Już w posiłku",
+        "selectHint": "Wybierz produkt z listy",
+        "pendingTitle": "W tym posiłku",
+        "emptyFavorites": "Oznacz produkty gwiazdką, aby pojawiły się tutaj",
+        "emptyRecent": "Tutaj pojawią się ostatnio dodawane produkty",
+        "emptyMine": "Nie masz jeszcze własnych produktów"
+    },
+    "modals": {
+        "eyebrow": {
+            "meal": "Posiłek",
+            "product": "Produkt",
+            "water": "Woda",
+            "weight": "Waga"
+        }
+    },
+    "errors": {
+        "generic": "Nie udało się zapisać. Spróbuj ponownie.",
+        "network": "Brak połączenia z serwerem. Sprawdź internet i spróbuj ponownie.",
+        "session_expired": "Sesja wygasła. Odśwież stronę i zaloguj się ponownie.",
+        "invalid_category": "Wybierz rodzaj posiłku.",
+        "invalid_entry": "Sprawdź ilość produktu.",
+        "invalid_product": "Sprawdź wartości: kalorie do 950, białko, tłuszcze, węglowodany i błonnik do 100 g na 100 g.",
+        "invalid_water": "Podaj ilość od 0.05 do 5 l.",
+        "invalid_weight": "Podaj wagę od 20 do 400 kg.",
+        "meal_not_found": "Ten posiłek został już usunięty. Odśwież stronę.",
+        "entry_not_found": "Ten produkt został już usunięty. Odśwież stronę.",
+        "nothing_to_copy": "Wczoraj nie było wpisów.",
+        "selectProduct": "Najpierw wybierz produkt z listy.",
+        "noItems": "Dodaj co najmniej jeden produkt.",
+        "amount": "Podaj ilość większą od 0 i nie większą niż {max} {unit}.",
+        "nameRequired": "Podaj nazwę produktu."
     }
 }
