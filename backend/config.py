@@ -86,7 +86,9 @@ class Config:
     # The app accepts no uploads; nothing legitimate is anywhere near 1 MB.
     MAX_CONTENT_LENGTH = 1024 * 1024
     RATELIMIT_ENABLED = _env_flag("RATELIMIT_ENABLED", True)
-    # Optional: share rate-limit counters between gunicorn workers/instances.
+    # Shared storage for rate-limit counters (all gunicorn workers and
+    # instances). Required in production: the app refuses to start without it.
+    # Locally it may be empty; counters then live in each process.
     RATELIMIT_REDIS_URL = os.getenv("RATELIMIT_REDIS_URL") or None
     # Extra origins allowed to send state-changing requests (comma-separated).
     TRUSTED_ORIGINS = tuple(

@@ -7,6 +7,9 @@
 - JSON bodies with NaN / Infinity are rejected (they pass float range checks).
 """
 
+import hashlib
+import ipaddress
+import hmac
 import json
 import logging
 import secrets
@@ -25,14 +28,39 @@ SAFE_METHODS = frozenset({"GET", "HEAD", "OPTIONS", "TRACE"})
 
 
 # --- Rate limiting -------------------------------------------------------------
+#
+# Counters live in Redis (RATELIMIT_REDIS_URL) so every gunicorn worker and
+# every instance shares them. Production refuses to start without Redis (see
+# check_rate_limit_config). Locally and in tests an in-process backend is used.
+#
+# Only HMACs of the identifiers (email, IP, user id) and integers are stored:
+# no passwords, codes, tokens or readable personal data.
+#
+# Fail closed: when Redis is unreachable a rate-limited (security-sensitive)
+# request gets 503 instead of running unlimited. Endpoints without a limit
+# never touch Redis and keep working.
+
+KEY_PREFIX = "nosifit:rl:"
+
+# INCR and the expiry in one atomic step: concurrent requests in different
+# workers can neither skip the TTL nor read a stale count.
+_HIT_SCRIPT = """
+local count = redis.call('INCR', KEYS[1])
+if count == 1 or redis.call('TTL', KEYS[1]) < 0 then
+    redis.call('EXPIRE', KEYS[1], ARGV[1])
+end
+return count
+"""
+
+
+class RateLimitUnavailable(RuntimeError):
+    """The shared rate-limit storage could not be reached."""
 
 
 class _MemoryBackend:
-    """Fixed-window counters in process memory.
+    """Fixed-window counters in process memory: development and tests only.
 
-    With several gunicorn workers each worker counts separately, so the
-    effective limit is ``limit * workers``. Set RATELIMIT_REDIS_URL to share
-    counters between workers and instances.
+    Each gunicorn worker would count separately, so production requires Redis.
     """
 
     def __init__(self):
@@ -61,18 +89,31 @@ class _MemoryBackend:
 class _RedisBackend:
     def __init__(self, url: str):
         import redis
+        from redis.backoff import NoBackoff
+        from redis.retry import Retry
 
-        self._redis = redis.Redis.from_url(url, socket_timeout=2)
+        self._redis = redis.Redis.from_url(
+            url,
+            # Short timeouts: a hung Redis must turn into a quick 503, not
+            # tie up gunicorn threads.
+            socket_timeout=1,
+            socket_connect_timeout=1,
+            # One immediate retry covers a dropped pooled connection after a
+            # Redis restart; a real outage still fails fast.
+            retry=Retry(NoBackoff(), 1),
+            retry_on_error=[redis.ConnectionError, redis.TimeoutError],
+            health_check_interval=30,
+        )
+        self._hit = self._redis.register_script(_HIT_SCRIPT)
 
     def hit(self, key: str, window: int) -> int:
-        pipe = self._redis.pipeline()
-        pipe.incr(key)
-        pipe.expire(key, window, nx=True)
-        count, _ = pipe.execute()
-        return int(count)
+        return int(self._hit(keys=[key], args=[int(window)]))
 
     def reset(self, key: str) -> None:
         self._redis.delete(key)
+
+    def ping(self) -> bool:
+        return bool(self._redis.ping())
 
 
 def _backend():
@@ -85,30 +126,73 @@ def _backend():
 
 
 def _key(scope: str, key) -> str:
-    return f"rl:{scope}:{str(key).strip().lower()}"
+    identifier = str(key).strip().lower().encode()
+    secret = (current_app.config.get("SECRET_KEY") or "").encode()
+    digest = hmac.new(secret, identifier, hashlib.sha256).hexdigest()[:32]
+    return f"{KEY_PREFIX}{scope}:{digest}"
 
 
 def hit_limit(scope: str, key, limit: int, window: int) -> bool:
-    """Count one attempt; True when ``limit`` attempts per ``window`` s are exceeded."""
+    """Count one attempt; True when ``limit`` attempts per ``window`` s are exceeded.
+
+    Raises RateLimitUnavailable when the storage is down; the error handler
+    answers 503, so a Redis outage never means unlimited attempts.
+    """
     if not current_app.config.get("RATELIMIT_ENABLED", True):
         return False
     try:
         return _backend().hit(_key(scope, key), window) > limit
-    except Exception:  # a broken Redis must not take logins down
-        logger.exception("Rate limiter backend failed")
-        return False
+    except Exception as exc:
+        logger.error("Rate limit storage unavailable (%s): %s", scope, type(exc).__name__)
+        raise RateLimitUnavailable(scope) from exc
 
 
 def reset_limit(scope: str, key) -> None:
+    # Clearing a counter early is a convenience; if it fails the counter just
+    # expires on its own.
     try:
         _backend().reset(_key(scope, key))
-    except Exception:
-        logger.exception("Rate limiter backend failed")
+    except Exception as exc:
+        logger.warning("Could not reset rate limit (%s): %s", scope, type(exc).__name__)
+
+
+def check_rate_limit_config(config) -> None:
+    """Fail fast instead of silently running per-process limits in production."""
+    url = config.get("RATELIMIT_REDIS_URL")
+    if url and not url.startswith(("redis://", "rediss://", "unix://")):
+        raise RuntimeError("RATELIMIT_REDIS_URL must be a redis://, rediss:// or unix:// URL")
+
+    if (
+        config.get("IS_PRODUCTION")
+        and not config.get("TESTING")
+        and config.get("RATELIMIT_ENABLED", True)
+        and not url
+    ):
+        raise RuntimeError(
+            "RATELIMIT_REDIS_URL is not set. Production needs Redis so login, "
+            "password-reset and code limits are shared by all gunicorn workers "
+            "and instances. On Railway add a Redis service and set "
+            "RATELIMIT_REDIS_URL=${{Redis.REDIS_URL}} on the web service."
+        )
 
 
 def client_ip() -> str:
-    # ProxyFix already replaced remote_addr with the proxy-reported client.
-    return request.remote_addr or "unknown"
+    """Rate-limit identity of the client.
+
+    ProxyFix already replaced remote_addr with the proxy-reported client.
+    IPv6 is grouped by /64: one customer usually gets a whole /64, so
+    counting single addresses would let them rotate through 2**64 of them.
+    """
+    raw = request.remote_addr or "unknown"
+    try:
+        address = ipaddress.ip_address(raw)
+    except ValueError:
+        return raw
+    if isinstance(address, ipaddress.IPv6Address):
+        if address.ipv4_mapped:
+            return str(address.ipv4_mapped)
+        return str(ipaddress.ip_network(f"{address}/64", strict=False))
+    return str(address)
 
 
 def too_many_requests(message="Too many requests. Try again later."):
@@ -244,6 +328,8 @@ class DbIdConverter(IntegerConverter):
 
 
 def init_security(app):
+    check_rate_limit_config(app.config)
+
     # Must run before blueprints add their rules.
     app.url_map.converters["int"] = DbIdConverter
 
@@ -253,6 +339,19 @@ def init_security(app):
     app.before_request(check_csrf)
     app.after_request(set_security_headers)
     app.context_processor(lambda: {"csp_nonce": csp_nonce})
+
+    @app.errorhandler(RateLimitUnavailable)
+    def _rate_limit_unavailable(error):
+        message = "Service temporarily unavailable. Try again shortly."
+        # /auth and /verify are HTML forms; the other limited endpoints are
+        # JSON APIs called from the profile page.
+        if request.path.startswith(("/auth/", "/verify/")) and not request.is_json:
+            response = current_app.response_class(message, mimetype="text/plain")
+        else:
+            response = jsonify({"error": message, "code": "rate_limit_unavailable"})
+        response.status_code = 503
+        response.headers["Retry-After"] = "30"
+        return response
 
     @app.errorhandler(HTTPException)
     def _http_error(error):
@@ -264,6 +363,8 @@ def init_security(app):
     def _unhandled(error):
         if isinstance(error, HTTPException):
             return _http_error(error)
+        if isinstance(error, RateLimitUnavailable):
+            return _rate_limit_unavailable(error)
         app.logger.exception("Unhandled error on %s %s", request.method, request.path)
         if request.path.startswith("/api/") or request.is_json:
             return jsonify({"error": "internal_server_error"}), 500

@@ -101,6 +101,7 @@ Translations are separated by application module and are used across the fronten
 - Flask-Mail
 - Authlib
 - PostgreSQL
+- Redis (shared rate-limit counters; required in production)
 - Jinja2
 
 ### Frontend
@@ -245,6 +246,11 @@ Run the database migrations:
 ```bash
 flask db upgrade
 ```
+
+Rate limits work without Redis locally (counters per process). Production
+requires `RATELIMIT_REDIS_URL`; to try the shared limiter locally run
+`docker run --rm -p 6379:6379 redis:7-alpine` and set
+`RATELIMIT_REDIS_URL=redis://localhost:6379/0`.
 
 All variables are listed in `.env.example`. Production deployment (Railway): see [DEPLOY.md](DEPLOY.md).
 
