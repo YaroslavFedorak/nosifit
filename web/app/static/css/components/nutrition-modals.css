@@ -971,3 +971,92 @@
         animation: none;
     }
 }
+
+/* ---------- Editing the user's own products ---------- */
+
+.nf-modal .nf-btn--danger {
+    border-color: rgba(240, 111, 122, 0.35);
+    background: rgba(240, 111, 122, 0.08);
+    color: #ff9aa3;
+}
+
+.nf-modal .nf-btn--danger:hover:not(:disabled) {
+    border-color: rgba(240, 111, 122, 0.6);
+    background: rgba(240, 111, 122, 0.16);
+    color: #ffc2c7;
+}
+
+.nf-modal .nf-btn--danger.is-confirming {
+    border-color: var(--nfm-danger);
+    background: var(--nfm-danger);
+    color: #fff;
+}
+
+.nf-modal .nf-btn[hidden] {
+    display: none;
+}
+
+.nf-modal .nf-input-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 8px;
+}
+
+.nf-modal .nf-product--own {
+    grid-template-columns: minmax(0, 1fr) 40px 40px;
+}
+
+.nf-modal .nf-product-edit {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    min-height: 40px;
+    padding: 0;
+    border: 1px solid var(--nfm-border);
+    border-radius: var(--nfm-radius);
+    background: var(--nfm-field);
+    color: var(--nfm-soft);
+    cursor: pointer;
+    transition: border-color 0.18s ease, color 0.18s ease, background 0.18s ease;
+}
+
+.nf-modal .nf-product-edit svg {
+    width: 16px;
+    height: 16px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.nf-modal .nf-product-edit:hover {
+    border-color: rgba(155, 93, 229, 0.45);
+    color: var(--nfm-accent-soft);
+}
+
+.nf-modal .nf-product-edit:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--nfm-accent-ring);
+}
+
+.nf-modal .nf-product-own-badge {
+    margin-left: 6px;
+    padding: 1px 6px;
+    border-radius: 999px;
+    background: var(--nfm-accent-tint);
+    color: var(--nfm-accent-soft);
+    font-size: 10px;
+    font-weight: 650;
+    vertical-align: 1px;
+}
+
+@media (max-width: 640px) {
+    .nf-modal .nf-input-row {
+        grid-template-columns: 1fr;
+    }
+
+    .nf-modal .nf-modal-footer .nf-btn--danger.nf-modal-footer-start {
+        flex: 1 0 100%;
+    }
+}

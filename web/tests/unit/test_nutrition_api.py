@@ -179,3 +179,77 @@ def test_translation_falls_back_to_default_locale(app):
 
     assert keys(uk) <= keys(ru)
     assert ru["page"]["title"] != uk["page"]["title"]
+
+
+def test_edit_own_product_recalculates_logged_entries(app, client, user):
+    login(client)
+
+    product = client.post(
+        "/api/nutrition/products",
+        json={"name": "Сирник крвий", "kcal_per_100g": 900, "protein_per_100g": 1, "default_unit": "g", "grams_per_unit": 1},
+    ).get_json()
+    assert product["is_own"] is True
+
+    meal_id = client.post("/api/nutrition/meals", json={"category": "breakfast"}).get_json()["id"]
+    client.post(
+        "/api/nutrition/entries/bulk",
+        json={"meal_id": meal_id, "items": [{"product_id": product["id"], "amount": 200, "unit": "g"}]},
+    )
+
+    response = client.patch(
+        f"/api/nutrition/products/{product['id']}",
+        json={"name": "Сирник", "kcal_per_100g": 220, "protein_per_100g": 15, "locale": "en"},
+    )
+    assert response.status_code == 200
+    assert response.get_json()["name"] == "Сирник"
+
+    meal = client.get("/api/nutrition/day").get_json()["meals"][0]
+    assert meal["items"][0]["calories"] == 440
+    assert meal["items"][0]["protein"] == 30
+    assert meal["total_calories"] == 440
+
+    # Name is the same in every language, not only the one used for editing.
+    uk_name = client.get(f"/api/nutrition/products/{product['id']}?locale=uk").get_json()["name"]
+    assert uk_name == "Сирник"
+
+
+def test_cannot_edit_or_delete_system_product(app, client, user):
+    login(client)
+    with app.app_context():
+        product_id = make_product().id
+
+    product = client.get(f"/api/nutrition/products/{product_id}").get_json()
+    assert product["is_own"] is False
+
+    response = client.patch(f"/api/nutrition/products/{product_id}", json={"kcal_per_100g": 1})
+    assert response.status_code == 404
+    assert response.get_json()["code"] == "product_not_found"
+    assert client.delete(f"/api/nutrition/products/{product_id}").status_code == 404
+
+
+def test_deleted_own_product_disappears_but_history_stays(app, client, user):
+    login(client)
+
+    product = client.post(
+        "/api/nutrition/products",
+        json={"name": "Тимчасовий", "kcal_per_100g": 100, "default_unit": "g", "grams_per_unit": 1},
+    ).get_json()
+    client.post(f"/api/nutrition/products/{product['id']}/favorite", json={"favorite": True})
+    meal_id = client.post("/api/nutrition/meals", json={"category": "snack"}).get_json()["id"]
+    client.post(
+        "/api/nutrition/entries/bulk",
+        json={"meal_id": meal_id, "items": [{"product_id": product["id"], "amount": 100, "unit": "g"}]},
+    )
+
+    assert client.delete(f"/api/nutrition/products/{product['id']}").status_code == 200
+
+    def ids(path):
+        return [item["id"] for item in client.get(path).get_json()["products"]]
+
+    assert product["id"] not in ids("/api/nutrition/products/mine")
+    assert product["id"] not in ids("/api/nutrition/products/recent")
+    assert product["id"] not in ids("/api/nutrition/products/favorites")
+    assert client.patch(f"/api/nutrition/products/{product['id']}", json={"name": "X"}).status_code == 404
+
+    meal = client.get("/api/nutrition/day").get_json()["meals"][0]
+    assert meal["items"][0]["calories"] == 100

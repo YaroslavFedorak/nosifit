@@ -15,6 +15,8 @@ export interface Product {
     default_unit: NutritionUnit;
     grams_per_unit: number;
     is_favorite: boolean;
+    /** The user's own product: can be edited and deleted. */
+    is_own?: boolean;
 }
 
 export interface ProductPayload {

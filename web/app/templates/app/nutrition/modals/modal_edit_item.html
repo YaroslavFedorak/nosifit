@@ -12,7 +12,10 @@
 
     <div class="nf-field">
       <label class="nf-label" for="edit-item-product">{{ translate("nutrition", "catalog.selectedProduct") }}</label>
-      <input class="nf-input" type="text" id="edit-item-product" readonly tabindex="-1" />
+      <div class="nf-input-row">
+        <input class="nf-input" type="text" id="edit-item-product" readonly tabindex="-1" />
+        <button class="nf-btn nf-btn--accent-soft" type="button" id="edit-item-open-product" hidden>{{ translate("nutrition", "catalog.editProductData") }}</button>
+      </div>
     </div>
 
     <div class="nf-field">

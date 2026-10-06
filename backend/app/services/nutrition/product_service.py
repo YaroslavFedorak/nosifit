@@ -4,7 +4,7 @@ from sqlalchemy import func, or_
 from sqlalchemy.orm import selectinload
 
 from backend.app.extensions import db
-from backend.app.models import Product, ProductFavorite, ProductName
+from backend.app.models import Meal, MealItem, Product, ProductFavorite, ProductName
 from backend.app.repositories.product_repository import (
     get_favorite_products,
     get_product_for_user,
@@ -79,6 +79,8 @@ def serialize_product(
         "default_unit": product.default_unit,
         "grams_per_unit": product.grams_per_unit,
         "is_favorite": is_favorite,
+        # The user's own products can be edited and deleted.
+        "is_own": product.owner_user_id is not None and product.owner_user_id == user_id,
     }
 
 
@@ -311,9 +313,59 @@ def create_user_product(user_id, data, locale="uk"):
     return serialize_product(product, user_id, locale)
 
 
+def _recalculate_product_entries(user_id, product, locale="uk"):
+    """Re-apply the product's (corrected) values to everything already logged.
+
+    Fixing a typo in a user's own product should fix the days it was used on,
+    not only future entries.
+    """
+    from backend.app.services.nutrition.calculation_service import (
+        NutritionValidationError,
+        calculate_product_nutrition,
+    )
+    from backend.app.services.nutrition.meal_service import recalc_meal_totals
+
+    items = (
+        MealItem.query
+        .join(Meal)
+        .filter(
+            MealItem.product_id == product.id,
+            Meal.user_id == user_id,
+        )
+        .all()
+    )
+
+    meals = {}
+    for item in items:
+        try:
+            nutrition = calculate_product_nutrition(
+                product,
+                item.amount if item.amount is not None else (item.weight or 100),
+                item.unit or product.default_unit,
+            )
+        except NutritionValidationError:
+            continue
+
+        item.name = get_product_name(product, locale)
+        item.weight = nutrition.grams
+        item.calories = int(nutrition.calories)
+        item.protein = nutrition.protein
+        item.fat = nutrition.fat
+        item.carbs = nutrition.carbs
+        item.fiber = nutrition.fiber
+        item.liquid_ml = nutrition.liquid_ml
+        meals[item.meal_id] = item.meal
+
+    db.session.flush()
+    for meal in meals.values():
+        recalc_meal_totals(meal)
+
+    return len(items)
+
+
 def update_user_product(user_id, product_id, data, locale="uk"):
     product = get_user_product(user_id, product_id)
-    if product is None:
+    if product is None or not product.is_active:
         return None
 
     locale = normalize_locale(locale)
@@ -326,14 +378,13 @@ def update_user_product(user_id, product_id, data, locale="uk"):
         if len(name) > MAX_PRODUCT_NAME_LENGTH:
             raise ProductServiceError("Product name is too long")
 
-        localized = ProductName.query.filter_by(
-            product_id=product.id,
-            locale=locale,
-        ).first()
-
-        if localized:
+        # A user's product has one name; keep every locale row in sync so a
+        # language switch never brings the old (wrong) name back.
+        names = ProductName.query.filter_by(product_id=product.id).all()
+        for localized in names:
             localized.name = name
-        else:
+
+        if not any(localized.locale == locale for localized in names):
             db.session.add(
                 ProductName(
                     product_id=product.id,
@@ -373,6 +424,10 @@ def update_user_product(user_id, product_id, data, locale="uk"):
 
         product.grams_per_unit = grams_per_unit
 
+    db.session.flush()
+    db.session.expire(product, ["names"])
+    _recalculate_product_entries(user_id, product, locale)
+
     db.session.commit()
     return serialize_product(product, user_id, locale)
 
@@ -382,7 +437,12 @@ def archive_user_product(user_id, product_id):
     if product is None:
         return False
 
+    if not product.is_active:
+        return False
+
+    # Archived, not deleted: meals that already used it keep their history.
     product.is_active = False
+    ProductFavorite.query.filter_by(product_id=product.id).delete()
     db.session.commit()
     return True
 

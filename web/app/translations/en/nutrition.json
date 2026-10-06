@@ -249,7 +249,12 @@
         "pendingTitle": "In this meal",
         "emptyFavorites": "Star foods to see them here",
         "emptyRecent": "Foods you add will show up here",
-        "emptyMine": "You haven't created any foods yet"
+        "emptyMine": "You haven't created any foods yet",
+        "editMyProductTitle": "Edit my food",
+        "editHint": "Changes also apply to meals where this food is already logged.",
+        "deleteProduct": "Delete food",
+        "editProductData": "Edit food",
+        "ownBadge": "mine"
     },
     "modals": {
         "eyebrow": {
@@ -274,6 +279,7 @@
         "selectProduct": "Pick a food from the list first.",
         "noItems": "Add at least one food.",
         "amount": "Enter an amount above 0 and up to {max} {unit}.",
-        "nameRequired": "Enter a name for the food."
+        "nameRequired": "Enter a name for the food.",
+        "product_not_found": "This food was already deleted. Reload the page."
     }
 }

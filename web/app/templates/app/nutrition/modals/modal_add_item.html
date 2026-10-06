@@ -97,10 +97,13 @@
 
 <div class="modal nf-modal nf-modal--stacked" id="modal-add-product" role="dialog" aria-modal="true" aria-labelledby="add-product-title">
   <div class="modal-content nf-modal-card nf-modal-card--medium">
+    <input type="hidden" id="product-edit-id" />
     <header class="nf-modal-header">
       <div class="nf-modal-heading">
         <span class="nf-modal-eyebrow">{{ translate("nutrition", "modals.eyebrow.product") }}</span>
-        <h2 class="nf-modal-title" id="add-product-title">{{ translate("nutrition", "catalog.myProductTitle") }}</h2>
+        <h2 class="nf-modal-title" id="add-product-title"
+            data-title-create="{{ translate("nutrition", "catalog.myProductTitle") }}"
+            data-title-edit="{{ translate("nutrition", "catalog.editMyProductTitle") }}">{{ translate("nutrition", "catalog.myProductTitle") }}</h2>
       </div>
       {% include "app/nutrition/modals/_close_button.html" %}
     </header>
@@ -165,9 +168,16 @@
 
     <p class="nf-modal-error" data-modal-error role="alert" hidden></p>
 
+    <p class="nf-modal-hint" id="product-edit-hint" hidden>{{ translate("nutrition", "catalog.editHint") }}</p>
+
     <footer class="nf-modal-footer">
+      <button class="nf-btn nf-btn--danger nf-modal-footer-start" type="button" id="delete-my-product" hidden
+              data-label="{{ translate("nutrition", "catalog.deleteProduct") }}"
+              data-label-confirm="{{ translate("nutrition", "actions.confirmDelete") }}">{{ translate("nutrition", "catalog.deleteProduct") }}</button>
       <button class="nf-btn" type="button" id="close-add-product">{{ translate("nutrition", "actions.cancel") }}</button>
-      <button class="nf-btn nf-btn--primary" type="button" id="save-add-product">{{ translate("nutrition", "actions.create") }}</button>
+      <button class="nf-btn nf-btn--primary" type="button" id="save-add-product"
+              data-label-create="{{ translate("nutrition", "actions.create") }}"
+              data-label-edit="{{ translate("nutrition", "actions.save") }}">{{ translate("nutrition", "actions.create") }}</button>
     </footer>
   </div>
 </div>

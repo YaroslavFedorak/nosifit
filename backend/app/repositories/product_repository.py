@@ -75,7 +75,11 @@ def get_recent_products(user_id, limit=12):
     seen = set()
 
     for entry in entries:
-        if entry.product_id in seen or entry.product is None:
+        if (
+            entry.product_id in seen
+            or entry.product is None
+            or not entry.product.is_active
+        ):
             continue
 
         seen.add(entry.product_id)

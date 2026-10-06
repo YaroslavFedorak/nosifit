@@ -24,6 +24,7 @@ const KNOWN_CODES = new Set([
     "entry_not_found",
     "nothing_to_copy",
     "session_expired",
+    "product_not_found",
 ]);
 
 /** Human, translated text for any error thrown while talking to the API. */

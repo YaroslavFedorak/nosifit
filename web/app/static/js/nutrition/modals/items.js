@@ -13,6 +13,7 @@ const EDIT_ID = "modal-edit-item";
 const MAX_AMOUNT = { g: 5000, ml: 5000, pcs: 100 };
 const STAR_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.8l2.55 5.16 5.7.83-4.13 4.03.98 5.69L12 16.82 6.9 19.51l.98-5.69L3.75 9.79l5.7-.83L12 3.8z"></path></svg>';
 const REMOVE_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>';
+const PENCIL_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg>';
 const CHECK_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5" /></svg>';
 let selectedProduct = null;
 let pendingMealItems = [];
@@ -21,6 +22,8 @@ let catalogMode = "all";
 let catalogProducts = { favorites: [], recent: [], mine: [], all: [] };
 let catalogSearchRequest = 0;
 let searchDebounce;
+let editingProduct = null;
+let refreshAfterChange = () => undefined;
 function formatCalories(value) {
     return String(Math.round(Number(value ?? 0)));
 }
@@ -43,6 +46,12 @@ function createProductRow(product) {
     const name = document.createElement("span");
     name.className = "nf-product-name";
     name.textContent = product.name;
+    if (product.is_own) {
+        const badge = document.createElement("span");
+        badge.className = "nf-product-own-badge";
+        badge.textContent = nutrition_t("catalog.ownBadge");
+        name.appendChild(badge);
+    }
     if (product.brand) {
         const brand = document.createElement("span");
         brand.className = "nf-product-brand";
@@ -84,6 +93,21 @@ function createProductRow(product) {
         }
     });
     wrapper.append(select, favorite);
+    if (product.is_own) {
+        wrapper.classList.add("nf-product--own");
+        const edit = document.createElement("button");
+        edit.type = "button";
+        edit.className = "nf-product-edit";
+        edit.innerHTML = PENCIL_ICON;
+        const editLabel = `${nutrition_t("catalog.editMyProductTitle")}: ${product.name}`;
+        edit.setAttribute("aria-label", editLabel);
+        edit.title = nutrition_t("catalog.editMyProductTitle");
+        edit.addEventListener("click", (event) => {
+            event.stopPropagation();
+            openProductModal(product);
+        });
+        wrapper.appendChild(edit);
+    }
     return wrapper;
 }
 function emptyTextFor(elementId) {
@@ -367,6 +391,21 @@ export async function openEditItemModal(item) {
     markInvalid("edit-item-amount", false);
     meal.innerHTML = "";
     openModal(EDIT_ID, "#edit-item-amount");
+    const openProduct = document.getElementById("edit-item-open-product");
+    if (openProduct) {
+        openProduct.hidden = true;
+        openProduct.onclick = null;
+        if (item.product_id) {
+            NutritionAPI.getProduct(item.product_id, getLocale())
+                .then((product) => {
+                if (!product.is_own)
+                    return;
+                openProduct.hidden = false;
+                openProduct.onclick = () => openProductModal(product);
+            })
+                .catch(() => undefined);
+        }
+    }
     try {
         const day = await NutritionAPI.getDay(getLocale());
         day.meals.forEach((entry) => {
@@ -386,6 +425,7 @@ export async function openEditItemModal(item) {
     }
 }
 export function setupItemModals(onRefresh) {
+    refreshAfterChange = onRefresh;
     onClick(["open-add-meal", "dashboard-open-add-meal"], () => openAddItemModal(0));
     onClick(["close-add-item"], () => closeModal(PICKER_ID));
     onClick(["add-item-to-meal"], () => {
@@ -500,21 +540,7 @@ export function setupItemModals(onRefresh) {
             gramsField.hidden = getValue("product-unit") !== "pcs";
     };
     document.getElementById("product-unit")?.addEventListener("change", syncGramsField);
-    onClick(["open-add-my-product"], () => {
-        ["product-name", "product-brand", "product-kcal", "product-protein", "product-fat", "product-carbs", "product-fiber"]
-            .forEach((id) => {
-            setValue(id, "");
-            markInvalid(id, false);
-        });
-        setValue("product-name", getValue("add-item-search").trim());
-        setValue("product-grams-per-unit", "100");
-        setValue("product-unit", "g");
-        syncGramsField();
-        const liquid = document.getElementById("product-is-liquid");
-        if (liquid)
-            liquid.checked = false;
-        openModal(PRODUCT_ID, "#product-name");
-    });
+    onClick(["open-add-my-product"], () => openProductModal(null));
     onClick(["close-add-product"], () => closeModal(PRODUCT_ID));
     const saveProduct = document.getElementById("save-add-product");
     saveProduct?.addEventListener("click", async () => {
@@ -545,7 +571,10 @@ export function setupItemModals(onRefresh) {
             values[id] = value;
         }
         const unit = getValue("product-unit");
-        let gramsPerUnit = 1;
+        // Keep the stored density (e.g. milk 1.03 g/ml) unless the unit changes.
+        let gramsPerUnit = editingProduct && editingProduct.default_unit === unit && unit !== "pcs"
+            ? Number(editingProduct.grams_per_unit || 1)
+            : 1;
         if (unit === "pcs") {
             gramsPerUnit = parseNumber(getValue("product-grams-per-unit"));
             if (!Number.isFinite(gramsPerUnit) || gramsPerUnit <= 0 || gramsPerUnit > 5000) {
@@ -557,25 +586,33 @@ export function setupItemModals(onRefresh) {
         markInvalid("product-grams-per-unit", false);
         setModalError(PRODUCT_ID, null);
         setBusy(saveProduct, true);
+        const payload = {
+            name,
+            brand: getValue("product-brand").trim() || null,
+            locale: getLocale(),
+            kcal_per_100g: values["product-kcal"],
+            protein_per_100g: values["product-protein"],
+            fat_per_100g: values["product-fat"],
+            carbs_per_100g: values["product-carbs"],
+            fiber_per_100g: values["product-fiber"],
+            liquid_ml_per_100g: document.getElementById("product-is-liquid")?.checked ? 100 : 0,
+            default_unit: unit,
+            grams_per_unit: gramsPerUnit,
+        };
         try {
-            const product = await NutritionAPI.createProduct({
-                name,
-                brand: getValue("product-brand").trim() || null,
-                locale: getLocale(),
-                kcal_per_100g: values["product-kcal"],
-                protein_per_100g: values["product-protein"],
-                fat_per_100g: values["product-fat"],
-                carbs_per_100g: values["product-carbs"],
-                fiber_per_100g: values["product-fiber"],
-                liquid_ml_per_100g: document.getElementById("product-is-liquid")?.checked ? 100 : 0,
-                default_unit: unit,
-                grams_per_unit: gramsPerUnit,
-            });
-            closeModal(PRODUCT_ID);
-            setValue("add-item-search", "");
-            setCatalogMode("mine");
-            await loadCatalog();
-            selectProduct(product);
+            if (editingProduct) {
+                const updated = await NutritionAPI.updateProduct(editingProduct.id, payload);
+                closeModal(PRODUCT_ID);
+                await afterProductChanged(updated, null);
+            }
+            else {
+                const product = await NutritionAPI.createProduct(payload);
+                closeModal(PRODUCT_ID);
+                setValue("add-item-search", "");
+                setCatalogMode("mine");
+                await loadCatalog();
+                selectProduct(product);
+            }
         }
         catch (error) {
             setModalError(PRODUCT_ID, describeError(error));
@@ -584,4 +621,119 @@ export function setupItemModals(onRefresh) {
             setBusy(saveProduct, false);
         }
     });
+    const deleteProduct = document.getElementById("delete-my-product");
+    let deleteTimer;
+    const disarmDelete = () => {
+        window.clearTimeout(deleteTimer);
+        if (!deleteProduct)
+            return;
+        deleteProduct.classList.remove("is-confirming");
+        deleteProduct.textContent = deleteProduct.dataset.label ?? nutrition_t("catalog.deleteProduct");
+    };
+    deleteProduct?.addEventListener("click", async () => {
+        if (!editingProduct)
+            return;
+        // Two-step: first click arms, second (within 3 s) deletes.
+        if (!deleteProduct.classList.contains("is-confirming")) {
+            deleteProduct.classList.add("is-confirming");
+            deleteProduct.textContent = deleteProduct.dataset.labelConfirm ?? nutrition_t("actions.confirmDelete");
+            deleteTimer = window.setTimeout(disarmDelete, 3000);
+            return;
+        }
+        disarmDelete();
+        setBusy(deleteProduct, true);
+        try {
+            const removed = editingProduct;
+            await NutritionAPI.deleteProduct(removed.id);
+            closeModal(PRODUCT_ID);
+            await afterProductChanged(null, removed.id);
+        }
+        catch (error) {
+            setModalError(PRODUCT_ID, describeError(error));
+        }
+        finally {
+            setBusy(deleteProduct, false);
+        }
+    });
+    document.getElementById(PRODUCT_ID)?.addEventListener("nf-modal:closed", () => {
+        disarmDelete();
+        editingProduct = null;
+    });
+}
+/** Opens "My product" empty (create) or filled with an own product (edit). */
+export function openProductModal(product) {
+    editingProduct = product;
+    const fields = [
+        ["product-name", product ? product.name : getValue("add-item-search").trim()],
+        ["product-brand", product?.brand ?? ""],
+        ["product-kcal", product ? product.kcal_per_100g : ""],
+        ["product-protein", product ? product.protein_per_100g : ""],
+        ["product-fat", product ? product.fat_per_100g : ""],
+        ["product-carbs", product ? product.carbs_per_100g : ""],
+        ["product-fiber", product ? product.fiber_per_100g : ""],
+    ];
+    fields.forEach(([id, value]) => {
+        setValue(id, value === null || value === undefined ? "" : String(value));
+        markInvalid(id, false);
+    });
+    const unit = product?.default_unit ?? "g";
+    setValue("product-unit", unit);
+    setValue("product-grams-per-unit", unit === "pcs" ? String(product?.grams_per_unit ?? 100) : "100");
+    markInvalid("product-grams-per-unit", false);
+    const gramsField = document.getElementById("product-grams-per-unit-field");
+    if (gramsField)
+        gramsField.hidden = unit !== "pcs";
+    const liquid = document.getElementById("product-is-liquid");
+    if (liquid)
+        liquid.checked = Number(product?.liquid_ml_per_100g ?? 0) > 0;
+    const title = document.getElementById("add-product-title");
+    if (title) {
+        title.textContent = product
+            ? (title.dataset.titleEdit ?? nutrition_t("catalog.editMyProductTitle"))
+            : (title.dataset.titleCreate ?? nutrition_t("catalog.myProductTitle"));
+    }
+    const save = document.getElementById("save-add-product");
+    if (save) {
+        save.textContent = product
+            ? (save.dataset.labelEdit ?? nutrition_t("actions.save"))
+            : (save.dataset.labelCreate ?? nutrition_t("actions.create"));
+    }
+    const remove = document.getElementById("delete-my-product");
+    if (remove)
+        remove.hidden = !product;
+    const hint = document.getElementById("product-edit-hint");
+    if (hint)
+        hint.hidden = !product;
+    openModal(PRODUCT_ID, "#product-name");
+}
+/** Keeps the picker, pending items and the meal list in sync after edit/delete. */
+async function afterProductChanged(updated, deletedId) {
+    if (updated) {
+        pendingMealItems = pendingMealItems.map((entry) => entry.product.id === updated.id ? { ...entry, product: updated } : entry);
+        if (selectedProduct?.id === updated.id)
+            selectedProduct = updated;
+        const entryName = document.getElementById("edit-item-product");
+        if (entryName && document.getElementById(EDIT_ID)?.classList.contains("open")) {
+            entryName.value = updated.name;
+        }
+    }
+    if (deletedId !== null) {
+        pendingMealItems = pendingMealItems.filter((entry) => entry.product.id !== deletedId);
+        if (selectedProduct?.id === deletedId)
+            selectedProduct = null;
+        const openProduct = document.getElementById("edit-item-open-product");
+        if (openProduct)
+            openProduct.hidden = true;
+    }
+    if (document.getElementById(PICKER_ID)?.classList.contains("open")) {
+        renderSelectedProduct();
+        renderPendingMealItems();
+        await loadCatalog();
+        if (getValue("add-item-search").trim()) {
+            await searchCatalog(getValue("add-item-search"));
+        }
+    }
+    // Logged entries were recalculated on the server.
+    emitNutritionChange("meals");
+    await refreshAfterChange();
 }

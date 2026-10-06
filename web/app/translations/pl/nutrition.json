@@ -249,7 +249,12 @@
         "pendingTitle": "W tym posiłku",
         "emptyFavorites": "Oznacz produkty gwiazdką, aby pojawiły się tutaj",
         "emptyRecent": "Tutaj pojawią się ostatnio dodawane produkty",
-        "emptyMine": "Nie masz jeszcze własnych produktów"
+        "emptyMine": "Nie masz jeszcze własnych produktów",
+        "editMyProductTitle": "Edytuj mój produkt",
+        "editHint": "Zmiany obejmą też posiłki, w których ten produkt jest już zapisany.",
+        "deleteProduct": "Usuń produkt",
+        "editProductData": "Edytuj produkt",
+        "ownBadge": "mój"
     },
     "modals": {
         "eyebrow": {
@@ -274,6 +279,7 @@
         "selectProduct": "Najpierw wybierz produkt z listy.",
         "noItems": "Dodaj co najmniej jeden produkt.",
         "amount": "Podaj ilość większą od 0 i nie większą niż {max} {unit}.",
-        "nameRequired": "Podaj nazwę produktu."
+        "nameRequired": "Podaj nazwę produktu.",
+        "product_not_found": "Ten produkt został już usunięty. Odśwież stronę."
     }
 }

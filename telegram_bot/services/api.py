@@ -20,6 +20,7 @@ ERROR_MESSAGES = {
     "meal_not_found": "Цей прийом їжі вже видалено.",
     "entry_not_found": "Цей продукт уже видалено.",
     "nothing_to_copy": "Учора не було записів.",
+    "product_not_found": "Цей продукт уже видалено.",
 }
 
 
@@ -325,4 +326,20 @@ class NosiFitAPI:
             "POST",
             "/api/nutrition/weight",
             json={"weight": weight},
+        ).json()
+
+    def update_product(self, product_id: int, data: dict, locale: str = "uk") -> dict:
+        """Edit one of the user's own products. Logged entries are recalculated."""
+        self.ensure_authenticated()
+        return self._request(
+            "PATCH",
+            f"/api/nutrition/products/{product_id}",
+            json={**data, "locale": locale},
+        ).json()
+
+    def delete_product(self, product_id: int) -> dict:
+        self.ensure_authenticated()
+        return self._request(
+            "DELETE",
+            f"/api/nutrition/products/{product_id}",
         ).json()

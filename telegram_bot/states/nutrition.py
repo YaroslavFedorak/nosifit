@@ -15,3 +15,4 @@ class NutritionStates(StatesGroup):
     product_protein = State()
     product_fat = State()
     product_carbs = State()
+    editing_product_field = State()

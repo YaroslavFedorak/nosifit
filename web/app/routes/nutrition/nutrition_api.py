@@ -201,10 +201,10 @@ def api_update_product(product_id):
             normalize_locale(data.get("locale")),
         )
     except ProductServiceError as exc:
-        return jsonify({"error": str(exc)}), 400
+        return _error(str(exc), "invalid_product")
 
     if product is None:
-        return jsonify({"error": "Product not found"}), 404
+        return _error("Product not found", "product_not_found", 404)
     return jsonify(product)
 
 
@@ -212,7 +212,7 @@ def api_update_product(product_id):
 @login_required
 def api_delete_product(product_id):
     if not archive_user_product(current_user.id, product_id):
-        return jsonify({"error": "User product not found"}), 404
+        return _error("User product not found", "product_not_found", 404)
     return jsonify({"status": "ok"})
 
 

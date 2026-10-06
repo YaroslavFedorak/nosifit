@@ -54,6 +54,7 @@ def nutrition_menu() -> InlineKeyboardMarkup:
         inline_keyboard=[
             [InlineKeyboardButton(text="➕ Додати їжу", callback_data="nutrition:add")],
             [InlineKeyboardButton(text="🍽 Прийоми сьогодні", callback_data="nutrition:today")],
+            [InlineKeyboardButton(text="👤 Мої продукти", callback_data="nutrition:catalog:mine")],
         ]
     )
 
@@ -174,21 +175,27 @@ def product_results(
     page = products[offset:offset + 8]
     for product in page:
         favorite = "★" if product.get("is_favorite") else "☆"
-        rows.append(
-            [
-                InlineKeyboardButton(
-                    text=product["name"][:40],
-                    callback_data=f"nutrition:product:{product['id']}",
+        row = [
+            InlineKeyboardButton(
+                text=product["name"][:40],
+                callback_data=f"nutrition:product:{product['id']}",
+            ),
+            InlineKeyboardButton(
+                text=favorite,
+                callback_data=(
+                    f"nutrition:fav:{product['id']}:"
+                    f"{0 if product.get('is_favorite') else 1}"
                 ),
+            ),
+        ]
+        if product.get("is_own"):
+            row.append(
                 InlineKeyboardButton(
-                    text=favorite,
-                    callback_data=(
-                        f"nutrition:fav:{product['id']}:"
-                        f"{0 if product.get('is_favorite') else 1}"
-                    ),
-                ),
-            ]
-        )
+                    text="✏️",
+                    callback_data=f"nutrition:myprod:{product['id']}",
+                )
+            )
+        rows.append(row)
 
     if has_more:
         rows.append([
@@ -268,5 +275,49 @@ def my_product_cancel_keyboard() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(
         inline_keyboard=[
             [InlineKeyboardButton(text="✕ Скасувати", callback_data="nutrition:cancel")]
+        ]
+    )
+
+
+# Fields of the user's own product that can be edited from the bot.
+PRODUCT_FIELDS = {
+    "name": "Назва",
+    "kcal_per_100g": "Ккал",
+    "protein_per_100g": "Білки",
+    "fat_per_100g": "Жири",
+    "carbs_per_100g": "Вуглеводи",
+}
+
+
+def my_product_keyboard(product_id: int) -> InlineKeyboardMarkup:
+    field = lambda key: InlineKeyboardButton(  # noqa: E731
+        text=PRODUCT_FIELDS[key],
+        callback_data=f"nutrition:myprod_edit:{product_id}:{key}",
+    )
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [field("name"), field("kcal_per_100g")],
+            [field("protein_per_100g"), field("fat_per_100g"), field("carbs_per_100g")],
+            [InlineKeyboardButton(text="🗑 Видалити продукт", callback_data=f"nutrition:myprod_delete:{product_id}")],
+            [InlineKeyboardButton(text="← Мої продукти", callback_data="nutrition:catalog:mine")],
+        ]
+    )
+
+
+def my_product_delete_keyboard(product_id: int) -> InlineKeyboardMarkup:
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(text="Так, видалити", callback_data=f"nutrition:myprod_delete_yes:{product_id}"),
+                InlineKeyboardButton(text="Ні", callback_data=f"nutrition:myprod:{product_id}"),
+            ]
+        ]
+    )
+
+
+def my_product_edit_cancel_keyboard(product_id: int) -> InlineKeyboardMarkup:
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [InlineKeyboardButton(text="← Назад до продукту", callback_data=f"nutrition:myprod:{product_id}")]
         ]
     )
