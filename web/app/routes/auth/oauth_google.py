@@ -31,7 +31,7 @@ def google_callback():
         return jsonify({"error": "Google user error"}), 400
 
     google_id = user_info["sub"]
-    email = user_info.get("email")
+    email = (user_info.get("email") or "").strip().lower() or None
     name = user_info.get("name")
 
     oauth_acc = OAuthAccount.query.filter_by(

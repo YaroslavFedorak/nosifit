@@ -17,10 +17,18 @@ def login():
         email = request.form.get("email", "").strip().lower()
         password = request.form.get("password", "")
 
-        user = User.query.filter_by(email=email).first()
+        user = User.query.filter(db.func.lower(User.email) == email).first()
 
         if not user:
             flash("Користувача не знайдено", "error")
+            return redirect(url_for("auth.login"))
+
+        if user.password == "oauth":
+            flash(
+                "Цей акаунт створено через Google або GitHub. Увійдіть через них "
+                "або встановіть пароль через «Забули пароль?».",
+                "error",
+            )
             return redirect(url_for("auth.login"))
 
         if not check_password_hash(user.password, password):

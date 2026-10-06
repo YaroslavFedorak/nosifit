@@ -34,6 +34,7 @@
         <h2 class="title">{{ auth_t("profile.heading") }}</h2>
       </div>
 
+      {% include "auth/_flashes.html" %}
       <form method="POST" class="auth-form">
         <div class="row two-cols">
           <div class="field" data-anim>
