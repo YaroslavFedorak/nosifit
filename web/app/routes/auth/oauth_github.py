@@ -48,7 +48,9 @@ def github_callback():
         return jsonify({"error": f"GitHub token request failed: {str(e)}"}), 500
 
     if "access_token" not in token_res:
-        error_msg = token_res.get("error_description", token_res.get("error", "Unknown error"))
+        error_msg = token_res.get(
+            "error_description", token_res.get("error", "Unknown error")
+        )
         return jsonify({"error": f"GitHub token error: {error_msg}"}), 400
 
     access_token = token_res["access_token"]
@@ -79,14 +81,31 @@ def github_callback():
         return jsonify({"error": f"GitHub email request failed: {str(e)}"}), 500
 
     if not isinstance(email_res, list):
-        return jsonify({"error": f"GitHub email error: expected list, got {type(email_res).__name__}"}), 400
+        # GitHub returned an error (dict) instead of list
+        if isinstance(email_res, dict) and "message" in email_res:
+            error_msg = email_res.get("message", "Unknown error")
+            return jsonify({"error": f"GitHub email error: {error_msg}"}), 400
+        return (
+            jsonify(
+                {
+                    "error": f"GitHub email error: expected list, got {type(email_res).__name__}"
+                }
+            ),
+            400,
+        )
 
     primary_email = None
-    for e in email_res:
-        if e.get("primary"):
-            primary_email = e.get("email")
+    verified_email = None
 
-    email = primary_email
+    # Look for primary email, fall back to verified email
+    for e in email_res:
+        if e.get("primary") and e.get("verified"):
+            primary_email = e.get("email")
+            break
+        elif e.get("verified") and not verified_email:
+            verified_email = e.get("email")
+
+    email = primary_email or verified_email
 
     oauth_acc = OAuthAccount.query.filter_by(
         provider="github", provider_user_id=github_id
