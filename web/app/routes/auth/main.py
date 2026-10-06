@@ -5,6 +5,7 @@ from backend.app.extensions import db
 from backend.app.models.user import User
 from backend.app.models.user_profile import UserProfile
 from backend.app.utils.email_service import send_password_reset_email
+from backend.app.utils.mailer import EmailSendError
 from backend.app.utils.token import verify_reset_token
 
 auth_bp = Blueprint("auth", __name__, url_prefix="/auth")
@@ -121,7 +122,11 @@ def reset_password():
         user = User.query.filter_by(email=email).first()
 
         if user:
-            send_password_reset_email(user)
+            try:
+                send_password_reset_email(user)
+            except EmailSendError:
+                flash("Не вдалося надіслати лист. Спробуйте трохи пізніше.", "error")
+                return render_template("auth/reset_password.html")
 
         return render_template(
             "auth/reset_status.html",

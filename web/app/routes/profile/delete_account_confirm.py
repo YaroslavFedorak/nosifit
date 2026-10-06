@@ -1,3 +1,4 @@
+from backend.app.utils.codes import check_code
 from flask import Blueprint, request, session, jsonify
 from flask_login import login_required, current_user
 
@@ -16,7 +17,7 @@ def confirm_delete():
     if session.get("delete_code_email") != current_user.email:
         return jsonify({"status": "email_mismatch"}), 400
 
-    if code is None or str(code) != str(session["delete_code"]):
+    if not check_code(session["delete_code"], code):
         return jsonify({"status": "wrong"}), 400
 
     return jsonify({"status": "ok"})

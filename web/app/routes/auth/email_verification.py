@@ -1,18 +1,36 @@
 from flask import Blueprint, request, render_template, redirect, session, flash, url_for
 from backend.app.models.verification_code import VerificationCode
 from backend.app.models.user import User
-from backend.app.extensions import db, mail
-from flask_mail import Message
-import random
+from datetime import datetime, timedelta, timezone
+import secrets
+
+from backend.app.extensions import db
+from backend.app.utils.mailer import EmailSendError, send_email
+
+CODE_TTL = timedelta(minutes=10)
+MAX_CODE_ATTEMPTS = 5
 
 email_verification_bp = Blueprint("email_verification", __name__, url_prefix="/verify")
 
 
+def _new_code() -> str:
+    return f"{secrets.randbelow(900000) + 100000}"
+
+
+def _is_expired(record) -> bool:
+    created = record.created_at
+    if created is None:
+        return False
+    if created.tzinfo is None:
+        created = created.replace(tzinfo=timezone.utc)
+    return datetime.now(timezone.utc) - created > CODE_TTL
+
+
 def send_verification_email(email, code):
-    msg = Message(
+    send_email(
+        to=email,
         subject="Код підтвердження для NosiFit",
-        recipients=[email],
-        body=(
+        text=(
             f"Привіт!\n\n"
             f"Ваш код підтвердження для створення акаунту в NosiFit:\n\n"
             f"👉 {code}\n\n"
@@ -20,23 +38,20 @@ def send_verification_email(email, code):
             f"Якщо ви не надсилали запит — просто ігноруйте цей лист.\n\n"
             f"З повагою,\nКоманда NosiFit"
         ),
-    )
-
-    msg.html = f"""
+        html=f"""
     <h2>Ваш код підтвердження</h2>
     <p>Код для входу в <b>NosiFit</b>:</p>
     <h1 style="font-size: 32px; letter-spacing: 4px;">{code}</h1>
     <p>Дійсний 10 хвилин.</p>
-    """
-
-    mail.send(msg)
+    """,
+    )
 
 
 @email_verification_bp.route("/send_code", methods=["POST"])
 def send_code():
-    email = request.form.get("email")
+    email = (request.form.get("email") or "").strip().lower()
 
-    if not email or email.strip() == "":
+    if not email:
         flash("Введіть коректний email", "error")
         return redirect(url_for("auth.register"))
 
@@ -46,16 +61,21 @@ def send_code():
 
     session["reg_data"] = request.form.to_dict()
 
-    code = f"{random.randint(100000, 999999)}"
+    code = _new_code()
 
     VerificationCode.query.filter_by(email=email).delete()
 
     db.session.add(VerificationCode(email=email, code=code))
     db.session.commit()
 
-    send_verification_email(email, code)
+    try:
+        send_verification_email(email, code)
+    except EmailSendError:
+        flash("Не вдалося надіслати лист із кодом. Спробуйте трохи пізніше.", "error")
+        return redirect(url_for("auth.register"))
 
     session["pending_email"] = email
+    session["code_attempts"] = 0
 
     return redirect(url_for("email_verification.verify_email"))
 
@@ -78,7 +98,22 @@ def verify_email():
         flash("Код не знайдено. Спробуйте ще раз.", "error")
         return redirect(url_for("auth.register"))
 
-    if record.code != code_input:
+    if _is_expired(record):
+        db.session.delete(record)
+        db.session.commit()
+        flash("Код застарів. Надішліть новий.", "error")
+        return redirect(url_for("email_verification.verify_email"))
+
+    attempts = int(session.get("code_attempts", 0)) + 1
+    session["code_attempts"] = attempts
+
+    if attempts > MAX_CODE_ATTEMPTS:
+        db.session.delete(record)
+        db.session.commit()
+        flash("Забагато спроб. Надішліть новий код.", "error")
+        return redirect(url_for("email_verification.verify_email"))
+
+    if not secrets.compare_digest(record.code, (code_input or "").strip()):
         flash("Невірний код.", "error")
         return redirect(url_for("email_verification.verify_email"))
 
@@ -98,14 +133,19 @@ def resend_code():
         flash("Сесія втрачена. Спробуйте ще раз.", "error")
         return redirect(url_for("auth.register"))
 
-    code = f"{random.randint(100000, 999999)}"
+    code = _new_code()
 
     VerificationCode.query.filter_by(email=email).delete()
     db.session.add(VerificationCode(email=email, code=code))
     db.session.commit()
 
-    send_verification_email(email, code)
+    try:
+        send_verification_email(email, code)
+    except EmailSendError:
+        flash("Не вдалося надіслати лист із кодом. Спробуйте трохи пізніше.", "error")
+        return redirect(url_for("email_verification.verify_email"))
 
+    session["code_attempts"] = 0
     flash("Код надіслано повторно!", "info")
     return redirect(url_for("email_verification.verify_email"))
 

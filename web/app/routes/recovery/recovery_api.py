@@ -6,6 +6,10 @@ from flask import (
     jsonify,
     current_app,
 )
+from flask_login import current_user
+
+from backend.app.extensions import db
+from backend.app.models.recovery.user_habit import UserRecoveryHabit
 
 from backend.app.services.recovery import (
     SleepService,
@@ -19,6 +23,32 @@ from backend.app.models.recovery.habit import RecoveryHabit
 from backend.app.services.training.load_service import TrainingLoadService
 
 recovery_bp = Blueprint("recovery", __name__, url_prefix="/api/recovery")
+
+
+# Every recovery endpoint works only with the signed-in user's own data.
+# The URLs still contain a user id (the frontend sends it), but it must match
+# the session; a different id is answered as if it did not exist.
+@recovery_bp.before_request
+def _require_login():
+    if not current_user.is_authenticated:
+        return jsonify({"error": "Authentication required"}), 401
+    return None
+
+
+def _not_found():
+    return jsonify({"error": "Not found"}), 404
+
+
+def _is_other_user(user_id) -> bool:
+    try:
+        return int(user_id) != current_user.id
+    except (TypeError, ValueError):
+        return True
+
+
+def _owns_user_habit(user_habit_id) -> bool:
+    habit = db.session.get(UserRecoveryHabit, user_habit_id)
+    return habit is not None and habit.user_id == current_user.id
 
 sleep_service = SleepService()
 habit_service = HabitService()
@@ -39,11 +69,11 @@ def parse_iso(dt: str) -> datetime:
 def add_sleep():
     data = request.get_json(silent=True) or {}
 
-    user_id = data.get("user_id")
+    user_id = current_user.id
     sleep_start = data.get("sleep_start")
     sleep_end = data.get("sleep_end")
 
-    if user_id is None or sleep_start is None or sleep_end is None:
+    if sleep_start is None or sleep_end is None:
         return (
             jsonify({"error": ("user_id, sleep_start " "and sleep_end are required")}),
             400,
@@ -102,6 +132,9 @@ def get_habits_list():
 
 @recovery_bp.get("/habits/user/<int:user_id>")
 def get_user_habits(user_id):
+    if _is_other_user(user_id):
+        return _not_found()
+
     habits = habit_service.get_user_habits_with_status(user_id, date.today())
 
     return jsonify(habits)
@@ -109,12 +142,7 @@ def get_user_habits(user_id):
 
 @recovery_bp.post("/habits/add/<int:habit_id>")
 def add_habit(habit_id):
-    data = request.get_json(silent=True) or {}
-
-    user_id = data.get("user_id")
-
-    if user_id is None:
-        return jsonify({"error": "user_id is required"}), 400
+    user_id = current_user.id
 
     habit, created = habit_service.add_user_habit(user_id, habit_id)
 
@@ -126,6 +154,9 @@ def add_habit(habit_id):
 
 @recovery_bp.delete("/habits/<int:user_habit_id>")
 def remove_habit(user_habit_id):
+    if not _owns_user_habit(user_habit_id):
+        return _not_found()
+
     habit = habit_service.remove_user_habit(user_habit_id)
 
     if habit is None:
@@ -150,6 +181,9 @@ def log_habit():
     except (TypeError, ValueError):
         return jsonify({"error": ("user_habit_id " "must be integer")}), 400
 
+    if not _owns_user_habit(user_habit_id):
+        return _not_found()
+
     log = habit_service.log_habit(user_habit_id)
 
     if log is None:
@@ -173,6 +207,9 @@ def log_habit():
 
 @recovery_bp.delete("/habits/logs/<int:user_habit_id>")
 def unlog_habit(user_habit_id):
+    if not _owns_user_habit(user_habit_id):
+        return _not_found()
+
     result = habit_service.unlog_habit(user_habit_id)
 
     if result is None:
@@ -183,6 +220,9 @@ def unlog_habit(user_habit_id):
 
 @recovery_bp.get("/snapshot/<int:user_id>")
 def get_snapshot(user_id):
+    if _is_other_user(user_id):
+        return _not_found()
+
     raw_date = request.args.get("date")
 
     if raw_date:
@@ -234,6 +274,9 @@ def get_snapshot(user_id):
 
 @recovery_bp.get("/heatmap/<int:user_id>")
 def get_heatmap(user_id):
+    if _is_other_user(user_id):
+        return _not_found()
+
     raw_year = request.args.get("year")
 
     try:
@@ -262,6 +305,9 @@ def get_heatmap(user_id):
 
 @recovery_bp.get("/recommendations/<int:user_id>")
 def get_recommendations(user_id):
+    if _is_other_user(user_id):
+        return _not_found()
+
     raw_date = request.args.get("date")
 
     if raw_date:
@@ -305,6 +351,9 @@ def get_recommendations(user_id):
 
 @recovery_bp.get("/day-details/<int:user_id>")
 def get_day_details(user_id):
+    if _is_other_user(user_id):
+        return _not_found()
+
     raw_date = request.args.get("date")
 
     if not raw_date:

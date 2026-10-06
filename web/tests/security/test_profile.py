@@ -195,15 +195,16 @@ def test_delete_request(client, user, monkeypatch):
 def test_delete_confirm(client, user, monkeypatch):
     login(client)
 
+    sent = {}
     monkeypatch.setattr(
         "web.app.routes.profile.delete_account_request.send_email_code",
-        lambda email, code: None,
+        lambda email, code: sent.update(code=code),
     )
 
     client.post("/profile/delete/request")
 
-    with client.session_transaction() as session:
-        code = session["delete_code"]
+    # The session holds only a hash; the real code arrives by email.
+    code = sent["code"]
 
     response = client.post(
         "/profile/delete/confirm",
@@ -217,15 +218,16 @@ def test_delete_confirm(client, user, monkeypatch):
 def test_delete_final(client, user, monkeypatch):
     login(client)
 
+    sent = {}
     monkeypatch.setattr(
         "web.app.routes.profile.delete_account_request.send_email_code",
-        lambda email, code: None,
+        lambda email, code: sent.update(code=code),
     )
 
     client.post("/profile/delete/request")
 
-    with client.session_transaction() as session:
-        code = session["delete_code"]
+    # The session holds only a hash; the real code arrives by email.
+    code = sent["code"]
 
     client.post(
         "/profile/delete/confirm",

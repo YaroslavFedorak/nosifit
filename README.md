@@ -246,6 +246,8 @@ Run the database migrations:
 flask db upgrade
 ```
 
+All variables are listed in `.env.example`. Production deployment (Railway): see [DEPLOY.md](DEPLOY.md).
+
 Start the development server:
 
 ```bash

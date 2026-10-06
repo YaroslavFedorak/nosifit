@@ -1,8 +1,9 @@
 from flask import Blueprint, request, jsonify, session
 from flask_login import login_required, current_user
-from backend.app.utils.mailer import send_email_code
 from backend.app.extensions import db
-import random
+from backend.app.models.user import User
+from backend.app.utils.codes import check_code, hash_code, new_code
+from backend.app.utils.mailer import EmailSendError, send_email_code
 
 email_change_bp = Blueprint("email_change", __name__)
 
@@ -11,7 +12,7 @@ email_change_bp = Blueprint("email_change", __name__)
 @login_required
 def change_email():
     data = request.get_json(silent=True) or {}
-    new_email = data.get("new_email", "").strip()
+    new_email = (data.get("new_email") or "").strip().lower()
 
     if not new_email:
         return jsonify({"status": "error", "message": "missing_email"}), 400
@@ -19,12 +20,18 @@ def change_email():
     if new_email == current_user.email:
         return jsonify({"status": "error", "message": "same_email"}), 400
 
-    code = random.randint(100000, 999999)
+    if User.query.filter_by(email=new_email).first():
+        return jsonify({"status": "error", "message": "email_taken"}), 400
 
-    session["email_change_code"] = code
+    code = new_code()
+
+    try:
+        send_email_code(new_email, code)
+    except EmailSendError:
+        return jsonify({"status": "error", "message": "send_failed"}), 503
+
+    session["email_change_code"] = hash_code(code)
     session["email_change_target"] = new_email
-
-    send_email_code(new_email, code)
 
     return jsonify({"status": "sent"})
 
@@ -41,12 +48,7 @@ def confirm_email():
     if raw_code is None:
         return jsonify({"status": "error", "message": "wrong"}), 400
 
-    try:
-        code = int(raw_code)
-    except (TypeError, ValueError):
-        return jsonify({"status": "error", "message": "wrong"}), 400
-
-    if code != session["email_change_code"]:
+    if not check_code(session["email_change_code"], raw_code):
         return jsonify({"status": "error", "message": "wrong"}), 400
 
     new_email = session.get("email_change_target")

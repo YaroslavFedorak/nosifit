@@ -1,7 +1,8 @@
 import os
 
 from dotenv import load_dotenv
-from flask import Flask
+from flask import Flask, jsonify
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 from backend.app.extensions import db, login_manager, migrate, mail, oauth
 from web.app.i18n import init_i18n
@@ -18,6 +19,24 @@ def create_app(config=None):
 
     if config:
         app.config.update(config)
+
+    if app.config.get("IS_PRODUCTION") and not app.config.get("TESTING"):
+        if not app.config.get("SECRET_KEY") or len(app.config["SECRET_KEY"]) < 32:
+            raise RuntimeError(
+                "SECRET_KEY must be set to a long random value in production "
+                "(python -c \"import secrets; print(secrets.token_hex(32))\")"
+            )
+        if not app.config.get("SQLALCHEMY_DATABASE_URI"):
+            raise RuntimeError("DATABASE_URL is not set")
+
+    # Behind Railway's proxy the app itself sees plain HTTP. Trust the
+    # X-Forwarded-* headers so url_for(..., _external=True) builds https://
+    # links (OAuth callbacks, password reset emails) with the real host.
+    app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1)
+
+    @app.get("/healthz")
+    def healthz():
+        return jsonify({"status": "ok"})
 
     db.init_app(app)
     login_manager.init_app(app)

@@ -1,3 +1,4 @@
+from backend.app.utils.codes import check_code
 from flask import Blueprint, request, jsonify, session
 from flask_login import login_required, current_user
 from backend.app.extensions import db
@@ -9,12 +10,12 @@ confirm_email_bp = Blueprint("confirm_email", __name__)
 @login_required
 def confirm_email():
     data = request.json
-    code = int(data.get("code"))
+    code = data.get("code")
 
     if "email_change_code" not in session:
         return jsonify({"status": "error", "message": "expired"}), 400
 
-    if code != session["email_change_code"]:
+    if not check_code(session["email_change_code"], code):
         return jsonify({"status": "error", "message": "wrong"}), 400
 
     current_user.email = session["email_change_target"]
