@@ -33,6 +33,7 @@ nutrition_api = Blueprint("nutrition_api", __name__, url_prefix="/api/nutrition"
 MIN_WEIGHT_KG = 20.0
 MAX_WEIGHT_KG = 400.0
 MAX_WATER_LITERS_PER_ENTRY = 5.0
+MAX_BULK_ITEMS = 50
 
 
 def _error(message, code, status=400):
@@ -354,6 +355,8 @@ def api_add_entries_bulk():
         return jsonify({"error": "meal_id is required"}), 400
     if not isinstance(items, list) or not items:
         return jsonify({"error": "items must be a non-empty list"}), 400
+    if len(items) > MAX_BULK_ITEMS:
+        return _error(f"At most {MAX_BULK_ITEMS} items at once", "invalid_entry")
 
     payload = []
     for item in items:
@@ -507,6 +510,8 @@ def api_heatmap():
         year = int(request.args.get("year", date.today().year))
     except (TypeError, ValueError):
         year = date.today().year
+    if not 2000 <= year <= 2100:
+        return _error("Year is out of range", "invalid_year")
     return jsonify(get_year_heatmap(current_user.id, year))
 
 

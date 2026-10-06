@@ -173,7 +173,7 @@ Nosi Fit {% endblock %} {% block styles %} {{ super() }}
 "app/training/modals/training_day_details_modal.html" %} {% include
 "app/training/modals/plan/modal.html" %}
 
-<script type="module">
+<script type="module" nonce="{{ csp_nonce() }}">
   import { ICONS } from "/static/js/icons/index.js";
 
   document.getElementById("tr-icon-weak").innerHTML = ICONS.weak;

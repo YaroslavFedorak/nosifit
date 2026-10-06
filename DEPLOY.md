@@ -1,11 +1,15 @@
 # Deploying NosiFit to Railway
 
-Two services from this one repository plus a Postgres database.
+Two services from this one repository plus a Postgres database and a small
+Redis (rate-limit counters only).
 
 ## 1. Project and database
 
 1. Railway → **New Project** → **Deploy PostgreSQL**.
 2. In the same project: **New** → **GitHub Repo** → `NosiFit`. Rename the service to `web`.
+3. In the same project: **New** → **Database** → **Redis**. Keep the default name `Redis`.
+   It must be in the *same project and environment* as `web`: private networking
+   does not cross projects, and the public URL would cost egress and expose Redis.
 
 ## 2. `web` service
 
@@ -20,9 +24,12 @@ Two services from this one repository plus a Postgres database.
 | `BREVO_API_KEY` | brevo.com (free: 300 emails/day) → *SMTP & API* → *API Keys* |
 | `MAIL_FROM` | `NosiFit <you@gmail.com>` — a sender verified in Brevo (*Senders, Domains & Dedicated IPs* → *Senders*); no own domain needed |
 | `TZ` | `Europe/Kyiv` — the server's "today" becomes the users' day |
+| `PUBLIC_BASE_URL` | only with a custom domain, e.g. `https://nosifit.com` — base of password-reset links. Defaults to `https://$RAILWAY_PUBLIC_DOMAIN`; reset emails are refused when neither is set |
+| `RATELIMIT_REDIS_URL` | `${{Redis.REDIS_URL}}` — **required**: the private (`redis.railway.internal`) URL, never `REDIS_PUBLIC_URL`. The app does not start in production without it |
 
 `postgres://` / `postgresql://` URLs are converted to the psycopg 3 driver automatically (`backend/config.py`).
-Secure + HttpOnly cookies, https links behind the proxy (ProxyFix) and the SECRET_KEY check switch on automatically on Railway.
+Secure + HttpOnly cookies, https links behind the proxy (ProxyFix), HSTS and the SECRET_KEY check switch on automatically on Railway.
+After the first deploy of the session-binding change every user is logged out once (old sessions carry no password fingerprint).
 
 **Settings**
 
@@ -31,7 +38,26 @@ Secure + HttpOnly cookies, https links behind the proxy (ProxyFix) and the SECRE
 - **Healthcheck path**: `/healthz`
 - **Networking** → **Generate Domain** → e.g. `nosifit-production.up.railway.app`.
 
-## 3. OAuth callbacks
+## 3. Redis (rate limiting)
+
+Redis holds only rate-limit counters: keys are HMACs of email/IP/user id, values
+are integers, every key expires within an hour. No sessions, cache, codes or
+personal data, so it needs neither persistence nor replicas.
+
+- **Cost**: usage-based. Idle Redis with these keys uses a few MB of RAM and
+  almost no CPU, i.e. cents per month (RAM is $10/GB/month), well inside the
+  plan's included usage.
+- **Smallest footprint** (optional): in the Redis service settings limit
+  memory and turn persistence off by adding to the start command
+  `--maxmemory 25mb --maxmemory-policy volatile-ttl --save "" --appendonly no`.
+  Keep `--requirepass`. Without persistence a Redis restart clears the counters
+  (windows are at most one hour), which is acceptable here.
+- **Do not** enable High Availability or add a public TCP proxy.
+- **When Redis is down** login, registration codes, password reset, email change,
+  password change and account deletion answer `503` until it is back; the rest
+  of the site keeps working. This is deliberate: no unlimited attempts.
+
+## 4. OAuth callbacks
 
 - Google Cloud Console → Credentials → OAuth client → *Authorized redirect URIs*:
   `https://<domain>/auth/google/callback`
@@ -39,7 +65,7 @@ Secure + HttpOnly cookies, https links behind the proxy (ProxyFix) and the SECRE
   *Authorization callback URL* `https://<domain>/auth/github/callback`.
   A GitHub OAuth App has only one callback URL, so keep the old app for localhost.
 
-## 4. Reference data (once)
+## 5. Reference data (once)
 
 After the first successful deploy, in the `web` service shell (or `railway run`):
 
@@ -50,7 +76,7 @@ python -m web.scripts.seed_all
 Exercises, muscles, equipment, 78 products and recovery habits. Safe to run again.
 The `pg_trgm` extension is created by migration `b4a7d1e8c2f0`.
 
-## 5. `bot` service
+## 6. `bot` service
 
 1. **New** → **GitHub Repo** → `NosiFit` again, rename to `bot`.
 2. **Start command**: `python -m telegram_bot.bot`

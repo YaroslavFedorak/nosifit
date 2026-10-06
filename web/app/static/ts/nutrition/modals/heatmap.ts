@@ -13,6 +13,10 @@ import {
     nutrition_t,
 } from "../../i18n/index.js";
 
+import {
+    escapeHtml,
+} from "../../utils/html.js";
+
 
 let calendarModal:
     HTMLDivElement | null = null;
@@ -449,7 +453,7 @@ function renderMeal(
                         <div>
 
                             <span class="nutrition-day-food-name">
-                                ${item.name}
+                                ${escapeHtml(item.name)}
                             </span>
 
                             ${
@@ -466,7 +470,7 @@ function renderMeal(
                         </div>
 
                         <span class="nutrition-day-food-kcal">
-                            ${item.calories} ${nutrition_t("units.kcal")}
+                            ${escapeHtml(item.calories)} ${nutrition_t("units.kcal")}
                         </span>
 
                     </div>
@@ -484,15 +488,15 @@ function renderMeal(
             <div>
 
                 <div class="nutrition-day-meal-name">
-                    ${meal.name}
+                    ${escapeHtml(meal.name)}
                 </div>
 
                 <div class="nutrition-day-meal-meta">
-                    ${formatMealCategory(meal.category)}
+                    ${escapeHtml(formatMealCategory(meal.category))}
 
                     ${
                         meal.time
-                            ? ` · ${meal.time}`
+                            ? ` · ${escapeHtml(meal.time)}`
                             : ""
                     }
 
@@ -501,7 +505,7 @@ function renderMeal(
             </div>
 
             <div class="nutrition-day-meal-kcal">
-                ${meal.total_calories || 0} ${nutrition_t("units.kcal")}
+                ${escapeHtml(meal.total_calories || 0)} ${nutrition_t("units.kcal")}
             </div>
 
         </div>

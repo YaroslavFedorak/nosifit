@@ -4,11 +4,36 @@ from backend.app.models.user import User
 from datetime import datetime, timedelta, timezone
 import secrets
 
+from werkzeug.security import generate_password_hash
+
 from backend.app.extensions import db
 from backend.app.utils.mailer import EmailSendError, send_email
+from backend.app.utils.validation import clean_username, normalize_email, password_problem
+from web.app.security import client_ip, hit_limit, reset_limit, too_many_requests
 
 CODE_TTL = timedelta(minutes=10)
 MAX_CODE_ATTEMPTS = 5
+
+# Each email costs quota and lands in someone's inbox: limit per address and
+# per client. Wrong codes are counted on the server, not in the (client-side,
+# replayable) session cookie.
+SEND_LIMIT_PER_EMAIL = (5, 60 * 60)
+SEND_LIMIT_PER_IP = (20, 60 * 60)
+VERIFY_ATTEMPT_WINDOW = int(CODE_TTL.total_seconds())
+
+# Registration form fields kept until the email is verified. Anything else in
+# the form (and the plain-text password) never goes into the session.
+REG_PROFILE_FIELDS = (
+    "gender",
+    "age",
+    "height",
+    "weight",
+    "activity",
+    "goal",
+    "experience",
+    "workouts_per_week",
+    "training_location",
+)
 
 email_verification_bp = Blueprint("email_verification", __name__, url_prefix="/verify")
 
@@ -47,26 +72,66 @@ def send_verification_email(email, code):
     )
 
 
+def _send_limited(email) -> bool:
+    return hit_limit("verify-send-ip", client_ip(), *SEND_LIMIT_PER_IP) or hit_limit(
+        "verify-send-email", email, *SEND_LIMIT_PER_EMAIL
+    )
+
+
+def _issue_code(email) -> str:
+    code = _new_code()
+    VerificationCode.query.filter_by(email=email).delete()
+    db.session.add(VerificationCode(email=email, code=code))
+    db.session.commit()
+    reset_limit("verify-attempts", email)
+    return code
+
+
 @email_verification_bp.route("/send_code", methods=["POST"])
 def send_code():
-    email = (request.form.get("email") or "").strip().lower()
+    email = normalize_email(request.form.get("email"))
 
     if not email:
         flash("Введіть коректний email", "error")
         return redirect(url_for("auth.register"))
 
-    if User.query.filter_by(email=email).first():
+    username = clean_username(request.form.get("username"))
+    if not username:
+        flash("Вкажіть ім'я користувача (до 50 символів).", "error")
+        return redirect(url_for("auth.register"))
+
+    password = request.form.get("password", "")
+    problem = password_problem(password)
+    if problem:
+        flash(problem, "error")
+        return redirect(url_for("auth.register"))
+
+    confirm = request.form.get("confirm_password")
+    if confirm is not None and confirm != password:
+        flash("Паролі не співпадають.", "error")
+        return redirect(url_for("auth.register"))
+
+    if User.query.filter(db.func.lower(User.email) == email).first():
         flash("Ця пошта вже зареєстрована. Увійдіть у свій акаунт.", "error")
         return redirect(url_for("auth.login"))
 
-    session["reg_data"] = request.form.to_dict()
+    if _send_limited(email):
+        return too_many_requests("Забагато запитів коду. Спробуйте пізніше.")
 
-    code = _new_code()
+    reg_data = {
+        key: str(request.form.get(key))[:32]
+        for key in REG_PROFILE_FIELDS
+        if request.form.get(key)
+    }
+    reg_data.update(
+        username=username,
+        email=email,
+        password_hash=generate_password_hash(password),
+    )
+    session["reg_data"] = reg_data
+    session.pop("verified_email", None)
 
-    VerificationCode.query.filter_by(email=email).delete()
-
-    db.session.add(VerificationCode(email=email, code=code))
-    db.session.commit()
+    code = _issue_code(email)
 
     try:
         send_verification_email(email, code)
@@ -75,7 +140,6 @@ def send_code():
         return redirect(url_for("auth.register"))
 
     session["pending_email"] = email
-    session["code_attempts"] = 0
 
     return redirect(url_for("email_verification.verify_email"))
 
@@ -104,10 +168,7 @@ def verify_email():
         flash("Код застарів. Надішліть новий.", "error")
         return redirect(url_for("email_verification.verify_email"))
 
-    attempts = int(session.get("code_attempts", 0)) + 1
-    session["code_attempts"] = attempts
-
-    if attempts > MAX_CODE_ATTEMPTS:
+    if hit_limit("verify-attempts", email, MAX_CODE_ATTEMPTS, VERIFY_ATTEMPT_WINDOW):
         db.session.delete(record)
         db.session.commit()
         flash("Забагато спроб. Надішліть новий код.", "error")
@@ -118,9 +179,11 @@ def verify_email():
         return redirect(url_for("email_verification.verify_email"))
 
     session["verified_email"] = email
+    session.pop("pending_email", None)
 
     db.session.delete(record)
     db.session.commit()
+    reset_limit("verify-attempts", email)
 
     return redirect(url_for("auth.register_complete"))
 
@@ -133,11 +196,11 @@ def resend_code():
         flash("Сесія втрачена. Спробуйте ще раз.", "error")
         return redirect(url_for("auth.register"))
 
-    code = _new_code()
+    if _send_limited(email):
+        flash("Забагато запитів коду. Спробуйте пізніше.", "error")
+        return redirect(url_for("email_verification.verify_email"))
 
-    VerificationCode.query.filter_by(email=email).delete()
-    db.session.add(VerificationCode(email=email, code=code))
-    db.session.commit()
+    code = _issue_code(email)
 
     try:
         send_verification_email(email, code)
@@ -145,7 +208,6 @@ def resend_code():
         flash("Не вдалося надіслати лист із кодом. Спробуйте трохи пізніше.", "error")
         return redirect(url_for("email_verification.verify_email"))
 
-    session["code_attempts"] = 0
     flash("Код надіслано повторно!", "info")
     return redirect(url_for("email_verification.verify_email"))
 

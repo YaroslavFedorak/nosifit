@@ -2,6 +2,12 @@ from flask import Blueprint, jsonify, request
 from flask_login import current_user, login_required
 
 from backend.app.dashboard.training.service import TrainingDashboardService
+from backend.app.services.training.validation import (
+    clean_exercise_id,
+    clean_fatigue,
+    clean_set_data,
+)
+from backend.app.utils.validation import ValidationError
 
 training_dashboard_api_bp = Blueprint(
     "training_dashboard_api",
@@ -64,7 +70,10 @@ def exercises():
 def start_session():
     payload = request.get_json(silent=True) or {}
 
-    fatigue_before = payload.get("fatigue_before")
+    try:
+        fatigue_before = clean_fatigue(payload.get("fatigue_before"))
+    except ValidationError:
+        return jsonify({"error": "invalid_fatigue"}), 400
 
     session_data = TrainingDashboardService.start(
         current_user.id,
@@ -98,7 +107,7 @@ def add_exercise(session_id):
 
     exercise_id = payload.get("exercise_id")
 
-    if not exercise_id:
+    if isinstance(exercise_id, bool) or not isinstance(exercise_id, (str, int)) or not exercise_id:
         return (
             jsonify(
                 {
@@ -139,11 +148,17 @@ def add_exercise(session_id):
 def update_exercise(session_id, exercise_id):
     payload = request.get_json(silent=True) or {}
 
+    try:
+        exercise_id = clean_exercise_id(exercise_id)
+        set_data = clean_set_data(payload)
+    except ValidationError:
+        return jsonify({"error": "invalid_exercise_data"}), 400
+
     data = TrainingDashboardService.update_exercise(
         current_user.id,
         session_id,
         exercise_id,
-        payload,
+        set_data,
     )
 
     if data is None:
@@ -168,7 +183,10 @@ def update_exercise(session_id, exercise_id):
 def finish_session(session_id):
     payload = request.get_json(silent=True) or {}
 
-    fatigue_after = payload.get("fatigue_after")
+    try:
+        fatigue_after = clean_fatigue(payload.get("fatigue_after"))
+    except ValidationError:
+        return jsonify({"error": "invalid_fatigue"}), 400
 
     data = TrainingDashboardService.finish(
         current_user.id,

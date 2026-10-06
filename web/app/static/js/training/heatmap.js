@@ -1,5 +1,6 @@
 import { TrainingAPI } from "./api.js";
 import { exercise_t, getLocale, t } from "../i18n/index.js";
+import { escapeHtml } from "../utils/html.js";
 let CALENDAR_DATA = [];
 let CURRENT_YEAR = new Date().getFullYear();
 let CURRENT_MONTH = new Date().getMonth();
@@ -445,18 +446,18 @@ function openDayDetails(date) {
                     .map(exercise => `
                                                     <div class="tr-day-exercise">
                                                         <div class="tr-ex-name">
-                                                            ${getDayExerciseName(exercise)}
+                                                            ${escapeHtml(getDayExerciseName(exercise))}
                                                         </div>
                                                         <div class="tr-ex-meta">
                                                             ${exercise.load != null
                     ? t("heatmap.exerciseMeta", {
-                        sets: exercise.sets,
-                        reps: exercise.reps,
-                        load: exercise.load
+                        sets: escapeHtml(exercise.sets),
+                        reps: escapeHtml(exercise.reps),
+                        load: escapeHtml(exercise.load)
                     })
                     : t("heatmap.exerciseMetaNoLoad", {
-                        sets: exercise.sets,
-                        reps: exercise.reps
+                        sets: escapeHtml(exercise.sets),
+                        reps: escapeHtml(exercise.reps)
                     })}
                                                         </div>
                                                     </div>

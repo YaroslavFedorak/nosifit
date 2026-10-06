@@ -8,6 +8,7 @@ from aiogram.fsm.storage.memory import MemoryStorage
 
 from telegram_bot.config import TelegramConfig
 from telegram_bot.handlers import auth, common, nutrition, start, water, weight
+from telegram_bot.security import is_private_chat
 
 logging.basicConfig(
     format="%(asctime)s | %(levelname)s | %(name)s | %(message)s",
@@ -18,6 +19,9 @@ logger = logging.getLogger(__name__)
 
 def create_dispatcher() -> Dispatcher:
     dispatcher = Dispatcher(storage=MemoryStorage())
+    # Groups and channels are ignored entirely (see telegram_bot.security).
+    dispatcher.message.filter(is_private_chat)
+    dispatcher.callback_query.filter(is_private_chat)
     dispatcher.include_router(auth.router)
     dispatcher.include_router(start.router)
     dispatcher.include_router(nutrition.router)

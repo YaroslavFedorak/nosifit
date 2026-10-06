@@ -6,6 +6,10 @@ import {
     t
 } from "../../../i18n/index.js";
 
+import {
+    escapeHtml
+} from "../../../utils/html.js";
+
 type NumberChangeHandler =
     (value: number) => void;
 
@@ -27,14 +31,14 @@ export function createCounterField(
     field.innerHTML = `
         <div class="tr-plan-field-label-row">
             <span class="tr-plan-field-icon">${iconSvg}</span>
-            <span class="tr-plan-field-label">${label}</span>
+            <span class="tr-plan-field-label">${escapeHtml(label)}</span>
         </div>
 
         <div class="tr-input-inline">
             <input
                 type="number"
                 class="tr-input-field tr-plan-counter-input"
-                value="${value}"
+                value="${escapeHtml(value)}"
                 min="0"
             >
 
@@ -149,7 +153,7 @@ export function createRepsField(
             <input
                 type="text"
                 class="tr-input-field tr-plan-reps-input"
-                value="${value}"
+                value="${escapeHtml(value)}"
             >
 
             <div class="tr-input-arrows">

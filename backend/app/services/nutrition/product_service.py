@@ -262,9 +262,26 @@ def _grams_per_unit(value):
     return grams_per_unit
 
 
+MAX_BRAND_LENGTH = 120  # products.brand
+MAX_BARCODE_LENGTH = 32  # products.barcode
+
+
+def _text(data, key, max_length=None):
+    """Optional text field: wrong types and over-long values are errors."""
+    value = data.get(key)
+    if value is None:
+        return ""
+    if not isinstance(value, str):
+        raise ProductServiceError(f"{key} must be text")
+    value = value.strip()
+    if max_length is not None and len(value) > max_length:
+        raise ProductServiceError(f"{key} is too long")
+    return value
+
+
 def create_user_product(user_id, data, locale="uk"):
     locale = normalize_locale(locale)
-    name = (data.get("name") or "").strip()
+    name = _text(data, "name")
 
     if not name:
         raise ProductServiceError("Product name is required")
@@ -272,21 +289,23 @@ def create_user_product(user_id, data, locale="uk"):
     if len(name) > MAX_PRODUCT_NAME_LENGTH:
         raise ProductServiceError("Product name is too long")
 
-    unit = (data.get("default_unit") or "g").strip().lower()
+    unit = (_text(data, "default_unit") or "g").lower()
     if unit not in SUPPORTED_UNITS:
         raise ProductServiceError("Unsupported default unit")
 
     grams_per_unit = _grams_per_unit(data.get("grams_per_unit", 1))
 
-    category = (data.get("category") or "other").strip().lower()
+    category = (_text(data, "category") or "other").lower()
     if category not in PRODUCT_CATEGORIES:
         raise ProductServiceError("Unsupported product category")
 
     product = Product(
         owner_user_id=user_id,
         source="user",
-        brand=(data.get("brand") or "").strip() or None,
-        barcode=(data.get("barcode") or "").strip() or None,
+        brand=_text(data, "brand", MAX_BRAND_LENGTH) or None,
+        # Barcodes are unique across all products; a user-chosen value could
+        # collide with (and block) another user's product. Not used by the UI.
+        barcode=None,
         kcal_per_100g=_nutrition_value(data, "kcal_per_100g"),
         protein_per_100g=_nutrition_value(data, "protein_per_100g"),
         fat_per_100g=_nutrition_value(data, "fat_per_100g"),
@@ -371,7 +390,7 @@ def update_user_product(user_id, product_id, data, locale="uk"):
     locale = normalize_locale(locale)
 
     if "name" in data:
-        name = (data.get("name") or "").strip()
+        name = _text(data, "name")
         if not name:
             raise ProductServiceError("Product name cannot be empty")
 
@@ -405,16 +424,16 @@ def update_user_product(user_id, product_id, data, locale="uk"):
             setattr(product, key, _nutrition_value(data, key))
 
     if "brand" in data:
-        product.brand = (data.get("brand") or "").strip() or None
+        product.brand = _text(data, "brand", MAX_BRAND_LENGTH) or None
 
     if "category" in data:
-        category = (data.get("category") or "other").strip().lower()
+        category = (_text(data, "category") or "other").lower()
         if category not in PRODUCT_CATEGORIES:
             raise ProductServiceError("Unsupported product category")
         product.category = category
 
     if "default_unit" in data:
-        unit = (data.get("default_unit") or "").strip().lower()
+        unit = _text(data, "default_unit").lower()
         if unit not in SUPPORTED_UNITS:
             raise ProductServiceError("Unsupported default unit")
         product.default_unit = unit

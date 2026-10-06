@@ -283,7 +283,7 @@
       </div>
     </div>
 
-    <script>
+    <script nonce="{{ csp_nonce() }}">
       // toggle password visibility
       document.addEventListener("DOMContentLoaded", () => {
         document.querySelectorAll(".toggle").forEach((btn) => {

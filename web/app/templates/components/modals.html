@@ -3,7 +3,7 @@
   <div class="nf-modal-backdrop"></div>
 
   <div class="nf-modal-window">
-    <button class="nf-modal-close" onclick="nfCloseModal()">×</button>
+    <button class="nf-modal-close" type="button">×</button>
     <div class="nf-modal-content">
       {% block modal_content %}
       <!-- Контент модалки вставляється тут -->
@@ -12,7 +12,7 @@
   </div>
 </div>
 
-<script>
+<script nonce="{{ csp_nonce() }}">
   function nfOpenModal(html) {
     const modal = document.getElementById("nf-modal");
     modal.querySelector(".nf-modal-content").innerHTML = html;
@@ -22,4 +22,8 @@
   function nfCloseModal() {
     document.getElementById("nf-modal").classList.add("hidden");
   }
+
+  document
+    .querySelector("#nf-modal .nf-modal-close")
+    ?.addEventListener("click", nfCloseModal);
 </script>

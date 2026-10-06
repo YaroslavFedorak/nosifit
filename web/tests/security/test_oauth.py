@@ -1,7 +1,22 @@
 ﻿from unittest.mock import MagicMock, patch
 
+import pytest
+
 from backend.app.extensions import db
 from backend.app.models.oauth_account import OAuthAccount
+
+
+def github_callback(client, code):
+    """Callback request carrying the state /auth/github put in the session."""
+    with client.session_transaction() as session:
+        session["github_oauth_state"] = "STATE"
+    return client.get(f"/auth/github/callback?code={code}&state=STATE")
+
+
+@pytest.fixture(autouse=True)
+def github_configured(app):
+    app.config["GITHUB_CLIENT_ID"] = "TEST_ID"
+    app.config["GITHUB_CLIENT_SECRET"] = "TEST_SECRET"
 
 
 def test_github_redirect(client, app):
@@ -38,7 +53,7 @@ def test_github_existing_user(mock_get, mock_post, client, user):
 
     mock_get.side_effect = [user_response, email_response]
 
-    response = client.get("/auth/github/callback?code=123")
+    response = github_callback(client, "123")
 
     assert response.status_code == 302
     assert response.location.endswith("/profile")
@@ -68,7 +83,7 @@ def test_github_new_user(mock_get, mock_post, client):
 
     mock_get.side_effect = [user_response, email_response]
 
-    response = client.get("/auth/github/callback?code=123")
+    response = github_callback(client, "123")
 
     assert response.status_code == 302
     assert response.location.endswith("/auth/complete_profile")
@@ -90,7 +105,7 @@ def test_github_private_email_uses_noreply(mock_get, mock_post, client, user):
     email_response.json.return_value = {"message": "Resource not accessible by integration"}
     mock_get.side_effect = [user_response, email_response]
 
-    response = client.get("/auth/github/callback?code=123")
+    response = github_callback(client, "123")
 
     assert response.location.endswith("/auth/complete_profile")
     with client.session_transaction() as session:
@@ -110,7 +125,7 @@ def test_github_unverified_email_is_not_linked(mock_get, mock_post, client, user
     ]
     mock_get.side_effect = [user_response, email_response]
 
-    response = client.get("/auth/github/callback?code=123")
+    response = github_callback(client, "123")
 
     assert response.location.endswith("/auth/complete_profile")
     assert OAuthAccount.query.filter_by(provider_user_id="321").first() is None
@@ -166,7 +181,7 @@ def test_github_token_error(mock_post, client):
         "error": "bad_verification_code",
     }
 
-    response = client.get("/auth/github/callback?code=BAD")
+    response = github_callback(client, "BAD")
 
     assert response.status_code == 400
 
@@ -185,6 +200,7 @@ def test_google_callback_existing_user(client, user):
     google.get.return_value.json.return_value = {
         "sub": "GOOGLE123",
         "email": "test@example.com",
+        "email_verified": True,
         "name": "Test User",
     }
 
@@ -220,6 +236,7 @@ def test_google_callback_new_user(client):
     google.get.return_value.json.return_value = {
         "sub": "GOOGLE456",
         "email": "new@example.com",
+        "email_verified": True,
         "name": "New User",
     }
 
