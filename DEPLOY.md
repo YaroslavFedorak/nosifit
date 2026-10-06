@@ -17,8 +17,8 @@ Two services from this one repository plus a Postgres database.
 | `SECRET_KEY` | output of `python -c "import secrets; print(secrets.token_hex(32))"` |
 | `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` | from Google Cloud Console |
 | `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET` | from a **separate** GitHub OAuth App for production |
-| `SENDGRID_API_KEY` | from SendGrid → Settings → API Keys (permission *Mail Send*) |
-| `MAIL_FROM` | `NosiFit <you@example.com>` — must be a sender verified in SendGrid (Settings → Sender Authentication) |
+| `BREVO_API_KEY` | brevo.com (free: 300 emails/day) → *SMTP & API* → *API Keys* |
+| `MAIL_FROM` | `NosiFit <you@gmail.com>` — a sender verified in Brevo (*Senders, Domains & Dedicated IPs* → *Senders*); no own domain needed |
 | `TZ` | `Europe/Kyiv` — the server's "today" becomes the users' day |
 
 `postgres://` / `postgresql://` URLs are converted to the psycopg 3 driver automatically (`backend/config.py`).

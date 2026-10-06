@@ -114,6 +114,35 @@ def test_sendgrid_is_used_when_api_key_is_set(app, monkeypatch):
     assert headers["Authorization"] == "Bearer SG.test"
 
 
+def test_brevo_is_used_when_api_key_is_set(app, monkeypatch):
+    from backend.app.utils import mailer
+
+    calls = []
+
+    class Response:
+        status_code = 201
+        text = "{}"
+
+    def fake_post(url, json, headers, timeout):
+        calls.append((url, json, headers))
+        return Response()
+
+    monkeypatch.setattr(mailer.requests, "post", fake_post)
+    app.config["BREVO_API_KEY"] = "xkeysib-test"
+    app.config["SENDGRID_API_KEY"] = "SG.test"
+    app.config["MAIL_FROM"] = "NosiFit <me@gmail.com>"
+
+    with app.app_context():
+        mailer.send_email("someone@example.com", "Hi", "Text", html="<b>Hi</b>")
+
+    url, payload, headers = calls[0]
+    assert url == "https://api.brevo.com/v3/smtp/email"
+    assert payload["sender"] == {"email": "me@gmail.com", "name": "NosiFit"}
+    assert payload["to"] == [{"email": "someone@example.com"}]
+    assert payload["htmlContent"] == "<b>Hi</b>"
+    assert headers["api-key"] == "xkeysib-test"
+
+
 def test_sendgrid_without_sender_raises(app, monkeypatch):
     import pytest
     from backend.app.utils import mailer
