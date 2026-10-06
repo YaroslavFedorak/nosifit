@@ -112,3 +112,18 @@ def bounded_number(value, low, high, *, integer=False, allow_none=True):
             raise ValidationError("A whole number is required")
         return int(number)
     return number
+
+
+# PostgreSQL INTEGER; larger values make the query itself fail.
+DB_ID_MAX = 2**31 - 1
+
+
+def as_db_id(value):
+    """A positive int that fits an INTEGER id column, else None."""
+    if isinstance(value, bool):
+        return None
+    if isinstance(value, str) and value.strip().isdigit():
+        value = int(value.strip())
+    if isinstance(value, int) and 0 < value <= DB_ID_MAX:
+        return value
+    return None

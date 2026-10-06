@@ -20,6 +20,7 @@ Two services from this one repository plus a Postgres database.
 | `BREVO_API_KEY` | brevo.com (free: 300 emails/day) → *SMTP & API* → *API Keys* |
 | `MAIL_FROM` | `NosiFit <you@gmail.com>` — a sender verified in Brevo (*Senders, Domains & Dedicated IPs* → *Senders*); no own domain needed |
 | `TZ` | `Europe/Kyiv` — the server's "today" becomes the users' day |
+| `PUBLIC_BASE_URL` | only with a custom domain, e.g. `https://nosifit.com` — base of password-reset links. Defaults to `https://$RAILWAY_PUBLIC_DOMAIN`; reset emails are refused when neither is set |
 | `RATELIMIT_REDIS_URL` | optional — a Redis URL so rate limits are shared by all gunicorn workers; without it each worker counts separately |
 
 `postgres://` / `postgresql://` URLs are converted to the psycopg 3 driver automatically (`backend/config.py`).

@@ -6,9 +6,13 @@ from sqlalchemy import or_
 from sqlalchemy.orm import selectinload
 
 from backend.app.models import Meal, MealItem, Product, ProductFavorite
+from backend.app.utils.validation import as_db_id
 
 
 def get_product_for_user(user_id, product_id):
+    product_id = as_db_id(product_id)
+    if product_id is None:
+        return None
     return (
         Product.query
         .options(selectinload(Product.names))
@@ -25,6 +29,9 @@ def get_product_for_user(user_id, product_id):
 
 
 def get_user_product(user_id, product_id):
+    product_id = as_db_id(product_id)
+    if product_id is None:
+        return None
     return (
         Product.query
         .options(selectinload(Product.names))

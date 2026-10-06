@@ -17,6 +17,7 @@ from urllib.parse import urlsplit
 from flask import abort, current_app, g, jsonify, request
 from flask.json.provider import DefaultJSONProvider
 from werkzeug.exceptions import HTTPException
+from werkzeug.routing import IntegerConverter
 
 logger = logging.getLogger(__name__)
 
@@ -233,7 +234,19 @@ def _json_error(error: HTTPException):
     return response
 
 
+class DbIdConverter(IntegerConverter):
+    """``<int:...>`` limited to PostgreSQL INTEGER: larger ids are a 404,
+    not a database error."""
+
+    def __init__(self, map, *args, **kwargs):
+        kwargs.setdefault("max", 2**31 - 1)
+        super().__init__(map, *args, **kwargs)
+
+
 def init_security(app):
+    # Must run before blueprints add their rules.
+    app.url_map.converters["int"] = DbIdConverter
+
     app.json_provider_class = StrictJSONProvider
     app.json = StrictJSONProvider(app)
 

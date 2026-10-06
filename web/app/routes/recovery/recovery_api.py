@@ -10,6 +10,7 @@ from flask_login import current_user
 
 from backend.app.extensions import db
 from backend.app.models.recovery.user_habit import UserRecoveryHabit
+from backend.app.utils.validation import as_db_id
 
 from backend.app.services.recovery import (
     SleepService,
@@ -47,6 +48,9 @@ def _is_other_user(user_id) -> bool:
 
 
 def _owns_user_habit(user_habit_id) -> bool:
+    user_habit_id = as_db_id(user_habit_id)
+    if user_habit_id is None:
+        return False
     habit = db.session.get(UserRecoveryHabit, user_habit_id)
     return habit is not None and habit.user_id == current_user.id
 
@@ -59,6 +63,7 @@ recommendation_service = RecommendationService()
 
 
 MAX_SLEEP_DURATION = timedelta(hours=24)
+MIN_YEAR, MAX_YEAR = 2000, 2100
 
 
 def parse_iso(dt: str) -> datetime:
@@ -312,6 +317,9 @@ def get_heatmap(user_id):
         year = int(raw_year) if raw_year is not None else date.today().year
     except ValueError:
         return jsonify({"error": ("year must be integer")}), 400
+
+    if not MIN_YEAR <= year <= MAX_YEAR:
+        return jsonify({"error": "year is out of range"}), 400
 
     heatmap = stats_service.get_heatmap(user_id, year)
 

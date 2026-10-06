@@ -510,6 +510,8 @@ def api_heatmap():
         year = int(request.args.get("year", date.today().year))
     except (TypeError, ValueError):
         year = date.today().year
+    if not 2000 <= year <= 2100:
+        return _error("Year is out of range", "invalid_year")
     return jsonify(get_year_heatmap(current_user.id, year))
 
 

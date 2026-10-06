@@ -21,10 +21,14 @@ def _serializer():
     return URLSafeTimedSerializer(current_app.config["SECRET_KEY"], salt=_SALT)
 
 
+def _fingerprint(user):
+    # The email is part of it, so a link sent to an address the account no
+    # longer uses stops working.
+    return session_fingerprint(user.id, f"{user.password}|{user.email.lower()}")
+
+
 def generate_reset_token(user):
-    return _serializer().dumps(
-        {"uid": user.id, "fp": session_fingerprint(user.id, user.password)}
-    )
+    return _serializer().dumps({"uid": user.id, "fp": _fingerprint(user)})
 
 
 def verify_reset_token(token, max_age=RESET_TOKEN_MAX_AGE):
@@ -43,7 +47,7 @@ def verify_reset_token(token, max_age=RESET_TOKEN_MAX_AGE):
     if user is None:
         return None
 
-    expected = session_fingerprint(user.id, user.password)
+    expected = _fingerprint(user)
     if not hmac.compare_digest(expected, str(data.get("fp", ""))):
         return None
     return user

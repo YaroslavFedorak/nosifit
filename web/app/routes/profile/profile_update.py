@@ -1,15 +1,13 @@
-from flask import Blueprint, current_app, request, redirect, session, url_for, flash
-from flask_login import login_required, current_user, logout_user
+from flask import Blueprint, current_app, request, redirect, url_for, flash
+from flask_login import login_required, current_user
 
 from backend.app.extensions import db
-from backend.app.services.account_service import delete_user_account
 from backend.app.utils.validation import (
     ValidationError,
     clean_choice,
     clean_username,
     parse_profile_number,
 )
-from web.app.security import hit_limit, too_many_requests
 
 from backend.app.services.nutrition.calories_service import (
     update_user_nutrition_goals,
@@ -109,45 +107,3 @@ def update_full():
         )
 
     return redirect(url_for("profile_pages.profile_page"))
-
-
-@profile_update_bp.route(
-    "/profile/delete_account",
-    methods=["POST"],
-)
-@login_required
-def delete_account():
-    confirm_email = request.form.get("confirm_email")
-
-    password = request.form.get("password")
-
-    if confirm_email != current_user.email:
-        flash(
-            "Email не співпадає",
-            "error",
-        )
-
-        return redirect(url_for("profile_pages.profile_page"))
-
-    if hit_limit("password-change", current_user.id, 10, 15 * 60):
-        return too_many_requests()
-
-    if not current_user.check_password(password):
-        flash(
-            "Невірний пароль",
-            "error",
-        )
-
-        return redirect(url_for("profile_pages.profile_page"))
-
-    delete_user_account(current_user._get_current_object())
-    logout_user()
-    session.clear()
-
-    flash(
-        "Акаунт видалено",
-        "success",
-    )
-
-    return redirect(url_for("auth.login"))
-

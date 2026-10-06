@@ -133,7 +133,14 @@ def test_change_email(client, user, monkeypatch):
         lambda email, code: sent.update(email=email, code=code),
     )
 
-    response = client.post("/profile/change_email", json={"new_email": "new@example.com"})
+    monkeypatch.setattr(
+        "web.app.routes.profile.email_change.send_email", lambda **kwargs: None
+    )
+
+    response = client.post(
+        "/profile/change_email",
+        json={"new_email": "new@example.com", "password": "password123"},
+    )
 
     assert response.status_code == 200
     assert response.json["status"] == "sent"

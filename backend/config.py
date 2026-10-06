@@ -93,6 +93,19 @@ class Config:
         o for o in (os.getenv("TRUSTED_ORIGINS") or "").split(",") if o.strip()
     )
 
-    # /premium/activate grants premium for free. Fine while developing,
-    # never on a public site until real payments exist.
-    PREMIUM_SELF_ACTIVATION = _env_flag("PREMIUM_SELF_ACTIVATION", not IS_PRODUCTION)
+    # /premium/activate grants premium for free. Off unless explicitly
+    # enabled (local development): a host without APP_ENV/RAILWAY_ENVIRONMENT
+    # must not hand out premium to everyone.
+    PREMIUM_SELF_ACTIVATION = _env_flag("PREMIUM_SELF_ACTIVATION", False)
+
+    # Canonical address used in emailed links. Building them from the
+    # request's Host / X-Forwarded-Host lets an attacker send a victim a
+    # password-reset link pointing at the attacker's site.
+    PUBLIC_BASE_URL = (
+        os.getenv("PUBLIC_BASE_URL")
+        or (
+            f"https://{os.getenv('RAILWAY_PUBLIC_DOMAIN')}"
+            if os.getenv("RAILWAY_PUBLIC_DOMAIN")
+            else None
+        )
+    )
