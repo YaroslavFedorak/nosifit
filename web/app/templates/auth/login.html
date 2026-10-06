@@ -38,6 +38,7 @@
       <div class="auth-error">{{ error }}</div>
       {% endif %}
 
+      {% include "auth/_flashes.html" %}
       <form
         method="POST"
         action="{{ url_for('auth.login') }}"

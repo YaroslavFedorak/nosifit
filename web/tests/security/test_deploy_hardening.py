@@ -87,7 +87,7 @@ def test_database_url_is_normalized_for_psycopg3(monkeypatch):
     assert importlib.reload(config).Config.SQLALCHEMY_DATABASE_URI == "postgresql+psycopg://u:p@host/db"
 
 
-def test_resend_is_used_when_api_key_is_set(app, monkeypatch):
+def test_sendgrid_is_used_when_api_key_is_set(app, monkeypatch):
     from backend.app.utils import mailer
 
     calls = []
@@ -101,16 +101,29 @@ def test_resend_is_used_when_api_key_is_set(app, monkeypatch):
         return Response()
 
     monkeypatch.setattr(mailer.requests, "post", fake_post)
-    app.config["RESEND_API_KEY"] = "re_test"
+    app.config["SENDGRID_API_KEY"] = "SG.test"
     app.config["MAIL_FROM"] = "NosiFit <no-reply@example.com>"
 
     with app.app_context():
         mailer.send_email("someone@example.com", "Hi", "Text")
 
     url, payload, headers = calls[0]
-    assert url == "https://api.resend.com/emails"
-    assert payload["to"] == ["someone@example.com"]
-    assert headers["Authorization"] == "Bearer re_test"
+    assert url == "https://api.sendgrid.com/v3/mail/send"
+    assert payload["personalizations"][0]["to"] == [{"email": "someone@example.com"}]
+    assert payload["from"] == {"email": "no-reply@example.com", "name": "NosiFit"}
+    assert headers["Authorization"] == "Bearer SG.test"
+
+
+def test_sendgrid_without_sender_raises(app, monkeypatch):
+    import pytest
+    from backend.app.utils import mailer
+
+    monkeypatch.setattr(mailer.requests, "post", lambda *a, **k: pytest.fail("must not call SendGrid"))
+    app.config["SENDGRID_API_KEY"] = "SG.test"
+    app.config["MAIL_FROM"] = None
+
+    with app.app_context(), pytest.raises(mailer.EmailSendError):
+        mailer.send_email("someone@example.com", "Hi", "Text")
 
 
 def test_email_codes_are_not_stored_in_plain_text(app, client, user, monkeypatch):

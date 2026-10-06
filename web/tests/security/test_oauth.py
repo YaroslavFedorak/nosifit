@@ -32,6 +32,7 @@ def test_github_existing_user(mock_get, mock_post, client, user):
         {
             "email": "test@example.com",
             "primary": True,
+            "verified": True,
         }
     ]
 
@@ -61,6 +62,7 @@ def test_github_new_user(mock_get, mock_post, client):
         {
             "email": "new@example.com",
             "primary": True,
+            "verified": True,
         }
     ]
 
@@ -75,6 +77,87 @@ def test_github_new_user(mock_get, mock_post, client):
         assert session["oauth_user"]["email"] == "new@example.com"
         assert session["oauth_user"]["username"] == "newuser"
         assert session["oauth_user"]["provider"] == "github"
+
+
+@patch("web.app.routes.auth.oauth_github.requests.post")
+@patch("web.app.routes.auth.oauth_github.requests.get")
+def test_github_private_email_uses_noreply(mock_get, mock_post, client, user):
+    mock_post.return_value.json.return_value = {"access_token": "TOKEN"}
+
+    user_response = MagicMock()
+    user_response.json.return_value = {"id": 789, "login": "Hidden"}
+    email_response = MagicMock()
+    email_response.json.return_value = {"message": "Resource not accessible by integration"}
+    mock_get.side_effect = [user_response, email_response]
+
+    response = client.get("/auth/github/callback?code=123")
+
+    assert response.location.endswith("/auth/complete_profile")
+    with client.session_transaction() as session:
+        assert session["oauth_user"]["email"] == "789+hidden@users.noreply.github.com"
+
+
+@patch("web.app.routes.auth.oauth_github.requests.post")
+@patch("web.app.routes.auth.oauth_github.requests.get")
+def test_github_unverified_email_is_not_linked(mock_get, mock_post, client, user):
+    mock_post.return_value.json.return_value = {"access_token": "TOKEN"}
+
+    user_response = MagicMock()
+    user_response.json.return_value = {"id": 321, "login": "attacker"}
+    email_response = MagicMock()
+    email_response.json.return_value = [
+        {"email": "test@example.com", "primary": True, "verified": False}
+    ]
+    mock_get.side_effect = [user_response, email_response]
+
+    response = client.get("/auth/github/callback?code=123")
+
+    assert response.location.endswith("/auth/complete_profile")
+    assert OAuthAccount.query.filter_by(provider_user_id="321").first() is None
+
+
+def test_github_callback_without_code_redirects_to_login(client):
+    response = client.get("/auth/github/callback")
+
+    assert response.status_code == 302
+    assert response.location.endswith("/auth/login")
+
+
+def test_complete_profile_links_oauth_account(client):
+    with client.session_transaction() as session:
+        session["oauth_user"] = {
+            "provider": "github",
+            "provider_user_id": "555",
+            "username": "octo",
+            "email": "Octo@Example.com",
+        }
+
+    response = client.post(
+        "/auth/complete_profile",
+        data={"age": "25", "height": "180", "weight": "75", "workouts": "3"},
+    )
+
+    assert response.status_code == 302
+    assert response.location.endswith("/profile")
+
+    account = OAuthAccount.query.filter_by(provider="github", provider_user_id="555").first()
+    assert account is not None
+    assert account.user.email == "octo@example.com"
+
+
+def test_complete_profile_rejects_empty_form(client):
+    with client.session_transaction() as session:
+        session["oauth_user"] = {
+            "provider": "github",
+            "provider_user_id": "556",
+            "username": "octo2",
+            "email": "octo2@example.com",
+        }
+
+    response = client.post("/auth/complete_profile", data={})
+
+    assert response.status_code == 200
+    assert OAuthAccount.query.filter_by(provider_user_id="556").first() is None
 
 
 @patch("web.app.routes.auth.oauth_github.requests.post")

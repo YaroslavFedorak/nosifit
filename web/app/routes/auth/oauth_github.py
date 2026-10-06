@@ -1,10 +1,13 @@
 from flask import Blueprint, redirect, request, session, current_app, jsonify
 import requests
+import logging
 from flask_login import login_user
 from backend.app.models.user import User
 from backend.app.models.oauth_account import OAuthAccount
 from backend.app.models.user_profile import UserProfile
 from backend.app.extensions import db
+
+logger = logging.getLogger(__name__)
 
 github_bp = Blueprint("github", __name__)
 
@@ -26,6 +29,9 @@ def github_login():
 @github_bp.route("/auth/github/callback")
 def github_callback():
     code = request.args.get("code")
+    if not code:
+        # User pressed "Cancel" on GitHub, or opened the callback directly
+        return redirect("/auth/login")
 
     client_id = current_app.config.get("GITHUB_CLIENT_ID")
     client_secret = current_app.config.get("GITHUB_CLIENT_SECRET")
@@ -78,25 +84,18 @@ def github_callback():
     except Exception as e:
         return jsonify({"error": f"GitHub email request failed: {str(e)}"}), 500
 
-    if not isinstance(email_res, list):
-        # GitHub returned an error (dict) instead of list
-        if isinstance(email_res, dict) and "message" in email_res:
-            error_msg = email_res.get("message", "Unknown error")
-            return jsonify({"error": f"GitHub email error: {error_msg}"}), 400
-        return jsonify({"error": f"GitHub email error: expected list, got {type(email_res).__name__}"}), 400
-
-    primary_email = None
-    verified_email = None
-
-    # Look for primary email, fall back to verified email
-    for e in email_res:
-        if e.get("primary") and e.get("verified"):
-            primary_email = e.get("email")
-            break
-        elif e.get("verified") and not verified_email:
-            verified_email = e.get("email")
-
-    email = primary_email or verified_email
+    # Only a verified address may be linked to an existing account.
+    email = None
+    if isinstance(email_res, list):
+        verified = [e for e in email_res if isinstance(e, dict) and e.get("verified")]
+        primary = next((e for e in verified if e.get("primary")), None)
+        chosen = primary or (verified[0] if verified else None)
+        if chosen and chosen.get("email"):
+            email = chosen["email"].strip().lower()
+    else:
+        # Private email or missing user:email scope: GitHub returns {"message": ...}
+        error_msg = email_res.get("message", "") if isinstance(email_res, dict) else ""
+        logger.warning("GitHub email API error for user %s: %s", github_id, error_msg)
 
     oauth_acc = OAuthAccount.query.filter_by(
         provider="github", provider_user_id=github_id
@@ -136,11 +135,14 @@ def github_callback():
             login_user(user)
             return redirect("/profile")
 
+    # No usable email: GitHub's own noreply address is unique per account.
+    noreply_email = f"{github_id}+{username or 'user'}@users.noreply.github.com".lower()
+
     session["oauth_user"] = {
         "provider": "github",
         "provider_user_id": github_id,
-        "username": username,
-        "email": email,
+        "username": username or f"github_{github_id}",
+        "email": email or noreply_email,
     }
 
     return redirect("/auth/complete_profile")

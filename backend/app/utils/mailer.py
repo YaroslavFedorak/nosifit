@@ -5,6 +5,7 @@ Otherwise, Flask-Mail + SMTP is used (local development with Gmail).
 """
 
 import logging
+from email.utils import parseaddr
 
 import requests
 from flask import current_app
@@ -26,7 +27,13 @@ def send_email(to: str, subject: str, text: str, html: str | None = None) -> Non
     api_key = current_app.config.get("SENDGRID_API_KEY")
 
     if api_key:
-        mail_from = current_app.config.get("MAIL_FROM", "noreply@nosifit.sendgrid.net")
+        # SendGrid wants {"email", "name"}, not "Name <addr>".
+        from_name, from_email = parseaddr(current_app.config.get("MAIL_FROM") or "")
+        if not from_email:
+            logger.error("MAIL_FROM is not set; SendGrid needs a verified sender")
+            raise EmailSendError("Email sender is not configured")
+
+        sender = {"email": from_email, "name": from_name or "NosiFit"}
 
         payload = {
             "personalizations": [
@@ -34,7 +41,7 @@ def send_email(to: str, subject: str, text: str, html: str | None = None) -> Non
                     "to": [{"email": to}],
                 }
             ],
-            "from": {"email": mail_from},
+            "from": sender,
             "subject": subject,
             "content": [
                 {"type": "text/plain", "value": text}

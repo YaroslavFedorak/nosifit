@@ -49,10 +49,11 @@ class Config:
     GITHUB_CLIENT_SECRET = os.getenv("GITHUB_CLIENT_SECRET")
 
     # --- Email -------------------------------------------------------------
-    # With RESEND_API_KEY set, mail goes through the Resend HTTP API (works on
-    # hosts that block SMTP ports, e.g. Railway). Otherwise Gmail SMTP below.
-    RESEND_API_KEY = os.getenv("RESEND_API_KEY")
-    MAIL_FROM = os.getenv("MAIL_FROM", "NosiFit <onboarding@resend.dev>")
+    # With SENDGRID_API_KEY set, mail goes through the SendGrid HTTP API (works
+    # on hosts that block SMTP ports, e.g. Railway). Otherwise Gmail SMTP below.
+    # MAIL_FROM must be a sender verified in SendGrid ("Name <addr>" or "addr").
+    SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY")
+    MAIL_FROM = os.getenv("MAIL_FROM") or os.getenv("MAIL_USERNAME")
 
     MAIL_SERVER = os.getenv("MAIL_SERVER", "smtp.gmail.com")
     MAIL_PORT = int(os.getenv("MAIL_PORT", "587"))
