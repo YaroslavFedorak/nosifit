@@ -16,7 +16,9 @@ from telegram_bot.keyboards.nutrition import (
     PRODUCT_FIELDS,
     meal_categories,
     meal_detail_keyboard,
+    my_product_brand_clear_keyboard,
     my_product_delete_keyboard,
+    product_brand_keyboard,
     my_product_edit_cancel_keyboard,
     my_product_keyboard,
     meal_name,
@@ -134,8 +136,10 @@ def _meal_by_category(day: dict, category: str) -> dict | None:
 
 def _format_product(product: dict) -> str:
     unit = UNIT_LABELS.get(product.get("default_unit", "g"), product.get("default_unit", "g"))
+    brand = product.get("brand")
+    brand_text = f" · {html.escape(brand)}" if brand else ""
     return (
-        f"🍽 <b>{html.escape(product.get('name', 'Продукт'))}</b>\n\n"
+        f"🍽 <b>{html.escape(product.get('name', 'Продукт'))}</b>{brand_text}\n\n"
         f"🔥 {product.get('kcal_per_100g', 0):.0f} ккал / 100 г\n"
         f"🥩 {product.get('protein_per_100g', 0):.1f} г білка · "
         f"🥑 {product.get('fat_per_100g', 0):.1f} г жирів\n"
@@ -707,7 +711,7 @@ async def choose_product(callback: CallbackQuery, state: FSMContext) -> None:
         + "\n\n"
         f"Введіть кількість у <b>{UNIT_LABELS.get(unit, unit)}</b>. "
         f"За замовчуванням: <b>{default_amount:g}</b>.",
-        reply_markup=amount_keyboard(unit),
+        reply_markup=amount_keyboard(unit, product_id if product.get("is_own") else None),
     )
 
 
@@ -1044,9 +1048,38 @@ async def my_product_name(message: Message, state: FSMContext) -> None:
     if not name or len(name) > 120:
         await message.answer("Введіть назву продукту (до 120 символів).")
         return
-    await state.update_data(new_product_name=name)
+    await state.update_data(new_product_name=name, new_product_brand=None)
+    await state.set_state(NutritionStates.product_brand)
+    await message.answer(
+        "Введіть бренд або виробника (до 120 символів), наприклад <b>Галичина</b>.\n"
+        "Якщо бренду немає — натисніть «Без бренду».",
+        reply_markup=product_brand_keyboard(),
+    )
+
+
+async def _ask_product_kcal(message: Message, state: FSMContext) -> None:
     await state.set_state(NutritionStates.product_kcal)
     await message.answer("Введіть калорійність на 100 г, наприклад <b>250</b>. Можна 0.")
+
+
+@router.message(NutritionStates.product_brand)
+async def my_product_brand(message: Message, state: FSMContext) -> None:
+    brand = (message.text or "").strip()
+    if not brand or len(brand) > 120:
+        await message.answer(
+            "Бренд має бути до 120 символів. Або натисніть «Без бренду».",
+            reply_markup=product_brand_keyboard(),
+        )
+        return
+    await state.update_data(new_product_brand=brand)
+    await _ask_product_kcal(message, state)
+
+
+@router.callback_query(NutritionStates.product_brand, F.data == "nutrition:brand_skip")
+async def my_product_brand_skip(callback: CallbackQuery, state: FSMContext) -> None:
+    await callback.answer()
+    await state.update_data(new_product_brand=None)
+    await _ask_product_kcal(callback.message, state)
 
 
 async def _read_product_number(
@@ -1111,6 +1144,7 @@ async def my_product_carbs(message: Message, state: FSMContext) -> None:
             _api(message.from_user.id).create_product,
             {
                 "name": data["new_product_name"],
+                "brand": data.get("new_product_brand"),
                 "kcal_per_100g": data["new_product_kcal"],
                 "protein_per_100g": data["new_product_protein"],
                 "fat_per_100g": data["new_product_fat"],
@@ -1158,9 +1192,12 @@ async def cancel_nutrition(callback: CallbackQuery, state: FSMContext) -> None:
 
 def _format_my_product(product: dict) -> str:
     unit = UNIT_LABELS.get(product.get("default_unit", "g"), product.get("default_unit", "g"))
+    brand = product.get("brand")
+    brand_line = f"Бренд: <b>{html.escape(brand)}</b>\n" if brand else "Бренд: —\n"
     return (
         f"✏️ <b>{html.escape(product.get('name', 'Продукт'))}</b>\n\n"
-        f"Ккал: <b>{_format_number(float(product.get('kcal_per_100g') or 0))}</b> на 100 г\n"
+        + brand_line
+        + f"Ккал: <b>{_format_number(float(product.get('kcal_per_100g') or 0))}</b> на 100 г\n"
         f"Білки: <b>{_format_number(float(product.get('protein_per_100g') or 0))}</b> г · "
         f"Жири: <b>{_format_number(float(product.get('fat_per_100g') or 0))}</b> г · "
         f"Вуглеводи: <b>{_format_number(float(product.get('carbs_per_100g') or 0))}</b> г\n"
@@ -1208,6 +1245,13 @@ async def my_product_edit_field(callback: CallbackQuery, state: FSMContext) -> N
 
     if field == "name":
         prompt = "Введіть нову назву продукту (до 120 символів):"
+    elif field == "brand":
+        await _safe_edit(
+            callback.message,
+            "Введіть новий бренд (до 120 символів) або приберіть його:",
+            reply_markup=my_product_brand_clear_keyboard(int(product_id)),
+        )
+        return
     else:
         limit = 950 if field == "kcal_per_100g" else 100
         prompt = (
@@ -1226,11 +1270,11 @@ async def my_product_save_field(message: Message, state: FSMContext) -> None:
         await state.set_state(None)
         return
 
-    if field == "name":
+    if field in ("name", "brand"):
         value = (message.text or "").strip()
         if not value or len(value) > 120:
             await message.answer(
-                "Назва не може бути порожньою або довшою за 120 символів.",
+                "Текст не може бути порожнім або довшим за 120 символів.",
                 reply_markup=my_product_edit_cancel_keyboard(product_id),
             )
             return
@@ -1283,3 +1327,16 @@ async def my_product_delete_confirm(callback: CallbackQuery, state: FSMContext) 
     await state.update_data(pending=pending)
     await callback.message.answer("🗑 Продукт видалено.")
     await _show_catalog(callback, state, "mine")
+
+
+@router.callback_query(F.data.startswith("nutrition:myprod_brand_clear:"))
+async def my_product_brand_clear(callback: CallbackQuery, state: FSMContext) -> None:
+    await callback.answer()
+    product_id = int(callback.data.rsplit(":", 1)[1])
+    try:
+        await asyncio.to_thread(_api(callback.from_user.id).update_product, product_id, {"brand": None})
+    except NosiFitAPIError as exc:
+        await callback.message.answer(str(exc))
+        return
+    await state.set_state(None)
+    await _send_my_product(callback.message, callback.from_user.id, product_id, edit=True, prefix="✅ Бренд прибрано.\n\n")

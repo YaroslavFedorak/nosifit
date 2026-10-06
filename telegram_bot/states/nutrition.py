@@ -11,6 +11,7 @@ class NutritionStates(StatesGroup):
     reviewing = State()
     saving = State()
     product_name = State()
+    product_brand = State()
     product_kcal = State()
     product_protein = State()
     product_fat = State()
