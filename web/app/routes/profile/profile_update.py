@@ -118,44 +118,6 @@ def update_full():
 
 
 @profile_update_bp.route(
-    "/profile/change_email",
-    methods=["POST"],
-)
-@login_required
-def change_email():
-    new_email = (request.form.get("new_email") or "").strip()
-
-    password = request.form.get("password")
-
-    if not current_user.check_password(password):
-        flash(
-            "Невірний пароль",
-            "error",
-        )
-
-        return redirect(url_for("profile_pages.profile_page"))
-
-    if not new_email:
-        flash(
-            "Email не може бути порожнім",
-            "error",
-        )
-
-        return redirect(url_for("profile_pages.profile_page"))
-
-    current_user.email = new_email
-
-    db.session.commit()
-
-    flash(
-        "Email оновлено",
-        "success",
-    )
-
-    return redirect(url_for("profile_pages.profile_page"))
-
-
-@profile_update_bp.route(
     "/profile/delete_account",
     methods=["POST"],
 )
@@ -190,5 +152,4 @@ def delete_account():
     )
 
     return redirect(url_for("auth.login"))
-
 
