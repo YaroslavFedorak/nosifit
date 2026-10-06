@@ -2,6 +2,7 @@ import { createCounterField, createRepsField } from "./counters.js";
 import { enableDrag } from "../interactions/dragdrop.js";
 import { ICONS } from "../../../icons/index.js";
 import { exercise_t } from "../../../i18n/index.js";
+import { escapeHtml } from "../../../utils/html.js";
 function getExerciseName(exercise) {
     if (!exercise.slug) {
         return exercise.name;
@@ -22,7 +23,7 @@ export function createExerciseCard(exercise, index, list, rerender, openPicker) 
         <div class="tr-plan-card-header-left">
             <div class="tr-plan-card-strip"></div>
             <button class="tr-plan-ex-name">
-                ${name}
+                ${escapeHtml(name)}
             </button>
         </div>
 

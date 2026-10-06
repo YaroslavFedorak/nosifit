@@ -1,4 +1,5 @@
 import os
+from datetime import timedelta
 
 
 def _env_flag(name: str, default: bool = False) -> bool:
@@ -75,7 +76,22 @@ class Config:
     SESSION_COOKIE_SAMESITE = "Lax"
     REMEMBER_COOKIE_SAMESITE = "Lax"
 
+    # Logins last 30 days instead of Flask-Login's default of a year.
+    REMEMBER_COOKIE_DURATION = timedelta(days=30)
+    PERMANENT_SESSION_LIFETIME = timedelta(days=30)
+
     PREFERRED_URL_SCHEME = "https" if IS_PRODUCTION else "http"
+
+    # --- Abuse limits ---------------------------------------------------------
+    # The app accepts no uploads; nothing legitimate is anywhere near 1 MB.
+    MAX_CONTENT_LENGTH = 1024 * 1024
+    RATELIMIT_ENABLED = _env_flag("RATELIMIT_ENABLED", True)
+    # Optional: share rate-limit counters between gunicorn workers/instances.
+    RATELIMIT_REDIS_URL = os.getenv("RATELIMIT_REDIS_URL") or None
+    # Extra origins allowed to send state-changing requests (comma-separated).
+    TRUSTED_ORIGINS = tuple(
+        o for o in (os.getenv("TRUSTED_ORIGINS") or "").split(",") if o.strip()
+    )
 
     # /premium/activate grants premium for free. Fine while developing,
     # never on a public site until real payments exist.

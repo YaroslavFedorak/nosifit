@@ -1,5 +1,6 @@
 import { NutritionAPI, } from "../api.js";
 import { getLocale, nutrition_t, } from "../../i18n/index.js";
+import { escapeHtml, } from "../../utils/html.js";
 let calendarModal = null;
 let dayModal = null;
 let calendarYear = new Date().getFullYear();
@@ -247,7 +248,7 @@ function renderMeal(meal) {
                         <div>
 
                             <span class="nutrition-day-food-name">
-                                ${item.name}
+                                ${escapeHtml(item.name)}
                             </span>
 
                             ${item.weight !== null &&
@@ -262,7 +263,7 @@ function renderMeal(meal) {
                         </div>
 
                         <span class="nutrition-day-food-kcal">
-                            ${item.calories} ${nutrition_t("units.kcal")}
+                            ${escapeHtml(item.calories)} ${nutrition_t("units.kcal")}
                         </span>
 
                     </div>
@@ -278,14 +279,14 @@ function renderMeal(meal) {
             <div>
 
                 <div class="nutrition-day-meal-name">
-                    ${meal.name}
+                    ${escapeHtml(meal.name)}
                 </div>
 
                 <div class="nutrition-day-meal-meta">
-                    ${formatMealCategory(meal.category)}
+                    ${escapeHtml(formatMealCategory(meal.category))}
 
                     ${meal.time
-        ? ` · ${meal.time}`
+        ? ` · ${escapeHtml(meal.time)}`
         : ""}
 
                 </div>
@@ -293,7 +294,7 @@ function renderMeal(meal) {
             </div>
 
             <div class="nutrition-day-meal-kcal">
-                ${meal.total_calories || 0} ${nutrition_t("units.kcal")}
+                ${escapeHtml(meal.total_calories || 0)} ${nutrition_t("units.kcal")}
             </div>
 
         </div>

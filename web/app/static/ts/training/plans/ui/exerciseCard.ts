@@ -20,6 +20,10 @@ import {
 exercise_t
 } from "../../../i18n/index.js";
 
+import {
+escapeHtml
+} from "../../../utils/html.js";
+
 type Rerender = () => void;
 
 type OpenPicker = (
@@ -66,7 +70,7 @@ card.innerHTML = `
         <div class="tr-plan-card-header-left">
             <div class="tr-plan-card-strip"></div>
             <button class="tr-plan-ex-name">
-                ${name}
+                ${escapeHtml(name)}
             </button>
         </div>
 

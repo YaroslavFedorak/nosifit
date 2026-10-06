@@ -5,7 +5,7 @@ from backend.app.utils.token import generate_reset_token
 
 
 def send_password_reset_email(user):
-    token = generate_reset_token(user.email)
+    token = generate_reset_token(user)
     reset_url = url_for("auth.reset_with_token", token=token, _external=True)
 
     send_email(

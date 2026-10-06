@@ -16,6 +16,16 @@ from backend.app.training.models.performance_state import PerformanceState
 import datetime as dt
 from zoneinfo import ZoneInfo
 
+from werkzeug.exceptions import BadRequest, HTTPException
+
+from backend.app.utils.validation import ValidationError, bounded_number
+from backend.app.services.training.validation import (
+    clean_exercise_id as _clean_exercise_id,
+    clean_fatigue as _clean_fatigue,
+    clean_reps as _clean_reps,
+    clean_set_data as _clean_set_data,
+)
+
 APP_TIMEZONE = ZoneInfo("Europe/Warsaw")
 
 
@@ -39,8 +49,34 @@ training_api_bp = Blueprint("training_api", __name__, url_prefix="/api/training"
 
 
 def _error(e):
+    if isinstance(e, HTTPException):  # 404 from first_or_404, 400 from bad JSON
+        raise e
+    if isinstance(e, ValidationError):
+        return jsonify({"error": "invalid_input", "message": str(e)}), 400
     current_app.logger.exception("API error")
-    return jsonify({"error": "internal_server_error", "message": str(e)}), 500
+    # Exception text can contain SQL and internals; it stays in the log.
+    return jsonify({"error": "internal_server_error"}), 500
+
+
+MAX_PLANS_PER_USER = 50
+MAX_PLAN_NAME_LENGTH = 100
+MAX_EXERCISES_PER_DAY = 40
+PLAN_DAY_KEYS = {"mon", "tue", "wed", "thu", "fri", "sat", "sun"}
+def _clean_plan_name(value, default):
+    if value is None:
+        return default
+    if not isinstance(value, str) or not value.strip():
+        raise ValidationError("name must be text")
+    return value.strip()[:MAX_PLAN_NAME_LENGTH]
+
+
+def _json_body():
+    data = request.get_json(silent=True)
+    if data is None:
+        return {}
+    if not isinstance(data, dict):
+        raise BadRequest("JSON object expected")
+    return data
 
 
 def _active_plan(user):
@@ -57,24 +93,36 @@ def _today_key():
 
 
 def _plan_days_struct(raw):
+    if not isinstance(raw, dict):
+        raise ValidationError("days must be an object")
+
     result = {}
     for key, items in raw.items():
+        if key not in PLAN_DAY_KEYS:
+            raise ValidationError("unknown day")
 
         if isinstance(items, dict) and "exercises" in items:
             items = items["exercises"]
 
+        if not isinstance(items, list) or len(items) > MAX_EXERCISES_PER_DAY:
+            raise ValidationError("too many exercises in a day")
+
         day_ex = []
         for ex in items:
-            obj = Exercise.query.get(ex["exercise"]["id"])
+            exercise = ex.get("exercise") if isinstance(ex, dict) else None
+            exercise_id = exercise.get("id") if isinstance(exercise, dict) else None
+            if isinstance(exercise_id, bool) or not isinstance(exercise_id, (str, int)):
+                continue
+            obj = Exercise.query.get(exercise_id)
             if not obj:
                 continue
 
             day_ex.append(
                 {
                     "exercise": {"id": obj.id, "name": obj.name},
-                    "sets": ex.get("sets") or 3,
-                    "reps": ex.get("reps") or "8-12",
-                    "load": ex.get("load") or 0,
+                    "sets": bounded_number(ex.get("sets"), 1, 20, integer=True) or 3,
+                    "reps": _clean_reps(ex.get("reps"), "8-12"),
+                    "load": bounded_number(ex.get("load"), 0, 2000) or 0,
                 }
             )
 
@@ -111,8 +159,8 @@ def exercises():
         muscle = request.args.get("muscle")
         equipment = request.args.get("equipment")
         qstr = request.args.get("q")
-        page = int(request.args.get("page", 1))
-        per_page = int(request.args.get("per_page", 50))
+        page = max(1, request.args.get("page", 1, type=int) or 1)
+        per_page = min(max(1, request.args.get("per_page", 50, type=int) or 50), 100)
 
         if muscle:
             q = q.filter(
@@ -388,11 +436,15 @@ def plans():
 @login_required
 def create_plan():
     try:
-        data = request.get_json() or {}
+        data = _json_body()
+
+        if TrainingPlan.query.filter_by(user_id=current_user.id).count() >= MAX_PLANS_PER_USER:
+            return jsonify({"error": "too_many_plans"}), 400
+
         plan = TrainingPlan(
             user_id=current_user.id,
-            name=data.get("name", "Plan"),
-            is_active=data.get("is_active", False),
+            name=_clean_plan_name(data.get("name"), "Plan"),
+            is_active=data.get("is_active") is True,
             days=_plan_days_struct(data.get("days", {})),
         )
 
@@ -415,12 +467,12 @@ def update_plan(plan_id):
         plan = TrainingPlan.query.filter_by(
             id=plan_id, user_id=current_user.id
         ).first_or_404()
-        data = request.get_json() or {}
+        data = _json_body()
 
-        plan.name = data.get("name", plan.name)
+        plan.name = _clean_plan_name(data.get("name"), plan.name)
         plan.days = _plan_days_struct(data.get("days", {}))
 
-        if data.get("is_active", plan.is_active):
+        if data.get("is_active", plan.is_active) is True:
             TrainingPlan.query.filter_by(
                 user_id=current_user.id, is_active=True
             ).update({"is_active": False})
@@ -452,7 +504,35 @@ def delete_plan(plan_id):
 @login_required
 def complete_session():
     try:
-        data = request.get_json() or {}
+        data = _json_body()
+        fatigue_before = _clean_fatigue(data.get("fatigue_before"))
+        fatigue_after = _clean_fatigue(data.get("fatigue_after"))
+
+        raw = data.get("exercises", [])
+        if isinstance(raw, dict):
+            raw = [item for values in raw.values() if isinstance(values, list) for item in values]
+        if not isinstance(raw, list) or len(raw) > 100:
+            raise ValidationError("exercises must be a list of at most 100 items")
+
+        exercises = []
+        for item in raw:
+            exercise_data = item.get("exercise") if isinstance(item, dict) else None
+            exercise_id = exercise_data.get("id") if isinstance(exercise_data, dict) else None
+            if not exercise_id:
+                continue
+            exercises.append(
+                (
+                    _clean_exercise_id(exercise_id),
+                    _clean_set_data(
+                        {
+                            "sets_done": item.get("sets"),
+                            "reps_done": item.get("reps"),
+                            "load_done": item.get("load"),
+                            "rpe": item.get("rpe"),
+                        }
+                    ),
+                )
+            )
 
         existing = (
             TrainingSession.query.filter_by(
@@ -466,43 +546,24 @@ def complete_session():
         if existing:
             TrainingSessionService.finish_session(
                 existing,
-                data.get("fatigue_after"),
+                fatigue_after,
             )
 
         session = TrainingSessionService.start_session(
             current_user,
-            fatigue_before=data.get("fatigue_before"),
+            fatigue_before=fatigue_before,
         )
 
-        raw = data.get("exercises", [])
-
-        exercises = (
-            raw
-            if isinstance(raw, list)
-            else [item for values in raw.values() for item in values]
-        )
-
-        for item in exercises:
-            exercise_data = item.get("exercise", {})
-            exercise_id = exercise_data.get("id")
-
-            if not exercise_id:
-                continue
-
+        for exercise_id, set_data in exercises:
             TrainingSessionService.update_exercise(
                 session,
                 exercise_id,
-                {
-                    "sets_done": item.get("sets"),
-                    "reps_done": item.get("reps"),
-                    "load_done": item.get("load"),
-                    "rpe": item.get("rpe"),
-                },
+                set_data,
             )
 
         TrainingSessionService.finish_session(
             session,
-            data.get("fatigue_after"),
+            fatigue_after,
         )
 
         return jsonify(
@@ -524,7 +585,8 @@ def complete_session():
 @login_required
 def update_session_exercise(session_id, exercise_id):
     try:
-        data = request.get_json() or {}
+        data = _clean_set_data(_json_body())
+        exercise_id = _clean_exercise_id(exercise_id)
 
         session = TrainingSession.query.filter_by(
             id=session_id,
@@ -552,8 +614,8 @@ def update_session_exercise(session_id, exercise_id):
 @login_required
 def start_session():
     try:
-        data = request.get_json() or {}
-        fatigue_before = data.get("fatigue_before")
+        data = _json_body()
+        fatigue_before = _clean_fatigue(data.get("fatigue_before"))
 
         existing = (
             TrainingSession.query.filter_by(user_id=current_user.id, status="active")
@@ -576,8 +638,8 @@ def start_session():
 @login_required
 def finish_session(session_id):
     try:
-        data = request.get_json() or {}
-        fatigue_after = data.get("fatigue_after")
+        data = _json_body()
+        fatigue_after = _clean_fatigue(data.get("fatigue_after"))
 
         session = TrainingSession.query.filter_by(
             id=session_id,
@@ -713,11 +775,11 @@ def recommendations():
 @login_required
 def strength_test():
     try:
-        data = request.get_json() or {}
+        data = _json_body()
 
-        pushups = int(data.get("pushups", 0))
-        squats = int(data.get("squats", 0))
-        situps = int(data.get("situps", 0))
+        pushups = bounded_number(data.get("pushups", 0), 0, 10000, integer=True) or 0
+        squats = bounded_number(data.get("squats", 0), 0, 10000, integer=True) or 0
+        situps = bounded_number(data.get("situps", 0), 0, 10000, integer=True) or 0
 
         perf = PerformanceState(
             user_id=current_user.id,

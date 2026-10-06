@@ -20,9 +20,11 @@ Two services from this one repository plus a Postgres database.
 | `BREVO_API_KEY` | brevo.com (free: 300 emails/day) → *SMTP & API* → *API Keys* |
 | `MAIL_FROM` | `NosiFit <you@gmail.com>` — a sender verified in Brevo (*Senders, Domains & Dedicated IPs* → *Senders*); no own domain needed |
 | `TZ` | `Europe/Kyiv` — the server's "today" becomes the users' day |
+| `RATELIMIT_REDIS_URL` | optional — a Redis URL so rate limits are shared by all gunicorn workers; without it each worker counts separately |
 
 `postgres://` / `postgresql://` URLs are converted to the psycopg 3 driver automatically (`backend/config.py`).
-Secure + HttpOnly cookies, https links behind the proxy (ProxyFix) and the SECRET_KEY check switch on automatically on Railway.
+Secure + HttpOnly cookies, https links behind the proxy (ProxyFix), HSTS and the SECRET_KEY check switch on automatically on Railway.
+After the first deploy of the session-binding change every user is logged out once (old sessions carry no password fingerprint).
 
 **Settings**
 

@@ -1,7 +1,15 @@
-from flask import Blueprint, request, redirect, url_for, flash
-from flask_login import login_required, current_user
+from flask import Blueprint, current_app, request, redirect, session, url_for, flash
+from flask_login import login_required, current_user, logout_user
 
 from backend.app.extensions import db
+from backend.app.services.account_service import delete_user_account
+from backend.app.utils.validation import (
+    ValidationError,
+    clean_choice,
+    clean_username,
+    parse_profile_number,
+)
+from web.app.security import hit_limit, too_many_requests
 
 from backend.app.services.nutrition.calories_service import (
     update_user_nutrition_goals,
@@ -13,18 +21,11 @@ profile_update_bp = Blueprint(
 )
 
 
-def to_float(value):
-    if value in (None, "", " "):
-        return None
-
-    return float(value)
-
-
-def to_int(value):
-    if value in (None, "", " "):
-        return None
-
-    return int(value)
+def _flag(name, current):
+    """Boolean form field; a field the form did not send keeps its value."""
+    if name not in request.form:
+        return bool(current)
+    return request.form.get(name) in ("1", "true", "on")
 
 
 @profile_update_bp.route(
@@ -36,55 +37,55 @@ def update_full():
     user = current_user
     profile = user.profile
 
+    if profile is None:
+        flash("Не вдалося оновити профіль", "error")
+        return redirect(url_for("profile_pages.profile_page"))
+
     try:
-        user.username = request.form.get("username")
+        username = clean_username(request.form.get("username"))
+        if not username:
+            raise ValidationError("username")
 
-        user.email = request.form.get("email")
+        # Email is changed only through /profile/change_email, which proves
+        # ownership of the new address with a code. Accepting it here let any
+        # session claim an arbitrary unregistered address.
+        submitted_email = (request.form.get("email") or "").strip().lower()
+        if submitted_email and submitted_email != user.email.lower():
+            flash("Щоб змінити email, скористайтеся кнопкою «Змінити email».", "error")
+            return redirect(url_for("profile_pages.profile_page"))
 
-        profile.age = to_int(request.form.get("age"))
-
-        profile.height = to_float(request.form.get("height"))
-
-        profile.weight = to_float(request.form.get("weight"))
-
-        profile.gender = request.form.get("gender") or None
-
-        profile.activity = request.form.get("activity") or None
-
-        profile.goal = request.form.get("goal") or None
-
-        profile.experience = request.form.get("experience") or None
-
-        profile.workouts_per_week = to_int(request.form.get("workouts_per_week"))
-
-        profile.training_location = request.form.get("training_location") or None
-
-        profile.wants_nutrition = bool(
-            int(
-                request.form.get(
-                    "wants_nutrition",
-                    0,
-                )
+        values = {
+            "age": parse_profile_number("age", request.form.get("age")),
+            "height": parse_profile_number("height", request.form.get("height")),
+            "weight": parse_profile_number("weight", request.form.get("weight")),
+            "workouts_per_week": parse_profile_number(
+                "workouts_per_week", request.form.get("workouts_per_week")
+            ),
+            "gender": clean_choice("gender", request.form.get("gender")),
+            "activity": clean_choice("activity", request.form.get("activity")),
+            "goal": clean_choice("goal", request.form.get("goal")),
+            "experience": clean_choice("experience", request.form.get("experience")),
+            "training_location": clean_choice(
+                "training_location", request.form.get("training_location")
             )
+            or profile.training_location
+            or "home",
+        }
+    except ValidationError:
+        flash(
+            "Некоректні дані профілю",
+            "error",
         )
+        return redirect(url_for("profile_pages.profile_page"))
 
-        profile.wants_recovery = bool(
-            int(
-                request.form.get(
-                    "wants_recovery",
-                    0,
-                )
-            )
-        )
+    try:
+        user.username = username
+        for field, value in values.items():
+            setattr(profile, field, value)
 
-        profile.onboarding_completed = bool(
-            int(
-                request.form.get(
-                    "onboarding_completed",
-                    0,
-                )
-            )
-        )
+        profile.wants_nutrition = _flag("wants_nutrition", profile.wants_nutrition)
+        profile.wants_recovery = _flag("wants_recovery", profile.wants_recovery)
+        profile.onboarding_completed = _flag("onboarding_completed", profile.onboarding_completed)
 
         # Save the updated profile first.
         db.session.commit()
@@ -98,16 +99,9 @@ def update_full():
             "success",
         )
 
-    except (TypeError, ValueError):
-        db.session.rollback()
-
-        flash(
-            "Некоректні дані профілю",
-            "error",
-        )
-
     except Exception:
         db.session.rollback()
+        current_app.logger.exception("Profile update failed")
 
         flash(
             "Не вдалося оновити профіль",
@@ -135,6 +129,9 @@ def delete_account():
 
         return redirect(url_for("profile_pages.profile_page"))
 
+    if hit_limit("password-change", current_user.id, 10, 15 * 60):
+        return too_many_requests()
+
     if not current_user.check_password(password):
         flash(
             "Невірний пароль",
@@ -143,8 +140,9 @@ def delete_account():
 
         return redirect(url_for("profile_pages.profile_page"))
 
-    db.session.delete(current_user)
-    db.session.commit()
+    delete_user_account(current_user._get_current_object())
+    logout_user()
+    session.clear()
 
     flash(
         "Акаунт видалено",

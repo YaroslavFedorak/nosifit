@@ -69,7 +69,7 @@
             <button
               type="button"
               class="toggle"
-              onclick="togglePass('password', this)"
+              data-toggle-target="password"
             >
               Показати
             </button>
@@ -135,7 +135,7 @@
       </div>
     </div>
 
-    <script>
+    <script nonce="{{ csp_nonce() }}">
       function togglePass(id, btn) {
         const input = document.getElementById(id);
         if (input.type === "password") {
@@ -146,6 +146,10 @@
           btn.textContent = "{{ auth_t("common.show") }}";
         }
       }
+
+      document.querySelectorAll("[data-toggle-target]").forEach((btn) => {
+        btn.addEventListener("click", () => togglePass(btn.dataset.toggleTarget, btn));
+      });
 
       window.addEventListener("load", () => {
         document.querySelectorAll("[data-anim]").forEach((el, i) => {

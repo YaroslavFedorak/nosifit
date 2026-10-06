@@ -1,7 +1,9 @@
 from flask import Blueprint, redirect, request, session, current_app, jsonify
 import requests
 import logging
-from flask_login import login_user
+import secrets
+from urllib.parse import urlencode
+from web.app.routes.auth.main import start_user_session
 from backend.app.models.user import User
 from backend.app.models.oauth_account import OAuthAccount
 from backend.app.models.user_profile import UserProfile
@@ -18,16 +20,26 @@ def github_login():
     if not client_id:
         return jsonify({"error": "GitHub OAuth not configured"}), 400
 
-    github_auth_url = (
-        "https://github.com/login/oauth/authorize"
-        f"?client_id={client_id}&scope=user:email"
-    )
+    # Ties the callback to this browser: without it an attacker can feed a
+    # victim their own ?code= and log the victim into the attacker's account.
+    state = secrets.token_urlsafe(32)
+    session["github_oauth_state"] = state
 
-    return redirect(github_auth_url)
+    query = urlencode({"client_id": client_id, "scope": "user:email", "state": state})
+    return redirect(f"https://github.com/login/oauth/authorize?{query}")
+
+
+def _oauth_failed(message, status=400):
+    return jsonify({"error": message}), status
 
 
 @github_bp.route("/auth/github/callback")
 def github_callback():
+    expected_state = session.pop("github_oauth_state", None)
+    state = request.args.get("state") or ""
+    if not expected_state or not secrets.compare_digest(expected_state, state):
+        return redirect("/auth/login")
+
     code = request.args.get("code")
     if not code:
         # User pressed "Cancel" on GitHub, or opened the callback directly
@@ -50,12 +62,13 @@ def github_callback():
             },
             timeout=10,
         ).json()
-    except Exception as e:
-        return jsonify({"error": f"GitHub token request failed: {str(e)}"}), 500
+    except Exception:
+        logger.exception("GitHub token request failed")
+        return _oauth_failed("GitHub sign-in failed", 502)
 
-    if "access_token" not in token_res:
-        error_msg = token_res.get("error_description", token_res.get("error", "Unknown error"))
-        return jsonify({"error": f"GitHub token error: {error_msg}"}), 400
+    if not isinstance(token_res, dict) or "access_token" not in token_res:
+        logger.warning("GitHub token error: %s", (token_res or {}).get("error") if isinstance(token_res, dict) else None)
+        return _oauth_failed("GitHub sign-in failed")
 
     access_token = token_res["access_token"]
 
@@ -65,12 +78,12 @@ def github_callback():
             headers={"Authorization": f"Bearer {access_token}"},
             timeout=10,
         ).json()
-    except Exception as e:
-        return jsonify({"error": f"GitHub user request failed: {str(e)}"}), 500
+    except Exception:
+        logger.exception("GitHub user request failed")
+        return _oauth_failed("GitHub sign-in failed", 502)
 
-    if "id" not in user_res:
-        error_msg = user_res.get("message", "Unknown error")
-        return jsonify({"error": f"GitHub user error: {error_msg}"}), 400
+    if not isinstance(user_res, dict) or "id" not in user_res:
+        return _oauth_failed("GitHub sign-in failed")
 
     github_id = str(user_res["id"])
     username = user_res.get("login")
@@ -81,8 +94,9 @@ def github_callback():
             headers={"Authorization": f"Bearer {access_token}"},
             timeout=10,
         ).json()
-    except Exception as e:
-        return jsonify({"error": f"GitHub email request failed: {str(e)}"}), 500
+    except Exception:
+        logger.exception("GitHub email request failed")
+        return _oauth_failed("GitHub sign-in failed", 502)
 
     # Only a verified address may be linked to an existing account.
     email = None
@@ -111,7 +125,7 @@ def github_callback():
             db.session.add(profile)
             db.session.commit()
 
-        login_user(user)
+        start_user_session(user)
         return redirect("/profile")
 
     if email:
@@ -132,7 +146,7 @@ def github_callback():
                 )
             )
             db.session.commit()
-            login_user(user)
+            start_user_session(user)
             return redirect("/profile")
 
     # No usable email: GitHub's own noreply address is unique per account.

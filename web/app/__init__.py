@@ -6,6 +6,7 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 
 from backend.app.extensions import db, login_manager, migrate, mail, oauth
 from web.app.i18n import init_i18n
+from web.app.security import init_security
 
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 load_dotenv(os.path.join(BASE_DIR, ".env"))
@@ -19,6 +20,8 @@ def create_app(config=None):
 
     if config:
         app.config.update(config)
+
+    init_security(app)
 
     if app.config.get("IS_PRODUCTION") and not app.config.get("TESTING"):
         if not app.config.get("SECRET_KEY") or len(app.config["SECRET_KEY"]) < 32:
@@ -53,9 +56,18 @@ def create_app(config=None):
     from backend.app.models.recovery.user_habit import UserRecoveryHabit
     from backend.app.models.recovery.habit_log import RecoveryHabitLog
 
+    from backend.app.utils.session_auth import fingerprint_matches, parse_session_id
+
     @login_manager.user_loader
-    def load_user(user_id):
-        return User.query.get(int(user_id))
+    def load_user(session_id):
+        parsed = parse_session_id(session_id)
+        if parsed is None:  # old integer-only ids: log in again
+            return None
+        user_id, fingerprint = parsed
+        user = db.session.get(User, user_id)
+        if user is None or not fingerprint_matches(user, fingerprint):
+            return None
+        return user
 
     oauth.register(
         name="google",

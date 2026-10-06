@@ -1,5 +1,6 @@
 import { ICONS } from "../../../icons/index.js";
 import { t } from "../../../i18n/index.js";
+import { escapeHtml } from "../../../utils/html.js";
 export function createCounterField(label, iconSvg, value, onChange) {
     const field = document.createElement("div");
     field.className =
@@ -7,14 +8,14 @@ export function createCounterField(label, iconSvg, value, onChange) {
     field.innerHTML = `
         <div class="tr-plan-field-label-row">
             <span class="tr-plan-field-icon">${iconSvg}</span>
-            <span class="tr-plan-field-label">${label}</span>
+            <span class="tr-plan-field-label">${escapeHtml(label)}</span>
         </div>
 
         <div class="tr-input-inline">
             <input
                 type="number"
                 class="tr-input-field tr-plan-counter-input"
-                value="${value}"
+                value="${escapeHtml(value)}"
                 min="0"
             >
 
@@ -74,7 +75,7 @@ export function createRepsField(value, onChange) {
             <input
                 type="text"
                 class="tr-input-field tr-plan-reps-input"
-                value="${value}"
+                value="${escapeHtml(value)}"
             >
 
             <div class="tr-input-arrows">

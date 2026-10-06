@@ -1,10 +1,16 @@
 from flask import Blueprint, render_template, request, redirect, session, flash
-from flask_login import login_user
 
 from backend.app.extensions import db
-from backend.app.models.user import User
+from backend.app.models.user import OAUTH_PASSWORD_MARKER, User
 from backend.app.models.oauth_account import OAuthAccount
 from backend.app.models.user_profile import UserProfile
+from backend.app.utils.validation import (
+    ValidationError,
+    clean_choice,
+    clean_username,
+    parse_profile_number,
+)
+from web.app.routes.auth.main import start_user_session
 
 complete_profile_bp = Blueprint(
     "complete_profile",
@@ -46,29 +52,30 @@ def complete_profile():
     if existing_user:
         _link_oauth_account(existing_user, oauth_user)
         db.session.commit()
-        login_user(existing_user, remember=True)
-        session.pop("oauth_user", None)
+        start_user_session(existing_user)
         return redirect("/profile")
 
     if request.method == "POST":
         try:
-            age = int(request.form.get("age"))
-            height = float(request.form.get("height"))
-            weight = float(request.form.get("weight"))
-            workouts = int(request.form.get("workouts"))
-        except (TypeError, ValueError):
+            age = parse_profile_number("age", request.form.get("age"), required=True)
+            height = parse_profile_number("height", request.form.get("height"), required=True)
+            weight = parse_profile_number("weight", request.form.get("weight"), required=True)
+            workouts = parse_profile_number(
+                "workouts_per_week", request.form.get("workouts"), required=True
+            )
+            gender = clean_choice("gender", request.form.get("gender"))
+            activity = clean_choice("activity", request.form.get("activity"))
+            goal = clean_choice("goal", request.form.get("goal"))
+            experience = clean_choice("experience", request.form.get("experience"))
+        except ValidationError:
             flash("Заповніть вік, зріст, вагу та кількість тренувань.", "error")
             return render_template("auth/complete_profile.html", oauth_user=oauth_user)
 
-        gender = request.form.get("gender") or None
-        activity = request.form.get("activity") or None
-        goal = request.form.get("goal") or None
-        experience = request.form.get("experience") or None
-
         user = User(
-            username=(oauth_user.get("username") or email.split("@")[0])[:50],
+            username=clean_username(oauth_user.get("username"))
+            or email.split("@")[0][:50],
             email=email,
-            password="oauth",
+            password=OAUTH_PASSWORD_MARKER,
             is_premium=False,
         )
 
@@ -94,9 +101,7 @@ def complete_profile():
         db.session.add(profile)
         db.session.commit()
 
-        login_user(user, remember=True)
-
-        session.pop("oauth_user", None)
+        start_user_session(user)
 
         return redirect("/profile")
 

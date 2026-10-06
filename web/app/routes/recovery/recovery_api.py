@@ -1,4 +1,4 @@
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 
 from flask import (
     Blueprint,
@@ -58,7 +58,13 @@ training_load_service = TrainingLoadService()
 recommendation_service = RecommendationService()
 
 
+MAX_SLEEP_DURATION = timedelta(hours=24)
+
+
 def parse_iso(dt: str) -> datetime:
+    if not isinstance(dt, str) or len(dt) > 40:
+        raise ValueError("Invalid datetime")
+
     if dt.endswith("Z"):
         dt = dt.replace("Z", "+00:00")
 
@@ -85,8 +91,19 @@ def add_sleep():
     except ValueError:
         return jsonify({"error": "Invalid datetime format"}), 400
 
+    # Mixing aware and naive datetimes would raise TypeError (a 500).
+    if (start_dt.tzinfo is None) != (end_dt.tzinfo is None):
+        return jsonify({"error": "Invalid datetime format"}), 400
+
     if end_dt <= start_dt:
         return jsonify({"error": ("sleep_end must be " "after sleep_start")}), 400
+
+    if end_dt - start_dt > MAX_SLEEP_DURATION:
+        return jsonify({"error": "sleep cannot be longer than 24 hours"}), 400
+
+    now = datetime.now(end_dt.tzinfo)
+    if end_dt > now + timedelta(days=1) or end_dt.year < 2000:
+        return jsonify({"error": "sleep date is out of range"}), 400
 
     entry = sleep_service.add_sleep(user_id, start_dt, end_dt)
 
@@ -143,6 +160,18 @@ def get_user_habits(user_id):
 @recovery_bp.post("/habits/add/<int:habit_id>")
 def add_habit(habit_id):
     user_id = current_user.id
+
+    catalog_habit = db.session.get(RecoveryHabit, habit_id)
+    if (
+        catalog_habit is None
+        or not catalog_habit.is_active
+        or catalog_habit.is_archived
+    ):
+        return _not_found()
+
+    # Premium habits are a paid feature; the UI hides them, the API must too.
+    if catalog_habit.premium_only and not current_user.is_premium:
+        return jsonify({"error": "Premium required"}), 403
 
     habit, created = habit_service.add_user_habit(user_id, habit_id)
 
