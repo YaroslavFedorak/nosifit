@@ -248,3 +248,21 @@ def test_google_invalid_token(client):
         response = client.get("/auth/google/callback")
 
     assert response.status_code == 400
+
+
+def test_complete_profile_then_profile_page_opens(client):
+    with client.session_transaction() as session:
+        session["oauth_user"] = {
+            "provider": "github",
+            "provider_user_id": "557",
+            "username": "octo3",
+            "email": "octo3@example.com",
+        }
+
+    response = client.post(
+        "/auth/complete_profile",
+        data={"age": "25", "height": "180", "weight": "75", "workouts": "3"},
+        follow_redirects=True,
+    )
+
+    assert response.status_code == 200
