@@ -1,8 +1,7 @@
-"""One place that sends email.
+﻿"""One place that sends email.
 
-Production (Railway) blocks outgoing SMTP, so when ``RESEND_API_KEY`` is set
-mail is sent through the Resend HTTP API. Without it, Flask-Mail + SMTP is
-used (local development with Gmail).
+Production (Railway) uses SendGrid API when `SENDGRID_API_KEY` is set.
+Otherwise, Flask-Mail + SMTP is used (local development with Gmail).
 """
 
 import logging
@@ -15,7 +14,7 @@ from backend.app.extensions import mail
 
 logger = logging.getLogger(__name__)
 
-RESEND_URL = "https://api.resend.com/emails"
+SENDGRID_URL = "https://api.sendgrid.com/v3/mail/send"
 
 
 class EmailSendError(RuntimeError):
@@ -24,31 +23,42 @@ class EmailSendError(RuntimeError):
 
 def send_email(to: str, subject: str, text: str, html: str | None = None) -> None:
     """Send one email. Raises EmailSendError when it could not be sent."""
-    api_key = current_app.config.get("RESEND_API_KEY")
+    api_key = current_app.config.get("SENDGRID_API_KEY")
 
     if api_key:
+        mail_from = current_app.config.get("MAIL_FROM", "noreply@nosifit.sendgrid.net")
+
         payload = {
-            "from": current_app.config.get("MAIL_FROM"),
-            "to": [to],
+            "personalizations": [
+                {
+                    "to": [{"email": to}],
+                }
+            ],
+            "from": {"email": mail_from},
             "subject": subject,
-            "text": text,
+            "content": [
+                {"type": "text/plain", "value": text}
+            ],
         }
         if html:
-            payload["html"] = html
+            payload["content"].append({"type": "text/html", "value": html})
 
         try:
             response = requests.post(
-                RESEND_URL,
+                SENDGRID_URL,
                 json=payload,
-                headers={"Authorization": f"Bearer {api_key}"},
+                headers={
+                    "Authorization": f"Bearer {api_key}",
+                    "Content-Type": "application/json",
+                },
                 timeout=10,
             )
         except requests.RequestException as exc:
-            logger.exception("Resend request failed")
+            logger.exception("SendGrid request failed")
             raise EmailSendError("Email service is unavailable") from exc
 
         if response.status_code >= 400:
-            logger.error("Resend rejected email: %s %s", response.status_code, response.text[:500])
+            logger.error("SendGrid rejected email: %s %s", response.status_code, response.text[:500])
             raise EmailSendError("Email service rejected the message")
         return
 
