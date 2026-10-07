@@ -1,6 +1,6 @@
 from aiogram.fsm.state import State, StatesGroup
 
 
-class AuthStates(StatesGroup):
+class RegisterStates(StatesGroup):
     entering_email = State()
-    entering_password = State()
+    entering_code = State()

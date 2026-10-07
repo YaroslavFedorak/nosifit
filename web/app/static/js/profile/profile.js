@@ -3,6 +3,7 @@ import { ICONS } from "../icons/index.js";
 import { initProgress } from "./progress.js";
 import { initModals } from "./modals.js";
 import { initDeleteAccount } from "./delete-account.js";
+import { initConnectedAccounts } from "./connected-accounts.js";
 const initProfileIcon = () => {
     const iconElement = document.querySelector("[data-profile-icon]");
     if (!iconElement) {
@@ -24,6 +25,7 @@ const initProfile = async () => {
     initProgress();
     initModals();
     initDeleteAccount();
+    initConnectedAccounts();
 };
 if (document.readyState ===
     "loading") {

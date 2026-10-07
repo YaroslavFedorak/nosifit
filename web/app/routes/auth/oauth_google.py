@@ -6,6 +6,7 @@ from backend.app.models.oauth_account import OAuthAccount
 from backend.app.models.user_profile import UserProfile
 from backend.app.extensions import db, oauth
 from web.app.routes.auth.main import start_user_session
+from web.app.routes.auth.telegram_session import pending_link_redirect
 
 logger = logging.getLogger(__name__)
 
@@ -60,7 +61,7 @@ def google_callback():
             db.session.commit()
 
         start_user_session(user)
-        return redirect("/profile")
+        return redirect(pending_link_redirect("/profile"))
 
     if email:
         user = User.query.filter_by(email=email).first()
@@ -82,7 +83,7 @@ def google_callback():
             db.session.commit()
 
             start_user_session(user)
-            return redirect("/profile")
+            return redirect(pending_link_redirect("/profile"))
 
     if not email:
         return redirect("/auth/login")

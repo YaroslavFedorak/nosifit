@@ -1,0 +1,95 @@
+<div
+    class="profile-modal-backdrop"
+    id="modal-telegram-disconnect"
+    aria-hidden="true"
+    data-has-password="{{ 'true' if connected.has_password else 'false' }}"
+>
+    <div
+        class="profile-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="telegram-disconnect-title"
+    >
+
+        <div class="profile-modal-header">
+            <h2 class="profile-modal-title" id="telegram-disconnect-title">
+                {{ profile_t("connected.disconnectTitle") }}
+            </h2>
+
+            <button
+                type="button"
+                class="profile-modal-close"
+                data-modal-close
+                aria-label="{{ profile_t('modal.close') }}"
+            >
+                &times;
+            </button>
+        </div>
+
+        <form id="telegram-disconnect-form" novalidate>
+
+            <div class="profile-modal-body">
+
+                <p class="profile-connected-hint">
+                    {{ profile_t("connected.disconnectText") }}
+                </p>
+
+                {% if connected.has_password %}
+                <div class="profile-field">
+                    <label class="profile-field-label" for="telegram-disconnect-password">
+                        {{ profile_t("connected.currentPassword") }}
+                    </label>
+                    <input
+                        class="profile-input"
+                        id="telegram-disconnect-password"
+                        type="password"
+                        name="password"
+                        autocomplete="current-password"
+                        maxlength="128"
+                        required
+                    >
+                </div>
+                {% else %}
+                <div class="profile-field">
+                    <button
+                        type="button"
+                        class="profile-btn profile-btn-secondary"
+                        id="telegram-disconnect-send-code"
+                    >
+                        {{ profile_t("connected.sendCode") }}
+                    </button>
+                </div>
+                <div class="profile-field">
+                    <label class="profile-field-label" for="telegram-disconnect-code">
+                        {{ profile_t("connected.emailCode") }}
+                    </label>
+                    <input
+                        class="profile-input"
+                        id="telegram-disconnect-code"
+                        type="text"
+                        name="code"
+                        inputmode="numeric"
+                        autocomplete="one-time-code"
+                        maxlength="6"
+                        required
+                    >
+                </div>
+                {% endif %}
+
+                <p class="profile-connected-hint" data-telegram-disconnect-message hidden></p>
+
+            </div>
+
+            <div class="profile-modal-footer">
+                <button type="button" class="profile-btn profile-btn-ghost" data-modal-close>
+                    {{ profile_t("modal.cancel") }}
+                </button>
+                <button type="submit" class="profile-btn profile-btn-danger">
+                    {{ profile_t("connected.disconnect") }}
+                </button>
+            </div>
+
+        </form>
+
+    </div>
+</div>

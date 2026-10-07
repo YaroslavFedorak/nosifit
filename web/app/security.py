@@ -176,6 +176,18 @@ def check_rate_limit_config(config) -> None:
         )
 
 
+def check_telegram_config(config) -> None:
+    """A short bot secret would make the bot's signatures guessable."""
+    from backend.app.utils.bot_signature import MIN_SECRET_LENGTH
+
+    secret = config.get("TELEGRAM_BOT_API_SECRET")
+    if secret and len(secret) < MIN_SECRET_LENGTH:
+        raise RuntimeError(
+            f"TELEGRAM_BOT_API_SECRET must be at least {MIN_SECRET_LENGTH} characters "
+            "(python -c \"import secrets; print(secrets.token_hex(32))\")"
+        )
+
+
 def client_ip() -> str:
     """Rate-limit identity of the client.
 
@@ -329,6 +341,7 @@ class DbIdConverter(IntegerConverter):
 
 def init_security(app):
     check_rate_limit_config(app.config)
+    check_telegram_config(app.config)
 
     # Must run before blueprints add their rules.
     app.url_map.converters["int"] = DbIdConverter

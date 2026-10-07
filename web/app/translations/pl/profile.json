@@ -195,5 +195,36 @@
         "recovery": "Regeneracja",
         "enabled": "Włączone",
         "disabled": "Wyłączone"
+    },
+    "connected": {
+        "title": "Połączone konta",
+        "subtitle": "Sposoby logowania do NosiFit",
+        "password": "Hasło",
+        "set": "Ustawione",
+        "notSet": "Nieustawione",
+        "setPassword": "Ustaw przez link w e-mailu",
+        "connected": "Połączono",
+        "connectedAs": "Połączono jako {username}",
+        "notConnected": "Niepołączone",
+        "disconnect": "Odłącz",
+        "connectTelegram": "Połącz Telegram",
+        "telegramHint": "W bocie NosiFit naciśnij „Połącz konto” i otwórz link z bota w tej przeglądarce.",
+        "confirmDisconnect": "Odłączyć ten sposób logowania?",
+        "disconnectTitle": "Odłącz Telegram",
+        "disconnectText": "Logowanie przez bota Telegram przestanie działać, a aktywne sesje bota zostaną zakończone.",
+        "currentPassword": "Obecne hasło",
+        "sendCode": "Wyślij kod na e-mail",
+        "emailCode": "Kod z e-maila",
+        "codeSent": "Kod został wysłany na Twój e-mail.",
+        "errors": {
+            "wrongPassword": "Nieprawidłowe hasło.",
+            "wrongCode": "Nieprawidłowy kod.",
+            "expired": "Kod wygasł. Wyślij nowy.",
+            "lastMethod": "To Twój jedyny sposób logowania. Najpierw ustaw hasło lub połącz inne konto.",
+            "notConnected": "To konto jest już odłączone.",
+            "sendFailed": "Nie udało się wysłać e-maila. Spróbuj później.",
+            "rateLimited": "Zbyt wiele prób. Spróbuj później.",
+            "generic": "Coś poszło nie tak. Spróbuj ponownie."
+        }
     }
 }

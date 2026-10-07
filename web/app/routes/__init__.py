@@ -9,6 +9,8 @@ from .auth.oauth_google import google_bp
 from .auth.oauth_github import github_bp
 from .auth.email_verification import email_verification_bp
 from .auth.complete_profile import complete_profile_bp
+from .auth.telegram_api import telegram_api_bp
+from .auth.telegram_link import telegram_link_bp
 
 from .dashboard.page import dashboard_bp
 from .dashboard.api import dashboard_api_bp
@@ -43,6 +45,7 @@ from .profile.delete_account_request import delete_request_bp
 from .profile.delete_account_confirm import delete_confirm_bp
 from .profile.delete_account_final import delete_final_bp
 from .profile.oauth_disconnect import oauth_disconnect_bp
+from .profile.connected_accounts import connected_accounts_bp
 
 from .questionnaire.pages import questionnaire_pages_bp
 from .questionnaire.questionnaire import questionnaire_bp

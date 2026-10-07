@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="{{ locale }}">
+  <head>
+    <meta charset="UTF-8" />
+    <title>NosiFit — {{ auth_t("telegramLink.title") }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="referrer" content="no-referrer" />
+    <link rel="stylesheet" href="/static/css/auth/reset_status.css" />
+  </head>
+
+  <body>
+    <div class="bg"></div>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+
+    <div class="auth-card">
+      <div class="brand-compact">
+        <img src="/static/img/Nosi_Logo.png" class="brand-icon" alt="" />
+        <h1 class="brand-title">
+          <span class="nos">Nosi</span><span class="fit">Fit</span>
+        </h1>
+      </div>
+
+      {% include "auth/_flashes.html" %}
+
+      {% if state == "confirm" %}
+      <h2 class="auth-card-title">{{ auth_t("telegramLink.confirmTitle") }}</h2>
+
+      <p class="muted">{{ auth_t("telegramLink.telegramAccount") }}</p>
+      <p>
+        <strong>
+          {% if telegram_username %}@{{ telegram_username }}{% endif %}
+          {% if telegram_name %}({{ telegram_name }}){% endif %}
+          {% if not telegram_username and not telegram_name %}Telegram{% endif %}
+        </strong>
+      </p>
+
+      <p class="muted">{{ auth_t("telegramLink.nosifitAccount") }}</p>
+      <p>
+        <strong>{{ account_email }}</strong>
+        {% if account_username %}({{ account_username }}){% endif %}
+      </p>
+
+      <p class="muted">{{ auth_t("telegramLink.warning") }}</p>
+
+      <div class="auth-actions">
+        <form method="post" action="{{ url_for('telegram_link.cancel_link') }}">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+          <button type="submit" class="cmp-btn-ghost">{{ auth_t("telegramLink.cancel") }}</button>
+        </form>
+        <form method="post" action="{{ url_for('telegram_link.confirm_link') }}">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+          <button type="submit" class="cmp-btn-primary">{{ auth_t("telegramLink.confirm") }}</button>
+        </form>
+      </div>
+
+      {% elif state == "linked" %}
+      <h2 class="auth-card-title">{{ auth_t("telegramLink.linkedTitle") }}</h2>
+      <div class="status-icon done">✔</div>
+      <p class="muted">{{ auth_t("telegramLink.linkedText") }}</p>
+      <div class="auth-actions">
+        <a class="cmp-btn-primary" href="{{ url_for('profile_pages.profile_page') }}">{{ auth_t("telegramLink.toProfile") }}</a>
+      </div>
+
+      {% elif state == "already_linked_here" %}
+      <h2 class="auth-card-title">{{ auth_t("telegramLink.alreadyHereTitle") }}</h2>
+      <p class="muted">{{ auth_t("telegramLink.alreadyHereText") }}</p>
+      <div class="auth-actions">
+        <a class="cmp-btn-primary" href="{{ url_for('profile_pages.profile_page') }}">{{ auth_t("telegramLink.toProfile") }}</a>
+      </div>
+
+      {% elif state == "telegram_taken" %}
+      <h2 class="auth-card-title">{{ auth_t("telegramLink.takenTitle") }}</h2>
+      <p class="muted">{{ auth_t("telegramLink.takenText") }}</p>
+      <div class="auth-actions">
+        <a class="cmp-btn-primary" href="{{ url_for('profile_pages.profile_page') }}">{{ auth_t("telegramLink.toProfile") }}</a>
+      </div>
+
+      {% elif state == "user_has_other" %}
+      <h2 class="auth-card-title">{{ auth_t("telegramLink.otherTitle") }}</h2>
+      <p class="muted">{{ auth_t("telegramLink.otherText") }}</p>
+      <div class="auth-actions">
+        <a class="cmp-btn-primary" href="{{ url_for('profile_pages.profile_page') }}">{{ auth_t("telegramLink.toProfile") }}</a>
+      </div>
+
+      {% elif state == "cancelled" %}
+      <h2 class="auth-card-title">{{ auth_t("telegramLink.cancelledTitle") }}</h2>
+      <p class="muted">{{ auth_t("telegramLink.cancelledText") }}</p>
+
+      {% else %}
+      <h2 class="auth-card-title">{{ auth_t("telegramLink.invalidTitle") }}</h2>
+      <p class="muted">{{ auth_t("telegramLink.invalidText") }}</p>
+      {% endif %}
+    </div>
+  </body>
+</html>

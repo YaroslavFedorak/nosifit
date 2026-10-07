@@ -4,6 +4,7 @@ import logging
 import secrets
 from urllib.parse import urlencode
 from web.app.routes.auth.main import start_user_session
+from web.app.routes.auth.telegram_session import pending_link_redirect
 from backend.app.models.user import User
 from backend.app.models.oauth_account import OAuthAccount
 from backend.app.models.user_profile import UserProfile
@@ -126,7 +127,7 @@ def github_callback():
             db.session.commit()
 
         start_user_session(user)
-        return redirect("/profile")
+        return redirect(pending_link_redirect("/profile"))
 
     if email:
         user = User.query.filter_by(email=email).first()
@@ -147,7 +148,7 @@ def github_callback():
             )
             db.session.commit()
             start_user_session(user)
-            return redirect("/profile")
+            return redirect(pending_link_redirect("/profile"))
 
     # No usable email: GitHub's own noreply address is unique per account.
     noreply_email = f"{github_id}+{username or 'user'}@users.noreply.github.com".lower()
