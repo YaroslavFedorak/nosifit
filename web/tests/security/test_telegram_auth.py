@@ -566,6 +566,28 @@ def app_client(client):
     return client.application.test_client()
 
 
+def test_confirmation_works_with_browser_origin_headers(client, user, mail):
+    """Regression: a no-referrer policy on the confirmation page made Firefox
+    send "Origin: null" with the form, which the CSRF check rejects."""
+    web_login(client)
+    path, _ = request_link(client)
+    client.get(path)
+    page = client.get("/auth/telegram/link")
+    html = page.get_data(as_text=True)
+
+    assert 'content="no-referrer"' not in html
+    assert page.headers.get("Referrer-Policy") != "no-referrer"
+
+    response = client.post(
+        "/auth/telegram/link/confirm",
+        data={"csrf_token": pending_csrf(client)},
+        headers={"Origin": "http://localhost", "Referer": "http://localhost/auth/telegram/link"},
+    )
+
+    assert response.status_code == 200
+    assert TelegramIdentity.query.count() == 1
+
+
 def test_signed_in_user_sees_confirmation_first(client, user, mail):
     web_login(client)
     path, _ = request_link(client)
