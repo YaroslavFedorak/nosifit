@@ -11,6 +11,7 @@ from backend.app.utils.validation import (
     parse_profile_number,
 )
 from web.app.routes.auth.main import start_user_session
+from web.app.routes.auth.telegram_session import pending_link_redirect
 
 complete_profile_bp = Blueprint(
     "complete_profile",
@@ -53,7 +54,7 @@ def complete_profile():
         _link_oauth_account(existing_user, oauth_user)
         db.session.commit()
         start_user_session(existing_user)
-        return redirect("/profile")
+        return redirect(pending_link_redirect("/profile"))
 
     if request.method == "POST":
         try:
@@ -103,7 +104,7 @@ def complete_profile():
 
         start_user_session(user)
 
-        return redirect("/profile")
+        return redirect(pending_link_redirect("/profile"))
 
     return render_template(
         "auth/complete_profile.html",

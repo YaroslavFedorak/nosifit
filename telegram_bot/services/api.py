@@ -29,46 +29,30 @@ class NosiFitAPI:
     base_url: str
     session: requests.Session = field(default_factory=requests.Session)
 
-    def login(self, email: str, password: str) -> None:
-        try:
-            response = self.session.post(
-                f"{self.base_url}/auth/login",
-                data={"email": email, "password": password},
-                timeout=10,
-                allow_redirects=False,
-            )
-        except requests.RequestException as exc:
-            raise NosiFitAPIError(
-                "Не вдалося підключитися до NosiFit."
-            ) from exc
-
-        if response.status_code in (301, 302, 303, 307, 308):
-            location = response.headers.get("Location", "")
-            if "/dashboard" in location and self.session.cookies:
-                return
-            raise NosiFitAPIError("Невірна електронна пошта або пароль.")
-
-        if response.status_code in (200, 401, 403):
-            raise NosiFitAPIError("Невірна електронна пошта або пароль.")
-
-        raise NosiFitAPIError(
-            f"NosiFit повернув помилку авторизації (HTTP {response.status_code})."
-        )
+    # Set once the web app says the session is gone (expired, revoked by
+    # disconnecting Telegram, password changed, account deleted).
+    expired: bool = False
 
     def _request(self, method: str, path: str, **kwargs) -> requests.Response:
         try:
             response = self.session.request(
-                method, f"{self.base_url}{path}", timeout=10, **kwargs
+                method,
+                f"{self.base_url}{path}",
+                timeout=10,
+                allow_redirects=False,
+                **kwargs,
             )
         except requests.RequestException as exc:
             raise NosiFitAPIError("Не вдалося підключитися до NosiFit.") from exc
-        needs_login = (
-            response.status_code in (401, 403)
-            or response.url.rstrip("/").endswith("/auth/login")
+        needs_login = response.status_code in (401, 403) or (
+            response.is_redirect
+            and "/auth/login" in response.headers.get("Location", "")
         )
         if needs_login:
+            self.expired = True
             raise NosiFitAPIError(
-                "Сесія NosiFit завершилася. Виконайте вхід ще раз."
+                "Сесія NosiFit завершилася. Натисніть /start, щоб увійти знову.",
+                "session_expired",
             )
         if not response.ok:
             try:
@@ -79,12 +63,6 @@ class NosiFitAPI:
             detail = ERROR_MESSAGES.get(code) or "NosiFit не зміг виконати запит. Спробуйте ще раз."
             raise NosiFitAPIError(detail, code)
         return response
-
-    def health(self) -> bool:
-        try:
-            return self.session.get(f"{self.base_url}/", timeout=5).ok
-        except requests.RequestException:
-            return False
 
     def ensure_authenticated(self) -> None:
         if not self.session.cookies:

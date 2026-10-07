@@ -5,6 +5,7 @@ import { ICONS } from "../icons/index.js";
 import { initProgress } from "./progress.js";
 import { initModals } from "./modals.js";
 import { initDeleteAccount } from "./delete-account.js";
+import { initConnectedAccounts } from "./connected-accounts.js";
 
 const initProfileIcon = (): void => {
     const iconElement =
@@ -41,6 +42,7 @@ const initProfile = async (): Promise<void> => {
     initProgress();
     initModals();
     initDeleteAccount();
+    initConnectedAccounts();
 };
 
 if (

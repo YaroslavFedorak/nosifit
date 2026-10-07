@@ -195,5 +195,36 @@
         "recovery": "Recovery",
         "enabled": "Enabled",
         "disabled": "Disabled"
+    },
+    "connected": {
+        "title": "Connected accounts",
+        "subtitle": "Ways to sign in to NosiFit",
+        "password": "Password",
+        "set": "Set",
+        "notSet": "Not set",
+        "setPassword": "Set it via an email link",
+        "connected": "Connected",
+        "connectedAs": "Connected as {username}",
+        "notConnected": "Not connected",
+        "disconnect": "Disconnect",
+        "connectTelegram": "Connect Telegram",
+        "telegramHint": "In the NosiFit bot press \"Connect account\" and open the link from the bot in this browser.",
+        "confirmDisconnect": "Disconnect this sign-in method?",
+        "disconnectTitle": "Disconnect Telegram",
+        "disconnectText": "Signing in through the Telegram bot will stop working and active bot sessions will end.",
+        "currentPassword": "Current password",
+        "sendCode": "Send code to email",
+        "emailCode": "Code from the email",
+        "codeSent": "A code has been sent to your email.",
+        "errors": {
+            "wrongPassword": "Wrong password.",
+            "wrongCode": "Wrong code.",
+            "expired": "The code has expired. Send a new one.",
+            "lastMethod": "This is your only way to sign in. Set a password or connect another account first.",
+            "notConnected": "This account is already disconnected.",
+            "sendFailed": "Could not send the email. Try again later.",
+            "rateLimited": "Too many attempts. Try again later.",
+            "generic": "Something went wrong. Please try again."
+        }
     }
 }

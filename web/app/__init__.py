@@ -52,6 +52,7 @@ def create_app(config=None):
     from backend.app.models.user import User
     from backend.app.models.verification_code import VerificationCode
     from backend.app.models.oauth_account import OAuthAccount
+    from backend.app.models.telegram import TelegramIdentity, TelegramLinkToken
     from backend.app.models.recovery.habit import RecoveryHabit
     from backend.app.models.recovery.user_habit import UserRecoveryHabit
     from backend.app.models.recovery.habit_log import RecoveryHabitLog
@@ -68,6 +69,11 @@ def create_app(config=None):
         if user is None or not fingerprint_matches(user, fingerprint):
             return None
         return user
+
+    # Telegram sessions: limited to the bot's API, revoked with the identity.
+    from web.app.routes.auth.telegram_session import enforce_telegram_session
+
+    app.before_request(enforce_telegram_session)
 
     oauth.register(
         name="google",
@@ -93,6 +99,8 @@ def create_app(config=None):
         github_bp,
         email_verification_bp,
         complete_profile_bp,
+        telegram_api_bp,
+        telegram_link_bp,
         root_bp,
         public_bp,
         info_bp,
@@ -123,6 +131,7 @@ def create_app(config=None):
         delete_confirm_bp,
         delete_final_bp,
         oauth_disconnect_bp,
+        connected_accounts_bp,
         questionnaire_pages_bp,
         questionnaire_bp,
         tracker_pages_bp,
@@ -135,6 +144,8 @@ def create_app(config=None):
     app.register_blueprint(github_bp)
     app.register_blueprint(email_verification_bp)
     app.register_blueprint(complete_profile_bp)
+    app.register_blueprint(telegram_api_bp)
+    app.register_blueprint(telegram_link_bp)
 
     app.register_blueprint(root_bp)
     app.register_blueprint(public_bp)
@@ -175,6 +186,7 @@ def create_app(config=None):
     app.register_blueprint(delete_confirm_bp)
     app.register_blueprint(delete_final_bp)
     app.register_blueprint(oauth_disconnect_bp)
+    app.register_blueprint(connected_accounts_bp)
 
     app.register_blueprint(questionnaire_pages_bp)
     app.register_blueprint(questionnaire_bp)

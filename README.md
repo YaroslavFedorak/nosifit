@@ -15,6 +15,8 @@ NosiFit is currently at **v0.1.0-beta**. The core application modules are connec
 - Password recovery
 - Google OAuth
 - GitHub OAuth
+- Telegram sign-in through the NosiFit bot (create an account, log in, or connect an existing account with a one-time link; no password goes through Telegram)
+- Connected accounts in the profile (Google, GitHub, Telegram) with safe disconnect
 - Profile management
 - Email and password changes
 - Account deletion
@@ -150,6 +152,7 @@ NosiFit/
 │       └── ...
 │
 ├── migrations/
+├── telegram_bot/
 ├── requirements.txt
 ├── run.py
 └── README.md
@@ -237,6 +240,10 @@ GITHUB_CLIENT_SECRET=
 
 MAIL_USERNAME=
 MAIL_PASSWORD=
+
+# Telegram bot + sign-in (same secret on the web app and the bot)
+TELEGRAM_BOT_TOKEN=
+TELEGRAM_BOT_API_SECRET=
 ```
 
 NosiFit uses PostgreSQL. Set `DATABASE_URL` to your local PostgreSQL connection string.
@@ -253,6 +260,7 @@ requires `RATELIMIT_REDIS_URL`; to try the shared limiter locally run
 `RATELIMIT_REDIS_URL=redis://localhost:6379/0`.
 
 All variables are listed in `.env.example`. Production deployment (Railway): see [DEPLOY.md](DEPLOY.md).
+Telegram bot setup and its sign-in security model: see [telegram_bot/README.md](telegram_bot/README.md).
 
 Start the development server:
 

@@ -72,6 +72,34 @@ def send_verification_email(email, code):
     )
 
 
+def send_existing_account_notice(email):
+    send_email(
+        to=email,
+        subject="Реєстрація в NosiFit",
+        text=(
+            "Хтось (імовірно ви) намагався зареєструвати новий акаунт NosiFit "
+            "з цією адресою. Акаунт із нею вже існує, тому код не надсилається.\n\n"
+            "Увійдіть у свій акаунт або скористайтеся «Забули пароль?» на "
+            "сторінці входу.\n\n"
+            "Якщо це були не ви — просто проігноруйте цей лист."
+        ),
+    )
+
+
+def _send_code_or_notice(email) -> None:
+    """A code for a free address; for a registered one a notice instead.
+
+    The page that follows is the same either way, so the registration form
+    does not tell anyone which addresses have accounts. Raises EmailSendError.
+    """
+    if User.query.filter(db.func.lower(User.email) == email).first():
+        VerificationCode.query.filter_by(email=email).delete()
+        db.session.commit()
+        send_existing_account_notice(email)
+        return
+    send_verification_email(email, _issue_code(email))
+
+
 def _send_limited(email) -> bool:
     return hit_limit("verify-send-ip", client_ip(), *SEND_LIMIT_PER_IP) or hit_limit(
         "verify-send-email", email, *SEND_LIMIT_PER_EMAIL
@@ -85,6 +113,12 @@ def _issue_code(email) -> str:
     db.session.commit()
     reset_limit("verify-attempts", email)
     return code
+
+
+# Shared with the Telegram registration (web/app/routes/auth/telegram_api.py):
+# one code store, one expiry and one attempt counter per address.
+issue_code = _issue_code
+code_is_expired = _is_expired
 
 
 @email_verification_bp.route("/send_code", methods=["POST"])
@@ -111,10 +145,7 @@ def send_code():
         flash("Паролі не співпадають.", "error")
         return redirect(url_for("auth.register"))
 
-    if User.query.filter(db.func.lower(User.email) == email).first():
-        flash("Ця пошта вже зареєстрована. Увійдіть у свій акаунт.", "error")
-        return redirect(url_for("auth.login"))
-
+    # Limited before anything depends on whether the address is registered.
     if _send_limited(email):
         return too_many_requests("Забагато запитів коду. Спробуйте пізніше.")
 
@@ -131,10 +162,8 @@ def send_code():
     session["reg_data"] = reg_data
     session.pop("verified_email", None)
 
-    code = _issue_code(email)
-
     try:
-        send_verification_email(email, code)
+        _send_code_or_notice(email)
     except EmailSendError:
         flash("Не вдалося надіслати лист із кодом. Спробуйте трохи пізніше.", "error")
         return redirect(url_for("auth.register"))
@@ -156,26 +185,24 @@ def verify_email():
         flash("Сесія втрачена. Спробуйте ще раз.", "error")
         return redirect(url_for("auth.register"))
 
-    record = VerificationCode.query.filter_by(email=email).first()
-
-    if not record:
-        flash("Код не знайдено. Спробуйте ще раз.", "error")
-        return redirect(url_for("auth.register"))
-
-    if _is_expired(record):
-        db.session.delete(record)
-        db.session.commit()
-        flash("Код застарів. Надішліть новий.", "error")
-        return redirect(url_for("email_verification.verify_email"))
-
+    # Every attempt counts, whether or not a code exists for the address.
     if hit_limit("verify-attempts", email, MAX_CODE_ATTEMPTS, VERIFY_ATTEMPT_WINDOW):
-        db.session.delete(record)
+        VerificationCode.query.filter_by(email=email).delete()
         db.session.commit()
         flash("Забагато спроб. Надішліть новий код.", "error")
         return redirect(url_for("email_verification.verify_email"))
 
-    if not secrets.compare_digest(record.code, (code_input or "").strip()):
-        flash("Невірний код.", "error")
+    record = VerificationCode.query.filter_by(email=email).first()
+    if record is not None and _is_expired(record):
+        db.session.delete(record)
+        db.session.commit()
+        record = None
+
+    # Missing (registered address), expired and wrong codes look the same.
+    if record is None or not secrets.compare_digest(
+        str(record.code), (code_input or "").strip()
+    ):
+        flash("Код невірний або застарів. Спробуйте ще раз або надішліть новий.", "error")
         return redirect(url_for("email_verification.verify_email"))
 
     session["verified_email"] = email
@@ -200,10 +227,8 @@ def resend_code():
         flash("Забагато запитів коду. Спробуйте пізніше.", "error")
         return redirect(url_for("email_verification.verify_email"))
 
-    code = _issue_code(email)
-
     try:
-        send_verification_email(email, code)
+        _send_code_or_notice(email)
     except EmailSendError:
         flash("Не вдалося надіслати лист із кодом. Спробуйте трохи пізніше.", "error")
         return redirect(url_for("email_verification.verify_email"))

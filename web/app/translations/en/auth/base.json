@@ -117,5 +117,27 @@
   "profileEdit": {
     "title": "Edit profile",
     "heading": "Edit profile"
+  },
+  "telegramLink": {
+    "title": "Connect Telegram",
+    "confirmTitle": "Connect Telegram to this NosiFit account?",
+    "telegramAccount": "Telegram account:",
+    "nosifitAccount": "NosiFit account:",
+    "warning": "Confirm only if you just pressed \"Connect account\" in the NosiFit bot yourself. Anyone with access to this Telegram account will be able to sign in to your NosiFit account through the bot.",
+    "confirm": "Connect",
+    "cancel": "Cancel",
+    "linkedTitle": "Telegram connected",
+    "linkedText": "Telegram has been connected to your NosiFit account. Go back to the bot and press \"Log in\".",
+    "toProfile": "Go to profile",
+    "alreadyHereTitle": "Already connected",
+    "alreadyHereText": "This Telegram account is already connected to your account.",
+    "takenTitle": "Telegram is already in use",
+    "takenText": "This Telegram account is already connected to another NosiFit account. Disconnect it there first.",
+    "otherTitle": "Another Telegram is connected",
+    "otherText": "Your account already has another Telegram connected. Disconnect it first in Profile → Connected accounts.",
+    "cancelledTitle": "Cancelled",
+    "cancelledText": "Telegram was not connected. The link no longer works.",
+    "invalidTitle": "Invalid link",
+    "invalidText": "The link is invalid, already used or expired. Get a new one in the bot: \"Connect account\"."
   }
 }

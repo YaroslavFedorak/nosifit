@@ -10,6 +10,7 @@ from backend.app.models.nutrition.user_goals import UserGoals
 from backend.app.models.nutrition.user_water import UserWater
 from backend.app.models.nutrition.user_weight import UserWeight
 from backend.app.models.recovery_plan import RecoveryPlan
+from backend.app.models.telegram import TelegramIdentity
 from backend.app.models.user_goals import UserTrainingGoals
 from backend.app.models.user_injury import UserInjury
 from backend.app.models.user_profile import UserProfile
@@ -27,6 +28,9 @@ _UNCASCADED = (
     UserInjury,
     UserTrainingGoals,
     UserProfile,
+    # Also ON DELETE CASCADE in the database; deleted here explicitly so a
+    # deleted account can never keep a Telegram sign-in.
+    TelegramIdentity,
 )
 
 

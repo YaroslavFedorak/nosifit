@@ -13,14 +13,21 @@ from backend.app.utils.validation import (
     parse_profile_number,
     password_problem,
 )
+from web.app.routes.auth.telegram_session import (
+    PENDING_LINK_KEY,
+    carry_pending_link_over,
+    mark_authenticated_now,
+    pending_link_redirect,
+)
 from web.app.security import client_ip, hit_limit, reset_limit, too_many_requests
 
 auth_bp = Blueprint("auth", __name__, url_prefix="/auth")
 
 # Per email: slows down guessing one account's password.
 LOGIN_LIMIT_PER_EMAIL = (10, 15 * 60)
-# Per IP: slows down credential stuffing across many accounts. The Telegram
-# bot logs in from one IP for all its users, so this stays generous.
+# Per IP: slows down credential stuffing across many accounts. Generous, as
+# households and offices share one address. (The Telegram bot no longer
+# logs in here: it uses /api/telegram/login.)
 LOGIN_LIMIT_PER_IP = (50, 5 * 60)
 RESET_LIMIT_PER_EMAIL = (3, 60 * 60)
 RESET_LIMIT_PER_IP = (10, 60 * 60)
@@ -29,9 +36,16 @@ LOGIN_FAILED_MESSAGE = "Невірна електронна пошта або п
 
 
 def start_user_session(user):
-    """Log ``user`` in on a fresh session (no data carried over from before)."""
+    """Log ``user`` in on a fresh session.
+
+    Nothing from before is carried over except a pending Telegram link, which
+    still needs an explicit confirmation on /auth/telegram/link.
+    """
+    pending = session.get(PENDING_LINK_KEY)
     session.clear()
+    carry_pending_link_over(pending)
     login_user(user, remember=True)
+    mark_authenticated_now()
 
 
 @auth_bp.route("/login", methods=["GET", "POST"], endpoint="login")
@@ -66,7 +80,7 @@ def login():
             db.session.commit()
 
         start_user_session(user)
-        return redirect(url_for("dashboard.dashboard"))
+        return redirect(pending_link_redirect(url_for("dashboard.dashboard")))
 
     return render_template("auth/login.html")
 
@@ -155,7 +169,7 @@ def register_complete():
 
         start_user_session(user)
 
-        return redirect(url_for("dashboard.dashboard"))
+        return redirect(pending_link_redirect(url_for("dashboard.dashboard")))
 
     return render_template("auth/register_complete.html")
 
@@ -237,7 +251,7 @@ def reset_with_token(token):
 
         start_user_session(user)
 
-        return redirect(url_for("dashboard.dashboard"))
+        return redirect(pending_link_redirect(url_for("dashboard.dashboard")))
 
     return render_template("auth/new_password.html")
 

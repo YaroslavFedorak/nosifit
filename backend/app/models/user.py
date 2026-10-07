@@ -5,8 +5,9 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 from backend.app.utils.session_auth import make_session_id
 
-# Accounts created through Google/GitHub have no password. The column stores
-# this marker instead of a hash.
+# Accounts created through Google/GitHub/Telegram have no password. The
+# column stores this marker instead of a hash; a password can be set later
+# through the emailed reset link.
 OAUTH_PASSWORD_MARKER = "oauth"
 
 
@@ -123,6 +124,14 @@ class User(db.Model, UserMixin):
         cascade="all, delete-orphan",
         lazy="dynamic",
         foreign_keys="OAuthAccount.user_id",
+    )
+
+    telegram_identity = db.relationship(
+        "TelegramIdentity",
+        back_populates="user",
+        uselist=False,
+        cascade="all, delete-orphan",
+        passive_deletes=True,
     )
 
     training_plans = db.relationship(

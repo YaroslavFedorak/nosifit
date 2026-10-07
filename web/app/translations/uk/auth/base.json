@@ -117,5 +117,27 @@
   "profileEdit": {
     "title": "Редагування профілю",
     "heading": "Редагування профілю"
+  },
+  "telegramLink": {
+    "title": "Підключення Telegram",
+    "confirmTitle": "Підключити Telegram до цього акаунта NosiFit?",
+    "telegramAccount": "Telegram-акаунт:",
+    "nosifitAccount": "Акаунт NosiFit:",
+    "warning": "Підтверджуйте, лише якщо ви щойно самі натиснули «Підключити акаунт» у боті NosiFit. Будь-хто з доступом до цього Telegram-акаунта зможе входити в ваш акаунт NosiFit через бота.",
+    "confirm": "Підключити",
+    "cancel": "Скасувати",
+    "linkedTitle": "Telegram підключено",
+    "linkedText": "Telegram підключено до вашого акаунта NosiFit. Поверніться в бот і натисніть «Увійти».",
+    "toProfile": "До профілю",
+    "alreadyHereTitle": "Уже підключено",
+    "alreadyHereText": "Цей Telegram уже підключено до вашого акаунта.",
+    "takenTitle": "Telegram уже використовується",
+    "takenText": "Цей Telegram-акаунт уже підключено до іншого акаунта NosiFit. Спочатку відключіть його там.",
+    "otherTitle": "Уже підключено інший Telegram",
+    "otherText": "До вашого акаунта вже підключено інший Telegram. Спочатку відключіть його в Профіль → Підключені акаунти.",
+    "cancelledTitle": "Скасовано",
+    "cancelledText": "Telegram не підключено. Посилання більше не діє.",
+    "invalidTitle": "Посилання недійсне",
+    "invalidText": "Посилання недійсне, уже використане або прострочене. Отримайте нове в боті: «Підключити акаунт»."
   }
 }
