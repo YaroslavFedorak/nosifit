@@ -34,6 +34,7 @@ from web.app.routes.auth.email_verification import (
     code_is_expired,
     issue_code,
 )
+from web.app.routes.auth.telegram_link import LINK_SIGN_IN_METHODS
 from web.app.routes.auth.telegram_session import start_telegram_session
 from web.app.security import hit_limit, reset_limit
 
@@ -290,5 +291,6 @@ def link_token(telegram_user_id, data):
         name=tg.clean_telegram_name(data.get("name")),
         ttl_seconds=ttl,
     )
-    url = base_url + url_for("telegram_link.open_link", token=token)
+    via = data.get("via") if data.get("via") in LINK_SIGN_IN_METHODS else None
+    url = base_url + url_for("telegram_link.open_link", token=token, via=via)
     return jsonify({"url": url, "expires_in": ttl})

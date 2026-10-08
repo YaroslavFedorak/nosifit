@@ -93,6 +93,10 @@ class TelegramAuthClient:
         )
         return NosiFitAPI(base_url=self.base_url, session=session)
 
-    def link_url(self, user: TelegramUser) -> tuple[str, int]:
-        data = self._post(requests.Session(), "/api/telegram/link-token", user.payload()).json()
+    def link_url(self, user: TelegramUser, via: str = "password") -> tuple[str, int]:
+        """One-time link; ``via`` (google / github / password) picks the
+        sign-in page the link opens when the browser is not signed in."""
+        data = self._post(
+            requests.Session(), "/api/telegram/link-token", {**user.payload(), "via": via}
+        ).json()
         return str(data["url"]), int(data.get("expires_in") or 600)

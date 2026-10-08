@@ -923,6 +923,55 @@ def test_pending_link_survives_github_login(client, user, mail, monkeypatch, app
     assert TelegramIdentity.query.count() == 0
 
 
+@pytest.mark.parametrize(
+    "via, target",
+    [("google", "/auth/google"), ("github", "/auth/github"), ("password", "/auth/telegram/link")],
+)
+def test_link_opens_the_sign_in_chosen_in_the_bot(client, app, user, mail, via, target):
+    app.config["GOOGLE_CLIENT_ID"] = app.config["GITHUB_CLIENT_ID"] = "configured"
+    response = bot_post(client, "/api/telegram/link-token", tg_payload(via=via))
+    url = response.json["url"]
+    assert url.endswith(f"?via={via}")
+
+    opened = client.get(url[len("http://localhost"):])
+
+    assert opened.status_code == 302 and opened.location.endswith(target)
+    with client.session_transaction() as session:
+        assert "tg_link" in session  # the Confirm page follows the sign-in
+    assert TelegramIdentity.query.count() == 0
+
+
+def test_via_is_a_closed_list(client, app, user, mail):
+    """No open redirect: unknown values are dropped from the URL and ignored."""
+    response = bot_post(
+        client, "/api/telegram/link-token", tg_payload(via="https://evil.example")
+    )
+    assert "via=" not in response.json["url"]
+
+    path, _ = request_link(client)
+    opened = client.get(path + "?via=https://evil.example")
+    assert opened.location.endswith("/auth/telegram/link")
+
+
+def test_recently_signed_in_user_skips_the_provider(client, app, user, mail):
+    app.config["GOOGLE_CLIENT_ID"] = "configured"
+    web_login(client)
+    path, _ = request_link(client)
+
+    opened = client.get(path + "?via=google")
+
+    assert opened.location.endswith("/auth/telegram/link")
+
+
+def test_unconfigured_provider_falls_back_to_the_login_page(client, app, user, mail):
+    app.config["GITHUB_CLIENT_ID"] = None
+    path, _ = request_link(client)
+
+    opened = client.get(path + "?via=github")
+
+    assert opened.location.endswith("/auth/telegram/link")
+
+
 def test_production_link_needs_public_base_url(client, app):
     app.config["PUBLIC_BASE_URL"] = None
     app.config["IS_PRODUCTION"] = True

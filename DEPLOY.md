@@ -94,7 +94,7 @@ The `pg_trgm` extension is created by migration `b4a7d1e8c2f0`.
 The bot never handles NosiFit passwords: users sign in with their Telegram
 account, create an account with an emailed code, or connect an existing
 account through a one-time link confirmed in the browser. Users of the old
-email + password bot press **🔗 Підключити акаунт** once (the old bot kept no
+email + password bot press **🔐 Увійти** and pick how they sign in, once (the old bot kept no
 stored data, so nothing is migrated). Details: [telegram_bot/README.md](telegram_bot/README.md).
 
 ## Checks after deploy
@@ -103,5 +103,5 @@ stored data, so nothing is migrated). Details: [telegram_bot/README.md](telegram
 - register with email code, log in, log in with Google and GitHub
 - password reset email arrives
 - the bot: "Створити акаунт" with a new email, then "Увійти" and save a meal
-- the bot: "Підключити акаунт" → open the link → log in → Connect → "Увійти" in the bot
+- the bot: "Увійти" → "Увійти через Google" → the link opens Google → Connect → "Увійти" in the bot
 - Profile → Connected accounts shows Telegram; Disconnect asks for the password

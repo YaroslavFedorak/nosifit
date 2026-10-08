@@ -39,8 +39,8 @@ def register_verify(user: TelegramUser, email: str, code: str) -> NosiFitAPI:
     return api
 
 
-def link_url(user: TelegramUser) -> tuple[str, int]:
-    return auth_client().link_url(user)
+def link_url(user: TelegramUser, via: str = "password") -> tuple[str, int]:
+    return auth_client().link_url(user, via)
 
 
 def get_api(user_id: int) -> NosiFitAPI:
