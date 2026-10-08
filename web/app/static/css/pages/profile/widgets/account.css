@@ -60,3 +60,39 @@
         grid-template-columns: minmax(0, 1fr);
     }
 }
+
+/* Connected accounts */
+
+.profile-connected-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.profile-connected-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px 14px;
+}
+
+.profile-connected-row .profile-data-label {
+    min-width: 90px;
+}
+
+.profile-connected-action {
+    margin-left: auto;
+}
+
+.profile-connected-link {
+    font-size: 12px;
+    color: var(--profile-accent-hover);
+}
+
+.profile-connected-hint {
+    flex-basis: 100%;
+    margin: 0;
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--profile-text-muted);
+}

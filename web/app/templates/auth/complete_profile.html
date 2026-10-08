@@ -34,6 +34,7 @@
         <h2 class="title">{{ auth_t("profile.heading") }}</h2>
       </div>
 
+      {% include "auth/_flashes.html" %}
       <form method="POST" class="auth-form">
         <div class="row two-cols">
           <div class="field" data-anim>
@@ -142,7 +143,7 @@
       </form>
     </div>
 
-    <script>
+    <script nonce="{{ csp_nonce() }}">
       window.addEventListener("load", () => {
         document.querySelectorAll("[data-anim]").forEach((el, i) => {
           el.style.setProperty("--stagger", i * 60 + "ms");

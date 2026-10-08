@@ -15,6 +15,10 @@ import {
     t
 } from "../i18n/index.js";
 
+import {
+    escapeHtml
+} from "../utils/html.js";
+
 let CALENDAR_DATA: HeatmapDay[] = [];
 
 let CURRENT_YEAR =
@@ -1048,14 +1052,14 @@ function openDayDetails(
                                                 exercise => `
                                                     <div class="tr-day-exercise">
                                                         <div class="tr-ex-name">
-                                                            ${getDayExerciseName(
+                                                            ${escapeHtml(getDayExerciseName(
                                                                 exercise
-                                                            )}
+                                                            ))}
                                                         </div>
                                                         <div class="tr-ex-meta">
-                                                            ${formatDayExerciseMeta(
+                                                            ${escapeHtml(formatDayExerciseMeta(
                                                                 exercise
-                                                            )}
+                                                            ))}
                                                         </div>
                                                     </div>
                                                 `

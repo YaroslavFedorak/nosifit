@@ -129,3 +129,77 @@ def test_registration_complete_creates_user(mock_send, client):
     assert user.username == "newuser"
     assert user.password != "password123"
     assert user.profile is not None
+
+
+# --- Account enumeration through the registration form ----------------------------------
+
+
+def _form(email):
+    return {
+        "username": "someone",
+        "email": email,
+        "password": "password123",
+        "confirm_password": "password123",
+    }
+
+
+def _flashes(client):
+    with client.session_transaction() as session:
+        return [message for _, message in session.pop("_flashes", [])]
+
+
+def test_registration_does_not_reveal_registered_emails(client, user, monkeypatch):
+    codes, notices = [], []
+    monkeypatch.setattr(
+        "web.app.routes.auth.email_verification.send_verification_email",
+        lambda email, code: codes.append(email),
+    )
+    monkeypatch.setattr(
+        "web.app.routes.auth.email_verification.send_existing_account_notice",
+        lambda email: notices.append(email),
+    )
+
+    new = client.post("/verify/send_code", data=_form("fresh@example.com"))
+    existing = client.post("/verify/send_code", data=_form("test@example.com"))
+
+    assert existing.status_code == new.status_code == 302
+    assert existing.location == new.location
+    assert codes == ["fresh@example.com"] and notices == ["test@example.com"]
+    assert VerificationCode.query.filter_by(email="test@example.com").count() == 0
+
+    client.post("/verify/verify_email", data={"code": "123456"})
+    with client.session_transaction() as session:
+        assert "verified_email" not in session
+
+
+def test_missing_expired_and_wrong_codes_look_the_same(client, user, monkeypatch):
+    from datetime import datetime, timedelta, timezone
+
+    sent = {}
+    monkeypatch.setattr(
+        "web.app.routes.auth.email_verification.send_verification_email",
+        lambda email, code: sent.update({email: code}),
+    )
+    monkeypatch.setattr(
+        "web.app.routes.auth.email_verification.send_existing_account_notice",
+        lambda email: None,
+    )
+    messages = []
+
+    client.post("/verify/send_code", data=_form("test@example.com"))  # registered
+    client.post("/verify/verify_email", data={"code": "123456"})
+    messages.append(_flashes(client))
+
+    client.post("/verify/send_code", data=_form("fresh@example.com"))
+    wrong = "000000" if sent["fresh@example.com"] != "000000" else "111111"
+    client.post("/verify/verify_email", data={"code": wrong})
+    messages.append(_flashes(client))
+
+    VerificationCode.query.update(
+        {"created_at": datetime.now(timezone.utc) - timedelta(minutes=11)}
+    )
+    db.session.commit()
+    client.post("/verify/verify_email", data={"code": sent["fresh@example.com"]})
+    messages.append(_flashes(client))
+
+    assert messages[0] == messages[1] == messages[2] and messages[0]

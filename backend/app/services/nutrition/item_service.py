@@ -1,3 +1,4 @@
+from backend.app.utils.validation import as_db_id
 from backend.app.extensions import db
 from backend.app.models import Meal, MealItem, Product
 from backend.app.services.nutrition.calculation_service import (
@@ -17,6 +18,9 @@ from backend.app.repositories.product_repository import (
 
 
 def _get_meal(user_id, meal_id):
+    meal_id = as_db_id(meal_id)
+    if meal_id is None:
+        return None
     return Meal.query.filter_by(
         id=meal_id,
         user_id=user_id,
@@ -84,9 +88,11 @@ def add_items_service(user_id, meal_id, items):
     if not items:
         return []
 
-    product_ids = {item.get("product_id") for item in items}
+    product_ids = {as_db_id(item.get("product_id")) for item in items}
     if None in product_ids:
         raise NutritionValidationError("Product id is required")
+    for item in items:
+        item["product_id"] = as_db_id(item.get("product_id"))
 
     products = (
         Product.query

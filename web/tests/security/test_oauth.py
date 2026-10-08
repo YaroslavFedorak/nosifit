@@ -1,7 +1,22 @@
 ﻿from unittest.mock import MagicMock, patch
 
+import pytest
+
 from backend.app.extensions import db
 from backend.app.models.oauth_account import OAuthAccount
+
+
+def github_callback(client, code):
+    """Callback request carrying the state /auth/github put in the session."""
+    with client.session_transaction() as session:
+        session["github_oauth_state"] = "STATE"
+    return client.get(f"/auth/github/callback?code={code}&state=STATE")
+
+
+@pytest.fixture(autouse=True)
+def github_configured(app):
+    app.config["GITHUB_CLIENT_ID"] = "TEST_ID"
+    app.config["GITHUB_CLIENT_SECRET"] = "TEST_SECRET"
 
 
 def test_github_redirect(client, app):
@@ -32,12 +47,13 @@ def test_github_existing_user(mock_get, mock_post, client, user):
         {
             "email": "test@example.com",
             "primary": True,
+            "verified": True,
         }
     ]
 
     mock_get.side_effect = [user_response, email_response]
 
-    response = client.get("/auth/github/callback?code=123")
+    response = github_callback(client, "123")
 
     assert response.status_code == 302
     assert response.location.endswith("/profile")
@@ -61,12 +77,13 @@ def test_github_new_user(mock_get, mock_post, client):
         {
             "email": "new@example.com",
             "primary": True,
+            "verified": True,
         }
     ]
 
     mock_get.side_effect = [user_response, email_response]
 
-    response = client.get("/auth/github/callback?code=123")
+    response = github_callback(client, "123")
 
     assert response.status_code == 302
     assert response.location.endswith("/auth/complete_profile")
@@ -78,12 +95,93 @@ def test_github_new_user(mock_get, mock_post, client):
 
 
 @patch("web.app.routes.auth.oauth_github.requests.post")
+@patch("web.app.routes.auth.oauth_github.requests.get")
+def test_github_private_email_uses_noreply(mock_get, mock_post, client, user):
+    mock_post.return_value.json.return_value = {"access_token": "TOKEN"}
+
+    user_response = MagicMock()
+    user_response.json.return_value = {"id": 789, "login": "Hidden"}
+    email_response = MagicMock()
+    email_response.json.return_value = {"message": "Resource not accessible by integration"}
+    mock_get.side_effect = [user_response, email_response]
+
+    response = github_callback(client, "123")
+
+    assert response.location.endswith("/auth/complete_profile")
+    with client.session_transaction() as session:
+        assert session["oauth_user"]["email"] == "789+hidden@users.noreply.github.com"
+
+
+@patch("web.app.routes.auth.oauth_github.requests.post")
+@patch("web.app.routes.auth.oauth_github.requests.get")
+def test_github_unverified_email_is_not_linked(mock_get, mock_post, client, user):
+    mock_post.return_value.json.return_value = {"access_token": "TOKEN"}
+
+    user_response = MagicMock()
+    user_response.json.return_value = {"id": 321, "login": "attacker"}
+    email_response = MagicMock()
+    email_response.json.return_value = [
+        {"email": "test@example.com", "primary": True, "verified": False}
+    ]
+    mock_get.side_effect = [user_response, email_response]
+
+    response = github_callback(client, "123")
+
+    assert response.location.endswith("/auth/complete_profile")
+    assert OAuthAccount.query.filter_by(provider_user_id="321").first() is None
+
+
+def test_github_callback_without_code_redirects_to_login(client):
+    response = client.get("/auth/github/callback")
+
+    assert response.status_code == 302
+    assert response.location.endswith("/auth/login")
+
+
+def test_complete_profile_links_oauth_account(client):
+    with client.session_transaction() as session:
+        session["oauth_user"] = {
+            "provider": "github",
+            "provider_user_id": "555",
+            "username": "octo",
+            "email": "Octo@Example.com",
+        }
+
+    response = client.post(
+        "/auth/complete_profile",
+        data={"age": "25", "height": "180", "weight": "75", "workouts": "3"},
+    )
+
+    assert response.status_code == 302
+    assert response.location.endswith("/profile")
+
+    account = OAuthAccount.query.filter_by(provider="github", provider_user_id="555").first()
+    assert account is not None
+    assert account.user.email == "octo@example.com"
+
+
+def test_complete_profile_rejects_empty_form(client):
+    with client.session_transaction() as session:
+        session["oauth_user"] = {
+            "provider": "github",
+            "provider_user_id": "556",
+            "username": "octo2",
+            "email": "octo2@example.com",
+        }
+
+    response = client.post("/auth/complete_profile", data={})
+
+    assert response.status_code == 200
+    assert OAuthAccount.query.filter_by(provider_user_id="556").first() is None
+
+
+@patch("web.app.routes.auth.oauth_github.requests.post")
 def test_github_token_error(mock_post, client):
     mock_post.return_value.json.return_value = {
         "error": "bad_verification_code",
     }
 
-    response = client.get("/auth/github/callback?code=BAD")
+    response = github_callback(client, "BAD")
 
     assert response.status_code == 400
 
@@ -102,6 +200,7 @@ def test_google_callback_existing_user(client, user):
     google.get.return_value.json.return_value = {
         "sub": "GOOGLE123",
         "email": "test@example.com",
+        "email_verified": True,
         "name": "Test User",
     }
 
@@ -137,6 +236,7 @@ def test_google_callback_new_user(client):
     google.get.return_value.json.return_value = {
         "sub": "GOOGLE456",
         "email": "new@example.com",
+        "email_verified": True,
         "name": "New User",
     }
 
@@ -165,3 +265,21 @@ def test_google_invalid_token(client):
         response = client.get("/auth/google/callback")
 
     assert response.status_code == 400
+
+
+def test_complete_profile_then_profile_page_opens(client):
+    with client.session_transaction() as session:
+        session["oauth_user"] = {
+            "provider": "github",
+            "provider_user_id": "557",
+            "username": "octo3",
+            "email": "octo3@example.com",
+        }
+
+    response = client.post(
+        "/auth/complete_profile",
+        data={"age": "25", "height": "180", "weight": "75", "workouts": "3"},
+        follow_redirects=True,
+    )
+
+    assert response.status_code == 200

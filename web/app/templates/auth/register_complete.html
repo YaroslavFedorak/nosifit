@@ -39,6 +39,7 @@
         {{ auth_t("registerComplete.text") }}
       </p>
 
+      {% include "auth/_flashes.html" %}
       <form method="POST" action="{{ url_for('auth.register_complete') }}">
         <div class="auth-actions">
           <button class="cmp-btn-primary" type="submit">

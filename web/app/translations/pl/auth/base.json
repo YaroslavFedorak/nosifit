@@ -117,5 +117,27 @@
   "profileEdit": {
     "title": "Edycja profilu",
     "heading": "Edycja profilu"
+  },
+  "telegramLink": {
+    "title": "Połącz Telegram",
+    "confirmTitle": "Połączyć Telegram z tym kontem NosiFit?",
+    "telegramAccount": "Konto Telegram:",
+    "nosifitAccount": "Konto NosiFit:",
+    "warning": "Potwierdź tylko wtedy, gdy przed chwilą sam(a) nacisnąłeś(-ęłaś) „Połącz konto” w bocie NosiFit. Każdy, kto ma dostęp do tego konta Telegram, będzie mógł logować się na Twoje konto NosiFit przez bota.",
+    "confirm": "Połącz",
+    "cancel": "Anuluj",
+    "linkedTitle": "Telegram połączony",
+    "linkedText": "Telegram został połączony z Twoim kontem NosiFit. Wróć do bota i naciśnij „Zaloguj się”.",
+    "toProfile": "Do profilu",
+    "alreadyHereTitle": "Już połączono",
+    "alreadyHereText": "To konto Telegram jest już połączone z Twoim kontem.",
+    "takenTitle": "Telegram jest już używany",
+    "takenText": "To konto Telegram jest już połączone z innym kontem NosiFit. Najpierw odłącz je tam.",
+    "otherTitle": "Połączono inny Telegram",
+    "otherText": "Twoje konto ma już połączony inny Telegram. Najpierw odłącz go w Profil → Połączone konta.",
+    "cancelledTitle": "Anulowano",
+    "cancelledText": "Telegram nie został połączony. Link już nie działa.",
+    "invalidTitle": "Nieprawidłowy link",
+    "invalidText": "Link jest nieprawidłowy, już użyty lub wygasł. Pobierz nowy w bocie: „Połącz konto”."
   }
 }

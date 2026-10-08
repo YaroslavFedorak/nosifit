@@ -44,8 +44,15 @@ def _item(exercise, **values):
 def test_exercise_list_exposes_whole_catalog_with_measurements(client, user, catalog):
     login(client)
 
-    data = client.get("/api/training/exercises").get_json()
-    by_slug = {item["slug"]: item for item in data["items"]}
+    items = []
+    page = 1
+    while True:
+        data = client.get(f"/api/training/exercises?page={page}&per_page=100").get_json()
+        items.extend(data["items"])
+        if len(data["items"]) < 100:
+            break
+        page += 1
+    by_slug = {item["slug"]: item for item in items}
 
     assert data["total"] == len(catalog)
     assert len(by_slug) == len(catalog)

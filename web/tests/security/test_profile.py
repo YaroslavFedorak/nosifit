@@ -35,7 +35,7 @@ def test_profile_update_full(client, user):
         "/profile/update_full",
         data={
             "username": "updated",
-            "email": "updated@example.com",
+            "email": "test@example.com",
             "age": "25",
             "height": "180",
             "weight": "80",
@@ -56,7 +56,7 @@ def test_profile_update_full(client, user):
     db.session.refresh(user)
 
     assert user.username == "updated"
-    assert user.email == "updated@example.com"
+    assert user.email == "test@example.com"
     assert user.profile.age == 25
     assert user.profile.height == 180
     assert user.profile.weight == 80
@@ -109,22 +109,52 @@ def test_change_password_wrong_old_password(client, user):
     assert response.json["message"] == "wrong_old"
 
 
-def test_change_email(client, user):
+def test_profile_update_cannot_change_email(client, user):
+    """Email changes need the emailed code; the profile form must not skip it."""
     login(client)
 
     response = client.post(
-        "/profile/change_email",
-        data={
-            "new_email": "new@example.com",
-            "password": "password123",
-        },
+        "/profile/update_full",
+        data={"username": "updated", "email": "attacker@example.com", "age": "25"},
     )
 
     assert response.status_code == 302
-    assert response.location.endswith("/profile/")
+    db.session.refresh(user)
+    assert user.email == "test@example.com"
+    assert user.username == "testuser"
+
+
+def test_change_email(client, user, monkeypatch):
+    login(client)
+
+    sent = {}
+    monkeypatch.setattr(
+        "web.app.routes.profile.email_change.send_email_code",
+        lambda email, code: sent.update(email=email, code=code),
+    )
+
+    monkeypatch.setattr(
+        "web.app.routes.profile.email_change.send_email", lambda **kwargs: None
+    )
+
+    response = client.post(
+        "/profile/change_email",
+        json={"new_email": "new@example.com", "password": "password123"},
+    )
+
+    assert response.status_code == 200
+    assert response.json["status"] == "sent"
+    assert sent["email"] == "new@example.com"
 
     db.session.refresh(user)
+    assert user.email == "test@example.com"
 
+    response = client.post("/profile/confirm_email", json={"code": sent["code"]})
+
+    assert response.status_code == 200
+    assert response.json["status"] == "success"
+
+    db.session.refresh(user)
     assert user.email == "new@example.com"
 
 
@@ -188,8 +218,10 @@ def test_delete_request(client, user, monkeypatch):
     assert response.json["status"] == "sent"
 
     with client.session_transaction() as session:
-        assert "delete_code" in session
-        assert session["delete_code_email"] == user.email
+        entry = session["delete_code"]
+        assert entry["email"] == user.email
+        assert entry["verified"] is False
+        assert "code" not in entry
 
 
 def test_delete_confirm(client, user, monkeypatch):

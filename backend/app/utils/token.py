@@ -1,15 +1,53 @@
-from itsdangerous import URLSafeTimedSerializer
+"""Password reset links.
+
+The token carries the user id and a fingerprint of the current password hash.
+Setting a new password changes the hash, so a link works only once and every
+older link dies with it.
+"""
+
+import hmac
+
 from flask import current_app
+from itsdangerous import BadData, URLSafeTimedSerializer
 
-def generate_reset_token(email):
-    s = URLSafeTimedSerializer(current_app.config["SECRET_KEY"])
-    return s.dumps(email, salt="password-reset")
+from backend.app.extensions import db
+from backend.app.utils.session_auth import session_fingerprint
 
-def verify_reset_token(token, max_age=3600):
-    s = URLSafeTimedSerializer(current_app.config["SECRET_KEY"])
+RESET_TOKEN_MAX_AGE = 3600
+_SALT = "password-reset-v2"
+
+
+def _serializer():
+    return URLSafeTimedSerializer(current_app.config["SECRET_KEY"], salt=_SALT)
+
+
+def _fingerprint(user):
+    # The email is part of it, so a link sent to an address the account no
+    # longer uses stops working.
+    return session_fingerprint(user.id, f"{user.password}|{user.email.lower()}")
+
+
+def generate_reset_token(user):
+    return _serializer().dumps({"uid": user.id, "fp": _fingerprint(user)})
+
+
+def verify_reset_token(token, max_age=RESET_TOKEN_MAX_AGE):
+    """Return the user the token was issued for, or None."""
+    from backend.app.models.user import User
+
     try:
-        email = s.loads(token, salt="password-reset", max_age=max_age)
-    except Exception:
+        data = _serializer().loads(token, max_age=max_age)
+    except (BadData, TypeError, ValueError):
         return None
-    return email
 
+    if not isinstance(data, dict) or not isinstance(data.get("uid"), int):
+        return None
+
+    user = db.session.get(User, data["uid"])
+    if user is None:
+        return None
+
+    expected = _fingerprint(user)
+    if not hmac.compare_digest(expected, str(data.get("fp", ""))):
+        return None
+    return user

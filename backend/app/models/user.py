@@ -3,6 +3,13 @@ from flask_login import UserMixin
 from backend.app.extensions import db
 from werkzeug.security import generate_password_hash, check_password_hash
 
+from backend.app.utils.session_auth import make_session_id
+
+# Accounts created through Google/GitHub/Telegram have no password. The
+# column stores this marker instead of a hash; a password can be set later
+# through the emailed reset link.
+OAUTH_PASSWORD_MARKER = "oauth"
+
 
 class User(db.Model, UserMixin):
     __tablename__ = "users"
@@ -119,6 +126,14 @@ class User(db.Model, UserMixin):
         foreign_keys="OAuthAccount.user_id",
     )
 
+    telegram_identity = db.relationship(
+        "TelegramIdentity",
+        back_populates="user",
+        uselist=False,
+        cascade="all, delete-orphan",
+        passive_deletes=True,
+    )
+
     training_plans = db.relationship(
         "TrainingPlan",
         back_populates="owner",
@@ -151,11 +166,24 @@ class User(db.Model, UserMixin):
         foreign_keys="PerformanceState.user_id",
     )
 
+    def get_id(self):
+        # "<id>:<password fingerprint>": see backend.app.utils.session_auth.
+        return make_session_id(self)
+
+    @property
+    def has_password(self) -> bool:
+        return bool(self.password) and self.password != OAUTH_PASSWORD_MARKER
+
     def set_password(self, password):
         self.password = generate_password_hash(password)
 
     def check_password(self, password):
-        return check_password_hash(self.password, password)
+        if not self.has_password or not password:
+            return False
+        try:
+            return check_password_hash(self.password, password)
+        except ValueError:  # not a werkzeug hash
+            return False
 
     def __repr__(self):
         return f"<User id={self.id} username={self.username}>"

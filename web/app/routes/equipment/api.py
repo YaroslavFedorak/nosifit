@@ -12,18 +12,31 @@ def get_equipment():
     return jsonify(items)
 
 
+def _equipment_id():
+    data = request.get_json(silent=True)
+    value = data.get("equipment_id") if isinstance(data, dict) else None
+    if isinstance(value, bool):
+        return None
+    if isinstance(value, str) and value.strip().isdigit() and len(value) < 10:
+        value = int(value)
+    return value if isinstance(value, int) and 0 < value < 2**31 else None
+
+
 @equipment_api.post("/add")
 @login_required
 def add_equipment():
-    data = request.get_json() or {}
-    EquipmentService.add_equipment(current_user, data.get("equipment_id"))
+    equipment_id = _equipment_id()
+    if equipment_id is None or not EquipmentService.add_equipment(current_user, equipment_id):
+        return jsonify({"error": "Equipment not found"}), 404
     return jsonify({"status": "added"})
 
 
 @equipment_api.post("/remove")
 @login_required
 def remove_equipment():
-    data = request.get_json() or {}
-    EquipmentService.remove_equipment(current_user, data.get("equipment_id"))
+    equipment_id = _equipment_id()
+    if equipment_id is None:
+        return jsonify({"error": "invalid_input"}), 400
+    EquipmentService.remove_equipment(current_user, equipment_id)
     return jsonify({"status": "removed"})
 

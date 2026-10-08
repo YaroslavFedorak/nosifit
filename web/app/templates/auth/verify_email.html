@@ -55,6 +55,7 @@
       <div class="auth-error shake">{{ error }}</div>
       {% endif %}
 
+      {% include "auth/_flashes.html" %}
       <form method="POST" class="auth-form" id="verify-form">
         <div class="field" data-anim>
           <label>{{ auth_t("verify.code") }}</label>
@@ -87,7 +88,7 @@
       </form>
     </div>
 
-    <script>
+    <script nonce="{{ csp_nonce() }}">
       // autofocus
       document.getElementById("code-input").focus();
 

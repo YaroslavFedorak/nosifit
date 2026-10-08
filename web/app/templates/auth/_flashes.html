@@ -1,0 +1,15 @@
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+<div class="auth-flashes" role="alert">
+  {% for category, message in messages %}
+  <div
+    class="auth-error auth-flash-{{ category }}"
+    style="margin: 0 0 12px; padding: 10px 14px; border-radius: 10px;
+           background: {{ '#fdecec' if category == 'error' else '#eaf4ff' }};
+           color: {{ '#b42318' if category == 'error' else '#1d4f91' }};
+           font-size: 14px; line-height: 1.4;"
+  >{{ message }}</div>
+  {% endfor %}
+</div>
+{% endif %}
+{% endwith %}
