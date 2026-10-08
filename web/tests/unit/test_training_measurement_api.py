@@ -12,6 +12,7 @@ from backend.app.training.plans.plan_generator import PlanGenerator
 from backend.app.training.training_analysis.recommendations_engine import (
     build_recommendations,
 )
+from web.app.routes.training.api_training import _local_today
 
 
 def login(client, email="test@example.com", password="password123"):
@@ -97,7 +98,7 @@ def test_mixed_workout_is_stored_and_loaded(client, user, catalog):
     assert (hang.sets_done, hang.reps_done, hang.duration_sec_done) == (2, None, 30)
     assert result["internal_load"] > 0
 
-    day = dt.date.today().strftime("%Y-%m-%d")
+    day = _local_today().strftime("%Y-%m-%d")
     details = client.get(f"/api/training/day/{day}").get_json()
     exercises = {item["slug"]: item for item in details["sessions"][0]["exercises"]}
 
@@ -142,7 +143,7 @@ def test_per_side_reaches_api_responses(client, user, catalog):
         ],
     )
 
-    day = dt.date.today().strftime("%Y-%m-%d")
+    day = _local_today().strftime("%Y-%m-%d")
     details = client.get(f"/api/training/day/{day}").get_json()
     per_side = {
         item["slug"]: item["per_side"] for item in details["sessions"][0]["exercises"]
