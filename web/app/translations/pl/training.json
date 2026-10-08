@@ -44,6 +44,20 @@
             "progression": "Wspiera progres",
             "lowFrequency": "Ta grupa mięśni jest trenowana zbyt rzadko",
             "highFrequency": "Uwzględnia wysoką częstotliwość treningów"
+        },
+        "training": {
+            "reasons": {
+                "belowTarget": "Poniżej tygodniowego celu",
+                "undertrained": "Stale poniżej docelowej objętości",
+                "weakPoint": "Pracuje nad twoim słabym punktem",
+                "focus": "Zgodne z twoim fokusem treningowym",
+                "frequency": "Nie trenowana od kilku dni",
+                "recovered": "Zregenerowana i gotowa",
+                "lowReadiness": "Wciąż regeneruje się po ostatnim treningu",
+                "moderateReadiness": "Częściowo zregenerowana — utrzymaj umiarkowaną objętość",
+                "accumulatedFatigue": "Zmęczenie narastało przez kilka dni",
+                "highVolume": "Już powyżej tygodniowego celu"
+            }
         }
     },
     "muscles": {
@@ -86,7 +100,10 @@
         "exerciseMetaDuration": "{sets}×{seconds} s, {load} kg",
         "exerciseMetaDurationNoLoad": "{sets}×{seconds} s",
         "error": "Błąd",
-        "loadError": "Nie udało się załadować danych."
+        "loadError": "Nie udało się załadować danych.",
+        "hardSets": "{sets} ciężkich serii",
+        "ariaHardSets": "{date}: {sets} ciężkich serii",
+        "setsShort": "{sets} serii"
     },
     "months": {
         "jan": "Sty",

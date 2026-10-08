@@ -5,10 +5,8 @@ from backend.app.models.training_session import (
     SessionExercise,
     TrainingSession,
 )
-from backend.app.services.training.load import (
-    TrainingLoadService,
-    calculate_session_load,
-)
+from backend.app.services.training.load import calculate_session_load
+from backend.app.services.training.model import TrainingModelService
 from backend.app.training.exercises.prescription import session_update_fields
 from backend.app.training.models.exercise import Exercise
 from backend.app.training.models.performance_state import PerformanceState
@@ -72,20 +70,14 @@ class TrainingSessionService:
         return session_exercise
 
     @staticmethod
-    def _compute_muscle_loads(session):
-        loads = {}
-        for exercise in session.exercises:
-            if exercise.load_done and exercise.rpe:
-                loads[str(exercise.exercise_id)] = float(exercise.load_done) * float(
-                    exercise.rpe
-                )
-        return loads
-
-    @staticmethod
     def _compute_session_load(session, user):
+        # internal_load: legacy multiplier-based number, still read by the
+        # dashboard session score; removed once that consumer moves.
         internal_load = calculate_session_load(session, user)
         session.internal_load = internal_load
-        session.muscle_loads = TrainingSessionService._compute_muscle_loads(session)
+        # The muscle_loads column now stores effective sets per muscle (v2
+        # model). It used to hold exercise ids by mistake.
+        session.muscle_loads = TrainingModelService.session_summary(session)["muscle_sets"]
         return internal_load
 
     @staticmethod

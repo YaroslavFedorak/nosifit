@@ -23,7 +23,8 @@
         "sleep": "Sen",
         "load": "Obciążenie",
         "habits": "Nawyki",
-        "training": "Trening"
+        "training": "Trening",
+        "trainingReadiness": "Готовность к тренировке"
     },
     "time": {
         "sleep": "{hours} godz. {minutes} min"
@@ -344,5 +345,11 @@
             "midnight_hint": "Sen przechodzący przez północ zostanie wykryty automatycznie.",
             "save": "Zapisz sen"
         }
+    },
+    "readiness": {
+        "low": "Низкая готовность",
+        "moderate": "Умеренная готовность",
+        "ready": "Готова",
+        "recovered": "Восстановлена"
     }
 }

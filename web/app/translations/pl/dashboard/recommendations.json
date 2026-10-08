@@ -1,4 +1,4 @@
-﻿{
+{
     "recommendations": {
         "title": "Zalecenia",
         "categories": {
@@ -13,12 +13,20 @@
         "training": {
             "reasons": {
                 "weakMuscle": "Poprawia słabą grupę mięśniową",
-                "weakPoint": "Ukierunkowuje trening na słaby punkt",
+                "weakPoint": "Pracuje nad twoim słabym punktem",
                 "weakPattern": "Poprawia słaby wzorzec ruchowy",
                 "regression": "Pomaga odwrócić regres",
                 "plateau": "Pomaga przełamać stagnację",
-                "frequency": "Wspiera niedotrenowaną grupę mięśniową",
-                "diversity": "Zwiększa różnorodność treningu"
+                "frequency": "Nie trenowana od kilku dni",
+                "diversity": "Zwiększa różnorodność treningu",
+                "belowTarget": "Poniżej tygodniowego celu",
+                "undertrained": "Stale poniżej docelowej objętości",
+                "focus": "Zgodne z twoim fokusem treningowym",
+                "recovered": "Zregenerowana i gotowa",
+                "lowReadiness": "Wciąż regeneruje się po ostatnim treningu",
+                "moderateReadiness": "Częściowo zregenerowana — utrzymaj umiarkowaną objętość",
+                "accumulatedFatigue": "Zmęczenie narastało przez kilka dni",
+                "highVolume": "Już powyżej tygodniowego celu"
             },
             "summary": {
                 "recovery": "Warto nadać priorytet regeneracji",

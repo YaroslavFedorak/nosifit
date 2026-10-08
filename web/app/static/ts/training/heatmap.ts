@@ -560,22 +560,16 @@ function showHeatmapTooltip(
     const tooltip =
         getHeatmapTooltip();
 
-    const percent =
+    const sets =
         Number(
-            cell.dataset.percent
-        ) || 0;
-
-    const load =
-        Number(
-            cell.dataset.load
+            cell.dataset.hardSets
         ) || 0;
 
     tooltip.textContent =
         t(
-            "heatmap.load",
+            "heatmap.hardSets",
             {
-                percent,
-                load
+                sets
             }
         );
 
@@ -670,8 +664,7 @@ function createEmptyDay(
     return {
         date,
         level: 0,
-        percent: 0,
-        load: 0,
+        hard_sets: 0,
         is_today: false
     };
 }
@@ -763,14 +756,9 @@ function renderHeatmap(
                 )
             );
 
-        const percent =
+        const sets =
             Number(
-                day.percent
-            ) || 0;
-
-        const load =
-            Number(
-                day.load
+                day.hard_sets
             ) || 0;
 
         const todayClass =
@@ -784,16 +772,15 @@ function renderHeatmap(
                     class="heatmap-cell${todayClass}"
                     data-date="${dateString}"
                     data-level="${level}"
-                    data-percent="${percent}"
-                    data-load="${load}"
+                    data-hard-sets="${sets}"
                     role="gridcell"
                     aria-label="${t(
-                        "heatmap.ariaLabel",
+                        "heatmap.ariaHardSets",
                         {
                             date: formatDate(
                                 current
                             ),
-                            percent
+                            sets
                         }
                     )}"
                 ></div>
@@ -878,9 +865,9 @@ function renderCalendarMonth(): void {
                             )
                         );
 
-                    const percent =
+                    const sets =
                         Number(
-                            day.percent
+                            day.hard_sets
                         ) || 0;
 
                     return `
@@ -892,7 +879,7 @@ function renderCalendarMonth(): void {
                                 ${date.getDate()}
                             </div>
                             <div class="tr-calendar-load">
-                                ${percent}%
+                                ${t("heatmap.setsShort", { sets })}
                             </div>
                         </div>
                     `;

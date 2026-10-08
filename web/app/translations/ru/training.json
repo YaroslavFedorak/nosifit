@@ -44,6 +44,20 @@
             "progression": "Поддерживает прогресс",
             "lowFrequency": "Эта мышечная группа тренируется слишком редко",
             "highFrequency": "Учитывает высокую частоту тренировок"
+        },
+        "training": {
+            "reasons": {
+                "belowTarget": "Ниже недельной цели",
+                "undertrained": "Систематически ниже целевого объёма",
+                "weakPoint": "Работает над вашей слабой зоной",
+                "focus": "Соответствует вашему тренировочному фокусу",
+                "frequency": "Не тренировалась последние несколько дней",
+                "recovered": "Восстановлена и готова",
+                "lowReadiness": "Ещё восстанавливается после недавней тренировки",
+                "moderateReadiness": "Частично восстановлена — держите умеренный объём",
+                "accumulatedFatigue": "Усталость накопилась за несколько дней",
+                "highVolume": "Уже выше недельной цели"
+            }
         }
     },
     "muscles": {
@@ -86,7 +100,10 @@
         "exerciseMetaDuration": "{sets}×{seconds} с, {load} кг",
         "exerciseMetaDurationNoLoad": "{sets}×{seconds} с",
         "error": "Ошибка",
-        "loadError": "Не удалось загрузить данные."
+        "loadError": "Не удалось загрузить данные.",
+        "hardSets": "{sets} тяжёлых подходов",
+        "ariaHardSets": "{date}: {sets} тяжёлых подходов",
+        "setsShort": "{sets} подх."
     },
     "months": {
         "jan": "Янв",

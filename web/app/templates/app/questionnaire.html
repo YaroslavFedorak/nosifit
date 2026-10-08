@@ -2,13 +2,13 @@
 
 <h2 class="page-title">{{ app_t("questionnaire.heading") }}</h2>
 
-<form method="POST" class="form-card">
+<form method="POST" action="{{ url_for('questionnaire.save_questionnaire') }}" class="form-card">
   <div class="form-section">
     <h3>{{ app_t("questionnaire.environment") }}</h3>
     <select name="environment" required>
-      <option value="gym">{{ app_t("questionnaire.gym") }}</option>
-      <option value="home">{{ app_t("questionnaire.home") }}</option>
-      <option value="outdoor">{{ app_t("questionnaire.outdoor") }}</option>
+      <option value="gym" {% if (user.profile.training_location if user.profile else user.environment) == "gym" %}selected{% endif %}>{{ app_t("questionnaire.gym") }}</option>
+      <option value="home" {% if (user.profile.training_location if user.profile else user.environment) == "home" %}selected{% endif %}>{{ app_t("questionnaire.home") }}</option>
+      <option value="outdoor" {% if (user.profile.training_location if user.profile else user.environment) == "outdoor" %}selected{% endif %}>{{ app_t("questionnaire.outdoor") }}</option>
     </select>
   </div>
 
@@ -42,16 +42,16 @@
     <h3>{{ app_t("questionnaire.strong") }}</h3>
 
     <label
-      ><input type="checkbox" name="strong_points" value="chest" /> {{ app_t("questionnaire.chest") }}</label
+      ><input type="checkbox" name="strong_points" value="chest" {% if "chest" in (user.strong_points or []) %}checked{% endif %} /> {{ app_t("questionnaire.chest") }}</label
     >
     <label
-      ><input type="checkbox" name="strong_points" value="back" /> {{ app_t("questionnaire.back") }}</label
+      ><input type="checkbox" name="strong_points" value="back" {% if "back" in (user.strong_points or []) %}checked{% endif %} /> {{ app_t("questionnaire.back") }}</label
     >
     <label
-      ><input type="checkbox" name="strong_points" value="legs" /> {{ app_t("questionnaire.legs") }}</label
+      ><input type="checkbox" name="strong_points" value="legs" {% if "legs" in (user.strong_points or []) %}checked{% endif %} /> {{ app_t("questionnaire.legs") }}</label
     >
     <label
-      ><input type="checkbox" name="strong_points" value="core" /> {{ app_t("questionnaire.core") }}</label
+      ><input type="checkbox" name="strong_points" value="core" {% if "core" in (user.strong_points or []) %}checked{% endif %} /> {{ app_t("questionnaire.core") }}</label
     >
   </div>
 
@@ -59,18 +59,18 @@
     <h3>{{ app_t("questionnaire.weak") }}</h3>
 
     <label
-      ><input type="checkbox" name="weak_points" value="chest" /> {{ app_t("questionnaire.chest") }}</label
+      ><input type="checkbox" name="weak_points" value="chest" {% if "chest" in (user.weak_points or []) %}checked{% endif %} /> {{ app_t("questionnaire.chest") }}</label
     >
     <label
-      ><input type="checkbox" name="weak_points" value="back" /> {{ app_t("questionnaire.back") }}</label
+      ><input type="checkbox" name="weak_points" value="back" {% if "back" in (user.weak_points or []) %}checked{% endif %} /> {{ app_t("questionnaire.back") }}</label
     >
     <label
-      ><input type="checkbox" name="weak_points" value="legs" /> {{ app_t("questionnaire.legs") }}</label
+      ><input type="checkbox" name="weak_points" value="legs" {% if "legs" in (user.weak_points or []) %}checked{% endif %} /> {{ app_t("questionnaire.legs") }}</label
     >
     <label
-      ><input type="checkbox" name="weak_points" value="core" /> {{ app_t("questionnaire.core") }}</label>
+      ><input type="checkbox" name="weak_points" value="core" {% if "core" in (user.weak_points or []) %}checked{% endif %} /> {{ app_t("questionnaire.core") }}</label>
     <label
-      ><input type="checkbox" name="weak_points" value="lower_back" />
+      ><input type="checkbox" name="weak_points" value="lower_back" {% if "lower_back" in (user.weak_points or []) %}checked{% endif %} />
       {{ app_t("questionnaire.lowerBack") }}</label
     >
   </div>

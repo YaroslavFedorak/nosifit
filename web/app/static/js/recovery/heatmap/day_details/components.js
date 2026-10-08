@@ -201,15 +201,17 @@ export function createDailySummary(data) {
         null;
     const sleep = data.sleep?.quality_score ??
         null;
-    const training = data.training?.load ??
+    const training = data.training?.readiness_score ??
+        null;
+    const trainingLevel = data.training?.readiness_level ??
         null;
     const habits = data.habits?.score ??
         null;
     wrapper.appendChild(createSummaryCard(recovery_t("summary.recovery"), formatScore(recovery), getStatus(recovery), getBarFill(recovery)));
     wrapper.appendChild(createSummaryCard(recovery_t("summary.sleep"), formatScore(sleep), getStatus(sleep), getBarFill(sleep)));
-    wrapper.appendChild(createSummaryCard(recovery_t("summary.load"), training == null
+    wrapper.appendChild(createSummaryCard(recovery_t("summary.trainingReadiness"), trainingLevel == null
         ? "—"
-        : Math.round(training), training == null
+        : recovery_t(`readiness.${trainingLevel}`), training == null
         ? recovery_t("status.no_data")
         : recovery_t("summary.training"), training == null
         ? 0

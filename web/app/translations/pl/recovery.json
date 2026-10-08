@@ -23,7 +23,8 @@
         "sleep": "Сон",
         "load": "Нагрузка",
         "habits": "Привычки",
-        "training": "Тренировка"
+        "training": "Тренировка",
+        "trainingReadiness": "Gotowość treningowa"
     },
     "time": {
         "sleep": "{hours} ч {minutes} мин"
@@ -344,5 +345,11 @@
             "midnight_hint": "Сон через полночь будет определён автоматически.",
             "save": "Сохранить сон"
         }
+    },
+    "readiness": {
+        "low": "Niska gotowość",
+        "moderate": "Umiarkowana gotowość",
+        "ready": "Gotowa",
+        "recovered": "Zregenerowana"
     }
 }

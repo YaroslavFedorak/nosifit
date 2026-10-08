@@ -440,7 +440,8 @@ export function createDailySummary(
             quality_score?: number | null;
         };
         training?: {
-            load?: number | null;
+            readiness_score?: number | null;
+            readiness_level?: string | null;
         };
         habits?: {
             score?: number | null;
@@ -464,7 +465,11 @@ export function createDailySummary(
         null;
 
     const training =
-        data.training?.load ??
+        data.training?.readiness_score ??
+        null;
+
+    const trainingLevel =
+        data.training?.readiness_level ??
         null;
 
     const habits =
@@ -508,12 +513,12 @@ export function createDailySummary(
     wrapper.appendChild(
         createSummaryCard(
             recovery_t(
-                "summary.load"
+                "summary.trainingReadiness"
             ),
-            training == null
+            trainingLevel == null
                 ? "—"
-                : Math.round(
-                    training
+                : recovery_t(
+                    `readiness.${trainingLevel}`
                 ),
             training == null
                 ? recovery_t(

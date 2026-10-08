@@ -29,9 +29,15 @@ function translateMuscle(value) {
         : capitalize(value);
 }
 function translateReason(value) {
-    const key = String(value || "")
-        .trim()
-        .toLowerCase();
+    const raw = String(value || "").trim();
+    // The engine sends i18n keys (recommendations.training.reasons.*).
+    if (raw.startsWith("recommendations.")) {
+        const translated = t(raw);
+        if (translated !== raw) {
+            return translated;
+        }
+    }
+    const key = raw.toLowerCase();
     const reasonKeys = {
         "improves weak muscle group": "recommendations.reasons.improvesWeakMuscleGroup",
         "improves weak movement pattern": "recommendations.reasons.improvesWeakMovementPattern",

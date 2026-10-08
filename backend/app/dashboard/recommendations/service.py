@@ -133,7 +133,7 @@ class DashboardRecommendationService:
     @staticmethod
     def _training_candidates(
         user: Any,
-        sessions: list,
+        sessions: Optional[list],
         target_day: date,
     ) -> list[Recommendation]:
         try:
@@ -348,13 +348,7 @@ class DashboardRecommendationService:
 
             user = User.query.get(user_id)
 
-        if sessions is None:
-            from backend.app.models.training_session import TrainingSession
-
-            sessions = TrainingSession.query.filter(
-                TrainingSession.user_id == user_id,
-            ).all()
-
+        # sessions=None lets the training model load its own history window.
         training = DashboardRecommendationService._select_category(
             DashboardRecommendationService._training_candidates(
                 user=user,

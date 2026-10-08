@@ -98,7 +98,11 @@ export interface RecoveryDayDetails {
         wake_time: string | null;
     };
     training: {
-        load: number | null;
+        // Readiness of recently trained muscles (0-100, internal) and its level.
+        readiness_score: number | null;
+        readiness_level: "low" | "moderate" | "ready" | "recovered" | null;
+        hard_sets: number;
+        session_training_stress_proxy: number;
         sessions: number;
         exercises: RecoveryTrainingExercise[];
     };
