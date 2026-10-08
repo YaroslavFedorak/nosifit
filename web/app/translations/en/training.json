@@ -61,7 +61,14 @@
         "biceps": "Biceps",
         "core": "Core",
         "legs": "Legs",
-        "lowerBack": "Lower back"
+        "lowerBack": "Lower back",
+        "lats": "Lats",
+        "upperBack": "Upper back",
+        "forearms": "Forearms",
+        "hamstrings": "Hamstrings",
+        "calves": "Calves",
+        "adductors": "Adductors",
+        "neck": "Neck"
     },
     "heatmap": {
         "yearActivity": "Activity over the year",
@@ -76,6 +83,8 @@
         "session": "Session",
         "exerciseMeta": "{sets}×{reps}, {load} kg",
         "exerciseMetaNoLoad": "{sets}×{reps}",
+        "exerciseMetaDuration": "{sets}×{seconds} s, {load} kg",
+        "exerciseMetaDurationNoLoad": "{sets}×{seconds} s",
         "error": "Error",
         "loadError": "Failed to load data."
     },
@@ -148,6 +157,8 @@
         "execution": "Exercise details",
         "sets": "Sets",
         "reps": "Reps",
+        "seconds": "Seconds",
+        "perSide": "/ side",
         "weight": "Weight (kg)",
         "rpe": "RPE",
         "fallback": "Exercise"

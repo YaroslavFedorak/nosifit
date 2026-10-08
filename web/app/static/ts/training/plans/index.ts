@@ -1,4 +1,8 @@
 import {
+    defaultPrescription
+} from "../measurement.js";
+
+import {
     initState,
     state
 } from "./state.js";
@@ -110,6 +114,9 @@ function syncPlanToSession(): void {
                 reps:
                     item.reps,
 
+                duration_sec:
+                    item.duration_sec,
+
                 load:
                     item.load,
 
@@ -193,12 +200,18 @@ export function initPlanModal(): void {
         dom.addBtn.onclick = () => {
             openExercisePicker(
                 exercise => {
+                    const prescription =
+                        defaultPrescription(
+                            exercise
+                        );
+
                     state.days[
                         state.currentDay
                     ].push({
                         exercise,
-                        sets: 3,
-                        reps: "8–12",
+                        sets: prescription.sets,
+                        reps: prescription.reps,
+                        duration_sec: prescription.duration_sec,
                         load: 0
                     });
 

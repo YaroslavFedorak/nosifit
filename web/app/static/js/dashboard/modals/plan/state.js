@@ -1,3 +1,4 @@
+import { defaultPrescription, isDurationExercise } from "../../../training/measurement.js";
 const DEFAULT_DAY = "mon";
 export const state = {
     planId: null,
@@ -11,12 +12,23 @@ function toNonNegativeNumber(value, fallback = 0) {
         : fallback;
 }
 function normalizeExercise(exercise = {}) {
+    const source = exercise.exercise ??
+        exercise;
+    const defaults = defaultPrescription(source);
+    const duration = isDurationExercise(source);
     return {
-        exercise: exercise.exercise ??
-            exercise,
-        sets: toNonNegativeNumber(exercise.sets, 3),
-        reps: String(exercise.reps ??
-            "8-12"),
+        exercise: source,
+        sets: toNonNegativeNumber(exercise.sets ??
+            source.sets, defaults.sets),
+        reps: duration
+            ? null
+            : String(exercise.reps ??
+                source.reps ??
+                defaults.reps),
+        duration_sec: duration
+            ? toNonNegativeNumber(exercise.duration_sec ??
+                source.duration_sec, defaults.duration_sec ?? 0) || defaults.duration_sec
+            : null,
         load: toNonNegativeNumber(exercise.load ??
             exercise.weight, 0)
     };
@@ -65,10 +77,12 @@ export function replaceExercise(index, exercise) {
     if (!current) {
         return;
     }
-    exercises[index] = {
-        ...current,
-        exercise
-    };
+    exercises[index] =
+        normalizeExercise({
+            exercise,
+            sets: current.sets,
+            load: current.load
+        });
 }
 export function removeExercise(index) {
     const exercises = state.days[state.currentDay];

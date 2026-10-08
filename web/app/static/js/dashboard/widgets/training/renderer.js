@@ -1,6 +1,11 @@
 import { el } from "../../utils/dom.js";
 import { dashboard_t, exercise_t } from "../../../i18n/index.js";
 import * as state from "./state.js";
+function withSide(exercise, label) {
+    return exercise.per_side
+        ? `${label} ${dashboard_t("workout.fields.perSide")}`
+        : label;
+}
 function getExerciseName(exercise) {
     const slug = exercise.slug ??
         exercise.exerciseSlug ??
@@ -87,7 +92,9 @@ function createExerciseRow(exercise) {
         })
     ]));
     row.appendChild(createInput(exercise, "sets", exercise.sets, dashboard_t("workout.fields.sets")));
-    row.appendChild(createInput(exercise, "reps", exercise.reps, dashboard_t("workout.fields.reps")));
+    row.appendChild(exercise.measurement_type === "duration"
+        ? createInput(exercise, "duration_sec", exercise.duration_sec, withSide(exercise, dashboard_t("workout.fields.seconds")))
+        : createInput(exercise, "reps", exercise.reps, withSide(exercise, dashboard_t("workout.fields.reps"))));
     row.appendChild(createInput(exercise, "weight", exercise.weight, dashboard_t("workout.fields.weight")));
     row.appendChild(createCheckbox(exercise));
     return row;

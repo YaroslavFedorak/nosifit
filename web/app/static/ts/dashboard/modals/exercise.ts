@@ -7,6 +7,10 @@ import {
     exercise_t
 } from "../../i18n/index.js";
 
+import {
+    defaultPrescription
+} from "../../training/measurement.js";
+
 interface ExerciseState {
     exercises: NormalizedExercise[];
     category: string;
@@ -304,12 +308,15 @@ function matchesCategory(
         return (
             pattern.includes("squat") ||
             pattern.includes("lunge") ||
+            pattern.includes("hinge") ||
             muscles.some(
                 muscle =>
                     muscle.includes("quad") ||
                     muscle.includes("glute") ||
                     muscle.includes("hamstring") ||
-                    muscle.includes("calf")
+                    muscle.includes("adductor") ||
+                    muscle.includes("calf") ||
+                    muscle.includes("calves")
             )
         );
     }
@@ -318,8 +325,11 @@ function matchesCategory(
         return (
             pattern.includes("core") ||
             pattern.includes("abs") ||
+            pattern.startsWith("anti-") ||
+            pattern === "rotation" ||
             muscles.some(
                 muscle =>
+                    muscle === "core" ||
                     muscle.includes("abs") ||
                     muscle.includes("oblique")
             )
@@ -469,6 +479,11 @@ function renderExercises(): void {
                         return;
                     }
 
+                    const prescription =
+                        defaultPrescription(
+                            exercise.original
+                        );
+
                     state.callback({
                         databaseId:
                             exercise.databaseId,
@@ -494,9 +509,20 @@ function renderExercises(): void {
                         equipment:
                             exercise.equipment,
 
-                        sets: 3,
+                        measurement_type:
+                            exercise.original
+                                ?.measurement_type ??
+                            "reps",
 
-                        reps: "10",
+                        sets: prescription.sets,
+
+                        reps: prescription.reps,
+
+                        duration_sec:
+                            prescription.duration_sec,
+
+                        per_side:
+                            prescription.per_side,
 
                         weight: 0,
 

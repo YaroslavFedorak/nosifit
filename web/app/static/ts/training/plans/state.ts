@@ -1,3 +1,8 @@
+import {
+    defaultPrescription,
+    isDurationExercise
+} from "../measurement.js";
+
 import type {
     PlanDayKey,
     PlanDays,
@@ -67,7 +72,19 @@ export function normalize(
             .map(item => ({
                 exercise: item.exercise,
                 sets: Number(item.sets) || 0,
-                reps: item.reps || "8–12",
+                ...(isDurationExercise(item.exercise)
+                    ? {
+                        reps: null,
+                        duration_sec:
+                            Number(item.duration_sec) ||
+                            defaultPrescription(item.exercise).duration_sec
+                    }
+                    : {
+                        reps:
+                            item.reps ||
+                            defaultPrescription(item.exercise).reps,
+                        duration_sec: null
+                    }),
                 load: Number(item.load) || 0
             }));
     });

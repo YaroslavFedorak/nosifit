@@ -62,7 +62,7 @@ function parseRange(value) {
         ]
         : [8, 12];
 }
-export function createRepsField(value, onChange) {
+export function createRepsField(value, onChange, label = dashboard_t("plan.fields.reps")) {
     const field = document.createElement("div");
     field.className =
         "db-plan-field";
@@ -97,6 +97,6 @@ export function createRepsField(value, onChange) {
         const [from, to] = parseRange(input.value);
         update(from, to);
     });
-    field.append(createLabel(dashboard_t("plan.fields.reps"), ICONS.exercise), control);
+    field.append(createLabel(label, ICONS.exercise), control);
     return field;
 }

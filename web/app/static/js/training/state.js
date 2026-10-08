@@ -1,5 +1,6 @@
 import { trainingStore } from "./store.js";
 import { t } from "../i18n/index.js";
+import { defaultPrescription, isDurationExercise } from "./measurement.js";
 const STORAGE_KEY = "dashboard_training_exercises";
 const STORAGE_DATE_KEY = "dashboard_training_date";
 function getTodayKey() {
@@ -61,7 +62,10 @@ function normalizeExercise(item) {
         exercise,
         sets: Number(item.sets) || 0,
         reps: item.reps ??
-            "8-12",
+            null,
+        duration_sec: item.duration_sec != null
+            ? Number(item.duration_sec) || null
+            : null,
         load,
         weight: load,
         rpe: item.rpe != null
@@ -111,6 +115,8 @@ export function persistWorkout(exercises) {
         exercise: item.exercise,
         sets: item.sets,
         reps: item.reps,
+        duration_sec: item.duration_sec ??
+            null,
         load: item.load,
         weight: item.load,
         rpe: null,
@@ -130,13 +136,35 @@ export function persistWorkout(exercises) {
 export function initDailyState() {
     const saved = getDailyExercises();
     trainingStore.workout =
-        saved.map(item => ({
-            exercise: item.exercise,
-            sets: item.sets,
-            reps: item.reps,
-            load: item.load,
-            done: item.done ||
-                item.completed,
-            fromPlan: item.fromPlan
-        }));
+        saved.map(item => {
+            // Items saved before measurement types existed carry a stale
+            // exercise object; refresh it from the catalog so duration
+            // exercises get seconds instead of a leftover reps value.
+            const catalogExercise = trainingStore.exercises.find(exercise => String(exercise.id) ===
+                String(item.exercise?.id));
+            const exercise = catalogExercise
+                ? {
+                    ...item.exercise,
+                    ...catalogExercise
+                }
+                : item.exercise;
+            const defaults = defaultPrescription(exercise);
+            const duration = isDurationExercise(exercise);
+            return {
+                exercise,
+                sets: item.sets,
+                reps: duration
+                    ? null
+                    : item.reps ??
+                        defaults.reps,
+                duration_sec: duration
+                    ? item.duration_sec ??
+                        defaults.duration_sec
+                    : null,
+                load: item.load,
+                done: item.done ||
+                    item.completed,
+                fromPlan: item.fromPlan
+            };
+        });
 }

@@ -37,6 +37,10 @@ import {
     persistWorkout
 } from "./state.js";
 
+import {
+    defaultPrescription
+} from "./measurement.js";
+
 document.addEventListener(
     "DOMContentLoaded",
     async () => {
@@ -123,10 +127,16 @@ document.addEventListener(
                             return;
                         }
 
+                        const prescription =
+                            defaultPrescription(
+                                exercise
+                            );
+
                         trainingStore.workout.push({
                             exercise,
-                            sets: 3,
-                            reps: "8-12",
+                            sets: prescription.sets,
+                            reps: prescription.reps,
+                            duration_sec: prescription.duration_sec,
                             load: 0,
                             done: false,
                             fromPlan: false

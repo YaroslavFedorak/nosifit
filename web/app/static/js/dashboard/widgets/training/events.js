@@ -60,7 +60,8 @@ export function bind(container, options = {}) {
         }
         let value = input.value.trim();
         if (field === "sets" ||
-            field === "weight") {
+            field === "weight" ||
+            field === "duration_sec") {
             value =
                 Number(value) || 0;
         }

@@ -1,13 +1,17 @@
 interface TrainingExercise {
     id: string;
     databaseId: string | null;
+    slug: string | null;
     name: string;
     movement_pattern: string;
     muscles_primary: string[];
     muscles_secondary: string[];
     equipment: string[];
+    measurement_type: "reps" | "duration";
     sets: number;
     reps: any;
+    duration_sec: number | null;
+    per_side: boolean;
     weight: number;
     rpe: number | null;
     completed: boolean;
@@ -173,6 +177,7 @@ function detectCompleted(
     if (
         exercise.sets_done !== undefined ||
         exercise.reps_done !== undefined ||
+        exercise.duration_sec_done !== undefined ||
         exercise.load_done !== undefined
     ) {
         return true;
@@ -197,6 +202,11 @@ function normalizeExercise(
             )
             : null;
 
+    const isDuration =
+        (exercise.measurement_type ??
+            exercise.exercise?.measurement_type) ===
+        "duration";
+
     return {
         id:
             typeof exercise.id === "string"
@@ -204,6 +214,12 @@ function normalizeExercise(
                 : createLocalId(),
 
         databaseId,
+
+        slug:
+            exercise.slug ??
+            exercise.exercise?.slug ??
+            exercise.original?.slug ??
+            null,
 
         name:
             getExerciseName(
@@ -235,6 +251,11 @@ function normalizeExercise(
                 exercise.original?.equipment
             ),
 
+        measurement_type:
+            isDuration
+                ? "duration"
+                : "reps",
+
         sets:
             normalizeNumber(
                 exercise.sets ??
@@ -243,9 +264,27 @@ function normalizeExercise(
             ) ?? 3,
 
         reps:
-            exercise.reps ??
-            exercise.reps_done ??
-            "10",
+            isDuration
+                ? null
+                : exercise.reps ??
+                  exercise.reps_done ??
+                  "10",
+
+        duration_sec:
+            isDuration
+                ? normalizeNumber(
+                    exercise.duration_sec ??
+                    exercise.duration_sec_done,
+                    null
+                )
+                : null,
+
+        per_side:
+            Boolean(
+                exercise.per_side ??
+                exercise.exercise?.prescription?.per_side ??
+                exercise.original?.prescription?.per_side
+            ),
 
         weight:
             normalizeNumber(

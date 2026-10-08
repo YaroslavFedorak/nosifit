@@ -14,6 +14,24 @@ import {
 
 import { PlanExercise } from "../state.js";
 
+import {
+    isDurationExercise,
+    isPerSide
+} from "../../../../training/measurement.js";
+
+function withSide(
+    item: PlanExercise,
+    label: string
+): string {
+    const perSide =
+        item.exercise?.per_side ??
+        isPerSide(item.exercise);
+
+    return perSide
+        ? `${label} ${dashboard_t("workout.fields.perSide")}`
+        : label;
+}
+
 interface ExerciseCardActions {
     replace: (
         index: number
@@ -197,13 +215,36 @@ export function createExerciseCard(
         "db-plan-card-body";
 
     body.append(
-        createRepsField(
-            item.reps,
-            value => {
-                item.reps =
-                    value;
-            }
-        ),
+        isDurationExercise(
+            item.exercise
+        )
+            ? createNumberField(
+                withSide(
+                    item,
+                    dashboard_t(
+                        "plan.fields.seconds"
+                    )
+                ),
+                ICONS.exercise,
+                item.duration_sec ?? 0,
+                value => {
+                    item.duration_sec =
+                        value;
+                }
+            )
+            : createRepsField(
+                item.reps ?? "",
+                value => {
+                    item.reps =
+                        value;
+                },
+                withSide(
+                    item,
+                    dashboard_t(
+                        "plan.fields.reps"
+                    )
+                )
+            ),
         createNumberField(
             dashboard_t(
                 "plan.fields.sets"

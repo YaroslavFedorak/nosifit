@@ -11,6 +11,7 @@ import { renderRecommendations } from "./recommendations.js";
 import { initHeatmap } from "./heatmap.js";
 import { initStrengthTest } from "./strength_test.js";
 import { initDailyState, persistWorkout } from "./state.js";
+import { defaultPrescription } from "./measurement.js";
 document.addEventListener("DOMContentLoaded", async () => {
     await Promise.all([
         loadTranslations("training"),
@@ -64,10 +65,12 @@ document.addEventListener("DOMContentLoaded", async () => {
                 if (exists) {
                     return;
                 }
+                const prescription = defaultPrescription(exercise);
                 trainingStore.workout.push({
                     exercise,
-                    sets: 3,
-                    reps: "8-12",
+                    sets: prescription.sets,
+                    reps: prescription.reps,
+                    duration_sec: prescription.duration_sec,
                     load: 0,
                     done: false,
                     fromPlan: false

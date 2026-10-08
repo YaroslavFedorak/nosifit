@@ -1,9 +1,15 @@
+import {
+    defaultPrescription,
+    isDurationExercise
+} from "../../../training/measurement.js";
+
 const DEFAULT_DAY = "mon";
 
 export interface PlanExercise {
     exercise: any;
     sets: number;
-    reps: string;
+    reps: string | null;
+    duration_sec: number | null;
     load: number;
 }
 
@@ -44,22 +50,48 @@ function toNonNegativeNumber(
 function normalizeExercise(
     exercise: any = {}
 ): PlanExercise {
+    const source =
+        exercise.exercise ??
+        exercise;
+
+    const defaults =
+        defaultPrescription(
+            source
+        );
+
+    const duration =
+        isDurationExercise(
+            source
+        );
+
     return {
         exercise:
-            exercise.exercise ??
-            exercise,
+            source,
 
         sets:
             toNonNegativeNumber(
-                exercise.sets,
-                3
+                exercise.sets ??
+                source.sets,
+                defaults.sets
             ),
 
         reps:
-            String(
-                exercise.reps ??
-                "8-12"
-            ),
+            duration
+                ? null
+                : String(
+                    exercise.reps ??
+                    source.reps ??
+                    defaults.reps
+                ),
+
+        duration_sec:
+            duration
+                ? toNonNegativeNumber(
+                    exercise.duration_sec ??
+                    source.duration_sec,
+                    defaults.duration_sec ?? 0
+                ) || defaults.duration_sec
+                : null,
 
         load:
             toNonNegativeNumber(
@@ -164,10 +196,12 @@ export function replaceExercise(
         return;
     }
 
-    exercises[index] = {
-        ...current,
-        exercise
-    };
+    exercises[index] =
+        normalizeExercise({
+            exercise,
+            sets: current.sets,
+            load: current.load
+        });
 }
 
 export function removeExercise(

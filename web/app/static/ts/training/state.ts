@@ -11,6 +11,11 @@ import {
     t
 } from "../i18n/index.js";
 
+import {
+    defaultPrescription,
+    isDurationExercise
+} from "./measurement.js";
+
 const STORAGE_KEY =
     "dashboard_training_exercises";
 
@@ -23,7 +28,8 @@ export type DailyTrainingExercise = {
     name: string;
     exercise: Exercise;
     sets: number;
-    reps: string | number;
+    reps: string | number | null;
+    duration_sec: number | null;
     load: number;
     weight: number;
     rpe: number | null;
@@ -142,7 +148,13 @@ function normalizeExercise(
             ) || 0,
         reps:
             item.reps ??
-            "8-12",
+            null,
+        duration_sec:
+            item.duration_sec != null
+                ? Number(
+                    item.duration_sec
+                ) || null
+                : null,
         load,
         weight: load,
         rpe:
@@ -242,6 +254,9 @@ export function persistWorkout(
                         item.sets,
                     reps:
                         item.reps,
+                    duration_sec:
+                        item.duration_sec ??
+                        null,
                     load:
                         item.load,
                     weight:
@@ -285,19 +300,56 @@ export function initDailyState(): void {
         getDailyExercises();
 
     trainingStore.workout =
-        saved.map(item => ({
-            exercise:
-                item.exercise,
-            sets:
-                item.sets,
-            reps:
-                item.reps,
-            load:
-                item.load,
-            done:
-                item.done ||
-                item.completed,
-            fromPlan:
-                item.fromPlan
-        }));
+        saved.map(item => {
+            // Items saved before measurement types existed carry a stale
+            // exercise object; refresh it from the catalog so duration
+            // exercises get seconds instead of a leftover reps value.
+            const catalogExercise =
+                trainingStore.exercises.find(
+                    exercise =>
+                        String(exercise.id) ===
+                        String(item.exercise?.id)
+                );
+
+            const exercise =
+                catalogExercise
+                    ? {
+                        ...item.exercise,
+                        ...catalogExercise
+                    }
+                    : item.exercise;
+
+            const defaults =
+                defaultPrescription(
+                    exercise
+                );
+
+            const duration =
+                isDurationExercise(
+                    exercise
+                );
+
+            return {
+                exercise,
+                sets:
+                    item.sets,
+                reps:
+                    duration
+                        ? null
+                        : item.reps ??
+                          defaults.reps,
+                duration_sec:
+                    duration
+                        ? item.duration_sec ??
+                          defaults.duration_sec
+                        : null,
+                load:
+                    item.load,
+                done:
+                    item.done ||
+                    item.completed,
+                fromPlan:
+                    item.fromPlan
+            };
+        });
 }

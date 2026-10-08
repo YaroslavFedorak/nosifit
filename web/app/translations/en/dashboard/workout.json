@@ -10,6 +10,8 @@
         "fields": {
             "sets": "sets",
             "reps": "reps",
+            "seconds": "sec",
+            "perSide": "/ side",
             "weight": "kg"
         },
         "exercise": {
@@ -71,6 +73,7 @@
         },
         "fields": {
             "reps": "Reps",
+            "seconds": "Seconds",
             "sets": "Sets",
             "weight": "Weight (kg)"
         },

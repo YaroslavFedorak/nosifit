@@ -22,11 +22,7 @@ function translateMuscle(value) {
     const key = String(value || "")
         .trim()
         .toLowerCase();
-    const translationKey = key === "hip-flexors"
-        ? "muscles.hipFlexors"
-        : key === "lower-back"
-            ? "muscles.lowerBack"
-            : `muscles.${key}`;
+    const translationKey = `muscles.${key.replace(/-([a-z])/g, (_, letter) => letter.toUpperCase())}`;
     const translated = t(translationKey);
     return translated !== translationKey
         ? translated

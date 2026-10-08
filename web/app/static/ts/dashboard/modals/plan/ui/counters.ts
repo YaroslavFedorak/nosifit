@@ -165,7 +165,8 @@ function parseRange(
 
 export function createRepsField(
     value: string,
-    onChange: (value: string) => void
+    onChange: (value: string) => void,
+    label: string = dashboard_t("plan.fields.reps")
 ): HTMLDivElement {
     const field =
         document.createElement("div");
@@ -281,9 +282,7 @@ export function createRepsField(
 
     field.append(
         createLabel(
-            dashboard_t(
-                "plan.fields.reps"
-            ),
+            label,
             ICONS.exercise
         ),
         control

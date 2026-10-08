@@ -1,5 +1,6 @@
 import { TrainingAPI } from "../widgets/training/api.js";
 import { dashboard_t, exercise_t } from "../../i18n/index.js";
+import { defaultPrescription } from "../../training/measurement.js";
 const state = {
     exercises: [],
     category: "all",
@@ -156,15 +157,21 @@ function matchesCategory(exercise) {
     if (category === "legs") {
         return (pattern.includes("squat") ||
             pattern.includes("lunge") ||
+            pattern.includes("hinge") ||
             muscles.some(muscle => muscle.includes("quad") ||
                 muscle.includes("glute") ||
                 muscle.includes("hamstring") ||
-                muscle.includes("calf")));
+                muscle.includes("adductor") ||
+                muscle.includes("calf") ||
+                muscle.includes("calves")));
     }
     if (category === "core") {
         return (pattern.includes("core") ||
             pattern.includes("abs") ||
-            muscles.some(muscle => muscle.includes("abs") ||
+            pattern.startsWith("anti-") ||
+            pattern === "rotation" ||
+            muscles.some(muscle => muscle === "core" ||
+                muscle.includes("abs") ||
                 muscle.includes("oblique")));
     }
     if (category === "mobility") {
@@ -235,6 +242,7 @@ function renderExercises() {
             if (!state.callback) {
                 return;
             }
+            const prescription = defaultPrescription(exercise.original);
             state.callback({
                 databaseId: exercise.databaseId,
                 id: exercise.databaseId,
@@ -244,8 +252,13 @@ function renderExercises() {
                 muscles_primary: exercise.muscles_primary,
                 muscles_secondary: exercise.muscles_secondary,
                 equipment: exercise.equipment,
-                sets: 3,
-                reps: "10",
+                measurement_type: exercise.original
+                    ?.measurement_type ??
+                    "reps",
+                sets: prescription.sets,
+                reps: prescription.reps,
+                duration_sec: prescription.duration_sec,
+                per_side: prescription.per_side,
                 weight: 0,
                 completed: false
             });

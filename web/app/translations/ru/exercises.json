@@ -1,30 +1,258 @@
 {
+    "bicep-curl": {
+        "name": "Сгибание рук с гантелями"
+    },
+    "barbell-curl": {
+        "name": "Подъём штанги на бицепс"
+    },
+    "hammer-curl": {
+        "name": "Молотковые сгибания"
+    },
+    "preacher-curl": {
+        "name": "Сгибания на скамье Скотта"
+    },
+    "incline-dumbbell-curl": {
+        "name": "Сгибания с гантелями на наклонной скамье"
+    },
+    "cable-curl": {
+        "name": "Сгибания рук на блоке"
+    },
+    "band-curl": {
+        "name": "Сгибания рук с эспандером"
+    },
+    "reverse-curl": {
+        "name": "Сгибания рук обратным хватом"
+    },
+    "wrist-curl": {
+        "name": "Сгибания запястий с гантелями"
+    },
+    "reverse-wrist-curl": {
+        "name": "Разгибания запястий с гантелями"
+    },
+    "tricep-pushdown": {
+        "name": "Разгибание рук на блоке"
+    },
+    "overhead-triceps-extension": {
+        "name": "Разгибание гантели из-за головы"
+    },
+    "skull-crusher": {
+        "name": "Французский жим лёжа"
+    },
+    "triceps-kickback": {
+        "name": "Разгибание руки с гантелью в наклоне"
+    },
+    "close-grip-bench-press": {
+        "name": "Жим лёжа узким хватом"
+    },
+    "bench-dips": {
+        "name": "Отжимания от скамьи"
+    },
+    "pull-ups": {
+        "name": "Подтягивания"
+    },
+    "chin-up": {
+        "name": "Подтягивания обратным хватом"
+    },
+    "eccentric-pull-up": {
+        "name": "Негативные подтягивания"
+    },
+    "band-assisted-pull-up": {
+        "name": "Подтягивания с резинкой"
+    },
+    "scapular-pull-up": {
+        "name": "Лопаточные подтягивания"
+    },
+    "inverted-row": {
+        "name": "Австралийские подтягивания"
+    },
+    "ring-row": {
+        "name": "Тяга на кольцах"
+    },
+    "lat-pulldown": {
+        "name": "Тяга верхнего блока"
+    },
+    "straight-arm-pulldown": {
+        "name": "Пуловер на блоке прямыми руками"
+    },
+    "seated-row": {
+        "name": "Тяга нижнего блока сидя"
+    },
+    "barbell-row": {
+        "name": "Тяга штанги в наклоне"
+    },
+    "dumbbell-row": {
+        "name": "Тяга гантели одной рукой"
+    },
+    "chest-supported-row": {
+        "name": "Тяга гантелей с упором грудью"
+    },
+    "t-bar-row": {
+        "name": "Тяга Т-грифа"
+    },
+    "machine-row": {
+        "name": "Тяга в тренажёре"
+    },
+    "band-row": {
+        "name": "Тяга эспандера"
+    },
+    "renegade-row": {
+        "name": "Тяга в планке (ренегат)"
+    },
+    "face-pull": {
+        "name": "Тяга каната к лицу"
+    },
+    "band-pull-apart": {
+        "name": "Разведение эспандера"
+    },
+    "prone-y-raise": {
+        "name": "Y-подъёмы лёжа"
+    },
+    "barbell-shrug": {
+        "name": "Шраги со штангой"
+    },
+    "dumbbell-shrug": {
+        "name": "Шраги с гантелями"
+    },
+    "superman": {
+        "name": "Супермен"
+    },
+    "arch-hold": {
+        "name": "Удержание «лодочка»"
+    },
+    "dead-hang": {
+        "name": "Вис на турнике"
+    },
+    "push-ups": {
+        "name": "Отжимания"
+    },
+    "knee-push-up": {
+        "name": "Отжимания с колен"
+    },
+    "incline-push-up": {
+        "name": "Отжимания с руками на опоре"
+    },
+    "decline-push-up": {
+        "name": "Отжимания с ногами на скамье"
+    },
+    "diamond-push-up": {
+        "name": "Алмазные отжимания"
+    },
+    "archer-push-up": {
+        "name": "Отжимания лучника"
+    },
+    "plyometric-push-up": {
+        "name": "Плиометрические отжимания"
+    },
+    "bench-press": {
+        "name": "Жим штанги лёжа"
+    },
+    "incline-barbell-bench-press": {
+        "name": "Жим штанги на наклонной скамье"
+    },
+    "dumbbell-bench-press": {
+        "name": "Жим гантелей лёжа"
+    },
+    "incline-dumbbell-press": {
+        "name": "Жим гантелей на наклонной скамье"
+    },
+    "machine-chest-press": {
+        "name": "Жим от груди в тренажёре"
+    },
+    "dips": {
+        "name": "Отжимания на брусьях"
+    },
+    "ring-dip": {
+        "name": "Отжимания на кольцах"
+    },
+    "dumbbell-fly": {
+        "name": "Разведение гантелей лёжа"
+    },
+    "cable-fly": {
+        "name": "Сведение рук в кроссовере"
+    },
+    "pec-deck": {
+        "name": "Сведение рук в тренажёре"
+    },
+    "dumbbell-pullover": {
+        "name": "Пуловер с гантелью"
+    },
+    "medicine-ball-chest-pass": {
+        "name": "Бросок медбола от груди"
+    },
     "plank": {
         "name": "Планка"
+    },
+    "high-plank": {
+        "name": "Планка на прямых руках"
+    },
+    "rkc-plank": {
+        "name": "Планка RKC"
+    },
+    "bear-plank": {
+        "name": "Удержание медведя"
+    },
+    "hollow-body-hold": {
+        "name": "Удержание «лодка»"
+    },
+    "dead-bug": {
+        "name": "Мёртвый жук"
+    },
+    "ab-wheel-rollout": {
+        "name": "Выкатывание ролика для пресса"
     },
     "side-plank": {
         "name": "Боковая планка"
     },
-    "crunches": {
-        "name": "Скручивания"
+    "side-plank-hip-dip": {
+        "name": "Боковая планка с опусканием таза"
+    },
+    "suitcase-carry": {
+        "name": "Перенос веса в одной руке"
+    },
+    "bird-dog": {
+        "name": "Птица-собака"
+    },
+    "plank-shoulder-tap": {
+        "name": "Планка с касанием плеч"
+    },
+    "pallof-press": {
+        "name": "Жим Паллофа"
     },
     "bicycle-crunch": {
         "name": "Велосипед"
     },
-    "dead-bug": {
-        "name": "Dead Bug"
+    "russian-twist": {
+        "name": "Русские скручивания"
     },
-    "bird-dog": {
-        "name": "Bird Dog"
+    "cable-woodchop": {
+        "name": "Дровосек на блоке"
+    },
+    "medicine-ball-rotational-throw": {
+        "name": "Ротационный бросок медбола"
+    },
+    "crunches": {
+        "name": "Скручивания"
+    },
+    "reverse-crunch": {
+        "name": "Обратные скручивания"
+    },
+    "sit-up": {
+        "name": "Подъём туловища"
+    },
+    "v-up": {
+        "name": "Складка (V-up)"
     },
     "lying-leg-raise": {
         "name": "Подъём ног лёжа"
     },
-    "superman": {
-        "name": "Superman"
+    "flutter-kicks": {
+        "name": "Ножницы"
     },
-    "pallof-press": {
-        "name": "Pallof Press"
+    "hanging-knee-raise": {
+        "name": "Подъём коленей в висе"
+    },
+    "hanging-leg-raise": {
+        "name": "Подъём ног в висе"
     },
     "cable-crunch": {
         "name": "Скручивания на блоке"
@@ -32,53 +260,230 @@
     "burpee": {
         "name": "Берпи"
     },
-    "mountain-climbers": {
-        "name": "Альпинист"
+    "squat-to-press": {
+        "name": "Приседание с жимом"
     },
-    "jumping-jacks": {
-        "name": "Прыжки с разведением рук и ног"
+    "wall-ball": {
+        "name": "Бросок медбола в стену"
     },
-    "bear-crawl": {
-        "name": "Медвежья ходьба"
+    "medicine-ball-slam": {
+        "name": "Удары медболом об пол"
+    },
+    "kettlebell-swing": {
+        "name": "Махи гирей"
+    },
+    "kettlebell-clean": {
+        "name": "Подъём гири на грудь"
+    },
+    "kettlebell-snatch": {
+        "name": "Рывок гири"
+    },
+    "turkish-get-up": {
+        "name": "Турецкий подъём"
+    },
+    "power-clean": {
+        "name": "Взятие штанги на грудь"
     },
     "farmer-walk": {
         "name": "Прогулка фермера"
     },
-    "squat-to-press": {
-        "name": "Приседание с жимом"
+    "overhead-carry": {
+        "name": "Перенос веса над головой"
+    },
+    "sled-push": {
+        "name": "Толкание саней"
+    },
+    "sled-drag": {
+        "name": "Тяга саней спиной вперёд"
+    },
+    "battle-rope-waves": {
+        "name": "Волны боевыми канатами"
+    },
+    "sprint": {
+        "name": "Спринт"
+    },
+    "high-knees": {
+        "name": "Бег с высоким подниманием коленей"
+    },
+    "lateral-shuffle": {
+        "name": "Приставные шаги в сторону"
+    },
+    "bear-crawl": {
+        "name": "Медвежья ходьба"
+    },
+    "inchworm": {
+        "name": "Гусеница"
+    },
+    "mountain-climbers": {
+        "name": "Альпинист"
+    },
+    "jump-rope": {
+        "name": "Скакалка"
+    },
+    "jumping-jacks": {
+        "name": "Прыжки с разведением рук и ног"
+    },
+    "jump-squat": {
+        "name": "Приседания с выпрыгиванием"
+    },
+    "jumping-lunge": {
+        "name": "Выпады в прыжке"
+    },
+    "box-jump": {
+        "name": "Прыжки на тумбу"
+    },
+    "broad-jump": {
+        "name": "Прыжок в длину с места"
+    },
+    "tuck-jump": {
+        "name": "Прыжки с подтягиванием коленей"
+    },
+    "skater-jump": {
+        "name": "Прыжки конькобежца"
+    },
+    "depth-jump": {
+        "name": "Прыжок в глубину"
+    },
+    "squat": {
+        "name": "Приседания с собственным весом"
+    },
+    "barbell-back-squat": {
+        "name": "Приседания со штангой на спине"
+    },
+    "barbell-front-squat": {
+        "name": "Фронтальные приседания со штангой"
+    },
+    "goblet-squat": {
+        "name": "Гоблет-приседания"
+    },
+    "box-squat": {
+        "name": "Приседания со штангой до скамьи"
+    },
+    "leg-press": {
+        "name": "Жим ногами"
+    },
+    "hack-squat": {
+        "name": "Гакк-приседания"
+    },
+    "pistol-squat": {
+        "name": "Приседания на одной ноге (пистолет)"
+    },
+    "cossack-squat": {
+        "name": "Казачьи приседания"
     },
     "wall-sit": {
         "name": "Стульчик у стены"
     },
-    "squat": {
-        "name": "Приседания"
+    "isometric-squat-hold": {
+        "name": "Статическое удержание приседа"
     },
-    "box-squat": {
-        "name": "Приседания до скамьи"
+    "bulgarian-split-squat": {
+        "name": "Болгарские выпады"
+    },
+    "split-squat": {
+        "name": "Статические выпады"
     },
     "lunges": {
-        "name": "Выпады"
+        "name": "Выпады вперёд"
+    },
+    "reverse-lunge": {
+        "name": "Обратные выпады"
+    },
+    "walking-lunge": {
+        "name": "Выпады в движении"
+    },
+    "lateral-lunge": {
+        "name": "Боковые выпады"
+    },
+    "curtsy-lunge": {
+        "name": "Выпады крестом"
     },
     "step-ups": {
         "name": "Зашагивания на платформу"
     },
-    "glute-bridge": {
-        "name": "Ягодичный мост"
+    "barbell-deadlift": {
+        "name": "Становая тяга"
+    },
+    "sumo-deadlift": {
+        "name": "Становая тяга сумо"
+    },
+    "trap-bar-deadlift": {
+        "name": "Становая тяга с трэп-грифом"
+    },
+    "romanian-deadlift": {
+        "name": "Румынская тяга со штангой"
     },
     "rdl-dumbbells": {
         "name": "Румынская тяга с гантелями"
     },
+    "kettlebell-deadlift": {
+        "name": "Становая тяга с гирей"
+    },
+    "single-leg-rdl": {
+        "name": "Румынская тяга на одной ноге"
+    },
+    "good-morning": {
+        "name": "Наклоны со штангой (гуд монинг)"
+    },
+    "hip-thrust": {
+        "name": "Ягодичный мост со штангой"
+    },
+    "glute-bridge": {
+        "name": "Ягодичный мост"
+    },
+    "single-leg-glute-bridge": {
+        "name": "Ягодичный мост на одной ноге"
+    },
+    "glute-bridge-hold": {
+        "name": "Удержание ягодичного моста"
+    },
+    "back-extension": {
+        "name": "Гиперэкстензия"
+    },
+    "cable-pull-through": {
+        "name": "Протяжка троса между ногами"
+    },
+    "nordic-hamstring-curl": {
+        "name": "Скандинавские сгибания"
+    },
     "leg-curl": {
-        "name": "Сгибание ног"
+        "name": "Сгибание ног лёжа в тренажёре"
+    },
+    "stability-ball-hamstring-curl": {
+        "name": "Сгибания ног на фитболе"
     },
     "leg-extension": {
-        "name": "Разгибание ног"
-    },
-    "calf-raise": {
-        "name": "Подъёмы на носки"
+        "name": "Разгибание ног в тренажёре"
     },
     "kickback": {
-        "name": "Отведение ноги назад"
+        "name": "Отведение ноги назад в тренажёре"
+    },
+    "donkey-kick": {
+        "name": "Отведение ноги назад на четвереньках"
+    },
+    "hip-abduction-machine": {
+        "name": "Разведение ног в тренажёре"
+    },
+    "hip-adduction-machine": {
+        "name": "Сведение ног в тренажёре"
+    },
+    "cable-hip-abduction": {
+        "name": "Отведение ноги в сторону на блоке"
+    },
+    "banded-lateral-walk": {
+        "name": "Боковая ходьба с резинкой"
+    },
+    "calf-raise": {
+        "name": "Подъёмы на носки стоя"
+    },
+    "single-leg-calf-raise": {
+        "name": "Подъём на носок одной ноги"
+    },
+    "seated-calf-raise": {
+        "name": "Подъём на носки сидя"
+    },
+    "copenhagen-plank": {
+        "name": "Копенгагенская планка"
     },
     "neck-tilts": {
         "name": "Наклоны шеи"
@@ -89,14 +494,23 @@
     "arm-circles": {
         "name": "Круговые движения руками"
     },
+    "band-shoulder-dislocate": {
+        "name": "Выкруты с резинкой"
+    },
     "cat-cow": {
         "name": "Кошка-корова"
     },
     "thread-the-needle": {
-        "name": "Thread the Needle"
+        "name": "Нитка в иголку"
     },
     "thoracic-rotation": {
         "name": "Повороты грудного отдела"
+    },
+    "worlds-greatest-stretch": {
+        "name": "Величайшая растяжка в мире"
+    },
+    "hip-90-90-switch": {
+        "name": "Переключение бёдер 90/90"
     },
     "chest-stretch": {
         "name": "Растяжка груди"
@@ -113,37 +527,88 @@
     "calf-stretch": {
         "name": "Растяжка икр"
     },
-    "worlds-greatest-stretch": {
-        "name": "Величайшая растяжка в мире"
+    "pigeon-stretch": {
+        "name": "Поза голубя"
     },
-    "push-ups": {
-        "name": "Отжимания"
+    "butterfly-stretch": {
+        "name": "Бабочка"
     },
-    "bench-dips": {
-        "name": "Отжимания от скамьи"
+    "childs-pose": {
+        "name": "Поза ребёнка"
     },
-    "pull-ups": {
-        "name": "Подтягивания"
+    "downward-dog": {
+        "name": "Собака мордой вниз"
     },
-    "seated-row": {
-        "name": "Горизонтальная тяга"
-    },
-    "bench-press": {
-        "name": "Жим лёжа"
+    "cobra-stretch": {
+        "name": "Поза кобры"
     },
     "overhead-press": {
-        "name": "Жим над головой"
+        "name": "Жим штанги над головой"
     },
-    "bicep-curl": {
-        "name": "Сгибание рук"
+    "dumbbell-shoulder-press": {
+        "name": "Жим гантелей сидя"
     },
-    "tricep-pushdown": {
-        "name": "Разгибание рук на блоке"
+    "arnold-press": {
+        "name": "Жим Арнольда"
+    },
+    "machine-shoulder-press": {
+        "name": "Жим над головой в тренажёре"
+    },
+    "kettlebell-press": {
+        "name": "Жим гири над головой"
+    },
+    "landmine-press": {
+        "name": "Жим лендмайн"
+    },
+    "push-press": {
+        "name": "Швунг жимовой"
+    },
+    "pike-push-up": {
+        "name": "Отжимания щукой"
+    },
+    "wall-handstand-push-up": {
+        "name": "Отжимания в стойке на руках у стены"
     },
     "lateral-raises": {
         "name": "Разведения рук в стороны"
     },
+    "cable-lateral-raise": {
+        "name": "Отведение руки в сторону на блоке"
+    },
+    "front-raise": {
+        "name": "Подъём гантелей перед собой"
+    },
     "reverse-fly": {
         "name": "Обратные разведения"
+    },
+    "reverse-pec-deck": {
+        "name": "Обратные разведения в тренажёре"
+    },
+    "upright-row": {
+        "name": "Тяга штанги к подбородку"
+    },
+    "band-external-rotation": {
+        "name": "Внешняя ротация плеча с резинкой"
+    },
+    "l-sit-hold": {
+        "name": "Удержание уголка (L-sit)"
+    },
+    "wall-handstand-hold": {
+        "name": "Стойка на руках у стены"
+    },
+    "handstand-hold": {
+        "name": "Стойка на руках"
+    },
+    "tuck-front-lever-hold": {
+        "name": "Передний вис в группировке"
+    },
+    "tuck-planche-hold": {
+        "name": "Планш в группировке"
+    },
+    "ring-support-hold": {
+        "name": "Упор на кольцах"
+    },
+    "muscle-up": {
+        "name": "Выход силой"
     }
 }

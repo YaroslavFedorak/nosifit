@@ -7,6 +7,15 @@ import {
 
 import * as state from "./state.js";
 
+function withSide(
+    exercise: any,
+    label: string
+): string {
+    return exercise.per_side
+        ? `${label} ${dashboard_t("workout.fields.perSide")}`
+        : label;
+}
+
 function getExerciseName(
     exercise: any
 ): string {
@@ -225,14 +234,29 @@ function createExerciseRow(
     );
 
     row.appendChild(
-        createInput(
-            exercise,
-            "reps",
-            exercise.reps,
-            dashboard_t(
-                "workout.fields.reps"
+        exercise.measurement_type === "duration"
+            ? createInput(
+                exercise,
+                "duration_sec",
+                exercise.duration_sec,
+                withSide(
+                    exercise,
+                    dashboard_t(
+                        "workout.fields.seconds"
+                    )
+                )
             )
-        )
+            : createInput(
+                exercise,
+                "reps",
+                exercise.reps,
+                withSide(
+                    exercise,
+                    dashboard_t(
+                        "workout.fields.reps"
+                    )
+                )
+            )
     );
 
     row.appendChild(

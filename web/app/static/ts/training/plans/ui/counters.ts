@@ -127,7 +127,8 @@ export function createCounterField(
 
 export function createRepsField(
     value: string | number,
-    onChange: RepsChangeHandler
+    onChange: RepsChangeHandler,
+    label: string = t("exercise.reps")
 ): HTMLDivElement {
     const field =
         document.createElement("div");
@@ -141,7 +142,7 @@ export function createRepsField(
                 ${ICONS.exercise}
             </span>
             <span class="tr-plan-field-label">
-                ${t("exercise.reps")}
+                ${label}
             </span>
         </div>
 
