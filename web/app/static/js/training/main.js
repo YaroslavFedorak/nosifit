@@ -12,6 +12,7 @@ import { renderRecommendations } from "./recommendations.js";
 import { initHeatmap } from "./heatmap.js";
 import { initDailyState, persistWorkout } from "./state.js";
 import { defaultPrescription } from "./measurement.js";
+import { initServerSync } from "./server_sync.js";
 document.addEventListener("DOMContentLoaded", async () => {
     await Promise.all([
         loadTranslations("training"),
@@ -53,6 +54,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         })
     ]);
     initDailyState();
+    initServerSync();
     const addExercise = document.getElementById("tr-add-exercise");
     if (addExercise) {
         addExercise.onclick = () => {

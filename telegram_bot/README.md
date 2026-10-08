@@ -121,42 +121,41 @@ Meals are stored with language-independent category keys (`breakfast`, `lunch`, 
 
 Amounts are validated before they are sent (up to 5000 g / ml or 100 pcs per entry). Backend errors carry a `code` and are shown in Ukrainian.
 
+## Menu
+
+The home keyboard has one button per mode: **🏋️ Тренування**,
+**🍽 Харчування** and **🚪 Вийти**. Each mode switches the keyboard to its
+own buttons with **🏠 Головна** to go back:
+
+- 🏋️ Тренування: ➕ Додати вправу · 📋 Моє тренування
+- 🍽 Харчування: 🍽 Їжа · 💧 Вода · ⚖️ Вага
+
 ## Training
 
-**🏋️ Тренування** logs today's workout in the stored model: per exercise
-sets x reps (or seconds) x kg and RIR. There are no separate per-set rows, so
-"60x10, 60x9" is kept as one exercise with its current values, like on the
-website.
+Today's workout in the stored model: per exercise sets x reps (or seconds)
+x kg. Entry goes one question at a time, like meals:
 
-1. The training screen is today's workout (or "Сьогодні ще немає вправ") with
-   recent exercises as one-tap buttons.
-2. Typing a name searches the exercise catalog by Ukrainian or English name
-   or slug, with typos (`GET /api/training/exercises/search`); exercises done
-   before rank first.
-3. An exercise card shows last time's values and prefills them. "➕ Підхід"
-   logs one more set with the values on the button; ±1 rep, ±2.5 kg (±5 s)
-   and RIR buttons change them. Typing `60 10` or `60 10 2` (kg, reps, RIR)
-   logs a set; bodyweight exercises take `12` / `12 2`, extra weight `10x12`.
-4. Typing the next name opens the next exercise; "← Тренування" returns.
-5. "✅ Завершити" asks once and shows the totals the server has.
+1. **➕ Додати вправу** → type a name (Ukrainian or English, typos are fine)
+   or tap a recent exercise.
+2. **Яка вага, кг?** (only for barbell, dumbbell, machine and cable
+   exercises) → **Скільки повторів?** / **Скільки секунд?** Last time's
+   values are offered as one-tap buttons.
+3. The set is saved: **➕ Ще підхід** repeats it with one tap, **✏️ Інші
+   значення** asks again, **✅ Готово** shows today's workout.
 
-Every change is saved at once: the bot sends the whole list to
-`POST /api/training/sessions/complete` with today's `session_id` (from
-`GET /api/training/sessions/today`) and `strict: true`, so the server
-replaces that session's exercises and never creates a duplicate. A stale id
-(e.g. after midnight) is rejected instead of copied into a new session.
-Removing the last exercise deletes the session. Values the bot did not
-change (reps "8-12", RPE 7.5 from the website) are sent back unchanged.
+**📋 Моє тренування** lists today's exercises; each one can get or lose a
+set, be changed or deleted, and the workout can be finished.
 
-Taps are serialised per user, and "one more set" / delete buttons carry the
-revision of the screen, so a double tap or a button on an old message does
-not repeat the action. `/cancel` leaves the flow; what is logged stays.
-
-Known limitation (follow-up): the website's workout page keeps its own list
-in the browser and does not load the server's session. If the page saved
-first that day, re-saving it replaces the session the bot also edits, and
-exercises logged from Telegram are lost. If the bot started the day, a save
-on the page creates a second session and the bot then shows the newer one.
+Every change first reads today's session from the server
+(`GET /api/training/sessions/today`), changes one exercise and sends the
+whole list back (`POST /api/training/sessions/complete` with `session_id`
+and `strict: true`). The bot keeps no copy of the workout, so exercises
+logged on the website are never dropped; the website in turn loads the
+server's session when the page opens or becomes visible again. Removing the
+last exercise deletes the session. Values not edited in the bot (reps
+"8-12", RPE) are sent back unchanged. Changes of one user run one at a time,
+and "➕ Ще підхід" / "➖ Прибрати підхід" carry the number of sets their screen
+showed, so a double tap changes nothing twice.
 
 ## Water and weight
 

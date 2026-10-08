@@ -60,7 +60,10 @@ export function initSession(): void {
                         ...(isDurationExercise(item.exercise)
                             ? { duration_sec: item.duration_sec }
                             : { reps: item.reps }),
-                        load: item.load
+                        load: item.load,
+                        ...(item.rpe != null
+                            ? { rpe: item.rpe }
+                            : {})
                     }))
             };
 

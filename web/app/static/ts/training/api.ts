@@ -31,8 +31,30 @@ export type WorkoutExercise = {
     reps: string | number | null;
     duration_sec?: number | null;
     load: number;
+    // Stored effort of a saved exercise (e.g. RIR from Telegram), sent
+    // back unchanged on the next save.
+    rpe?: number | null;
     done: boolean;
     fromPlan: boolean;
+};
+
+export type LoggedExercise = {
+    id: number | string;
+    slug?: string;
+    name: string;
+    measurement_type?: "reps" | "duration";
+    sets: number;
+    reps: string | null;
+    duration_sec: number | null;
+    load: number | null;
+    rpe: number | null;
+};
+
+export type LoggedTodayResponse = {
+    session: {
+        id: number;
+        exercises: LoggedExercise[];
+    } | null;
 };
 
 export type WeeklyMuscleSets = {
@@ -364,6 +386,12 @@ export const TrainingAPI = {
     getToday(): Promise<JsonObject> {
         return jsonFetch<JsonObject>(
             `${BASE}/today`
+        );
+    },
+
+    getLoggedToday(): Promise<LoggedTodayResponse> {
+        return jsonFetch<LoggedTodayResponse>(
+            `${BASE}/sessions/today`
         );
     },
 

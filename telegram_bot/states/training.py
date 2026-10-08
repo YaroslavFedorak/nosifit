@@ -2,5 +2,6 @@ from aiogram.fsm.state import State, StatesGroup
 
 
 class TrainingStates(StatesGroup):
-    # Text is a search query, or one set ("60 10") while an exercise is open.
-    active = State()
+    searching = State()  # text: exercise name
+    weight = State()  # text: kg
+    count = State()  # text: reps or seconds
