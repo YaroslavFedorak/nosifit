@@ -1,0 +1,598 @@
+[
+    {
+        "slug": "push-ups",
+        "name": "Push-Up",
+        "movement_pattern": "push",
+        "difficulty": 2,
+        "risk_level": 1,
+        "equipment": [
+            "bodyweight"
+        ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 0.64,
+        "max_additional_load_kg": 40,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 8,
+            "reps_max": 20
+        },
+        "muscles_primary": [
+            "chest"
+        ],
+        "muscles_secondary": [
+            "triceps",
+            "shoulders",
+            "core"
+        ],
+        "muscle_load_profile": {
+            "chest": 0.55,
+            "triceps": 0.2,
+            "shoulders": 0.15,
+            "core": 0.1
+        }
+    },
+    {
+        "slug": "knee-push-up",
+        "name": "Knee Push-Up",
+        "movement_pattern": "push",
+        "difficulty": 1,
+        "risk_level": 1,
+        "equipment": [
+            "bodyweight"
+        ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 0.49,
+        "max_additional_load_kg": null,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 8,
+            "reps_max": 20
+        },
+        "muscles_primary": [
+            "chest"
+        ],
+        "muscles_secondary": [
+            "triceps",
+            "shoulders",
+            "core"
+        ],
+        "muscle_load_profile": {
+            "chest": 0.55,
+            "triceps": 0.2,
+            "shoulders": 0.15,
+            "core": 0.1
+        }
+    },
+    {
+        "slug": "incline-push-up",
+        "name": "Incline Push-Up",
+        "movement_pattern": "push",
+        "difficulty": 1,
+        "risk_level": 1,
+        "equipment": [
+            "bench"
+        ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 0.41,
+        "max_additional_load_kg": null,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 10,
+            "reps_max": 20
+        },
+        "muscles_primary": [
+            "chest"
+        ],
+        "muscles_secondary": [
+            "triceps",
+            "shoulders",
+            "core"
+        ],
+        "muscle_load_profile": {
+            "chest": 0.55,
+            "triceps": 0.2,
+            "shoulders": 0.15,
+            "core": 0.1
+        }
+    },
+    {
+        "slug": "decline-push-up",
+        "name": "Decline Push-Up",
+        "movement_pattern": "push",
+        "difficulty": 2,
+        "risk_level": 1,
+        "equipment": [
+            "bench"
+        ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 0.7,
+        "max_additional_load_kg": null,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 8,
+            "reps_max": 15
+        },
+        "muscles_primary": [
+            "chest",
+            "shoulders"
+        ],
+        "muscles_secondary": [
+            "triceps",
+            "core"
+        ],
+        "muscle_load_profile": {
+            "chest": 0.45,
+            "shoulders": 0.25,
+            "triceps": 0.2,
+            "core": 0.1
+        }
+    },
+    {
+        "slug": "diamond-push-up",
+        "name": "Diamond Push-Up",
+        "movement_pattern": "push",
+        "difficulty": 3,
+        "risk_level": 1,
+        "equipment": [
+            "bodyweight"
+        ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 0.64,
+        "max_additional_load_kg": null,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 6,
+            "reps_max": 15
+        },
+        "muscles_primary": [
+            "triceps",
+            "chest"
+        ],
+        "muscles_secondary": [
+            "shoulders",
+            "core"
+        ],
+        "muscle_load_profile": {
+            "triceps": 0.45,
+            "chest": 0.35,
+            "shoulders": 0.12,
+            "core": 0.08
+        }
+    },
+    {
+        "slug": "archer-push-up",
+        "name": "Archer Push-Up",
+        "movement_pattern": "push",
+        "difficulty": 4,
+        "risk_level": 2,
+        "equipment": [
+            "bodyweight"
+        ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 0.7,
+        "max_additional_load_kg": null,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 4,
+            "reps_max": 10,
+            "per_side": true
+        },
+        "muscles_primary": [
+            "chest"
+        ],
+        "muscles_secondary": [
+            "triceps",
+            "shoulders",
+            "core"
+        ],
+        "muscle_load_profile": {
+            "chest": 0.55,
+            "triceps": 0.2,
+            "shoulders": 0.15,
+            "core": 0.1
+        }
+    },
+    {
+        "slug": "plyometric-push-up",
+        "name": "Plyometric Push-Up",
+        "movement_pattern": "push",
+        "difficulty": 3,
+        "risk_level": 2,
+        "equipment": [
+            "bodyweight"
+        ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 0.64,
+        "max_additional_load_kg": null,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 5,
+            "reps_max": 10
+        },
+        "muscles_primary": [
+            "chest"
+        ],
+        "muscles_secondary": [
+            "triceps",
+            "shoulders",
+            "core"
+        ],
+        "muscle_load_profile": {
+            "chest": 0.55,
+            "triceps": 0.2,
+            "shoulders": 0.15,
+            "core": 0.1
+        }
+    },
+    {
+        "slug": "bench-press",
+        "name": "Barbell Bench Press",
+        "movement_pattern": "push",
+        "difficulty": 3,
+        "risk_level": 3,
+        "equipment": [
+            "barbell",
+            "bench"
+        ],
+        "load_type": "external",
+        "max_additional_load_kg": 250,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 4,
+            "reps_min": 5,
+            "reps_max": 10
+        },
+        "muscles_primary": [
+            "chest"
+        ],
+        "muscles_secondary": [
+            "triceps",
+            "shoulders"
+        ],
+        "muscle_load_profile": {
+            "chest": 0.6,
+            "triceps": 0.25,
+            "shoulders": 0.15
+        }
+    },
+    {
+        "slug": "incline-barbell-bench-press",
+        "name": "Incline Barbell Bench Press",
+        "movement_pattern": "push",
+        "difficulty": 3,
+        "risk_level": 3,
+        "equipment": [
+            "barbell",
+            "bench"
+        ],
+        "load_type": "external",
+        "max_additional_load_kg": 200,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 6,
+            "reps_max": 10
+        },
+        "muscles_primary": [
+            "chest",
+            "shoulders"
+        ],
+        "muscles_secondary": [
+            "triceps"
+        ],
+        "muscle_load_profile": {
+            "chest": 0.5,
+            "shoulders": 0.25,
+            "triceps": 0.25
+        }
+    },
+    {
+        "slug": "dumbbell-bench-press",
+        "name": "Dumbbell Bench Press",
+        "movement_pattern": "push",
+        "difficulty": 2,
+        "risk_level": 2,
+        "equipment": [
+            "dumbbells",
+            "bench"
+        ],
+        "load_type": "external",
+        "max_additional_load_kg": 120,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 6,
+            "reps_max": 12
+        },
+        "muscles_primary": [
+            "chest"
+        ],
+        "muscles_secondary": [
+            "triceps",
+            "shoulders"
+        ],
+        "muscle_load_profile": {
+            "chest": 0.6,
+            "triceps": 0.2,
+            "shoulders": 0.2
+        }
+    },
+    {
+        "slug": "incline-dumbbell-press",
+        "name": "Incline Dumbbell Press",
+        "movement_pattern": "push",
+        "difficulty": 2,
+        "risk_level": 2,
+        "equipment": [
+            "dumbbells",
+            "bench"
+        ],
+        "load_type": "external",
+        "max_additional_load_kg": 100,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 8,
+            "reps_max": 12
+        },
+        "muscles_primary": [
+            "chest",
+            "shoulders"
+        ],
+        "muscles_secondary": [
+            "triceps"
+        ],
+        "muscle_load_profile": {
+            "chest": 0.5,
+            "shoulders": 0.25,
+            "triceps": 0.25
+        }
+    },
+    {
+        "slug": "machine-chest-press",
+        "name": "Machine Chest Press",
+        "movement_pattern": "push",
+        "difficulty": 1,
+        "risk_level": 1,
+        "equipment": [
+            "machine"
+        ],
+        "load_type": "machine",
+        "max_additional_load_kg": 200,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 8,
+            "reps_max": 12
+        },
+        "muscles_primary": [
+            "chest"
+        ],
+        "muscles_secondary": [
+            "triceps",
+            "shoulders"
+        ],
+        "muscle_load_profile": {
+            "chest": 0.6,
+            "triceps": 0.25,
+            "shoulders": 0.15
+        }
+    },
+    {
+        "slug": "dips",
+        "name": "Parallel Bar Dip",
+        "movement_pattern": "push",
+        "difficulty": 3,
+        "risk_level": 2,
+        "equipment": [
+            "dip-bars"
+        ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 0.87,
+        "max_additional_load_kg": 60,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 6,
+            "reps_max": 12
+        },
+        "muscles_primary": [
+            "chest",
+            "triceps"
+        ],
+        "muscles_secondary": [
+            "shoulders"
+        ],
+        "muscle_load_profile": {
+            "chest": 0.45,
+            "triceps": 0.35,
+            "shoulders": 0.2
+        }
+    },
+    {
+        "slug": "ring-dip",
+        "name": "Ring Dip",
+        "movement_pattern": "push",
+        "difficulty": 4,
+        "risk_level": 3,
+        "equipment": [
+            "rings"
+        ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 0.87,
+        "max_additional_load_kg": 30,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 3,
+            "reps_max": 8
+        },
+        "muscles_primary": [
+            "chest",
+            "triceps"
+        ],
+        "muscles_secondary": [
+            "shoulders"
+        ],
+        "muscle_load_profile": {
+            "chest": 0.4,
+            "triceps": 0.4,
+            "shoulders": 0.2
+        }
+    },
+    {
+        "slug": "dumbbell-fly",
+        "name": "Dumbbell Fly",
+        "movement_pattern": "isolation",
+        "difficulty": 2,
+        "risk_level": 2,
+        "equipment": [
+            "dumbbells",
+            "bench"
+        ],
+        "load_type": "external",
+        "max_additional_load_kg": 50,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 10,
+            "reps_max": 15
+        },
+        "muscles_primary": [
+            "chest"
+        ],
+        "muscles_secondary": [
+            "shoulders"
+        ],
+        "muscle_load_profile": {
+            "chest": 0.85,
+            "shoulders": 0.15
+        }
+    },
+    {
+        "slug": "cable-fly",
+        "name": "Cable Fly",
+        "movement_pattern": "isolation",
+        "difficulty": 1,
+        "risk_level": 1,
+        "equipment": [
+            "cable"
+        ],
+        "load_type": "cable",
+        "max_additional_load_kg": 60,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 10,
+            "reps_max": 15
+        },
+        "muscles_primary": [
+            "chest"
+        ],
+        "muscles_secondary": [
+            "shoulders"
+        ],
+        "muscle_load_profile": {
+            "chest": 0.85,
+            "shoulders": 0.15
+        }
+    },
+    {
+        "slug": "pec-deck",
+        "name": "Machine Chest Fly",
+        "movement_pattern": "isolation",
+        "difficulty": 1,
+        "risk_level": 1,
+        "equipment": [
+            "machine"
+        ],
+        "load_type": "machine",
+        "max_additional_load_kg": 120,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 10,
+            "reps_max": 15
+        },
+        "muscles_primary": [
+            "chest"
+        ],
+        "muscles_secondary": [
+            "shoulders"
+        ],
+        "muscle_load_profile": {
+            "chest": 0.9,
+            "shoulders": 0.1
+        }
+    },
+    {
+        "slug": "dumbbell-pullover",
+        "name": "Dumbbell Pullover",
+        "movement_pattern": "isolation",
+        "difficulty": 2,
+        "risk_level": 2,
+        "equipment": [
+            "dumbbells",
+            "bench"
+        ],
+        "load_type": "external",
+        "max_additional_load_kg": 50,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 10,
+            "reps_max": 15
+        },
+        "muscles_primary": [
+            "lats",
+            "chest"
+        ],
+        "muscles_secondary": [
+            "triceps"
+        ],
+        "muscle_load_profile": {
+            "lats": 0.55,
+            "chest": 0.3,
+            "triceps": 0.15
+        }
+    },
+    {
+        "slug": "medicine-ball-chest-pass",
+        "name": "Medicine Ball Chest Pass",
+        "movement_pattern": "push",
+        "difficulty": 1,
+        "risk_level": 1,
+        "equipment": [
+            "medicine-ball"
+        ],
+        "load_type": "external",
+        "max_additional_load_kg": 10,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 8,
+            "reps_max": 12
+        },
+        "muscles_primary": [
+            "chest",
+            "triceps"
+        ],
+        "muscles_secondary": [
+            "shoulders",
+            "core"
+        ],
+        "muscle_load_profile": {
+            "chest": 0.5,
+            "triceps": 0.25,
+            "shoulders": 0.15,
+            "core": 0.1
+        }
+    }
+]

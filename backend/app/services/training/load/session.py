@@ -1,37 +1,15 @@
 from datetime import timedelta
 
+from backend.app.training.exercises.prescription import performed_values
+
 from .constants import MAX_DURATION_BONUS
-from .exercise import calculate_exercise_load
-from .timed import (
-    calculate_timed_load,
-    is_timed_exercise,
-)
+from .exercise import calculate_measured_load
 from .parsing import parse_float
 
 
-def get_session_exercise_value(
-    session_exercise,
-    done_name,
-    planned_name,
-    default=0,
-):
-    value = getattr(
-        session_exercise,
-        done_name,
-        None,
-    )
-
-    if value is not None:
-        return value
-
-    return getattr(
-        session_exercise,
-        planned_name,
-        default,
-    )
-
-
 def calculate_session_load(session, user):
+    from backend.app.training.models.exercise import Exercise
+
     user_weight = parse_float(
         getattr(
             user,
@@ -53,30 +31,12 @@ def calculate_session_load(session, user):
     total_load = 0.0
 
     for session_exercise in exercises:
-        from backend.app.training.models.exercise import Exercise
-
         exercise = Exercise.query.get(session_exercise.exercise_id)
 
         if not exercise:
             continue
 
-        sets = get_session_exercise_value(
-            session_exercise,
-            "sets_done",
-            "sets_planned",
-        )
-
-        reps = get_session_exercise_value(
-            session_exercise,
-            "reps_done",
-            "reps_planned",
-        )
-
-        weight = get_session_exercise_value(
-            session_exercise,
-            "load_done",
-            "load_planned",
-        )
+        values = performed_values(session_exercise, exercise)
 
         rpe = getattr(
             session_exercise,
@@ -84,22 +44,13 @@ def calculate_session_load(session, user):
             None,
         )
 
-        if is_timed_exercise(exercise):
-            result = calculate_timed_load(
-                exercise,
-                user_weight,
-            )
-
-            total_load += result
-
-            continue
-
-        result = calculate_exercise_load(
+        result = calculate_measured_load(
             exercise=exercise,
             user_weight=user_weight,
-            sets=sets,
-            reps=reps,
-            additional_weight=weight,
+            sets=values["sets"],
+            reps=values["reps"],
+            duration_sec=values["duration_sec"],
+            additional_weight=values["load"],
             rpe=7.0 if rpe is None else rpe,
         )
 

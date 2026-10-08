@@ -23,6 +23,14 @@ class Exercise(db.Model):
     max_additional_load_kg = db.Column(db.Integer, nullable=True)
     muscle_load_profile = db.Column(JSONB, nullable=True)
 
+    # "reps" or "duration"; see backend/app/training/exercises/catalog.py.
+    measurement_type = db.Column(
+        db.String(16), nullable=False, default="reps", server_default="reps"
+    )
+    load_type = db.Column(db.String(16), nullable=True)
+    bodyweight_ratio = db.Column(db.Float, nullable=True)
+    prescription = db.Column(JSONB, nullable=True)
+
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
     updated_at = db.Column(
         db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False
@@ -46,6 +54,10 @@ class Exercise(db.Model):
             "equipment": self.equipment or [],
             "max_additional_load_kg": self.max_additional_load_kg,
             "muscle_load_profile": self.muscle_load_profile,
+            "measurement_type": self.measurement_type or "reps",
+            "load_type": self.load_type,
+            "bodyweight_ratio": self.bodyweight_ratio,
+            "prescription": self.prescription,
         }
 
     def __repr__(self):

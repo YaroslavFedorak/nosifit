@@ -1,6 +1,8 @@
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional
 
+from backend.app.training.exercises.prescription import build_entry
+
 
 @dataclass
 class TrainingDay:
@@ -9,13 +11,18 @@ class TrainingDay:
     environment: Optional[List[str]] = None
     exercises: List[Dict[str, Any]] = field(default_factory=list)
 
-    def add_exercise(self, exercise=None, sets=3, reps="8-12", load=0):
-        entry = {
-            "exercise": exercise,
-            "sets": sets,
-            "reps": reps,
-            "load": load,
-        }
+    def add_exercise(
+        self, exercise=None, sets=None, reps=None, duration_sec=None, load=0
+    ):
+        """Add an exercise; missing values come from its catalog prescription."""
+        entry = build_entry(
+            exercise,
+            sets=sets,
+            reps=reps,
+            duration_sec=duration_sec,
+            load=load,
+        )
+        entry["exercise"] = exercise
         self.exercises.append(entry)
 
     @classmethod
@@ -39,8 +46,11 @@ class TrainingDay:
                         if hasattr(ex["exercise"], "to_dict")
                         else ex["exercise"]
                     ),
+                    "measurement_type": ex.get("measurement_type", "reps"),
                     "sets": ex["sets"],
-                    "reps": ex["reps"],
+                    "reps": ex.get("reps"),
+                    "duration_sec": ex.get("duration_sec"),
+                    "per_side": ex.get("per_side", False),
                     "load": ex.get("load", 0),
                 }
                 for ex in self.exercises

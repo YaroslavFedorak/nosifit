@@ -1,6 +1,10 @@
 from datetime import date
 from typing import List, Mapping, Any, Set
 
+from backend.app.training.exercises.prescription import (
+    default_entry,
+    measurement_type_of,
+)
 from backend.app.training.models.exercise import Exercise
 
 from backend.app.training.training_analysis.dto import (
@@ -74,6 +78,7 @@ from backend.app.training.training_analysis.constants import (
     MAX_RECOMMENDATIONS,
     SUMMARY_PRIORITY,
     PROGRESSION_PLATEAU_THRESHOLD,
+    MUSCLE_GROUPS,
 )
 
 
@@ -112,7 +117,15 @@ def _profile_points(user: Any, key: str) -> Set[str]:
     if not isinstance(raw, (list, tuple, set)):
         return set()
 
-    return {str(value).strip().lower() for value in raw if str(value).strip()}
+    points: Set[str] = set()
+
+    for value in raw:
+        key = str(value).strip().lower()
+
+        if key:
+            points.update(MUSCLE_GROUPS.get(key, (key,)))
+
+    return points
 
 
 def _exercise_history_count(
@@ -463,6 +476,9 @@ def _should_exclude(
     primary = set(primary_muscles(ex))
     movement = movement_pattern(ex)
 
+    if (ex.movement_pattern or "").lower() == "mobility":
+        return True
+
     if primary.intersection(muscles["overloaded"]):
         return True
 
@@ -558,6 +574,7 @@ def build_recommendations(
     muscles = analyse_muscles(
         sessions,
         target_day,
+        user_weight=weight,
     )
 
     patterns = analyse_patterns(
@@ -663,9 +680,17 @@ def build_recommendations(
         if not reasons:
             continue
 
+        prescription = default_entry(exercise)
+
         recommended.append(
             {
                 "exercise": exercise.name,
+                "slug": exercise.slug,
+                "measurement_type": measurement_type_of(exercise),
+                "sets": prescription["sets"],
+                "reps": prescription["reps"],
+                "duration_sec": prescription["duration_sec"],
+                "per_side": prescription["per_side"],
                 "reasons": reasons[:2],
                 "score": round(score, 1),
             }

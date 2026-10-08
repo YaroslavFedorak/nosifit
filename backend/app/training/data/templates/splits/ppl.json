@@ -5,22 +5,22 @@
             "name": "Push",
             "exercises": [
                 {
-                    "id": "pushups"
+                    "id": "push-ups"
                 },
                 {
-                    "id": "bench_press"
+                    "id": "bench-press"
                 },
                 {
-                    "id": "incline_dumbbell_press"
+                    "id": "incline-dumbbell-press"
                 },
                 {
-                    "id": "shoulder_press"
+                    "id": "dumbbell-shoulder-press"
                 },
                 {
-                    "id": "lateral_raise"
+                    "id": "lateral-raises"
                 },
                 {
-                    "id": "triceps_pushdown"
+                    "id": "tricep-pushdown"
                 }
             ]
         },
@@ -28,22 +28,22 @@
             "name": "Pull",
             "exercises": [
                 {
-                    "id": "barbell_row"
+                    "id": "barbell-row"
                 },
                 {
-                    "id": "lat_pulldown"
+                    "id": "lat-pulldown"
                 },
                 {
-                    "id": "seated_row"
+                    "id": "seated-row"
                 },
                 {
-                    "id": "face_pull"
+                    "id": "face-pull"
                 },
                 {
-                    "id": "biceps_curl"
+                    "id": "bicep-curl"
                 },
                 {
-                    "id": "hammer_curl"
+                    "id": "hammer-curl"
                 }
             ]
         },
@@ -51,22 +51,22 @@
             "name": "Legs",
             "exercises": [
                 {
-                    "id": "squat"
+                    "id": "barbell-back-squat"
                 },
                 {
-                    "id": "romanian_deadlift"
+                    "id": "romanian-deadlift"
                 },
                 {
                     "id": "lunges"
                 },
                 {
-                    "id": "leg_press"
+                    "id": "leg-press"
                 },
                 {
-                    "id": "calf_raise"
+                    "id": "calf-raise"
                 },
                 {
-                    "id": "glute_bridge"
+                    "id": "glute-bridge"
                 }
             ]
         }

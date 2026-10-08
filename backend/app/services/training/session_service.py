@@ -9,6 +9,8 @@ from backend.app.services.training.load import (
     TrainingLoadService,
     calculate_session_load,
 )
+from backend.app.training.exercises.prescription import session_update_fields
+from backend.app.training.models.exercise import Exercise
 from backend.app.training.models.performance_state import PerformanceState
 
 
@@ -61,17 +63,10 @@ class TrainingSessionService:
                 exercise_id,
             )
 
-        if "sets_done" in data:
-            session_exercise.sets_done = data["sets_done"]
+        exercise = Exercise.query.get(exercise_id)
 
-        if "reps_done" in data:
-            session_exercise.reps_done = data["reps_done"]
-
-        if "load_done" in data:
-            session_exercise.load_done = data["load_done"]
-
-        if "rpe" in data:
-            session_exercise.rpe = data["rpe"]
+        for field, value in session_update_fields(exercise, data).items():
+            setattr(session_exercise, field, value)
 
         db.session.commit()
         return session_exercise

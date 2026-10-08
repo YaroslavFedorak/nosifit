@@ -102,5 +102,75 @@
             "pulling"
         ],
         "description": "Використовується для підтягувань та інших вправ на спину."
+    },
+    {
+        "slug": "trap-bar",
+        "name": "Трап-гриф",
+        "tags": [
+            "strength",
+            "compound"
+        ],
+        "description": "Шестикутний гриф для станової тяги з нейтральним хватом."
+    },
+    {
+        "slug": "rings",
+        "name": "Гімнастичні кільця",
+        "tags": [
+            "calisthenics",
+            "stability"
+        ],
+        "description": "Нестабільна опора для тяг, віджимань та утримань."
+    },
+    {
+        "slug": "dip-bars",
+        "name": "Бруси",
+        "tags": [
+            "calisthenics",
+            "pushing"
+        ],
+        "description": "Паралельні бруси для віджимань та утримань."
+    },
+    {
+        "slug": "medicine-ball",
+        "name": "Медбол",
+        "tags": [
+            "power",
+            "conditioning"
+        ],
+        "description": "Обтяжений м'яч для кидків та вибухових рухів."
+    },
+    {
+        "slug": "jump-rope",
+        "name": "Скакалка",
+        "tags": [
+            "conditioning"
+        ],
+        "description": "Для кардіо та роботи литкових м'язів."
+    },
+    {
+        "slug": "ab-wheel",
+        "name": "Ролик для преса",
+        "tags": [
+            "core"
+        ],
+        "description": "Для викочувань та роботи над антирозгинанням корпусу."
+    },
+    {
+        "slug": "landmine",
+        "name": "Лендмайн",
+        "tags": [
+            "strength",
+            "rotation"
+        ],
+        "description": "Кріплення для одного кінця штанги — жими, тяги та ротації."
+    },
+    {
+        "slug": "stability-ball",
+        "name": "Фітбол",
+        "tags": [
+            "stability",
+            "core"
+        ],
+        "description": "Великий м'яч для вправ на стабільність."
     }
 ]

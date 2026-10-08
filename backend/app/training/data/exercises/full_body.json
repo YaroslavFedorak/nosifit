@@ -1,163 +1,978 @@
 [
     {
-        "name": "Burpee",
         "slug": "burpee",
-        "difficulty": 3,
+        "name": "Burpee",
         "movement_pattern": "full-body",
-        "risk_level": 2,
-        "equipment": [
-            "bodyweight"
-        ],
-        "muscles_primary": [
-            "legs"
-        ],
-        "muscles_secondary": [
-            "core",
-            "shoulders"
-        ],
-        "max_additional_load_kg": 40,
-        "muscle_load_profile": {
-            "legs": 0.5,
-            "core": 0.3,
-            "shoulders": 0.2
-        }
-    },
-    {
-        "name": "Mountain Climbers",
-        "slug": "mountain-climbers",
         "difficulty": 2,
-        "movement_pattern": "full-body",
-        "risk_level": 1,
-        "equipment": [
-            "bodyweight"
-        ],
-        "muscles_primary": [
-            "core"
-        ],
-        "muscles_secondary": [
-            "legs",
-            "shoulders"
-        ],
-        "max_additional_load_kg": 20,
-        "muscle_load_profile": {
-            "core": 0.6,
-            "legs": 0.25,
-            "shoulders": 0.15
-        }
-    },
-    {
-        "name": "Jumping Jacks",
-        "slug": "jumping-jacks",
-        "difficulty": 1,
-        "movement_pattern": "full-body",
-        "risk_level": 1,
-        "equipment": [
-            "bodyweight"
-        ],
-        "muscles_primary": [
-            "legs"
-        ],
-        "muscles_secondary": [
-            "shoulders",
-            "core"
-        ],
-        "max_additional_load_kg": 20,
-        "muscle_load_profile": {
-            "legs": 0.5,
-            "shoulders": 0.3,
-            "core": 0.2
-        }
-    },
-    {
-        "name": "Bear Crawl",
-        "slug": "bear-crawl",
-        "difficulty": 3,
-        "movement_pattern": "full-body",
         "risk_level": 2,
         "equipment": [
             "bodyweight"
         ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 1.0,
+        "max_additional_load_kg": null,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 8,
+            "reps_max": 15
+        },
         "muscles_primary": [
-            "core"
+            "quads",
+            "chest"
         ],
         "muscles_secondary": [
+            "glutes",
             "shoulders",
-            "legs"
+            "core",
+            "triceps"
         ],
-        "max_additional_load_kg": 40,
         "muscle_load_profile": {
-            "core": 0.5,
-            "shoulders": 0.3,
-            "legs": 0.2
+            "quads": 0.3,
+            "chest": 0.2,
+            "glutes": 0.15,
+            "shoulders": 0.15,
+            "core": 0.1,
+            "triceps": 0.1
         }
     },
     {
-        "name": "Farmer Walk",
-        "slug": "farmer-walk",
-        "difficulty": 3,
+        "slug": "squat-to-press",
+        "name": "Dumbbell Squat to Press",
         "movement_pattern": "full-body",
-        "risk_level": 1,
+        "difficulty": 3,
+        "risk_level": 2,
         "equipment": [
             "dumbbells"
         ],
+        "load_type": "external",
+        "max_additional_load_kg": 60,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 8,
+            "reps_max": 12
+        },
         "muscles_primary": [
-            "core"
+            "quads",
+            "shoulders"
         ],
         "muscles_secondary": [
-            "forearms",
-            "legs"
+            "glutes",
+            "triceps",
+            "core"
         ],
-        "max_additional_load_kg": 200,
         "muscle_load_profile": {
-            "core": 0.5,
-            "forearms": 0.3,
-            "legs": 0.2
+            "quads": 0.35,
+            "shoulders": 0.3,
+            "glutes": 0.2,
+            "triceps": 0.1,
+            "core": 0.05
         }
     },
     {
-        "name": "Squat to Press",
-        "slug": "squat-to-press",
-        "difficulty": 4,
+        "slug": "wall-ball",
+        "name": "Wall Ball Shot",
         "movement_pattern": "full-body",
+        "difficulty": 2,
+        "risk_level": 2,
+        "equipment": [
+            "medicine-ball"
+        ],
+        "load_type": "external",
+        "max_additional_load_kg": 12,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 10,
+            "reps_max": 20
+        },
+        "muscles_primary": [
+            "quads",
+            "shoulders"
+        ],
+        "muscles_secondary": [
+            "glutes",
+            "triceps",
+            "core"
+        ],
+        "muscle_load_profile": {
+            "quads": 0.35,
+            "shoulders": 0.25,
+            "glutes": 0.2,
+            "triceps": 0.1,
+            "core": 0.1
+        }
+    },
+    {
+        "slug": "medicine-ball-slam",
+        "name": "Medicine Ball Slam",
+        "movement_pattern": "full-body",
+        "difficulty": 1,
+        "risk_level": 1,
+        "equipment": [
+            "medicine-ball"
+        ],
+        "load_type": "external",
+        "max_additional_load_kg": 20,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 8,
+            "reps_max": 15
+        },
+        "muscles_primary": [
+            "lats",
+            "abs"
+        ],
+        "muscles_secondary": [
+            "shoulders",
+            "core",
+            "triceps"
+        ],
+        "muscle_load_profile": {
+            "lats": 0.3,
+            "abs": 0.3,
+            "shoulders": 0.2,
+            "core": 0.1,
+            "triceps": 0.1
+        }
+    },
+    {
+        "slug": "kettlebell-swing",
+        "name": "Kettlebell Swing",
+        "movement_pattern": "hinge",
+        "difficulty": 2,
+        "risk_level": 2,
+        "equipment": [
+            "kettlebell"
+        ],
+        "load_type": "external",
+        "max_additional_load_kg": 48,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 12,
+            "reps_max": 20
+        },
+        "muscles_primary": [
+            "glutes",
+            "hamstrings"
+        ],
+        "muscles_secondary": [
+            "lower-back",
+            "core",
+            "forearms"
+        ],
+        "muscle_load_profile": {
+            "glutes": 0.4,
+            "hamstrings": 0.3,
+            "lower-back": 0.12,
+            "core": 0.1,
+            "forearms": 0.08
+        }
+    },
+    {
+        "slug": "kettlebell-clean",
+        "name": "Kettlebell Clean",
+        "movement_pattern": "full-body",
+        "difficulty": 3,
+        "risk_level": 2,
+        "equipment": [
+            "kettlebell"
+        ],
+        "load_type": "external",
+        "max_additional_load_kg": 48,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 5,
+            "reps_max": 8,
+            "per_side": true
+        },
+        "muscles_primary": [
+            "glutes",
+            "hamstrings"
+        ],
+        "muscles_secondary": [
+            "traps",
+            "shoulders",
+            "forearms",
+            "core"
+        ],
+        "muscle_load_profile": {
+            "glutes": 0.3,
+            "hamstrings": 0.2,
+            "traps": 0.15,
+            "shoulders": 0.15,
+            "forearms": 0.1,
+            "core": 0.1
+        }
+    },
+    {
+        "slug": "kettlebell-snatch",
+        "name": "Kettlebell Snatch",
+        "movement_pattern": "full-body",
+        "difficulty": 4,
         "risk_level": 3,
         "equipment": [
-            "dumbbells"
+            "kettlebell"
         ],
+        "load_type": "external",
+        "max_additional_load_kg": 40,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 5,
+            "reps_max": 10,
+            "per_side": true
+        },
         "muscles_primary": [
-            "legs"
+            "glutes",
+            "shoulders",
+            "hamstrings"
         ],
         "muscles_secondary": [
-            "shoulders",
-            "core"
+            "traps",
+            "core",
+            "forearms"
         ],
-        "max_additional_load_kg": 120,
         "muscle_load_profile": {
-            "legs": 0.55,
-            "shoulders": 0.3,
-            "core": 0.15
+            "glutes": 0.3,
+            "shoulders": 0.25,
+            "hamstrings": 0.2,
+            "traps": 0.1,
+            "core": 0.1,
+            "forearms": 0.05
         }
     },
     {
-        "name": "Wall Sit",
-        "slug": "wall-sit",
-        "difficulty": 2,
+        "slug": "turkish-get-up",
+        "name": "Turkish Get-Up",
         "movement_pattern": "full-body",
+        "difficulty": 3,
+        "risk_level": 3,
+        "equipment": [
+            "kettlebell"
+        ],
+        "load_type": "external",
+        "max_additional_load_kg": 48,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 2,
+            "reps_max": 5,
+            "per_side": true
+        },
+        "muscles_primary": [
+            "shoulders",
+            "core"
+        ],
+        "muscles_secondary": [
+            "glutes",
+            "obliques",
+            "triceps"
+        ],
+        "muscle_load_profile": {
+            "shoulders": 0.35,
+            "core": 0.3,
+            "glutes": 0.15,
+            "obliques": 0.1,
+            "triceps": 0.1
+        }
+    },
+    {
+        "slug": "power-clean",
+        "name": "Power Clean",
+        "movement_pattern": "full-body",
+        "difficulty": 5,
+        "risk_level": 4,
+        "equipment": [
+            "barbell"
+        ],
+        "load_type": "external",
+        "max_additional_load_kg": 180,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 4,
+            "reps_min": 2,
+            "reps_max": 5
+        },
+        "muscles_primary": [
+            "glutes",
+            "hamstrings",
+            "quads",
+            "traps"
+        ],
+        "muscles_secondary": [
+            "shoulders",
+            "forearms"
+        ],
+        "muscle_load_profile": {
+            "glutes": 0.25,
+            "hamstrings": 0.2,
+            "quads": 0.2,
+            "traps": 0.2,
+            "shoulders": 0.1,
+            "forearms": 0.05
+        }
+    },
+    {
+        "slug": "farmer-walk",
+        "name": "Farmer's Walk",
+        "movement_pattern": "carry",
+        "difficulty": 1,
         "risk_level": 1,
         "equipment": [
-            "bodyweight"
+            "dumbbells"
         ],
+        "load_type": "external",
+        "max_additional_load_kg": 160,
+        "measurement_type": "duration",
+        "prescription": {
+            "sets": 3,
+            "seconds_min": 30,
+            "seconds_max": 60
+        },
+        "muscles_primary": [
+            "forearms",
+            "traps",
+            "core"
+        ],
+        "muscles_secondary": [
+            "quads"
+        ],
+        "muscle_load_profile": {
+            "forearms": 0.35,
+            "traps": 0.3,
+            "core": 0.2,
+            "quads": 0.15
+        }
+    },
+    {
+        "slug": "overhead-carry",
+        "name": "Overhead Carry",
+        "movement_pattern": "carry",
+        "difficulty": 3,
+        "risk_level": 2,
+        "equipment": [
+            "kettlebell"
+        ],
+        "load_type": "external",
+        "max_additional_load_kg": 48,
+        "measurement_type": "duration",
+        "prescription": {
+            "sets": 3,
+            "seconds_min": 20,
+            "seconds_max": 40,
+            "per_side": true
+        },
+        "muscles_primary": [
+            "shoulders",
+            "core"
+        ],
+        "muscles_secondary": [
+            "traps"
+        ],
+        "muscle_load_profile": {
+            "shoulders": 0.45,
+            "core": 0.35,
+            "traps": 0.2
+        }
+    },
+    {
+        "slug": "sled-push",
+        "name": "Sled Push",
+        "movement_pattern": "locomotion",
+        "difficulty": 2,
+        "risk_level": 1,
+        "equipment": [
+            "sled"
+        ],
+        "load_type": "external",
+        "max_additional_load_kg": 250,
+        "measurement_type": "duration",
+        "prescription": {
+            "sets": 4,
+            "seconds_min": 15,
+            "seconds_max": 30
+        },
+        "muscles_primary": [
+            "quads",
+            "glutes"
+        ],
+        "muscles_secondary": [
+            "calves",
+            "core"
+        ],
+        "muscle_load_profile": {
+            "quads": 0.45,
+            "glutes": 0.3,
+            "calves": 0.15,
+            "core": 0.1
+        }
+    },
+    {
+        "slug": "sled-drag",
+        "name": "Backward Sled Drag",
+        "movement_pattern": "locomotion",
+        "difficulty": 1,
+        "risk_level": 1,
+        "equipment": [
+            "sled"
+        ],
+        "load_type": "external",
+        "max_additional_load_kg": 200,
+        "measurement_type": "duration",
+        "prescription": {
+            "sets": 4,
+            "seconds_min": 20,
+            "seconds_max": 40
+        },
         "muscles_primary": [
             "quads"
         ],
         "muscles_secondary": [
             "glutes",
-            "core"
+            "calves"
         ],
-        "max_additional_load_kg": 100,
         "muscle_load_profile": {
             "quads": 0.6,
-            "glutes": 0.25,
+            "glutes": 0.2,
+            "calves": 0.2
+        }
+    },
+    {
+        "slug": "battle-rope-waves",
+        "name": "Battle Rope Waves",
+        "movement_pattern": "full-body",
+        "difficulty": 2,
+        "risk_level": 1,
+        "equipment": [
+            "battle-rope"
+        ],
+        "load_type": "none",
+        "max_additional_load_kg": null,
+        "measurement_type": "duration",
+        "prescription": {
+            "sets": 4,
+            "seconds_min": 20,
+            "seconds_max": 40
+        },
+        "muscles_primary": [
+            "shoulders"
+        ],
+        "muscles_secondary": [
+            "core",
+            "forearms",
+            "biceps",
+            "triceps"
+        ],
+        "muscle_load_profile": {
+            "shoulders": 0.45,
+            "core": 0.2,
+            "forearms": 0.15,
+            "biceps": 0.1,
+            "triceps": 0.1
+        }
+    },
+    {
+        "slug": "sprint",
+        "name": "Sprint",
+        "movement_pattern": "locomotion",
+        "difficulty": 3,
+        "risk_level": 3,
+        "equipment": [
+            "bodyweight"
+        ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 1.0,
+        "max_additional_load_kg": null,
+        "measurement_type": "duration",
+        "prescription": {
+            "sets": 6,
+            "seconds_min": 10,
+            "seconds_max": 20
+        },
+        "muscles_primary": [
+            "hamstrings",
+            "glutes",
+            "quads"
+        ],
+        "muscles_secondary": [
+            "calves",
+            "hip-flexors"
+        ],
+        "muscle_load_profile": {
+            "hamstrings": 0.3,
+            "glutes": 0.3,
+            "quads": 0.2,
+            "calves": 0.15,
+            "hip-flexors": 0.05
+        }
+    },
+    {
+        "slug": "high-knees",
+        "name": "High Knees",
+        "movement_pattern": "locomotion",
+        "difficulty": 1,
+        "risk_level": 1,
+        "equipment": [
+            "bodyweight"
+        ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 0.6,
+        "max_additional_load_kg": null,
+        "measurement_type": "duration",
+        "prescription": {
+            "sets": 3,
+            "seconds_min": 20,
+            "seconds_max": 45
+        },
+        "muscles_primary": [
+            "hip-flexors",
+            "quads"
+        ],
+        "muscles_secondary": [
+            "calves",
+            "core"
+        ],
+        "muscle_load_profile": {
+            "hip-flexors": 0.35,
+            "quads": 0.25,
+            "calves": 0.2,
+            "core": 0.2
+        }
+    },
+    {
+        "slug": "lateral-shuffle",
+        "name": "Lateral Shuffle",
+        "movement_pattern": "locomotion",
+        "difficulty": 1,
+        "risk_level": 1,
+        "equipment": [
+            "bodyweight"
+        ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 0.6,
+        "max_additional_load_kg": null,
+        "measurement_type": "duration",
+        "prescription": {
+            "sets": 3,
+            "seconds_min": 15,
+            "seconds_max": 30
+        },
+        "muscles_primary": [
+            "quads",
+            "glutes"
+        ],
+        "muscles_secondary": [
+            "adductors",
+            "calves"
+        ],
+        "muscle_load_profile": {
+            "quads": 0.35,
+            "glutes": 0.35,
+            "adductors": 0.15,
+            "calves": 0.15
+        }
+    },
+    {
+        "slug": "bear-crawl",
+        "name": "Bear Crawl",
+        "movement_pattern": "locomotion",
+        "difficulty": 2,
+        "risk_level": 1,
+        "equipment": [
+            "bodyweight"
+        ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 0.6,
+        "max_additional_load_kg": null,
+        "measurement_type": "duration",
+        "prescription": {
+            "sets": 3,
+            "seconds_min": 20,
+            "seconds_max": 45
+        },
+        "muscles_primary": [
+            "core",
+            "shoulders"
+        ],
+        "muscles_secondary": [
+            "quads",
+            "hip-flexors"
+        ],
+        "muscle_load_profile": {
+            "core": 0.35,
+            "shoulders": 0.3,
+            "quads": 0.2,
+            "hip-flexors": 0.15
+        }
+    },
+    {
+        "slug": "inchworm",
+        "name": "Inchworm",
+        "movement_pattern": "locomotion",
+        "difficulty": 1,
+        "risk_level": 1,
+        "equipment": [
+            "bodyweight"
+        ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 0.5,
+        "max_additional_load_kg": null,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 6,
+            "reps_max": 10
+        },
+        "muscles_primary": [
+            "hamstrings",
+            "shoulders"
+        ],
+        "muscles_secondary": [
+            "core",
+            "chest"
+        ],
+        "muscle_load_profile": {
+            "hamstrings": 0.35,
+            "shoulders": 0.3,
+            "core": 0.25,
+            "chest": 0.1
+        }
+    },
+    {
+        "slug": "mountain-climbers",
+        "name": "Mountain Climbers",
+        "movement_pattern": "full-body",
+        "difficulty": 1,
+        "risk_level": 1,
+        "equipment": [
+            "bodyweight"
+        ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 0.6,
+        "max_additional_load_kg": null,
+        "measurement_type": "duration",
+        "prescription": {
+            "sets": 3,
+            "seconds_min": 20,
+            "seconds_max": 45
+        },
+        "muscles_primary": [
+            "core",
+            "hip-flexors"
+        ],
+        "muscles_secondary": [
+            "shoulders",
+            "quads"
+        ],
+        "muscle_load_profile": {
+            "core": 0.4,
+            "hip-flexors": 0.25,
+            "shoulders": 0.2,
+            "quads": 0.15
+        }
+    },
+    {
+        "slug": "jump-rope",
+        "name": "Jump Rope",
+        "movement_pattern": "jump",
+        "difficulty": 1,
+        "risk_level": 1,
+        "equipment": [
+            "jump-rope"
+        ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 0.3,
+        "max_additional_load_kg": null,
+        "measurement_type": "duration",
+        "prescription": {
+            "sets": 3,
+            "seconds_min": 30,
+            "seconds_max": 120
+        },
+        "muscles_primary": [
+            "calves"
+        ],
+        "muscles_secondary": [
+            "quads",
+            "shoulders",
+            "core"
+        ],
+        "muscle_load_profile": {
+            "calves": 0.5,
+            "quads": 0.2,
+            "shoulders": 0.15,
             "core": 0.15
+        }
+    },
+    {
+        "slug": "jumping-jacks",
+        "name": "Jumping Jacks",
+        "movement_pattern": "jump",
+        "difficulty": 1,
+        "risk_level": 1,
+        "equipment": [
+            "bodyweight"
+        ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 0.3,
+        "max_additional_load_kg": null,
+        "measurement_type": "duration",
+        "prescription": {
+            "sets": 3,
+            "seconds_min": 30,
+            "seconds_max": 60
+        },
+        "muscles_primary": [
+            "calves",
+            "quads"
+        ],
+        "muscles_secondary": [
+            "shoulders",
+            "glutes"
+        ],
+        "muscle_load_profile": {
+            "calves": 0.45,
+            "quads": 0.25,
+            "shoulders": 0.15,
+            "glutes": 0.15
+        }
+    },
+    {
+        "slug": "jump-squat",
+        "name": "Jump Squat",
+        "movement_pattern": "jump",
+        "difficulty": 2,
+        "risk_level": 2,
+        "equipment": [
+            "bodyweight"
+        ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 0.9,
+        "max_additional_load_kg": null,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 6,
+            "reps_max": 12
+        },
+        "muscles_primary": [
+            "quads",
+            "glutes"
+        ],
+        "muscles_secondary": [
+            "calves",
+            "core"
+        ],
+        "muscle_load_profile": {
+            "quads": 0.45,
+            "glutes": 0.3,
+            "calves": 0.15,
+            "core": 0.1
+        }
+    },
+    {
+        "slug": "jumping-lunge",
+        "name": "Jumping Lunge",
+        "movement_pattern": "jump",
+        "difficulty": 3,
+        "risk_level": 2,
+        "equipment": [
+            "bodyweight"
+        ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 0.9,
+        "max_additional_load_kg": null,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 6,
+            "reps_max": 12,
+            "per_side": true
+        },
+        "muscles_primary": [
+            "quads",
+            "glutes"
+        ],
+        "muscles_secondary": [
+            "calves",
+            "hamstrings"
+        ],
+        "muscle_load_profile": {
+            "quads": 0.45,
+            "glutes": 0.35,
+            "calves": 0.1,
+            "hamstrings": 0.1
+        }
+    },
+    {
+        "slug": "box-jump",
+        "name": "Box Jump",
+        "movement_pattern": "jump",
+        "difficulty": 2,
+        "risk_level": 2,
+        "equipment": [
+            "box"
+        ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 0.9,
+        "max_additional_load_kg": null,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 4,
+            "reps_max": 8
+        },
+        "muscles_primary": [
+            "quads",
+            "glutes"
+        ],
+        "muscles_secondary": [
+            "calves",
+            "hamstrings"
+        ],
+        "muscle_load_profile": {
+            "quads": 0.45,
+            "glutes": 0.3,
+            "calves": 0.15,
+            "hamstrings": 0.1
+        }
+    },
+    {
+        "slug": "broad-jump",
+        "name": "Broad Jump",
+        "movement_pattern": "jump",
+        "difficulty": 2,
+        "risk_level": 2,
+        "equipment": [
+            "bodyweight"
+        ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 0.9,
+        "max_additional_load_kg": null,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 4,
+            "reps_max": 8
+        },
+        "muscles_primary": [
+            "glutes",
+            "quads"
+        ],
+        "muscles_secondary": [
+            "hamstrings",
+            "calves"
+        ],
+        "muscle_load_profile": {
+            "glutes": 0.4,
+            "quads": 0.35,
+            "hamstrings": 0.15,
+            "calves": 0.1
+        }
+    },
+    {
+        "slug": "tuck-jump",
+        "name": "Tuck Jump",
+        "movement_pattern": "jump",
+        "difficulty": 3,
+        "risk_level": 2,
+        "equipment": [
+            "bodyweight"
+        ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 0.9,
+        "max_additional_load_kg": null,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 6,
+            "reps_max": 10
+        },
+        "muscles_primary": [
+            "quads",
+            "glutes"
+        ],
+        "muscles_secondary": [
+            "calves",
+            "hip-flexors"
+        ],
+        "muscle_load_profile": {
+            "quads": 0.4,
+            "glutes": 0.3,
+            "calves": 0.15,
+            "hip-flexors": 0.15
+        }
+    },
+    {
+        "slug": "skater-jump",
+        "name": "Skater Jump",
+        "movement_pattern": "jump",
+        "difficulty": 2,
+        "risk_level": 2,
+        "equipment": [
+            "bodyweight"
+        ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 0.9,
+        "max_additional_load_kg": null,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 8,
+            "reps_max": 12,
+            "per_side": true
+        },
+        "muscles_primary": [
+            "glutes",
+            "quads"
+        ],
+        "muscles_secondary": [
+            "adductors",
+            "calves"
+        ],
+        "muscle_load_profile": {
+            "glutes": 0.4,
+            "quads": 0.3,
+            "adductors": 0.15,
+            "calves": 0.15
+        }
+    },
+    {
+        "slug": "depth-jump",
+        "name": "Depth Jump",
+        "movement_pattern": "jump",
+        "difficulty": 4,
+        "risk_level": 4,
+        "equipment": [
+            "box"
+        ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 0.9,
+        "max_additional_load_kg": null,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 3,
+            "reps_max": 6
+        },
+        "muscles_primary": [
+            "quads",
+            "glutes"
+        ],
+        "muscles_secondary": [
+            "calves",
+            "hamstrings"
+        ],
+        "muscle_load_profile": {
+            "quads": 0.4,
+            "glutes": 0.3,
+            "calves": 0.2,
+            "hamstrings": 0.1
         }
     }
 ]

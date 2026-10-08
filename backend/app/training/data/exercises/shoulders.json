@@ -1,0 +1,494 @@
+[
+    {
+        "slug": "overhead-press",
+        "name": "Barbell Overhead Press",
+        "movement_pattern": "push",
+        "difficulty": 3,
+        "risk_level": 3,
+        "equipment": [
+            "barbell"
+        ],
+        "load_type": "external",
+        "max_additional_load_kg": 140,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 4,
+            "reps_min": 5,
+            "reps_max": 10
+        },
+        "muscles_primary": [
+            "shoulders"
+        ],
+        "muscles_secondary": [
+            "triceps",
+            "traps",
+            "core"
+        ],
+        "muscle_load_profile": {
+            "shoulders": 0.55,
+            "triceps": 0.25,
+            "traps": 0.1,
+            "core": 0.1
+        }
+    },
+    {
+        "slug": "dumbbell-shoulder-press",
+        "name": "Dumbbell Shoulder Press",
+        "movement_pattern": "push",
+        "difficulty": 2,
+        "risk_level": 2,
+        "equipment": [
+            "dumbbells"
+        ],
+        "load_type": "external",
+        "max_additional_load_kg": 80,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 8,
+            "reps_max": 12
+        },
+        "muscles_primary": [
+            "shoulders"
+        ],
+        "muscles_secondary": [
+            "triceps",
+            "core",
+            "traps"
+        ],
+        "muscle_load_profile": {
+            "shoulders": 0.6,
+            "triceps": 0.25,
+            "core": 0.1,
+            "traps": 0.05
+        }
+    },
+    {
+        "slug": "arnold-press",
+        "name": "Arnold Press",
+        "movement_pattern": "push",
+        "difficulty": 2,
+        "risk_level": 2,
+        "equipment": [
+            "dumbbells"
+        ],
+        "load_type": "external",
+        "max_additional_load_kg": 60,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 8,
+            "reps_max": 12
+        },
+        "muscles_primary": [
+            "shoulders"
+        ],
+        "muscles_secondary": [
+            "triceps",
+            "traps"
+        ],
+        "muscle_load_profile": {
+            "shoulders": 0.65,
+            "triceps": 0.25,
+            "traps": 0.1
+        }
+    },
+    {
+        "slug": "machine-shoulder-press",
+        "name": "Machine Shoulder Press",
+        "movement_pattern": "push",
+        "difficulty": 1,
+        "risk_level": 1,
+        "equipment": [
+            "machine"
+        ],
+        "load_type": "machine",
+        "max_additional_load_kg": 150,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 8,
+            "reps_max": 12
+        },
+        "muscles_primary": [
+            "shoulders"
+        ],
+        "muscles_secondary": [
+            "triceps",
+            "traps"
+        ],
+        "muscle_load_profile": {
+            "shoulders": 0.6,
+            "triceps": 0.3,
+            "traps": 0.1
+        }
+    },
+    {
+        "slug": "kettlebell-press",
+        "name": "Kettlebell Overhead Press",
+        "movement_pattern": "push",
+        "difficulty": 2,
+        "risk_level": 2,
+        "equipment": [
+            "kettlebell"
+        ],
+        "load_type": "external",
+        "max_additional_load_kg": 48,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 6,
+            "reps_max": 10,
+            "per_side": true
+        },
+        "muscles_primary": [
+            "shoulders"
+        ],
+        "muscles_secondary": [
+            "triceps",
+            "core"
+        ],
+        "muscle_load_profile": {
+            "shoulders": 0.6,
+            "triceps": 0.25,
+            "core": 0.15
+        }
+    },
+    {
+        "slug": "landmine-press",
+        "name": "Landmine Press",
+        "movement_pattern": "push",
+        "difficulty": 2,
+        "risk_level": 1,
+        "equipment": [
+            "landmine",
+            "barbell"
+        ],
+        "load_type": "external",
+        "max_additional_load_kg": 80,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 8,
+            "reps_max": 12,
+            "per_side": true
+        },
+        "muscles_primary": [
+            "shoulders",
+            "chest"
+        ],
+        "muscles_secondary": [
+            "triceps",
+            "core"
+        ],
+        "muscle_load_profile": {
+            "shoulders": 0.5,
+            "chest": 0.25,
+            "triceps": 0.15,
+            "core": 0.1
+        }
+    },
+    {
+        "slug": "push-press",
+        "name": "Push Press",
+        "movement_pattern": "push",
+        "difficulty": 3,
+        "risk_level": 3,
+        "equipment": [
+            "barbell"
+        ],
+        "load_type": "external",
+        "max_additional_load_kg": 150,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 4,
+            "reps_min": 3,
+            "reps_max": 8
+        },
+        "muscles_primary": [
+            "shoulders"
+        ],
+        "muscles_secondary": [
+            "triceps",
+            "quads",
+            "glutes",
+            "core"
+        ],
+        "muscle_load_profile": {
+            "shoulders": 0.45,
+            "triceps": 0.2,
+            "quads": 0.15,
+            "glutes": 0.1,
+            "core": 0.1
+        }
+    },
+    {
+        "slug": "pike-push-up",
+        "name": "Pike Push-Up",
+        "movement_pattern": "push",
+        "difficulty": 2,
+        "risk_level": 1,
+        "equipment": [
+            "bodyweight"
+        ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 0.7,
+        "max_additional_load_kg": null,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 6,
+            "reps_max": 12
+        },
+        "muscles_primary": [
+            "shoulders"
+        ],
+        "muscles_secondary": [
+            "triceps",
+            "core",
+            "chest"
+        ],
+        "muscle_load_profile": {
+            "shoulders": 0.55,
+            "triceps": 0.3,
+            "core": 0.1,
+            "chest": 0.05
+        }
+    },
+    {
+        "slug": "wall-handstand-push-up",
+        "name": "Wall Handstand Push-Up",
+        "movement_pattern": "push",
+        "difficulty": 5,
+        "risk_level": 4,
+        "equipment": [
+            "bodyweight"
+        ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 1.0,
+        "max_additional_load_kg": null,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 2,
+            "reps_max": 8
+        },
+        "muscles_primary": [
+            "shoulders"
+        ],
+        "muscles_secondary": [
+            "triceps",
+            "traps",
+            "core"
+        ],
+        "muscle_load_profile": {
+            "shoulders": 0.55,
+            "triceps": 0.3,
+            "traps": 0.1,
+            "core": 0.05
+        }
+    },
+    {
+        "slug": "lateral-raises",
+        "name": "Dumbbell Lateral Raise",
+        "movement_pattern": "isolation",
+        "difficulty": 1,
+        "risk_level": 1,
+        "equipment": [
+            "dumbbells"
+        ],
+        "load_type": "external",
+        "max_additional_load_kg": 40,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 12,
+            "reps_max": 20
+        },
+        "muscles_primary": [
+            "shoulders"
+        ],
+        "muscles_secondary": [
+            "traps"
+        ],
+        "muscle_load_profile": {
+            "shoulders": 0.9,
+            "traps": 0.1
+        }
+    },
+    {
+        "slug": "cable-lateral-raise",
+        "name": "Cable Lateral Raise",
+        "movement_pattern": "isolation",
+        "difficulty": 1,
+        "risk_level": 1,
+        "equipment": [
+            "cable"
+        ],
+        "load_type": "cable",
+        "max_additional_load_kg": 30,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 12,
+            "reps_max": 20,
+            "per_side": true
+        },
+        "muscles_primary": [
+            "shoulders"
+        ],
+        "muscles_secondary": [
+            "traps"
+        ],
+        "muscle_load_profile": {
+            "shoulders": 0.9,
+            "traps": 0.1
+        }
+    },
+    {
+        "slug": "front-raise",
+        "name": "Dumbbell Front Raise",
+        "movement_pattern": "isolation",
+        "difficulty": 1,
+        "risk_level": 1,
+        "equipment": [
+            "dumbbells"
+        ],
+        "load_type": "external",
+        "max_additional_load_kg": 30,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 10,
+            "reps_max": 15
+        },
+        "muscles_primary": [
+            "shoulders"
+        ],
+        "muscles_secondary": [
+            "chest",
+            "traps"
+        ],
+        "muscle_load_profile": {
+            "shoulders": 0.85,
+            "chest": 0.1,
+            "traps": 0.05
+        }
+    },
+    {
+        "slug": "reverse-fly",
+        "name": "Dumbbell Reverse Fly",
+        "movement_pattern": "isolation",
+        "difficulty": 1,
+        "risk_level": 1,
+        "equipment": [
+            "dumbbells"
+        ],
+        "load_type": "external",
+        "max_additional_load_kg": 30,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 12,
+            "reps_max": 20
+        },
+        "muscles_primary": [
+            "shoulders",
+            "upper-back"
+        ],
+        "muscles_secondary": [
+            "traps"
+        ],
+        "muscle_load_profile": {
+            "shoulders": 0.5,
+            "upper-back": 0.4,
+            "traps": 0.1
+        }
+    },
+    {
+        "slug": "reverse-pec-deck",
+        "name": "Reverse Pec Deck",
+        "movement_pattern": "isolation",
+        "difficulty": 1,
+        "risk_level": 1,
+        "equipment": [
+            "machine"
+        ],
+        "load_type": "machine",
+        "max_additional_load_kg": 100,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 12,
+            "reps_max": 20
+        },
+        "muscles_primary": [
+            "shoulders",
+            "upper-back"
+        ],
+        "muscles_secondary": [
+            "traps"
+        ],
+        "muscle_load_profile": {
+            "shoulders": 0.5,
+            "upper-back": 0.4,
+            "traps": 0.1
+        }
+    },
+    {
+        "slug": "upright-row",
+        "name": "Barbell Upright Row",
+        "movement_pattern": "pull",
+        "difficulty": 2,
+        "risk_level": 3,
+        "equipment": [
+            "barbell"
+        ],
+        "load_type": "external",
+        "max_additional_load_kg": 80,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 10,
+            "reps_max": 15
+        },
+        "muscles_primary": [
+            "shoulders",
+            "traps"
+        ],
+        "muscles_secondary": [
+            "biceps"
+        ],
+        "muscle_load_profile": {
+            "shoulders": 0.5,
+            "traps": 0.35,
+            "biceps": 0.15
+        }
+    },
+    {
+        "slug": "band-external-rotation",
+        "name": "Band External Rotation",
+        "movement_pattern": "isolation",
+        "difficulty": 1,
+        "risk_level": 1,
+        "equipment": [
+            "band"
+        ],
+        "load_type": "band",
+        "max_additional_load_kg": null,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 12,
+            "reps_max": 20,
+            "per_side": true
+        },
+        "muscles_primary": [
+            "shoulders"
+        ],
+        "muscles_secondary": [],
+        "muscle_load_profile": {
+            "shoulders": 1.0
+        }
+    }
+]

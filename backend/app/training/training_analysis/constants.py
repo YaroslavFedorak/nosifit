@@ -55,6 +55,16 @@ PROFILE_STRONG_PENALTY = 5.0
 MIN_RECOMMENDATION_SCORE = 4.0
 MAX_RECOMMENDATIONS = 3
 
+# Body-region keys used by the questionnaire (weak/strong points) mapped to
+# catalog muscle slugs.
+MUSCLE_GROUPS = {
+    "back": ("lats", "upper-back", "traps", "lower-back"),
+    "legs": ("quads", "hamstrings", "glutes", "adductors", "calves"),
+    "arms": ("biceps", "triceps", "forearms"),
+    "core": ("core", "abs", "obliques"),
+    "lower_back": ("lower-back",),
+}
+
 SUMMARY_PRIORITY = {
     "recovery": 4,
     "load": 3,

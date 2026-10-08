@@ -1,4 +1,6 @@
-from .exercise import calculate_exercise_load
+from backend.app.training.exercises.prescription import performed_values
+
+from .exercise import calculate_measured_load
 from .index import compute_daily_load_index
 from .session import calculate_session_load
 from backend.app.models.training_session import TrainingSession
@@ -35,15 +37,19 @@ class TrainingLoadService:
 
         user_weight = float(capacity.get("weight", 70.0) or 70.0)
 
-        result = calculate_exercise_load(
+        values = performed_values(session_exercise, exercise)
+
+        rpe = getattr(session_exercise, "rpe", None)
+
+        return calculate_measured_load(
             exercise=exercise,
             user_weight=user_weight,
-            sets=getattr(session_exercise, "sets", 0),
-            reps=getattr(session_exercise, "reps", 0),
-            additional_weight=getattr(session_exercise, "load", 0),
+            sets=values["sets"],
+            reps=values["reps"],
+            duration_sec=values["duration_sec"],
+            additional_weight=values["load"],
+            rpe=7.0 if rpe is None else rpe,
         )
-
-        return result
 
     @staticmethod
     def compute_session_load(session, user):

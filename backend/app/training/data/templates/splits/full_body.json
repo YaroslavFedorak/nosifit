@@ -5,19 +5,19 @@
             "name": "Full Body A",
             "exercises": [
                 {
-                    "id": "squat"
+                    "id": "barbell-back-squat"
                 },
                 {
-                    "id": "bench_press"
+                    "id": "bench-press"
                 },
                 {
-                    "id": "barbell_row"
+                    "id": "barbell-row"
                 },
                 {
-                    "id": "lateral_raise"
+                    "id": "lateral-raises"
                 },
                 {
-                    "id": "biceps_curl"
+                    "id": "bicep-curl"
                 },
                 {
                     "id": "plank"
@@ -28,22 +28,22 @@
             "name": "Full Body B",
             "exercises": [
                 {
-                    "id": "deadlift"
+                    "id": "barbell-deadlift"
                 },
                 {
-                    "id": "shoulder_press"
+                    "id": "dumbbell-shoulder-press"
                 },
                 {
-                    "id": "lat_pulldown"
+                    "id": "lat-pulldown"
                 },
                 {
-                    "id": "triceps_pushdown"
+                    "id": "tricep-pushdown"
                 },
                 {
-                    "id": "hammer_curl"
+                    "id": "hammer-curl"
                 },
                 {
-                    "id": "hanging_leg_raise"
+                    "id": "hanging-leg-raise"
                 }
             ]
         },
@@ -54,19 +54,19 @@
                     "id": "lunges"
                 },
                 {
-                    "id": "incline_dumbbell_press"
+                    "id": "incline-dumbbell-press"
                 },
                 {
-                    "id": "seated_row"
+                    "id": "seated-row"
                 },
                 {
-                    "id": "face_pull"
+                    "id": "face-pull"
                 },
                 {
-                    "id": "glute_bridge"
+                    "id": "glute-bridge"
                 },
                 {
-                    "id": "side_plank"
+                    "id": "side-plank"
                 }
             ]
         }

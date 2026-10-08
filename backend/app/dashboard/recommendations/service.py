@@ -127,6 +127,7 @@ class DashboardRecommendationService:
             description_key=(str(description_key) if description_key else None),
             reason_key=(str(reason_key) if reason_key else None),
             params=params,
+            slug=(str(item["slug"]) if item.get("slug") else None),
         )
 
     @staticmethod

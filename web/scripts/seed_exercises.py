@@ -3,6 +3,7 @@ import os
 
 from web.app import create_app
 from backend.app.extensions import db
+from backend.app.training.exercises.catalog import load_exercise_catalog
 
 BASE_DIR = os.path.abspath(
     os.path.join(
@@ -29,36 +30,15 @@ def load_json(path):
         return []
 
 
-def load_all_from_dir(path):
-    items = []
-
-    if not os.path.exists(path):
-        return items
-
-    for filename in os.listdir(path):
-        if not filename.endswith(".json"):
-            continue
-
-        file_path = os.path.join(path, filename)
-
-        try:
-            with open(file_path, "r", encoding="utf-8") as file:
-                data = json.load(file)
-
-            if isinstance(data, list):
-                items.extend(data)
-        except Exception:
-            continue
-
-    return items
-
-
 def run_seed():
     app = create_app()
 
     muscles_path = os.path.join(BASE_DIR, "muscles", "muscles.json")
     equipment_path = os.path.join(BASE_DIR, "equipment", "equipment.json")
     exercises_dir = os.path.join(BASE_DIR, "exercises")
+
+    # Validates every record and raises ExerciseDataError before touching the DB.
+    exercises = load_exercise_catalog(exercises_dir, muscles_path, equipment_path)
 
     with app.app_context():
         from backend.app.training.models.muscle import Muscle
@@ -67,7 +47,6 @@ def run_seed():
 
         muscles = load_json(muscles_path)
         equipment = load_json(equipment_path)
-        exercises = load_all_from_dir(exercises_dir)
 
         created_muscles = 0
         created_equipment = 0
@@ -114,46 +93,33 @@ def run_seed():
         db.session.flush()
 
         for item in exercises:
-            name = item.get("name")
-            slug = item.get("slug")
-
-            if not name:
-                continue
-
-            if not slug:
-                slug = name.lower().replace(" ", "-")
+            slug = item["slug"]
+            fields = {
+                "name": item["name"],
+                "description": item.get("description"),
+                "difficulty": item["difficulty"],
+                "location": item.get("location", "any"),
+                "movement_pattern": item["movement_pattern"],
+                "risk_level": item["risk_level"],
+                "muscles_primary": item["muscles_primary"],
+                "muscles_secondary": item["muscles_secondary"],
+                "equipment": item["equipment"],
+                "max_additional_load_kg": item.get("max_additional_load_kg"),
+                "muscle_load_profile": item["muscle_load_profile"],
+                "measurement_type": item["measurement_type"],
+                "load_type": item["load_type"],
+                "bodyweight_ratio": item.get("bodyweight_ratio"),
+                "prescription": item["prescription"],
+            }
 
             exercise = Exercise.query.filter_by(slug=slug).first()
 
             if not exercise:
-                exercise = Exercise(
-                    name=name,
-                    slug=slug,
-                    description=item.get("description"),
-                    difficulty=item.get("difficulty", 1),
-                    location=item.get("location", "any"),
-                    movement_pattern=item.get("movement_pattern"),
-                    risk_level=item.get("risk_level", 1),
-                    muscles_primary=item.get("muscles_primary", []),
-                    muscles_secondary=item.get("muscles_secondary", []),
-                    equipment=item.get("equipment", []),
-                    max_additional_load_kg=item.get("max_additional_load_kg"),
-                    muscle_load_profile=item.get("muscle_load_profile"),
-                )
-                db.session.add(exercise)
+                db.session.add(Exercise(slug=slug, **fields))
                 created_exercises += 1
             else:
-                exercise.name = name
-                exercise.description = item.get("description")
-                exercise.difficulty = item.get("difficulty", 1)
-                exercise.location = item.get("location", "any")
-                exercise.movement_pattern = item.get("movement_pattern")
-                exercise.risk_level = item.get("risk_level", 1)
-                exercise.muscles_primary = item.get("muscles_primary", [])
-                exercise.muscles_secondary = item.get("muscles_secondary", [])
-                exercise.equipment = item.get("equipment", [])
-                exercise.max_additional_load_kg = item.get("max_additional_load_kg")
-                exercise.muscle_load_profile = item.get("muscle_load_profile")
+                for field, value in fields.items():
+                    setattr(exercise, field, value)
                 updated_exercises += 1
 
         db.session.commit()

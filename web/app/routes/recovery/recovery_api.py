@@ -540,6 +540,11 @@ def get_day_details(user_id):
                             if exercise.reps_done is not None
                             else exercise.reps_planned
                         ),
+                        "duration_sec": (
+                            exercise.duration_sec_done
+                            if exercise.duration_sec_done is not None
+                            else exercise.duration_sec_planned
+                        ),
                         "load": (
                             exercise.load_done
                             if exercise.load_done is not None

@@ -5,62 +5,39 @@ REFERENCE_HISTORY_WEIGHT = 0.7
 
 MAX_DURATION_BONUS = 0.2
 
-BODYWEIGHT_FACTOR = 0.65
-
 GLOBAL_LOAD_SCALE = 1.0
 
-REPETITION_EXPONENT = 0.85
-REPETITION_SCALE = 1.0
+# Fallback for bodyweight exercises that predate catalog bodyweight_ratio.
+DEFAULT_BODYWEIGHT_RATIO = 0.50
 
+# Duration load metric: sets x (seconds / TIME_BASE_SECONDS) ** TIME_EXPONENT.
+# It scales hold time into internal load units for duration exercises only;
+# it is not a repetition count and never changes an exercise prescription.
 TIME_BASE_SECONDS = 30.0
 TIME_EXPONENT = 0.85
 TIME_SCALE = 1.0
 
 MOVEMENT_FACTORS = {
+    "squat": 1.08,
+    "hinge": 1.08,
+    "lunge": 1.05,
     "push": 1.00,
     "pull": 1.05,
-    "lower": 1.05,
-    "core": 0.80,
-    "mobility": 0.40,
-    "full_body": 1.10,
-    "accessory": 0.75,
-}
-
-BODYWEIGHT_RATIOS = {
-    "push-ups": 0.64,
-    "pushup": 0.64,
-    "bench-push-ups": 0.55,
-    "bench-dips": 0.70,
-    "dips": 0.87,
-    "pull-ups": 1.00,
-    "plank": 0.45,
-    "side-plank": 0.35,
-    "wall-sit": 0.55,
-    "burpee": 1.10,
-    "jump-squat": 1.15,
-    "jumping-jacks": 0.75,
-    "mountain-climbers": 0.65,
-    "bear-crawl": 0.65,
-    "lunge-bodyweight": 0.85,
-    "lunges": 0.85,
-    "squat-bodyweight": 0.90,
-    "squats": 0.90,
-    "dead-bug": 0.45,
-    "bicycle": 0.45,
-    "bird-dog": 0.35,
-    "glute-bridge": 0.70,
-    "kickback": 0.45,
-}
-
-BODYWEIGHT_RATIO = BODYWEIGHT_RATIOS
-
-TIME_BASED_EXERCISES = {
-    "plank",
-    "side-plank",
-    "wall-sit",
-    "dead-hang",
-    "hollow-hold",
-    "glute-bridge-hold",
+    "carry": 1.05,
+    "rotation": 0.90,
+    "anti-rotation": 0.90,
+    "anti-extension": 0.90,
+    "anti-lateral-flexion": 0.90,
+    "core": 0.90,
+    "isolation": 0.80,
+    "locomotion": 1.05,
+    "jump": 1.10,
+    "full-body": 1.15,
+    "mobility": 0.30,
+    # Patterns used by the catalog before the measurement-type redesign.
+    "upper-body": 1.00,
+    "lower-body": 1.10,
+    "accessory": 0.80,
 }
 
 MIN_REFERENCE_LOAD = {
