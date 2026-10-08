@@ -25,6 +25,13 @@ export type ExercisesResponse =
         items?: Exercise[];
     };
 
+// One set as logged: reps (or seconds for duration exercises) and kg.
+export type SetEntry = {
+    reps?: number | null;
+    duration_sec?: number | null;
+    load: number;
+};
+
 export type WorkoutExercise = {
     exercise: Exercise;
     sets: number;
@@ -34,6 +41,9 @@ export type WorkoutExercise = {
     // Stored effort of a saved exercise (e.g. RIR from Telegram), sent
     // back unchanged on the next save.
     rpe?: number | null;
+    // Each set with its own reps and kg; sets / reps / load above are
+    // derived from it.
+    set_entries?: SetEntry[];
     done: boolean;
     fromPlan: boolean;
 };
@@ -48,6 +58,7 @@ export type LoggedExercise = {
     duration_sec: number | null;
     load: number | null;
     rpe: number | null;
+    set_entries: SetEntry[];
 };
 
 export type LoggedTodayResponse = {

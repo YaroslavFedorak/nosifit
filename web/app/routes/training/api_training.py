@@ -322,7 +322,22 @@ def _logged_values(exercise, session_exercise):
         "rir": rir_from_rpe(session_exercise.rpe),
         # As stored, so a client re-sending the workout keeps it exact.
         "rpe": session_exercise.rpe,
+        "set_entries": _set_entries(session_exercise, values, duration_sec, reps_count),
     }
+
+
+def _set_entries(session_exercise, values, duration_sec, reps_count):
+    """Logged sets; rows saved before sets were stored repeat one set."""
+    if session_exercise.set_entries:
+        return session_exercise.set_entries
+    load = values["load"] or 0.0
+    if duration_sec:
+        one = {"duration_sec": duration_sec, "load": load}
+    elif reps_count:
+        one = {"reps": reps_count, "load": load}
+    else:
+        return []
+    return [dict(one) for _ in range(values["sets"] or 0)]
 
 
 def _today_utc_bounds():
@@ -825,6 +840,7 @@ def complete_session():
                             "load_done": item.get("load"),
                             "rpe": item.get("rpe"),
                             **({"rir": item["rir"]} if "rir" in item else {}),
+                            "set_entries": item.get("set_entries"),
                         }
                     ),
                 )

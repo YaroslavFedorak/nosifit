@@ -73,6 +73,9 @@ function normalizeExercise(item) {
         rpe: item.rpe != null
             ? Number(item.rpe)
             : null,
+        set_entries: Array.isArray(item.set_entries)
+            ? item.set_entries
+            : null,
         done: completed,
         completed,
         fromPlan: Boolean(item.fromPlan)
@@ -122,7 +125,8 @@ export function persistWorkout(exercises) {
             null,
         load: item.load,
         weight: item.load,
-        rpe: null,
+        rpe: item.rpe ?? null,
+        set_entries: item.set_entries ?? null,
         done: item.done,
         completed: item.done,
         fromPlan: item.fromPlan
@@ -187,6 +191,8 @@ export function initDailyState() {
                         defaults.duration_sec
                     : null,
                 load: item.load,
+                rpe: item.rpe,
+                set_entries: item.set_entries ?? undefined,
                 done: item.done ||
                     item.completed,
                 fromPlan: item.fromPlan

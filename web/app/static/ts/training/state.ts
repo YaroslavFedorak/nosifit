@@ -1,5 +1,6 @@
 import type {
     Exercise,
+    SetEntry,
     WorkoutExercise
 } from "./api.js";
 
@@ -37,6 +38,7 @@ export type DailyTrainingExercise = {
     load: number;
     weight: number;
     rpe: number | null;
+    set_entries: SetEntry[] | null;
     done: boolean;
     completed: boolean;
     fromPlan: boolean;
@@ -167,6 +169,10 @@ function normalizeExercise(
                     item.rpe
                 )
                 : null,
+        set_entries:
+            Array.isArray(item.set_entries)
+                ? item.set_entries
+                : null,
         done:
             completed,
         completed,
@@ -270,7 +276,9 @@ export function persistWorkout(
                     weight:
                         item.load,
                     rpe:
-                        null,
+                        item.rpe ?? null,
+                    set_entries:
+                        item.set_entries ?? null,
                     done:
                         item.done,
                     completed:
@@ -392,6 +400,10 @@ export function initDailyState(): void {
                         : null,
                 load:
                     item.load,
+                rpe:
+                    item.rpe,
+                set_entries:
+                    item.set_entries ?? undefined,
                 done:
                     item.done ||
                     item.completed,

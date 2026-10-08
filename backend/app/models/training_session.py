@@ -122,6 +122,15 @@ class SessionExercise(db.Model):
         db.Float,
     )
 
+    # Each set as logged: [{"reps": 12, "load": 60.0}, ...] or
+    # [{"duration_sec": 45, "load": 0.0}, ...]. sets_done / reps_done /
+    # duration_sec_done / load_done are derived from it (see
+    # prescription.aggregate_set_entries); null for rows logged before.
+    set_entries = db.Column(
+        db.JSON,
+        nullable=True,
+    )
+
     session = db.relationship(
         "TrainingSession",
         back_populates="exercises",

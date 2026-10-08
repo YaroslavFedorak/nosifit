@@ -182,6 +182,35 @@ def performed_values(session_exercise: Any, exercise: Any) -> Dict[str, Any]:
     }
 
 
+def aggregate_set_entries(exercise: Any, entries) -> Dict[str, Any]:
+    """Per-exercise columns of a list of logged sets.
+
+    Sets is their number, reps (or seconds) their rounded mean, and kg the
+    mean weighted by reps, so sets x reps x kg stays close to the volume of
+    the sets. The sets themselves are kept in ``set_entries``.
+    """
+    duration = exercise is not None and is_duration_exercise(exercise)
+    key = "duration_sec" if duration else "reps"
+    counts = [int(entry.get(key) or 0) for entry in entries]
+    loads = [float(entry.get("load") or 0) for entry in entries]
+    total = sum(counts)
+    if duration or not total:
+        load = sum(loads) / len(loads)
+    else:
+        load = sum(c * l for c, l in zip(counts, loads)) / total
+    mean = int(round(total / len(counts))) if counts else 0
+    fields = {
+        "sets_done": len(entries),
+        "load_done": round(load, 2),
+        "set_entries": [dict(entry) for entry in entries],
+    }
+    if duration:
+        fields.update(duration_sec_done=mean, reps_done=None)
+    else:
+        fields.update(reps_done=str(mean), duration_sec_done=None)
+    return fields
+
+
 def session_update_fields(exercise: Any, data: Mapping[str, Any]) -> Dict[str, Any]:
     """Map a client payload onto ``SessionExercise`` columns.
 
@@ -218,6 +247,12 @@ def session_update_fields(exercise: Any, data: Mapping[str, Any]) -> Dict[str, A
 
     if "reps_done" in fields and fields["reps_done"] is not None:
         fields["reps_done"] = str(fields["reps_done"])
+
+    if data.get("set_entries"):
+        fields.update(aggregate_set_entries(exercise, data["set_entries"]))
+    elif {"sets_done", "reps_done", "duration_sec_done", "load_done"} & set(fields):
+        # Values changed without sets: stored sets would no longer match.
+        fields["set_entries"] = None
 
     return fields
 

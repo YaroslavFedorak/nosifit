@@ -211,6 +211,8 @@
         "execution": "Szczegóły ćwiczenia",
         "sets": "Serie",
         "reps": "Powtórzenia",
+        "addSet": "+ Seria",
+        "removeSet": "Usuń serię",
         "seconds": "Sekundy",
         "perSide": "/ stronę",
         "weight": "Ciężar (kg)",

@@ -211,6 +211,8 @@
         "execution": "Exercise details",
         "sets": "Sets",
         "reps": "Reps",
+        "addSet": "+ Set",
+        "removeSet": "Remove set",
         "seconds": "Seconds",
         "perSide": "/ side",
         "weight": "Weight (kg)",

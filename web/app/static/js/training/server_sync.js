@@ -32,6 +32,7 @@ export async function syncWorkoutWithServer() {
             duration_sec: row.duration_sec,
             load: row.load ?? 0,
             rpe: row.rpe,
+            set_entries: row.set_entries,
             done: true,
             fromPlan: false
         };

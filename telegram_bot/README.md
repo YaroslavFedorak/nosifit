@@ -132,19 +132,23 @@ own buttons with **🏠 Головна** to go back:
 
 ## Training
 
-Today's workout in the stored model: per exercise sets x reps (or seconds)
-x kg. Entry goes one question at a time, like meals:
+Each exercise is a list of sets, every set with its own reps (or seconds)
+and kg, e.g. 12 × 60, 11 × 55, 8 × 50. Entry goes one question at a time:
 
 1. **➕ Додати вправу** → type a name (Ukrainian or English, typos are fine)
    or tap a recent exercise.
-2. **Яка вага, кг?** (only for barbell, dumbbell, machine and cable
-   exercises) → **Скільки повторів?** / **Скільки секунд?** Last time's
-   values are offered as one-tap buttons.
-3. The set is saved: **➕ Ще підхід** repeats it with one tap, **✏️ Інші
-   значення** asks again, **✅ Готово** shows today's workout.
+2. **Скільки підходів?** → for each set **Скільки повторів?** (or секунд),
+   then **Яка вага, кг?** (only barbell, dumbbell, machine and cable).
+   "↻ Як попередній" and "↻ Як минулого разу" fill a whole set in one tap.
+3. Saved: **➕ Ще підхід**, **✏️ Ввести заново** or **✅ Готово**.
 
-**📋 Моє тренування** lists today's exercises; each one can get or lose a
-set, be changed or deleted, and the workout can be finished.
+The server stores the sets in `session_exercises.set_entries` and derives
+sets / reps / kg for the training model from them (mean reps, kg weighted
+by reps).
+
+**📋 Моє тренування** lists today's exercises; each one can get one more
+set, lose its last set, be entered again or deleted, and the workout can be
+finished.
 
 Every change first reads today's session from the server
 (`GET /api/training/sessions/today`), changes one exercise and sends the

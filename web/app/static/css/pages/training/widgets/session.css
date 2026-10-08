@@ -67,7 +67,8 @@
 
 .tr-session-ex-row {
     display: grid;
-    grid-template-columns: 1fr 120px 120px 120px 45px;
+    /* name | sets (one row per set) | done check */
+    grid-template-columns: minmax(140px, 1fr) minmax(0, 2fr) 45px;
     align-items: center;
     background: var(--surface);
     border: 1px solid var(--border-soft);
@@ -227,5 +228,69 @@
 @media (max-width: 900px) {
     .tr-card-session {
         height: 460px;
+    }
+}
+
+/* Sets of one exercise: "1  [12] повт.  [60] кг  ✕", then "+ Підхід". */
+.tr-sets-editor {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+}
+
+.tr-set-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.tr-set-num {
+    width: 18px;
+    color: var(--text-muted, var(--text));
+    font-size: 13px;
+    opacity: 0.7;
+}
+
+.tr-set-input {
+    width: 56px;
+    padding: 4px 6px;
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius-sm, 8px);
+}
+
+.tr-set-unit {
+    font-size: 12px;
+    opacity: 0.7;
+}
+
+.tr-set-remove,
+.tr-set-add {
+    background: transparent;
+    border: none;
+    color: var(--text);
+    cursor: pointer;
+    font-size: 13px;
+    padding: 2px 6px;
+}
+
+.tr-set-remove {
+    opacity: 0.5;
+}
+
+.tr-set-add {
+    align-self: flex-start;
+    font-weight: 600;
+}
+
+@media (max-width: 640px) {
+    .tr-session-ex-row {
+        grid-template-columns: 1fr 45px;
+    }
+
+    .tr-sets-editor {
+        grid-column: 1 / -1;
+        grid-row: 2;
     }
 }

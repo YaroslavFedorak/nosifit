@@ -2,108 +2,13 @@ import { trainingStore } from "./store.js";
 import { persistWorkout } from "./state.js";
 import { ICONS } from "../icons/index.js";
 import { isDurationExercise, isPerSide } from "./measurement.js";
+import { acceptsLoad, entriesOf, syncTotals } from "./sets.js";
 function measurementLabel(item, key) {
     return isPerSide(item.exercise)
         ? `${t(key)} ${t("exercise.perSide")}`
         : t(key);
 }
 import { exercise_t, t } from "../i18n/index.js";
-function makeInlineBlock(labelText, initialValue, onChange, isRange = false, disabled = false) {
-    const wrap = document.createElement("div");
-    wrap.className =
-        "tr-input-inline";
-    const input = document.createElement("input");
-    input.className =
-        "tr-input-field";
-    input.value =
-        String(initialValue ?? "");
-    input.disabled =
-        disabled;
-    input.oninput = () => {
-        if (input.disabled) {
-            return;
-        }
-        onChange(input.value);
-        persistWorkout(trainingStore.workout);
-    };
-    const arrows = document.createElement("div");
-    arrows.className =
-        "tr-input-arrows";
-    const up = document.createElement("div");
-    up.className =
-        "tr-arrow tr-arrow-up";
-    up.onclick = () => {
-        if (input.disabled) {
-            return;
-        }
-        const value = String(input.value);
-        if (isRange) {
-            const parts = value
-                .split("-")
-                .map(Number);
-            const first = Number.isFinite(parts[0])
-                ? parts[0]
-                : 0;
-            const second = Number.isFinite(parts[1])
-                ? parts[1]
-                : first;
-            const next = `${first + 1}-${second + 1}`;
-            input.value =
-                next;
-            onChange(next);
-            persistWorkout(trainingStore.workout);
-            return;
-        }
-        const next = (Number(input.value) || 0) + 1;
-        input.value =
-            String(next);
-        onChange(next);
-        persistWorkout(trainingStore.workout);
-    };
-    const down = document.createElement("div");
-    down.className =
-        "tr-arrow tr-arrow-down";
-    down.onclick = () => {
-        if (input.disabled) {
-            return;
-        }
-        const value = String(input.value);
-        if (isRange) {
-            const parts = value
-                .split("-")
-                .map(Number);
-            const first = Math.max(1, Number(parts[0]) || 1);
-            const second = Math.max(first, Number(parts[1]) || first);
-            const nextFirst = Math.max(1, first - 1);
-            const nextSecond = Math.max(nextFirst, second - 1);
-            const next = `${nextFirst}-${nextSecond}`;
-            input.value =
-                next;
-            onChange(next);
-            persistWorkout(trainingStore.workout);
-            return;
-        }
-        const next = Math.max(0, (Number(input.value) || 0) - 1);
-        input.value =
-            String(next);
-        onChange(next);
-        persistWorkout(trainingStore.workout);
-    };
-    const label = document.createElement("span");
-    label.className =
-        "tr-input-inline-label";
-    label.textContent =
-        labelText;
-    arrows.appendChild(up);
-    arrows.appendChild(down);
-    wrap.appendChild(input);
-    wrap.appendChild(arrows);
-    wrap.appendChild(label);
-    if (disabled) {
-        wrap.classList.add("tr-input-inline-disabled");
-    }
-    return wrap;
-}
 function getExerciseName(item) {
     const slug = item.exercise?.slug;
     if (typeof slug === "string" &&
@@ -116,6 +21,106 @@ function getExerciseName(item) {
     }
     return (item.exercise?.name ||
         t("exercise.fallback"));
+}
+function makeNumberInput(value, disabled, onChange, step = "1") {
+    const input = document.createElement("input");
+    input.type = "number";
+    input.min = "0";
+    input.step = step;
+    input.inputMode = step === "1" ? "numeric" : "decimal";
+    input.className = "tr-input-field tr-set-input";
+    input.value = value != null && value !== 0 ? String(value) : "";
+    input.disabled = disabled;
+    input.oninput = () => {
+        onChange(Number(input.value.replace(",", ".")) || 0);
+    };
+    return input;
+}
+// One row per set: "1  [12] повт.  [60] кг  ✕", then "+ Підхід" that
+// copies the last set. Each set keeps its own reps and kg.
+function makeSetsEditor(item, disabled) {
+    const box = document.createElement("div");
+    box.className =
+        "tr-sets-editor";
+    const duration = isDurationExercise(item.exercise);
+    const withLoad = acceptsLoad(item.exercise);
+    const entries = entriesOf(item);
+    const changed = () => {
+        syncTotals(item);
+        persistWorkout(trainingStore.workout);
+    };
+    entries.forEach((entry, index) => {
+        const row = document.createElement("div");
+        row.className =
+            "tr-set-row";
+        const number = document.createElement("span");
+        number.className =
+            "tr-set-num";
+        number.textContent =
+            String(index + 1);
+        row.appendChild(number);
+        row.appendChild(makeNumberInput(duration ? entry.duration_sec : entry.reps, disabled, value => {
+            if (duration) {
+                entry.duration_sec = Math.round(value);
+            }
+            else {
+                entry.reps = Math.round(value);
+            }
+            changed();
+        }));
+        const unit = document.createElement("span");
+        unit.className =
+            "tr-set-unit";
+        unit.textContent =
+            duration
+                ? measurementLabel(item, "exercise.seconds")
+                : measurementLabel(item, "exercise.reps");
+        row.appendChild(unit);
+        if (withLoad) {
+            row.appendChild(makeNumberInput(entry.load, disabled, value => {
+                entry.load = value;
+                changed();
+            }, "0.5"));
+            const kg = document.createElement("span");
+            kg.className =
+                "tr-set-unit";
+            kg.textContent =
+                t("exercise.weight");
+            row.appendChild(kg);
+        }
+        if (!disabled && entries.length > 1) {
+            const remove = document.createElement("button");
+            remove.type = "button";
+            remove.className = "tr-set-remove";
+            remove.textContent = "✕";
+            remove.title = t("exercise.removeSet");
+            remove.onclick = () => {
+                entries.splice(index, 1);
+                changed();
+                renderWorkoutList();
+            };
+            row.appendChild(remove);
+        }
+        box.appendChild(row);
+    });
+    if (!disabled) {
+        const add = document.createElement("button");
+        add.type = "button";
+        add.className = "tr-set-add";
+        add.textContent = t("exercise.addSet");
+        add.onclick = () => {
+            const last = entries[entries.length - 1];
+            entries.push(last
+                ? { ...last }
+                : duration
+                    ? { duration_sec: 30, load: 0 }
+                    : { reps: 10, load: 0 });
+            changed();
+            renderWorkoutList();
+        };
+        box.appendChild(add);
+    }
+    return box;
 }
 export function renderWorkoutList() {
     const box = document.getElementById("tr-workout-exercise-list");
@@ -174,23 +179,7 @@ export function renderWorkoutList() {
             nameWrap.appendChild(planIcon);
         }
         const disabled = Boolean(item.done);
-        const setsBlock = makeInlineBlock(t("exercise.sets"), item.sets, value => {
-            item.sets =
-                parseInt(String(value), 10) || 0;
-        }, false, disabled);
-        const repsBlock = isDurationExercise(item.exercise)
-            ? makeInlineBlock(measurementLabel(item, "exercise.seconds"), item.duration_sec, value => {
-                item.duration_sec =
-                    parseInt(String(value), 10) || 0;
-            }, false, disabled)
-            : makeInlineBlock(measurementLabel(item, "exercise.reps"), item.reps, value => {
-                item.reps =
-                    String(value);
-            }, true, disabled);
-        const loadBlock = makeInlineBlock(t("exercise.weight"), item.load, value => {
-            item.load =
-                parseFloat(String(value)) || 0;
-        }, false, disabled);
+        const setsEditor = makeSetsEditor(item, disabled);
         const check = document.createElement("div");
         check.className =
             "tr-ex-check";
@@ -205,9 +194,7 @@ export function renderWorkoutList() {
             window.dispatchEvent(new CustomEvent("training:workout-updated"));
         };
         row.appendChild(nameWrap);
-        row.appendChild(repsBlock);
-        row.appendChild(setsBlock);
-        row.appendChild(loadBlock);
+        row.appendChild(setsEditor);
         row.appendChild(check);
         box.appendChild(row);
     });
