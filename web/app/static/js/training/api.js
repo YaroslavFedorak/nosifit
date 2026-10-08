@@ -111,6 +111,9 @@ export const TrainingAPI = {
     getToday() {
         return jsonFetch(`${BASE}/today`);
     },
+    getLoggedToday() {
+        return jsonFetch(`${BASE}/sessions/today`);
+    },
     getTodaySession() {
         return jsonFetch(`${BASE}/today-session`);
     },

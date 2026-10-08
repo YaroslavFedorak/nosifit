@@ -1,11 +1,11 @@
-from aiogram import Bot, Router
+from aiogram import Bot, F, Router
 from aiogram.filters import Command, CommandObject, CommandStart
 from aiogram.fsm.context import FSMContext
 from aiogram.types import ChatMemberUpdated, Message
 
 from telegram_bot.handlers.auth import HELP_TEXT, choose_method
 from telegram_bot.keyboards.auth import auth_menu
-from telegram_bot.keyboards.main import main_menu
+from telegram_bot.keyboards.main import HOME, main_menu
 from telegram_bot.runtime import is_authenticated
 from telegram_bot.security import start_throttle
 
@@ -39,6 +39,17 @@ async def start(message: Message, state: FSMContext, command: CommandObject) -> 
     await message.answer(
         WELCOME_TEXT + "\n\nОберіть, що хочете додати:",
         reply_markup=main_menu(authenticated=True),
+    )
+
+
+@router.message(F.text == HOME)
+async def home(message: Message, state: FSMContext) -> None:
+    """Back to the mode choice from any mode or unfinished step."""
+    await state.clear()
+    authenticated = is_authenticated(message.from_user.id)
+    await message.answer(
+        "🏠 Головна" if authenticated else WELCOME_TEXT,
+        reply_markup=main_menu(authenticated=authenticated),
     )
 
 

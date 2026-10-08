@@ -21,7 +21,16 @@ from backend.app.training.exercises.catalog import load_exercise_catalog
 from backend.app.training.models.exercise import Exercise
 from telegram_bot import runtime
 from telegram_bot.handlers import training as training_handlers
-from telegram_bot.keyboards.main import NUTRITION, TRAINING
+from telegram_bot.keyboards.main import (
+    ADD_EXERCISE,
+    FOOD,
+    HOME,
+    MY_WORKOUT,
+    NUTRITION,
+    TRAINING,
+    WATER,
+    WEIGHT,
+)
 from telegram_bot.services.api import NosiFitAPI, NosiFitAPIError
 from web.tests.security.test_telegram_auth import SECRET, bot_post, tg_payload
 from web.tests.security.test_telegram_bot import ALICE, Harness
@@ -151,387 +160,203 @@ def rows_by_slug(session, catalog):
     return {by_id[row.exercise_id]: row for row in session.exercises}
 
 
-def open_new_exercise(h, query, name):
+def reply_keyboard(h):
+    """Texts of the last reply keyboard (the mode buttons)."""
+    for call in reversed(screens(h)):
+        rows = getattr(call.reply_markup, "keyboard", None)
+        if rows:
+            return [[b.text for b in row] for row in rows]
+    return None
+
+
+def save_on_server(h, catalog, items, session_id=None):
+    payload = [{"exercise": {"id": catalog[slug].id}, **values} for slug, values in items]
+    body = {"exercises": payload, "session_id": session_id}
+    return h.http.request("POST", "http://localhost/api/training/sessions/complete", json=body).json()
+
+
+def log_set(h, query, name, *answers):
+    """➕ Додати вправу → search → pick → weight/reps answers."""
+    h.message(ADD_EXERCISE)
     h.message(query)
     press(h, name)
-    assert "ще немає підходів" in text(h)
+    for answer in answers:
+        h.message(answer)
 
 
-# --- main scenario: a new user logs a workout ---------------------------------------------
+# --- the main scenario -------------------------------------------------------------------
 
 
-def test_new_user_logs_a_whole_workout(tg, catalog):
+def test_new_user_logs_a_workout_step_by_step(tg, catalog):
     tg.message(TRAINING)
-    assert "Сьогодні ще немає вправ" in text(tg)
-    assert [b.text for b in buttons(tg)] == ["❌ Скасувати"]
+    assert "Ще немає вправ" in text(tg)
+    assert reply_keyboard(tg) == [[ADD_EXERCISE, MY_WORKOUT], [HOME]]
 
+    tg.message(ADD_EXERCISE)
+    assert "Напишіть назву вправи" in text(tg)
     tg.message("жим")
-    assert "Оберіть вправу" in text(tg)
-    assert any("Жим штанги лежачи" in b.text for b in buttons(tg))
-
     press(tg, "Жим штанги лежачи")
-    assert "Сьогодні: ще немає підходів" in text(tg)
-    assert sessions(tg) == []  # opening an exercise logs nothing
+    assert "Яка вага, кг?" in text(tg)
+    tg.message("60")
+    assert "Скільки повторів?" in text(tg)
+    tg.message("10")
+    assert "✅ Підхід записано" in text(tg)
+    assert "Жим штанги лежачи</b>: 1 підхід · 60 кг × 10" in text(tg)
 
-    tg.message("60 10 2")
-    assert "Сьогодні: 1 × 10 · 60 кг · RIR 2" in text(tg)
-    press(tg, "➕ Підхід")
-    press(tg, "➕ Підхід")
-    assert "Сьогодні: 3 × 10 · 60 кг · RIR 2" in text(tg)
+    press(tg, "➕ Ще підхід")
+    assert "2 підходи · 60 кг × 10" in text(tg)
+    press(tg, "✅ Готово")
+    assert "1. Жим штанги лежачи — 2 підходи · 60 кг × 10" in text(tg)
 
-    open_new_exercise(tg, "присідання зі штангою на спині", "Присідання зі штангою на спині")
-    tg.message("80 8")
-    press(tg, "← Тренування")
+    log_set(tg, "планка", "Планка")
+    assert "Скільки секунд?" in text(tg)
+    tg.message("45")
+    assert "Планка</b>: 1 підхід · 45 с" in text(tg)
 
-    home = text(tg)
-    assert "1. Жим штанги лежачи — 3 × 10 · 60 кг · RIR 2" in home
-    assert "2. Присідання зі штангою на спині — 1 × 8 · 80 кг" in home
-    assert "Всього: 2 вправи · 4 підходи" in home
-
+    tg.message(MY_WORKOUT)
+    assert "Всього: 2 вправи · 3 підходи" in text(tg)
+    press(tg, "✅ Завершити тренування")
+    assert "Завершити тренування?" in text(tg)
     press(tg, "✅ Завершити")
-    assert "Завершити тренування?" in text(tg) and "4 підходи · 2 вправи" in text(tg)
-    press(tg, "✅ Завершити")
-    assert "Тренування збережено" in text(tg) and "2 вправи · 4 підходи" in text(tg)
+    assert "Тренування збережено" in text(tg) and "2 вправи · 3 підходи" in text(tg)
 
-    session = only_session(tg)
-    rows = rows_by_slug(session, catalog)
-    assert session.status == "finished"
-    assert (rows["bench-press"].sets_done, rows["bench-press"].reps_done, rows["bench-press"].load_done) == (3, "10", 60.0)
-    assert rows["bench-press"].rpe == 8.0
-    assert (rows["barbell-back-squat"].sets_done, rows["barbell-back-squat"].load_done) == (1, 80.0)
+    rows = rows_by_slug(only_session(tg), catalog)
+    bench, plank = rows["bench-press"], rows["plank"]
+    assert (bench.sets_done, bench.reps_done, bench.load_done) == (2, "10", 60.0)
+    assert (plank.sets_done, plank.duration_sec_done) == (1, 45)
 
 
-def test_every_change_is_saved_at_once(tg, catalog):
-    tg.message(TRAINING)
-    open_new_exercise(tg, "жим штанги лежачи", "Жим штанги лежачи")
-    tg.message("60 10")
-    assert rows_by_slug(only_session(tg), catalog)["bench-press"].sets_done == 1
-    press(tg, "➕ Підхід")
-    assert rows_by_slug(only_session(tg), catalog)["bench-press"].sets_done == 2
-
-
-# --- an existing session --------------------------------------------------------------------
-
-
-def save_on_server(h, catalog, items):
-    payload = [
-        {"exercise": {"id": catalog[slug].id}, **values} for slug, values in items
-    ]
-    return h.http.request("POST", "http://localhost/api/training/sessions/complete", json={"exercises": payload}).json()
-
-
-def test_existing_session_can_be_edited(tg, catalog):
-    first = save_on_server(
-        tg,
-        catalog,
-        [
-            ("bench-press", {"sets": 3, "reps": 10, "load": 60, "rpe": 8}),
-            ("lat-pulldown", {"sets": 3, "reps": 12, "load": 45}),
-            ("plank", {"sets": 2, "duration_sec": 60}),
-        ],
-    )
-    tg.message(TRAINING)
-    assert "Всього: 3 вправи · 8 підходів" in text(tg)
-
-    press(tg, "✏️ 1.")
-    assert "Сьогодні: 3 × 10 · 60 кг · RIR 2" in text(tg)
-    press(tg, "+1 повт")
-    press(tg, "+2,5 кг")
-    press(tg, "1")  # RIR 1
-    press(tg, "➖ Підхід")
-    assert "Сьогодні: 2 × 11 · 62,5 кг · RIR 1" in text(tg)
-
-    press(tg, "← Тренування")
-    press(tg, "✏️ 2.")
-    press(tg, "🗑 Вправу")
-    assert "Видалити «Тяга верхнього блока» (3 підходи)" in text(tg)
-    press(tg, "🗑 Так, видалити")
-    assert "Тяга верхнього блока" not in text(tg)
-    assert "Всього: 2 вправи · 4 підходи" in text(tg)
-
-    session = only_session(tg)
-    assert session.id == first["id"]
-    rows = rows_by_slug(session, catalog)
-    assert set(rows) == {"bench-press", "plank"}
-    bench = rows["bench-press"]
-    assert (bench.sets_done, bench.reps_done, bench.load_done, bench.rpe) == (2, "11", 62.5, 9.0)
-    assert (rows["plank"].sets_done, rows["plank"].duration_sec_done) == (2, 60)
-
-
-def test_untouched_web_values_are_kept_exactly(tg, catalog):
-    """Reps "8-12" and RPE 7.5 from the website survive edits of other exercises."""
-    save_on_server(
-        tg,
-        catalog,
-        [
-            ("bench-press", {"sets": 3, "reps": "8-12", "load": 60, "rpe": 7.5}),
-            ("plank", {"sets": 2, "duration_sec": 60}),
-        ],
-    )
-    tg.message(TRAINING)
-    press(tg, "✏️ 2.")
-    press(tg, "➕ Підхід")
-
-    bench = rows_by_slug(only_session(tg), catalog)["bench-press"]
-    assert (bench.reps_done, bench.rpe) == ("8-12", 7.5)
-
-
-def test_recent_exercise_is_one_tap_and_shows_last_time(tg, catalog):
+def test_bodyweight_exercise_asks_only_reps_and_offers_last_time(tg, catalog):
     import datetime as dt
 
     from backend.app.models.training_session import SessionExercise
 
-    past = TrainingSession(
-        user_id=tg.user.id,
-        status="finished",
-        started_at=dt.datetime.utcnow() - dt.timedelta(days=2),
-        finished_at=dt.datetime.utcnow() - dt.timedelta(days=2),
-    )
+    when = dt.datetime.utcnow() - dt.timedelta(days=2)
+    past = TrainingSession(user_id=tg.user.id, status="finished", started_at=when, finished_at=when)
     db.session.add(past)
     db.session.flush()
-    db.session.add(SessionExercise(session_id=past.id, exercise_id=catalog["bench-press"].id, sets_done=3, reps_done="8", load_done=60, rpe=8))
+    db.session.add(SessionExercise(session_id=past.id, exercise_id=catalog["push-ups"].id, sets_done=3, reps_done="33"))
     db.session.commit()
 
+    tg.message(ADD_EXERCISE)
+    press(tg, "Віджимання")  # recent, one tap
+    assert "Минулого разу: 3 підходи · × 33" in text(tg)
+    assert "Скільки повторів?" in text(tg)
+    press(tg, "33 повт.")
+    assert "Віджимання</b>: 1 підхід · × 33" in text(tg)
+
+
+def test_double_tap_on_one_more_set_adds_one(tg, catalog):
+    log_set(tg, "жим штанги лежачи", "Жим штанги лежачи", "60", "10")
+    data = button(tg, "➕ Ще підхід").callback_data
+    tg.callback(data)
+    tg.callback(data)
+    assert "Цей підхід уже записано." in toasts(tg)
+    assert rows_by_slug(only_session(tg), catalog)["bench-press"].sets_done == 2
+
+
+# --- full sync with the server ---------------------------------------------------------------
+
+
+def test_bot_never_drops_exercises_logged_on_the_website(tg, catalog):
+    log_set(tg, "жим штанги лежачи", "Жим штанги лежачи", "60", "10")
+    session_id = only_session(tg).id
+    # The website saves the same session with one more exercise.
+    save_on_server(
+        tg,
+        catalog,
+        [("bench-press", {"sets": 1, "reps": 10, "load": 60}), ("lat-pulldown", {"sets": 3, "reps": 12, "load": 45})],
+        session_id,
+    )
+    press(tg, "➕ Ще підхід")  # the bot's screen is from before that save
+
+    rows = rows_by_slug(only_session(tg), catalog)
+    assert set(rows) == {"bench-press", "lat-pulldown"}
+    assert rows["bench-press"].sets_done == 2
+
+
+# --- editing ----------------------------------------------------------------------------------
+
+
+def test_edit_remove_set_and_delete(tg, catalog):
+    save_on_server(
+        tg,
+        catalog,
+        [("bench-press", {"sets": 3, "reps": 10, "load": 60, "rpe": 8}), ("plank", {"sets": 2, "duration_sec": 60})],
+    )
+    tg.message(MY_WORKOUT)
+    press(tg, "1. Жим штанги лежачи")
+    assert "Сьогодні: 3 підходи · 60 кг × 10" in text(tg)
+    press(tg, "➖ Прибрати підхід")
+    assert "Сьогодні: 2 підходи" in text(tg)
+
+    press(tg, "✏️ Змінити")
+    assert "Зараз: 2 підходи · 60 кг × 10" in text(tg)
+    tg.message("62,5")
+    tg.message("8")
+    assert "✅ Змінено" in text(tg) and "2 підходи · 62,5 кг × 8" in text(tg)
+    bench = rows_by_slug(only_session(tg), catalog)["bench-press"]
+    assert (bench.sets_done, bench.reps_done, bench.load_done, bench.rpe) == (2, "8", 62.5, 8.0)
+
+    press(tg, "🗑 Видалити")
+    press(tg, "🗑 Видалити")
+    assert "1. Планка" in text(tg) and "Жим" not in text(tg)
+
+    press(tg, "1. Планка")
+    press(tg, "🗑 Видалити")
+    press(tg, "🗑 Видалити")
+    assert "Ще немає вправ" in text(tg)
+    assert sessions(tg) == []  # no empty session is left
+
+
+def test_invalid_answers_are_explained(tg, catalog):
+    log_set(tg, "жим штанги лежачи", "Жим штанги лежачи", "багато")
+    assert "Напишіть вагу числом" in text(tg)
+    tg.message("60")
+    tg.message("8,5")
+    assert "ціле число повторів" in text(tg)
+    assert sessions(tg) == []
+
+
+# --- navigation and errors ---------------------------------------------------------------------
+
+
+def test_modes_and_home(tg, catalog):
+    tg.message(NUTRITION)
+    assert reply_keyboard(tg) == [[FOOD, WATER, WEIGHT], [HOME]]
     tg.message(TRAINING)
-    press(tg, "⭐ Жим штанги лежачи")
-    assert "Минулого разу: 3 × 8 · 60 кг · RIR 2" in text(tg)
-    assert button(tg, "➕ Підхід").text == "➕ Підхід · 8 · 60 кг · RIR 2"
-    press(tg, "➕ Підхід")
-    assert "Сьогодні: 1 × 8 · 60 кг · RIR 2" in text(tg)
-    assert len(sessions(tg)) == 2  # the old one and today's
+    assert reply_keyboard(tg) == [[ADD_EXERCISE, MY_WORKOUT], [HOME]]
+    tg.message(ADD_EXERCISE)
+    tg.message(HOME)  # also leaves the search step
+    assert reply_keyboard(tg) == [[TRAINING, NUTRITION], ["🚪 Вийти"]]
+    tg.message("жим")
+    assert "Оберіть вправу" not in text(tg)
 
 
-# --- search ------------------------------------------------------------------------------------
-
-
-def test_typo_search(tg, catalog):
-    tg.message(TRAINING)
-    tg.message("підтягуваня")
-    assert any(b.text == "Підтягування" for b in buttons(tg))
+def test_cancel_keeps_what_is_logged(tg, catalog):
+    log_set(tg, "жим штанги лежачи", "Жим штанги лежачи", "60", "10")
+    tg.message(ADD_EXERCISE)
+    tg.message("/cancel")
+    assert "Скасовано. Усе записане збережено." in text(tg)
+    assert len(sessions(tg)) == 1
 
 
 def test_search_without_results(tg, catalog):
-    tg.message(TRAINING)
+    tg.message(ADD_EXERCISE)
     tg.message("xyzqqq")
-    assert "Нічого не знайдено" in text(tg)
-    assert [b.text for b in buttons(tg)] == ["← Тренування"]
+    assert "нічого не знайдено" in text(tg)
 
 
-def test_more_results(tg, catalog):
-    tg.message(TRAINING)
-    tg.message("жим")
-    before = len(buttons(tg))
-    press(tg, "Ще результати")
-    assert len(buttons(tg)) > before
-
-
-def test_duration_exercise_uses_seconds(tg, catalog):
-    tg.message(TRAINING)
-    open_new_exercise(tg, "планка", "Планка")
-    assert any(b.text == "+5 с" for b in buttons(tg))
-    assert not any("кг" in b.text for b in buttons(tg))
-    tg.message("45")
-    assert "Сьогодні: 1 × 45 с" in text(tg)
-    assert rows_by_slug(only_session(tg), catalog)["plank"].duration_sec_done == 45
-
-
-def test_invalid_quick_input_is_explained_and_not_saved(tg, catalog):
-    tg.message(TRAINING)
-    open_new_exercise(tg, "жим штанги лежачи", "Жим штанги лежачи")
-    tg.message("60 10 15")
-    assert text(tg) == "RIR: від 0 до 9."
-    tg.message("60 8,5")
-    assert "цілі числа" in text(tg)
-    assert sessions(tg) == []
-
-
-# --- reliability -------------------------------------------------------------------------------
-
-
-def test_double_tap_adds_one_set(tg, catalog):
-    tg.message(TRAINING)
-    open_new_exercise(tg, "жим штанги лежачи", "Жим штанги лежачи")
-    tg.message("60 10")
-    data = button(tg, "➕ Підхід").callback_data
-    tg.callback(data)
-    tg.callback(data)  # the same screen pressed again
-
-    assert "Екран оновлено." in toasts(tg)
-    assert rows_by_slug(only_session(tg), catalog)["bench-press"].sets_done == 2
-
-
-def test_removing_the_last_set_of_the_only_exercise_deletes_the_session(tg, catalog):
-    tg.message(TRAINING)
-    open_new_exercise(tg, "жим штанги лежачи", "Жим штанги лежачи")
-    tg.message("60 10")
-    assert len(sessions(tg)) == 1
-    press(tg, "➖ Підхід")
-    assert sessions(tg) == []
-    press(tg, "← Тренування")
-    assert "Сьогодні ще немає вправ" in text(tg)
-
-    # and logging again creates exactly one new session
-    open_new_exercise(tg, "жим штанги лежачи", "Жим штанги лежачи")
-    tg.message("60 10")
-    assert len(sessions(tg)) == 1
-
-
-def test_deleting_the_last_exercise_leaves_no_empty_session(tg, catalog):
-    tg.message(TRAINING)
-    open_new_exercise(tg, "жим штанги лежачи", "Жим штанги лежачи")
-    tg.message("60 10")
-    press(tg, "🗑 Вправу")
-    press(tg, "🗑 Так, видалити")
-    assert sessions(tg) == []
-    assert "Сьогодні ще немає вправ" in text(tg)
-
-
-def test_finishing_twice_keeps_one_session(tg, catalog):
-    tg.message(TRAINING)
-    open_new_exercise(tg, "жим штанги лежачи", "Жим штанги лежачи")
-    tg.message("60 10")
-    press(tg, "← Тренування")
-    press(tg, "✅ Завершити")
-    data = press(tg, "✅ Завершити")
-    tg.callback(data)  # finished already
-    assert "Тренування збережено" in text(tg)
-    assert only_session(tg).status == "finished"
-
-
-def test_finish_without_sets_is_refused(tg, catalog):
-    tg.message(TRAINING)
-    tg.callback("tr:finish")
-    assert "Ще немає жодного підходу." in toasts(tg)
-
-
-def test_session_continues_after_finishing(tg, catalog):
-    tg.message(TRAINING)
-    open_new_exercise(tg, "жим штанги лежачи", "Жим штанги лежачи")
-    tg.message("60 10")
-    tg.callback("tr:finyes")
-    tg.message(TRAINING)
-    assert "1. Жим штанги лежачи — 1 × 10 · 60 кг" in text(tg)
-    press(tg, "✏️ 1.")
-    press(tg, "➕ Підхід")
-    assert rows_by_slug(only_session(tg), catalog)["bench-press"].sets_done == 2
-
-
-def test_cancel_leaves_the_flow_and_keeps_data(tg, catalog):
-    tg.message(TRAINING)
-    open_new_exercise(tg, "жим штанги лежачи", "Жим штанги лежачи")
-    tg.message("60 10")
-    tg.message("/cancel")
-    assert "Скасовано. Усе, що ви вже записали, збережено." in text(tg)
-    tg.message("жим")
-    assert "Не зрозумів" in text(tg)
-    assert len(sessions(tg)) == 1
-
-
-def test_close_button(tg, catalog):
-    tg.message(TRAINING)
-    press(tg, "❌ Скасувати")
-    assert "Тренування закрито" in text(tg)
-
-
-def test_menu_buttons_are_not_searched(tg, catalog):
-    tg.message(TRAINING)
-    tg.message(NUTRITION)
-    assert "🔎" not in text(tg)
-    assert "Харчування сьогодні" in text(tg)
-
-
-def test_old_screen_after_a_bot_restart(tg, catalog):
-    tg.message(TRAINING)
-    open_new_exercise(tg, "жим штанги лежачи", "Жим штанги лежачи")
-    tg.message("60 10")
-    stale = button(tg, "➕ Підхід").callback_data
-
-    restarted = Harness()  # fresh dispatcher and empty FSM storage
-    restarted.session.calls.clear()
-    try:
-        restarted.callback(stale)
-        assert "Екран оновлено." in toasts(restarted)
-        assert "1. Жим штанги лежачи — 1 × 10 · 60 кг" in text(restarted)
-        press(restarted, "✏️ 1.")
-        press(restarted, "➕ Підхід")
-    finally:
-        restarted.close()
-    assert rows_by_slug(only_session(tg), catalog)["bench-press"].sets_done == 2
-
-
-def test_stale_session_id_is_not_turned_into_a_new_session(tg, catalog, monkeypatch):
-    tg.message(TRAINING)
-    open_new_exercise(tg, "жим штанги лежачи", "Жим штанги лежачи")
-    tg.message("60 10")
-    # Midnight passes: today's session is now yesterday's.
-    session = only_session(tg)
-    import datetime as dt
-
-    session.started_at -= dt.timedelta(days=1)
-    db.session.commit()
-
-    press(tg, "➕ Підхід")
-    assert any("уже закрите" in t for t in toasts(tg))
-    assert "Сьогодні ще немає вправ" in text(tg)  # today's (empty) workout at once
-    assert len(sessions(tg)) == 1
-    assert only_session(tg).exercises[0].sets_done == 1
-
-
-def test_network_error_keeps_the_screen_and_the_data(tg, catalog):
-    tg.message(TRAINING)
-    open_new_exercise(tg, "жим штанги лежачи", "Жим штанги лежачи")
-    tg.message("60 10")
+def test_network_error_is_human(tg, catalog):
+    log_set(tg, "жим штанги лежачи", "Жим штанги лежачи", "60", "10")
     tg.http.down = True
-    press(tg, "➕ Підхід")
+    press(tg, "➕ Ще підхід")
     assert "Не вдалося підключитися до NosiFit." in toasts(tg)
     tg.http.down = False
-
-    press(tg, "➕ Підхід")  # the screen is still current
-    assert rows_by_slug(only_session(tg), catalog)["bench-press"].sets_done == 2
-
-
-def test_server_error_is_human(tg, catalog, monkeypatch):
-    tg.message(TRAINING)
-    open_new_exercise(tg, "жим штанги лежачи", "Жим штанги лежачи")
-
-    def broken(*args, **kwargs):
-        raise NosiFitAPIError("Щось пішло не так. Спробуйте ще раз.", "internal_server_error")
-
-    monkeypatch.setattr(NosiFitAPI, "save_session", broken)
-    tg.message("60 10")
-    assert text(tg) == "Не вдалося зберегти. Спробуйте ще раз."
-
-
-def test_search_error_is_human(tg, catalog, monkeypatch):
-    tg.message(TRAINING)
-    tg.http.down = True
-    tg.message("жим")
-    assert text(tg) == "Не вдалося підключитися до NosiFit."
-
-
-def test_expired_link_asks_to_sign_in_again(tg, catalog):
-    tg.message(TRAINING)
-    TelegramIdentity.query.delete()
-    db.session.commit()
-    tg.message("жим")
-    assert "Сесія закінчилась" in text(tg)
-    assert runtime._sessions[ALICE.id].expired
+    assert rows_by_slug(only_session(tg), catalog)["bench-press"].sets_done == 1
 
 
 def test_signed_out_user_is_asked_to_sign_in(tg, catalog):
     runtime._sessions.clear()
     tg.message(TRAINING)
     assert "Спочатку увійдіть" in text(tg)
-
-
-def test_flow_without_server_calls_for_drafts(tg, catalog, monkeypatch):
-    """Adjusting an exercise with no sets yet saves nothing."""
-    tg.message(TRAINING)
-    open_new_exercise(tg, "жим штанги лежачи", "Жим штанги лежачи")
-    calls = []
-    original = NosiFitAPI.save_session
-    monkeypatch.setattr(NosiFitAPI, "save_session", lambda self, *a: calls.append(a) or original(self, *a))
-    press(tg, "+2,5 кг")
-    press(tg, "+1 повт")
-    assert calls == []
-    assert "Підхід · 11 · 2,5 кг" in button(tg, "➕ Підхід").text

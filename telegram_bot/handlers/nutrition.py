@@ -7,7 +7,7 @@ from aiogram.exceptions import TelegramBadRequest
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, Message
 
-from telegram_bot.keyboards.main import NUTRITION, main_menu
+from telegram_bot.keyboards.main import FOOD, NUTRITION, nutrition_mode_menu
 from telegram_bot.keyboards.nutrition import (
     CATALOG_LABELS,
     UNIT_LABELS,
@@ -427,15 +427,18 @@ async def _safe_edit(message: Message, text: str, *, reply_markup=None) -> None:
 
 
 
-@router.message(F.text == NUTRITION)
+@router.message(F.text.in_({NUTRITION, FOOD}))
 async def nutrition(message: Message, state: FSMContext) -> None:
     await state.clear()
+    if message.text == NUTRITION:
+        # Entering the mode: its own buttons (food, water, weight, home).
+        await message.answer("🍽 Харчування", reply_markup=nutrition_mode_menu())
     try:
         day = await asyncio.to_thread(_api(message.from_user.id).get_day)
     except NosiFitAPIError as exc:
         await message.answer(
             f"Не вдалося підключитися до NosiFit: {exc}",
-            reply_markup=main_menu(authenticated=True),
+            reply_markup=nutrition_mode_menu(),
         )
         return
     await message.answer(_format_day(day), reply_markup=nutrition_menu())
@@ -1181,7 +1184,7 @@ async def cancel_nutrition(callback: CallbackQuery, state: FSMContext) -> None:
     await _safe_edit(callback.message, "Дію скасовано.")
     await callback.message.answer(
         "Оберіть дію:",
-        reply_markup=main_menu(authenticated=True),
+        reply_markup=nutrition_mode_menu(),
     )
 
 

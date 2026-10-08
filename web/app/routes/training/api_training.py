@@ -1,6 +1,8 @@
 from functools import lru_cache
+from types import SimpleNamespace
 
 from flask import Blueprint, jsonify, request, current_app
+from sqlalchemy import func
 from flask_login import login_required, current_user
 from backend.app.extensions import db
 from backend.app.training.models.exercise import Exercise
@@ -254,6 +256,36 @@ def _exercise_names(locale):
     }
 
 
+_catalog_cache = {"key": None, "rows": []}
+
+
+def _catalog_snapshot():
+    """The exercise catalog as plain objects, rebuilt only when it changes.
+
+    The catalog changes only when it is seeded; reading every exercise on
+    each search made the bot slow. A count + last update check is enough to
+    notice a reseed.
+    """
+    key = tuple(
+        db.session.query(func.count(Exercise.id), func.max(Exercise.updated_at)).one()
+    )
+    if key != _catalog_cache["key"]:
+        _catalog_cache["rows"] = [
+            SimpleNamespace(
+                id=row.id,
+                slug=row.slug,
+                name=row.name,
+                measurement_type=row.measurement_type,
+                load_type=row.load_type,
+                max_additional_load_kg=row.max_additional_load_kg,
+                prescription=row.prescription,
+            )
+            for row in Exercise.query.all()
+        ]
+        _catalog_cache["key"] = key
+    return _catalog_cache["rows"]
+
+
 def _bounded_arg(name, default, low, high):
     value = request.args.get(name, default, type=int)
     return default if value is None else max(low, min(value, high))
@@ -369,7 +401,7 @@ def search_exercise_catalog():
             .distinct()
         }
         found = search_exercises(
-            Exercise.query.all(),
+            _catalog_snapshot(),
             names,
             query,
             limit=limit + 1,

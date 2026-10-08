@@ -38,6 +38,9 @@ import {
 import {
     defaultPrescription
 } from "./measurement.js";
+import {
+    initServerSync
+} from "./server_sync.js";
 
 document.addEventListener(
     "DOMContentLoaded",
@@ -96,6 +99,7 @@ document.addEventListener(
         ]);
 
         initDailyState();
+        initServerSync();
 
         const addExercise =
             document.getElementById(

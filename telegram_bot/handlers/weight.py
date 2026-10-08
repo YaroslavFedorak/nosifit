@@ -7,7 +7,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, Message
 
 from telegram_bot.keyboards.body import cancel_keyboard
-from telegram_bot.keyboards.main import WEIGHT, main_menu
+from telegram_bot.keyboards.main import WEIGHT, main_menu, nutrition_mode_menu
 from telegram_bot.runtime import get_api, is_authenticated
 from telegram_bot.services.api import NosiFitAPIError
 from telegram_bot.states.body import WeightStates
@@ -73,7 +73,7 @@ async def enter_weight(message: Message, state: FSMContext) -> None:
     await state.clear()
     await message.answer(
         f"✅ Вагу оновлено: <b>{value:.1f} кг</b>",
-        reply_markup=main_menu(authenticated=True),
+        reply_markup=nutrition_mode_menu(),
     )
 
 
