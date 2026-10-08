@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="{{ locale }}">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    {% include "components/brand_head.html" %}
+    <title>{% block title %}nosifit{% endblock %}</title>
+
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/core/reset.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/core/variables.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/core/layout.css') }}"
+    />
+
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/components/sidebar.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/components/buttons.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/components/forms.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/components/cards.css') }}"
+    />
+
+    {% block styles %}{% endblock %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/core/system.css') }}" />
+  </head>
+
+  <body class="app-page app-layout {% block body_class %}{% endblock %}">
+    <div class="bg-glow-static glow-purple" aria-hidden="true"></div>
+    <div class="bg-glow-static glow-teal" aria-hidden="true"></div>
+    <div class="bg-glow-static glow-yellow" aria-hidden="true"></div>
+    <div class="bg-glow-dynamic" aria-hidden="true"></div>
+
+    <div class="core-sidebar-shell" role="navigation" aria-label="{{ common_t("navigation.menu") }}">
+      {% include "components/sidebar.html" %}
+    </div>
+
+    <main class="main-content" role="main">
+      <div class="page-content">{% block body %}{% endblock %}</div>
+    </main>
+
+    {% block scripts %}{% endblock %}
+  </body>
+</html>

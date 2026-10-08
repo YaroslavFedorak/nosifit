@@ -1,0 +1,176 @@
+[
+    {
+        "slug": "bodyweight",
+        "name": "Власна вага",
+        "tags": [
+            "no-equipment"
+        ],
+        "description": "Вправи, що виконуються без додаткового обладнання."
+    },
+    {
+        "slug": "barbell",
+        "name": "Штанга",
+        "tags": [
+            "strength",
+            "compound"
+        ],
+        "description": "Основне силове обладнання для базових вправ."
+    },
+    {
+        "slug": "dumbbells",
+        "name": "Гантелі",
+        "tags": [
+            "strength",
+            "unilateral"
+        ],
+        "description": "Універсальне обладнання для тренування всіх груп м'язів."
+    },
+    {
+        "slug": "kettlebell",
+        "name": "Гиря",
+        "tags": [
+            "functional",
+            "power"
+        ],
+        "description": "Функціональне обладнання для вибухових рухів."
+    },
+    {
+        "slug": "machine",
+        "name": "Тренажер",
+        "tags": [
+            "safe",
+            "guided"
+        ],
+        "description": "Тренажери з фіксованою траєкторією руху."
+    },
+    {
+        "slug": "cable",
+        "name": "Кросовер / канатна станція",
+        "tags": [
+            "isolation",
+            "continuous-tension"
+        ],
+        "description": "Тросові тренажери для ізоляційних вправ."
+    },
+    {
+        "slug": "bench",
+        "name": "Лава",
+        "tags": [
+            "support"
+        ],
+        "description": "Використовується для жимів, тяг та інших вправ."
+    },
+    {
+        "slug": "battle-rope",
+        "name": "Бойові канати",
+        "tags": [
+            "conditioning",
+            "arms"
+        ],
+        "description": "Функціональне обладнання для кардіо та сили."
+    },
+    {
+        "slug": "sled",
+        "name": "Сани",
+        "tags": [
+            "conditioning",
+            "legs"
+        ],
+        "description": "Використовуються для силових та кардіо вправ."
+    },
+    {
+        "slug": "box",
+        "name": "Тумба для стрибків",
+        "tags": [
+            "plyometrics"
+        ],
+        "description": "Використовується для стрибкових вправ."
+    },
+    {
+        "slug": "band",
+        "name": "Еспандер / резинка",
+        "tags": [
+            "mobility",
+            "activation"
+        ],
+        "description": "Підходить для розминки, мобільності та активації."
+    },
+    {
+        "slug": "bar",
+        "name": "Турнік",
+        "tags": [
+            "pulling"
+        ],
+        "description": "Використовується для підтягувань та інших вправ на спину."
+    },
+    {
+        "slug": "trap-bar",
+        "name": "Трап-гриф",
+        "tags": [
+            "strength",
+            "compound"
+        ],
+        "description": "Шестикутний гриф для станової тяги з нейтральним хватом."
+    },
+    {
+        "slug": "rings",
+        "name": "Гімнастичні кільця",
+        "tags": [
+            "calisthenics",
+            "stability"
+        ],
+        "description": "Нестабільна опора для тяг, віджимань та утримань."
+    },
+    {
+        "slug": "dip-bars",
+        "name": "Бруси",
+        "tags": [
+            "calisthenics",
+            "pushing"
+        ],
+        "description": "Паралельні бруси для віджимань та утримань."
+    },
+    {
+        "slug": "medicine-ball",
+        "name": "Медбол",
+        "tags": [
+            "power",
+            "conditioning"
+        ],
+        "description": "Обтяжений м'яч для кидків та вибухових рухів."
+    },
+    {
+        "slug": "jump-rope",
+        "name": "Скакалка",
+        "tags": [
+            "conditioning"
+        ],
+        "description": "Для кардіо та роботи литкових м'язів."
+    },
+    {
+        "slug": "ab-wheel",
+        "name": "Ролик для преса",
+        "tags": [
+            "core"
+        ],
+        "description": "Для викочувань та роботи над антирозгинанням корпусу."
+    },
+    {
+        "slug": "landmine",
+        "name": "Лендмайн",
+        "tags": [
+            "strength",
+            "rotation"
+        ],
+        "description": "Кріплення для одного кінця штанги — жими, тяги та ротації."
+    },
+    {
+        "slug": "stability-ball",
+        "name": "Фітбол",
+        "tags": [
+            "stability",
+            "core"
+        ],
+        "description": "Великий м'яч для вправ на стабільність."
+    }
+]

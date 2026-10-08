@@ -1,0 +1,109 @@
+<div id="db-exercise-modal" class="db-modal" aria-hidden="true">
+  <div
+    class="db-modal-panel"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="db-exercise-modal-title"
+  >
+    <div class="db-modal-header">
+      <div class="db-modal-heading">
+        <h2 id="db-exercise-modal-title" class="db-modal-title">
+          {{ dashboard_t("exerciseModal.title") }}
+        </h2>
+
+        <p class="db-modal-subtitle">
+          {{ dashboard_t("exerciseModal.subtitle") }}
+        </p>
+      </div>
+
+      <button
+        type="button"
+        class="db-modal-close"
+        data-close-exercise-modal
+        aria-label="{{ dashboard_t('exerciseModal.close') }}"
+      >
+        ×
+      </button>
+    </div>
+
+    <div class="db-modal-body">
+      <div class="db-session-content">
+        <div class="db-session-section">
+          <input
+            id="db-exercise-search"
+            class="db-session-search"
+            type="search"
+            placeholder="{{ dashboard_t('exerciseModal.searchPlaceholder') }}"
+            autocomplete="off"
+          />
+        </div>
+
+        <div class="db-session-section">
+          <div class="db-session-filter-row">
+            <button
+              type="button"
+              class="db-session-filter active"
+              data-exercise-category="all"
+            >
+              {{ dashboard_t("exerciseModal.all") }}
+            </button>
+
+            <button
+              type="button"
+              class="db-session-filter"
+              data-exercise-category="push"
+            >
+              {{ dashboard_t("exerciseModal.push") }}
+            </button>
+
+            <button
+              type="button"
+              class="db-session-filter"
+              data-exercise-category="pull"
+            >
+              {{ dashboard_t("exerciseModal.pull") }}
+            </button>
+
+            <button
+              type="button"
+              class="db-session-filter"
+              data-exercise-category="legs"
+            >
+              {{ dashboard_t("exerciseModal.legs") }}
+            </button>
+
+            <button
+              type="button"
+              class="db-session-filter"
+              data-exercise-category="core"
+            >
+              {{ dashboard_t("exerciseModal.core") }}
+            </button>
+
+            <button
+              type="button"
+              class="db-session-filter"
+              data-exercise-category="mobility"
+            >
+              {{ dashboard_t("exerciseModal.mobility") }}
+            </button>
+          </div>
+        </div>
+
+        <div class="db-session-section">
+          <div id="db-exercise-list" class="db-session-list"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="db-modal-footer">
+      <button
+        type="button"
+        class="db-btn db-btn-secondary"
+        data-close-exercise-modal
+      >
+        {{ dashboard_t("exerciseModal.close") }}
+      </button>
+    </div>
+  </div>
+</div>

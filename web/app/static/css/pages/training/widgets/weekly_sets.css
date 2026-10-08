@@ -1,0 +1,103 @@
+.tr-card-weekly-sets {
+    display: flex;
+    flex-direction: column;
+}
+
+.tr-card-weekly-sets .tr-card-header {
+    margin-bottom: 8px;
+}
+
+.tr-weekly-sets-period {
+    font-size: 12px;
+    color: var(--text-muted);
+    white-space: nowrap;
+}
+
+.tr-weekly-sets-body {
+    min-height: 120px;
+    display: flex;
+    flex-direction: column;
+}
+
+.tr-weekly-sets-loading {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+.tr-weekly-sets-state {
+    flex: 1;
+}
+
+.tr-weekly-sets-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 7px 20px;
+}
+
+.tr-weekly-sets-row {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+}
+
+.tr-weekly-sets-label {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+    font-size: 13px;
+    line-height: 1.2;
+}
+
+.tr-weekly-sets-name {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    opacity: 0.85;
+}
+
+.tr-weekly-sets-value {
+    flex-shrink: 0;
+    color: var(--text-muted);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+}
+
+.tr-weekly-sets-row.is-reached .tr-weekly-sets-value {
+    color: var(--accent);
+}
+
+.tr-weekly-sets-track {
+    height: 4px;
+    background: var(--border-soft);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.tr-weekly-sets-fill {
+    height: 100%;
+    max-width: 100%;
+    background: var(--accent);
+    border-radius: 4px;
+}
+
+@media (max-width: 720px) {
+    .tr-weekly-sets-list {
+        column-gap: 16px;
+    }
+}
+
+@media (max-width: 340px) {
+    .tr-weekly-sets-list {
+        grid-template-columns: 1fr;
+    }
+}

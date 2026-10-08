@@ -1,0 +1,251 @@
+{
+    "title": "Training",
+    "subtitle": "Plan workouts • Analyze progress • Get recommendations",
+    "today": "Today",
+    "todayWorkout": "Today's workout",
+    "trainingPlan": "Training plan",
+    "workoutName": "Workout name",
+    "addExercise": "Add exercise",
+    "saveWorkout": "Save workout",
+    "weeklySets": {
+        "title": "Weekly sets",
+        "period": "Since Monday",
+        "emptyTitle": "No workouts this week yet",
+        "emptyText": "Log a workout to see your weekly volume.",
+        "loadErrorTitle": "Couldn't load the data",
+        "loadErrorText": "Try refreshing the page a bit later.",
+        "ariaRow": "{muscle}: {sets} of {target} sets"
+    },
+    "weakPoints": "Weak points",
+    "recommendedExercises": "Recommended exercises",
+    "muscleBalance": "Muscle balance",
+    "balanced": "Balanced",
+    "overloaded": "Overloaded",
+    "recommendations": {
+        "weakPointsEmpty": "Not enough data to identify weak muscle groups",
+        "weakPointsDescription": "Add a few workouts to get a personalized analysis",
+        "exercisesEmpty": "No personalized recommendations yet",
+        "exercisesDescription": "Add a few workouts so the system can analyze your progress",
+        "balanceEmpty": "Not enough data to analyze muscle balance",
+        "balanceDescription": "Keep training to get an analysis of your muscle groups",
+        "noBalancedGroups": "No groups are in the balanced range",
+        "noOverloadedGroups": "No overloaded groups",
+        "reasons": {
+            "improvesWeakMuscleGroup": "Develops a weak muscle group",
+            "improvesWeakMovementPattern": "Improves a weak movement pattern",
+            "helpsReverseRegression": "Helps restore progress",
+            "helpsBreakPlateau": "Helps break a plateau",
+            "supportsAnUndertrainedMuscle": "Strengthens an undertrained muscle group",
+            "addsExerciseVariety": "Adds exercise variety",
+            "targetsYourWeakPoint": "Targets your weak point",
+            "progression": "Supports progress",
+            "lowFrequency": "This muscle group is trained too infrequently",
+            "highFrequency": "Accounts for high training frequency"
+        },
+        "training": {
+            "reasons": {
+                "belowTarget": "Few sets in the last 7 days",
+                "undertrained": "Too few sets for several weeks",
+                "weakPoint": "Targets your weak point",
+                "focus": "You asked for more attention here",
+                "frequency": "No training for a few days",
+                "recovered": "Rested and ready",
+                "lowReadiness": "Still recovering from recent training",
+                "moderateReadiness": "Not fully rested yet — do fewer sets",
+                "accumulatedFatigue": "Several heavy days in a row — let it rest",
+                "highVolume": "Already enough sets in the last 7 days",
+                "withinTarget": "Sets in the last 7 days are within your target",
+                "ready": "Recovered enough to train"
+            },
+            "guidance": {
+                "heading": "What to train today",
+                "holdBack": "Better to hold back",
+                "verdict": {
+                    "no_history": {
+                        "title": "No workouts yet",
+                        "message": "Log a workout and this will show what to train and why."
+                    },
+                    "focus": {
+                        "title": "Worth training today",
+                        "message": "These muscles have recovered and got too few sets recently."
+                    },
+                    "train": {
+                        "title": "No clear priority",
+                        "message": "Your volume is within target. If you train today, these muscles are a good fit."
+                    },
+                    "rest": {
+                        "title": "Better to rest today",
+                        "message": "No extra work is needed right now, and some muscles are still recovering.",
+                        "messageFatigue": "Several days of heavy training in a row — give your muscles a rest."
+                    },
+                    "balanced": {
+                        "title": "No clear priority today",
+                        "message": "Your sets over the last 7 days are evenly spread — go ahead with your planned workout."
+                    }
+                },
+                "kind": {
+                    "priority": "Priority",
+                    "train": "Good to train",
+                    "reduce": "Fewer sets",
+                    "enough": "Target met",
+                    "rest": "Rest"
+                },
+                "action": {
+                    "priority": "Add about {sets} sets",
+                    "train": "About {sets} sets to keep your volume"
+                },
+                "noExercises": "No extra exercises are needed right now — follow your plan."
+            }
+        }
+    },
+    "muscles": {
+        "spine": "Spine",
+        "traps": "Traps",
+        "abs": "Abs",
+        "obliques": "Obliques",
+        "hipFlexors": "Hip flexors",
+        "chest": "Chest",
+        "back": "Back",
+        "glutes": "Glutes",
+        "quads": "Quads",
+        "shoulders": "Shoulders",
+        "triceps": "Triceps",
+        "biceps": "Biceps",
+        "core": "Core",
+        "legs": "Legs",
+        "lowerBack": "Lower back",
+        "lats": "Lats",
+        "upperBack": "Upper back",
+        "forearms": "Forearms",
+        "hamstrings": "Hamstrings",
+        "calves": "Calves",
+        "adductors": "Adductors",
+        "neck": "Neck"
+    },
+    "heatmap": {
+        "yearActivity": "Activity over the year",
+        "year": "Year",
+        "calendar": "Calendar",
+        "activityHeatmap": "Activity heatmap for the year",
+        "less": "Less",
+        "more": "More",
+        "load": "{percent}% load ({load} units)",
+        "ariaLabel": "{date}: {percent}% load",
+        "emptyDay": "No workouts on this day",
+        "session": "Session",
+        "exerciseMeta": "{sets}×{reps}, {load} kg",
+        "exerciseMetaNoLoad": "{sets}×{reps}",
+        "exerciseMetaDuration": "{sets}×{seconds} s, {load} kg",
+        "exerciseMetaDurationNoLoad": "{sets}×{seconds} s",
+        "error": "Error",
+        "loadError": "Failed to load data.",
+        "intensity": "{percent}% · ≈ {sets} hard sets",
+        "ariaIntensity": "{date}: {percent}% · ≈ {sets} hard sets"
+    },
+    "months": {
+        "jan": "Jan",
+        "feb": "Feb",
+        "mar": "Mar",
+        "apr": "Apr",
+        "may": "May",
+        "jun": "Jun",
+        "jul": "Jul",
+        "aug": "Aug",
+        "sep": "Sep",
+        "oct": "Oct",
+        "nov": "Nov",
+        "dec": "Dec"
+    },
+    "monthNames": {
+        "jan": "January",
+        "feb": "February",
+        "mar": "March",
+        "apr": "April",
+        "may": "May",
+        "jun": "June",
+        "jul": "July",
+        "aug": "August",
+        "sep": "September",
+        "oct": "October",
+        "nov": "November",
+        "dec": "December"
+    },
+    "weekdays": {
+        "mon": "Mon",
+        "tue": "Tue",
+        "wed": "Wed",
+        "thu": "Thu",
+        "fri": "Fri",
+        "sat": "Sat",
+        "sun": "Sun"
+    },
+    "plan": {
+        "title": "My training plan",
+        "help": "Help",
+        "helpChooseDay": "Choose a day, add exercises, and set reps, sets, and weight",
+        "helpReorder": "Drag exercises by the handle to change their order",
+        "name": "Plan name",
+        "namePlaceholder": "For example: Full Body",
+        "dayExercises": "Exercises for this day",
+        "empty": "This day's plan is empty",
+        "emptyDescription": "Add your first exercise to start the workout",
+        "exercisesCount": "exercises",
+        "setsCount": "sets",
+        "save": "Save plan",
+        "saved": "Plan saved",
+        "saveError": "Failed to save the plan"
+    },
+    "exercisePicker": {
+        "title": "Exercise selection",
+        "search": "Search exercises",
+        "all": "All",
+        "chest": "Chest",
+        "back": "Back",
+        "legs": "Legs",
+        "shoulders": "Shoulders",
+        "arms": "Arms",
+        "core": "Core",
+        "empty": "No exercises found"
+    },
+    "exercise": {
+        "execution": "Exercise details",
+        "sets": "Sets",
+        "reps": "Reps",
+        "seconds": "Seconds",
+        "perSide": "/ side",
+        "weight": "Weight (kg)",
+        "rpe": "RPE",
+        "fallback": "Exercise"
+    },
+    "workout": {
+        "add": "Add workout",
+        "setsShort": "sets",
+        "repsShort": "reps",
+        "weightShort": "kg"
+    },
+    "summary": {
+        "exercises": "exercises",
+        "sets": "sets"
+    },
+    "calendar": {
+        "month": "Month",
+        "close": "Close",
+        "previousMonth": "Previous month",
+        "nextMonth": "Next month"
+    },
+    "dayDetails": {
+        "day": "Day",
+        "close": "Close"
+    },
+    "session": {
+        "saved": "Workout saved"
+    },
+    "common": {
+        "cancel": "Cancel",
+        "close": "Close",
+        "save": "Save",
+        "error": "Error",
+        "loading": "Loading",
+        "noData": "No data available"
+    }
+}

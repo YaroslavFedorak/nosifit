@@ -1,0 +1,18 @@
+{% extends "app/base_app.html" %} {% block title %}{{ app_t("assessment.title") }}{% endblock %} {% block body %}
+
+<h2 class="page-title">{{ app_t("assessment.heading") }}</h2>
+
+<form method="POST" class="form-card">
+  <label>{{ app_t("assessment.pushups") }}</label>
+  <input type="number" name="pushups" required />
+
+  <label>{{ app_t("assessment.squats") }}</label>
+  <input type="number" name="squats" required />
+
+  <label>{{ app_t("assessment.plank") }}</label>
+  <input type="number" name="plank" required />
+
+  <button type="submit" class="btn-primary">{{ app_t("assessment.submit") }}</button>
+</form>
+
+{% endblock %}

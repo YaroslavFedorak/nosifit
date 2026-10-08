@@ -1,0 +1,18 @@
+@import url("./auth.css");
+
+body::before,
+body::after {
+  content: "";
+  position: fixed;
+  z-index: -3;
+  width: 420px;
+  height: 420px;
+  border-radius: 50%;
+  filter: blur(110px);
+  pointer-events: none;
+}
+body::before { top: -170px; left: -140px; background: rgba(157,123,234,.26); }
+body::after { right: -170px; bottom: -190px; background: rgba(244,200,74,.20); }
+
+.auth-card { max-width: 760px; }
+.form-label { margin-bottom: 16px; }

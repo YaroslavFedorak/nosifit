@@ -1,0 +1,270 @@
+.db-card {
+    background: var(--nf-surface);
+    border: 1px solid var(--nf-border-subtle);
+    border-radius: var(--nf-radius-md);
+    box-shadow: var(--nf-shadow-soft);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.db-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.db-card-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--nf-text-main);
+}
+
+.db-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    padding: 8px 14px;
+    border: 1px solid transparent;
+    border-radius: var(--nf-radius-sm);
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.2;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: var(--nf-transition-fast);
+}
+
+.db-btn:hover {
+    transform: translateY(-1px);
+}
+
+.db-btn:active {
+    transform: translateY(0);
+}
+
+.db-btn:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(255, 214, 10, 0.12);
+}
+
+.db-btn-primary {
+    background: var(--nf-yellow);
+    border-color: var(--nf-yellow);
+    color: #000;
+}
+
+.db-btn-primary:hover {
+    background: var(--nf-yellow-soft);
+    border-color: var(--nf-yellow-soft);
+}
+
+.db-btn-secondary {
+    background: var(--nf-surface-soft);
+    border-color: var(--nf-border-soft);
+    color: var(--nf-text-main);
+}
+
+.db-btn-secondary:hover {
+    background: var(--nf-yellow);
+    border-color: var(--nf-yellow);
+    color: #000;
+}
+
+.db-btn-danger {
+    background: #ff4444;
+    border-color: #ff4444;
+    color: #fff;
+}
+
+.db-btn-danger:hover {
+    background: #ff6666;
+    border-color: #ff6666;
+    color: #fff;
+}
+
+.db-card-session .db-btn {
+    padding: 10px 16px;
+    border-radius: var(--nf-radius-sm);
+    background: var(--nf-surface-soft);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    color: var(--nf-text-main);
+    font-size: 14px;
+    font-weight: 500;
+    transition: var(--nf-transition-fast);
+}
+
+.db-card-session .db-btn:hover {
+    background: var(--nf-yellow);
+    border-color: var(--nf-yellow);
+    color: #000;
+    transform: translateY(-2px);
+}
+
+.db-card-session .db-btn-primary {
+    background: var(--nf-yellow);
+    border-color: var(--nf-yellow);
+    color: #000;
+    font-weight: 600;
+}
+
+.db-card-session .db-btn-primary:hover {
+    background: var(--nf-yellow-soft);
+    border-color: var(--nf-yellow-soft);
+}
+
+.db-card-session .db-btn-secondary {
+    background: var(--nf-surface-soft);
+    border-color: rgba(255, 255, 255, 0.09);
+    color: var(--nf-text-main);
+}
+
+.db-card-session .db-btn-secondary:hover {
+    background: var(--nf-yellow);
+    border-color: var(--nf-yellow);
+    color: #000;
+}
+
+.db-card-session .db-btn-danger {
+    background: #ff4444;
+    border-color: #ff4444;
+    color: #fff;
+    border-radius: var(--nf-radius-sm);
+    padding: 10px 16px;
+    transition: var(--nf-transition-fast);
+}
+
+.db-card-session .db-btn-danger:hover {
+    background: #ff6666;
+    border-color: #ff6666;
+}
+
+.db-card-nutrition .db-btn {
+    padding: 8px 12px;
+    border-radius: var(--nf-radius-sm);
+    background: var(--nf-surface-soft);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    color: var(--nf-text-main);
+    font-size: 13px;
+    font-weight: 600;
+    transition: var(--nf-transition-fast);
+}
+
+.db-card-nutrition .db-btn:hover {
+    background: var(--nf-violet);
+    border-color: var(--nf-violet);
+    color: #fff;
+    transform: translateY(-1px);
+}
+
+.db-card-nutrition .db-btn-primary {
+    background: var(--nf-violet);
+    border-color: var(--nf-violet);
+    color: #fff;
+    font-weight: 600;
+}
+
+.db-card-nutrition .db-btn-primary:hover {
+    background: var(--nf-violet-soft);
+    border-color: var(--nf-violet-soft);
+    color: #000;
+}
+
+.db-card-nutrition .db-btn-secondary {
+    background: var(--nf-surface-soft);
+    border-color: rgba(255, 255, 255, 0.09);
+    color: var(--nf-text-main);
+}
+
+.db-card-nutrition .db-btn-secondary:hover {
+    background: var(--nf-violet);
+    border-color: var(--nf-violet);
+    color: #fff;
+}
+
+.db-card-recovery .db-btn {
+    padding: 8px 12px;
+    border-radius: var(--nf-radius-sm);
+    background: var(--nf-surface-soft);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    color: var(--nf-text-main);
+    font-size: 13px;
+    font-weight: 600;
+    transition: var(--nf-transition-fast);
+}
+
+.db-card-recovery .db-btn:hover {
+    background: var(--nf-blue);
+    border-color: var(--nf-blue);
+    color: #fff;
+    transform: translateY(-1px);
+}
+
+.db-card-recovery .db-btn-primary {
+    background: var(--nf-blue);
+    border-color: var(--nf-blue);
+    color: #fff;
+    font-weight: 600;
+}
+
+.db-card-recovery .db-btn-primary:hover {
+    background: var(--nf-blue-soft);
+    border-color: var(--nf-blue-soft);
+    color: #000;
+}
+
+.db-card-recovery .db-btn-secondary {
+    background: var(--nf-surface-soft);
+    border-color: rgba(255, 255, 255, 0.09);
+    color: var(--nf-text-main);
+}
+
+.db-card-recovery .db-btn-secondary:hover {
+    background: var(--nf-blue);
+    border-color: var(--nf-blue);
+    color: #fff;
+}
+
+.db-card-recommendations .db-btn {
+    padding: 8px 12px;
+    border-radius: var(--nf-radius-sm);
+    background: var(--nf-surface-soft);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    color: var(--nf-text-main);
+    font-size: 13px;
+    font-weight: 600;
+    transition: var(--nf-transition-fast);
+}
+
+.db-card-recommendations .db-btn:hover {
+    background: var(--nf-yellow);
+    border-color: var(--nf-yellow);
+    color: #000;
+    transform: translateY(-1px);
+}
+
+.db-card-recommendations .db-btn-primary {
+    background: var(--nf-yellow);
+    border-color: var(--nf-yellow);
+    color: #000;
+    font-weight: 600;
+}
+
+.db-card-recommendations .db-btn-primary:hover {
+    background: var(--nf-yellow-soft);
+    border-color: var(--nf-yellow-soft);
+}
+
+.db-card-recommendations .db-btn-secondary {
+    background: var(--nf-surface-soft);
+    border-color: rgba(255, 255, 255, 0.09);
+    color: var(--nf-text-main);
+}
+
+.db-card-recommendations .db-btn-secondary:hover {
+    background: var(--nf-yellow);
+    border-color: var(--nf-yellow);
+    color: #000;
+}

@@ -1,0 +1,443 @@
+[
+    {
+        "slug": "bicep-curl",
+        "name": "Dumbbell Biceps Curl",
+        "movement_pattern": "isolation",
+        "difficulty": 1,
+        "risk_level": 1,
+        "equipment": [
+            "dumbbells"
+        ],
+        "load_type": "external",
+        "max_additional_load_kg": 50,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 8,
+            "reps_max": 15
+        },
+        "muscles_primary": [
+            "biceps"
+        ],
+        "muscles_secondary": [
+            "forearms"
+        ],
+        "muscle_load_profile": {
+            "biceps": 0.85,
+            "forearms": 0.15
+        }
+    },
+    {
+        "slug": "barbell-curl",
+        "name": "Barbell Curl",
+        "movement_pattern": "isolation",
+        "difficulty": 1,
+        "risk_level": 1,
+        "equipment": [
+            "barbell"
+        ],
+        "load_type": "external",
+        "max_additional_load_kg": 80,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 8,
+            "reps_max": 12
+        },
+        "muscles_primary": [
+            "biceps"
+        ],
+        "muscles_secondary": [
+            "forearms"
+        ],
+        "muscle_load_profile": {
+            "biceps": 0.85,
+            "forearms": 0.15
+        }
+    },
+    {
+        "slug": "hammer-curl",
+        "name": "Hammer Curl",
+        "movement_pattern": "isolation",
+        "difficulty": 1,
+        "risk_level": 1,
+        "equipment": [
+            "dumbbells"
+        ],
+        "load_type": "external",
+        "max_additional_load_kg": 50,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 8,
+            "reps_max": 15
+        },
+        "muscles_primary": [
+            "biceps",
+            "forearms"
+        ],
+        "muscles_secondary": [],
+        "muscle_load_profile": {
+            "biceps": 0.6,
+            "forearms": 0.4
+        }
+    },
+    {
+        "slug": "preacher-curl",
+        "name": "Preacher Curl",
+        "movement_pattern": "isolation",
+        "difficulty": 1,
+        "risk_level": 1,
+        "equipment": [
+            "barbell",
+            "bench"
+        ],
+        "load_type": "external",
+        "max_additional_load_kg": 60,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 8,
+            "reps_max": 12
+        },
+        "muscles_primary": [
+            "biceps"
+        ],
+        "muscles_secondary": [
+            "forearms"
+        ],
+        "muscle_load_profile": {
+            "biceps": 0.9,
+            "forearms": 0.1
+        }
+    },
+    {
+        "slug": "incline-dumbbell-curl",
+        "name": "Incline Dumbbell Curl",
+        "movement_pattern": "isolation",
+        "difficulty": 2,
+        "risk_level": 1,
+        "equipment": [
+            "dumbbells",
+            "bench"
+        ],
+        "load_type": "external",
+        "max_additional_load_kg": 30,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 8,
+            "reps_max": 12
+        },
+        "muscles_primary": [
+            "biceps"
+        ],
+        "muscles_secondary": [
+            "forearms"
+        ],
+        "muscle_load_profile": {
+            "biceps": 0.9,
+            "forearms": 0.1
+        }
+    },
+    {
+        "slug": "cable-curl",
+        "name": "Cable Curl",
+        "movement_pattern": "isolation",
+        "difficulty": 1,
+        "risk_level": 1,
+        "equipment": [
+            "cable"
+        ],
+        "load_type": "cable",
+        "max_additional_load_kg": 50,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 10,
+            "reps_max": 15
+        },
+        "muscles_primary": [
+            "biceps"
+        ],
+        "muscles_secondary": [
+            "forearms"
+        ],
+        "muscle_load_profile": {
+            "biceps": 0.85,
+            "forearms": 0.15
+        }
+    },
+    {
+        "slug": "band-curl",
+        "name": "Resistance Band Biceps Curl",
+        "movement_pattern": "isolation",
+        "difficulty": 1,
+        "risk_level": 1,
+        "equipment": [
+            "band"
+        ],
+        "load_type": "band",
+        "max_additional_load_kg": null,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 12,
+            "reps_max": 20
+        },
+        "muscles_primary": [
+            "biceps"
+        ],
+        "muscles_secondary": [
+            "forearms"
+        ],
+        "muscle_load_profile": {
+            "biceps": 0.9,
+            "forearms": 0.1
+        }
+    },
+    {
+        "slug": "reverse-curl",
+        "name": "Reverse Curl",
+        "movement_pattern": "isolation",
+        "difficulty": 1,
+        "risk_level": 1,
+        "equipment": [
+            "barbell"
+        ],
+        "load_type": "external",
+        "max_additional_load_kg": 50,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 10,
+            "reps_max": 15
+        },
+        "muscles_primary": [
+            "forearms",
+            "biceps"
+        ],
+        "muscles_secondary": [],
+        "muscle_load_profile": {
+            "forearms": 0.55,
+            "biceps": 0.45
+        }
+    },
+    {
+        "slug": "wrist-curl",
+        "name": "Dumbbell Wrist Curl",
+        "movement_pattern": "isolation",
+        "difficulty": 1,
+        "risk_level": 1,
+        "equipment": [
+            "dumbbells"
+        ],
+        "load_type": "external",
+        "max_additional_load_kg": 40,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 12,
+            "reps_max": 20
+        },
+        "muscles_primary": [
+            "forearms"
+        ],
+        "muscles_secondary": [],
+        "muscle_load_profile": {
+            "forearms": 1.0
+        }
+    },
+    {
+        "slug": "reverse-wrist-curl",
+        "name": "Dumbbell Reverse Wrist Curl",
+        "movement_pattern": "isolation",
+        "difficulty": 1,
+        "risk_level": 1,
+        "equipment": [
+            "dumbbells"
+        ],
+        "load_type": "external",
+        "max_additional_load_kg": 20,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 12,
+            "reps_max": 20
+        },
+        "muscles_primary": [
+            "forearms"
+        ],
+        "muscles_secondary": [],
+        "muscle_load_profile": {
+            "forearms": 1.0
+        }
+    },
+    {
+        "slug": "tricep-pushdown",
+        "name": "Cable Triceps Pushdown",
+        "movement_pattern": "isolation",
+        "difficulty": 1,
+        "risk_level": 1,
+        "equipment": [
+            "cable"
+        ],
+        "load_type": "cable",
+        "max_additional_load_kg": 80,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 10,
+            "reps_max": 15
+        },
+        "muscles_primary": [
+            "triceps"
+        ],
+        "muscles_secondary": [
+            "forearms"
+        ],
+        "muscle_load_profile": {
+            "triceps": 0.95,
+            "forearms": 0.05
+        }
+    },
+    {
+        "slug": "overhead-triceps-extension",
+        "name": "Dumbbell Overhead Triceps Extension",
+        "movement_pattern": "isolation",
+        "difficulty": 1,
+        "risk_level": 1,
+        "equipment": [
+            "dumbbells"
+        ],
+        "load_type": "external",
+        "max_additional_load_kg": 50,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 10,
+            "reps_max": 15
+        },
+        "muscles_primary": [
+            "triceps"
+        ],
+        "muscles_secondary": [],
+        "muscle_load_profile": {
+            "triceps": 1.0
+        }
+    },
+    {
+        "slug": "skull-crusher",
+        "name": "Lying Triceps Extension",
+        "movement_pattern": "isolation",
+        "difficulty": 2,
+        "risk_level": 2,
+        "equipment": [
+            "barbell",
+            "bench"
+        ],
+        "load_type": "external",
+        "max_additional_load_kg": 60,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 8,
+            "reps_max": 12
+        },
+        "muscles_primary": [
+            "triceps"
+        ],
+        "muscles_secondary": [],
+        "muscle_load_profile": {
+            "triceps": 1.0
+        }
+    },
+    {
+        "slug": "triceps-kickback",
+        "name": "Dumbbell Triceps Kickback",
+        "movement_pattern": "isolation",
+        "difficulty": 1,
+        "risk_level": 1,
+        "equipment": [
+            "dumbbells"
+        ],
+        "load_type": "external",
+        "max_additional_load_kg": 20,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 10,
+            "reps_max": 15,
+            "per_side": true
+        },
+        "muscles_primary": [
+            "triceps"
+        ],
+        "muscles_secondary": [],
+        "muscle_load_profile": {
+            "triceps": 1.0
+        }
+    },
+    {
+        "slug": "close-grip-bench-press",
+        "name": "Close-Grip Bench Press",
+        "movement_pattern": "push",
+        "difficulty": 3,
+        "risk_level": 3,
+        "equipment": [
+            "barbell",
+            "bench"
+        ],
+        "load_type": "external",
+        "max_additional_load_kg": 180,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 6,
+            "reps_max": 10
+        },
+        "muscles_primary": [
+            "triceps",
+            "chest"
+        ],
+        "muscles_secondary": [
+            "shoulders"
+        ],
+        "muscle_load_profile": {
+            "triceps": 0.5,
+            "chest": 0.35,
+            "shoulders": 0.15
+        }
+    },
+    {
+        "slug": "bench-dips",
+        "name": "Bench Dip",
+        "movement_pattern": "push",
+        "difficulty": 1,
+        "risk_level": 2,
+        "equipment": [
+            "bench"
+        ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 0.7,
+        "max_additional_load_kg": 40,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 8,
+            "reps_max": 15
+        },
+        "muscles_primary": [
+            "triceps"
+        ],
+        "muscles_secondary": [
+            "chest",
+            "shoulders"
+        ],
+        "muscle_load_profile": {
+            "triceps": 0.7,
+            "chest": 0.15,
+            "shoulders": 0.15
+        }
+    }
+]

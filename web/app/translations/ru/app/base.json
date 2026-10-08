@@ -1,0 +1,54 @@
+{
+  "assessment": {
+    "title": "Тест физической подготовки — NOSIFIT",
+    "heading": "Тест физической подготовки",
+    "pushups": "Максимум отжиманий за один подход:",
+    "squats": "Максимум приседаний за один подход:",
+    "plank": "Планка (секунды):",
+    "submit": "Завершить тест"
+  },
+  "equipment": {
+    "title": "Оборудование — NOSIFIT",
+    "heading": "Оборудование",
+    "subtitle": "Здесь появится список доступного оборудования."
+  },
+  "premium": {
+    "title": "Premium",
+    "accountPremium": "Ваш аккаунт: Premium",
+    "thanks": "Спасибо за поддержку!",
+    "accountFree": "Ваш аккаунт: Free",
+    "activate": "Активировать Premium"
+  },
+  "questionnaire": {
+    "title": "Анкета",
+    "heading": "Персональная анкета",
+    "environment": "Где вы тренируетесь",
+    "gym": "Зал",
+    "home": "Дома",
+    "outdoor": "На улице",
+    "aesthetic": "Эстетическая цель",
+    "none": "Нет",
+    "chest": "Грудь",
+    "back": "Спина",
+    "shoulders": "Плечи",
+    "arms": "Руки",
+    "legs": "Ноги",
+    "glutes": "Ягодицы",
+    "core": "Пресс",
+    "performance": "Физическая цель",
+    "strength": "Сила",
+    "endurance": "Выносливость",
+    "mobility": "Мобильность",
+    "morePushups": "Больше отжиманий",
+    "morePullups": "Больше подтягиваний",
+    "strong": "Сильные стороны",
+    "weak": "Слабые стороны",
+    "lowerBack": "Поясница",
+    "save": "Сохранить"
+  },
+  "tracker": {
+    "title": "Трекинг — NOSIFIT",
+    "heading": "Ваш график",
+    "subtitle": "Здесь появятся ваши трекеры."
+  }
+}

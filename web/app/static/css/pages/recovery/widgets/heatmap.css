@@ -1,0 +1,391 @@
+.rc-card-heatmap {
+    padding: 0;
+    margin-top: auto;
+}
+
+.rc-heatmap-container {
+    background: var(--card);
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius-lg);
+    padding: 10px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    position: relative;
+    overflow: visible;
+}
+
+.rc-heatmap-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.rc-heatmap-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.rc-select {
+    padding: 5px 9px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-input);
+    background: var(--surface-input);
+    color: var(--text);
+    font-size: 12px;
+}
+
+.rc-heatmap-content {
+    width: 100%;
+    position: relative;
+}
+
+.rc-heatmap-months {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 845px;
+    margin: 0 auto;
+    padding: 0;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    line-height: 1;
+    color: var(--text-muted);
+}
+
+.rc-heatmap-months span {
+    display: block;
+    flex: 0 0 auto;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.rc-heatmap-grid {
+    display: grid;
+    grid-template-columns: repeat(53, minmax(0, 1fr));
+    grid-template-rows: repeat(7, 13px);
+    grid-auto-flow: column;
+    gap: 3px;
+    padding: 6px 0;
+    justify-content: center;
+    align-items: start;
+    max-width: 845px;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.rc-heatmap-cell {
+    width: 100%;
+    max-width: 13px;
+    height: 13px;
+    justify-self: center;
+    border-radius: 3px;
+    background: #1a1f27;
+    position: relative;
+    cursor: pointer;
+    box-sizing: border-box;
+    transition:
+        transform 160ms ease,
+        box-shadow 160ms ease;
+}
+
+.rc-heatmap-cell[data-level="0"] {
+    background: #1a1f27;
+}
+
+.rc-heatmap-cell[data-level="1"] {
+    background: #05343a;
+}
+
+.rc-heatmap-cell[data-level="2"] {
+    background: #0aa3bf;
+}
+
+.rc-heatmap-cell[data-level="3"] {
+    background: var(--accent);
+}
+
+.rc-heatmap-cell[data-level="4"] {
+    background: var(--accent-soft);
+}
+
+.rc-heatmap-cell.today {
+    outline: 2px solid var(--accent);
+    outline-offset: -2px;
+}
+
+.rc-heatmap-cell:hover {
+    transform: scale(1.2);
+    z-index: 5;
+    box-shadow:
+        0 6px 18px rgba(2, 6, 23, 0.6);
+}
+
+.rc-heatmap-tooltip {
+    position: absolute;
+    left: 50%;
+    bottom: calc(100% + 6px);
+    transform:
+        translateX(-50%) translateY(-8px);
+    background: rgba(6, 10, 15, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    padding: 8px 10px;
+    border-radius: var(--radius-sm);
+    font-size: 12px;
+    color: var(--text);
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    transition:
+        opacity 160ms ease,
+        transform 160ms ease;
+    z-index: 70;
+    will-change: transform, opacity;
+    box-shadow:
+        0 6px 18px rgba(2, 6, 23, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 96px;
+    line-height: 1;
+}
+
+.rc-heatmap-tooltip.visible {
+    opacity: 1;
+    transform:
+        translateX(-50%) translateY(-12px);
+}
+
+.rc-heatmap-tooltip::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    transform:
+        translateX(-50%) rotate(45deg);
+    bottom: -5px;
+    width: 10px;
+    height: 10px;
+    background: rgba(6, 10, 15, 0.95);
+    border-left:
+        1px solid rgba(255, 255, 255, 0.06);
+    border-bottom:
+        1px solid rgba(255, 255, 255, 0.06);
+}
+
+.rc-heatmap-legend {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 2px;
+    padding-top: 2px;
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+.legend-box {
+    width: 14px;
+    height: 14px;
+    border-radius: 3px;
+    flex: 0 0 auto;
+}
+
+.legend-box.level-1 {
+    background: #05343a;
+}
+
+.legend-box.level-2 {
+    background: #0aa3bf;
+}
+
+.legend-box.level-3 {
+    background: var(--accent);
+}
+
+.legend-box.level-4 {
+    background: var(--accent-soft);
+}
+
+.rc-calendar-modal {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.65);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    backdrop-filter: blur(4px);
+}
+
+.rc-calendar-modal.open {
+    display: flex !important;
+}
+
+.rc-calendar-dialog {
+    background: var(--card);
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius-lg);
+    width: 90%;
+    max-width: 520px;
+    padding: 20px;
+    box-shadow:
+        0 0 40px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.rc-calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.rc-calendar-body {
+    max-height: 480px;
+    overflow-y: auto;
+}
+
+.rc-calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 10px;
+}
+
+.rc-calendar-item {
+    background: var(--card-soft);
+    border-radius: var(--radius-sm);
+    padding: 6px 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 12px;
+    cursor: pointer;
+    border: 1px solid var(--border-soft);
+}
+
+.rc-calendar-item:hover {
+    border-color: var(--accent);
+}
+
+.rc-calendar-date {
+    font-weight: 600;
+}
+
+.rc-calendar-load {
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+.rc-level-0 {
+    background: #1a1f27;
+}
+
+.rc-level-1 {
+    background: #05343a;
+}
+
+.rc-level-2 {
+    background: #0aa3bf;
+}
+
+.rc-level-3 {
+    background: var(--accent);
+}
+
+.rc-level-4 {
+    background: var(--accent-soft);
+}
+
+.rc-day-details-body {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    font-size: 13px;
+}
+
+.rc-day-session {
+    background: var(--card-soft);
+    border-radius: var(--radius-sm);
+    padding: 8px 10px;
+}
+
+.rc-day-session-title {
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.tt-single-line {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.tt-single-line .tt-score {
+    margin-right: 8px;
+    font-weight: 600;
+}
+
+@media (max-width: 900px) {
+    .rc-heatmap-container {
+        padding: 12px;
+    }
+
+    .rc-heatmap-content {
+        overflow-x: hidden;
+    }
+
+    .rc-heatmap-months {
+        width: 100%;
+        max-width: none;
+        margin: 0;
+    }
+
+    .rc-heatmap-grid {
+        width: 100%;
+        max-width: none;
+        margin: 0;
+        grid-template-columns:
+            repeat(53, minmax(0, 1fr));
+        gap: 2px;
+    }
+
+    .rc-heatmap-cell {
+        max-width: none;
+    }
+
+    .rc-calendar-dialog {
+        max-width: 95%;
+    }
+}
+
+@media (max-width: 600px) {
+    .rc-heatmap-container {
+        padding: 8px 10px;
+    }
+
+    .rc-heatmap-content {
+        overflow-x: auto;
+    }
+
+    .rc-heatmap-months {
+        min-width: 680px;
+    }
+
+    .rc-heatmap-grid {
+        min-width: 680px;
+        grid-template-columns:
+            repeat(53, minmax(0, 1fr));
+        gap: 3px;
+    }
+
+    .rc-heatmap-legend {
+        gap: 6px;
+        font-size: 11px;
+    }
+}

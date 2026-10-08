@@ -1,0 +1,90 @@
+<div class="dashboard-recovery-modal-backdrop" id="sleep-modal-backdrop" hidden>
+  <div
+    class="dashboard-recovery-modal dashboard-sleep-modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="dashboard-sleep-modal-title"
+  >
+    <div class="dashboard-sleep-header">
+      <div
+        class="dashboard-sleep-header-icon"
+        id="sleep-header-icon"
+        aria-hidden="true"
+      ></div>
+
+      <div class="dashboard-sleep-header-text">
+        <div class="dashboard-sleep-title" id="dashboard-sleep-modal-title">
+          {{ dashboard_t("recovery.sleepModal.title") }}
+        </div>
+
+        <div class="dashboard-sleep-subtitle">
+          {{ dashboard_t("recovery.sleepModal.subtitle") }}
+        </div>
+      </div>
+    </div>
+
+    <div class="dashboard-sleep-body">
+      <div class="dashboard-sleep-field-card">
+        <label class="dashboard-sleep-label">
+          {{ dashboard_t("recovery.sleepModal.date") }}
+        </label>
+
+        <div class="dashboard-sleep-input-wrapper">
+          <input
+            type="date"
+            class="dashboard-sleep-input-date"
+            data-sleep-date
+          />
+        </div>
+      </div>
+
+      <div class="dashboard-sleep-time-section">
+        <label class="dashboard-sleep-label">
+          {{ dashboard_t("recovery.sleepModal.time") }}
+        </label>
+
+        <div class="dashboard-sleep-time-row">
+          <div class="dashboard-sleep-time-field">
+            <div class="dashboard-sleep-time-label">
+              {{ dashboard_t("recovery.sleepModal.start") }}
+            </div>
+
+            <input
+              type="time"
+              class="dashboard-sleep-input-time"
+              data-sleep-start-time
+            />
+          </div>
+
+          <div class="dashboard-sleep-time-arrow" aria-hidden="true">→</div>
+
+          <div class="dashboard-sleep-time-field">
+            <div class="dashboard-sleep-time-label">
+              {{ dashboard_t("recovery.sleepModal.end") }}
+            </div>
+
+            <input
+              type="time"
+              class="dashboard-sleep-input-time"
+              data-sleep-end-time
+            />
+          </div>
+        </div>
+
+        <div class="dashboard-sleep-hint">
+          {{ dashboard_t("recovery.sleepModal.hint") }}
+        </div>
+      </div>
+    </div>
+
+    <div class="dashboard-sleep-footer">
+      <button class="dashboard-sleep-btn-cancel" type="button" data-close-sleep>
+        {{ dashboard_t("recovery.sleepModal.cancel") }}
+      </button>
+
+      <button class="dashboard-sleep-btn-save" type="button" data-save-sleep>
+        {{ dashboard_t("recovery.sleepModal.save") }}
+      </button>
+    </div>
+  </div>
+</div>

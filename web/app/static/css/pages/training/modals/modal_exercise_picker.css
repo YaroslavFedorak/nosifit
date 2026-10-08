@@ -1,0 +1,71 @@
+.tr-ex-modal-list {
+    margin-top: 10px;
+    max-height: 350px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding-right: 4px;
+}
+
+.tr-ex-modal-item {
+    width: 100%;
+    text-align: left;
+    padding: 12px 14px;
+    background: var(--card-soft);
+    color: var(--text);
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-size: 14px;
+    transition: var(--transition);
+}
+
+.tr-ex-modal-item:hover {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #000;
+}
+
+.tr-ex-modal-item.active {
+    background: var(--accent-soft);
+    border-color: var(--accent);
+    color: #000;
+}
+
+#tr-modal-picker {
+    position: fixed;
+    z-index: 9999;
+}
+
+.tr-ex-categories {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin: 12px 0;
+}
+
+.tr-ex-cat {
+    padding: 8px 12px;
+    font-size: 13px;
+    border-radius: var(--radius-sm);
+    background: var(--card-soft);
+    border: 1px solid var(--border-soft);
+    color: var(--text);
+    cursor: pointer;
+    transition: var(--transition);
+    text-align: center;
+}
+
+.tr-ex-cat:hover {
+    background: var(--accent-soft);
+    border-color: var(--accent);
+    color: #000;
+}
+
+.tr-ex-cat.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #000;
+    box-shadow: 0 0 0 1px rgba(255, 212, 59, 0.35);
+}

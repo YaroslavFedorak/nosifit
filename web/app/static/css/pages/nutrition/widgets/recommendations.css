@@ -1,0 +1,166 @@
+.nutrition-recommendations {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    height: 514px;
+    overflow: hidden;
+}
+
+.recommendations-header {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.recommendations-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
+}
+
+.recommendation-item {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+
+    padding: 14px;
+
+    background: rgba(255, 255, 255, 0.025);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 12px;
+
+    transition:
+        background var(--nutrition-transition-fast),
+        border-color var(--nutrition-transition-fast),
+        transform var(--nutrition-transition-fast);
+}
+
+.recommendation-item:hover {
+    background: var(--nutrition-surface-hover);
+    border-color: var(--nutrition-border-soft);
+    transform: translateY(-1px);
+}
+
+.recommendation-marker {
+    width: 4px;
+    min-width: 4px;
+    align-self: stretch;
+
+    border-radius: 999px;
+
+    background: var(--nutrition-text-muted);
+    opacity: 0.45;
+}
+
+.recommendation-content {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+
+    min-width: 0;
+}
+
+.recommendation-title {
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.35;
+
+    color: var(--nutrition-text);
+}
+
+.recommendation-text {
+    font-size: 13px;
+    line-height: 1.5;
+
+    color: var(--nutrition-text-muted);
+}
+
+
+.recommendation-item--high .recommendation-marker {
+    background: #ef6b73;
+    opacity: 1;
+}
+
+.recommendation-item--medium .recommendation-marker {
+    background: #f5c451;
+    opacity: 1;
+}
+
+.recommendation-item--low .recommendation-marker {
+    background: #7bd88f;
+    opacity: 1;
+}
+
+
+/* SUMMARY */
+
+.recommendations-summary {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    padding: 14px 16px;
+
+    background: rgba(255, 255, 255, 0.025);
+    border: 1px solid var(--nutrition-border);
+    border-radius: 12px;
+}
+
+.recommendations-summary-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+
+    font-size: 13px;
+    color: var(--nutrition-text-muted);
+}
+
+.recommendations-summary-row span:last-child {
+    font-weight: 600;
+    color: var(--nutrition-text);
+}
+
+.recommendations-summary-meta {
+    padding-top: 10px;
+
+    border-top: 1px solid var(--nutrition-border);
+
+    font-size: 12px;
+    line-height: 1.5;
+
+    color: var(--nutrition-text-muted);
+}
+
+
+.recommendations-list>.recommendation-item:only-child {
+    min-height: 100px;
+}
+
+
+@media (max-width: 900px) {
+    .nutrition-recommendations {
+        height: auto;
+        min-height: auto;
+    }
+}
+
+@media (max-width: 600px) {
+    .nutrition-recommendations {
+        padding: 16px;
+    }
+
+    .recommendation-item {
+        padding: 13px;
+    }
+
+    .recommendations-summary {
+        padding: 13px;
+    }
+}

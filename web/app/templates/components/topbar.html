@@ -1,0 +1,16 @@
+<header class="nf-topbar">
+  <div class="nf-topbar-left">
+    {% if page_title %}
+    <h1 class="nf-topbar-title">{{ page_title }}</h1>
+    {% endif %} {% if page_subtitle %}
+    <div class="nf-topbar-sub">{{ page_subtitle }}</div>
+    {% endif %}
+  </div>
+
+  <div class="nf-topbar-right">
+    <div class="nf-user-mini">
+      <div class="nf-user-mini-avatar">{{ user.username[0]|upper }}</div>
+      <div class="nf-user-mini-name">{{ user.username }}</div>
+    </div>
+  </div>
+</header>

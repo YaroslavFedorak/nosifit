@@ -1,0 +1,143 @@
+{
+  "common": {
+    "email": "Email",
+    "login": "Войти",
+    "back": "Назад",
+    "backToLogin": "Вернуться ко входу",
+    "save": "Сохранить",
+    "select": "Выберите",
+    "show": "Показать",
+    "hide": "Скрыть",
+    "or": "или",
+    "togglePassword": "Показать/скрыть пароль"
+  },
+  "steps": {
+    "account": "Настройка аккаунта",
+    "verification": "Подтверждение email",
+    "profile": "Данные профиля"
+  },
+  "login": {
+    "title": "Вход",
+    "heading": "Вход в аккаунт",
+    "email": "Email",
+    "password": "Пароль",
+    "passwordPlaceholder": "Ваш пароль",
+    "submit": "Войти",
+    "forgotPassword": "Забыли пароль?",
+    "google": "Войти через Google",
+    "github": "Войти через GitHub",
+    "noAccount": "Нет аккаунта?",
+    "create": "Создать"
+  },
+  "register": {
+    "title": "Регистрация",
+    "heading": "Создать аккаунт",
+    "namePlaceholder": "Ваше имя",
+    "passwordPlaceholder": "Минимум 8 символов",
+    "confirmPlaceholder": "Повторите пароль",
+    "privacyPrefix": "Я согласен с",
+    "privacyLink": "политикой конфиденциальности",
+    "submit": "Создать аккаунт",
+    "already": "Уже есть аккаунт?"
+  },
+  "fields": {
+    "name": "Имя",
+    "password": "Пароль",
+    "confirmPassword": "Подтверждение пароля",
+    "age": "Возраст",
+    "height": "Рост (см)",
+    "weight": "Вес (кг)",
+    "gender": "Пол",
+    "male": "Мужской",
+    "female": "Женский",
+    "other": "Другое",
+    "activity": "Активность",
+    "goal": "Цель",
+    "experience": "Опыт",
+    "workouts": "Тренировок в неделю"
+  },
+  "activity": {
+    "minimum": "Минимальная",
+    "light": "Лёгкая",
+    "medium": "Средняя",
+    "high": "Высокая",
+    "veryHigh": "Очень высокая",
+    "extreme": "Экстремальная"
+  },
+  "goals": {
+    "lose": "Снижение веса",
+    "maintain": "Поддержание",
+    "gain": "Набор массы",
+    "muscleGain": "Набор мышц",
+    "recomposition": "Рекомпозиция",
+    "performance": "Производительность"
+  },
+  "experience": {
+    "beginner": "Начинающий",
+    "intermediate": "Средний",
+    "advanced": "Продвинутый"
+  },
+  "reset": {
+    "title": "Восстановление пароля",
+    "heading": "Восстановить доступ",
+    "submit": "Отправить письмо",
+    "step": "Сброс",
+    "done": "Готово"
+  },
+  "newPassword": {
+    "title": "Новый пароль",
+    "heading": "Новый пароль",
+    "password": "Новый пароль",
+    "confirmation": "Подтверждение",
+    "submit": "Сохранить пароль"
+  },
+  "status": {
+    "sentTitle": "Письмо отправлено",
+    "sentText": "Инструкции отправлены на {email}. Проверьте почту.",
+    "resend": "Отправить повторно",
+    "doneTitle": "Пароль изменён"
+  },
+  "verify": {
+    "title": "Подтверждение кода",
+    "subtitle": "Код отправлен на {email}. Введите его ниже.",
+    "code": "Код подтверждения",
+    "submit": "Подтвердить",
+    "resend": "Отправить код повторно",
+    "timer": "Повторно через"
+  },
+  "registerComplete": {
+    "title": "Подтверждение данных",
+    "text": "Проверьте информацию и нажмите кнопку, чтобы завершить создание аккаунта.",
+    "submit": "Завершить регистрацию"
+  },
+  "profile": {
+    "title": "Заполнение профиля",
+    "heading": "Заполните профиль"
+  },
+  "profileEdit": {
+    "title": "Редактирование профиля",
+    "heading": "Редактирование профиля"
+  },
+  "telegramLink": {
+    "title": "Подключение Telegram",
+    "confirmTitle": "Подключить Telegram к этому аккаунту NosiFit?",
+    "telegramAccount": "Telegram-аккаунт:",
+    "nosifitAccount": "Аккаунт NosiFit:",
+    "warning": "Подтверждайте, только если вы только что сами нажали «Подключить аккаунт» в боте NosiFit. Любой, у кого есть доступ к этому Telegram-аккаунту, сможет входить в ваш аккаунт NosiFit через бота.",
+    "confirm": "Подключить",
+    "cancel": "Отмена",
+    "linkedTitle": "Telegram подключён",
+    "linkedText": "Telegram подключён к вашему аккаунту NosiFit. Вернитесь в бот и нажмите «Войти».",
+    "toProfile": "В профиль",
+    "alreadyHereTitle": "Уже подключено",
+    "alreadyHereText": "Этот Telegram уже подключён к вашему аккаунту.",
+    "takenTitle": "Telegram уже используется",
+    "takenText": "Этот Telegram-аккаунт уже подключён к другому аккаунту NosiFit. Сначала отключите его там.",
+    "otherTitle": "Подключён другой Telegram",
+    "otherText": "К вашему аккаунту уже подключён другой Telegram. Сначала отключите его в Профиль → Подключённые аккаунты.",
+    "cancelledTitle": "Отменено",
+    "cancelledText": "Telegram не подключён. Ссылка больше не действует.",
+    "invalidTitle": "Ссылка недействительна",
+    "invalidText": "Ссылка недействительна, уже использована или истекла. Получите новую в боте: «Подключить аккаунт»."
+  }
+}

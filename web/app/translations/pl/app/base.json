@@ -1,0 +1,54 @@
+{
+  "assessment": {
+    "title": "Test sprawności fizycznej — NOSIFIT",
+    "heading": "Test sprawności fizycznej",
+    "pushups": "Maksymalna liczba pompek w jednej serii:",
+    "squats": "Maksymalna liczba przysiadów w jednej serii:",
+    "plank": "Plank (sekundy):",
+    "submit": "Zakończ test"
+  },
+  "equipment": {
+    "title": "Sprzęt — NOSIFIT",
+    "heading": "Sprzęt",
+    "subtitle": "Tutaj pojawi się lista dostępnego sprzętu."
+  },
+  "premium": {
+    "title": "Premium",
+    "accountPremium": "Twoje konto: Premium",
+    "thanks": "Dziękujemy za wsparcie!",
+    "accountFree": "Twoje konto: Free",
+    "activate": "Aktywuj Premium"
+  },
+  "questionnaire": {
+    "title": "Ankieta",
+    "heading": "Ankieta personalna",
+    "environment": "Gdzie trenujesz",
+    "gym": "Siłownia",
+    "home": "Dom",
+    "outdoor": "Na zewnątrz",
+    "aesthetic": "Cel estetyczny",
+    "none": "Brak",
+    "chest": "Klatka piersiowa",
+    "back": "Plecy",
+    "shoulders": "Barki",
+    "arms": "Ramiona",
+    "legs": "Nogi",
+    "glutes": "Pośladki",
+    "core": "Brzuch",
+    "performance": "Cel fizyczny",
+    "strength": "Siła",
+    "endurance": "Wytrzymałość",
+    "mobility": "Mobilność",
+    "morePushups": "Więcej pompek",
+    "morePullups": "Więcej podciągnięć",
+    "strong": "Mocne strony",
+    "weak": "Słabe strony",
+    "lowerBack": "Dolna część pleców",
+    "save": "Zapisz"
+  },
+  "tracker": {
+    "title": "Śledzenie — NOSIFIT",
+    "heading": "Twój wykres",
+    "subtitle": "Tutaj pojawią się Twoje trackery."
+  }
+}
