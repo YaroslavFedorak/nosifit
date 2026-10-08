@@ -115,6 +115,6 @@ def send_email(to: str, subject: str, text: str, html: str | None = None) -> Non
 def send_email_code(email, code):
     send_email(
         to=email,
-        subject="Код підтвердження NOSIFIT",
+        subject="Код підтвердження NosiFit",
         text=f"Ваш код підтвердження: {code}",
     )

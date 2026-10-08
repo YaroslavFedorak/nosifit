@@ -71,7 +71,7 @@ def update_full():
         }
     except ValidationError:
         flash(
-            "Некоректні дані профілю",
+            "Перевірте дані профілю",
             "error",
         )
         return redirect(url_for("profile_pages.profile_page"))

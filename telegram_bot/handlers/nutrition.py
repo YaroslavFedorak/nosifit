@@ -154,19 +154,19 @@ def _format_catalog(mode: str, products: list[dict], query: str = "") -> str:
     if mode == "mine" and not products:
         return (
             f"🍽 <b>{title}</b>\n\n"
-            "У вас ще немає своїх продуктів. Їх можна створити під час додавання їжі: "
+            "Своїх продуктів поки немає. Створити їх можна під час додавання їжі: "
             "«➕ Додати свій продукт»."
         )
     if mode == "mine":
         return (
             f"🍽 <b>{title}</b>\n\n"
-            "Натисніть на продукт, щоб додати його в прийом.\n"
+            "Натисніть на продукт, щоб додати його.\n"
             "✏️ — змінити назву чи КБЖВ або видалити. ☆ / ★ — обране."
         )
     if not products:
         return (
             f"🍽 <b>{title}</b>{suffix}\n\n"
-            "Нічого не знайдено. Спробуйте інший спосіб пошуку."
+            "Тут поки порожньо."
         )
     return (
         f"🍽 <b>{title}</b>{suffix}\n\n"
@@ -323,9 +323,8 @@ async def _show_product_menu(callback: CallbackQuery, state: FSMContext) -> None
     await _safe_edit(
         callback.message,
         "🍽 <b>Додати продукт</b>\n\n"
-        "🔎 Пошук працює за частиною назви. Якщо помилитесь у написанні, "
-        "NosiFit покаже найближчі варіанти.\n\n"
-        "Також можна швидко відкрити обрані, нещодавні чи свої продукти.",
+        "🔎 Напишіть назву або її частину — помилки в написанні не страшні.\n\n"
+        "Або відкрийте обрані, нещодавні чи свої продукти.",
         reply_markup=catalog_keyboard(),
     )
 
@@ -336,8 +335,7 @@ async def _start_product_search(callback: CallbackQuery, state: FSMContext) -> N
     await _safe_edit(
         callback.message,
         "🔎 <b>Пошук продукту</b>\n\n"
-        "Введіть хоча б частину назви продукту.\n\n"
-        "Пошук охоплює всю базу продуктів.",
+        "Напишіть назву продукту або її частину.",
         reply_markup=catalog_keyboard(),
     )
 
@@ -383,7 +381,7 @@ async def _perform_product_search(
         else:
             await message.answer(
                 f"🔎 <b>{html.escape(query)}</b>\n\n"
-                "Нічого не знайдено. Спробуйте коротшу назву або скористайтеся іншим способом пошуку.",
+                "Нічого не знайдено. Спробуйте коротшу назву.",
                 reply_markup=catalog_keyboard(),
             )
         return
@@ -495,8 +493,8 @@ async def choose_meal(callback: CallbackQuery, state: FSMContext) -> None:
     await _safe_edit(
         callback.message,
         f"🍽 <b>{html.escape(meal_name(category))}</b>\n\n"
-        "Вкажіть час прийому їжі у форматі <b>HH:MM</b> "
-        "або оберіть варіант нижче.",
+        "О котрій ви їли? Напишіть час, наприклад <b>13:30</b>, "
+        "або виберіть нижче.",
         reply_markup=meal_time_keyboard(),
     )
 
@@ -535,7 +533,7 @@ async def choose_meal_time(callback: CallbackQuery, state: FSMContext) -> None:
     await state.set_state(NutritionStates.browsing_catalog)
     await callback.message.edit_text(
         "🍽 <b>Додати продукт</b>\n\n"
-        "🔎 Знайдіть продукт за назвою або відкрийте обрані, нещодавні чи свої продукти.",
+        "🔎 Напишіть назву або відкрийте обрані, нещодавні чи свої продукти.",
         reply_markup=catalog_keyboard(),
     )
 
@@ -545,7 +543,7 @@ async def enter_meal_time(message: Message, state: FSMContext) -> None:
     value = _normalize_time(message.text or "")
     if value is None:
         await message.answer(
-            "Введіть час у форматі <b>HH:MM</b>, наприклад <b>08:30</b>, "
+            "Напишіть час як <b>08:30</b> "
             "або натисніть «Поточний час».",
             reply_markup=meal_time_keyboard(),
         )
@@ -557,8 +555,7 @@ async def enter_meal_time(message: Message, state: FSMContext) -> None:
     await state.set_state(NutritionStates.browsing_catalog)
     await message.answer(
         "🍽 <b>Додати продукт</b>\n\n"
-        "🔎 Знайдіть продукт за назвою або скористайтеся обраними, "
-        "недавніми чи своїми продуктами.",
+        "🔎 Напишіть назву або відкрийте обрані, нещодавні чи свої продукти.",
         reply_markup=catalog_keyboard(),
     )
 
@@ -582,7 +579,7 @@ async def search_product(message: Message, state: FSMContext) -> None:
 async def _handle_product_query(message: Message, state: FSMContext) -> None:
     query = (message.text or "").strip()
     if not query:
-        await message.answer("Введіть хоча б частину назви продукту.")
+        await message.answer("Напишіть назву продукту або її частину.")
         return
     await _perform_product_search(message, state, query, offset=0)
 
@@ -833,7 +830,7 @@ async def delete_pending_item(callback: CallbackQuery, state: FSMContext) -> Non
         await _safe_edit(
             callback.message,
             f"🍽 <b>{html.escape(meal_name(data.get('category')))}</b>\n\n"
-            "Чернетка порожня. Додайте продукт або скасуйте.",
+            "Поки нічого не додано. Додайте продукт або скасуйте.",
             reply_markup=review_keyboard(pending),
         )
         return
@@ -1202,7 +1199,7 @@ def _format_my_product(product: dict) -> str:
         f"Жири: <b>{_format_number(float(product.get('fat_per_100g') or 0))}</b> г · "
         f"Вуглеводи: <b>{_format_number(float(product.get('carbs_per_100g') or 0))}</b> г\n"
         f"Одиниця: {unit}\n\n"
-        "Що змінити? Зміни застосуються і до вже записаних прийомів з цим продуктом."
+        "Що змінити? Нові значення підтягнуться і в уже записані прийоми з цим продуктом."
     )
 
 
@@ -1306,7 +1303,7 @@ async def my_product_delete(callback: CallbackQuery, state: FSMContext) -> None:
     await _safe_edit(
         callback.message,
         "Видалити цей продукт?\n\n"
-        "Він зникне зі списків, але вже записані прийоми їжі залишаться без змін.",
+        "Він зникне зі списків, а вже записані прийоми їжі не зміняться.",
         reply_markup=my_product_delete_keyboard(product_id),
     )
 

@@ -54,20 +54,20 @@ def _is_expired(record) -> bool:
 def send_verification_email(email, code):
     send_email(
         to=email,
-        subject="Код підтвердження для NosiFit",
+        subject="Код для реєстрації в NosiFit",
         text=(
             f"Привіт!\n\n"
-            f"Ваш код підтвердження для створення акаунту в NosiFit:\n\n"
-            f"👉 {code}\n\n"
-            f"Код дійсний протягом 10 хвилин.\n"
-            f"Якщо ви не надсилали запит — просто ігноруйте цей лист.\n\n"
-            f"З повагою,\nКоманда NosiFit"
+            f"Ваш код для реєстрації в NosiFit:\n\n"
+            f"{code}\n\n"
+            f"Код діє 10 хвилин.\n"
+            f"Якщо ви не реєструвались у NosiFit, просто не зважайте на цей лист.\n\n"
+            f"Команда NosiFit"
         ),
         html=f"""
-    <h2>Ваш код підтвердження</h2>
-    <p>Код для входу в <b>NosiFit</b>:</p>
+    <p>Привіт!</p>
+    <p>Ваш код для реєстрації в <b>NosiFit</b>:</p>
     <h1 style="font-size: 32px; letter-spacing: 4px;">{code}</h1>
-    <p>Дійсний 10 хвилин.</p>
+    <p>Код діє 10 хвилин. Якщо ви не реєструвались у NosiFit, просто не зважайте на цей лист.</p>
     """,
     )
 
@@ -126,7 +126,7 @@ def send_code():
     email = normalize_email(request.form.get("email"))
 
     if not email:
-        flash("Введіть коректний email", "error")
+        flash("Перевірте email: схоже, в адресі помилка", "error")
         return redirect(url_for("auth.register"))
 
     username = clean_username(request.form.get("username"))
@@ -142,7 +142,7 @@ def send_code():
 
     confirm = request.form.get("confirm_password")
     if confirm is not None and confirm != password:
-        flash("Паролі не співпадають.", "error")
+        flash("Паролі не збігаються.", "error")
         return redirect(url_for("auth.register"))
 
     # Limited before anything depends on whether the address is registered.
@@ -182,7 +182,7 @@ def verify_email():
     email = session.get("pending_email")
 
     if not email:
-        flash("Сесія втрачена. Спробуйте ще раз.", "error")
+        flash("Щось пішло не так. Почніть реєстрацію ще раз.", "error")
         return redirect(url_for("auth.register"))
 
     # Every attempt counts, whether or not a code exists for the address.
@@ -220,7 +220,7 @@ def resend_code():
     email = session.get("pending_email")
 
     if not email:
-        flash("Сесія втрачена. Спробуйте ще раз.", "error")
+        flash("Щось пішло не так. Почніть реєстрацію ще раз.", "error")
         return redirect(url_for("auth.register"))
 
     if _send_limited(email):
@@ -233,7 +233,7 @@ def resend_code():
         flash("Не вдалося надіслати лист із кодом. Спробуйте трохи пізніше.", "error")
         return redirect(url_for("email_verification.verify_email"))
 
-    flash("Код надіслано повторно!", "info")
+    flash("Новий код надіслано.", "info")
     return redirect(url_for("email_verification.verify_email"))
 
 

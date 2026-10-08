@@ -15,8 +15,8 @@
     <header class="demo-dashboard-header">
       <div>
         <span class="demo-eyebrow" data-i18n="dashboard.eyebrow">Огляд дня</span>
-        <h2 id="demo-dashboard-title" data-i18n="dashboard.title">Dashboard</h2>
-        <p data-i18n="dashboard.description">Це один день у контексті: тренування, харчування, відновлення та історія балансу працюють разом.</p>
+        <h2 id="demo-dashboard-title" data-i18n="dashboard.title">Дашборд</h2>
+        <p data-i18n="dashboard.description">Один звичайний день: тренування, їжа, сон і як усе це разом вплинуло на стан.</p>
       </div>
       <div class="demo-date">
         <span data-i18n="dashboard.dateLabel">Сьогодні</span>
@@ -39,24 +39,24 @@
 
   <section class="demo-explainer">
     <div>
-      <span class="demo-eyebrow" data-i18n="explainer.eyebrow">Що відбувається всередині</span>
-      <h2 data-i18n="explainer.title">Дані не залишаються окремими записами</h2>
-      <p data-i18n="explainer.text">Коли ви регулярно додаєте тренування, їжу та відновлення, NosiFit може показувати не тільки те, що сталося сьогодні, а й взаємозв’язки між цими даними.</p>
+      <span class="demo-eyebrow" data-i18n="explainer.eyebrow">Що NosiFit робить із записами</span>
+      <h2 data-i18n="explainer.title">Не просто список записів</h2>
+      <p data-i18n="explainer.text">Якщо записувати регулярно, NosiFit покаже не лише сьогоднішній день, а й те, як сон і їжа впливають на ваші тренування.</p>
     </div>
     <div class="demo-explainer-grid">
-      <article><span>01</span><h3 data-i18n="explainer.data.title">Ви вводите факти</h3><p data-i18n="explainer.data.text">Вправи, прийоми їжі, воду, сон і звички — це прості записи, які можна додавати протягом дня.</p></article>
-      <article><span>02</span><h3 data-i18n="explainer.context.title">Dashboard збирає контекст</h3><p data-i18n="explainer.context.text">Система ставить записи поруч, щоб навантаження, харчування та відновлення було видно в одному місці.</p></article>
-      <article><span>03</span><h3 data-i18n="explainer.trend.title">Heatmap показує історію</h3><p data-i18n="explainer.trend.text">День за днем утворюється історія балансу. Це допомагає помічати зміни, а не оцінювати себе за одним днем.</p></article>
+      <article><span>01</span><h3 data-i18n="explainer.data.title">Ви записуєте</h3><p data-i18n="explainer.data.text">Вправи, їжу, воду, сон і звички — у будь-який момент дня.</p></article>
+      <article><span>02</span><h3 data-i18n="explainer.context.title">Дашборд показує все разом</h3><p data-i18n="explainer.context.text">Навантаження, харчування і відновлення на одному екрані.</p></article>
+      <article><span>03</span><h3 data-i18n="explainer.trend.title">Календар показує історію</h3><p data-i18n="explainer.trend.text">Видно, як змінюється ваш стан тиждень за тижнем, а не лише за один день.</p></article>
     </div>
   </section>
 
   <section class="demo-register-panel">
     <div>
       <span class="demo-eyebrow" data-i18n="register.eyebrow">Після реєстрації</span>
-      <h2 data-i18n="register.title">Ці дані стануть твоїми</h2>
-      <p data-i18n="register.text">Ти зможеш заносити власні тренування, прийоми їжі, воду, сон і звички, а NosiFit буде збирати їх у єдиний дашборд та показувати динаміку.</p>
+      <h2 data-i18n="register.title">Далі — ваші власні дані</h2>
+      <p data-i18n="register.text">Записуйте свої тренування, їжу, воду, сон і звички, а NosiFit покаже, як змінюються ваші показники.</p>
     </div>
-    <a href="{{ url_for('auth.register') }}" class="demo-register-button" data-i18n="register.cta">Почати з NosiFit</a>
+    <a href="{{ url_for('auth.register') }}" class="demo-register-button" data-i18n="register.cta">Створити акаунт</a>
   </section>
 </main>
 {% endblock %}

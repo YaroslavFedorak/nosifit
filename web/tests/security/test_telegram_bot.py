@@ -36,6 +36,7 @@ from telegram_bot import runtime
 from telegram_bot.bot import create_dispatcher
 from telegram_bot.services.api import NosiFitAPI
 from telegram_bot.services.telegram_auth import TelegramAuthError, TelegramUser
+from telegram_bot.handlers.start import WELCOME_TEXT
 
 ALICE = TgUser(id=111, is_bot=False, first_name="Alice", username="alice_tg")
 
@@ -238,7 +239,7 @@ def test_start_offers_login_register_help(bot, backend):
     markup = bot.sent()[-1].reply_markup
     data = [row[0].callback_data for row in markup.inline_keyboard]
     assert data == ["auth:login", "auth:register", "auth:help"]
-    assert "Ласкаво просимо до NosiFit" in bot.texts()[0]
+    assert bot.texts()[0] == WELCOME_TEXT
 
 
 def test_start_is_throttled(bot, backend):
