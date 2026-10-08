@@ -3,12 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
+    {% include "components/brand_head.html" %}
     <title>{% block title %}Nosi App{% endblock %}</title>
-
-    <link
-      rel="icon"
-      href="{{ url_for('static', filename='img/NosiFit_Icon_App1.0.png') }}"
-    />
 
     <link
       rel="stylesheet"

@@ -25,8 +25,9 @@
 .public-layout .nav-right { gap: 8px; }
 
 .public-layout .nav-logo-img {
-  width: 124px;
-  max-width: 124px;
+  display: block;
+  width: auto;
+  height: 30px;
 }
 
 .public-layout .nav-link {
@@ -97,5 +98,5 @@
   .public-layout .nav-root { min-height: 60px; }
   .public-layout .nav-links { display: none; }
   .public-layout .nav-left { gap: 0; }
-  .public-layout .nav-logo-img { width: 112px; }
+  .public-layout .nav-logo-img { height: 27px; }
 }

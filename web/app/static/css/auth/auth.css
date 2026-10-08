@@ -87,11 +87,10 @@ button, a { -webkit-tap-highlight-color: transparent; }
   justify-content: center;
   gap: 11px;
 }
-.brand-icon {
-  width: 46px;
-  height: 46px;
-  object-fit: contain;
-  filter: drop-shadow(0 8px 22px rgba(157,123,234,.16));
+.brand-logo {
+  display: block;
+  width: auto;
+  height: 40px;
 }
 .brand-title {
   margin: 0;
@@ -100,8 +99,6 @@ button, a { -webkit-tap-highlight-color: transparent; }
   font-weight: 800;
   letter-spacing: -.03em;
 }
-.nos { color: var(--nf-yellow); }
-.fit { color: var(--nf-violet); }
 
 .top-center { text-align: center; }
 .title, .auth-card-title {

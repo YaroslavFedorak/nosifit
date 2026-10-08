@@ -34,24 +34,10 @@
 }
 
 .app-layout .cmp-sidebar-brand-img {
-  width: 38px;
-  height: 38px;
-  object-fit: contain;
-  filter: drop-shadow(0 6px 18px rgba(244, 200, 74, .18));
+  display: block;
+  width: auto;
+  height: 32px;
 }
-
-.app-layout .cmp-sidebar-brand-text {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 3px;
-  font-size: 21px;
-  line-height: 1;
-  font-weight: 750;
-  letter-spacing: -.045em;
-}
-
-.app-layout .brand-nos { color: var(--nf-text-main); }
-.app-layout .brand-fit { color: var(--nf-yellow); }
 
 .app-layout .cmp-sidebar-home-link {
   width: fit-content;

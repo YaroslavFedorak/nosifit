@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <title>NosiFit — {{ auth_t("telegramLink.title") }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    {% include "components/brand_head.html" %}
     <link rel="stylesheet" href="/static/css/auth/reset_status.css" />
   </head>
 
@@ -15,9 +16,8 @@
 
     <div class="auth-card">
       <div class="brand-compact">
-        <img src="/static/img/Nosi_Logo.png" class="brand-icon" alt="" />
         <h1 class="brand-title">
-          <span class="nos">Nosi</span><span class="fit">Fit</span>
+          <img src="{{ url_for('static', filename='img/brand/nosifit-lockup-on-dark.svg') }}" class="brand-logo" alt="NosiFit" />
         </h1>
       </div>
 
