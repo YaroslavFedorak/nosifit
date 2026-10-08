@@ -23,6 +23,11 @@ class TrainingPlan(db.Model):
 
     owner = db.relationship("User", back_populates="training_plans", lazy="joined")
 
+    def add_day(self, key: str, day) -> None:
+        days = dict(self.days or {})
+        days[key] = day.to_dict() if hasattr(day, "to_dict") else day
+        self.days = days
+
     def to_dict(self) -> Dict:
         return {
             "id": self.id,

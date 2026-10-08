@@ -50,16 +50,18 @@ function isValidExercise(
     const hasSets =
         Number(exercise.sets) > 0;
 
-    const hasReps =
-        exercise.reps !== null &&
-        exercise.reps !== undefined &&
-        String(exercise.reps).trim() !== "";
+    const hasWork =
+        exercise.measurement_type === "duration"
+            ? Number(exercise.duration_sec) > 0
+            : exercise.reps !== null &&
+              exercise.reps !== undefined &&
+              String(exercise.reps).trim() !== "";
 
     return (
         hasDatabaseId &&
         hasName &&
         hasSets &&
-        hasReps
+        hasWork
     );
 }
 
@@ -150,10 +152,19 @@ async function saveExercise(
                     exercise.sets
                 ),
 
-            reps_done:
-                String(
-                    exercise.reps
-                ),
+            ...(exercise.measurement_type === "duration"
+                ? {
+                    duration_sec_done:
+                        Number(
+                            exercise.duration_sec
+                        )
+                }
+                : {
+                    reps_done:
+                        String(
+                            exercise.reps
+                        )
+                }),
 
             load_done:
                 Number(

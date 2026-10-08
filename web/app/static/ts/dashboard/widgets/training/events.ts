@@ -140,7 +140,8 @@ export function bind(
 
             if (
                 field === "sets" ||
-                field === "weight"
+                field === "weight" ||
+                field === "duration_sec"
             ) {
                 value =
                     Number(value) || 0;

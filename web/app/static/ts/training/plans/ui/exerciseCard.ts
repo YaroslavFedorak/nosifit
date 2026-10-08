@@ -13,11 +13,18 @@ enableDrag
 } from "../interactions/dragdrop.js";
 
 import {
+defaultPrescription,
+isDurationExercise,
+isPerSide
+} from "../../measurement.js";
+
+import {
 ICONS
 } from "../../../icons/index.js";
 
 import {
-exercise_t
+exercise_t,
+t
 } from "../../../i18n/index.js";
 
 import {
@@ -112,13 +119,30 @@ if (
 }
 
 const reps =
-    createRepsField(
-        exercise.reps,
-        value => {
-            exercise.reps =
-                value;
-        }
-    );
+    isDurationExercise(
+        exercise.exercise
+    )
+        ? createCounterField(
+            isPerSide(exercise.exercise)
+                ? `${t("exercise.seconds")} ${t("exercise.perSide")}`
+                : t("exercise.seconds"),
+            ICONS.exercise,
+            exercise.duration_sec ?? 0,
+            value => {
+                exercise.duration_sec =
+                    value;
+            }
+        )
+        : createRepsField(
+            exercise.reps ?? "",
+            value => {
+                exercise.reps =
+                    value;
+            },
+            isPerSide(exercise.exercise)
+                ? `${t("exercise.reps")} ${t("exercise.perSide")}`
+                : t("exercise.reps")
+        );
 
 const sets =
     createCounterField(
@@ -149,8 +173,19 @@ body.appendChild(load);
 nameButton.onclick = () => {
     openPicker(
         selectedExercise => {
+            const prescription =
+                defaultPrescription(
+                    selectedExercise
+                );
+
             exercise.exercise =
                 selectedExercise;
+
+            exercise.reps =
+                prescription.reps;
+
+            exercise.duration_sec =
+                prescription.duration_sec;
 
             rerender();
         }

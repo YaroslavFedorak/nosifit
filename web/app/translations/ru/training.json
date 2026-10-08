@@ -61,7 +61,14 @@
         "biceps": "Бицепсы",
         "core": "Кор",
         "legs": "Ноги",
-        "lowerBack": "Поясница"
+        "lowerBack": "Поясница",
+        "lats": "Широчайшие",
+        "upperBack": "Середина спины",
+        "forearms": "Предплечья",
+        "hamstrings": "Бицепс бедра",
+        "calves": "Икры",
+        "adductors": "Приводящие мышцы",
+        "neck": "Шея"
     },
     "heatmap": {
         "yearActivity": "Активность за год",
@@ -76,6 +83,8 @@
         "session": "Сессия",
         "exerciseMeta": "{sets}×{reps}, {load} кг",
         "exerciseMetaNoLoad": "{sets}×{reps}",
+        "exerciseMetaDuration": "{sets}×{seconds} с, {load} кг",
+        "exerciseMetaDurationNoLoad": "{sets}×{seconds} с",
         "error": "Ошибка",
         "loadError": "Не удалось загрузить данные."
     },
@@ -148,6 +157,8 @@
         "execution": "Детали упражнения",
         "sets": "Подходы",
         "reps": "Повторения",
+        "seconds": "Секунды",
+        "perSide": "/ сторону",
         "weight": "Вес (кг)",
         "rpe": "RPE",
         "fallback": "Упражнение"

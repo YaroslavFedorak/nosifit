@@ -25,6 +25,7 @@ class Recommendation:
     description_key: Optional[str] = None
     reason_key: Optional[str] = None
     params: Optional[dict[str, Any]] = None
+    slug: Optional[str] = None
 
     def to_dict(self) -> dict[str, Any]:
         data = asdict(self)

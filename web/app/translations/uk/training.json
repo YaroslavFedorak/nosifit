@@ -61,7 +61,14 @@
         "biceps": "Біцепси",
         "core": "Кор",
         "legs": "Ноги",
-        "lowerBack": "Нижня частина спини"
+        "lowerBack": "Нижня частина спини",
+        "lats": "Найширші",
+        "upperBack": "Середина спини",
+        "forearms": "Передпліччя",
+        "hamstrings": "Біцепс стегна",
+        "calves": "Литки",
+        "adductors": "Привідні м'язи",
+        "neck": "Шия"
     },
     "heatmap": {
         "yearActivity": "Активність за рік",
@@ -76,6 +83,8 @@
         "session": "Сесія",
         "exerciseMeta": "{sets}×{reps}, {load} кг",
         "exerciseMetaNoLoad": "{sets}×{reps}",
+        "exerciseMetaDuration": "{sets}×{seconds} с, {load} кг",
+        "exerciseMetaDurationNoLoad": "{sets}×{seconds} с",
         "error": "Помилка",
         "loadError": "Не вдалося завантажити дані."
     },
@@ -148,6 +157,8 @@
         "execution": "Деталі вправи",
         "sets": "Підходи",
         "reps": "Повторення",
+        "seconds": "Секунди",
+        "perSide": "/ сторону",
         "weight": "Вага (кг)",
         "rpe": "RPE",
         "fallback": "Вправа"

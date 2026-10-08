@@ -400,6 +400,24 @@ function renderCalendarMonth() {
             }
         };
 }
+function formatDayExerciseMeta(exercise) {
+    const isDuration = exercise.measurement_type === "duration";
+    const key = isDuration
+        ? "heatmap.exerciseMetaDuration"
+        : "heatmap.exerciseMeta";
+    const params = {
+        sets: exercise.sets,
+        reps: exercise.reps ?? "",
+        seconds: exercise.duration_sec ?? 0,
+        load: exercise.load
+    };
+    const meta = exercise.load != null
+        ? t(key, params)
+        : t(`${key}NoLoad`, params);
+    return exercise.per_side
+        ? `${meta} ${t("exercise.perSide")}`
+        : meta;
+}
 function getDayExerciseName(exercise) {
     if (typeof exercise.slug === "string" &&
         exercise.slug.trim()) {
@@ -449,16 +467,7 @@ function openDayDetails(date) {
                                                             ${escapeHtml(getDayExerciseName(exercise))}
                                                         </div>
                                                         <div class="tr-ex-meta">
-                                                            ${exercise.load != null
-                    ? t("heatmap.exerciseMeta", {
-                        sets: escapeHtml(exercise.sets),
-                        reps: escapeHtml(exercise.reps),
-                        load: escapeHtml(exercise.load)
-                    })
-                    : t("heatmap.exerciseMetaNoLoad", {
-                        sets: escapeHtml(exercise.sets),
-                        reps: escapeHtml(exercise.reps)
-                    })}
+                                                            ${escapeHtml(formatDayExerciseMeta(exercise))}
                                                         </div>
                                                     </div>
                                                 `)

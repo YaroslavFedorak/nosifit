@@ -1,4 +1,5 @@
 import { trainingStore } from "./store.js";
+import { MUSCLE_CATEGORIES } from "./measurement.js";
 import { exercise_t, t } from "../i18n/index.js";
 let pickerCallback = null;
 function getExerciseName(exercise) {
@@ -67,9 +68,8 @@ export function initExercisePicker() {
                     const muscles = exercise
                         .muscles_primary ||
                         [];
-                    return muscles.some(muscle => muscle
-                        .toLowerCase()
-                        .includes(currentCategory));
+                    const categoryMuscles = MUSCLE_CATEGORIES[currentCategory] ?? [currentCategory];
+                    return muscles.some(muscle => categoryMuscles.includes(muscle.toLowerCase()));
                 });
         }
         if (query) {

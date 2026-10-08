@@ -1,0 +1,239 @@
+[
+    {
+        "slug": "l-sit-hold",
+        "name": "L-Sit Hold",
+        "movement_pattern": "core",
+        "difficulty": 4,
+        "risk_level": 2,
+        "equipment": [
+            "dip-bars"
+        ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 1.0,
+        "max_additional_load_kg": null,
+        "measurement_type": "duration",
+        "prescription": {
+            "sets": 3,
+            "seconds_min": 10,
+            "seconds_max": 30
+        },
+        "muscles_primary": [
+            "abs",
+            "hip-flexors"
+        ],
+        "muscles_secondary": [
+            "triceps",
+            "quads",
+            "shoulders"
+        ],
+        "muscle_load_profile": {
+            "abs": 0.4,
+            "hip-flexors": 0.3,
+            "triceps": 0.15,
+            "quads": 0.1,
+            "shoulders": 0.05
+        }
+    },
+    {
+        "slug": "wall-handstand-hold",
+        "name": "Wall Handstand Hold",
+        "movement_pattern": "push",
+        "difficulty": 3,
+        "risk_level": 3,
+        "equipment": [
+            "bodyweight"
+        ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 1.0,
+        "max_additional_load_kg": null,
+        "measurement_type": "duration",
+        "prescription": {
+            "sets": 3,
+            "seconds_min": 20,
+            "seconds_max": 60
+        },
+        "muscles_primary": [
+            "shoulders"
+        ],
+        "muscles_secondary": [
+            "triceps",
+            "core",
+            "traps"
+        ],
+        "muscle_load_profile": {
+            "shoulders": 0.55,
+            "triceps": 0.2,
+            "core": 0.15,
+            "traps": 0.1
+        }
+    },
+    {
+        "slug": "handstand-hold",
+        "name": "Freestanding Handstand Hold",
+        "movement_pattern": "push",
+        "difficulty": 5,
+        "risk_level": 3,
+        "equipment": [
+            "bodyweight"
+        ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 1.0,
+        "max_additional_load_kg": null,
+        "measurement_type": "duration",
+        "prescription": {
+            "sets": 5,
+            "seconds_min": 10,
+            "seconds_max": 30
+        },
+        "muscles_primary": [
+            "shoulders"
+        ],
+        "muscles_secondary": [
+            "core",
+            "triceps",
+            "traps"
+        ],
+        "muscle_load_profile": {
+            "shoulders": 0.5,
+            "core": 0.2,
+            "triceps": 0.15,
+            "traps": 0.15
+        }
+    },
+    {
+        "slug": "tuck-front-lever-hold",
+        "name": "Tuck Front Lever Hold",
+        "movement_pattern": "pull",
+        "difficulty": 4,
+        "risk_level": 2,
+        "equipment": [
+            "bar"
+        ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 1.0,
+        "max_additional_load_kg": null,
+        "measurement_type": "duration",
+        "prescription": {
+            "sets": 4,
+            "seconds_min": 8,
+            "seconds_max": 20
+        },
+        "muscles_primary": [
+            "lats",
+            "abs"
+        ],
+        "muscles_secondary": [
+            "upper-back",
+            "biceps",
+            "forearms"
+        ],
+        "muscle_load_profile": {
+            "lats": 0.5,
+            "abs": 0.2,
+            "upper-back": 0.15,
+            "biceps": 0.1,
+            "forearms": 0.05
+        }
+    },
+    {
+        "slug": "tuck-planche-hold",
+        "name": "Tuck Planche Hold",
+        "movement_pattern": "push",
+        "difficulty": 5,
+        "risk_level": 3,
+        "equipment": [
+            "bodyweight"
+        ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 1.0,
+        "max_additional_load_kg": null,
+        "measurement_type": "duration",
+        "prescription": {
+            "sets": 4,
+            "seconds_min": 5,
+            "seconds_max": 15
+        },
+        "muscles_primary": [
+            "shoulders"
+        ],
+        "muscles_secondary": [
+            "core",
+            "triceps",
+            "chest"
+        ],
+        "muscle_load_profile": {
+            "shoulders": 0.55,
+            "core": 0.2,
+            "triceps": 0.15,
+            "chest": 0.1
+        }
+    },
+    {
+        "slug": "ring-support-hold",
+        "name": "Ring Support Hold",
+        "movement_pattern": "push",
+        "difficulty": 3,
+        "risk_level": 2,
+        "equipment": [
+            "rings"
+        ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 1.0,
+        "max_additional_load_kg": null,
+        "measurement_type": "duration",
+        "prescription": {
+            "sets": 3,
+            "seconds_min": 15,
+            "seconds_max": 40
+        },
+        "muscles_primary": [
+            "triceps",
+            "shoulders",
+            "chest"
+        ],
+        "muscles_secondary": [
+            "core"
+        ],
+        "muscle_load_profile": {
+            "triceps": 0.35,
+            "shoulders": 0.3,
+            "chest": 0.2,
+            "core": 0.15
+        }
+    },
+    {
+        "slug": "muscle-up",
+        "name": "Muscle-Up",
+        "movement_pattern": "pull",
+        "difficulty": 5,
+        "risk_level": 4,
+        "equipment": [
+            "bar"
+        ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 1.0,
+        "max_additional_load_kg": 20,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 1,
+            "reps_max": 5
+        },
+        "muscles_primary": [
+            "lats",
+            "triceps"
+        ],
+        "muscles_secondary": [
+            "biceps",
+            "shoulders",
+            "chest"
+        ],
+        "muscle_load_profile": {
+            "lats": 0.4,
+            "triceps": 0.2,
+            "biceps": 0.15,
+            "shoulders": 0.15,
+            "chest": 0.1
+        }
+    }
+]

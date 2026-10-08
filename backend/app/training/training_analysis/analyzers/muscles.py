@@ -1,6 +1,7 @@
 from datetime import date, timedelta
 from typing import Dict, List, Any
 
+from backend.app.services.training.load.service import TrainingLoadService
 from backend.app.training.models.exercise import Exercise
 from backend.app.training.training_analysis.dto import MuscleResult
 
@@ -8,65 +9,30 @@ WEAK_RATIO = 0.70
 OVERLOADED_RATIO = 1.35
 
 
-def _parse_reps(value: Any) -> float:
-    if value is None:
-        return 1.0
+def _exercise_load(
+    session_exercise: Any,
+    exercise: Exercise,
+    user_weight: float,
+) -> float:
+    """Internal training load of one logged exercise.
 
-    if isinstance(value, (int, float)):
-        return max(float(value), 1.0)
+    This is an analytics metric computed by the load engine in each
+    exercise's own unit (sets x reps or sets x seconds); it never converts
+    seconds into repetitions or the other way round.
+    """
+    result = TrainingLoadService.compute_exercise_load(
+        session_exercise=session_exercise,
+        exercise=exercise,
+        capacity={"weight": user_weight},
+    )
 
-    text = str(value).strip()
-
-    if not text:
-        return 1.0
-
-    if "-" in text:
-        parts = text.split("-", 1)
-
-        try:
-            low = float(parts[0].strip())
-            high = float(parts[1].strip())
-            return max((low + high) / 2.0, 1.0)
-        except (TypeError, ValueError):
-            return 1.0
-
-    try:
-        return max(float(text), 1.0)
-    except (TypeError, ValueError):
-        return 1.0
-
-
-def _exercise_volume(session_exercise: Any) -> float:
-    sets = session_exercise.sets_done or session_exercise.sets_planned or 0
-    reps = session_exercise.reps_done or session_exercise.reps_planned or 1
-    load = session_exercise.load_done or session_exercise.load_planned or 0
-
-    try:
-        sets_value = max(float(sets), 0.0)
-    except (TypeError, ValueError):
-        sets_value = 0.0
-
-    reps_value = _parse_reps(reps)
-
-    try:
-        load_value = max(float(load), 0.0)
-    except (TypeError, ValueError):
-        load_value = 0.0
-
-    if sets_value <= 0:
-        return 0.0
-
-    base_volume = sets_value * reps_value
-
-    if load_value > 0:
-        return base_volume * (1.0 + min(load_value / 100.0, 2.0))
-
-    return base_volume
+    return float(result.get("internal_load", 0.0))
 
 
 def _add_exercise_muscles(
     totals: Dict[str, float],
     session_exercise: Any,
+    user_weight: float,
 ) -> None:
     exercise = Exercise.query.get(session_exercise.exercise_id)
 
@@ -82,7 +48,7 @@ def _add_exercise_muscles(
     if not muscles:
         return
 
-    volume = _exercise_volume(session_exercise)
+    volume = _exercise_load(session_exercise, exercise, user_weight)
 
     if volume <= 0:
         return
@@ -124,7 +90,7 @@ def _add_stored_muscle_loads(
     return added
 
 
-def _calculate_totals(window: List[Any]) -> Dict[str, float]:
+def _calculate_totals(window: List[Any], user_weight: float) -> Dict[str, float]:
     totals: Dict[str, float] = {}
 
     for session in window:
@@ -140,6 +106,7 @@ def _calculate_totals(window: List[Any]) -> Dict[str, float]:
             _add_exercise_muscles(
                 totals,
                 session_exercise,
+                user_weight,
             )
 
     return {muscle: round(value, 3) for muscle, value in totals.items() if value > 0}
@@ -163,6 +130,7 @@ def analyse_muscles(
     sessions: List,
     target_day: date,
     days: int = 14,
+    user_weight: float = 70.0,
 ) -> MuscleResult:
     start = target_day - timedelta(days=days)
 
@@ -172,7 +140,7 @@ def analyse_muscles(
         if session.started_at and start <= session.started_at.date() <= target_day
     ]
 
-    totals = _calculate_totals(window)
+    totals = _calculate_totals(window, user_weight)
 
     if not totals:
         return {

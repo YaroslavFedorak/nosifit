@@ -100,17 +100,18 @@ function translateRecommendation(key, fallback, params = {}) {
     }
     return fallback || key;
 }
-function translateExercise(name) {
-    const normalizedName = name.trim();
-    if (!normalizedName) {
-        return name;
+function translateExercise(key, fallback) {
+    const normalizedKey = key.trim();
+    if (!normalizedKey) {
+        return fallback;
     }
-    const translated = translate("exercises", normalizedName);
-    if (translated !==
-        normalizedName) {
+    const translated = translate("exercises", normalizedKey);
+    if (typeof translated === "string" &&
+        translated !==
+            normalizedKey) {
         return translated;
     }
-    return name;
+    return fallback;
 }
 function getCategoryLabel(category) {
     return translate("dashboard", CATEGORY_LABELS[category]);
@@ -129,7 +130,9 @@ function getRecommendationTitle(recommendation, category) {
             category) {
         if (category ===
             "training") {
-            return translateExercise(title);
+            return translateExercise(recommendation.slug
+                ? `${recommendation.slug}.name`
+                : title, title);
         }
         return title;
     }

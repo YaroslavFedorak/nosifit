@@ -1,204 +1,1491 @@
 [
     {
-        "name": "Присідання",
         "slug": "squat",
+        "name": "Bodyweight Squat",
+        "movement_pattern": "squat",
+        "difficulty": 1,
+        "risk_level": 1,
+        "equipment": [
+            "bodyweight"
+        ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 0.65,
+        "max_additional_load_kg": null,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 12,
+            "reps_max": 25
+        },
+        "muscles_primary": [
+            "quads",
+            "glutes"
+        ],
+        "muscles_secondary": [
+            "adductors",
+            "core"
+        ],
+        "muscle_load_profile": {
+            "quads": 0.5,
+            "glutes": 0.3,
+            "adductors": 0.1,
+            "core": 0.1
+        }
+    },
+    {
+        "slug": "barbell-back-squat",
+        "name": "Barbell Back Squat",
+        "movement_pattern": "squat",
         "difficulty": 3,
-        "movement_pattern": "lower-body",
+        "risk_level": 3,
+        "equipment": [
+            "barbell"
+        ],
+        "load_type": "external",
+        "max_additional_load_kg": 250,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 4,
+            "reps_min": 4,
+            "reps_max": 10
+        },
+        "muscles_primary": [
+            "quads",
+            "glutes"
+        ],
+        "muscles_secondary": [
+            "adductors",
+            "lower-back",
+            "core"
+        ],
+        "muscle_load_profile": {
+            "quads": 0.45,
+            "glutes": 0.3,
+            "adductors": 0.1,
+            "lower-back": 0.08,
+            "core": 0.07
+        }
+    },
+    {
+        "slug": "barbell-front-squat",
+        "name": "Barbell Front Squat",
+        "movement_pattern": "squat",
+        "difficulty": 4,
+        "risk_level": 3,
+        "equipment": [
+            "barbell"
+        ],
+        "load_type": "external",
+        "max_additional_load_kg": 200,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 4,
+            "reps_min": 4,
+            "reps_max": 8
+        },
+        "muscles_primary": [
+            "quads",
+            "glutes"
+        ],
+        "muscles_secondary": [
+            "core",
+            "upper-back",
+            "adductors"
+        ],
+        "muscle_load_profile": {
+            "quads": 0.55,
+            "glutes": 0.2,
+            "core": 0.1,
+            "upper-back": 0.08,
+            "adductors": 0.07
+        }
+    },
+    {
+        "slug": "goblet-squat",
+        "name": "Goblet Squat",
+        "movement_pattern": "squat",
+        "difficulty": 1,
+        "risk_level": 1,
+        "equipment": [
+            "dumbbells"
+        ],
+        "load_type": "external",
+        "max_additional_load_kg": 60,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 8,
+            "reps_max": 15
+        },
+        "muscles_primary": [
+            "quads",
+            "glutes"
+        ],
+        "muscles_secondary": [
+            "core",
+            "adductors"
+        ],
+        "muscle_load_profile": {
+            "quads": 0.5,
+            "glutes": 0.28,
+            "core": 0.12,
+            "adductors": 0.1
+        }
+    },
+    {
+        "slug": "box-squat",
+        "name": "Barbell Box Squat",
+        "movement_pattern": "squat",
+        "difficulty": 3,
+        "risk_level": 2,
+        "equipment": [
+            "barbell",
+            "bench"
+        ],
+        "load_type": "external",
+        "max_additional_load_kg": 220,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 4,
+            "reps_min": 5,
+            "reps_max": 10
+        },
+        "muscles_primary": [
+            "quads",
+            "glutes"
+        ],
+        "muscles_secondary": [
+            "hamstrings",
+            "adductors",
+            "lower-back"
+        ],
+        "muscle_load_profile": {
+            "quads": 0.4,
+            "glutes": 0.35,
+            "hamstrings": 0.1,
+            "adductors": 0.08,
+            "lower-back": 0.07
+        }
+    },
+    {
+        "slug": "leg-press",
+        "name": "Leg Press",
+        "movement_pattern": "squat",
+        "difficulty": 1,
+        "risk_level": 2,
+        "equipment": [
+            "machine"
+        ],
+        "load_type": "machine",
+        "max_additional_load_kg": 400,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 8,
+            "reps_max": 15
+        },
+        "muscles_primary": [
+            "quads",
+            "glutes"
+        ],
+        "muscles_secondary": [
+            "adductors",
+            "hamstrings"
+        ],
+        "muscle_load_profile": {
+            "quads": 0.6,
+            "glutes": 0.25,
+            "adductors": 0.1,
+            "hamstrings": 0.05
+        }
+    },
+    {
+        "slug": "hack-squat",
+        "name": "Hack Squat",
+        "movement_pattern": "squat",
+        "difficulty": 2,
+        "risk_level": 2,
+        "equipment": [
+            "machine"
+        ],
+        "load_type": "machine",
+        "max_additional_load_kg": 300,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 8,
+            "reps_max": 12
+        },
+        "muscles_primary": [
+            "quads",
+            "glutes"
+        ],
+        "muscles_secondary": [
+            "adductors",
+            "hamstrings"
+        ],
+        "muscle_load_profile": {
+            "quads": 0.65,
+            "glutes": 0.2,
+            "adductors": 0.1,
+            "hamstrings": 0.05
+        }
+    },
+    {
+        "slug": "pistol-squat",
+        "name": "Pistol Squat",
+        "movement_pattern": "squat",
+        "difficulty": 4,
         "risk_level": 2,
         "equipment": [
             "bodyweight"
         ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 0.95,
+        "max_additional_load_kg": 20,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 3,
+            "reps_max": 8,
+            "per_side": true
+        },
         "muscles_primary": [
-            "quads"
+            "quads",
+            "glutes"
         ],
         "muscles_secondary": [
-            "glutes",
-            "core"
+            "core",
+            "adductors"
         ],
-        "max_additional_load_kg": 350,
         "muscle_load_profile": {
             "quads": 0.5,
             "glutes": 0.3,
-            "core": 0.2
+            "core": 0.1,
+            "adductors": 0.1
         }
     },
     {
-        "name": "Присідання до лави",
-        "slug": "box-squat",
+        "slug": "cossack-squat",
+        "name": "Cossack Squat",
+        "movement_pattern": "squat",
         "difficulty": 3,
-        "movement_pattern": "lower-body",
+        "risk_level": 2,
+        "equipment": [
+            "bodyweight"
+        ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 0.75,
+        "max_additional_load_kg": 24,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 6,
+            "reps_max": 10,
+            "per_side": true
+        },
+        "muscles_primary": [
+            "adductors",
+            "quads",
+            "glutes"
+        ],
+        "muscles_secondary": [
+            "hamstrings"
+        ],
+        "muscle_load_profile": {
+            "adductors": 0.35,
+            "quads": 0.35,
+            "glutes": 0.2,
+            "hamstrings": 0.1
+        }
+    },
+    {
+        "slug": "wall-sit",
+        "name": "Wall Sit",
+        "movement_pattern": "squat",
+        "difficulty": 1,
+        "risk_level": 1,
+        "equipment": [
+            "bodyweight"
+        ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 0.55,
+        "max_additional_load_kg": 40,
+        "measurement_type": "duration",
+        "prescription": {
+            "sets": 3,
+            "seconds_min": 30,
+            "seconds_max": 90
+        },
+        "muscles_primary": [
+            "quads",
+            "glutes"
+        ],
+        "muscles_secondary": [
+            "core"
+        ],
+        "muscle_load_profile": {
+            "quads": 0.7,
+            "glutes": 0.2,
+            "core": 0.1
+        }
+    },
+    {
+        "slug": "isometric-squat-hold",
+        "name": "Isometric Squat Hold",
+        "movement_pattern": "squat",
+        "difficulty": 1,
+        "risk_level": 1,
+        "equipment": [
+            "bodyweight"
+        ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 0.65,
+        "max_additional_load_kg": 40,
+        "measurement_type": "duration",
+        "prescription": {
+            "sets": 3,
+            "seconds_min": 20,
+            "seconds_max": 60
+        },
+        "muscles_primary": [
+            "quads",
+            "glutes"
+        ],
+        "muscles_secondary": [
+            "core",
+            "adductors"
+        ],
+        "muscle_load_profile": {
+            "quads": 0.55,
+            "glutes": 0.3,
+            "core": 0.1,
+            "adductors": 0.05
+        }
+    },
+    {
+        "slug": "bulgarian-split-squat",
+        "name": "Bulgarian Split Squat",
+        "movement_pattern": "lunge",
+        "difficulty": 3,
+        "risk_level": 2,
+        "equipment": [
+            "bench"
+        ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 0.8,
+        "max_additional_load_kg": 80,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 6,
+            "reps_max": 12,
+            "per_side": true
+        },
+        "muscles_primary": [
+            "quads",
+            "glutes"
+        ],
+        "muscles_secondary": [
+            "adductors",
+            "core"
+        ],
+        "muscle_load_profile": {
+            "quads": 0.45,
+            "glutes": 0.35,
+            "adductors": 0.1,
+            "core": 0.1
+        }
+    },
+    {
+        "slug": "split-squat",
+        "name": "Split Squat",
+        "movement_pattern": "lunge",
+        "difficulty": 1,
+        "risk_level": 1,
+        "equipment": [
+            "bodyweight"
+        ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 0.8,
+        "max_additional_load_kg": 60,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 8,
+            "reps_max": 12,
+            "per_side": true
+        },
+        "muscles_primary": [
+            "quads",
+            "glutes"
+        ],
+        "muscles_secondary": [
+            "adductors",
+            "core"
+        ],
+        "muscle_load_profile": {
+            "quads": 0.5,
+            "glutes": 0.3,
+            "adductors": 0.1,
+            "core": 0.1
+        }
+    },
+    {
+        "slug": "lunges",
+        "name": "Forward Lunge",
+        "movement_pattern": "lunge",
+        "difficulty": 2,
+        "risk_level": 1,
+        "equipment": [
+            "bodyweight"
+        ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 0.8,
+        "max_additional_load_kg": 60,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 8,
+            "reps_max": 12,
+            "per_side": true
+        },
+        "muscles_primary": [
+            "quads",
+            "glutes"
+        ],
+        "muscles_secondary": [
+            "adductors",
+            "core"
+        ],
+        "muscle_load_profile": {
+            "quads": 0.5,
+            "glutes": 0.35,
+            "adductors": 0.08,
+            "core": 0.07
+        }
+    },
+    {
+        "slug": "reverse-lunge",
+        "name": "Reverse Lunge",
+        "movement_pattern": "lunge",
+        "difficulty": 1,
+        "risk_level": 1,
+        "equipment": [
+            "bodyweight"
+        ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 0.8,
+        "max_additional_load_kg": 60,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 8,
+            "reps_max": 12,
+            "per_side": true
+        },
+        "muscles_primary": [
+            "quads",
+            "glutes"
+        ],
+        "muscles_secondary": [
+            "adductors",
+            "core"
+        ],
+        "muscle_load_profile": {
+            "quads": 0.45,
+            "glutes": 0.4,
+            "adductors": 0.08,
+            "core": 0.07
+        }
+    },
+    {
+        "slug": "walking-lunge",
+        "name": "Walking Lunge",
+        "movement_pattern": "lunge",
+        "difficulty": 2,
+        "risk_level": 1,
+        "equipment": [
+            "bodyweight"
+        ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 0.8,
+        "max_additional_load_kg": 60,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 8,
+            "reps_max": 14,
+            "per_side": true
+        },
+        "muscles_primary": [
+            "quads",
+            "glutes"
+        ],
+        "muscles_secondary": [
+            "adductors",
+            "hamstrings"
+        ],
+        "muscle_load_profile": {
+            "quads": 0.45,
+            "glutes": 0.35,
+            "adductors": 0.1,
+            "hamstrings": 0.1
+        }
+    },
+    {
+        "slug": "lateral-lunge",
+        "name": "Lateral Lunge",
+        "movement_pattern": "lunge",
+        "difficulty": 2,
+        "risk_level": 1,
+        "equipment": [
+            "bodyweight"
+        ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 0.75,
+        "max_additional_load_kg": 40,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 8,
+            "reps_max": 12,
+            "per_side": true
+        },
+        "muscles_primary": [
+            "adductors",
+            "quads",
+            "glutes"
+        ],
+        "muscles_secondary": [
+            "core"
+        ],
+        "muscle_load_profile": {
+            "adductors": 0.35,
+            "quads": 0.35,
+            "glutes": 0.2,
+            "core": 0.1
+        }
+    },
+    {
+        "slug": "curtsy-lunge",
+        "name": "Curtsy Lunge",
+        "movement_pattern": "lunge",
+        "difficulty": 2,
+        "risk_level": 1,
+        "equipment": [
+            "bodyweight"
+        ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 0.8,
+        "max_additional_load_kg": 40,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 8,
+            "reps_max": 12,
+            "per_side": true
+        },
+        "muscles_primary": [
+            "glutes",
+            "quads"
+        ],
+        "muscles_secondary": [
+            "adductors",
+            "core"
+        ],
+        "muscle_load_profile": {
+            "glutes": 0.45,
+            "quads": 0.35,
+            "adductors": 0.12,
+            "core": 0.08
+        }
+    },
+    {
+        "slug": "step-ups",
+        "name": "Step-Up",
+        "movement_pattern": "lunge",
+        "difficulty": 1,
+        "risk_level": 1,
+        "equipment": [
+            "box"
+        ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 0.8,
+        "max_additional_load_kg": 60,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 8,
+            "reps_max": 12,
+            "per_side": true
+        },
+        "muscles_primary": [
+            "quads",
+            "glutes"
+        ],
+        "muscles_secondary": [
+            "hamstrings",
+            "calves"
+        ],
+        "muscle_load_profile": {
+            "quads": 0.5,
+            "glutes": 0.35,
+            "hamstrings": 0.08,
+            "calves": 0.07
+        }
+    },
+    {
+        "slug": "barbell-deadlift",
+        "name": "Conventional Deadlift",
+        "movement_pattern": "hinge",
+        "difficulty": 3,
+        "risk_level": 3,
+        "equipment": [
+            "barbell"
+        ],
+        "load_type": "external",
+        "max_additional_load_kg": 300,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 3,
+            "reps_max": 8
+        },
+        "muscles_primary": [
+            "glutes",
+            "hamstrings",
+            "lower-back"
+        ],
+        "muscles_secondary": [
+            "quads",
+            "traps",
+            "forearms"
+        ],
+        "muscle_load_profile": {
+            "glutes": 0.3,
+            "hamstrings": 0.25,
+            "lower-back": 0.2,
+            "quads": 0.1,
+            "traps": 0.08,
+            "forearms": 0.07
+        }
+    },
+    {
+        "slug": "sumo-deadlift",
+        "name": "Sumo Deadlift",
+        "movement_pattern": "hinge",
+        "difficulty": 3,
+        "risk_level": 3,
+        "equipment": [
+            "barbell"
+        ],
+        "load_type": "external",
+        "max_additional_load_kg": 300,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 3,
+            "reps_max": 8
+        },
+        "muscles_primary": [
+            "glutes",
+            "adductors",
+            "hamstrings"
+        ],
+        "muscles_secondary": [
+            "quads",
+            "lower-back",
+            "forearms"
+        ],
+        "muscle_load_profile": {
+            "glutes": 0.3,
+            "adductors": 0.2,
+            "hamstrings": 0.2,
+            "quads": 0.12,
+            "lower-back": 0.1,
+            "forearms": 0.08
+        }
+    },
+    {
+        "slug": "trap-bar-deadlift",
+        "name": "Trap Bar Deadlift",
+        "movement_pattern": "hinge",
+        "difficulty": 2,
+        "risk_level": 2,
+        "equipment": [
+            "trap-bar"
+        ],
+        "load_type": "external",
+        "max_additional_load_kg": 300,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 4,
+            "reps_max": 8
+        },
+        "muscles_primary": [
+            "quads",
+            "glutes",
+            "hamstrings"
+        ],
+        "muscles_secondary": [
+            "lower-back",
+            "traps",
+            "forearms"
+        ],
+        "muscle_load_profile": {
+            "quads": 0.3,
+            "glutes": 0.3,
+            "hamstrings": 0.2,
+            "lower-back": 0.1,
+            "traps": 0.05,
+            "forearms": 0.05
+        }
+    },
+    {
+        "slug": "romanian-deadlift",
+        "name": "Barbell Romanian Deadlift",
+        "movement_pattern": "hinge",
+        "difficulty": 3,
         "risk_level": 2,
         "equipment": [
             "barbell"
         ],
-        "muscles_primary": [
-            "quads"
-        ],
-        "muscles_secondary": [
-            "glutes"
-        ],
-        "max_additional_load_kg": 350,
-        "muscle_load_profile": {
-            "quads": 0.55,
-            "glutes": 0.45
-        }
-    },
-    {
-        "name": "Випади",
-        "slug": "lunges",
-        "difficulty": 2,
-        "movement_pattern": "lower-body",
-        "risk_level": 2,
-        "equipment": [
-            "bodyweight"
-        ],
-        "muscles_primary": [
-            "quads"
-        ],
-        "muscles_secondary": [
-            "glutes"
-        ],
-        "max_additional_load_kg": 120,
-        "muscle_load_profile": {
-            "quads": 0.55,
-            "glutes": 0.45
-        }
-    },
-    {
-        "name": "Кроки на платформу",
-        "slug": "step-ups",
-        "difficulty": 2,
-        "movement_pattern": "lower-body",
-        "risk_level": 1,
-        "equipment": [
-            "bodyweight"
-        ],
-        "muscles_primary": [
-            "quads"
-        ],
-        "muscles_secondary": [
-            "glutes"
-        ],
-        "max_additional_load_kg": 100,
-        "muscle_load_profile": {
-            "quads": 0.6,
-            "glutes": 0.4
-        }
-    },
-    {
-        "name": "Ягодичний міст",
-        "slug": "glute-bridge",
-        "difficulty": 2,
-        "movement_pattern": "lower-body",
-        "risk_level": 1,
-        "equipment": [
-            "bodyweight"
-        ],
-        "muscles_primary": [
-            "glutes"
-        ],
-        "muscles_secondary": [
-            "hamstrings"
-        ],
+        "load_type": "external",
         "max_additional_load_kg": 200,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 6,
+            "reps_max": 12
+        },
+        "muscles_primary": [
+            "hamstrings",
+            "glutes"
+        ],
+        "muscles_secondary": [
+            "lower-back",
+            "forearms"
+        ],
         "muscle_load_profile": {
-            "glutes": 0.7,
-            "hamstrings": 0.3
+            "hamstrings": 0.5,
+            "glutes": 0.3,
+            "lower-back": 0.15,
+            "forearms": 0.05
         }
     },
     {
-        "name": "Румунська тяга з гантелями",
         "slug": "rdl-dumbbells",
-        "difficulty": 3,
-        "movement_pattern": "lower-body",
+        "name": "Dumbbell Romanian Deadlift",
+        "movement_pattern": "hinge",
+        "difficulty": 2,
         "risk_level": 2,
         "equipment": [
             "dumbbells"
         ],
+        "load_type": "external",
+        "max_additional_load_kg": 100,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 8,
+            "reps_max": 12
+        },
+        "muscles_primary": [
+            "hamstrings",
+            "glutes"
+        ],
+        "muscles_secondary": [
+            "lower-back",
+            "forearms"
+        ],
+        "muscle_load_profile": {
+            "hamstrings": 0.5,
+            "glutes": 0.3,
+            "lower-back": 0.15,
+            "forearms": 0.05
+        }
+    },
+    {
+        "slug": "kettlebell-deadlift",
+        "name": "Kettlebell Deadlift",
+        "movement_pattern": "hinge",
+        "difficulty": 1,
+        "risk_level": 1,
+        "equipment": [
+            "kettlebell"
+        ],
+        "load_type": "external",
+        "max_additional_load_kg": 48,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 8,
+            "reps_max": 12
+        },
+        "muscles_primary": [
+            "glutes",
+            "hamstrings"
+        ],
+        "muscles_secondary": [
+            "lower-back",
+            "quads",
+            "forearms"
+        ],
+        "muscle_load_profile": {
+            "glutes": 0.4,
+            "hamstrings": 0.35,
+            "lower-back": 0.1,
+            "quads": 0.1,
+            "forearms": 0.05
+        }
+    },
+    {
+        "slug": "single-leg-rdl",
+        "name": "Single-Leg Romanian Deadlift",
+        "movement_pattern": "hinge",
+        "difficulty": 2,
+        "risk_level": 1,
+        "equipment": [
+            "bodyweight"
+        ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 0.45,
+        "max_additional_load_kg": 40,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 8,
+            "reps_max": 12,
+            "per_side": true
+        },
+        "muscles_primary": [
+            "hamstrings",
+            "glutes"
+        ],
+        "muscles_secondary": [
+            "core",
+            "lower-back"
+        ],
+        "muscle_load_profile": {
+            "hamstrings": 0.45,
+            "glutes": 0.35,
+            "core": 0.1,
+            "lower-back": 0.1
+        }
+    },
+    {
+        "slug": "good-morning",
+        "name": "Barbell Good Morning",
+        "movement_pattern": "hinge",
+        "difficulty": 3,
+        "risk_level": 3,
+        "equipment": [
+            "barbell"
+        ],
+        "load_type": "external",
+        "max_additional_load_kg": 120,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 6,
+            "reps_max": 10
+        },
+        "muscles_primary": [
+            "hamstrings",
+            "glutes",
+            "lower-back"
+        ],
+        "muscles_secondary": [
+            "core"
+        ],
+        "muscle_load_profile": {
+            "hamstrings": 0.4,
+            "glutes": 0.25,
+            "lower-back": 0.25,
+            "core": 0.1
+        }
+    },
+    {
+        "slug": "hip-thrust",
+        "name": "Barbell Hip Thrust",
+        "movement_pattern": "hinge",
+        "difficulty": 2,
+        "risk_level": 2,
+        "equipment": [
+            "barbell",
+            "bench"
+        ],
+        "load_type": "external",
+        "max_additional_load_kg": 250,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 8,
+            "reps_max": 12
+        },
+        "muscles_primary": [
+            "glutes"
+        ],
+        "muscles_secondary": [
+            "hamstrings",
+            "quads",
+            "core"
+        ],
+        "muscle_load_profile": {
+            "glutes": 0.7,
+            "hamstrings": 0.15,
+            "quads": 0.1,
+            "core": 0.05
+        }
+    },
+    {
+        "slug": "glute-bridge",
+        "name": "Glute Bridge",
+        "movement_pattern": "hinge",
+        "difficulty": 1,
+        "risk_level": 1,
+        "equipment": [
+            "bodyweight"
+        ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 0.6,
+        "max_additional_load_kg": 100,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 12,
+            "reps_max": 20
+        },
+        "muscles_primary": [
+            "glutes"
+        ],
+        "muscles_secondary": [
+            "hamstrings",
+            "core"
+        ],
+        "muscle_load_profile": {
+            "glutes": 0.7,
+            "hamstrings": 0.2,
+            "core": 0.1
+        }
+    },
+    {
+        "slug": "single-leg-glute-bridge",
+        "name": "Single-Leg Glute Bridge",
+        "movement_pattern": "hinge",
+        "difficulty": 2,
+        "risk_level": 1,
+        "equipment": [
+            "bodyweight"
+        ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 0.6,
+        "max_additional_load_kg": 20,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 8,
+            "reps_max": 15,
+            "per_side": true
+        },
+        "muscles_primary": [
+            "glutes"
+        ],
+        "muscles_secondary": [
+            "hamstrings",
+            "core"
+        ],
+        "muscle_load_profile": {
+            "glutes": 0.65,
+            "hamstrings": 0.2,
+            "core": 0.15
+        }
+    },
+    {
+        "slug": "glute-bridge-hold",
+        "name": "Glute Bridge Hold",
+        "movement_pattern": "hinge",
+        "difficulty": 1,
+        "risk_level": 1,
+        "equipment": [
+            "bodyweight"
+        ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 0.6,
+        "max_additional_load_kg": 60,
+        "measurement_type": "duration",
+        "prescription": {
+            "sets": 3,
+            "seconds_min": 20,
+            "seconds_max": 60
+        },
+        "muscles_primary": [
+            "glutes"
+        ],
+        "muscles_secondary": [
+            "hamstrings",
+            "core"
+        ],
+        "muscle_load_profile": {
+            "glutes": 0.65,
+            "hamstrings": 0.2,
+            "core": 0.15
+        }
+    },
+    {
+        "slug": "back-extension",
+        "name": "45-Degree Back Extension",
+        "movement_pattern": "hinge",
+        "difficulty": 2,
+        "risk_level": 1,
+        "equipment": [
+            "machine"
+        ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 0.5,
+        "max_additional_load_kg": 40,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 10,
+            "reps_max": 15
+        },
+        "muscles_primary": [
+            "lower-back",
+            "glutes",
+            "hamstrings"
+        ],
+        "muscles_secondary": [],
+        "muscle_load_profile": {
+            "lower-back": 0.4,
+            "glutes": 0.35,
+            "hamstrings": 0.25
+        }
+    },
+    {
+        "slug": "cable-pull-through",
+        "name": "Cable Pull-Through",
+        "movement_pattern": "hinge",
+        "difficulty": 1,
+        "risk_level": 1,
+        "equipment": [
+            "cable"
+        ],
+        "load_type": "cable",
+        "max_additional_load_kg": 80,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 10,
+            "reps_max": 15
+        },
+        "muscles_primary": [
+            "glutes",
+            "hamstrings"
+        ],
+        "muscles_secondary": [
+            "lower-back"
+        ],
+        "muscle_load_profile": {
+            "glutes": 0.6,
+            "hamstrings": 0.3,
+            "lower-back": 0.1
+        }
+    },
+    {
+        "slug": "nordic-hamstring-curl",
+        "name": "Nordic Hamstring Curl",
+        "movement_pattern": "isolation",
+        "difficulty": 4,
+        "risk_level": 3,
+        "equipment": [
+            "bodyweight"
+        ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 0.6,
+        "max_additional_load_kg": null,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 3,
+            "reps_max": 8
+        },
         "muscles_primary": [
             "hamstrings"
         ],
         "muscles_secondary": [
             "glutes",
-            "lower-back"
+            "calves"
         ],
-        "max_additional_load_kg": 160,
         "muscle_load_profile": {
-            "hamstrings": 0.5,
-            "glutes": 0.3,
-            "lower-back": 0.2
+            "hamstrings": 0.85,
+            "glutes": 0.1,
+            "calves": 0.05
         }
     },
     {
-        "name": "Згинання ніг",
         "slug": "leg-curl",
-        "difficulty": 2,
-        "movement_pattern": "lower-body",
+        "name": "Lying Leg Curl",
+        "movement_pattern": "isolation",
+        "difficulty": 1,
         "risk_level": 1,
         "equipment": [
             "machine"
         ],
+        "load_type": "machine",
+        "max_additional_load_kg": 120,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 10,
+            "reps_max": 15
+        },
         "muscles_primary": [
             "hamstrings"
         ],
-        "muscles_secondary": [],
-        "max_additional_load_kg": 120,
+        "muscles_secondary": [
+            "calves"
+        ],
         "muscle_load_profile": {
-            "hamstrings": 1.0
+            "hamstrings": 0.9,
+            "calves": 0.1
         }
     },
     {
-        "name": "Розгинання ніг",
-        "slug": "leg-extension",
+        "slug": "stability-ball-hamstring-curl",
+        "name": "Stability Ball Hamstring Curl",
+        "movement_pattern": "isolation",
         "difficulty": 2,
-        "movement_pattern": "lower-body",
+        "risk_level": 1,
+        "equipment": [
+            "stability-ball"
+        ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 0.35,
+        "max_additional_load_kg": null,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 8,
+            "reps_max": 15
+        },
+        "muscles_primary": [
+            "hamstrings",
+            "glutes"
+        ],
+        "muscles_secondary": [
+            "core"
+        ],
+        "muscle_load_profile": {
+            "hamstrings": 0.6,
+            "glutes": 0.25,
+            "core": 0.15
+        }
+    },
+    {
+        "slug": "leg-extension",
+        "name": "Leg Extension",
+        "movement_pattern": "isolation",
+        "difficulty": 1,
         "risk_level": 1,
         "equipment": [
             "machine"
         ],
+        "load_type": "machine",
+        "max_additional_load_kg": 150,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 10,
+            "reps_max": 15
+        },
         "muscles_primary": [
             "quads"
         ],
         "muscles_secondary": [],
-        "max_additional_load_kg": 120,
         "muscle_load_profile": {
             "quads": 1.0
         }
     },
     {
-        "name": "Підйоми на носки",
-        "slug": "calf-raise",
+        "slug": "kickback",
+        "name": "Machine Glute Kickback",
+        "movement_pattern": "isolation",
         "difficulty": 1,
-        "movement_pattern": "lower-body",
+        "risk_level": 1,
+        "equipment": [
+            "machine"
+        ],
+        "load_type": "machine",
+        "max_additional_load_kg": 100,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 10,
+            "reps_max": 15,
+            "per_side": true
+        },
+        "muscles_primary": [
+            "glutes"
+        ],
+        "muscles_secondary": [
+            "hamstrings"
+        ],
+        "muscle_load_profile": {
+            "glutes": 0.85,
+            "hamstrings": 0.15
+        }
+    },
+    {
+        "slug": "donkey-kick",
+        "name": "Donkey Kick",
+        "movement_pattern": "isolation",
+        "difficulty": 1,
         "risk_level": 1,
         "equipment": [
             "bodyweight"
         ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 0.15,
+        "max_additional_load_kg": null,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 12,
+            "reps_max": 20,
+            "per_side": true
+        },
+        "muscles_primary": [
+            "glutes"
+        ],
+        "muscles_secondary": [
+            "hamstrings",
+            "core"
+        ],
+        "muscle_load_profile": {
+            "glutes": 0.85,
+            "hamstrings": 0.1,
+            "core": 0.05
+        }
+    },
+    {
+        "slug": "hip-abduction-machine",
+        "name": "Hip Abduction Machine",
+        "movement_pattern": "isolation",
+        "difficulty": 1,
+        "risk_level": 1,
+        "equipment": [
+            "machine"
+        ],
+        "load_type": "machine",
+        "max_additional_load_kg": 120,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 12,
+            "reps_max": 20
+        },
+        "muscles_primary": [
+            "glutes"
+        ],
+        "muscles_secondary": [],
+        "muscle_load_profile": {
+            "glutes": 1.0
+        }
+    },
+    {
+        "slug": "hip-adduction-machine",
+        "name": "Hip Adduction Machine",
+        "movement_pattern": "isolation",
+        "difficulty": 1,
+        "risk_level": 1,
+        "equipment": [
+            "machine"
+        ],
+        "load_type": "machine",
+        "max_additional_load_kg": 120,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 12,
+            "reps_max": 15
+        },
+        "muscles_primary": [
+            "adductors"
+        ],
+        "muscles_secondary": [],
+        "muscle_load_profile": {
+            "adductors": 1.0
+        }
+    },
+    {
+        "slug": "cable-hip-abduction",
+        "name": "Cable Hip Abduction",
+        "movement_pattern": "isolation",
+        "difficulty": 1,
+        "risk_level": 1,
+        "equipment": [
+            "cable"
+        ],
+        "load_type": "cable",
+        "max_additional_load_kg": 40,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 12,
+            "reps_max": 20,
+            "per_side": true
+        },
+        "muscles_primary": [
+            "glutes"
+        ],
+        "muscles_secondary": [
+            "core"
+        ],
+        "muscle_load_profile": {
+            "glutes": 0.9,
+            "core": 0.1
+        }
+    },
+    {
+        "slug": "banded-lateral-walk",
+        "name": "Banded Lateral Walk",
+        "movement_pattern": "isolation",
+        "difficulty": 1,
+        "risk_level": 1,
+        "equipment": [
+            "band"
+        ],
+        "load_type": "band",
+        "max_additional_load_kg": null,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 10,
+            "reps_max": 15,
+            "per_side": true
+        },
+        "muscles_primary": [
+            "glutes"
+        ],
+        "muscles_secondary": [
+            "quads"
+        ],
+        "muscle_load_profile": {
+            "glutes": 0.9,
+            "quads": 0.1
+        }
+    },
+    {
+        "slug": "calf-raise",
+        "name": "Standing Calf Raise",
+        "movement_pattern": "isolation",
+        "difficulty": 1,
+        "risk_level": 1,
+        "equipment": [
+            "bodyweight"
+        ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 1.0,
+        "max_additional_load_kg": 60,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 12,
+            "reps_max": 20
+        },
         "muscles_primary": [
             "calves"
         ],
         "muscles_secondary": [],
-        "max_additional_load_kg": 150,
         "muscle_load_profile": {
             "calves": 1.0
         }
     },
     {
-        "name": "Відведення ноги назад",
-        "slug": "kickback",
+        "slug": "single-leg-calf-raise",
+        "name": "Single-Leg Calf Raise",
+        "movement_pattern": "isolation",
+        "difficulty": 2,
+        "risk_level": 1,
+        "equipment": [
+            "bodyweight"
+        ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 1.0,
+        "max_additional_load_kg": 40,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 8,
+            "reps_max": 15,
+            "per_side": true
+        },
+        "muscles_primary": [
+            "calves"
+        ],
+        "muscles_secondary": [],
+        "muscle_load_profile": {
+            "calves": 1.0
+        }
+    },
+    {
+        "slug": "seated-calf-raise",
+        "name": "Seated Calf Raise",
+        "movement_pattern": "isolation",
         "difficulty": 1,
-        "movement_pattern": "lower-body",
         "risk_level": 1,
         "equipment": [
             "machine"
         ],
+        "load_type": "machine",
+        "max_additional_load_kg": 150,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 12,
+            "reps_max": 20
+        },
         "muscles_primary": [
-            "glutes"
+            "calves"
         ],
         "muscles_secondary": [],
-        "max_additional_load_kg": 80,
         "muscle_load_profile": {
-            "glutes": 1.0
+            "calves": 1.0
+        }
+    },
+    {
+        "slug": "copenhagen-plank",
+        "name": "Copenhagen Plank",
+        "movement_pattern": "anti-lateral-flexion",
+        "difficulty": 3,
+        "risk_level": 2,
+        "equipment": [
+            "bench"
+        ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 0.4,
+        "max_additional_load_kg": null,
+        "measurement_type": "duration",
+        "prescription": {
+            "sets": 3,
+            "seconds_min": 15,
+            "seconds_max": 40,
+            "per_side": true
+        },
+        "muscles_primary": [
+            "adductors",
+            "obliques"
+        ],
+        "muscles_secondary": [
+            "core"
+        ],
+        "muscle_load_profile": {
+            "adductors": 0.55,
+            "obliques": 0.3,
+            "core": 0.15
         }
     }
 ]

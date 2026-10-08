@@ -1,4 +1,4 @@
-from typing import TypedDict, List, Dict
+from typing import Dict, List, Optional, TypedDict
 
 
 class MuscleResult(TypedDict):
@@ -60,6 +60,12 @@ class FrequencyResult(TypedDict):
 
 class RecommendationExercise(TypedDict):
     exercise: str
+    slug: Optional[str]
+    measurement_type: str
+    sets: int
+    reps: Optional[str]
+    duration_sec: Optional[int]
+    per_side: bool
     reasons: List[str]
     score: float
 

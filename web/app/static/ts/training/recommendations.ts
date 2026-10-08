@@ -80,11 +80,11 @@ function translateMuscle(
             .toLowerCase();
 
     const translationKey =
-        key === "hip-flexors"
-            ? "muscles.hipFlexors"
-            : key === "lower-back"
-                ? "muscles.lowerBack"
-                : `muscles.${key}`;
+        `muscles.${key.replace(
+            /-([a-z])/g,
+            (_, letter: string) =>
+                letter.toUpperCase()
+        )}`;
 
     const translated =
         t(translationKey);

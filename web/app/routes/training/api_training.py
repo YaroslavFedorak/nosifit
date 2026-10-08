@@ -2,6 +2,13 @@ from flask import Blueprint, jsonify, request, current_app
 from flask_login import login_required, current_user
 from backend.app.extensions import db
 from backend.app.training.models.exercise import Exercise
+from backend.app.training.exercises.prescription import (
+    build_entry,
+    is_duration_exercise,
+    is_per_side,
+    measurement_type_of,
+    serialize_entry,
+)
 from backend.app.training.models.muscle import Muscle
 from backend.app.training.models.equipment import TEEquipment
 from backend.app.training.models.user_pref import UserPreference
@@ -92,6 +99,30 @@ def _today_key():
     return ["mon", "tue", "wed", "thu", "fri", "sat", "sun"][_local_today().weekday()]
 
 
+def _plan_entry(exercise, item):
+    return build_entry(
+        exercise,
+        sets=item.get("sets"),
+        reps=item.get("reps"),
+        duration_sec=item.get("duration_sec"),
+        load=item.get("load"),
+    )
+
+
+def _session_entry(exercise, session_exercise):
+    entry = build_entry(
+        exercise,
+        reps=session_exercise.reps_done or session_exercise.reps_planned,
+        duration_sec=(
+            session_exercise.duration_sec_done
+            or session_exercise.duration_sec_planned
+        ),
+        load=session_exercise.load_done or session_exercise.load_planned,
+    )
+    entry["sets"] = session_exercise.sets_done or session_exercise.sets_planned or 0
+    return entry
+
+
 def _plan_days_struct(raw):
     if not isinstance(raw, dict):
         raise ValidationError("days must be an object")
@@ -118,12 +149,22 @@ def _plan_days_struct(raw):
                 continue
 
             day_ex.append(
-                {
-                    "exercise": {"id": obj.id, "name": obj.name},
-                    "sets": bounded_number(ex.get("sets"), 1, 20, integer=True) or 3,
-                    "reps": _clean_reps(ex.get("reps"), "8-12"),
-                    "load": bounded_number(ex.get("load"), 0, 2000) or 0,
-                }
+                serialize_entry(
+                    obj,
+                    _plan_entry(
+                        obj,
+                        {
+                            "sets": bounded_number(
+                                ex.get("sets"), 1, 20, integer=True
+                            ),
+                            "reps": _clean_reps(ex.get("reps")),
+                            "duration_sec": bounded_number(
+                                ex.get("duration_sec"), 1, 3600, integer=True
+                            ),
+                            "load": bounded_number(ex.get("load"), 0, 2000),
+                        },
+                    ),
+                )
             )
 
         result[key] = {"exercises": day_ex}
@@ -234,9 +275,7 @@ def today():
                 exercises_raw.append(
                     {
                         "exercise": ex_obj,
-                        "sets": se.sets_done or se.sets_planned or 0,
-                        "reps": se.reps_done or se.reps_planned or "8-12",
-                        "load": se.load_done or se.load_planned or 0,
+                        "entry": _session_entry(ex_obj, se),
                     }
                 )
         else:
@@ -252,9 +291,7 @@ def today():
                 exercises_raw.append(
                     {
                         "exercise": ex_obj,
-                        "sets": ex.get("sets") or 3,
-                        "reps": ex.get("reps") or "8-12",
-                        "load": ex.get("load") or 0,
+                        "entry": _plan_entry(ex_obj, ex),
                     }
                 )
             payload["title"] = "Рекомендована сесія"
@@ -282,17 +319,7 @@ def today():
         total = sum(muscles.values()) or 1
         payload["muscles"] = {k: round(v / total, 3) for k, v in muscles.items()}
         payload["exercises"] = [
-            {
-                "exercise": {
-                    "id": item["exercise"].id,
-                    "name": item["exercise"].name,
-                    "slug": item["exercise"].slug,
-                },
-                "sets": item["sets"],
-                "reps": item["reps"],
-                "load": item["load"],
-            }
-            for item in filtered
+            serialize_entry(item["exercise"], item["entry"]) for item in filtered
         ]
 
         return jsonify(payload)
@@ -318,16 +345,7 @@ def today_session():
                 if not ex:
                     continue
                 result["exercises"].append(
-                    {
-                        "exercise": {
-                            "id": ex.id,
-                            "name": ex.name,
-                            "slug": ex.slug,
-                        },
-                        "sets": se.sets_done or se.sets_planned or 0,
-                        "reps": se.reps_done or se.reps_planned or "8-12",
-                        "load": se.load_done or se.load_planned or 0,
-                    }
+                    serialize_entry(ex, _session_entry(ex, se))
                 )
             return jsonify(result)
 
@@ -341,18 +359,7 @@ def today_session():
             ex = Exercise.query.get(item["exercise"]["id"])
             if not ex:
                 continue
-            result["exercises"].append(
-                {
-                    "exercise": {
-                        "id": ex.id,
-                        "name": ex.name,
-                        "slug": ex.slug,
-                    },
-                    "sets": item.get("sets") or 3,
-                    "reps": item.get("reps") or "8-12",
-                    "load": item.get("load") or 0,
-                }
-            )
+            result["exercises"].append(serialize_entry(ex, _plan_entry(ex, item)))
 
         return jsonify(result)
     except Exception as e:
@@ -527,6 +534,7 @@ def complete_session():
                         {
                             "sets_done": item.get("sets"),
                             "reps_done": item.get("reps"),
+                            "duration_sec_done": item.get("duration_sec"),
                             "load_done": item.get("load"),
                             "rpe": item.get("rpe"),
                         }
@@ -602,6 +610,7 @@ def update_session_exercise(session_id, exercise_id):
                 "exercise_id": exercise_id,
                 "sets_done": se.sets_done,
                 "reps_done": se.reps_done,
+                "duration_sec_done": se.duration_sec_done,
                 "load_done": se.load_done,
                 "rpe": se.rpe,
             }
@@ -680,12 +689,22 @@ def day_details(date):
             for ex in s.exercises:
                 obj = Exercise.query.get(ex.exercise_id)
                 if obj:
+                    duration = is_duration_exercise(obj)
                     exercises.append(
                         {
                             "name": obj.name,
                             "slug": obj.slug,
+                            "measurement_type": measurement_type_of(obj),
                             "sets": ex.sets_done or ex.sets_planned,
-                            "reps": ex.reps_done or ex.reps_planned,
+                            "reps": (
+                                None if duration else ex.reps_done or ex.reps_planned
+                            ),
+                            "duration_sec": (
+                                ex.duration_sec_done or ex.duration_sec_planned
+                                if duration
+                                else None
+                            ),
+                            "per_side": is_per_side(obj),
                             "load": ex.load_done or ex.load_planned,
                             "rpe": ex.rpe,
                         }

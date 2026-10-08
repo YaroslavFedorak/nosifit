@@ -24,13 +24,36 @@ async function jsonFetch(url, options = {}) {
     }
     return data;
 }
+// The API caps page size, so a call without an explicit page walks every
+// page and returns the whole catalog.
+const EXERCISES_PAGE_SIZE = 100;
+const EXERCISES_MAX_PAGES = 20;
 export const TrainingAPI = {
-    getExercises(params = {}) {
-        const query = new URLSearchParams(Object.entries(params).map(([key, value]) => [key, String(value)])).toString();
-        const url = query
-            ? `${BASE}/exercises?${query}`
-            : `${BASE}/exercises`;
-        return jsonFetch(url);
+    async getExercises(params = {}) {
+        const buildUrl = (values) => {
+            const query = new URLSearchParams(Object.entries(values).map(([key, value]) => [key, String(value)])).toString();
+            return query
+                ? `${BASE}/exercises?${query}`
+                : `${BASE}/exercises`;
+        };
+        if ("page" in params) {
+            return jsonFetch(buildUrl(params));
+        }
+        const items = [];
+        for (let page = 1; page <= EXERCISES_MAX_PAGES; page += 1) {
+            const data = await jsonFetch(buildUrl({
+                ...params,
+                page,
+                per_page: EXERCISES_PAGE_SIZE
+            }));
+            const pageItems = data.items ?? [];
+            items.push(...pageItems);
+            if (pageItems.length < EXERCISES_PAGE_SIZE ||
+                items.length >= (data.total ?? 0)) {
+                break;
+            }
+        }
+        return { items };
     },
     getPlans() {
         return jsonFetch(`${BASE}/plans`);

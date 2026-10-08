@@ -1,3 +1,10 @@
+from backend.app.training.exercises.prescription import (
+    is_duration_exercise,
+    is_per_side,
+    measurement_type_of,
+)
+
+
 def exercise_to_dict(exercise):
     return {
         "id": exercise.id,
@@ -6,6 +13,8 @@ def exercise_to_dict(exercise):
         "difficulty": exercise.difficulty,
         "movement_pattern": exercise.movement_pattern,
         "equipment": exercise.equipment or [],
+        "measurement_type": measurement_type_of(exercise),
+        "prescription": exercise.prescription,
     }
 
 
@@ -13,20 +22,37 @@ def session_exercise_to_dict(
     session_exercise,
     exercise=None,
 ):
+    duration = exercise is not None and is_duration_exercise(exercise)
+
     return {
         "id": session_exercise.id,
         "exercise_id": session_exercise.exercise_id,
         "exercise": (exercise.name if exercise else None),
+        "measurement_type": measurement_type_of(exercise),
         "sets": (
             session_exercise.sets_done
             if session_exercise.sets_done is not None
             else session_exercise.sets_planned or 0
         ),
         "reps": (
-            session_exercise.reps_done
-            if session_exercise.reps_done is not None
-            else session_exercise.reps_planned or ""
+            None
+            if duration
+            else (
+                session_exercise.reps_done
+                if session_exercise.reps_done is not None
+                else session_exercise.reps_planned or ""
+            )
         ),
+        "duration_sec": (
+            (
+                session_exercise.duration_sec_done
+                if session_exercise.duration_sec_done is not None
+                else session_exercise.duration_sec_planned
+            )
+            if duration
+            else None
+        ),
+        "per_side": exercise is not None and is_per_side(exercise),
         "load": session_exercise.load_done,
         "rpe": session_exercise.rpe,
     }

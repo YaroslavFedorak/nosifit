@@ -2,6 +2,14 @@ import { dashboard_t, exercise_t } from "../../../../i18n/index.js";
 import { ICONS } from "../../../../icons/index.js";
 import { enableDragAndDrop } from "../interactions/dragdrop.js";
 import { createNumberField, createRepsField } from "./counters.js";
+import { isDurationExercise, isPerSide } from "../../../../training/measurement.js";
+function withSide(item, label) {
+    const perSide = item.exercise?.per_side ??
+        isPerSide(item.exercise);
+    return perSide
+        ? `${label} ${dashboard_t("workout.fields.perSide")}`
+        : label;
+}
 function getExerciseName(exercise) {
     const slug = exercise?.slug ??
         exercise?.exercise_slug ??
@@ -57,10 +65,15 @@ export function createExerciseCard(item, index, actions) {
     const body = document.createElement("div");
     body.className =
         "db-plan-card-body";
-    body.append(createRepsField(item.reps, value => {
-        item.reps =
-            value;
-    }), createNumberField(dashboard_t("plan.fields.sets"), ICONS.exercise, item.sets, value => {
+    body.append(isDurationExercise(item.exercise)
+        ? createNumberField(withSide(item, dashboard_t("plan.fields.seconds")), ICONS.exercise, item.duration_sec ?? 0, value => {
+            item.duration_sec =
+                value;
+        })
+        : createRepsField(item.reps ?? "", value => {
+            item.reps =
+                value;
+        }, withSide(item, dashboard_t("plan.fields.reps"))), createNumberField(dashboard_t("plan.fields.sets"), ICONS.exercise, item.sets, value => {
         item.sets =
             value;
     }), createNumberField(dashboard_t("plan.fields.weight"), ICONS.exercise, item.load, value => {

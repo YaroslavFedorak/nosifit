@@ -2,6 +2,7 @@ import { TrainingAPI } from "./api.js";
 import { trainingStore } from "./store.js";
 import { renderWorkoutList } from "./workout.js";
 import { t } from "../i18n/index.js";
+import { isDurationExercise } from "./measurement.js";
 export function initSession() {
     const saveButton = document.getElementById("tr-save-workout");
     const titleInput = document.getElementById("tr-workout-title");
@@ -19,7 +20,9 @@ export function initSession() {
                         id: item.exercise.id
                     },
                     sets: item.sets,
-                    reps: item.reps,
+                    ...(isDurationExercise(item.exercise)
+                        ? { duration_sec: item.duration_sec }
+                        : { reps: item.reps }),
                     load: item.load
                 }))
             };

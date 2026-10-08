@@ -11,6 +11,20 @@ import {
 import { ICONS } from "../icons/index.js";
 
 import {
+    isDurationExercise,
+    isPerSide
+} from "./measurement.js";
+
+function measurementLabel(
+    item: WorkoutExercise,
+    key: string
+): string {
+    return isPerSide(item.exercise)
+        ? `${t(key)} ${t("exercise.perSide")}`
+        : t(key);
+}
+
+import {
     exercise_t,
     t
 } from "../i18n/index.js";
@@ -438,18 +452,36 @@ export function renderWorkoutList(): void {
                 );
 
             const repsBlock =
-                makeInlineBlock(
-                    t("exercise.reps"),
-                    item.reps,
-                    value => {
-                        item.reps =
-                            String(
-                                value
-                            );
-                    },
-                    true,
-                    disabled
-                );
+                isDurationExercise(
+                    item.exercise
+                )
+                    ? makeInlineBlock(
+                        measurementLabel(item, "exercise.seconds"),
+                        item.duration_sec,
+                        value => {
+                            item.duration_sec =
+                                parseInt(
+                                    String(
+                                        value
+                                    ),
+                                    10
+                                ) || 0;
+                        },
+                        false,
+                        disabled
+                    )
+                    : makeInlineBlock(
+                        measurementLabel(item, "exercise.reps"),
+                        item.reps,
+                        value => {
+                            item.reps =
+                                String(
+                                    value
+                                );
+                        },
+                        true,
+                        disabled
+                    );
 
             const loadBlock =
                 makeInlineBlock(

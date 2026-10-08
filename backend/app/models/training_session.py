@@ -98,6 +98,17 @@ class SessionExercise(db.Model):
         db.String(32),
     )
 
+    # Seconds per set for duration exercises; reps_* stay empty for them.
+    duration_sec_planned = db.Column(
+        db.Integer,
+        nullable=True,
+    )
+
+    duration_sec_done = db.Column(
+        db.Integer,
+        nullable=True,
+    )
+
     load_planned = db.Column(
         db.Float,
         nullable=True,

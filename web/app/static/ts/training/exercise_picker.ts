@@ -1,5 +1,9 @@
 import { trainingStore } from "./store.js";
 
+import {
+    MUSCLE_CATEGORIES
+} from "./measurement.js";
+
 import type {
 Exercise
 } from "./api.js";
@@ -155,13 +159,16 @@ const filterItems =
                                 .muscles_primary ||
                             [];
 
+                        const categoryMuscles =
+                            MUSCLE_CATEGORIES[
+                                currentCategory
+                            ] ?? [currentCategory];
+
                         return muscles.some(
                             muscle =>
-                                muscle
-                                    .toLowerCase()
-                                    .includes(
-                                        currentCategory
-                                    )
+                                categoryMuscles.includes(
+                                    muscle.toLowerCase()
+                                )
                         );
                     }
                 );

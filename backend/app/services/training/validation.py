@@ -21,7 +21,7 @@ def clean_reps(value, default=None):
 
 
 def clean_set_data(data):
-    """Validated sets/reps/load/rpe of one exercise in a session."""
+    """Validated sets, reps or seconds, load and rpe of one exercise in a session."""
     if not isinstance(data, dict):
         raise ValidationError("exercise data must be an object")
     cleaned = {}
@@ -29,6 +29,10 @@ def clean_set_data(data):
         cleaned["sets_done"] = bounded_number(data["sets_done"], 0, 100, integer=True)
     if "reps_done" in data:
         cleaned["reps_done"] = clean_reps(data["reps_done"])
+    if "duration_sec_done" in data:
+        cleaned["duration_sec_done"] = bounded_number(
+            data["duration_sec_done"], 0, 3600, integer=True
+        )
     if "load_done" in data:
         cleaned["load_done"] = bounded_number(data["load_done"], 0, 2000)
     if "rpe" in data:

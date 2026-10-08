@@ -1,42 +1,27 @@
-from .constants import BODYWEIGHT_RATIO
+from backend.app.training.exercises.catalog import LOAD_BODYWEIGHT
+
+from .constants import DEFAULT_BODYWEIGHT_RATIO, MOVEMENT_FACTORS
 from .parsing import parse_float, normalize_name
 
 
 def is_bodyweight_exercise(exercise):
+    load_type = getattr(exercise, "load_type", None)
+
+    if load_type:
+        return load_type == LOAD_BODYWEIGHT
+
     equipment = getattr(exercise, "equipment", None) or []
 
     if isinstance(equipment, str):
         equipment = [equipment]
 
-    normalized = {normalize_name(item) for item in equipment}
-
-    slug = normalize_name(getattr(exercise, "slug", None))
-
-    name = normalize_name(getattr(exercise, "name", None))
-
-    return (
-        "bodyweight" in normalized
-        or slug in BODYWEIGHT_RATIO
-        or name in BODYWEIGHT_RATIO
-    )
+    return "bodyweight" in {normalize_name(item) for item in equipment}
 
 
 def bodyweight_ratio(exercise):
-    slug = normalize_name(getattr(exercise, "slug", None))
+    ratio = parse_float(getattr(exercise, "bodyweight_ratio", None))
 
-    name = normalize_name(getattr(exercise, "name", None))
-
-    if slug in BODYWEIGHT_RATIO:
-        return BODYWEIGHT_RATIO[slug]
-
-    if name in BODYWEIGHT_RATIO:
-        return BODYWEIGHT_RATIO[name]
-
-    for key, ratio in BODYWEIGHT_RATIO.items():
-        if key in slug or key in name:
-            return ratio
-
-    return 0.50
+    return ratio if ratio > 0 else DEFAULT_BODYWEIGHT_RATIO
 
 
 def bodyweight_load(exercise, user_weight):
@@ -130,20 +115,7 @@ def movement_factor(exercise):
         )
     )
 
-    values = {
-        "upper-body": 1.00,
-        "lower-body": 1.10,
-        "core": 0.90,
-        "full-body": 1.15,
-        "mobility": 0.30,
-        "push": 1.00,
-        "pull": 1.05,
-        "hinge": 1.08,
-        "squat": 1.08,
-        "accessory": 0.80,
-    }
-
-    return values.get(
+    return MOVEMENT_FACTORS.get(
         pattern,
         1.00,
     )

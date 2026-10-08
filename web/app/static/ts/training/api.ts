@@ -1,10 +1,21 @@
 const BASE = "/api/training";
 
+export type ExercisePrescription = {
+    sets?: number;
+    reps_min?: number;
+    reps_max?: number;
+    seconds_min?: number;
+    seconds_max?: number;
+    per_side?: boolean;
+};
+
 export type Exercise = {
     id: number | string;
     name: string;
     slug?: string;
     muscles_primary?: string[];
+    measurement_type?: "reps" | "duration";
+    prescription?: ExercisePrescription | null;
     [key: string]: unknown;
 };
 
@@ -17,7 +28,8 @@ export type ExercisesResponse =
 export type WorkoutExercise = {
     exercise: Exercise;
     sets: number;
-    reps: string | number;
+    reps: string | number | null;
+    duration_sec?: number | null;
     load: number;
     done: boolean;
     fromPlan: boolean;
@@ -71,8 +83,11 @@ export type HeatmapResponse = {
 export type SessionExercise = {
     name: string;
     slug?: string;
+    measurement_type?: "reps" | "duration";
     sets: number;
-    reps: number | string;
+    reps: number | string | null;
+    duration_sec?: number | null;
+    per_side?: boolean;
     load: number;
     [key: string]: unknown;
 };
@@ -92,7 +107,8 @@ export type JsonObject = Record<string, unknown>;
 export type PlanExercise = {
     exercise: Exercise;
     sets: number;
-    reps: string | number;
+    reps: string | number | null;
+    duration_sec?: number | null;
     load: number;
 };
 
@@ -176,21 +192,70 @@ async function jsonFetch<T>(
     return data as T;
 }
 
+type ExercisesPage = {
+    items?: Exercise[];
+    total?: number;
+};
+
+// The API caps page size, so a call without an explicit page walks every
+// page and returns the whole catalog.
+const EXERCISES_PAGE_SIZE = 100;
+const EXERCISES_MAX_PAGES = 20;
+
 export const TrainingAPI = {
-    getExercises(
+    async getExercises(
         params: Record<string, string | number | boolean> = {}
     ): Promise<ExercisesResponse> {
-        const query = new URLSearchParams(
-            Object.entries(params).map(
-                ([key, value]) => [key, String(value)]
-            )
-        ).toString();
+        const buildUrl = (
+            values: Record<string, string | number | boolean>
+        ): string => {
+            const query = new URLSearchParams(
+                Object.entries(values).map(
+                    ([key, value]) => [key, String(value)]
+                )
+            ).toString();
 
-        const url = query
-            ? `${BASE}/exercises?${query}`
-            : `${BASE}/exercises`;
+            return query
+                ? `${BASE}/exercises?${query}`
+                : `${BASE}/exercises`;
+        };
 
-        return jsonFetch<ExercisesResponse>(url);
+        if ("page" in params) {
+            return jsonFetch<ExercisesResponse>(
+                buildUrl(params)
+            );
+        }
+
+        const items: Exercise[] = [];
+
+        for (
+            let page = 1;
+            page <= EXERCISES_MAX_PAGES;
+            page += 1
+        ) {
+            const data =
+                await jsonFetch<ExercisesPage>(
+                    buildUrl({
+                        ...params,
+                        page,
+                        per_page: EXERCISES_PAGE_SIZE
+                    })
+                );
+
+            const pageItems =
+                data.items ?? [];
+
+            items.push(...pageItems);
+
+            if (
+                pageItems.length < EXERCISES_PAGE_SIZE ||
+                items.length >= (data.total ?? 0)
+            ) {
+                break;
+            }
+        }
+
+        return { items };
     },
 
     getPlans(): Promise<PlansResponse> {

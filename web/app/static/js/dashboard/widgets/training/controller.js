@@ -27,13 +27,15 @@ function isValidExercise(exercise) {
     const hasName = typeof exercise.name === "string" &&
         exercise.name.trim().length > 0;
     const hasSets = Number(exercise.sets) > 0;
-    const hasReps = exercise.reps !== null &&
-        exercise.reps !== undefined &&
-        String(exercise.reps).trim() !== "";
+    const hasWork = exercise.measurement_type === "duration"
+        ? Number(exercise.duration_sec) > 0
+        : exercise.reps !== null &&
+            exercise.reps !== undefined &&
+            String(exercise.reps).trim() !== "";
     return (hasDatabaseId &&
         hasName &&
         hasSets &&
-        hasReps);
+        hasWork);
 }
 function getWorkoutTitle() {
     const titleInput = document.getElementById("dashboard-workout-title");
@@ -73,7 +75,13 @@ async function saveExercise(sessionId, exercise) {
     await trainingAPI.addExerciseToSession(sessionId, exercise.databaseId);
     await trainingAPI.updateSessionExercise(sessionId, exercise.databaseId, {
         sets_done: Number(exercise.sets),
-        reps_done: String(exercise.reps),
+        ...(exercise.measurement_type === "duration"
+            ? {
+                duration_sec_done: Number(exercise.duration_sec)
+            }
+            : {
+                reps_done: String(exercise.reps)
+            }),
         load_done: Number(exercise.weight ??
             exercise.load ??
             0),

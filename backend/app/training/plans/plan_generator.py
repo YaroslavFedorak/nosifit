@@ -66,8 +66,9 @@ class PlanGenerator:
 
                 day.add_exercise(
                     exercise=ex,
-                    sets=ex_def.get("sets", 3),
-                    reps=ex_def.get("reps", "8-12"),
+                    sets=ex_def.get("sets"),
+                    reps=ex_def.get("reps"),
+                    duration_sec=ex_def.get("duration_sec"),
                 )
 
             plan.add_day(key, day)

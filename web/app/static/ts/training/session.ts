@@ -14,6 +14,10 @@ import {
     t
 } from "../i18n/index.js";
 
+import {
+    isDurationExercise
+} from "./measurement.js";
+
 export function initSession(): void {
     const saveButton =
         document.getElementById(
@@ -46,7 +50,9 @@ export function initSession(): void {
                             id: item.exercise.id
                         },
                         sets: item.sets,
-                        reps: item.reps,
+                        ...(isDurationExercise(item.exercise)
+                            ? { duration_sec: item.duration_sec }
+                            : { reps: item.reps }),
                         load: item.load
                     }))
             };

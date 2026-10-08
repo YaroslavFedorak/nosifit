@@ -20,6 +20,7 @@ export interface Recommendation {
     description_key?: string | null;
     reason_key?: string | null;
     params?: Record<string, string | number>;
+    slug?: string | null;
 }
 
 export interface DashboardRecommendations {
@@ -169,29 +170,31 @@ function translateRecommendation(
 }
 
 function translateExercise(
-    name: string
+    key: string,
+    fallback: string
 ): string {
-    const normalizedName =
-        name.trim();
+    const normalizedKey =
+        key.trim();
 
-    if (!normalizedName) {
-        return name;
+    if (!normalizedKey) {
+        return fallback;
     }
 
     const translated =
         translate(
             "exercises",
-            normalizedName
+            normalizedKey
         );
 
     if (
+        typeof translated === "string" &&
         translated !==
-        normalizedName
+        normalizedKey
     ) {
         return translated;
     }
 
-    return name;
+    return fallback;
 }
 
 function getCategoryLabel(
@@ -242,6 +245,9 @@ function getRecommendationTitle(
             "training"
         ) {
             return translateExercise(
+                recommendation.slug
+                    ? `${recommendation.slug}.name`
+                    : title,
                 title
             );
         }

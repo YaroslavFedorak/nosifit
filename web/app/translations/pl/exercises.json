@@ -1,30 +1,258 @@
 {
-    "plank": {
-        "name": "Deska"
+    "bicep-curl": {
+        "name": "Uginanie ramion z hantlami"
     },
-    "side-plank": {
-        "name": "Deska boczna"
+    "barbell-curl": {
+        "name": "Uginanie ramion ze sztangą"
     },
-    "crunches": {
-        "name": "Brzuszki"
+    "hammer-curl": {
+        "name": "Uginanie ramion chwytem młotkowym"
     },
-    "bicycle-crunch": {
-        "name": "Brzuszki rowerowe"
+    "preacher-curl": {
+        "name": "Uginanie ramion na modlitewniku"
     },
-    "dead-bug": {
-        "name": "Dead Bug"
+    "incline-dumbbell-curl": {
+        "name": "Uginanie ramion z hantlami na ławce skośnej"
     },
-    "bird-dog": {
-        "name": "Bird Dog"
+    "cable-curl": {
+        "name": "Uginanie ramion na wyciągu"
     },
-    "lying-leg-raise": {
-        "name": "Unoszenie nóg w leżeniu"
+    "band-curl": {
+        "name": "Uginanie ramion z gumą"
+    },
+    "reverse-curl": {
+        "name": "Uginanie ramion nachwytem"
+    },
+    "wrist-curl": {
+        "name": "Uginanie nadgarstków z hantlami"
+    },
+    "reverse-wrist-curl": {
+        "name": "Prostowanie nadgarstków z hantlami"
+    },
+    "tricep-pushdown": {
+        "name": "Prostowanie ramion na wyciągu"
+    },
+    "overhead-triceps-extension": {
+        "name": "Wyciskanie francuskie hantli nad głową"
+    },
+    "skull-crusher": {
+        "name": "Wyciskanie francuskie leżąc"
+    },
+    "triceps-kickback": {
+        "name": "Prostowanie ramienia z hantlem w opadzie"
+    },
+    "close-grip-bench-press": {
+        "name": "Wyciskanie wąskim chwytem"
+    },
+    "bench-dips": {
+        "name": "Pompki na ławce"
+    },
+    "pull-ups": {
+        "name": "Podciąganie"
+    },
+    "chin-up": {
+        "name": "Podciąganie podchwytem"
+    },
+    "eccentric-pull-up": {
+        "name": "Negatywne podciąganie"
+    },
+    "band-assisted-pull-up": {
+        "name": "Podciąganie z gumą"
+    },
+    "scapular-pull-up": {
+        "name": "Podciąganie łopatkowe"
+    },
+    "inverted-row": {
+        "name": "Wiosłowanie w zwisie (australijskie)"
+    },
+    "ring-row": {
+        "name": "Wiosłowanie na kółkach"
+    },
+    "lat-pulldown": {
+        "name": "Ściąganie drążka wyciągu górnego"
+    },
+    "straight-arm-pulldown": {
+        "name": "Ściąganie wyciągu prostymi ramionami"
+    },
+    "seated-row": {
+        "name": "Wiosłowanie siedząc na wyciągu"
+    },
+    "barbell-row": {
+        "name": "Wiosłowanie sztangą w opadzie"
+    },
+    "dumbbell-row": {
+        "name": "Wiosłowanie hantlem jednorącz"
+    },
+    "chest-supported-row": {
+        "name": "Wiosłowanie hantlami z podparciem klatki"
+    },
+    "t-bar-row": {
+        "name": "Wiosłowanie sztangą T"
+    },
+    "machine-row": {
+        "name": "Wiosłowanie na maszynie"
+    },
+    "band-row": {
+        "name": "Wiosłowanie z gumą"
+    },
+    "renegade-row": {
+        "name": "Wiosłowanie w podporze (renegade row)"
+    },
+    "face-pull": {
+        "name": "Przyciąganie liny do twarzy (face pull)"
+    },
+    "band-pull-apart": {
+        "name": "Rozciąganie gumy przed sobą"
+    },
+    "prone-y-raise": {
+        "name": "Unoszenie ramion w literę Y leżąc"
+    },
+    "barbell-shrug": {
+        "name": "Szrugsy ze sztangą"
+    },
+    "dumbbell-shrug": {
+        "name": "Szrugsy z hantlami"
     },
     "superman": {
         "name": "Superman"
     },
+    "arch-hold": {
+        "name": "Utrzymanie łuku (arch hold)"
+    },
+    "dead-hang": {
+        "name": "Zwis na drążku"
+    },
+    "push-ups": {
+        "name": "Pompki"
+    },
+    "knee-push-up": {
+        "name": "Pompki na kolanach"
+    },
+    "incline-push-up": {
+        "name": "Pompki z rękami na podwyższeniu"
+    },
+    "decline-push-up": {
+        "name": "Pompki z nogami na podwyższeniu"
+    },
+    "diamond-push-up": {
+        "name": "Pompki diamentowe"
+    },
+    "archer-push-up": {
+        "name": "Pompki łucznika"
+    },
+    "plyometric-push-up": {
+        "name": "Pompki plyometryczne"
+    },
+    "bench-press": {
+        "name": "Wyciskanie sztangi na ławce płaskiej"
+    },
+    "incline-barbell-bench-press": {
+        "name": "Wyciskanie sztangi na ławce skośnej"
+    },
+    "dumbbell-bench-press": {
+        "name": "Wyciskanie hantli leżąc"
+    },
+    "incline-dumbbell-press": {
+        "name": "Wyciskanie hantli na ławce skośnej"
+    },
+    "machine-chest-press": {
+        "name": "Wyciskanie na maszynie"
+    },
+    "dips": {
+        "name": "Pompki na poręczach"
+    },
+    "ring-dip": {
+        "name": "Pompki na kółkach"
+    },
+    "dumbbell-fly": {
+        "name": "Rozpiętki z hantlami"
+    },
+    "cable-fly": {
+        "name": "Rozpiętki na wyciągu"
+    },
+    "pec-deck": {
+        "name": "Rozpiętki na maszynie"
+    },
+    "dumbbell-pullover": {
+        "name": "Przenoszenie hantla za głowę"
+    },
+    "medicine-ball-chest-pass": {
+        "name": "Rzut piłką lekarską sprzed klatki"
+    },
+    "plank": {
+        "name": "Deska"
+    },
+    "high-plank": {
+        "name": "Deska na prostych rękach"
+    },
+    "rkc-plank": {
+        "name": "Deska RKC"
+    },
+    "bear-plank": {
+        "name": "Deska niedźwiedzia"
+    },
+    "hollow-body-hold": {
+        "name": "Hollow body hold"
+    },
+    "dead-bug": {
+        "name": "Martwy robak"
+    },
+    "ab-wheel-rollout": {
+        "name": "Rolowanie kółkiem do brzucha"
+    },
+    "side-plank": {
+        "name": "Deska boczna"
+    },
+    "side-plank-hip-dip": {
+        "name": "Deska boczna z opuszczaniem bioder"
+    },
+    "suitcase-carry": {
+        "name": "Spacer z ciężarem w jednej ręce"
+    },
+    "bird-dog": {
+        "name": "Bird Dog"
+    },
+    "plank-shoulder-tap": {
+        "name": "Deska z dotykaniem barków"
+    },
     "pallof-press": {
-        "name": "Pallof Press"
+        "name": "Wyciskanie Pallofa"
+    },
+    "bicycle-crunch": {
+        "name": "Brzuszki rowerowe"
+    },
+    "russian-twist": {
+        "name": "Russian twist"
+    },
+    "cable-woodchop": {
+        "name": "Drwal na wyciągu"
+    },
+    "medicine-ball-rotational-throw": {
+        "name": "Rzut rotacyjny piłką lekarską"
+    },
+    "crunches": {
+        "name": "Brzuszki"
+    },
+    "reverse-crunch": {
+        "name": "Odwrotne brzuszki"
+    },
+    "sit-up": {
+        "name": "Siady z leżenia"
+    },
+    "v-up": {
+        "name": "Scyzoryk (V-up)"
+    },
+    "lying-leg-raise": {
+        "name": "Unoszenie nóg w leżeniu"
+    },
+    "flutter-kicks": {
+        "name": "Nożyce"
+    },
+    "hanging-knee-raise": {
+        "name": "Unoszenie kolan w zwisie"
+    },
+    "hanging-leg-raise": {
+        "name": "Unoszenie nóg w zwisie"
     },
     "cable-crunch": {
         "name": "Brzuszki na wyciągu"
@@ -32,71 +260,257 @@
     "burpee": {
         "name": "Burpees"
     },
-    "mountain-climbers": {
-        "name": "Wspinaczka górska"
+    "squat-to-press": {
+        "name": "Przysiad z wyciskaniem"
     },
-    "jumping-jacks": {
-        "name": "Pajacyki"
+    "wall-ball": {
+        "name": "Wall ball"
     },
-    "bear-crawl": {
-        "name": "Chód niedźwiedzia"
+    "medicine-ball-slam": {
+        "name": "Rzuty piłką lekarską o podłogę"
+    },
+    "kettlebell-swing": {
+        "name": "Swing kettlebell"
+    },
+    "kettlebell-clean": {
+        "name": "Zarzut kettlebell"
+    },
+    "kettlebell-snatch": {
+        "name": "Rwanie kettlebell"
+    },
+    "turkish-get-up": {
+        "name": "Tureckie wstawanie"
+    },
+    "power-clean": {
+        "name": "Zarzut siłowy"
     },
     "farmer-walk": {
         "name": "Spacer farmera"
     },
-    "squat-to-press": {
-        "name": "Przysiad z wyciskaniem"
+    "overhead-carry": {
+        "name": "Spacer z ciężarem nad głową"
+    },
+    "sled-push": {
+        "name": "Pchanie sań"
+    },
+    "sled-drag": {
+        "name": "Ciągnięcie sań tyłem"
+    },
+    "battle-rope-waves": {
+        "name": "Fale linami bojowymi"
+    },
+    "sprint": {
+        "name": "Sprint"
+    },
+    "high-knees": {
+        "name": "Skip A (wysokie kolana)"
+    },
+    "lateral-shuffle": {
+        "name": "Krok dostawny w bok"
+    },
+    "bear-crawl": {
+        "name": "Chód niedźwiedzia"
+    },
+    "inchworm": {
+        "name": "Gąsienica (inchworm)"
+    },
+    "mountain-climbers": {
+        "name": "Wspinaczka górska"
+    },
+    "jump-rope": {
+        "name": "Skakanka"
+    },
+    "jumping-jacks": {
+        "name": "Pajacyki"
+    },
+    "jump-squat": {
+        "name": "Przysiady z wyskokiem"
+    },
+    "jumping-lunge": {
+        "name": "Wykroki z przeskokiem"
+    },
+    "box-jump": {
+        "name": "Wskoki na skrzynię"
+    },
+    "broad-jump": {
+        "name": "Skok w dal z miejsca"
+    },
+    "tuck-jump": {
+        "name": "Skoki z kolanami do klatki"
+    },
+    "skater-jump": {
+        "name": "Skoki łyżwiarza"
+    },
+    "depth-jump": {
+        "name": "Skok w głąb"
+    },
+    "squat": {
+        "name": "Przysiady bez obciążenia"
+    },
+    "barbell-back-squat": {
+        "name": "Przysiad ze sztangą z tyłu"
+    },
+    "barbell-front-squat": {
+        "name": "Przysiad przedni ze sztangą"
+    },
+    "goblet-squat": {
+        "name": "Przysiad goblet"
+    },
+    "box-squat": {
+        "name": "Przysiad ze sztangą do ławki"
+    },
+    "leg-press": {
+        "name": "Wypychanie nogami na suwnicy"
+    },
+    "hack-squat": {
+        "name": "Przysiad hack"
+    },
+    "pistol-squat": {
+        "name": "Przysiad na jednej nodze (pistolet)"
+    },
+    "cossack-squat": {
+        "name": "Przysiad kozacki"
     },
     "wall-sit": {
         "name": "Krzesło przy ścianie"
     },
-    "squat": {
-        "name": "Przysiady"
+    "isometric-squat-hold": {
+        "name": "Izometryczne utrzymanie przysiadu"
     },
-    "box-squat": {
-        "name": "Przysiady do ławki"
+    "bulgarian-split-squat": {
+        "name": "Przysiad bułgarski"
+    },
+    "split-squat": {
+        "name": "Przysiad wykroczny"
     },
     "lunges": {
-        "name": "Wykroki"
+        "name": "Wykroki w przód"
+    },
+    "reverse-lunge": {
+        "name": "Wykroki w tył"
+    },
+    "walking-lunge": {
+        "name": "Wykroki chodzone"
+    },
+    "lateral-lunge": {
+        "name": "Wykroki boczne"
+    },
+    "curtsy-lunge": {
+        "name": "Wykrok skrzyżny (curtsy)"
     },
     "step-ups": {
         "name": "Wejścia na podest"
     },
-    "glute-bridge": {
-        "name": "Mostek pośladkowy"
+    "barbell-deadlift": {
+        "name": "Martwy ciąg klasyczny"
+    },
+    "sumo-deadlift": {
+        "name": "Martwy ciąg sumo"
+    },
+    "trap-bar-deadlift": {
+        "name": "Martwy ciąg z trap barem"
+    },
+    "romanian-deadlift": {
+        "name": "Rumuński martwy ciąg ze sztangą"
     },
     "rdl-dumbbells": {
         "name": "Rumuński martwy ciąg z hantlami"
     },
+    "kettlebell-deadlift": {
+        "name": "Martwy ciąg z kettlebell"
+    },
+    "single-leg-rdl": {
+        "name": "Rumuński martwy ciąg na jednej nodze"
+    },
+    "good-morning": {
+        "name": "Skłony ze sztangą (good morning)"
+    },
+    "hip-thrust": {
+        "name": "Hip thrust ze sztangą"
+    },
+    "glute-bridge": {
+        "name": "Mostek pośladkowy"
+    },
+    "single-leg-glute-bridge": {
+        "name": "Mostek biodrowy na jednej nodze"
+    },
+    "glute-bridge-hold": {
+        "name": "Utrzymanie mostka biodrowego"
+    },
+    "back-extension": {
+        "name": "Wyprosty tułowia na ławce rzymskiej"
+    },
+    "cable-pull-through": {
+        "name": "Przeciąganie liny między nogami"
+    },
+    "nordic-hamstring-curl": {
+        "name": "Nordic curl"
+    },
     "leg-curl": {
-        "name": "Uginanie nóg"
+        "name": "Uginanie nóg leżąc na maszynie"
+    },
+    "stability-ball-hamstring-curl": {
+        "name": "Uginanie nóg na piłce"
     },
     "leg-extension": {
-        "name": "Prostowanie nóg"
-    },
-    "calf-raise": {
-        "name": "Wspięcia na palce"
+        "name": "Prostowanie nóg na maszynie"
     },
     "kickback": {
-        "name": "Odwodzenie nogi w tył"
+        "name": "Odwodzenie nogi w tył na maszynie"
+    },
+    "donkey-kick": {
+        "name": "Wykopy nogi w tył w klęku podpartym"
+    },
+    "hip-abduction-machine": {
+        "name": "Odwodzenie nóg na maszynie"
+    },
+    "hip-adduction-machine": {
+        "name": "Przywodzenie nóg na maszynie"
+    },
+    "cable-hip-abduction": {
+        "name": "Odwodzenie nogi na wyciągu"
+    },
+    "banded-lateral-walk": {
+        "name": "Chód boczny z gumą"
+    },
+    "calf-raise": {
+        "name": "Wspięcia na palce stojąc"
+    },
+    "single-leg-calf-raise": {
+        "name": "Wspięcia na palce jednonóż"
+    },
+    "seated-calf-raise": {
+        "name": "Wspięcia na palce siedząc"
+    },
+    "copenhagen-plank": {
+        "name": "Deska kopenhaska"
     },
     "neck-tilts": {
         "name": "Skłony szyi"
     },
     "shoulder-circles": {
-        "name": "Krążenia ramion"
+        "name": "Krążenia barków"
     },
     "arm-circles": {
         "name": "Krążenia ramion"
+    },
+    "band-shoulder-dislocate": {
+        "name": "Przekładanie gumy za plecy"
     },
     "cat-cow": {
         "name": "Koci grzbiet"
     },
     "thread-the-needle": {
-        "name": "Thread the Needle"
+        "name": "Nawlekanie igły"
     },
     "thoracic-rotation": {
         "name": "Rotacja odcinka piersiowego"
+    },
+    "worlds-greatest-stretch": {
+        "name": "Najlepsze rozciąganie świata"
+    },
+    "hip-90-90-switch": {
+        "name": "Przełączanie bioder 90/90"
     },
     "chest-stretch": {
         "name": "Rozciąganie klatki piersiowej"
@@ -113,37 +527,88 @@
     "calf-stretch": {
         "name": "Rozciąganie łydek"
     },
-    "worlds-greatest-stretch": {
-        "name": "Najlepsze rozciąganie świata"
+    "pigeon-stretch": {
+        "name": "Pozycja gołębia"
     },
-    "push-ups": {
-        "name": "Pompki"
+    "butterfly-stretch": {
+        "name": "Rozciąganie motylek"
     },
-    "bench-dips": {
-        "name": "Pompki na ławce"
+    "childs-pose": {
+        "name": "Pozycja dziecka"
     },
-    "pull-ups": {
-        "name": "Podciąganie"
+    "downward-dog": {
+        "name": "Pies z głową w dół"
     },
-    "seated-row": {
-        "name": "Wiosłowanie siedząc"
-    },
-    "bench-press": {
-        "name": "Wyciskanie na ławce"
+    "cobra-stretch": {
+        "name": "Pozycja kobry"
     },
     "overhead-press": {
-        "name": "Wyciskanie nad głowę"
+        "name": "Wyciskanie sztangi nad głowę"
     },
-    "bicep-curl": {
-        "name": "Uginanie ramion"
+    "dumbbell-shoulder-press": {
+        "name": "Wyciskanie hantli nad głowę"
     },
-    "tricep-pushdown": {
-        "name": "Prostowanie ramion na wyciągu"
+    "arnold-press": {
+        "name": "Wyciskanie Arnolda"
+    },
+    "machine-shoulder-press": {
+        "name": "Wyciskanie nad głowę na maszynie"
+    },
+    "kettlebell-press": {
+        "name": "Wyciskanie kettlebell nad głowę"
+    },
+    "landmine-press": {
+        "name": "Wyciskanie landmine"
+    },
+    "push-press": {
+        "name": "Podrzut siłowy (push press)"
+    },
+    "pike-push-up": {
+        "name": "Pompki w pozycji szczupaka"
+    },
+    "wall-handstand-push-up": {
+        "name": "Pompki w staniu na rękach przy ścianie"
     },
     "lateral-raises": {
         "name": "Unoszenie ramion bokiem"
     },
+    "cable-lateral-raise": {
+        "name": "Unoszenie ramienia bokiem na wyciągu"
+    },
+    "front-raise": {
+        "name": "Unoszenie hantli przodem"
+    },
     "reverse-fly": {
         "name": "Rozpiętki odwrotne"
+    },
+    "reverse-pec-deck": {
+        "name": "Odwrotne rozpiętki na maszynie"
+    },
+    "upright-row": {
+        "name": "Podciąganie sztangi wzdłuż tułowia"
+    },
+    "band-external-rotation": {
+        "name": "Rotacja zewnętrzna barku z gumą"
+    },
+    "l-sit-hold": {
+        "name": "Podpór L-sit"
+    },
+    "wall-handstand-hold": {
+        "name": "Stanie na rękach przy ścianie"
+    },
+    "handstand-hold": {
+        "name": "Stanie na rękach"
+    },
+    "tuck-front-lever-hold": {
+        "name": "Front lever w zwinięciu"
+    },
+    "tuck-planche-hold": {
+        "name": "Planche w zwinięciu"
+    },
+    "ring-support-hold": {
+        "name": "Podpór na kółkach"
+    },
+    "muscle-up": {
+        "name": "Muscle-up"
     }
 }

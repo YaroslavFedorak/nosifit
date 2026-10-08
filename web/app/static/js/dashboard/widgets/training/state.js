@@ -86,6 +86,7 @@ function detectCompleted(exercise) {
     }
     if (exercise.sets_done !== undefined ||
         exercise.reps_done !== undefined ||
+        exercise.duration_sec_done !== undefined ||
         exercise.load_done !== undefined) {
         return true;
     }
@@ -98,11 +99,18 @@ function normalizeExercise(exercise = {}) {
         exercise.rpe !== ""
         ? normalizeNumber(exercise.rpe, null)
         : null;
+    const isDuration = (exercise.measurement_type ??
+        exercise.exercise?.measurement_type) ===
+        "duration";
     return {
         id: typeof exercise.id === "string"
             ? exercise.id
             : createLocalId(),
         databaseId,
+        slug: exercise.slug ??
+            exercise.exercise?.slug ??
+            exercise.original?.slug ??
+            null,
         name: getExerciseName(exercise),
         movement_pattern: exercise.movement_pattern ||
             exercise.exercise
@@ -113,11 +121,23 @@ function normalizeExercise(exercise = {}) {
         equipment: normalizeArray(exercise.equipment ??
             exercise.exercise?.equipment ??
             exercise.original?.equipment),
+        measurement_type: isDuration
+            ? "duration"
+            : "reps",
         sets: normalizeNumber(exercise.sets ??
             exercise.sets_done, 3) ?? 3,
-        reps: exercise.reps ??
-            exercise.reps_done ??
-            "10",
+        reps: isDuration
+            ? null
+            : exercise.reps ??
+                exercise.reps_done ??
+                "10",
+        duration_sec: isDuration
+            ? normalizeNumber(exercise.duration_sec ??
+                exercise.duration_sec_done, null)
+            : null,
+        per_side: Boolean(exercise.per_side ??
+            exercise.exercise?.prescription?.per_side ??
+            exercise.original?.prescription?.per_side),
         weight: normalizeNumber(exercise.weight ??
             exercise.load ??
             exercise.load_done, 0) ?? 0,

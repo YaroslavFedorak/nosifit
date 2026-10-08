@@ -63,6 +63,11 @@ def parse_reps(value):
         return 0
 
 
+def parse_seconds(value):
+    """Seconds per set for duration exercises (same parsing, no unit change)."""
+    return parse_reps(value)
+
+
 def normalize_name(name):
     if not name:
         return ""

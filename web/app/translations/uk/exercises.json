@@ -1,84 +1,489 @@
 {
+    "bicep-curl": {
+        "name": "Згинання рук з гантелями"
+    },
+    "barbell-curl": {
+        "name": "Підйом штанги на біцепс"
+    },
+    "hammer-curl": {
+        "name": "Молоткові згинання"
+    },
+    "preacher-curl": {
+        "name": "Згинання на лаві Скотта"
+    },
+    "incline-dumbbell-curl": {
+        "name": "Згинання з гантелями на похилій лаві"
+    },
+    "cable-curl": {
+        "name": "Згинання рук на блоці"
+    },
+    "band-curl": {
+        "name": "Згинання рук з еспандером"
+    },
+    "reverse-curl": {
+        "name": "Згинання рук зворотним хватом"
+    },
+    "wrist-curl": {
+        "name": "Згинання зап'ясть з гантелями"
+    },
+    "reverse-wrist-curl": {
+        "name": "Розгинання зап'ясть з гантелями"
+    },
+    "tricep-pushdown": {
+        "name": "Розгинання рук на блоці"
+    },
+    "overhead-triceps-extension": {
+        "name": "Розгинання гантелі з-за голови"
+    },
+    "skull-crusher": {
+        "name": "Французький жим лежачи"
+    },
+    "triceps-kickback": {
+        "name": "Розгинання руки з гантеллю в нахилі"
+    },
+    "close-grip-bench-press": {
+        "name": "Жим лежачи вузьким хватом"
+    },
+    "bench-dips": {
+        "name": "Віджимання від лави"
+    },
+    "pull-ups": {
+        "name": "Підтягування"
+    },
+    "chin-up": {
+        "name": "Підтягування зворотним хватом"
+    },
+    "eccentric-pull-up": {
+        "name": "Негативні підтягування"
+    },
+    "band-assisted-pull-up": {
+        "name": "Підтягування з резинкою"
+    },
+    "scapular-pull-up": {
+        "name": "Лопаткові підтягування"
+    },
+    "inverted-row": {
+        "name": "Австралійські підтягування"
+    },
+    "ring-row": {
+        "name": "Тяга на кільцях"
+    },
+    "lat-pulldown": {
+        "name": "Тяга верхнього блока"
+    },
+    "straight-arm-pulldown": {
+        "name": "Пуловер на блоці прямими руками"
+    },
+    "seated-row": {
+        "name": "Тяга нижнього блока сидячи"
+    },
+    "barbell-row": {
+        "name": "Тяга штанги в нахилі"
+    },
+    "dumbbell-row": {
+        "name": "Тяга гантелі однією рукою"
+    },
+    "chest-supported-row": {
+        "name": "Тяга гантелей з упором грудьми"
+    },
+    "t-bar-row": {
+        "name": "Тяга Т-грифа"
+    },
+    "machine-row": {
+        "name": "Тяга в тренажері"
+    },
+    "band-row": {
+        "name": "Тяга еспандера"
+    },
+    "renegade-row": {
+        "name": "Тяга в планці (ренегат)"
+    },
+    "face-pull": {
+        "name": "Тяга канату до обличчя"
+    },
+    "band-pull-apart": {
+        "name": "Розведення еспандера"
+    },
+    "prone-y-raise": {
+        "name": "Y-підйоми лежачи"
+    },
+    "barbell-shrug": {
+        "name": "Шраги зі штангою"
+    },
+    "dumbbell-shrug": {
+        "name": "Шраги з гантелями"
+    },
+    "superman": {
+        "name": "Супермен"
+    },
+    "arch-hold": {
+        "name": "Утримання «човник»"
+    },
+    "dead-hang": {
+        "name": "Вис на турніку"
+    },
+    "push-ups": {
+        "name": "Віджимання"
+    },
+    "knee-push-up": {
+        "name": "Віджимання з колін"
+    },
+    "incline-push-up": {
+        "name": "Віджимання з руками на опорі"
+    },
+    "decline-push-up": {
+        "name": "Віджимання з ногами на лаві"
+    },
+    "diamond-push-up": {
+        "name": "Алмазні віджимання"
+    },
+    "archer-push-up": {
+        "name": "Віджимання лучника"
+    },
+    "plyometric-push-up": {
+        "name": "Плиометричні віджимання"
+    },
+    "bench-press": {
+        "name": "Жим штанги лежачи"
+    },
+    "incline-barbell-bench-press": {
+        "name": "Жим штанги на похилій лаві"
+    },
+    "dumbbell-bench-press": {
+        "name": "Жим гантелей лежачи"
+    },
+    "incline-dumbbell-press": {
+        "name": "Жим гантелей на похилій лаві"
+    },
+    "machine-chest-press": {
+        "name": "Жим від грудей у тренажері"
+    },
+    "dips": {
+        "name": "Віджимання на брусах"
+    },
+    "ring-dip": {
+        "name": "Віджимання на кільцях"
+    },
+    "dumbbell-fly": {
+        "name": "Розведення гантелей лежачи"
+    },
+    "cable-fly": {
+        "name": "Зведення рук у кросовері"
+    },
+    "pec-deck": {
+        "name": "Зведення рук у тренажері"
+    },
+    "dumbbell-pullover": {
+        "name": "Пуловер з гантеллю"
+    },
+    "medicine-ball-chest-pass": {
+        "name": "Кидок медболу від грудей"
+    },
     "plank": {
         "name": "Планка"
+    },
+    "high-plank": {
+        "name": "Планка на прямих руках"
+    },
+    "rkc-plank": {
+        "name": "Планка RKC"
+    },
+    "bear-plank": {
+        "name": "Утримання ведмедя"
+    },
+    "hollow-body-hold": {
+        "name": "Утримання «човен»"
+    },
+    "dead-bug": {
+        "name": "Мертвий жук"
+    },
+    "ab-wheel-rollout": {
+        "name": "Викочування ролика для преса"
     },
     "side-plank": {
         "name": "Бічна планка"
     },
-    "crunches": {
-        "name": "Скручування"
+    "side-plank-hip-dip": {
+        "name": "Бічна планка з опусканням таза"
+    },
+    "suitcase-carry": {
+        "name": "Перенесення ваги в одній руці"
+    },
+    "bird-dog": {
+        "name": "Пташка-собака"
+    },
+    "plank-shoulder-tap": {
+        "name": "Планка з торканням плечей"
+    },
+    "pallof-press": {
+        "name": "Жим Паллофа"
     },
     "bicycle-crunch": {
         "name": "Велосипед"
     },
-    "dead-bug": {
-        "name": "Dead Bug"
+    "russian-twist": {
+        "name": "Російські скручування"
     },
-    "bird-dog": {
-        "name": "Bird Dog"
+    "cable-woodchop": {
+        "name": "Дроворуб на блоці"
+    },
+    "medicine-ball-rotational-throw": {
+        "name": "Ротаційний кидок медболу"
+    },
+    "crunches": {
+        "name": "Скручування"
+    },
+    "reverse-crunch": {
+        "name": "Зворотні скручування"
+    },
+    "sit-up": {
+        "name": "Підйом тулуба"
+    },
+    "v-up": {
+        "name": "Складка (V-up)"
     },
     "lying-leg-raise": {
         "name": "Підйом ніг лежачи"
     },
-    "superman": {
-        "name": "Superman"
+    "flutter-kicks": {
+        "name": "Ножиці"
     },
-    "pallof-press": {
-        "name": "Pallof Press"
+    "hanging-knee-raise": {
+        "name": "Підйом колін у висі"
+    },
+    "hanging-leg-raise": {
+        "name": "Підйом ніг у висі"
     },
     "cable-crunch": {
-        "name": "Cable Crunch"
+        "name": "Скручування на блоці"
     },
     "burpee": {
-        "name": "Burpee"
-    },
-    "mountain-climbers": {
-        "name": "Mountain Climbers"
-    },
-    "jumping-jacks": {
-        "name": "Jumping Jacks"
-    },
-    "bear-crawl": {
-        "name": "Bear Crawl"
-    },
-    "farmer-walk": {
-        "name": "Прогулянка фермера"
+        "name": "Берпі"
     },
     "squat-to-press": {
         "name": "Присідання з жимом"
     },
+    "wall-ball": {
+        "name": "Кидок медболу в стіну"
+    },
+    "medicine-ball-slam": {
+        "name": "Удари медболом об підлогу"
+    },
+    "kettlebell-swing": {
+        "name": "Махи гирею"
+    },
+    "kettlebell-clean": {
+        "name": "Підйом гирі на груди"
+    },
+    "kettlebell-snatch": {
+        "name": "Ривок гирі"
+    },
+    "turkish-get-up": {
+        "name": "Турецький підйом"
+    },
+    "power-clean": {
+        "name": "Взяття штанги на груди"
+    },
+    "farmer-walk": {
+        "name": "Прогулянка фермера"
+    },
+    "overhead-carry": {
+        "name": "Перенесення ваги над головою"
+    },
+    "sled-push": {
+        "name": "Штовхання саней"
+    },
+    "sled-drag": {
+        "name": "Тяга саней спиною вперед"
+    },
+    "battle-rope-waves": {
+        "name": "Хвилі бойовими канатами"
+    },
+    "sprint": {
+        "name": "Спринт"
+    },
+    "high-knees": {
+        "name": "Біг з високим підніманням колін"
+    },
+    "lateral-shuffle": {
+        "name": "Приставні кроки вбік"
+    },
+    "bear-crawl": {
+        "name": "Ведмежа хода"
+    },
+    "inchworm": {
+        "name": "Гусениця"
+    },
+    "mountain-climbers": {
+        "name": "Скелелаз"
+    },
+    "jump-rope": {
+        "name": "Скакалка"
+    },
+    "jumping-jacks": {
+        "name": "Стрибки «зірочка»"
+    },
+    "jump-squat": {
+        "name": "Присідання з вистрибуванням"
+    },
+    "jumping-lunge": {
+        "name": "Випади в стрибку"
+    },
+    "box-jump": {
+        "name": "Стрибки на тумбу"
+    },
+    "broad-jump": {
+        "name": "Стрибок у довжину з місця"
+    },
+    "tuck-jump": {
+        "name": "Стрибки з підтягуванням колін"
+    },
+    "skater-jump": {
+        "name": "Стрибки ковзаняра"
+    },
+    "depth-jump": {
+        "name": "Стрибок у глибину"
+    },
+    "squat": {
+        "name": "Присідання з власною вагою"
+    },
+    "barbell-back-squat": {
+        "name": "Присідання зі штангою на спині"
+    },
+    "barbell-front-squat": {
+        "name": "Фронтальні присідання зі штангою"
+    },
+    "goblet-squat": {
+        "name": "Гоблет-присідання"
+    },
+    "box-squat": {
+        "name": "Присідання зі штангою до лави"
+    },
+    "leg-press": {
+        "name": "Жим ногами"
+    },
+    "hack-squat": {
+        "name": "Гак-присідання"
+    },
+    "pistol-squat": {
+        "name": "Присідання на одній нозі (пістолет)"
+    },
+    "cossack-squat": {
+        "name": "Козацькі присідання"
+    },
     "wall-sit": {
         "name": "Стільчик біля стіни"
     },
-    "squat": {
-        "name": "Присідання"
+    "isometric-squat-hold": {
+        "name": "Статичне утримання присіду"
     },
-    "box-squat": {
-        "name": "Присідання до лави"
+    "bulgarian-split-squat": {
+        "name": "Болгарські випади"
+    },
+    "split-squat": {
+        "name": "Статичні випади"
     },
     "lunges": {
-        "name": "Випади"
+        "name": "Випади вперед"
+    },
+    "reverse-lunge": {
+        "name": "Зворотні випади"
+    },
+    "walking-lunge": {
+        "name": "Випади в русі"
+    },
+    "lateral-lunge": {
+        "name": "Бічні випади"
+    },
+    "curtsy-lunge": {
+        "name": "Випади навхрест"
     },
     "step-ups": {
         "name": "Кроки на платформу"
     },
-    "glute-bridge": {
-        "name": "Ягодичний міст"
+    "barbell-deadlift": {
+        "name": "Станова тяга"
+    },
+    "sumo-deadlift": {
+        "name": "Станова тяга сумо"
+    },
+    "trap-bar-deadlift": {
+        "name": "Станова тяга з трап-грифом"
+    },
+    "romanian-deadlift": {
+        "name": "Румунська тяга зі штангою"
     },
     "rdl-dumbbells": {
         "name": "Румунська тяга з гантелями"
     },
+    "kettlebell-deadlift": {
+        "name": "Станова тяга з гирею"
+    },
+    "single-leg-rdl": {
+        "name": "Румунська тяга на одній нозі"
+    },
+    "good-morning": {
+        "name": "Нахили зі штангою (гуд морнінг)"
+    },
+    "hip-thrust": {
+        "name": "Ягодичний міст зі штангою"
+    },
+    "glute-bridge": {
+        "name": "Ягодичний міст"
+    },
+    "single-leg-glute-bridge": {
+        "name": "Ягодичний міст на одній нозі"
+    },
+    "glute-bridge-hold": {
+        "name": "Утримання ягодичного мосту"
+    },
+    "back-extension": {
+        "name": "Гіперекстензія"
+    },
+    "cable-pull-through": {
+        "name": "Протяжка троса між ногами"
+    },
+    "nordic-hamstring-curl": {
+        "name": "Скандинавські згинання"
+    },
     "leg-curl": {
-        "name": "Згинання ніг"
+        "name": "Згинання ніг лежачи в тренажері"
+    },
+    "stability-ball-hamstring-curl": {
+        "name": "Згинання ніг на фітболі"
     },
     "leg-extension": {
-        "name": "Розгинання ніг"
-    },
-    "calf-raise": {
-        "name": "Підйоми на носки"
+        "name": "Розгинання ніг у тренажері"
     },
     "kickback": {
-        "name": "Відведення ноги назад"
+        "name": "Відведення ноги назад у тренажері"
+    },
+    "donkey-kick": {
+        "name": "Відведення ноги назад на четвереньках"
+    },
+    "hip-abduction-machine": {
+        "name": "Розведення ніг у тренажері"
+    },
+    "hip-adduction-machine": {
+        "name": "Зведення ніг у тренажері"
+    },
+    "cable-hip-abduction": {
+        "name": "Відведення ноги вбік на блоці"
+    },
+    "banded-lateral-walk": {
+        "name": "Бічна ходьба з резинкою"
+    },
+    "calf-raise": {
+        "name": "Підйоми на носки стоячи"
+    },
+    "single-leg-calf-raise": {
+        "name": "Підйом на носок однієї ноги"
+    },
+    "seated-calf-raise": {
+        "name": "Підйом на носки сидячи"
+    },
+    "copenhagen-plank": {
+        "name": "Копенгагенська планка"
     },
     "neck-tilts": {
         "name": "Нахили шиї"
@@ -89,14 +494,23 @@
     "arm-circles": {
         "name": "Колові рухи руками"
     },
+    "band-shoulder-dislocate": {
+        "name": "Викрути з резинкою"
+    },
     "cat-cow": {
         "name": "Кішка-корова"
     },
     "thread-the-needle": {
-        "name": "Thread the Needle"
+        "name": "Нитка в голку"
     },
     "thoracic-rotation": {
         "name": "Повороти грудного відділу"
+    },
+    "worlds-greatest-stretch": {
+        "name": "Найкраще розтягування у світі"
+    },
+    "hip-90-90-switch": {
+        "name": "Перемикання стегон 90/90"
     },
     "chest-stretch": {
         "name": "Розтягування грудних"
@@ -113,37 +527,88 @@
     "calf-stretch": {
         "name": "Розтягування литок"
     },
-    "worlds-greatest-stretch": {
-        "name": "Найкраще розтягування у світі"
+    "pigeon-stretch": {
+        "name": "Поза голуба"
     },
-    "push-ups": {
-        "name": "Віджимання"
+    "butterfly-stretch": {
+        "name": "Метелик"
     },
-    "bench-dips": {
-        "name": "Віджимання від лави"
+    "childs-pose": {
+        "name": "Поза дитини"
     },
-    "pull-ups": {
-        "name": "Підтягування"
+    "downward-dog": {
+        "name": "Собака мордою вниз"
     },
-    "seated-row": {
-        "name": "Горизонтальна тяга"
-    },
-    "bench-press": {
-        "name": "Жим від грудей"
+    "cobra-stretch": {
+        "name": "Поза кобри"
     },
     "overhead-press": {
-        "name": "Жим над головою"
+        "name": "Жим штанги над головою"
     },
-    "bicep-curl": {
-        "name": "Згинання рук"
+    "dumbbell-shoulder-press": {
+        "name": "Жим гантелей сидячи"
     },
-    "tricep-pushdown": {
-        "name": "Розгинання рук на блоці"
+    "arnold-press": {
+        "name": "Жим Арнольда"
+    },
+    "machine-shoulder-press": {
+        "name": "Жим над головою в тренажері"
+    },
+    "kettlebell-press": {
+        "name": "Жим гирі над головою"
+    },
+    "landmine-press": {
+        "name": "Жим лендмайн"
+    },
+    "push-press": {
+        "name": "Швунг жимовий"
+    },
+    "pike-push-up": {
+        "name": "Віджимання щукою"
+    },
+    "wall-handstand-push-up": {
+        "name": "Віджимання в стійці на руках біля стіни"
     },
     "lateral-raises": {
         "name": "Бічні підйоми рук"
     },
+    "cable-lateral-raise": {
+        "name": "Відведення руки вбік на блоці"
+    },
+    "front-raise": {
+        "name": "Підйом гантелей перед собою"
+    },
     "reverse-fly": {
         "name": "Зворотні розведення"
+    },
+    "reverse-pec-deck": {
+        "name": "Зворотні розведення в тренажері"
+    },
+    "upright-row": {
+        "name": "Тяга штанги до підборіддя"
+    },
+    "band-external-rotation": {
+        "name": "Зовнішня ротація плеча з резинкою"
+    },
+    "l-sit-hold": {
+        "name": "Утримання кута (L-sit)"
+    },
+    "wall-handstand-hold": {
+        "name": "Стійка на руках біля стіни"
+    },
+    "handstand-hold": {
+        "name": "Стійка на руках"
+    },
+    "tuck-front-lever-hold": {
+        "name": "Передній вис в групуванні"
+    },
+    "tuck-planche-hold": {
+        "name": "Планш у групуванні"
+    },
+    "ring-support-hold": {
+        "name": "Упор на кільцях"
+    },
+    "muscle-up": {
+        "name": "Вихід силою"
     }
 }

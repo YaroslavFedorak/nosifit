@@ -5,25 +5,25 @@
             "name": "Upper Body",
             "exercises": [
                 {
-                    "id": "bench_press"
+                    "id": "bench-press"
                 },
                 {
-                    "id": "barbell_row"
+                    "id": "barbell-row"
                 },
                 {
-                    "id": "shoulder_press"
+                    "id": "dumbbell-shoulder-press"
                 },
                 {
-                    "id": "lat_pulldown"
+                    "id": "lat-pulldown"
                 },
                 {
-                    "id": "lateral_raise"
+                    "id": "lateral-raises"
                 },
                 {
-                    "id": "biceps_curl"
+                    "id": "bicep-curl"
                 },
                 {
-                    "id": "triceps_pushdown"
+                    "id": "tricep-pushdown"
                 }
             ]
         },
@@ -31,22 +31,22 @@
             "name": "Lower Body",
             "exercises": [
                 {
-                    "id": "squat"
+                    "id": "barbell-back-squat"
                 },
                 {
-                    "id": "romanian_deadlift"
+                    "id": "romanian-deadlift"
                 },
                 {
                     "id": "lunges"
                 },
                 {
-                    "id": "leg_press"
+                    "id": "leg-press"
                 },
                 {
-                    "id": "calf_raise"
+                    "id": "calf-raise"
                 },
                 {
-                    "id": "glute_bridge"
+                    "id": "glute-bridge"
                 },
                 {
                     "id": "plank"

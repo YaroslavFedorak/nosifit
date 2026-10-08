@@ -61,7 +61,14 @@
         "biceps": "Bicepsy",
         "core": "Core",
         "legs": "Nogi",
-        "lowerBack": "Dolne plecy"
+        "lowerBack": "Dolne plecy",
+        "lats": "Najszersze grzbietu",
+        "upperBack": "Środek pleców",
+        "forearms": "Przedramiona",
+        "hamstrings": "Dwugłowe uda",
+        "calves": "Łydki",
+        "adductors": "Przywodziciele",
+        "neck": "Szyja"
     },
     "heatmap": {
         "yearActivity": "Aktywność w ciągu roku",
@@ -76,6 +83,8 @@
         "session": "Sesja",
         "exerciseMeta": "{sets}×{reps}, {load} kg",
         "exerciseMetaNoLoad": "{sets}×{reps}",
+        "exerciseMetaDuration": "{sets}×{seconds} s, {load} kg",
+        "exerciseMetaDurationNoLoad": "{sets}×{seconds} s",
         "error": "Błąd",
         "loadError": "Nie udało się załadować danych."
     },
@@ -148,6 +157,8 @@
         "execution": "Szczegóły ćwiczenia",
         "sets": "Serie",
         "reps": "Powtórzenia",
+        "seconds": "Sekundy",
+        "perSide": "/ stronę",
         "weight": "Ciężar (kg)",
         "rpe": "RPE",
         "fallback": "Ćwiczenie"

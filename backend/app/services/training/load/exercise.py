@@ -1,8 +1,4 @@
-from .constants import (
-    BODYWEIGHT_FACTOR,
-    BODYWEIGHT_RATIOS,
-    MOVEMENT_FACTORS,
-)
+from backend.app.training.exercises.prescription import is_duration_exercise
 
 from .factors import (
     difficulty_factor,
@@ -14,124 +10,10 @@ from .factors import (
 )
 
 from .parsing import (
-    normalize_name,
     parse_float,
     parse_reps,
 )
-
-
-def get_movement_factor(exercise):
-    movement = getattr(
-        exercise,
-        "movement_pattern",
-        None,
-    )
-
-    movement = normalize_name(movement)
-
-    if movement in MOVEMENT_FACTORS:
-        return MOVEMENT_FACTORS[movement]
-
-    name = normalize_name(getattr(exercise, "name", ""))
-
-    if any(
-        word in name
-        for word in (
-            "stretch",
-            "mobility",
-            "cat-cow",
-            "thread-the-needle",
-            "розтяг",
-            "кішка-корова",
-        )
-    ):
-        return MOVEMENT_FACTORS["mobility"]
-
-    if any(
-        word in name
-        for word in (
-            "plank",
-            "dead-bug",
-            "deadbug",
-            "crunch",
-            "bicycle",
-            "велосипед",
-            "планка",
-        )
-    ):
-        return MOVEMENT_FACTORS["core"]
-
-    if any(
-        word in name
-        for word in (
-            "squat",
-            "lunge",
-            "step-up",
-            "glute",
-            "kickback",
-            "присід",
-            "випад",
-            "відведення-ноги",
-        )
-    ):
-        return MOVEMENT_FACTORS["lower"]
-
-    if any(
-        word in name
-        for word in (
-            "row",
-            "pull-up",
-            "pulldown",
-            "curl",
-            "тяга",
-            "підтяг",
-        )
-    ):
-        return MOVEMENT_FACTORS["pull"]
-
-    if any(
-        word in name
-        for word in (
-            "push-up",
-            "pushup",
-            "bench-press",
-            "press",
-            "dip",
-            "віджим",
-            "жим",
-        )
-    ):
-        return MOVEMENT_FACTORS["push"]
-
-    if any(
-        word in name
-        for word in (
-            "burpee",
-            "mountain-climber",
-            "bear-crawl",
-        )
-    ):
-        return MOVEMENT_FACTORS["full_body"]
-
-    return MOVEMENT_FACTORS["accessory"]
-
-
-def get_bodyweight_ratio(exercise):
-    slug = normalize_name(getattr(exercise, "slug", ""))
-
-    name = normalize_name(getattr(exercise, "name", ""))
-
-    if slug in BODYWEIGHT_RATIOS:
-        return BODYWEIGHT_RATIOS[slug]
-
-    if name in BODYWEIGHT_RATIOS:
-        return BODYWEIGHT_RATIOS[name]
-
-    for key, ratio in BODYWEIGHT_RATIOS.items():
-        if key in slug or key in name:
-            return ratio
-
-    return BODYWEIGHT_FACTOR
+from .timed import compute_timed_load
 
 
 def calculate_exercise_load(
@@ -143,15 +25,11 @@ def calculate_exercise_load(
     capacity=1.0,
     rpe=7.0,
 ):
-    sets = parse_reps(getattr(exercise, "sets", 0) if sets is None else sets)
+    sets = parse_reps(sets)
 
-    reps = parse_reps(getattr(exercise, "reps", 0) if reps is None else reps)
+    reps = parse_reps(reps)
 
-    additional_weight = parse_float(
-        getattr(exercise, "weight", 0)
-        if additional_weight is None
-        else additional_weight
-    )
+    additional_weight = parse_float(additional_weight)
 
     if sets <= 0 or reps <= 0:
         return {
@@ -207,3 +85,41 @@ def calculate_exercise_load(
         "internal_load": internal_load,
     }
 
+
+
+def calculate_measured_load(
+    exercise,
+    user_weight=70.0,
+    sets=0,
+    reps=None,
+    duration_sec=None,
+    additional_weight=None,
+    capacity=1.0,
+    rpe=7.0,
+):
+    """Load of one exercise: sets x reps for repetition exercises,
+    sets x seconds for duration exercises."""
+    if is_duration_exercise(exercise):
+        result = compute_timed_load(
+            exercise=exercise,
+            sets=sets,
+            duration=duration_sec,
+            additional_load=additional_weight,
+            user_weight=user_weight,
+            capacity=capacity,
+            rpe=rpe,
+        )
+        result["measurement_type"] = "duration"
+        return result
+
+    result = calculate_exercise_load(
+        exercise=exercise,
+        user_weight=user_weight,
+        sets=sets,
+        reps=reps,
+        additional_weight=additional_weight,
+        capacity=capacity,
+        rpe=rpe,
+    )
+    result["measurement_type"] = "reps"
+    return result

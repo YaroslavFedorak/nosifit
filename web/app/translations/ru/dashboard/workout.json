@@ -10,6 +10,8 @@
         "fields": {
             "sets": "подходы",
             "reps": "повт.",
+            "seconds": "сек",
+            "perSide": "/ сторону",
             "weight": "кг"
         },
         "exercise": {
@@ -71,6 +73,7 @@
         },
         "fields": {
             "reps": "Повторения",
+            "seconds": "Секунды",
             "sets": "Подходы",
             "weight": "Вес (кг)"
         },

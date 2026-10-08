@@ -57,7 +57,7 @@ export function createCounterField(label, iconSvg, value, onChange) {
     };
     return field;
 }
-export function createRepsField(value, onChange) {
+export function createRepsField(value, onChange, label = t("exercise.reps")) {
     const field = document.createElement("div");
     field.className =
         "tr-plan-field";
@@ -67,7 +67,7 @@ export function createRepsField(value, onChange) {
                 ${ICONS.exercise}
             </span>
             <span class="tr-plan-field-label">
-                ${t("exercise.reps")}
+                ${label}
             </span>
         </div>
 

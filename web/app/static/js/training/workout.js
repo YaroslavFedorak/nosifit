@@ -1,6 +1,12 @@
 import { trainingStore } from "./store.js";
 import { persistWorkout } from "./state.js";
 import { ICONS } from "../icons/index.js";
+import { isDurationExercise, isPerSide } from "./measurement.js";
+function measurementLabel(item, key) {
+    return isPerSide(item.exercise)
+        ? `${t(key)} ${t("exercise.perSide")}`
+        : t(key);
+}
 import { exercise_t, t } from "../i18n/index.js";
 function makeInlineBlock(labelText, initialValue, onChange, isRange = false, disabled = false) {
     const wrap = document.createElement("div");
@@ -172,10 +178,15 @@ export function renderWorkoutList() {
             item.sets =
                 parseInt(String(value), 10) || 0;
         }, false, disabled);
-        const repsBlock = makeInlineBlock(t("exercise.reps"), item.reps, value => {
-            item.reps =
-                String(value);
-        }, true, disabled);
+        const repsBlock = isDurationExercise(item.exercise)
+            ? makeInlineBlock(measurementLabel(item, "exercise.seconds"), item.duration_sec, value => {
+                item.duration_sec =
+                    parseInt(String(value), 10) || 0;
+            }, false, disabled)
+            : makeInlineBlock(measurementLabel(item, "exercise.reps"), item.reps, value => {
+                item.reps =
+                    String(value);
+            }, true, disabled);
         const loadBlock = makeInlineBlock(t("exercise.weight"), item.load, value => {
             item.load =
                 parseFloat(String(value)) || 0;

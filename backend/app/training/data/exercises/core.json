@@ -1,203 +1,828 @@
 [
     {
-        "name": "Планка",
         "slug": "plank",
-        "difficulty": 2,
-        "movement_pattern": "core",
-        "risk_level": 1,
-        "equipment": [
-            "bodyweight"
-        ],
-        "muscles_primary": [
-            "core"
-        ],
-        "muscles_secondary": [],
-        "max_additional_load_kg": 60,
-        "muscle_load_profile": {
-            "core": 1.0
-        }
-    },
-    {
-        "name": "Бічна планка",
-        "slug": "side-plank",
-        "difficulty": 2,
-        "movement_pattern": "core",
-        "risk_level": 1,
-        "equipment": [
-            "bodyweight"
-        ],
-        "muscles_primary": [
-            "obliques"
-        ],
-        "muscles_secondary": [
-            "core"
-        ],
-        "max_additional_load_kg": 40,
-        "muscle_load_profile": {
-            "obliques": 0.7,
-            "core": 0.3
-        }
-    },
-    {
-        "name": "Скручування",
-        "slug": "crunches",
+        "name": "Plank",
+        "movement_pattern": "anti-extension",
         "difficulty": 1,
-        "movement_pattern": "core",
         "risk_level": 1,
         "equipment": [
             "bodyweight"
         ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 0.45,
+        "max_additional_load_kg": null,
+        "measurement_type": "duration",
+        "prescription": {
+            "sets": 3,
+            "seconds_min": 20,
+            "seconds_max": 90
+        },
         "muscles_primary": [
+            "core",
             "abs"
-        ],
-        "muscles_secondary": [],
-        "max_additional_load_kg": 40,
-        "muscle_load_profile": {
-            "abs": 1.0
-        }
-    },
-    {
-        "name": "Велосипед",
-        "slug": "bicycle-crunch",
-        "difficulty": 2,
-        "movement_pattern": "core",
-        "risk_level": 1,
-        "equipment": [
-            "bodyweight"
-        ],
-        "muscles_primary": [
-            "obliques"
         ],
         "muscles_secondary": [
-            "abs"
+            "shoulders",
+            "glutes"
         ],
-        "max_additional_load_kg": 40,
         "muscle_load_profile": {
-            "obliques": 0.6,
-            "abs": 0.4
+            "core": 0.5,
+            "abs": 0.3,
+            "shoulders": 0.1,
+            "glutes": 0.1
         }
     },
     {
-        "name": "Dead Bug",
+        "slug": "high-plank",
+        "name": "High Plank",
+        "movement_pattern": "anti-extension",
+        "difficulty": 1,
+        "risk_level": 1,
+        "equipment": [
+            "bodyweight"
+        ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 0.5,
+        "max_additional_load_kg": null,
+        "measurement_type": "duration",
+        "prescription": {
+            "sets": 3,
+            "seconds_min": 20,
+            "seconds_max": 60
+        },
+        "muscles_primary": [
+            "core",
+            "abs"
+        ],
+        "muscles_secondary": [
+            "shoulders",
+            "triceps",
+            "glutes"
+        ],
+        "muscle_load_profile": {
+            "core": 0.45,
+            "abs": 0.25,
+            "shoulders": 0.15,
+            "triceps": 0.1,
+            "glutes": 0.05
+        }
+    },
+    {
+        "slug": "rkc-plank",
+        "name": "RKC Plank",
+        "movement_pattern": "anti-extension",
+        "difficulty": 3,
+        "risk_level": 1,
+        "equipment": [
+            "bodyweight"
+        ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 0.5,
+        "max_additional_load_kg": null,
+        "measurement_type": "duration",
+        "prescription": {
+            "sets": 3,
+            "seconds_min": 10,
+            "seconds_max": 30
+        },
+        "muscles_primary": [
+            "abs",
+            "core"
+        ],
+        "muscles_secondary": [
+            "glutes"
+        ],
+        "muscle_load_profile": {
+            "abs": 0.45,
+            "core": 0.35,
+            "glutes": 0.2
+        }
+    },
+    {
+        "slug": "bear-plank",
+        "name": "Bear Plank Hold",
+        "movement_pattern": "anti-extension",
+        "difficulty": 1,
+        "risk_level": 1,
+        "equipment": [
+            "bodyweight"
+        ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 0.4,
+        "max_additional_load_kg": null,
+        "measurement_type": "duration",
+        "prescription": {
+            "sets": 3,
+            "seconds_min": 20,
+            "seconds_max": 45
+        },
+        "muscles_primary": [
+            "core",
+            "shoulders"
+        ],
+        "muscles_secondary": [
+            "quads",
+            "hip-flexors"
+        ],
+        "muscle_load_profile": {
+            "core": 0.45,
+            "shoulders": 0.25,
+            "quads": 0.2,
+            "hip-flexors": 0.1
+        }
+    },
+    {
+        "slug": "hollow-body-hold",
+        "name": "Hollow Body Hold",
+        "movement_pattern": "anti-extension",
+        "difficulty": 2,
+        "risk_level": 1,
+        "equipment": [
+            "bodyweight"
+        ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 0.35,
+        "max_additional_load_kg": null,
+        "measurement_type": "duration",
+        "prescription": {
+            "sets": 3,
+            "seconds_min": 15,
+            "seconds_max": 45
+        },
+        "muscles_primary": [
+            "abs",
+            "core"
+        ],
+        "muscles_secondary": [
+            "hip-flexors"
+        ],
+        "muscle_load_profile": {
+            "abs": 0.5,
+            "core": 0.35,
+            "hip-flexors": 0.15
+        }
+    },
+    {
         "slug": "dead-bug",
-        "difficulty": 2,
-        "movement_pattern": "core",
+        "name": "Dead Bug",
+        "movement_pattern": "anti-extension",
+        "difficulty": 1,
         "risk_level": 1,
         "equipment": [
             "bodyweight"
         ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 0.2,
+        "max_additional_load_kg": null,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 8,
+            "reps_max": 12,
+            "per_side": true
+        },
         "muscles_primary": [
-            "core"
-        ],
-        "muscles_secondary": [
-            "hip-flexors"
-        ],
-        "max_additional_load_kg": 20,
-        "muscle_load_profile": {
-            "core": 0.7,
-            "hip-flexors": 0.3
-        }
-    },
-    {
-        "name": "Bird Dog",
-        "slug": "bird-dog",
-        "difficulty": 2,
-        "movement_pattern": "core",
-        "risk_level": 1,
-        "equipment": [
-            "bodyweight"
-        ],
-        "muscles_primary": [
-            "lower-back"
-        ],
-        "muscles_secondary": [
-            "core"
-        ],
-        "max_additional_load_kg": 20,
-        "muscle_load_profile": {
-            "lower-back": 0.6,
-            "core": 0.4
-        }
-    },
-    {
-        "name": "Підйом ніг лежачи",
-        "slug": "lying-leg-raise",
-        "difficulty": 2,
-        "movement_pattern": "core",
-        "risk_level": 1,
-        "equipment": [
-            "bodyweight"
-        ],
-        "muscles_primary": [
+            "core",
             "abs"
         ],
         "muscles_secondary": [
             "hip-flexors"
         ],
-        "max_additional_load_kg": 40,
         "muscle_load_profile": {
-            "abs": 0.7,
-            "hip-flexors": 0.3
+            "core": 0.6,
+            "abs": 0.25,
+            "hip-flexors": 0.15
         }
     },
     {
-        "name": "Superman",
-        "slug": "superman",
-        "difficulty": 1,
-        "movement_pattern": "core",
+        "slug": "ab-wheel-rollout",
+        "name": "Ab Wheel Rollout",
+        "movement_pattern": "anti-extension",
+        "difficulty": 3,
+        "risk_level": 2,
+        "equipment": [
+            "ab-wheel"
+        ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 0.5,
+        "max_additional_load_kg": null,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 6,
+            "reps_max": 12
+        },
+        "muscles_primary": [
+            "abs",
+            "core"
+        ],
+        "muscles_secondary": [
+            "lats",
+            "shoulders"
+        ],
+        "muscle_load_profile": {
+            "abs": 0.5,
+            "core": 0.3,
+            "lats": 0.1,
+            "shoulders": 0.1
+        }
+    },
+    {
+        "slug": "side-plank",
+        "name": "Side Plank",
+        "movement_pattern": "anti-lateral-flexion",
+        "difficulty": 2,
         "risk_level": 1,
         "equipment": [
             "bodyweight"
         ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 0.35,
+        "max_additional_load_kg": null,
+        "measurement_type": "duration",
+        "prescription": {
+            "sets": 3,
+            "seconds_min": 15,
+            "seconds_max": 60,
+            "per_side": true
+        },
         "muscles_primary": [
+            "obliques",
+            "core"
+        ],
+        "muscles_secondary": [
+            "glutes"
+        ],
+        "muscle_load_profile": {
+            "obliques": 0.55,
+            "core": 0.3,
+            "glutes": 0.15
+        }
+    },
+    {
+        "slug": "side-plank-hip-dip",
+        "name": "Side Plank Hip Dip",
+        "movement_pattern": "core",
+        "difficulty": 2,
+        "risk_level": 1,
+        "equipment": [
+            "bodyweight"
+        ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 0.35,
+        "max_additional_load_kg": null,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 8,
+            "reps_max": 15,
+            "per_side": true
+        },
+        "muscles_primary": [
+            "obliques",
+            "core"
+        ],
+        "muscles_secondary": [
+            "glutes"
+        ],
+        "muscle_load_profile": {
+            "obliques": 0.65,
+            "core": 0.2,
+            "glutes": 0.15
+        }
+    },
+    {
+        "slug": "suitcase-carry",
+        "name": "Suitcase Carry",
+        "movement_pattern": "carry",
+        "difficulty": 2,
+        "risk_level": 1,
+        "equipment": [
+            "dumbbells"
+        ],
+        "load_type": "external",
+        "max_additional_load_kg": 60,
+        "measurement_type": "duration",
+        "prescription": {
+            "sets": 3,
+            "seconds_min": 20,
+            "seconds_max": 45,
+            "per_side": true
+        },
+        "muscles_primary": [
+            "obliques",
+            "core"
+        ],
+        "muscles_secondary": [
+            "forearms",
+            "traps"
+        ],
+        "muscle_load_profile": {
+            "obliques": 0.4,
+            "core": 0.3,
+            "forearms": 0.2,
+            "traps": 0.1
+        }
+    },
+    {
+        "slug": "bird-dog",
+        "name": "Bird Dog",
+        "movement_pattern": "anti-rotation",
+        "difficulty": 1,
+        "risk_level": 1,
+        "equipment": [
+            "bodyweight"
+        ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 0.2,
+        "max_additional_load_kg": null,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 8,
+            "reps_max": 12,
+            "per_side": true
+        },
+        "muscles_primary": [
+            "core",
             "lower-back"
         ],
         "muscles_secondary": [
             "glutes"
         ],
-        "max_additional_load_kg": 20,
         "muscle_load_profile": {
-            "lower-back": 0.7,
-            "glutes": 0.3
+            "core": 0.4,
+            "lower-back": 0.35,
+            "glutes": 0.25
         }
     },
     {
-        "name": "Pallof Press",
-        "slug": "pallof-press",
-        "difficulty": 3,
-        "movement_pattern": "core",
+        "slug": "plank-shoulder-tap",
+        "name": "Plank Shoulder Tap",
+        "movement_pattern": "anti-rotation",
+        "difficulty": 2,
         "risk_level": 1,
         "equipment": [
-            "machine"
+            "bodyweight"
         ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 0.5,
+        "max_additional_load_kg": null,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 8,
+            "reps_max": 16,
+            "per_side": true
+        },
         "muscles_primary": [
+            "core",
+            "obliques"
+        ],
+        "muscles_secondary": [
+            "shoulders",
+            "triceps"
+        ],
+        "muscle_load_profile": {
+            "core": 0.45,
+            "obliques": 0.3,
+            "shoulders": 0.15,
+            "triceps": 0.1
+        }
+    },
+    {
+        "slug": "pallof-press",
+        "name": "Pallof Press",
+        "movement_pattern": "anti-rotation",
+        "difficulty": 2,
+        "risk_level": 1,
+        "equipment": [
+            "cable"
+        ],
+        "load_type": "cable",
+        "max_additional_load_kg": 40,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 8,
+            "reps_max": 12,
+            "per_side": true
+        },
+        "muscles_primary": [
+            "core",
+            "obliques"
+        ],
+        "muscles_secondary": [
+            "shoulders"
+        ],
+        "muscle_load_profile": {
+            "core": 0.5,
+            "obliques": 0.4,
+            "shoulders": 0.1
+        }
+    },
+    {
+        "slug": "bicycle-crunch",
+        "name": "Bicycle Crunch",
+        "movement_pattern": "rotation",
+        "difficulty": 1,
+        "risk_level": 1,
+        "equipment": [
+            "bodyweight"
+        ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 0.3,
+        "max_additional_load_kg": null,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 10,
+            "reps_max": 20,
+            "per_side": true
+        },
+        "muscles_primary": [
+            "obliques",
+            "abs"
+        ],
+        "muscles_secondary": [
+            "hip-flexors"
+        ],
+        "muscle_load_profile": {
+            "obliques": 0.5,
+            "abs": 0.4,
+            "hip-flexors": 0.1
+        }
+    },
+    {
+        "slug": "russian-twist",
+        "name": "Russian Twist",
+        "movement_pattern": "rotation",
+        "difficulty": 2,
+        "risk_level": 2,
+        "equipment": [
+            "bodyweight"
+        ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 0.3,
+        "max_additional_load_kg": 20,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 10,
+            "reps_max": 20,
+            "per_side": true
+        },
+        "muscles_primary": [
+            "obliques",
+            "abs"
+        ],
+        "muscles_secondary": [
+            "hip-flexors"
+        ],
+        "muscle_load_profile": {
+            "obliques": 0.6,
+            "abs": 0.3,
+            "hip-flexors": 0.1
+        }
+    },
+    {
+        "slug": "cable-woodchop",
+        "name": "Cable Woodchop",
+        "movement_pattern": "rotation",
+        "difficulty": 2,
+        "risk_level": 1,
+        "equipment": [
+            "cable"
+        ],
+        "load_type": "cable",
+        "max_additional_load_kg": 50,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 8,
+            "reps_max": 12,
+            "per_side": true
+        },
+        "muscles_primary": [
+            "obliques",
             "core"
+        ],
+        "muscles_secondary": [
+            "shoulders"
+        ],
+        "muscle_load_profile": {
+            "obliques": 0.6,
+            "core": 0.25,
+            "shoulders": 0.15
+        }
+    },
+    {
+        "slug": "medicine-ball-rotational-throw",
+        "name": "Medicine Ball Rotational Throw",
+        "movement_pattern": "rotation",
+        "difficulty": 2,
+        "risk_level": 1,
+        "equipment": [
+            "medicine-ball"
+        ],
+        "load_type": "external",
+        "max_additional_load_kg": 10,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 6,
+            "reps_max": 10,
+            "per_side": true
+        },
+        "muscles_primary": [
+            "obliques",
+            "core"
+        ],
+        "muscles_secondary": [
+            "shoulders",
+            "glutes"
+        ],
+        "muscle_load_profile": {
+            "obliques": 0.55,
+            "core": 0.25,
+            "shoulders": 0.1,
+            "glutes": 0.1
+        }
+    },
+    {
+        "slug": "crunches",
+        "name": "Crunch",
+        "movement_pattern": "core",
+        "difficulty": 1,
+        "risk_level": 1,
+        "equipment": [
+            "bodyweight"
+        ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 0.3,
+        "max_additional_load_kg": null,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 12,
+            "reps_max": 25
+        },
+        "muscles_primary": [
+            "abs"
         ],
         "muscles_secondary": [
             "obliques"
         ],
-        "max_additional_load_kg": 80,
         "muscle_load_profile": {
-            "core": 0.6,
-            "obliques": 0.4
+            "abs": 0.85,
+            "obliques": 0.15
         }
     },
     {
-        "name": "Cable Crunch",
-        "slug": "cable-crunch",
-        "difficulty": 3,
+        "slug": "reverse-crunch",
+        "name": "Reverse Crunch",
         "movement_pattern": "core",
-        "risk_level": 2,
+        "difficulty": 1,
+        "risk_level": 1,
         "equipment": [
-            "machine"
+            "bodyweight"
         ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 0.3,
+        "max_additional_load_kg": null,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 10,
+            "reps_max": 20
+        },
         "muscles_primary": [
             "abs"
         ],
-        "muscles_secondary": [],
-        "max_additional_load_kg": 100,
+        "muscles_secondary": [
+            "hip-flexors"
+        ],
         "muscle_load_profile": {
-            "abs": 1.0
+            "abs": 0.8,
+            "hip-flexors": 0.2
+        }
+    },
+    {
+        "slug": "sit-up",
+        "name": "Sit-Up",
+        "movement_pattern": "core",
+        "difficulty": 1,
+        "risk_level": 1,
+        "equipment": [
+            "bodyweight"
+        ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 0.35,
+        "max_additional_load_kg": null,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 10,
+            "reps_max": 20
+        },
+        "muscles_primary": [
+            "abs",
+            "hip-flexors"
+        ],
+        "muscles_secondary": [
+            "obliques"
+        ],
+        "muscle_load_profile": {
+            "abs": 0.6,
+            "hip-flexors": 0.3,
+            "obliques": 0.1
+        }
+    },
+    {
+        "slug": "v-up",
+        "name": "V-Up",
+        "movement_pattern": "core",
+        "difficulty": 3,
+        "risk_level": 1,
+        "equipment": [
+            "bodyweight"
+        ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 0.4,
+        "max_additional_load_kg": null,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 8,
+            "reps_max": 15
+        },
+        "muscles_primary": [
+            "abs",
+            "hip-flexors"
+        ],
+        "muscles_secondary": [
+            "core"
+        ],
+        "muscle_load_profile": {
+            "abs": 0.6,
+            "hip-flexors": 0.3,
+            "core": 0.1
+        }
+    },
+    {
+        "slug": "lying-leg-raise",
+        "name": "Lying Leg Raise",
+        "movement_pattern": "core",
+        "difficulty": 2,
+        "risk_level": 1,
+        "equipment": [
+            "bodyweight"
+        ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 0.35,
+        "max_additional_load_kg": null,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 8,
+            "reps_max": 15
+        },
+        "muscles_primary": [
+            "abs",
+            "hip-flexors"
+        ],
+        "muscles_secondary": [
+            "core"
+        ],
+        "muscle_load_profile": {
+            "abs": 0.55,
+            "hip-flexors": 0.3,
+            "core": 0.15
+        }
+    },
+    {
+        "slug": "flutter-kicks",
+        "name": "Flutter Kicks",
+        "movement_pattern": "core",
+        "difficulty": 1,
+        "risk_level": 1,
+        "equipment": [
+            "bodyweight"
+        ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 0.3,
+        "max_additional_load_kg": null,
+        "measurement_type": "duration",
+        "prescription": {
+            "sets": 3,
+            "seconds_min": 20,
+            "seconds_max": 40
+        },
+        "muscles_primary": [
+            "abs",
+            "hip-flexors"
+        ],
+        "muscles_secondary": [
+            "quads"
+        ],
+        "muscle_load_profile": {
+            "abs": 0.45,
+            "hip-flexors": 0.4,
+            "quads": 0.15
+        }
+    },
+    {
+        "slug": "hanging-knee-raise",
+        "name": "Hanging Knee Raise",
+        "movement_pattern": "core",
+        "difficulty": 2,
+        "risk_level": 1,
+        "equipment": [
+            "bar"
+        ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 0.4,
+        "max_additional_load_kg": null,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 8,
+            "reps_max": 15
+        },
+        "muscles_primary": [
+            "abs",
+            "hip-flexors"
+        ],
+        "muscles_secondary": [
+            "forearms",
+            "obliques"
+        ],
+        "muscle_load_profile": {
+            "abs": 0.55,
+            "hip-flexors": 0.25,
+            "forearms": 0.1,
+            "obliques": 0.1
+        }
+    },
+    {
+        "slug": "hanging-leg-raise",
+        "name": "Hanging Leg Raise",
+        "movement_pattern": "core",
+        "difficulty": 3,
+        "risk_level": 2,
+        "equipment": [
+            "bar"
+        ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 0.5,
+        "max_additional_load_kg": 10,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 6,
+            "reps_max": 12
+        },
+        "muscles_primary": [
+            "abs",
+            "hip-flexors"
+        ],
+        "muscles_secondary": [
+            "forearms",
+            "obliques"
+        ],
+        "muscle_load_profile": {
+            "abs": 0.5,
+            "hip-flexors": 0.3,
+            "forearms": 0.1,
+            "obliques": 0.1
+        }
+    },
+    {
+        "slug": "cable-crunch",
+        "name": "Cable Crunch",
+        "movement_pattern": "core",
+        "difficulty": 2,
+        "risk_level": 1,
+        "equipment": [
+            "cable"
+        ],
+        "load_type": "cable",
+        "max_additional_load_kg": 100,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 10,
+            "reps_max": 15
+        },
+        "muscles_primary": [
+            "abs"
+        ],
+        "muscles_secondary": [
+            "obliques"
+        ],
+        "muscle_load_profile": {
+            "abs": 0.9,
+            "obliques": 0.1
         }
     }
 ]

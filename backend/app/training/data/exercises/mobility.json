@@ -1,243 +1,548 @@
 [
     {
-        "name": "Нахили шиї",
         "slug": "neck-tilts",
-        "difficulty": 1,
+        "name": "Neck Tilts",
         "movement_pattern": "mobility",
+        "difficulty": 1,
         "risk_level": 1,
         "equipment": [
             "bodyweight"
         ],
+        "load_type": "none",
+        "max_additional_load_kg": null,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 2,
+            "reps_min": 8,
+            "reps_max": 12,
+            "per_side": true
+        },
         "muscles_primary": [
             "neck"
         ],
         "muscles_secondary": [],
-        "max_additional_load_kg": 0,
         "muscle_load_profile": {
             "neck": 1.0
         }
     },
     {
-        "name": "Колові рухи плечима",
         "slug": "shoulder-circles",
-        "difficulty": 1,
+        "name": "Shoulder Circles",
         "movement_pattern": "mobility",
+        "difficulty": 1,
         "risk_level": 1,
         "equipment": [
             "bodyweight"
         ],
+        "load_type": "none",
+        "max_additional_load_kg": null,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 2,
+            "reps_min": 10,
+            "reps_max": 15
+        },
         "muscles_primary": [
             "shoulders"
         ],
-        "muscles_secondary": [],
-        "max_additional_load_kg": 0,
+        "muscles_secondary": [
+            "traps"
+        ],
         "muscle_load_profile": {
-            "shoulders": 1.0
+            "shoulders": 0.8,
+            "traps": 0.2
         }
     },
     {
-        "name": "Колові рухи руками",
         "slug": "arm-circles",
-        "difficulty": 1,
+        "name": "Arm Circles",
         "movement_pattern": "mobility",
+        "difficulty": 1,
         "risk_level": 1,
         "equipment": [
             "bodyweight"
         ],
+        "load_type": "none",
+        "max_additional_load_kg": null,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 2,
+            "reps_min": 10,
+            "reps_max": 20
+        },
         "muscles_primary": [
             "shoulders"
         ],
         "muscles_secondary": [
             "upper-back"
         ],
-        "max_additional_load_kg": 0,
         "muscle_load_profile": {
-            "shoulders": 0.7,
-            "upper-back": 0.3
+            "shoulders": 0.8,
+            "upper-back": 0.2
         }
     },
     {
-        "name": "Кішка-корова",
-        "slug": "cat-cow",
-        "difficulty": 1,
+        "slug": "band-shoulder-dislocate",
+        "name": "Band Shoulder Dislocate",
         "movement_pattern": "mobility",
+        "difficulty": 1,
+        "risk_level": 1,
+        "equipment": [
+            "band"
+        ],
+        "load_type": "band",
+        "max_additional_load_kg": null,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 2,
+            "reps_min": 10,
+            "reps_max": 15
+        },
+        "muscles_primary": [
+            "shoulders"
+        ],
+        "muscles_secondary": [
+            "chest",
+            "upper-back"
+        ],
+        "muscle_load_profile": {
+            "shoulders": 0.7,
+            "chest": 0.15,
+            "upper-back": 0.15
+        }
+    },
+    {
+        "slug": "cat-cow",
+        "name": "Cat-Cow",
+        "movement_pattern": "mobility",
+        "difficulty": 1,
         "risk_level": 1,
         "equipment": [
             "bodyweight"
         ],
+        "load_type": "none",
+        "max_additional_load_kg": null,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 2,
+            "reps_min": 8,
+            "reps_max": 12
+        },
         "muscles_primary": [
-            "spine"
+            "lower-back",
+            "upper-back"
         ],
         "muscles_secondary": [
             "core"
         ],
-        "max_additional_load_kg": 0,
         "muscle_load_profile": {
-            "spine": 0.8,
+            "lower-back": 0.5,
+            "upper-back": 0.3,
             "core": 0.2
         }
     },
     {
-        "name": "Thread the Needle",
         "slug": "thread-the-needle",
-        "difficulty": 1,
+        "name": "Thread the Needle",
         "movement_pattern": "mobility",
+        "difficulty": 1,
         "risk_level": 1,
         "equipment": [
             "bodyweight"
         ],
+        "load_type": "none",
+        "max_additional_load_kg": null,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 2,
+            "reps_min": 6,
+            "reps_max": 10,
+            "per_side": true
+        },
         "muscles_primary": [
             "upper-back"
         ],
         "muscles_secondary": [
             "shoulders"
         ],
-        "max_additional_load_kg": 0,
         "muscle_load_profile": {
             "upper-back": 0.7,
             "shoulders": 0.3
         }
     },
     {
-        "name": "Повороти грудного відділу",
         "slug": "thoracic-rotation",
-        "difficulty": 1,
+        "name": "Thoracic Rotation",
         "movement_pattern": "mobility",
+        "difficulty": 1,
         "risk_level": 1,
         "equipment": [
             "bodyweight"
         ],
+        "load_type": "none",
+        "max_additional_load_kg": null,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 2,
+            "reps_min": 8,
+            "reps_max": 12,
+            "per_side": true
+        },
         "muscles_primary": [
-            "spine"
+            "upper-back"
         ],
         "muscles_secondary": [
+            "obliques",
             "core"
         ],
-        "max_additional_load_kg": 0,
         "muscle_load_profile": {
-            "spine": 0.75,
-            "core": 0.25
+            "upper-back": 0.6,
+            "obliques": 0.25,
+            "core": 0.15
         }
     },
     {
-        "name": "Розтягування грудних",
-        "slug": "chest-stretch",
-        "difficulty": 1,
+        "slug": "worlds-greatest-stretch",
+        "name": "World's Greatest Stretch",
         "movement_pattern": "mobility",
+        "difficulty": 2,
         "risk_level": 1,
         "equipment": [
             "bodyweight"
         ],
+        "load_type": "none",
+        "max_additional_load_kg": null,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 2,
+            "reps_min": 4,
+            "reps_max": 8,
+            "per_side": true
+        },
+        "muscles_primary": [
+            "hip-flexors",
+            "hamstrings"
+        ],
+        "muscles_secondary": [
+            "glutes",
+            "upper-back"
+        ],
+        "muscle_load_profile": {
+            "hip-flexors": 0.35,
+            "hamstrings": 0.25,
+            "glutes": 0.2,
+            "upper-back": 0.2
+        }
+    },
+    {
+        "slug": "hip-90-90-switch",
+        "name": "90/90 Hip Switch",
+        "movement_pattern": "mobility",
+        "difficulty": 1,
+        "risk_level": 1,
+        "equipment": [
+            "bodyweight"
+        ],
+        "load_type": "none",
+        "max_additional_load_kg": null,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 2,
+            "reps_min": 6,
+            "reps_max": 10,
+            "per_side": true
+        },
+        "muscles_primary": [
+            "glutes",
+            "hip-flexors"
+        ],
+        "muscles_secondary": [
+            "adductors"
+        ],
+        "muscle_load_profile": {
+            "glutes": 0.5,
+            "hip-flexors": 0.3,
+            "adductors": 0.2
+        }
+    },
+    {
+        "slug": "chest-stretch",
+        "name": "Chest Stretch",
+        "movement_pattern": "mobility",
+        "difficulty": 1,
+        "risk_level": 1,
+        "equipment": [
+            "bodyweight"
+        ],
+        "load_type": "none",
+        "max_additional_load_kg": null,
+        "measurement_type": "duration",
+        "prescription": {
+            "sets": 2,
+            "seconds_min": 20,
+            "seconds_max": 45,
+            "per_side": true
+        },
         "muscles_primary": [
             "chest"
         ],
         "muscles_secondary": [
             "shoulders"
         ],
-        "max_additional_load_kg": 0,
         "muscle_load_profile": {
             "chest": 0.8,
             "shoulders": 0.2
         }
     },
     {
-        "name": "Розтягування згиначів стегна",
         "slug": "hip-flexor-stretch",
-        "difficulty": 1,
+        "name": "Hip Flexor Stretch",
         "movement_pattern": "mobility",
+        "difficulty": 1,
         "risk_level": 1,
         "equipment": [
             "bodyweight"
         ],
+        "load_type": "none",
+        "max_additional_load_kg": null,
+        "measurement_type": "duration",
+        "prescription": {
+            "sets": 2,
+            "seconds_min": 30,
+            "seconds_max": 60,
+            "per_side": true
+        },
         "muscles_primary": [
             "hip-flexors"
         ],
         "muscles_secondary": [
             "quads"
         ],
-        "max_additional_load_kg": 0,
         "muscle_load_profile": {
-            "hip-flexors": 0.7,
-            "quads": 0.3
+            "hip-flexors": 0.75,
+            "quads": 0.25
         }
     },
     {
-        "name": "Розтягування задньої поверхні стегна",
         "slug": "hamstring-stretch",
-        "difficulty": 1,
+        "name": "Hamstring Stretch",
         "movement_pattern": "mobility",
+        "difficulty": 1,
         "risk_level": 1,
         "equipment": [
             "bodyweight"
         ],
+        "load_type": "none",
+        "max_additional_load_kg": null,
+        "measurement_type": "duration",
+        "prescription": {
+            "sets": 2,
+            "seconds_min": 30,
+            "seconds_max": 60
+        },
         "muscles_primary": [
             "hamstrings"
         ],
-        "muscles_secondary": [],
-        "max_additional_load_kg": 0,
+        "muscles_secondary": [
+            "calves"
+        ],
         "muscle_load_profile": {
-            "hamstrings": 1.0
+            "hamstrings": 0.85,
+            "calves": 0.15
         }
     },
     {
-        "name": "Розтягування квадрицепса",
         "slug": "quad-stretch",
-        "difficulty": 1,
+        "name": "Quad Stretch",
         "movement_pattern": "mobility",
+        "difficulty": 1,
         "risk_level": 1,
         "equipment": [
             "bodyweight"
         ],
+        "load_type": "none",
+        "max_additional_load_kg": null,
+        "measurement_type": "duration",
+        "prescription": {
+            "sets": 2,
+            "seconds_min": 30,
+            "seconds_max": 60,
+            "per_side": true
+        },
         "muscles_primary": [
             "quads"
         ],
-        "muscles_secondary": [],
-        "max_additional_load_kg": 0,
+        "muscles_secondary": [
+            "hip-flexors"
+        ],
         "muscle_load_profile": {
-            "quads": 1.0
+            "quads": 0.8,
+            "hip-flexors": 0.2
         }
     },
     {
-        "name": "Розтягування литок",
         "slug": "calf-stretch",
-        "difficulty": 1,
+        "name": "Calf Stretch",
         "movement_pattern": "mobility",
+        "difficulty": 1,
         "risk_level": 1,
         "equipment": [
             "bodyweight"
         ],
+        "load_type": "none",
+        "max_additional_load_kg": null,
+        "measurement_type": "duration",
+        "prescription": {
+            "sets": 2,
+            "seconds_min": 30,
+            "seconds_max": 60,
+            "per_side": true
+        },
         "muscles_primary": [
             "calves"
         ],
         "muscles_secondary": [],
-        "max_additional_load_kg": 0,
         "muscle_load_profile": {
             "calves": 1.0
         }
     },
     {
-        "name": "World's Greatest Stretch",
-        "slug": "worlds-greatest-stretch",
-        "difficulty": 2,
+        "slug": "pigeon-stretch",
+        "name": "Pigeon Stretch",
         "movement_pattern": "mobility",
+        "difficulty": 1,
         "risk_level": 1,
         "equipment": [
             "bodyweight"
         ],
+        "load_type": "none",
+        "max_additional_load_kg": null,
+        "measurement_type": "duration",
+        "prescription": {
+            "sets": 2,
+            "seconds_min": 30,
+            "seconds_max": 60,
+            "per_side": true
+        },
         "muscles_primary": [
-            "hip-flexors"
+            "glutes"
         ],
         "muscles_secondary": [
-            "hamstrings",
-            "glutes",
-            "core"
+            "hip-flexors"
         ],
-        "max_additional_load_kg": 0,
         "muscle_load_profile": {
-            "hip-flexors": 0.4,
-            "hamstrings": 0.25,
-            "glutes": 0.2,
-            "core": 0.15
+            "glutes": 0.8,
+            "hip-flexors": 0.2
+        }
+    },
+    {
+        "slug": "butterfly-stretch",
+        "name": "Butterfly Stretch",
+        "movement_pattern": "mobility",
+        "difficulty": 1,
+        "risk_level": 1,
+        "equipment": [
+            "bodyweight"
+        ],
+        "load_type": "none",
+        "max_additional_load_kg": null,
+        "measurement_type": "duration",
+        "prescription": {
+            "sets": 2,
+            "seconds_min": 30,
+            "seconds_max": 60
+        },
+        "muscles_primary": [
+            "adductors"
+        ],
+        "muscles_secondary": [],
+        "muscle_load_profile": {
+            "adductors": 1.0
+        }
+    },
+    {
+        "slug": "childs-pose",
+        "name": "Child's Pose",
+        "movement_pattern": "mobility",
+        "difficulty": 1,
+        "risk_level": 1,
+        "equipment": [
+            "bodyweight"
+        ],
+        "load_type": "none",
+        "max_additional_load_kg": null,
+        "measurement_type": "duration",
+        "prescription": {
+            "sets": 2,
+            "seconds_min": 30,
+            "seconds_max": 60
+        },
+        "muscles_primary": [
+            "lower-back",
+            "lats"
+        ],
+        "muscles_secondary": [],
+        "muscle_load_profile": {
+            "lower-back": 0.5,
+            "lats": 0.5
+        }
+    },
+    {
+        "slug": "downward-dog",
+        "name": "Downward Dog",
+        "movement_pattern": "mobility",
+        "difficulty": 1,
+        "risk_level": 1,
+        "equipment": [
+            "bodyweight"
+        ],
+        "load_type": "none",
+        "max_additional_load_kg": null,
+        "measurement_type": "duration",
+        "prescription": {
+            "sets": 2,
+            "seconds_min": 30,
+            "seconds_max": 60
+        },
+        "muscles_primary": [
+            "hamstrings",
+            "calves"
+        ],
+        "muscles_secondary": [
+            "shoulders"
+        ],
+        "muscle_load_profile": {
+            "hamstrings": 0.4,
+            "calves": 0.3,
+            "shoulders": 0.3
+        }
+    },
+    {
+        "slug": "cobra-stretch",
+        "name": "Cobra Stretch",
+        "movement_pattern": "mobility",
+        "difficulty": 1,
+        "risk_level": 1,
+        "equipment": [
+            "bodyweight"
+        ],
+        "load_type": "none",
+        "max_additional_load_kg": null,
+        "measurement_type": "duration",
+        "prescription": {
+            "sets": 2,
+            "seconds_min": 20,
+            "seconds_max": 45
+        },
+        "muscles_primary": [
+            "abs"
+        ],
+        "muscles_secondary": [
+            "hip-flexors"
+        ],
+        "muscle_load_profile": {
+            "abs": 0.7,
+            "hip-flexors": 0.3
         }
     }
 ]
