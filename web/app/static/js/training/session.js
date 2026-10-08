@@ -3,6 +3,7 @@ import { trainingStore } from "./store.js";
 import { renderWorkoutList } from "./workout.js";
 import { t } from "../i18n/index.js";
 import { isDurationExercise } from "./measurement.js";
+import { persistSessionId } from "./state.js";
 export function initSession() {
     const saveButton = document.getElementById("tr-save-workout");
     const titleInput = document.getElementById("tr-workout-title");
@@ -13,6 +14,8 @@ export function initSession() {
         async () => {
             const selected = trainingStore.workout.filter(item => item.done);
             const payload = {
+                // Re-saving today's workout updates the same session.
+                session_id: trainingStore.sessionId,
                 title: titleInput?.value ||
                     null,
                 exercises: selected.map(item => ({
@@ -30,6 +33,7 @@ export function initSession() {
                 const response = await TrainingAPI.completeSession(payload);
                 trainingStore.sessionId =
                     response.id;
+                persistSessionId(response.id);
                 showSavedToast();
                 trainingStore.workout.sort((a, b) => {
                     if (a.done &&

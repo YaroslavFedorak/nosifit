@@ -3,6 +3,8 @@ import { t } from "../i18n/index.js";
 import { defaultPrescription, isDurationExercise } from "./measurement.js";
 const STORAGE_KEY = "dashboard_training_exercises";
 const STORAGE_DATE_KEY = "dashboard_training_date";
+// Session created by today's first "save workout"; later saves update it.
+const STORAGE_SESSION_KEY = "dashboard_training_session_id";
 function getTodayKey() {
     const date = new Date();
     const year = date.getFullYear();
@@ -83,6 +85,7 @@ export function getDailyExercises() {
             getTodayKey()) {
             localStorage.removeItem(STORAGE_KEY);
             localStorage.removeItem(STORAGE_DATE_KEY);
+            localStorage.removeItem(STORAGE_SESSION_KEY);
             return [];
         }
         const raw = localStorage.getItem(STORAGE_KEY);
@@ -133,8 +136,30 @@ export function persistWorkout(exercises) {
         return;
     }
 }
+export function getDailySessionId() {
+    try {
+        if (localStorage.getItem(STORAGE_DATE_KEY) !== getTodayKey()) {
+            return null;
+        }
+        return localStorage.getItem(STORAGE_SESSION_KEY);
+    }
+    catch {
+        return null;
+    }
+}
+export function persistSessionId(sessionId) {
+    try {
+        localStorage.setItem(STORAGE_SESSION_KEY, String(sessionId));
+        localStorage.setItem(STORAGE_DATE_KEY, getTodayKey());
+    }
+    catch {
+        return;
+    }
+}
 export function initDailyState() {
     const saved = getDailyExercises();
+    trainingStore.sessionId =
+        getDailySessionId();
     trainingStore.workout =
         saved.map(item => {
             // Items saved before measurement types existed carry a stale
