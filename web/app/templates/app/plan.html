@@ -1,0 +1,15 @@
+{% extends "app/base_app.html" %}
+
+{% block title %}View Plan — NosiFit{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Training Plan</h1>
+    {% if plan.id %}
+        <h2>{{ plan.name }}</h2>
+        <p>Active training plan for your workouts.</p>
+    {% else %}
+        <p>No active training plan. Create one to get started.</p>
+    {% endif %}
+</div>
+{% endblock %}

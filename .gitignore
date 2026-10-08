@@ -1,0 +1,50 @@
+# --- ENVIRONMENT ---
+.env
+.env.*
+*.env
+!.env.example
+
+# --- PYTHON ---
+__pycache__/
+**/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pdb
+*.egg-info/
+*.egg
+*.log
+
+# --- VENV ---
+venv/
+.venv/
+env/
+ENV/
+
+# --- IDE / EDITORS ---
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# --- OS FILES ---
+.DS_Store
+Thumbs.db
+
+# --- FLASK / INSTANCE ---
+instance/
+*.sqlite3
+
+# --- CACHE ---
+.cache/
+*.cache
+
+# --- COMPILED ASSETS ---
+dist/
+build/
+
+# --- NODE / TYPESCRIPT ---
+node_modules/
+*.js.map
+*.d.ts
+tsconfig.tsbuildinfo

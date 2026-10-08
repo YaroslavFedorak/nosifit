@@ -1,0 +1,60 @@
+<div class="dashboard-recovery-modal-backdrop" id="habit-modal-backdrop" hidden>
+  <div
+    class="dashboard-recovery-modal dashboard-habit-modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="dashboard-habit-modal-title"
+  >
+    <div class="dashboard-habit-modal-header">
+      <span
+        class="dashboard-habit-modal-title"
+        id="dashboard-habit-modal-title"
+      >
+        {{ dashboard_t("recovery.habitModal.title") }}
+      </span>
+    </div>
+
+    <div class="dashboard-habit-sort-bar">
+      <button
+        class="dashboard-habit-sort-btn active"
+        type="button"
+        data-sort="points"
+      >
+        {{ dashboard_t("recovery.habitModal.sort.points") }}
+      </button>
+
+      <button
+        class="dashboard-habit-sort-btn"
+        type="button"
+        data-sort="category"
+      >
+        {{ dashboard_t("recovery.habitModal.sort.category") }}
+      </button>
+
+      <button class="dashboard-habit-sort-btn" type="button" data-sort="name">
+        {{ dashboard_t("recovery.habitModal.sort.name") }}
+      </button>
+    </div>
+
+    <div class="dashboard-habit-modal-list" id="habit-modal-list"></div>
+
+    <div class="dashboard-habit-footer">
+      <button
+        id="habit-back-btn"
+        class="dashboard-habit-back-btn"
+        type="button"
+      >
+        {{ dashboard_t("recovery.habitModal.back") }}
+      </button>
+
+      <button
+        id="save-habit"
+        class="dashboard-habit-save-btn"
+        type="button"
+        disabled
+      >
+        {{ dashboard_t("recovery.habitModal.save") }}
+      </button>
+    </div>
+  </div>
+</div>

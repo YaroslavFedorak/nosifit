@@ -1,0 +1,303 @@
+#tr-plan-modal .tr-modal-content.tr-plan-modern {
+    max-width: 780px;
+    padding: 22px 24px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.tr-plan-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+}
+
+.tr-plan-title-block {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.tr-plan-title-block h3 {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text);
+}
+
+.tr-plan-title-icon svg {
+    color: var(--accent);
+}
+
+.tr-plan-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.tr-plan-help-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--card-soft);
+    color: var(--text-muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+}
+
+.tr-plan-help-btn:hover {
+    background: var(--accent-soft);
+    color: #000;
+    border-color: var(--accent);
+}
+
+.tr-plan-help-popover {
+    margin-top: 4px;
+    padding: 12px 14px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    background: var(--card-soft);
+    font-size: 13px;
+    color: var(--text-muted);
+    display: none;
+}
+
+.tr-plan-help-popover.open {
+    display: block;
+}
+
+.tr-plan-help-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding-left: 18px;
+}
+
+.tr-plan-body {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.tr-plan-name-block {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.tr-plan-name-label {
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+.tr-plan-days {
+    display: flex;
+    gap: 8px;
+    padding: 6px;
+    border-radius: var(--radius-md);
+    background: var(--card-soft);
+    border: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 3;
+}
+
+.tr-plan-day {
+    flex: 1;
+    padding: 8px 10px;
+    border-radius: var(--radius-sm);
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--text);
+    font-size: 13px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: var(--transition);
+}
+
+.tr-plan-day span:first-child {
+    font-weight: 500;
+}
+
+.tr-plan-day-badge {
+    min-width: 18px;
+    height: 18px;
+    border-radius: 999px;
+    background: var(--accent-soft);
+    color: #000;
+    font-size: 11px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+.tr-plan-day-badge.visible {
+    display: flex;
+}
+
+.tr-plan-day:hover {
+    background: var(--card);
+    border-color: var(--border);
+}
+
+.tr-plan-day.active {
+    background: var(--accent-soft);
+    border-color: var(--accent);
+    color: #000;
+    box-shadow: 0 0 0 1px rgba(255, 212, 59, 0.35);
+}
+
+.tr-plan-column {
+    margin-top: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.tr-plan-toolbar {
+    position: sticky;
+    top: 48px;
+    z-index: 2;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 14px;
+    border-radius: var(--radius-md);
+    background: var(--card-soft);
+    border: 1px solid var(--border);
+}
+
+.tr-plan-toolbar-left {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.tr-plan-toolbar-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+}
+
+.tr-plan-toolbar-subtitle {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.tr-plan-exercises {
+    margin-top: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    max-height: min(55vh, 540px);
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+.tr-plan-empty {
+    margin-top: 10px;
+    padding: 18px 16px;
+    border-radius: var(--radius-md);
+    border: 1px dashed var(--border);
+    background: var(--card-soft);
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    text-align: center;
+}
+
+.tr-plan-empty.visible {
+    display: flex;
+}
+
+.tr-plan-empty-icon svg {
+    color: var(--accent);
+}
+
+.tr-plan-empty-text-main {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+}
+
+.tr-plan-empty-text-sub {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.tr-plan-footer {
+    margin-top: 4px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+
+.tr-plan-footer-summary {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.tr-plan-footer-actions {
+    display: flex;
+    gap: 8px;
+}
+
+#tr-plan-save {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+#tr-plan-save .btn-loader {
+    width: 16px;
+    height: 16px;
+    border-radius: 999px;
+    border: 2px solid #000;
+    border-top-color: transparent;
+    animation: trPlanSpinner 0.7s linear infinite;
+}
+
+.tr-plan-toast {
+    position: fixed;
+    bottom: 18px;
+    right: 18px;
+    padding: 10px 14px;
+    border-radius: var(--radius-md);
+    background: var(--accent-soft);
+    color: #000;
+    font-size: 13px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+    opacity: 0;
+    transform: translateY(8px);
+    pointer-events: none;
+    transition: opacity .18s ease, transform .18s ease;
+    z-index: 4000;
+}
+
+.tr-plan-toast.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+@keyframes trPlanSpinner {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}

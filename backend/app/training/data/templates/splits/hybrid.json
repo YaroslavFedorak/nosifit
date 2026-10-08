@@ -1,0 +1,85 @@
+{
+    "name": "Hybrid",
+    "days": {
+        "full_body": {
+            "name": "Full Body",
+            "exercises": [
+                {
+                    "id": "barbell-back-squat"
+                },
+                {
+                    "id": "bench-press"
+                },
+                {
+                    "id": "barbell-row"
+                },
+                {
+                    "id": "lateral-raises"
+                },
+                {
+                    "id": "bicep-curl"
+                },
+                {
+                    "id": "plank"
+                }
+            ]
+        },
+        "upper": {
+            "name": "Upper Body",
+            "exercises": [
+                {
+                    "id": "dumbbell-shoulder-press"
+                },
+                {
+                    "id": "lat-pulldown"
+                },
+                {
+                    "id": "incline-dumbbell-press"
+                },
+                {
+                    "id": "face-pull"
+                },
+                {
+                    "id": "tricep-pushdown"
+                }
+            ]
+        },
+        "lower": {
+            "name": "Lower Body",
+            "exercises": [
+                {
+                    "id": "romanian-deadlift"
+                },
+                {
+                    "id": "lunges"
+                },
+                {
+                    "id": "leg-press"
+                },
+                {
+                    "id": "calf-raise"
+                },
+                {
+                    "id": "glute-bridge"
+                }
+            ]
+        },
+        "core": {
+            "name": "Core",
+            "exercises": [
+                {
+                    "id": "plank"
+                },
+                {
+                    "id": "hanging-leg-raise"
+                },
+                {
+                    "id": "side-plank"
+                },
+                {
+                    "id": "back-extension"
+                }
+            ]
+        }
+    }
+}

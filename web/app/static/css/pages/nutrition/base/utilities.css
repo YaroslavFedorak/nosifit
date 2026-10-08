@@ -1,0 +1,31 @@
+.nutrition-page-wrapper h1,
+.nutrition-page-wrapper h2,
+.nutrition-page-wrapper h3,
+.nutrition-page-wrapper p {
+    margin: 0;
+}
+
+.nutrition-widget-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.nutrition-widget-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--nf-text-main);
+}
+
+.nutrition-widget-subtitle {
+    margin-top: 4px;
+    font-size: 13px;
+    color: var(--nf-text-muted);
+}
+
+@media (max-width: 560px) {
+    .nutrition-widget-header {
+        flex-direction: column;
+    }
+}

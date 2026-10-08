@@ -1,0 +1,47 @@
+<nav class="nav-root" aria-label="{{ common_t('navigation.menu') }}">
+  <div class="nav-left">
+    <a
+      href="{{ url_for('root.landing') }}"
+      class="nav-logo-link"
+      aria-label="NosiFit"
+    >
+      <img
+        src="{{ url_for('static', filename='img/brand/nosifit-lockup-on-dark.svg') }}"
+        class="nav-logo-img"
+        alt="NosiFit"
+      />
+    </a>
+
+    <div class="nav-links">
+      <a href="{{ url_for('root.landing') }}" class="nav-link">
+        {{ public_t("nav.home") }}
+      </a>
+      <a href="{{ url_for('public.about') }}" class="nav-link">
+        {{ public_t("nav.about") }}
+      </a>
+      <a href="{{ url_for('public.contact') }}" class="nav-link">
+        {{ public_t("nav.contact") }}
+      </a>
+      <a href="{{ url_for('public.demo') }}" class="nav-link">
+        {{ public_t("nav.demo") }}
+      </a>
+    </div>
+  </div>
+
+  <div class="nav-right">
+    <a
+      href="{{ url_for('auth.login') }}"
+      class="nav-btn nav-btn-login"
+      data-glow="yellow"
+    >
+      {{ public_t("nav.login") }}
+    </a>
+    <a
+      href="{{ url_for('auth.register') }}"
+      class="nav-btn nav-btn-register"
+      data-glow="yellow"
+    >
+      {{ public_t("nav.register") }}
+    </a>
+  </div>
+</nav>

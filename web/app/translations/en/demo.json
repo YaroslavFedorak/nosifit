@@ -1,0 +1,159 @@
+{
+    "hero": {
+        "eyebrow": "NosiFit Demo",
+        "title": "See how NosiFit brings training, nutrition and recovery together",
+        "lead": "This is a realistic NosiFit dashboard preview. It shows what you can log every day and how those entries become a clear picture of your current state.",
+        "badge": "Demo data only",
+        "cta": "Create account"
+    },
+    "dashboard": {
+        "eyebrow": "Daily overview",
+        "title": "Dashboard",
+        "dateLabel": "Today",
+        "date": "28 Sep",
+        "description": "This is not a collection of isolated mockups. It is one day in context: training, nutrition, recovery and balance history work together."
+    },
+    "scores": {
+        "balance": {
+            "label": "Daily balance",
+            "note": "stable day"
+        },
+        "training": {
+            "label": "Training",
+            "note": "moderate load"
+        },
+        "recovery": {
+            "label": "Recovery",
+            "note": "good state"
+        },
+        "nutrition": {
+            "label": "Nutrition",
+            "note": "goal nearly reached"
+        }
+    },
+    "heatmap": {
+        "eyebrow": "Activity",
+        "title": "Your rhythm over the last weeks",
+        "badge": "Daily balance",
+        "description": "Each cell shows the overall balance for a day. In the real dashboard, you can open a day to see training, recovery and nutrition details.",
+        "month1": "Aug",
+        "month2": "Sep",
+        "less": "Less",
+        "more": "More",
+        "months": {
+            "january": "Jan",
+            "february": "Feb",
+            "march": "Mar",
+            "april": "Apr",
+            "may": "May",
+            "june": "Jun",
+            "july": "Jul",
+            "august": "Aug",
+            "september": "Sep",
+            "october": "Oct",
+            "november": "Nov",
+            "december": "Dec"
+        }
+    },
+    "training": {
+        "eyebrow": "Training",
+        "title": "Today's workout",
+        "status": "Saved",
+        "plan": "Upper Body",
+        "duration": "42 min",
+        "load": "Load 64",
+        "progress": "Workout progress",
+        "description": "The session keeps the same structure as the real dashboard: exercises, sets, reps and load. The demo checkboxes are interactive."
+    },
+    "nutrition": {
+        "eyebrow": "Nutrition",
+        "title": "What you ate today",
+        "meal1": "Breakfast",
+        "meal1Food": "Oatmeal · banana · yogurt",
+        "meal2": "Lunch",
+        "meal2Food": "Rice · chicken · vegetables",
+        "meal3": "Dinner",
+        "meal3Food": "Pasta · tuna · salad",
+        "meal4": "Snack",
+        "meal4Food": "Fruit · nuts",
+        "protein": "Protein",
+        "carbs": "Carbs",
+        "fats": "Fats",
+        "water": "Water",
+        "description": "Meals open the same way as the dashboard widget: a compact summary first, then individual foods and macros.",
+        "waterGoal": "1 650 of 2 000 ml"
+    },
+    "recovery": {
+        "eyebrow": "Recovery",
+        "title": "Sleep and body state",
+        "sleep": "Sleep",
+        "sleepQuality": "good quality",
+        "energy": "Energy",
+        "energyStatus": "stable",
+        "stress": "Stress",
+        "stressValue": "Low",
+        "stressStatus": "no sharp changes",
+        "description": "Recovery is more than one number. NosiFit places sleep, energy and stress next to training load."
+    },
+    "habits": {
+        "eyebrow": "Recovery habits",
+        "title": "Daily actions",
+        "sleep": "Sleep on schedule",
+        "water": "Enough water",
+        "mobility": "Light mobility",
+        "recovery": "Recovery session",
+        "stress": "Screen-free rest",
+        "count": "4 / 5",
+        "description": "Habits turn recovery into concrete daily actions. You can toggle them in this demo."
+    },
+    "recommendation": {
+        "eyebrow": "Recommendation",
+        "title": "Keep today's intensity moderate",
+        "text": "Recent training load is stable and recovery looks good. You can train, but avoid a sudden increase in volume. After training, pay attention to sleep and hydration.",
+        "note": "The recommendation is based on the context of the day, not one metric."
+    },
+    "register": {
+        "eyebrow": "After registration",
+        "title": "These data become yours",
+        "text": "You can log your own workouts, meals, water, sleep and recovery habits. NosiFit brings them into one dashboard and shows how they change over time.",
+        "cta": "Start with NosiFit"
+    },
+    "guide": {
+        "eyebrow": "How it works",
+        "title": "One day — one clear picture",
+        "text": "NosiFit is not just a collection of numbers. You log the important parts of your day and the dashboard brings them into one context.",
+        "training": {
+            "title": "Log your workout",
+            "text": "Add exercises, sets and reps. The session shows what you actually did today and the load you received."
+        },
+        "nutrition": {
+            "title": "Track your nutrition",
+            "text": "Add meals, foods, water and weight. This gives you a view of the whole day instead of isolated meals."
+        },
+        "recovery": {
+            "title": "Support recovery",
+            "text": "Sleep and recovery habits help you understand whether your body is ready for the next training load."
+        },
+        "analysis": {
+            "title": "See the trend",
+            "text": "The heatmap turns individual days into a history. Open a day to connect training, recovery and nutrition."
+        }
+    },
+    "explainer": {
+        "eyebrow": "What happens inside",
+        "title": "Your data does not stay isolated",
+        "text": "As you regularly log training, food and recovery, NosiFit can show more than what happened today. It can make relationships between those inputs visible.",
+        "data": {
+            "title": "You log facts",
+            "text": "Exercises, meals, water, sleep and habits are simple entries you can add throughout the day."
+        },
+        "context": {
+            "title": "The dashboard adds context",
+            "text": "The system puts those entries together so training load, nutrition and recovery can be understood in one place."
+        },
+        "trend": {
+            "title": "The heatmap shows history",
+            "text": "Day by day, your balance becomes a history. That makes changes easier to notice than judging progress from a single day."
+        }
+    }
+}

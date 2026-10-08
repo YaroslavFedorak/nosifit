@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="{{ locale }}">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Підтвердження коду — NOSI FIT</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    {% include "components/brand_head.html" %}
+
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/auth/verify_email.css') }}"
+    />
+  </head>
+
+  <body>
+    <div class="bg"></div>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+
+    <div class="auth-card">
+      <div class="progress-wrapper">
+        <div class="progress-line">
+          <div class="progress-fill" style="width: 66%"></div>
+        </div>
+
+        <div class="progress-steps">
+          <div class="step completed" data-label="{{ auth_t("steps.account") }}"></div>
+
+          <div class="step active" data-label="{{ auth_t("steps.verification") }}"></div>
+
+          <div class="step" data-label="{{ auth_t("steps.profile") }}"></div>
+        </div>
+      </div>
+
+      <div class="top-center">
+        <div class="brand-compact">
+          <h1 class="brand-title">
+            <img src="{{ url_for('static', filename='img/brand/nosifit-lockup-on-dark.svg') }}" class="brand-logo" alt="NosiFit" />
+          </h1>
+        </div>
+
+        <h2 class="title">{{ auth_t("verify.title") }}</h2>
+
+        <p class="subtitle">
+          {{ auth_t("verify.subtitle", email=session.get('pending_email')) }}
+        </p>
+      </div>
+
+      {% if error %}
+      <div class="auth-error shake">{{ error }}</div>
+      {% endif %}
+
+      {% include "auth/_flashes.html" %}
+      <form method="POST" class="auth-form" id="verify-form">
+        <div class="field" data-anim>
+          <label>{{ auth_t("verify.code") }}</label>
+          <input
+            class="cmp-input code-input"
+            type="text"
+            name="code"
+            id="code-input"
+            maxlength="6"
+            placeholder="000000"
+            required
+          />
+        </div>
+
+        <div class="auth-actions">
+          <button class="btn-save" type="submit">{{ auth_t("verify.submit") }}</button>
+
+          <a
+            class="btn-back disabled"
+            id="resend-btn"
+            href="{{ url_for('email_verification.resend') }}"
+          >
+            {{ auth_t("verify.resend") }}
+          </a>
+        </div>
+
+        <p class="timer">
+          {{ auth_t("verify.timer") }} <span id="timer">30</span> сек
+        </p>
+      </form>
+    </div>
+
+    <script nonce="{{ csp_nonce() }}">
+      // autofocus
+      document.getElementById("code-input").focus();
+
+      // resend timer
+      let t = 30;
+      const timerEl = document.getElementById("timer");
+      const resendBtn = document.getElementById("resend-btn");
+
+      const interval = setInterval(() => {
+        t--;
+        timerEl.textContent = t;
+
+        if (t <= 0) {
+          clearInterval(interval);
+          resendBtn.classList.remove("disabled");
+          document.querySelector(".timer").style.display = "none";
+        }
+      }, 1000);
+
+      // shake if code too short
+      document.getElementById("verify-form").addEventListener("submit", (e) => {
+        const input = document.getElementById("code-input");
+        if (input.value.length < 6) {
+          e.preventDefault();
+          input.classList.add("shake");
+          setTimeout(() => input.classList.remove("shake"), 300);
+        }
+      });
+
+      // reveal animation
+      window.addEventListener("load", () => {
+        document.querySelectorAll("[data-anim]").forEach((el, i) => {
+          el.style.setProperty("--stagger", i * 60 + "ms");
+          el.classList.add("reveal");
+        });
+      });
+    </script>
+  </body>
+</html>

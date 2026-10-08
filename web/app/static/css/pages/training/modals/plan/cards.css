@@ -1,0 +1,204 @@
+.tr-plan-card {
+    position: relative;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+    background: var(--card);
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+    transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+}
+
+.tr-plan-card::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    border-radius: var(--radius-md) 0 0 var(--radius-md);
+    background: var(--accent);
+}
+
+.tr-plan-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.18);
+}
+
+.tr-plan-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+
+.tr-plan-card-header-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.tr-plan-ex-name {
+    background: transparent;
+    border: none;
+    padding: 0;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+    cursor: pointer;
+    text-align: left;
+    transition: var(--transition);
+}
+
+.tr-plan-ex-name:hover {
+    color: var(--accent);
+}
+
+.tr-plan-card-header-right {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.tr-plan-card-drag,
+.tr-plan-card-delete {
+    width: 34px;
+    height: 34px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--card-soft);
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: grab;
+    transition: var(--transition);
+}
+
+.tr-plan-card-drag:hover {
+    background: var(--accent-soft);
+    color: #000;
+    border-color: var(--accent);
+}
+
+.tr-plan-card-delete:hover {
+    background: #ffefef;
+    border-color: #ff7070;
+    color: #d11;
+}
+
+.tr-plan-card-body {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.tr-plan-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+/* LABEL ROW */
+.tr-plan-field-label-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.tr-plan-field-icon svg {
+    width: 16px;
+    height: 16px;
+    color: var(--text-muted);
+}
+
+.tr-plan-field-label {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.tr-input-inline {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    background: var(--surface-input);
+    border: 1px solid var(--border-input);
+    border-radius: var(--radius-md);
+    padding: 4px 6px;
+}
+
+.tr-input-field {
+    width: 40px;
+    background: transparent;
+    border: none;
+    color: var(--text);
+    font-size: 14px;
+    font-weight: 600;
+    text-align: center;
+}
+
+.tr-input-field[type="number"]::-webkit-outer-spin-button,
+.tr-input-field[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.tr-input-arrows {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.tr-arrow {
+    width: 14px;
+    height: 14px;
+    border-radius: 4px;
+    background: var(--surface-hover);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.tr-arrow-up::before,
+.tr-arrow-down::before {
+    content: "";
+    border: 5px solid transparent;
+}
+
+.tr-arrow-up::before {
+    border-bottom-color: var(--accent);
+}
+
+.tr-arrow-down::before {
+    border-top-color: var(--accent);
+}
+
+.tr-arrow:hover {
+    background: var(--accent-soft);
+}
+
+.tr-plan-card-dragging {
+    opacity: 0.6;
+    cursor: grabbing;
+}
+
+.tr-plan-card-drag-over {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 1px rgba(255, 212, 59, 0.35);
+}
+
+.tr-plan-counter-input[type="number"]::-webkit-inner-spin-button,
+.tr-plan-counter-input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.tr-plan-counter-input[type="number"] {
+    appearance: textfield;
+    -moz-appearance: textfield;
+}

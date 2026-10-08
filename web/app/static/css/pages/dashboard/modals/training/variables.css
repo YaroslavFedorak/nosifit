@@ -1,0 +1,27 @@
+.db-modal {
+    --db-modal-bg: #0b0e13;
+    --db-modal-card: #11141c;
+    --db-modal-card-soft: #1a1f27;
+    --db-modal-card-deep: #0f1218;
+
+    --db-modal-surface: #141414;
+    --db-modal-surface-hover: #181818;
+    --db-modal-surface-input: #1f1f1f;
+
+    --db-modal-border: #1f232d;
+    --db-modal-border-soft: #252a33;
+    --db-modal-border-input: #353942;
+
+    --db-modal-text: #ffffff;
+    --db-modal-text-muted: #8b8fa3;
+
+    --db-modal-accent: #ffd43b;
+    --db-modal-accent-soft: #ffe58f;
+
+    --db-modal-radius-lg: 14px;
+    --db-modal-radius-md: 10px;
+    --db-modal-radius-sm: 6px;
+
+    --db-modal-transition: 0.25s ease;
+    --db-modal-transition-fast: 0.18s ease;
+}

@@ -1,0 +1,198 @@
+:root {
+  --nf-content-max: 1440px;
+}
+
+.app-layout,
+.public-layout,
+.auth-layout {
+  min-height: 100vh;
+  position: relative;
+  isolation: isolate;
+  background: var(--nf-bg);
+  color: var(--nf-text-main);
+}
+
+.app-layout {
+  display: block;
+}
+
+.app-layout .core-sidebar-shell {
+  position: fixed;
+  inset: 0 auto 0 0;
+  z-index: 20;
+  width: var(--nf-sidebar-width);
+  min-width: var(--nf-sidebar-width);
+  height: 100vh;
+}
+
+.app-layout .main-content {
+  min-height: 100vh;
+  margin-left: var(--nf-sidebar-width);
+  width: calc(100% - var(--nf-sidebar-width));
+  position: relative;
+  z-index: 1;
+}
+
+.app-layout .page-content {
+  width: min(100%, var(--nf-content-max));
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 28px var(--nf-page-padding-x) 44px;
+  position: relative;
+  z-index: 1;
+}
+
+.public-layout .public-wrapper {
+  width: 100%;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.auth-layout .auth-wrapper {
+  width: min(100%, 720px);
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 40px 20px;
+  display: grid;
+  place-items: center;
+  position: relative;
+  z-index: 1;
+}
+
+/* Ambient background: three blurred solid lights.
+   They sit above the page background and below the UI. */
+.bg-glow-static,
+.bg-glow-dynamic {
+  position: fixed;
+  pointer-events: none;
+  z-index: 0;
+  border-radius: 50%;
+  transition:
+    background var(--nf-transition-slow),
+    opacity var(--nf-transition-slow),
+    transform var(--nf-transition-slow);
+}
+
+.bg-glow-static {
+  width: 520px;
+  height: 520px;
+  filter: blur(105px);
+  opacity: .34;
+}
+
+.bg-glow-static.glow-purple {
+  top: -155px;
+  left: -115px;
+  background: rgba(157, 123, 234, .92);
+}
+
+.bg-glow-static.glow-teal {
+  top: 8%;
+  right: -155px;
+  background: rgba(66, 199, 216, .78);
+}
+
+.bg-glow-static.glow-yellow {
+  right: 25%;
+  bottom: -235px;
+  background: rgba(244, 200, 74, .68);
+}
+
+.bg-glow-dynamic {
+  width: 300px;
+  height: 300px;
+  left: 45%;
+  top: 34%;
+  background: rgba(255, 255, 255, .45);
+  opacity: .07;
+  filter: blur(82px);
+  animation: nf-ambient-drift 18s ease-in-out infinite alternate;
+}
+
+/* The hovered card changes only one of the three lights. */
+.app-layout:has(.db-card:hover) .glow-yellow,
+.app-layout:has(.tr-card:hover) .glow-yellow,
+.app-layout:has(.widget-card:hover) .glow-yellow {
+  background: rgba(101, 214, 160, .72);
+  opacity: .27;
+}
+
+.app-layout:has(.db-card:hover) .glow-purple,
+.app-layout:has(.tr-card:hover) .glow-purple,
+.app-layout:has(.widget-card:hover) .glow-purple {
+  opacity: .22;
+}
+
+@keyframes nf-ambient-drift {
+  from {
+    transform: translate3d(-12px, -8px, 0) scale(1);
+    opacity: .055;
+  }
+  to {
+    transform: translate3d(14px, 10px, 0) scale(1.04);
+    opacity: .085;
+  }
+}
+
+.u-shell,
+.u-container {
+  width: min(100%, var(--nf-content-max));
+  margin-inline: auto;
+  padding-inline: var(--nf-page-padding-x);
+}
+
+.u-flex { display: flex; }
+
+.u-flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.u-gap-md { gap: 16px; }
+
+@media (max-width: 960px) {
+  .app-layout .core-sidebar-shell {
+    width: 220px;
+    min-width: 220px;
+  }
+
+  .app-layout .main-content {
+    margin-left: 220px;
+    width: calc(100% - 220px);
+  }
+
+  .app-layout .page-content {
+    padding-inline: 20px;
+  }
+}
+
+@media (max-width: 720px) {
+  .app-layout .core-sidebar-shell {
+    display: none;
+  }
+
+  .app-layout .main-content {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .app-layout .page-content {
+    padding: 20px 16px 32px;
+  }
+
+  .u-shell,
+  .u-container {
+    padding-inline: 16px;
+  }
+
+  .bg-glow-static {
+    width: 300px;
+    height: 300px;
+    filter: blur(90px);
+    opacity: .16;
+  }
+}

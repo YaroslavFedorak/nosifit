@@ -1,0 +1,50 @@
+.nutrition-page-wrapper {
+  width: min(100%, 1440px);
+  margin: 0 auto;
+  padding: 4px 0 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.nutrition-main-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(320px, .9fr);
+  gap: var(--nf-content-gap);
+  align-items: start;
+}
+
+.nutrition-left,
+.nutrition-right {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.nutrition-page .cmp-card {
+  background: var(--nf-surface);
+  border: 1px solid var(--nf-border-subtle);
+  border-radius: var(--nf-radius-lg);
+  box-shadow: var(--nf-shadow-sm);
+}
+
+.nutrition-page .cmp-card::before,
+.nutrition-page .cmp-card::after {
+  display: none;
+}
+
+.nutrition-page .cmp-card:hover {
+  border-color: var(--nf-border-strong);
+  background: var(--nf-surface-soft);
+}
+
+@media (max-width: 1180px) {
+  .nutrition-main-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 720px) {
+  .nutrition-page-wrapper { padding: 0 0 16px; gap: 16px; }
+  .nutrition-left,
+  .nutrition-right { gap: 14px; }
+}

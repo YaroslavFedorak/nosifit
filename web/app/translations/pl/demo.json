@@ -1,0 +1,159 @@
+{
+    "hero": {
+        "eyebrow": "Demo NosiFit",
+        "title": "Zobacz, jak NosiFit łączy trening, odżywianie i regenerację",
+        "lead": "To realistyczny podgląd panelu NosiFit. Pokazuje, co możesz zapisywać każdego dnia i jak dane tworzą czytelny obraz Twojego stanu.",
+        "badge": "Tylko dane demo",
+        "cta": "Utwórz konto"
+    },
+    "dashboard": {
+        "eyebrow": "Podsumowanie dnia",
+        "title": "Dashboard",
+        "dateLabel": "Dzisiaj",
+        "date": "28 wrz",
+        "description": "To nie jest zestaw osobnych makiet. To jeden dzień w kontekście: trening, odżywianie, regeneracja i historia bilansu działają razem."
+    },
+    "scores": {
+        "balance": {
+            "label": "Bilans dnia",
+            "note": "stabilny dzień"
+        },
+        "training": {
+            "label": "Trening",
+            "note": "umiarkowane obciążenie"
+        },
+        "recovery": {
+            "label": "Regeneracja",
+            "note": "dobry stan"
+        },
+        "nutrition": {
+            "label": "Odżywianie",
+            "note": "cel prawie osiągnięty"
+        }
+    },
+    "heatmap": {
+        "eyebrow": "Aktywność",
+        "title": "Twój rytm z ostatnich tygodni",
+        "badge": "Bilans dnia",
+        "description": "Każde pole pokazuje ogólny bilans dnia. W prawdziwym panelu możesz otworzyć dzień i zobaczyć trening, regenerację oraz odżywianie.",
+        "month1": "Sie",
+        "month2": "Wrz",
+        "less": "Mniej",
+        "more": "Więcej",
+        "months": {
+            "january": "Sty",
+            "february": "Lut",
+            "march": "Mar",
+            "april": "Kwi",
+            "may": "Maj",
+            "june": "Cze",
+            "july": "Lip",
+            "august": "Sie",
+            "september": "Wrz",
+            "october": "Paź",
+            "november": "Lis",
+            "december": "Gru"
+        }
+    },
+    "training": {
+        "eyebrow": "Trening",
+        "title": "Dzisiejszy trening",
+        "status": "Zapisano",
+        "plan": "Upper Body",
+        "duration": "42 min",
+        "load": "Obciążenie 64",
+        "progress": "Postęp treningu",
+        "description": "Sesja zachowuje strukturę prawdziwego panelu: ćwiczenia, serie, powtórzenia i obciążenie. Pola w demo są interaktywne."
+    },
+    "nutrition": {
+        "eyebrow": "Odżywianie",
+        "title": "Co zjedzono dzisiaj",
+        "meal1": "Śniadanie",
+        "meal1Food": "Owsianka · banan · jogurt",
+        "meal2": "Obiad",
+        "meal2Food": "Ryż · kurczak · warzywa",
+        "meal3": "Kolacja",
+        "meal3Food": "Makaron · tuńczyk · sałatka",
+        "meal4": "Przekąska",
+        "meal4Food": "Owoce · orzechy",
+        "protein": "Białko",
+        "carbs": "Węglowodany",
+        "fats": "Tłuszcze",
+        "water": "Woda",
+        "description": "Posiłki rozwijają się tak jak w panelu: najpierw podsumowanie, potem produkty i makroskładniki.",
+        "waterGoal": "1 650 z 2 000 ml"
+    },
+    "recovery": {
+        "eyebrow": "Regeneracja",
+        "title": "Sen i stan organizmu",
+        "sleep": "Sen",
+        "sleepQuality": "dobra jakość",
+        "energy": "Energia",
+        "energyStatus": "stabilna",
+        "stress": "Stres",
+        "stressValue": "Niski",
+        "stressStatus": "bez nagłych zmian",
+        "description": "Regeneracja to więcej niż jedna liczba. NosiFit pokazuje sen, energię i stres obok obciążenia treningowego."
+    },
+    "habits": {
+        "eyebrow": "Nawyki regeneracyjne",
+        "title": "Codzienne działania",
+        "sleep": "Sen zgodnie z planem",
+        "water": "Wystarczająco wody",
+        "mobility": "Lekka mobilność",
+        "recovery": "Sesja regeneracyjna",
+        "stress": "Odpoczynek bez ekranów",
+        "count": "4 / 5",
+        "description": "Nawyki zamieniają regenerację w konkretne codzienne działania. W demo możesz je przełączać."
+    },
+    "recommendation": {
+        "eyebrow": "Rekomendacja",
+        "title": "Utrzymaj dziś umiarkowaną intensywność",
+        "text": "Niedawne obciążenie treningowe jest stabilne, a regeneracja wygląda dobrze. Możesz trenować, ale unikaj nagłego zwiększania objętości. Po treningu zwróć uwagę na sen i nawodnienie.",
+        "note": "Rekomendacja wynika z kontekstu dnia, a nie z jednego wskaźnika."
+    },
+    "register": {
+        "eyebrow": "Po rejestracji",
+        "title": "Te dane będą Twoje",
+        "text": "Będziesz zapisywać własne treningi, posiłki, wodę, sen i nawyki regeneracyjne. NosiFit połączy je w jednym panelu i pokaże zmiany w czasie.",
+        "cta": "Zacznij z NosiFit"
+    },
+    "guide": {
+        "eyebrow": "Jak to działa",
+        "title": "Jeden dzień — jeden czytelny obraz",
+        "text": "NosiFit to nie tylko zbiór liczb. Zapisujesz najważniejsze elementy dnia, a panel łączy je w jeden kontekst.",
+        "training": {
+            "title": "Zapisz trening",
+            "text": "Dodawaj ćwiczenia, serie i powtórzenia. Sesja pokazuje, co naprawdę zrobiłeś dzisiaj i jakie obciążenie otrzymałeś."
+        },
+        "nutrition": {
+            "title": "Śledź odżywianie",
+            "text": "Dodawaj posiłki, produkty, wodę i wagę. Dzięki temu widzisz cały dzień, a nie pojedyncze posiłki."
+        },
+        "recovery": {
+            "title": "Dbaj o regenerację",
+            "text": "Sen i nawyki regeneracyjne pomagają zrozumieć, czy organizm jest gotowy na kolejne obciążenie."
+        },
+        "analysis": {
+            "title": "Obserwuj zmiany",
+            "text": "Heatmapa zamienia pojedyncze dni w historię. Otwórz dzień, aby połączyć trening, regenerację i odżywianie."
+        }
+    },
+    "explainer": {
+        "eyebrow": "Co dzieje się wewnątrz",
+        "title": "Twoje dane nie pozostają osobnymi wpisami",
+        "text": "Gdy regularnie zapisujesz trening, jedzenie i regenerację, NosiFit może pokazać więcej niż tylko dzisiejszy stan — może ujawnić zależności między danymi.",
+        "data": {
+            "title": "Zapisujesz fakty",
+            "text": "Ćwiczenia, posiłki, wodę, sen i nawyki dodajesz jako proste wpisy w ciągu dnia."
+        },
+        "context": {
+            "title": "Panel dodaje kontekst",
+            "text": "System łączy wpisy, dzięki czemu obciążenie treningowe, odżywianie i regenerację widać w jednym miejscu."
+        },
+        "trend": {
+            "title": "Heatmapa pokazuje historię",
+            "text": "Dzień po dniu bilans tworzy historię. Dzięki temu łatwiej zauważyć zmiany niż oceniać postęp na podstawie jednego dnia."
+        }
+    }
+}

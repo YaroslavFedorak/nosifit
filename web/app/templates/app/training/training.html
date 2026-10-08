@@ -1,0 +1,144 @@
+{% extends "app/base_app.html" %} {% block title %} {{ training_t("title") }} —
+Nosi Fit {% endblock %} {% block styles %} {{ super() }}
+
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/pages/training/training.css') }}"
+/>
+{% endblock %} {% block body_class %} training-page {% endblock %} {% block body
+%}
+
+<div class="training-page-wrapper">
+  <div class="training-header">
+    <div class="training-header-left">
+      <div class="training-header-icon-box">
+        <span class="training-header-icon" id="training-header-icon"></span>
+      </div>
+
+      <div class="training-header-text">
+        <h1 class="training-title">{{ training_t("title") }}</h1>
+
+        <div class="training-subtitle">{{ training_t("subtitle") }}</div>
+      </div>
+    </div>
+
+    <div class="training-header-right">
+      <div class="training-header-info">
+        <div class="training-header-label">{{ training_t("today") }}</div>
+
+        <div id="current-date" class="training-header-value"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="training-main-grid">
+    <div class="training-left">
+      <section class="tr-card tr-card-session">
+        <div class="tr-card-header">
+          <h3 class="tr-card-title">{{ training_t("todayWorkout") }}</h3>
+
+          <button id="tr-edit-plan" class="tr-btn tr-btn-primary" type="button">
+            {{ training_t("trainingPlan") }}
+          </button>
+        </div>
+
+        <div class="tr-session-info">
+          <input
+            id="tr-workout-title"
+            placeholder="{{ training_t('workoutName') }}"
+          />
+        </div>
+
+        <div class="tr-session-actions-compact">
+          <button
+            id="tr-add-exercise"
+            class="tr-btn tr-btn-secondary"
+            type="button"
+          >
+            + {{ training_t("addExercise") }}
+          </button>
+
+          <button
+            id="tr-save-workout"
+            class="tr-btn tr-btn-primary"
+            type="button"
+          >
+            {{ training_t("saveWorkout") }}
+          </button>
+        </div>
+
+        <div class="tr-session-exercise-box">
+          <div
+            id="tr-workout-exercise-list"
+            class="tr-session-exercise-list"
+          ></div>
+        </div>
+      </section>
+
+      <section class="tr-card tr-card-heatmap">
+        {% include "app/training/training_heatmap.html" %}
+      </section>
+    </div>
+
+    <div class="training-right">
+      <section class="tr-card tr-card-weekly-sets">
+        <div class="tr-card-header">
+          <h3 class="tr-card-title">{{ training_t("weeklySets.title") }}</h3>
+
+          <span class="tr-weekly-sets-period">
+            {{ training_t("weeklySets.period") }}
+          </span>
+        </div>
+
+        <div id="tr-weekly-sets-body" class="tr-weekly-sets-body" aria-busy="true">
+          <div class="tr-weekly-sets-loading">
+            {{ training_t("common.loading") }}…
+          </div>
+        </div>
+      </section>
+
+      <section class="tr-card tr-card-recommendations">
+        <div class="tr-rec-section">
+          <div class="tr-rec-section-title">
+            <span id="tr-icon-guidance"></span>
+
+            <span> {{ training_t("recommendations.training.guidance.heading") }} </span>
+          </div>
+
+          <div id="tr-guidance" class="tr-guidance" aria-live="polite"></div>
+        </div>
+
+        <div class="tr-rec-section">
+          <div class="tr-rec-section-title">
+            <span id="tr-icon-recommended"></span>
+
+            <span> {{ training_t("recommendedExercises") }} </span>
+          </div>
+
+          <div id="tr-rec-grid" class="tr-rec-line"></div>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+
+{% include "app/training/modals/training_exercise_modals.html" %} {% include
+"app/training/modals/training_misc_modals.html" %} {% include
+"app/training/modals/training_calendar_modal.html" %} {% include
+"app/training/modals/training_day_details_modal.html" %} {% include
+"app/training/modals/plan/modal.html" %}
+
+<script type="module" nonce="{{ csp_nonce() }}">
+  import { ICONS } from "/static/js/icons/index.js";
+
+  document.getElementById("tr-icon-guidance").innerHTML = ICONS.weak;
+  document.getElementById("tr-icon-recommended").innerHTML = ICONS.recommended;
+  document.getElementById("training-header-icon").innerHTML = ICONS.exercise;
+</script>
+
+<script
+  type="module"
+  src="{{ url_for('static', filename='js/training/main.js') }}"
+></script>
+
+{% endblock %}

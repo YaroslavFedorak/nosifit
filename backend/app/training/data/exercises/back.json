@@ -1,0 +1,805 @@
+[
+    {
+        "slug": "pull-ups",
+        "name": "Pull-Up",
+        "movement_pattern": "pull",
+        "difficulty": 3,
+        "risk_level": 2,
+        "equipment": [
+            "bar"
+        ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 0.95,
+        "max_additional_load_kg": 60,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 4,
+            "reps_max": 10
+        },
+        "muscles_primary": [
+            "lats"
+        ],
+        "muscles_secondary": [
+            "biceps",
+            "upper-back",
+            "forearms"
+        ],
+        "muscle_load_profile": {
+            "lats": 0.55,
+            "biceps": 0.2,
+            "upper-back": 0.15,
+            "forearms": 0.1
+        }
+    },
+    {
+        "slug": "chin-up",
+        "name": "Chin-Up",
+        "movement_pattern": "pull",
+        "difficulty": 3,
+        "risk_level": 2,
+        "equipment": [
+            "bar"
+        ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 0.95,
+        "max_additional_load_kg": 60,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 4,
+            "reps_max": 10
+        },
+        "muscles_primary": [
+            "lats",
+            "biceps"
+        ],
+        "muscles_secondary": [
+            "upper-back",
+            "forearms"
+        ],
+        "muscle_load_profile": {
+            "lats": 0.45,
+            "biceps": 0.3,
+            "upper-back": 0.15,
+            "forearms": 0.1
+        }
+    },
+    {
+        "slug": "eccentric-pull-up",
+        "name": "Eccentric Pull-Up",
+        "movement_pattern": "pull",
+        "difficulty": 2,
+        "risk_level": 1,
+        "equipment": [
+            "bar"
+        ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 0.95,
+        "max_additional_load_kg": null,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 3,
+            "reps_max": 6
+        },
+        "muscles_primary": [
+            "lats"
+        ],
+        "muscles_secondary": [
+            "biceps",
+            "upper-back",
+            "forearms"
+        ],
+        "muscle_load_profile": {
+            "lats": 0.55,
+            "biceps": 0.2,
+            "upper-back": 0.15,
+            "forearms": 0.1
+        }
+    },
+    {
+        "slug": "band-assisted-pull-up",
+        "name": "Band-Assisted Pull-Up",
+        "movement_pattern": "pull",
+        "difficulty": 2,
+        "risk_level": 1,
+        "equipment": [
+            "bar",
+            "band"
+        ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 0.65,
+        "max_additional_load_kg": null,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 5,
+            "reps_max": 10
+        },
+        "muscles_primary": [
+            "lats"
+        ],
+        "muscles_secondary": [
+            "biceps",
+            "upper-back",
+            "forearms"
+        ],
+        "muscle_load_profile": {
+            "lats": 0.55,
+            "biceps": 0.2,
+            "upper-back": 0.15,
+            "forearms": 0.1
+        }
+    },
+    {
+        "slug": "scapular-pull-up",
+        "name": "Scapular Pull-Up",
+        "movement_pattern": "pull",
+        "difficulty": 1,
+        "risk_level": 1,
+        "equipment": [
+            "bar"
+        ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 0.95,
+        "max_additional_load_kg": null,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 8,
+            "reps_max": 12
+        },
+        "muscles_primary": [
+            "lats",
+            "upper-back"
+        ],
+        "muscles_secondary": [
+            "traps",
+            "forearms"
+        ],
+        "muscle_load_profile": {
+            "lats": 0.35,
+            "upper-back": 0.35,
+            "traps": 0.2,
+            "forearms": 0.1
+        }
+    },
+    {
+        "slug": "inverted-row",
+        "name": "Inverted Row",
+        "movement_pattern": "pull",
+        "difficulty": 2,
+        "risk_level": 1,
+        "equipment": [
+            "bar"
+        ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 0.6,
+        "max_additional_load_kg": 20,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 8,
+            "reps_max": 15
+        },
+        "muscles_primary": [
+            "upper-back",
+            "lats"
+        ],
+        "muscles_secondary": [
+            "biceps",
+            "forearms"
+        ],
+        "muscle_load_profile": {
+            "upper-back": 0.45,
+            "lats": 0.25,
+            "biceps": 0.2,
+            "forearms": 0.1
+        }
+    },
+    {
+        "slug": "ring-row",
+        "name": "Ring Row",
+        "movement_pattern": "pull",
+        "difficulty": 1,
+        "risk_level": 1,
+        "equipment": [
+            "rings"
+        ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 0.55,
+        "max_additional_load_kg": null,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 8,
+            "reps_max": 15
+        },
+        "muscles_primary": [
+            "upper-back",
+            "lats"
+        ],
+        "muscles_secondary": [
+            "biceps",
+            "forearms"
+        ],
+        "muscle_load_profile": {
+            "upper-back": 0.45,
+            "lats": 0.25,
+            "biceps": 0.2,
+            "forearms": 0.1
+        }
+    },
+    {
+        "slug": "lat-pulldown",
+        "name": "Lat Pulldown",
+        "movement_pattern": "pull",
+        "difficulty": 1,
+        "risk_level": 1,
+        "equipment": [
+            "cable"
+        ],
+        "load_type": "cable",
+        "max_additional_load_kg": 150,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 8,
+            "reps_max": 12
+        },
+        "muscles_primary": [
+            "lats"
+        ],
+        "muscles_secondary": [
+            "biceps",
+            "upper-back",
+            "forearms"
+        ],
+        "muscle_load_profile": {
+            "lats": 0.55,
+            "biceps": 0.2,
+            "upper-back": 0.15,
+            "forearms": 0.1
+        }
+    },
+    {
+        "slug": "straight-arm-pulldown",
+        "name": "Straight-Arm Pulldown",
+        "movement_pattern": "isolation",
+        "difficulty": 1,
+        "risk_level": 1,
+        "equipment": [
+            "cable"
+        ],
+        "load_type": "cable",
+        "max_additional_load_kg": 60,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 10,
+            "reps_max": 15
+        },
+        "muscles_primary": [
+            "lats"
+        ],
+        "muscles_secondary": [
+            "triceps",
+            "core"
+        ],
+        "muscle_load_profile": {
+            "lats": 0.8,
+            "triceps": 0.1,
+            "core": 0.1
+        }
+    },
+    {
+        "slug": "seated-row",
+        "name": "Seated Cable Row",
+        "movement_pattern": "pull",
+        "difficulty": 1,
+        "risk_level": 1,
+        "equipment": [
+            "cable"
+        ],
+        "load_type": "cable",
+        "max_additional_load_kg": 150,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 8,
+            "reps_max": 12
+        },
+        "muscles_primary": [
+            "upper-back",
+            "lats"
+        ],
+        "muscles_secondary": [
+            "biceps",
+            "forearms"
+        ],
+        "muscle_load_profile": {
+            "upper-back": 0.4,
+            "lats": 0.35,
+            "biceps": 0.15,
+            "forearms": 0.1
+        }
+    },
+    {
+        "slug": "barbell-row",
+        "name": "Barbell Bent-Over Row",
+        "movement_pattern": "pull",
+        "difficulty": 3,
+        "risk_level": 3,
+        "equipment": [
+            "barbell"
+        ],
+        "load_type": "external",
+        "max_additional_load_kg": 180,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 6,
+            "reps_max": 10
+        },
+        "muscles_primary": [
+            "upper-back",
+            "lats"
+        ],
+        "muscles_secondary": [
+            "biceps",
+            "lower-back",
+            "forearms"
+        ],
+        "muscle_load_profile": {
+            "upper-back": 0.4,
+            "lats": 0.3,
+            "biceps": 0.12,
+            "lower-back": 0.1,
+            "forearms": 0.08
+        }
+    },
+    {
+        "slug": "dumbbell-row",
+        "name": "One-Arm Dumbbell Row",
+        "movement_pattern": "pull",
+        "difficulty": 1,
+        "risk_level": 1,
+        "equipment": [
+            "dumbbells",
+            "bench"
+        ],
+        "load_type": "external",
+        "max_additional_load_kg": 80,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 8,
+            "reps_max": 12,
+            "per_side": true
+        },
+        "muscles_primary": [
+            "lats",
+            "upper-back"
+        ],
+        "muscles_secondary": [
+            "biceps",
+            "forearms"
+        ],
+        "muscle_load_profile": {
+            "lats": 0.45,
+            "upper-back": 0.3,
+            "biceps": 0.15,
+            "forearms": 0.1
+        }
+    },
+    {
+        "slug": "chest-supported-row",
+        "name": "Chest-Supported Dumbbell Row",
+        "movement_pattern": "pull",
+        "difficulty": 1,
+        "risk_level": 1,
+        "equipment": [
+            "dumbbells",
+            "bench"
+        ],
+        "load_type": "external",
+        "max_additional_load_kg": 80,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 8,
+            "reps_max": 12
+        },
+        "muscles_primary": [
+            "upper-back",
+            "lats"
+        ],
+        "muscles_secondary": [
+            "biceps",
+            "forearms"
+        ],
+        "muscle_load_profile": {
+            "upper-back": 0.5,
+            "lats": 0.25,
+            "biceps": 0.15,
+            "forearms": 0.1
+        }
+    },
+    {
+        "slug": "t-bar-row",
+        "name": "Landmine T-Bar Row",
+        "movement_pattern": "pull",
+        "difficulty": 2,
+        "risk_level": 2,
+        "equipment": [
+            "landmine",
+            "barbell"
+        ],
+        "load_type": "external",
+        "max_additional_load_kg": 150,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 6,
+            "reps_max": 10
+        },
+        "muscles_primary": [
+            "upper-back",
+            "lats"
+        ],
+        "muscles_secondary": [
+            "biceps",
+            "lower-back",
+            "forearms"
+        ],
+        "muscle_load_profile": {
+            "upper-back": 0.45,
+            "lats": 0.3,
+            "biceps": 0.12,
+            "lower-back": 0.08,
+            "forearms": 0.05
+        }
+    },
+    {
+        "slug": "machine-row",
+        "name": "Machine Row",
+        "movement_pattern": "pull",
+        "difficulty": 1,
+        "risk_level": 1,
+        "equipment": [
+            "machine"
+        ],
+        "load_type": "machine",
+        "max_additional_load_kg": 150,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 8,
+            "reps_max": 12
+        },
+        "muscles_primary": [
+            "upper-back",
+            "lats"
+        ],
+        "muscles_secondary": [
+            "biceps",
+            "forearms"
+        ],
+        "muscle_load_profile": {
+            "upper-back": 0.45,
+            "lats": 0.3,
+            "biceps": 0.15,
+            "forearms": 0.1
+        }
+    },
+    {
+        "slug": "band-row",
+        "name": "Resistance Band Row",
+        "movement_pattern": "pull",
+        "difficulty": 1,
+        "risk_level": 1,
+        "equipment": [
+            "band"
+        ],
+        "load_type": "band",
+        "max_additional_load_kg": null,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 12,
+            "reps_max": 20
+        },
+        "muscles_primary": [
+            "upper-back",
+            "lats"
+        ],
+        "muscles_secondary": [
+            "biceps",
+            "forearms"
+        ],
+        "muscle_load_profile": {
+            "upper-back": 0.45,
+            "lats": 0.3,
+            "biceps": 0.15,
+            "forearms": 0.1
+        }
+    },
+    {
+        "slug": "renegade-row",
+        "name": "Renegade Row",
+        "movement_pattern": "pull",
+        "difficulty": 3,
+        "risk_level": 2,
+        "equipment": [
+            "dumbbells"
+        ],
+        "load_type": "external",
+        "max_additional_load_kg": 60,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 6,
+            "reps_max": 10,
+            "per_side": true
+        },
+        "muscles_primary": [
+            "upper-back",
+            "lats",
+            "core"
+        ],
+        "muscles_secondary": [
+            "biceps",
+            "forearms"
+        ],
+        "muscle_load_profile": {
+            "upper-back": 0.35,
+            "lats": 0.25,
+            "core": 0.25,
+            "biceps": 0.1,
+            "forearms": 0.05
+        }
+    },
+    {
+        "slug": "face-pull",
+        "name": "Face Pull",
+        "movement_pattern": "pull",
+        "difficulty": 1,
+        "risk_level": 1,
+        "equipment": [
+            "cable"
+        ],
+        "load_type": "cable",
+        "max_additional_load_kg": 50,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 12,
+            "reps_max": 20
+        },
+        "muscles_primary": [
+            "shoulders",
+            "upper-back"
+        ],
+        "muscles_secondary": [
+            "traps"
+        ],
+        "muscle_load_profile": {
+            "shoulders": 0.4,
+            "upper-back": 0.4,
+            "traps": 0.2
+        }
+    },
+    {
+        "slug": "band-pull-apart",
+        "name": "Band Pull-Apart",
+        "movement_pattern": "isolation",
+        "difficulty": 1,
+        "risk_level": 1,
+        "equipment": [
+            "band"
+        ],
+        "load_type": "band",
+        "max_additional_load_kg": null,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 15,
+            "reps_max": 25
+        },
+        "muscles_primary": [
+            "upper-back",
+            "shoulders"
+        ],
+        "muscles_secondary": [
+            "traps"
+        ],
+        "muscle_load_profile": {
+            "upper-back": 0.5,
+            "shoulders": 0.4,
+            "traps": 0.1
+        }
+    },
+    {
+        "slug": "prone-y-raise",
+        "name": "Prone Y Raise",
+        "movement_pattern": "isolation",
+        "difficulty": 1,
+        "risk_level": 1,
+        "equipment": [
+            "bodyweight"
+        ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 0.05,
+        "max_additional_load_kg": null,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 10,
+            "reps_max": 15
+        },
+        "muscles_primary": [
+            "upper-back",
+            "shoulders"
+        ],
+        "muscles_secondary": [
+            "traps"
+        ],
+        "muscle_load_profile": {
+            "upper-back": 0.45,
+            "shoulders": 0.35,
+            "traps": 0.2
+        }
+    },
+    {
+        "slug": "barbell-shrug",
+        "name": "Barbell Shrug",
+        "movement_pattern": "isolation",
+        "difficulty": 1,
+        "risk_level": 2,
+        "equipment": [
+            "barbell"
+        ],
+        "load_type": "external",
+        "max_additional_load_kg": 250,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 10,
+            "reps_max": 15
+        },
+        "muscles_primary": [
+            "traps"
+        ],
+        "muscles_secondary": [
+            "forearms"
+        ],
+        "muscle_load_profile": {
+            "traps": 0.85,
+            "forearms": 0.15
+        }
+    },
+    {
+        "slug": "dumbbell-shrug",
+        "name": "Dumbbell Shrug",
+        "movement_pattern": "isolation",
+        "difficulty": 1,
+        "risk_level": 1,
+        "equipment": [
+            "dumbbells"
+        ],
+        "load_type": "external",
+        "max_additional_load_kg": 100,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 10,
+            "reps_max": 15
+        },
+        "muscles_primary": [
+            "traps"
+        ],
+        "muscles_secondary": [
+            "forearms"
+        ],
+        "muscle_load_profile": {
+            "traps": 0.85,
+            "forearms": 0.15
+        }
+    },
+    {
+        "slug": "superman",
+        "name": "Superman",
+        "movement_pattern": "core",
+        "difficulty": 1,
+        "risk_level": 1,
+        "equipment": [
+            "bodyweight"
+        ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 0.3,
+        "max_additional_load_kg": null,
+        "measurement_type": "reps",
+        "prescription": {
+            "sets": 3,
+            "reps_min": 10,
+            "reps_max": 15
+        },
+        "muscles_primary": [
+            "lower-back",
+            "glutes"
+        ],
+        "muscles_secondary": [
+            "upper-back"
+        ],
+        "muscle_load_profile": {
+            "lower-back": 0.6,
+            "glutes": 0.25,
+            "upper-back": 0.15
+        }
+    },
+    {
+        "slug": "arch-hold",
+        "name": "Arch Body Hold",
+        "movement_pattern": "core",
+        "difficulty": 2,
+        "risk_level": 1,
+        "equipment": [
+            "bodyweight"
+        ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 0.35,
+        "max_additional_load_kg": null,
+        "measurement_type": "duration",
+        "prescription": {
+            "sets": 3,
+            "seconds_min": 15,
+            "seconds_max": 45
+        },
+        "muscles_primary": [
+            "lower-back",
+            "glutes"
+        ],
+        "muscles_secondary": [
+            "upper-back",
+            "hamstrings"
+        ],
+        "muscle_load_profile": {
+            "lower-back": 0.5,
+            "glutes": 0.25,
+            "upper-back": 0.15,
+            "hamstrings": 0.1
+        }
+    },
+    {
+        "slug": "dead-hang",
+        "name": "Dead Hang",
+        "movement_pattern": "pull",
+        "difficulty": 1,
+        "risk_level": 1,
+        "equipment": [
+            "bar"
+        ],
+        "load_type": "bodyweight",
+        "bodyweight_ratio": 1.0,
+        "max_additional_load_kg": 20,
+        "measurement_type": "duration",
+        "prescription": {
+            "sets": 3,
+            "seconds_min": 20,
+            "seconds_max": 60
+        },
+        "muscles_primary": [
+            "forearms"
+        ],
+        "muscles_secondary": [
+            "lats",
+            "shoulders"
+        ],
+        "muscle_load_profile": {
+            "forearms": 0.6,
+            "lats": 0.25,
+            "shoulders": 0.15
+        }
+    }
+]

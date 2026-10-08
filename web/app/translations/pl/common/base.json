@@ -1,0 +1,38 @@
+{
+  "actions": {
+    "save": "Zapisz",
+    "cancel": "Anuluj",
+    "close": "Zamknij",
+    "back": "Wstecz",
+    "continue": "Dalej",
+    "submit": "Zatwierdź",
+    "delete": "Usuń",
+    "edit": "Edytuj",
+    "confirm": "Potwierdź"
+  },
+  "status": {
+    "loading": "Ładowanie...",
+    "error": "Coś poszło nie tak"
+  },
+  "navigation": {
+    "home": "Strona główna",
+    "profile": "Profil",
+    "dashboard": "Dashboard",
+    "training": "Trening",
+    "equipment": "Sprzęt",
+    "nutrition": "Odżywianie",
+    "tracker": "Tracker",
+    "recovery": "Regeneracja",
+    "premium": "Premium",
+    "aboutApp": "O aplikacji",
+    "info": "O stronie",
+    "logout": "Wyloguj się",
+    "menu": "Menu główne"
+  },
+  "footer": {
+    "rights": "Wszelkie prawa zastrzeżone.",
+    "support": "Wsparcie",
+    "privacy": "Polityka prywatności",
+    "terms": "Warunki korzystania"
+  }
+}

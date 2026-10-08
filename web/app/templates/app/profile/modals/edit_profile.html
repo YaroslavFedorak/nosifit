@@ -1,0 +1,500 @@
+<div
+    class="profile-modal-backdrop"
+    id="modal-edit-profile"
+    aria-hidden="true"
+>
+    <div
+        class="profile-modal profile-modal-wide"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="edit-profile-title"
+    >
+
+        <div class="profile-modal-header">
+
+            <h2
+                class="profile-modal-title"
+                id="edit-profile-title"
+            >
+                {{ profile_t("editProfile.title") }}
+            </h2>
+
+            <button
+                type="button"
+                class="profile-modal-close"
+                data-modal-close
+                aria-label="{{ profile_t('modal.close') }}"
+            >
+                &times;
+            </button>
+
+        </div>
+
+        <form
+            method="post"
+            action="{{ url_for('profile_update.update_full') }}"
+        >
+
+            <div class="profile-modal-body">
+
+                <h3 class="profile-section-title">
+                    {{ profile_t("editProfile.accountInfo") }}
+                </h3>
+
+                <div class="profile-modal-grid">
+
+                    <div class="profile-field">
+
+                        <label
+                            class="profile-field-label"
+                            for="edit-username"
+                        >
+                            {{ profile_t("editProfile.username") }}
+                        </label>
+
+                        <input
+                            class="profile-input"
+                            id="edit-username"
+                            type="text"
+                            name="username"
+                            value="{{ user.username or '' }}"
+                            autocomplete="username"
+                        >
+
+                    </div>
+
+                    <div class="profile-field">
+
+                        <label
+                            class="profile-field-label"
+                            for="edit-email"
+                        >
+                            {{ profile_t("editProfile.email") }}
+                        </label>
+
+                        <input
+                            class="profile-input"
+                            id="edit-email"
+                            type="email"
+                            name="email"
+                            value="{{ user.email or '' }}"
+                            autocomplete="email"
+                            readonly
+                        >
+
+                    </div>
+
+                </div>
+
+                <h3 class="profile-section-title">
+                    {{ profile_t("editProfile.bodyParameters") }}
+                </h3>
+
+                <div class="profile-modal-grid">
+
+                    <div class="profile-field">
+
+                        <label
+                            class="profile-field-label"
+                            for="edit-age"
+                        >
+                            {{ profile_t("editProfile.age") }}
+                        </label>
+
+                        <input
+                            class="profile-input"
+                            id="edit-age"
+                            type="number"
+                            name="age"
+                            value="{{ profile.age if profile.age is not none else '' }}"
+                            min="1"
+                            max="120"
+                        >
+
+                    </div>
+
+                    <div class="profile-field">
+
+                        <label
+                            class="profile-field-label"
+                            for="edit-gender"
+                        >
+                            {{ profile_t("editProfile.gender") }}
+                        </label>
+
+                        <select
+                            class="profile-input"
+                            id="edit-gender"
+                            name="gender"
+                        >
+                            <option value="">
+                                {{ profile_t("editProfile.notSpecified") }}
+                            </option>
+
+                            <option
+                                value="male"
+                                {% if profile.gender == "male" %}selected{% endif %}
+                            >
+                                {{ profile_t("editProfile.male") }}
+                            </option>
+
+                            <option
+                                value="female"
+                                {% if profile.gender == "female" %}selected{% endif %}
+                            >
+                                {{ profile_t("editProfile.female") }}
+                            </option>
+                        </select>
+
+                    </div>
+
+                    <div class="profile-field">
+
+                        <label
+                            class="profile-field-label"
+                            for="edit-height"
+                        >
+                            {{ profile_t("editProfile.height") }}
+                        </label>
+
+                        <input
+                            class="profile-input"
+                            id="edit-height"
+                            type="number"
+                            name="height"
+                            value="{{ profile.height if profile.height is not none else '' }}"
+                            min="50"
+                            max="250"
+                        >
+
+                    </div>
+
+                    <div class="profile-field">
+
+                        <label
+                            class="profile-field-label"
+                            for="edit-weight"
+                        >
+                            {{ profile_t("editProfile.weight") }}
+                        </label>
+
+                        <input
+                            class="profile-input"
+                            id="edit-weight"
+                            type="number"
+                            name="weight"
+                            value="{{ profile.weight if profile.weight is not none else '' }}"
+                            min="20"
+                            max="400"
+                            step="0.1"
+                        >
+
+                    </div>
+
+                </div>
+
+                <h3 class="profile-section-title">
+                    {{ profile_t("editProfile.training") }}
+                </h3>
+
+                <div class="profile-modal-grid">
+
+                    <div class="profile-field">
+
+                        <label
+                            class="profile-field-label"
+                            for="edit-goal"
+                        >
+                            {{ profile_t("editProfile.goal") }}
+                        </label>
+
+                        <select
+                            class="profile-input"
+                            id="edit-goal"
+                            name="goal"
+                        >
+                            <option value="">
+                                {{ profile_t("editProfile.notSpecified") }}
+                            </option>
+
+                            <option
+                                value="maintenance"
+                                {% if profile.goal == "maintenance" %}selected{% endif %}
+                            >
+                                {{ profile_t("editProfile.maintenance") }}
+                            </option>
+
+                            <option
+                                value="strength"
+                                {% if profile.goal == "strength" %}selected{% endif %}
+                            >
+                                {{ profile_t("editProfile.strength") }}
+                            </option>
+
+                            <option
+                                value="muscle_gain"
+                                {% if profile.goal == "muscle_gain" %}selected{% endif %}
+                            >
+                                {{ profile_t("editProfile.muscleGain") }}
+                            </option>
+
+                            <option
+                                value="fat_loss"
+                                {% if profile.goal == "fat_loss" %}selected{% endif %}
+                            >
+                                {{ profile_t("editProfile.fatLoss") }}
+                            </option>
+                        </select>
+
+                    </div>
+
+                    <div class="profile-field">
+
+                        <label
+                            class="profile-field-label"
+                            for="edit-activity"
+                        >
+                            {{ profile_t("editProfile.activity") }}
+                        </label>
+
+                        <select
+                            class="profile-input"
+                            id="edit-activity"
+                            name="activity"
+                        >
+                            <option value="">
+                                {{ profile_t("editProfile.notSpecified") }}
+                            </option>
+
+                            <option
+                                value="sedentary"
+                                {% if profile.activity == "sedentary" %}selected{% endif %}
+                            >
+                                {{ profile_t("editProfile.sedentary") }}
+                            </option>
+
+                            <option
+                                value="light"
+                                {% if profile.activity == "light" %}selected{% endif %}
+                            >
+                                {{ profile_t("editProfile.light") }}
+                            </option>
+
+                            <option
+                                value="moderate"
+                                {% if profile.activity == "moderate" %}selected{% endif %}
+                            >
+                                {{ profile_t("editProfile.moderate") }}
+                            </option>
+
+                            <option
+                                value="active"
+                                {% if profile.activity == "active" %}selected{% endif %}
+                            >
+                                {{ profile_t("editProfile.active") }}
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <div class="profile-field">
+
+                        <label
+                            class="profile-field-label"
+                            for="edit-experience"
+                        >
+                            {{ profile_t("editProfile.experience") }}
+                        </label>
+
+                        <select
+                            class="profile-input"
+                            id="edit-experience"
+                            name="experience"
+                        >
+                            <option value="">
+                                {{ profile_t("editProfile.notSpecified") }}
+                            </option>
+
+                            <option
+                                value="beginner"
+                                {% if profile.experience == "beginner" %}selected{% endif %}
+                            >
+                                {{ profile_t("editProfile.beginner") }}
+                            </option>
+
+                            <option
+                                value="intermediate"
+                                {% if profile.experience == "intermediate" %}selected{% endif %}
+                            >
+                                {{ profile_t("editProfile.intermediate") }}
+                            </option>
+
+                            <option
+                                value="experienced"
+                                {% if profile.experience == "experienced" %}selected{% endif %}
+                            >
+                                {{ profile_t("editProfile.experienced") }}
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <div class="profile-field">
+
+                        <label
+                            class="profile-field-label"
+                            for="edit-workouts"
+                        >
+                            {{ profile_t("editProfile.workoutsPerWeek") }}
+                        </label>
+
+                        <input
+                            class="profile-input"
+                            id="edit-workouts"
+                            type="number"
+                            name="workouts_per_week"
+                            value="{{ profile.workouts_per_week if profile.workouts_per_week is not none else '' }}"
+                            min="1"
+                            max="14"
+                        >
+
+                    </div>
+
+                    <div class="profile-field">
+
+                        <label
+                            class="profile-field-label"
+                            for="edit-location"
+                        >
+                            {{ profile_t("editProfile.location") }}
+                        </label>
+
+                        <select
+                            class="profile-input"
+                            id="edit-location"
+                            name="training_location"
+                            required
+                        >
+                            <option
+                                value="gym"
+                                {% if profile.training_location == "gym" %}selected{% endif %}
+                            >
+                                {{ profile_t("editProfile.gym") }}
+                            </option>
+
+                            <option
+                                value="home"
+                                {% if profile.training_location == "home" %}selected{% endif %}
+                            >
+                                {{ profile_t("editProfile.home") }}
+                            </option>
+
+                            <option
+                                value="outdoor"
+                                {% if profile.training_location == "outdoor" %}selected{% endif %}
+                            >
+                                {{ profile_t("editProfile.outdoor") }}
+                            </option>
+                        </select>
+
+                    </div>
+
+                </div>
+
+                <h3 class="profile-section-title">
+                    {{ profile_t("editProfile.additionalFeatures") }}
+                </h3>
+
+                <div class="profile-modal-grid">
+
+                    <div class="profile-field">
+
+                        <label
+                            class="profile-field-label"
+                            for="edit-nutrition"
+                        >
+                            {{ profile_t("editProfile.nutrition") }}
+                        </label>
+
+                        <select
+                            class="profile-input"
+                            id="edit-nutrition"
+                            name="wants_nutrition"
+                        >
+                            <option
+                                value="1"
+                                {% if profile.wants_nutrition %}selected{% endif %}
+                            >
+                                {{ profile_t("editProfile.enabled") }}
+                            </option>
+
+                            <option
+                                value="0"
+                                {% if not profile.wants_nutrition %}selected{% endif %}
+                            >
+                                {{ profile_t("editProfile.disabled") }}
+                            </option>
+                        </select>
+
+                    </div>
+
+                    <div class="profile-field">
+
+                        <label
+                            class="profile-field-label"
+                            for="edit-recovery"
+                        >
+                            {{ profile_t("editProfile.recovery") }}
+                        </label>
+
+                        <select
+                            class="profile-input"
+                            id="edit-recovery"
+                            name="wants_recovery"
+                        >
+                            <option
+                                value="1"
+                                {% if profile.wants_recovery %}selected{% endif %}
+                            >
+                                {{ profile_t("editProfile.enabled") }}
+                            </option>
+
+                            <option
+                                value="0"
+                                {% if not profile.wants_recovery %}selected{% endif %}
+                            >
+                                {{ profile_t("editProfile.disabled") }}
+                            </option>
+                        </select>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="profile-modal-footer">
+
+                <button
+                    type="button"
+                    class="profile-btn profile-btn-ghost"
+                    data-modal-close
+                >
+                    {{ profile_t("modal.cancel") }}
+                </button>
+
+                <button
+                    type="submit"
+                    class="profile-btn profile-btn-primary"
+                >
+                    {{ profile_t("modal.saveChanges") }}
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+</div>

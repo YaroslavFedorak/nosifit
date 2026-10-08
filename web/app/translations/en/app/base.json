@@ -1,0 +1,54 @@
+{
+  "assessment": {
+    "title": "Fitness Assessment — NOSIFIT",
+    "heading": "Fitness Assessment",
+    "pushups": "Maximum push-ups in one set:",
+    "squats": "Maximum squats in one set:",
+    "plank": "Plank (seconds):",
+    "submit": "Complete assessment"
+  },
+  "equipment": {
+    "title": "Equipment — NOSIFIT",
+    "heading": "Equipment",
+    "subtitle": "A list of available equipment will appear here."
+  },
+  "premium": {
+    "title": "Premium",
+    "accountPremium": "Your account: Premium",
+    "thanks": "Thank you for your support!",
+    "accountFree": "Your account: Free",
+    "activate": "Activate Premium"
+  },
+  "questionnaire": {
+    "title": "Questionnaire",
+    "heading": "Personal questionnaire",
+    "environment": "Where do you train",
+    "gym": "Gym",
+    "home": "Home",
+    "outdoor": "Outdoors",
+    "aesthetic": "Aesthetic goal",
+    "none": "None",
+    "chest": "Chest",
+    "back": "Back",
+    "shoulders": "Shoulders",
+    "arms": "Arms",
+    "legs": "Legs",
+    "glutes": "Glutes",
+    "core": "Core",
+    "performance": "Physical goal",
+    "strength": "Strength",
+    "endurance": "Endurance",
+    "mobility": "Mobility",
+    "morePushups": "More push-ups",
+    "morePullups": "More pull-ups",
+    "strong": "Strengths",
+    "weak": "Weaknesses",
+    "lowerBack": "Lower back",
+    "save": "Save"
+  },
+  "tracker": {
+    "title": "Tracking — NOSIFIT",
+    "heading": "Your chart",
+    "subtitle": "Your trackers will appear here."
+  }
+}

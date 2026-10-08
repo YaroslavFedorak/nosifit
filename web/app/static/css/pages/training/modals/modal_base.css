@@ -1,0 +1,101 @@
+.tr-modal {
+    position: fixed;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.55);
+    z-index: 3000;
+    backdrop-filter: blur(4px);
+}
+
+.tr-modal.open {
+    display: flex;
+    animation: modalFadeIn var(--transition);
+}
+
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.96);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.tr-modal-content {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 22px;
+    width: 100%;
+    max-width: var(--modal-width, 420px);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.tr-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.tr-modal-header h3 {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text);
+}
+
+.tr-modal-close {
+    background: transparent;
+    border: none;
+    font-size: 22px;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.tr-modal-close:hover {
+    color: var(--accent);
+}
+
+.tr-modal-body {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    font-size: 14px;
+    color: var(--text);
+    overflow-y: auto;
+}
+
+.tr-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.tr-modal-body input,
+.tr-modal-body select,
+.tr-modal-body textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-input);
+    background: var(--surface-input);
+    color: var(--text);
+    font-size: 14px;
+    transition: var(--transition-fast);
+}
+
+.tr-modal-body input:focus,
+.tr-modal-body select:focus,
+.tr-modal-body textarea:focus {
+    border-color: var(--accent);
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(255, 212, 59, 0.25);
+}

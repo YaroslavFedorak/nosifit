@@ -1,0 +1,69 @@
+<div class="recovery-modal-backdrop" id="sleep-modal-backdrop" hidden>
+  <div class="recovery-modal sleep-modal">
+    <div class="sleep-header">
+      <div class="sleep-header-icon" id="sleep-header-icon"></div>
+
+      <div class="sleep-header-text">
+        <div class="sleep-title">
+          {{ translate("recovery", "template.sleep_modal.title") }}
+        </div>
+
+        <div class="sleep-subtitle">
+          {{ translate("recovery", "template.sleep_modal.subtitle") }}
+        </div>
+      </div>
+    </div>
+
+    <div class="sleep-body">
+      <div class="sleep-field-card">
+        <label class="sleep-label">
+          {{ translate("recovery", "template.sleep_modal.sleep_date") }}
+        </label>
+
+        <div class="sleep-input-wrapper">
+          <input type="date" class="sleep-input-date" data-sleep-date />
+        </div>
+      </div>
+
+      <div class="sleep-time-section">
+        <label class="sleep-label">
+          {{ translate("recovery", "template.sleep_modal.sleep_time") }}
+        </label>
+
+        <div class="sleep-time-row">
+          <div class="sleep-time-field">
+            <div class="sleep-time-label">
+              {{ translate("recovery", "template.sleep_modal.start") }}
+            </div>
+
+            <input type="time" class="sleep-input-time" data-sleep-start-time />
+          </div>
+
+          <div class="sleep-time-arrow">→</div>
+
+          <div class="sleep-time-field">
+            <div class="sleep-time-label">
+              {{ translate("recovery", "template.sleep_modal.end") }}
+            </div>
+
+            <input type="time" class="sleep-input-time" data-sleep-end-time />
+          </div>
+        </div>
+
+        <div class="sleep-hint">
+          {{ translate("recovery", "template.sleep_modal.midnight_hint") }}
+        </div>
+      </div>
+    </div>
+
+    <div class="sleep-footer">
+      <button class="sleep-btn-cancel" type="button" data-close-sleep>
+        {{ translate("recovery", "template.actions.cancel") }}
+      </button>
+
+      <button class="sleep-btn-save" type="button" data-save-sleep>
+        {{ translate("recovery", "template.sleep_modal.save") }}
+      </button>
+    </div>
+  </div>
+</div>

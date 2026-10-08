@@ -1,0 +1,767 @@
+import * as api from "./api.js";
+import * as state from "./state.js";
+
+import {
+    dashboard_t,
+    loadTranslations,
+} from "../i18n/index.js";
+
+import { renderRecommendations } from "./widgets/recommendations.js";
+import * as trainingEditor from "./widgets/training/index.js";
+import { saveWorkout } from "./widgets/training/controller.js";
+
+import { initRecoveryWidget } from "./widgets/recovery/index.js";
+
+import { renderHeatmap } from "./heatmap/render.js";
+
+import {
+    openExerciseModal,
+    initExerciseModal,
+} from "./modals/exercise.js";
+
+import {
+    openPlanModal,
+    initPlanModal,
+} from "./modals/plan/index.js";
+
+import { initHabitModal } from "./modals/recovery/habit.js";
+import { initSleepModal } from "./modals/recovery/sleep.js";
+
+import { initCalendarModal } from "./modals/heatmap/calendar.js";
+import { initDayDetailsModal } from "./modals/heatmap/day_details.js";
+
+import { formatDashboardDate } from "./utils/date.js";
+
+function setMetricValue(
+    id: string,
+    value: unknown
+): void {
+    const container =
+        document.getElementById(id);
+
+    if (!container) {
+        return;
+    }
+
+    const element =
+        container.querySelector<HTMLElement>(
+            ".dashboard-metric-value"
+        );
+
+    if (!element) {
+        return;
+    }
+
+    element.textContent =
+        value == null || value === ""
+            ? "—"
+            : String(value);
+}
+
+function bindHeaderDate(): void {
+    const element =
+        document.getElementById(
+            "dashboard-header-date"
+        );
+
+    if (!element) {
+        return;
+    }
+
+    element.textContent =
+        formatDashboardDate(
+            new Date()
+        );
+}
+
+function bindOverview(
+    overview: any
+): void {
+    if (!overview) {
+        setMetricValue(
+            "daily-score",
+            "—"
+        );
+
+        setMetricValue(
+            "training-load",
+            "—"
+        );
+
+        setMetricValue(
+            "recovery-score",
+            "—"
+        );
+
+        setMetricValue(
+            "sleep-score",
+            "—"
+        );
+
+        return;
+    }
+
+    setMetricValue(
+        "daily-score",
+        overview.daily_score
+    );
+
+    setMetricValue(
+        "training-load",
+        overview.training?.score ??
+        overview.training?.load
+    );
+
+    setMetricValue(
+        "recovery-score",
+        overview.recovery?.score
+    );
+
+    const sleep =
+        overview.recovery?.sleep_hours ??
+        overview.sleep_hours;
+
+    setMetricValue(
+        "sleep-score",
+        sleep != null
+            ? `${sleep} ${dashboard_t("units.hours")}`
+            : "—"
+    );
+
+    bindRecoverySummary(
+        overview
+    );
+
+    bindNutritionSummary(
+        overview
+    );
+}
+
+function bindRecoverySummary(
+    overview: any
+): void {
+    const recoveryScore =
+        document.getElementById(
+            "dashboard-recovery-score"
+        );
+
+    const sleep =
+        document.getElementById(
+            "dashboard-sleep"
+        );
+
+    const habits =
+        document.getElementById(
+            "dashboard-habits"
+        );
+
+    if (recoveryScore) {
+        const value =
+            overview?.recovery?.score;
+
+        recoveryScore.textContent =
+            value != null
+                ? String(value)
+                : "—";
+    }
+
+    if (sleep) {
+        const value =
+            overview?.recovery?.sleep_hours;
+
+        sleep.textContent =
+            value != null
+                ? `${value} ${dashboard_t("units.hours")}`
+                : "—";
+    }
+
+    if (habits) {
+        const value =
+            overview?.recovery?.habits_score ??
+            overview?.recovery?.habits;
+
+        habits.textContent =
+            value != null
+                ? String(value)
+                : "—";
+    }
+}
+
+function bindNutritionSummary(
+    overview: any
+): void {
+    const nutrition =
+        overview?.nutrition;
+
+    const calories =
+        document.getElementById(
+            "dashboard-calories"
+        );
+
+    const protein =
+        document.getElementById(
+            "dashboard-protein"
+        );
+
+    // #dashboard-water belongs to the nutrition widget
+    // (widgets/nutrition/index.ts), which keeps it in sync after edits.
+
+    if (!nutrition) {
+        if (calories) {
+            calories.textContent = "—";
+        }
+
+        if (protein) {
+            protein.textContent = "—";
+        }
+
+        return;
+    }
+
+    if (calories) {
+        const value =
+            Number(
+                nutrition.calories
+            );
+
+        calories.textContent =
+            Number.isFinite(value)
+                ? `${Math.round(value)} ${dashboard_t("units.calories")}`
+                : "—";
+    }
+
+    if (protein) {
+        const value =
+            Number(
+                nutrition.protein
+            );
+
+        protein.textContent =
+            Number.isFinite(value)
+                ? `${Math.round(value)} ${dashboard_t("units.grams")}`
+                : "—";
+    }
+
+}
+
+function bindHeatmap(
+    data: any
+): void {
+    const container =
+        document.getElementById(
+            "dashboard-heatmap"
+        );
+
+    if (!container) {
+        return;
+    }
+
+    renderHeatmap(
+        container,
+        data
+    );
+}
+
+function bindRecommendations(
+    recommendations: any
+): void {
+    const container =
+        document.getElementById(
+            "dashboard-recommendations"
+        );
+
+    if (!container) {
+        return;
+    }
+
+    renderRecommendations(
+        container,
+        recommendations
+    );
+}
+
+function getTrainingPlan(
+    training: any
+): any | null {
+    if (!training) {
+        return null;
+    }
+
+    return (
+        training.plan ??
+        training.training_plan ??
+        training.program ??
+        null
+    );
+}
+
+function getCurrentPlanExercises(
+    plan: any
+): any[] {
+    const dayKeys = [
+        "sun",
+        "mon",
+        "tue",
+        "wed",
+        "thu",
+        "fri",
+        "sat",
+    ];
+
+    const currentDay =
+        dayKeys[new Date().getDay()];
+
+    const day =
+        plan?.days?.[currentDay];
+
+    if (Array.isArray(day)) {
+        return day;
+    }
+
+    if (Array.isArray(day?.exercises)) {
+        return day.exercises;
+    }
+
+    return [];
+}
+
+function applyPlanToWorkout(
+    plan: any
+): void {
+    const exercises =
+        getCurrentPlanExercises(
+            plan
+        );
+
+    trainingEditor.replaceExercises(
+        exercises
+    );
+
+    const titleInput =
+        document.getElementById(
+            "dashboard-workout-title"
+        ) as HTMLInputElement | null;
+
+    if (titleInput) {
+        titleInput.value =
+            plan?.name ??
+            dashboard_t("workout.defaultTitle");
+    }
+}
+
+function loadPersistedExercises(): any[] {
+    try {
+        const savedDate =
+            window.localStorage.getItem(
+                "dashboard_training_date"
+            );
+
+        const today =
+            new Date()
+                .toISOString()
+                .slice(0, 10);
+
+        if (savedDate !== today) {
+            window.localStorage.removeItem(
+                "dashboard_training_exercises"
+            );
+
+            window.localStorage.removeItem(
+                "dashboard_training_date"
+            );
+
+            return [];
+        }
+
+        const raw =
+            window.localStorage.getItem(
+                "dashboard_training_exercises"
+            );
+
+        if (!raw) {
+            return [];
+        }
+
+        const parsed =
+            JSON.parse(raw);
+
+        return Array.isArray(parsed)
+            ? parsed
+            : [];
+    } catch (_) {
+        return [];
+    }
+}
+
+function restoreTodayExercises(
+    overview: any
+): void {
+    const training =
+        overview?.training;
+
+    let exercises: any[] = [];
+
+    if (training) {
+        const fromOverview =
+            training.exercises ??
+            training.completed_exercises ??
+            [];
+
+        if (
+            Array.isArray(fromOverview) &&
+            fromOverview.length
+        ) {
+            exercises =
+                fromOverview;
+        }
+    }
+
+    if (!exercises.length) {
+        exercises =
+            loadPersistedExercises();
+    }
+
+    if (
+        !Array.isArray(exercises) ||
+        !exercises.length
+    ) {
+        return;
+    }
+
+    trainingEditor.replaceExercises(
+        exercises
+    );
+}
+
+function handleExerciseSelected(
+    exercise: any
+): void {
+    if (!exercise) {
+        return;
+    }
+
+    const added =
+        trainingEditor.addExercise(
+            exercise
+        );
+
+    if (!added) {
+        console.error(
+            "Failed to add exercise:",
+            exercise
+        );
+    }
+}
+
+async function handleSaveWorkout(): Promise<void> {
+    try {
+        const exercises =
+            trainingEditor.getCompletedExercises();
+
+        const finished =
+            await saveWorkout({
+                exercises,
+
+                onSuccess: async result => {
+                    await loadAll();
+
+                    window.dispatchEvent(
+                        new CustomEvent(
+                            "dashboard:training-saved",
+                            {
+                                detail: result,
+                            }
+                        )
+                    );
+                },
+            });
+
+        if (finished) {
+            alert(
+                dashboard_t(
+                    "workout.saveSuccess"
+                )
+            );
+        }
+    } catch (error) {
+        console.error(
+            "Failed to save workout:",
+            error
+        );
+
+        alert(
+            error instanceof Error
+                ? error.message
+                : dashboard_t(
+                    "workout.errors.saveFailed"
+                )
+        );
+    }
+}
+
+async function loadAll(): Promise<void> {
+    try {
+        const [
+            overview,
+            heatmap,
+            recommendations,
+        ] = await Promise.all([
+            api.getToday(),
+            api.getHeatmap(),
+            api.getRecommendation(),
+        ]);
+
+        restoreTodayExercises(
+            overview
+        );
+
+        state.setOverview(
+            overview
+        );
+
+        state.setHeatmap(
+            heatmap
+        );
+
+        state.setRecommendations(
+            recommendations
+        );
+    } catch (error) {
+        console.error(
+            "Failed to load dashboard:",
+            error
+        );
+    }
+}
+
+function bindNavigation(): void {
+    const trainingButton =
+        document.getElementById(
+            "dashboard-open-training"
+        );
+
+    if (!trainingButton) {
+        return;
+    }
+
+    trainingButton.addEventListener(
+        "click",
+        () => {
+            const overview =
+                state.getState().overview;
+
+            const plan =
+                getTrainingPlan(
+                    overview?.training
+                );
+
+            openPlanModal(
+                plan,
+                savedPlan => {
+                    applyPlanToWorkout(
+                        savedPlan
+                    );
+
+                    state.setOverview({
+                        ...overview,
+
+                        training: {
+                            ...overview?.training,
+                            plan: savedPlan,
+                        },
+                    });
+                }
+            );
+        }
+    );
+}
+
+function bindWorkoutActions(): void {
+    const addExerciseButton =
+        document.getElementById(
+            "dashboard-add-exercise"
+        );
+
+    const saveButton =
+        document.getElementById(
+            "dashboard-save-workout"
+        );
+
+    if (addExerciseButton) {
+        addExerciseButton.addEventListener(
+            "click",
+            () => {
+                openExerciseModal(
+                    handleExerciseSelected
+                );
+            }
+        );
+    }
+
+    if (saveButton) {
+        saveButton.addEventListener(
+            "click",
+            handleSaveWorkout
+        );
+    }
+}
+
+function getUserId(): number | null {
+    const element =
+        document.getElementById(
+            "dashboard-open-recovery"
+        );
+
+    if (!element) {
+        return null;
+    }
+
+    const userId =
+        Number(
+            element.getAttribute(
+                "data-user-id"
+            )
+        );
+
+    if (
+        !Number.isFinite(userId) ||
+        userId <= 0
+    ) {
+        return null;
+    }
+
+    return userId;
+}
+
+function bindRecoveryNavigation(): void {
+    const recoveryButton =
+        document.getElementById(
+            "dashboard-open-recovery"
+        );
+
+    if (!recoveryButton) {
+        return;
+    }
+
+    recoveryButton.addEventListener(
+        "click",
+        () => {
+            const habitButton =
+                document.getElementById(
+                    "open-habit-modal"
+                );
+
+            if (habitButton) {
+                habitButton.click();
+                return;
+            }
+
+            const habitModal =
+                document.getElementById(
+                    "habit-modal-backdrop"
+                );
+
+            if (!habitModal) {
+                return;
+            }
+
+            habitModal.hidden = false;
+
+            habitModal.classList.add(
+                "open"
+            );
+        }
+    );
+}
+
+function initRecoveryModals(): void {
+    const userId =
+        getUserId();
+
+    if (userId === null) {
+        return;
+    }
+
+    initHabitModal(
+        userId
+    );
+
+    initSleepModal();
+
+    bindRecoveryNavigation();
+}
+
+function initHeatmapModals(): void {
+    const heatmap =
+        state.getState().heatmap;
+
+    initDayDetailsModal();
+
+    initCalendarModal(
+        heatmap
+    );
+}
+
+function initModals(): void {
+    initExerciseModal();
+    initPlanModal();
+    initRecoveryModals();
+    initHeatmapModals();
+}
+
+function initSubscriptions(): void {
+    state.subscribe(
+        "overview",
+        bindOverview
+    );
+
+    state.subscribe(
+        "heatmap",
+        bindHeatmap
+    );
+
+    state.subscribe(
+        "recommendations",
+        bindRecommendations
+    );
+}
+
+async function init(): Promise<void> {
+    await Promise.all([
+        loadTranslations("dashboard"),
+        loadTranslations("exercises"),
+        loadTranslations("recovery"),
+        loadTranslations("nutrition"),
+    ]);
+
+    bindHeaderDate();
+
+    initSubscriptions();
+
+    trainingEditor.init();
+
+    initModals();
+
+    initRecoveryWidget();
+
+    bindNavigation();
+
+    bindWorkoutActions();
+
+    await loadAll();
+
+    window.addEventListener(
+        "dashboard:refresh",
+        () => {
+            void loadAll();
+            void initRecoveryWidget();
+        }
+    );
+}
+
+document.addEventListener(
+    "DOMContentLoaded",
+    () => {
+        void init();
+    }
+);

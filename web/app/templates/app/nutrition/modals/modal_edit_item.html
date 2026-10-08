@@ -1,0 +1,48 @@
+<div class="modal nf-modal" id="modal-edit-item" role="dialog" aria-modal="true" aria-labelledby="edit-item-title">
+  <div class="modal-content nf-modal-card">
+    <input type="hidden" id="edit-item-id" />
+
+    <header class="nf-modal-header">
+      <div class="nf-modal-heading">
+        <span class="nf-modal-eyebrow">{{ translate("nutrition", "modals.eyebrow.product") }}</span>
+        <h2 class="nf-modal-title" id="edit-item-title">{{ translate("nutrition", "items.editTitle") }}</h2>
+      </div>
+      {% include "app/nutrition/modals/_close_button.html" %}
+    </header>
+
+    <div class="nf-field">
+      <label class="nf-label" for="edit-item-product">{{ translate("nutrition", "catalog.selectedProduct") }}</label>
+      <div class="nf-input-row">
+        <input class="nf-input" type="text" id="edit-item-product" readonly tabindex="-1" />
+        <button class="nf-btn nf-btn--accent-soft" type="button" id="edit-item-open-product" hidden>{{ translate("nutrition", "catalog.editProductData") }}</button>
+      </div>
+    </div>
+
+    <div class="nf-field">
+      <label class="nf-label" for="edit-item-meal-id">{{ translate("nutrition", "catalog.moveMeal") }}</label>
+      <select class="nf-input" id="edit-item-meal-id"></select>
+    </div>
+
+    <div class="nf-field-grid">
+      <div class="nf-field">
+        <label class="nf-label" for="edit-item-amount">{{ translate("nutrition", "catalog.amount") }}</label>
+        <input class="nf-input" type="number" id="edit-item-amount" min="0.1" step="any" inputmode="decimal" />
+      </div>
+      <div class="nf-field">
+        <label class="nf-label" for="edit-item-unit">{{ translate("nutrition", "catalog.unit") }}</label>
+        <select class="nf-input" id="edit-item-unit">
+          <option value="g">{{ translate("nutrition", "catalog.units.g") }}</option>
+          <option value="ml">{{ translate("nutrition", "catalog.units.ml") }}</option>
+          <option value="pcs">{{ translate("nutrition", "catalog.units.pcs") }}</option>
+        </select>
+      </div>
+    </div>
+
+    <p class="nf-modal-error" data-modal-error role="alert" hidden></p>
+
+    <footer class="nf-modal-footer">
+      <button class="nf-btn" type="button" id="close-edit-item">{{ translate("nutrition", "actions.cancel") }}</button>
+      <button class="nf-btn nf-btn--primary" type="button" id="save-edit-item">{{ translate("nutrition", "actions.save") }}</button>
+    </footer>
+  </div>
+</div>

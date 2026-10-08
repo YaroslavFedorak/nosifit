@@ -1,0 +1,81 @@
+{% extends "app/base_app.html" %} {% block title %}{{ app_t("questionnaire.title") }}{% endblock %} {% block body %}
+
+<h2 class="page-title">{{ app_t("questionnaire.heading") }}</h2>
+
+<form method="POST" action="{{ url_for('questionnaire.save_questionnaire') }}" class="form-card">
+  <div class="form-section">
+    <h3>{{ app_t("questionnaire.environment") }}</h3>
+    <select name="environment" required>
+      <option value="gym" {% if (user.profile.training_location if user.profile else user.environment) == "gym" %}selected{% endif %}>{{ app_t("questionnaire.gym") }}</option>
+      <option value="home" {% if (user.profile.training_location if user.profile else user.environment) == "home" %}selected{% endif %}>{{ app_t("questionnaire.home") }}</option>
+      <option value="outdoor" {% if (user.profile.training_location if user.profile else user.environment) == "outdoor" %}selected{% endif %}>{{ app_t("questionnaire.outdoor") }}</option>
+    </select>
+  </div>
+
+  <div class="form-section">
+    <h3>{{ app_t("questionnaire.aesthetic") }}</h3>
+    <select name="aesthetic_focus">
+      <option value="">{{ app_t("questionnaire.none") }}</option>
+      <option value="chest">{{ app_t("questionnaire.chest") }}</option>
+      <option value="back">{{ app_t("questionnaire.back") }}</option>
+      <option value="shoulders">{{ app_t("questionnaire.shoulders") }}</option>
+      <option value="arms">{{ app_t("questionnaire.arms") }}</option>
+      <option value="legs">{{ app_t("questionnaire.legs") }}</option>
+      <option value="glutes">{{ app_t("questionnaire.glutes") }}</option>
+      <option value="core">{{ app_t("questionnaire.core") }}</option>
+    </select>
+  </div>
+
+  <div class="form-section">
+    <h3>{{ app_t("questionnaire.performance") }}</h3>
+    <select name="performance_focus">
+      <option value="">{{ app_t("questionnaire.none") }}</option>
+      <option value="strength">{{ app_t("questionnaire.strength") }}</option>
+      <option value="endurance">{{ app_t("questionnaire.endurance") }}</option>
+      <option value="mobility">{{ app_t("questionnaire.mobility") }}</option>
+      <option value="pushups">{{ app_t("questionnaire.morePushups") }}</option>
+      <option value="pullups">{{ app_t("questionnaire.morePullups") }}</option>
+    </select>
+  </div>
+
+  <div class="form-section">
+    <h3>{{ app_t("questionnaire.strong") }}</h3>
+
+    <label
+      ><input type="checkbox" name="strong_points" value="chest" {% if "chest" in (user.strong_points or []) %}checked{% endif %} /> {{ app_t("questionnaire.chest") }}</label
+    >
+    <label
+      ><input type="checkbox" name="strong_points" value="back" {% if "back" in (user.strong_points or []) %}checked{% endif %} /> {{ app_t("questionnaire.back") }}</label
+    >
+    <label
+      ><input type="checkbox" name="strong_points" value="legs" {% if "legs" in (user.strong_points or []) %}checked{% endif %} /> {{ app_t("questionnaire.legs") }}</label
+    >
+    <label
+      ><input type="checkbox" name="strong_points" value="core" {% if "core" in (user.strong_points or []) %}checked{% endif %} /> {{ app_t("questionnaire.core") }}</label
+    >
+  </div>
+
+  <div class="form-section">
+    <h3>{{ app_t("questionnaire.weak") }}</h3>
+
+    <label
+      ><input type="checkbox" name="weak_points" value="chest" {% if "chest" in (user.weak_points or []) %}checked{% endif %} /> {{ app_t("questionnaire.chest") }}</label
+    >
+    <label
+      ><input type="checkbox" name="weak_points" value="back" {% if "back" in (user.weak_points or []) %}checked{% endif %} /> {{ app_t("questionnaire.back") }}</label
+    >
+    <label
+      ><input type="checkbox" name="weak_points" value="legs" {% if "legs" in (user.weak_points or []) %}checked{% endif %} /> {{ app_t("questionnaire.legs") }}</label
+    >
+    <label
+      ><input type="checkbox" name="weak_points" value="core" {% if "core" in (user.weak_points or []) %}checked{% endif %} /> {{ app_t("questionnaire.core") }}</label>
+    <label
+      ><input type="checkbox" name="weak_points" value="lower_back" {% if "lower_back" in (user.weak_points or []) %}checked{% endif %} />
+      {{ app_t("questionnaire.lowerBack") }}</label
+    >
+  </div>
+
+  <button type="submit" class="btn-primary">{{ app_t("questionnaire.save") }}</button>
+</form>
+
+{% endblock %}

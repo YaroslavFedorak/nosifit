@@ -1,0 +1,53 @@
+{% extends base_template %}
+
+{% block title %}{{ public_t("contact.title") }} — NosiFit{% endblock %}
+
+{% block styles %}
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/pages/contact.css') }}"
+/>
+{% endblock %}
+
+{% block body %}
+<section class="public-contact">
+  <div class="public-contact-header">
+    <span class="public-contact-eyebrow">NosiFit</span>
+    <h1 class="public-contact-title">{{ public_t("contact.title") }}</h1>
+    <p class="public-contact-lead">{{ public_t("contact.lead") }}</p>
+  </div>
+
+  <div class="public-contact-grid">
+    <a
+      class="public-contact-card public-contact-card-email"
+      href="mailto:support@nosi.fit"
+    >
+      <span class="public-contact-label">{{ public_t("contact.email") }}</span>
+      <strong>support@nosi.fit</strong>
+      <span class="public-contact-action">{{ public_t("contact.emailAction") }} →</span>
+    </a>
+
+    <a
+      class="public-contact-card public-contact-card-instagram"
+      href="https://www.instagram.com/nosi.fit/"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      <span class="public-contact-label">{{ public_t("contact.instagram") }}</span>
+      <strong>@nosi.fit</strong>
+      <span class="public-contact-action">{{ public_t("contact.instagramAction") }} →</span>
+    </a>
+
+    <a
+      class="public-contact-card public-contact-card-telegram"
+      href="https://t.me/nosi_support"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      <span class="public-contact-label">{{ public_t("contact.telegram") }}</span>
+      <strong>@nosi_support</strong>
+      <span class="public-contact-action">{{ public_t("contact.telegramAction") }} →</span>
+    </a>
+  </div>
+</section>
+{% endblock %}

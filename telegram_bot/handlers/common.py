@@ -1,0 +1,27 @@
+from aiogram import Router
+from aiogram.filters import Command
+from aiogram.fsm.context import FSMContext
+from aiogram.types import Message
+
+from telegram_bot.keyboards.main import main_menu
+from telegram_bot.runtime import is_authenticated
+
+
+router = Router()
+
+
+@router.message(Command("cancel"))
+async def cancel(message: Message, state: FSMContext) -> None:
+    await state.clear()
+    await message.answer(
+        "Дію скасовано.",
+        reply_markup=main_menu(authenticated=is_authenticated(message.from_user.id)),
+    )
+
+
+@router.message()
+async def unknown(message: Message) -> None:
+    await message.answer(
+        "Не зрозумів. Скористайтеся кнопками внизу або /help.",
+        reply_markup=main_menu(authenticated=is_authenticated(message.from_user.id)),
+    )

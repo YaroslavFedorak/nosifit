@@ -1,0 +1,21 @@
+.loading,
+.error,
+.empty {
+    padding: 16px;
+    border-radius: var(--radius-md);
+    background: var(--card-soft);
+    border: 1px solid var(--border-soft);
+    text-align: center;
+    font-size: 15px;
+    color: var(--text-muted);
+}
+
+.widget-card {
+    background: var(--card);
+    border-radius: var(--radius-lg);
+    padding: 14px;
+    border: 1px solid var(--border-soft);
+    box-shadow: none;
+    display: flex;
+    flex-direction: column;
+}

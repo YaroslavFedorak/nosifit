@@ -1,0 +1,88 @@
+<section class="profile-card" id="connected-accounts">
+
+    <div class="profile-card-header">
+        <div>
+            <h2 class="profile-card-title">
+                {{ profile_t("connected.title") }}
+            </h2>
+
+            <p class="profile-card-subtitle">
+                {{ profile_t("connected.subtitle") }}
+            </p>
+        </div>
+    </div>
+
+    <div class="profile-account-content">
+
+        <div class="profile-connected-list">
+
+            <div class="profile-connected-row">
+                <span class="profile-data-label">{{ profile_t("connected.password") }}</span>
+                {% if connected.has_password %}
+                    <span class="profile-status profile-status-success">{{ profile_t("connected.set") }}</span>
+                {% else %}
+                    <span class="profile-status">{{ profile_t("connected.notSet") }}</span>
+                    <a class="profile-connected-link" href="{{ url_for('auth.reset_password') }}">
+                        {{ profile_t("connected.setPassword") }}
+                    </a>
+                {% endif %}
+            </div>
+
+            {% for provider, label in (("google", "Google"), ("github", "GitHub")) %}
+            <div class="profile-connected-row">
+                <span class="profile-data-label">{{ label }}</span>
+                {% if connected[provider] %}
+                    <span class="profile-status profile-status-success">{{ profile_t("connected.connected") }}</span>
+                    <button
+                        type="button"
+                        class="profile-btn profile-btn-ghost profile-connected-action"
+                        data-oauth-disconnect="{{ provider }}"
+                    >
+                        {{ profile_t("connected.disconnect") }}
+                    </button>
+                {% else %}
+                    <span class="profile-status">{{ profile_t("connected.notConnected") }}</span>
+                {% endif %}
+            </div>
+            {% endfor %}
+
+            <div class="profile-connected-row">
+                <span class="profile-data-label">Telegram</span>
+                {% if connected.telegram %}
+                    <span class="profile-status profile-status-success">
+                        {% if connected.telegram_username %}
+                            {{ profile_t("connected.connectedAs", username="@" ~ connected.telegram_username) }}
+                        {% else %}
+                            {{ profile_t("connected.connected") }}
+                        {% endif %}
+                    </span>
+                    <button
+                        type="button"
+                        class="profile-btn profile-btn-ghost profile-connected-action"
+                        data-modal-open="modal-telegram-disconnect"
+                    >
+                        {{ profile_t("connected.disconnect") }}
+                    </button>
+                {% else %}
+                    <span class="profile-status">{{ profile_t("connected.notConnected") }}</span>
+                    {% if connected.telegram_connect_url %}
+                        <a
+                            class="profile-btn profile-btn-secondary profile-connected-action"
+                            href="{{ connected.telegram_connect_url }}"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            {{ profile_t("connected.connectTelegram") }}
+                        </a>
+                    {% endif %}
+                    <p class="profile-connected-hint">{{ profile_t("connected.telegramHint") }}</p>
+                {% endif %}
+            </div>
+
+        </div>
+
+        <p class="profile-connected-hint" data-connected-message hidden></p>
+
+    </div>
+
+</section>

@@ -1,0 +1,705 @@
+from datetime import datetime, date, timedelta
+
+from flask import (
+    Blueprint,
+    request,
+    jsonify,
+    current_app,
+)
+from flask_login import current_user
+
+from backend.app.extensions import db
+from backend.app.models.recovery.user_habit import UserRecoveryHabit
+from backend.app.utils.validation import as_db_id
+
+from backend.app.services.recovery import (
+    SleepService,
+    HabitService,
+    SnapshotService,
+    StatsService,
+    RecommendationService,
+)
+
+from backend.app.models.recovery.habit import RecoveryHabit
+from backend.app.models.user import User
+from backend.app.services.training.model import TrainingModelService
+from backend.app.services.training.model.readiness import readiness_level
+
+recovery_bp = Blueprint("recovery", __name__, url_prefix="/api/recovery")
+
+
+# Every recovery endpoint works only with the signed-in user's own data.
+# The URLs still contain a user id (the frontend sends it), but it must match
+# the session; a different id is answered as if it did not exist.
+@recovery_bp.before_request
+def _require_login():
+    if not current_user.is_authenticated:
+        return jsonify({"error": "Authentication required"}), 401
+    return None
+
+
+def _not_found():
+    return jsonify({"error": "Not found"}), 404
+
+
+def _is_other_user(user_id) -> bool:
+    try:
+        return int(user_id) != current_user.id
+    except (TypeError, ValueError):
+        return True
+
+
+def _owns_user_habit(user_habit_id) -> bool:
+    user_habit_id = as_db_id(user_habit_id)
+    if user_habit_id is None:
+        return False
+    habit = db.session.get(UserRecoveryHabit, user_habit_id)
+    return habit is not None and habit.user_id == current_user.id
+
+sleep_service = SleepService()
+habit_service = HabitService()
+snapshot_service = SnapshotService()
+stats_service = StatsService()
+recommendation_service = RecommendationService()
+
+
+MAX_SLEEP_DURATION = timedelta(hours=24)
+MIN_YEAR, MAX_YEAR = 2000, 2100
+
+
+def _training_day_summary(user_id, day, readiness_score=None):
+    """Training part of the day details: readiness level (score kept for the
+    bar) and the day's hard sets. The legacy 'load' number is no longer sent."""
+    summary = {
+        "readiness_score": readiness_score,
+        "readiness_level": None,
+        "hard_sets": 0.0,
+        "session_training_stress_proxy": 0.0,
+    }
+    try:
+        if readiness_score is None:
+            user = db.session.get(User, user_id)
+            if user is not None:
+                readiness_score = TrainingModelService.training_readiness_score(user, day)
+        stress = TrainingModelService.day_stress(user_id, day)
+        summary.update(
+            readiness_score=readiness_score,
+            readiness_level=(
+                readiness_level(readiness_score / 100.0)
+                if readiness_score is not None
+                else None
+            ),
+            hard_sets=stress["hard_sets"],
+            session_training_stress_proxy=stress["session_training_stress_proxy"],
+        )
+    except Exception:
+        current_app.logger.exception(
+            "Error while building training summary for user %s date %s", user_id, day
+        )
+    return summary
+
+
+def parse_iso(dt: str) -> datetime:
+    if not isinstance(dt, str) or len(dt) > 40:
+        raise ValueError("Invalid datetime")
+
+    if dt.endswith("Z"):
+        dt = dt.replace("Z", "+00:00")
+
+    return datetime.fromisoformat(dt)
+
+
+@recovery_bp.post("/sleep")
+def add_sleep():
+    data = request.get_json(silent=True) or {}
+
+    user_id = current_user.id
+    sleep_start = data.get("sleep_start")
+    sleep_end = data.get("sleep_end")
+
+    if sleep_start is None or sleep_end is None:
+        return (
+            jsonify({"error": ("user_id, sleep_start " "and sleep_end are required")}),
+            400,
+        )
+
+    try:
+        start_dt = parse_iso(sleep_start)
+        end_dt = parse_iso(sleep_end)
+    except ValueError:
+        return jsonify({"error": "Invalid datetime format"}), 400
+
+    # Mixing aware and naive datetimes would raise TypeError (a 500).
+    if (start_dt.tzinfo is None) != (end_dt.tzinfo is None):
+        return jsonify({"error": "Invalid datetime format"}), 400
+
+    if end_dt <= start_dt:
+        return jsonify({"error": ("sleep_end must be " "after sleep_start")}), 400
+
+    if end_dt - start_dt > MAX_SLEEP_DURATION:
+        return jsonify({"error": "sleep cannot be longer than 24 hours"}), 400
+
+    now = datetime.now(end_dt.tzinfo)
+    if end_dt > now + timedelta(days=1) or end_dt.year < 2000:
+        return jsonify({"error": "sleep date is out of range"}), 400
+
+    entry = sleep_service.add_sleep(user_id, start_dt, end_dt)
+
+    snapshot = snapshot_service.generate_snapshot(user_id, target_date=end_dt.date())
+
+    return (
+        jsonify(
+            {
+                "id": entry.id,
+                "duration_minutes": (entry.duration_minutes),
+                "quality_score": (snapshot.sleep_score if snapshot else 0),
+            }
+        ),
+        201,
+    )
+
+
+@recovery_bp.get("/habits/list")
+def get_habits_list():
+    habits = (
+        RecoveryHabit.query.filter_by(is_active=True, is_archived=False)
+        .order_by(RecoveryHabit.sort_order.asc(), RecoveryHabit.id.asc())
+        .all()
+    )
+
+    return jsonify(
+        [
+            {
+                "id": habit.id,
+                "slug": habit.slug,
+                "name": habit.name,
+                "description": habit.description,
+                "category": habit.category,
+                "points": habit.points,
+                "icon": habit.icon,
+                "recommended_when": (habit.recommended_when),
+                "premium_only": (habit.premium_only),
+            }
+            for habit in habits
+        ]
+    )
+
+
+@recovery_bp.get("/habits/user/<int:user_id>")
+def get_user_habits(user_id):
+    if _is_other_user(user_id):
+        return _not_found()
+
+    habits = habit_service.get_user_habits_with_status(user_id, date.today())
+
+    return jsonify(habits)
+
+
+@recovery_bp.post("/habits/add/<int:habit_id>")
+def add_habit(habit_id):
+    user_id = current_user.id
+
+    catalog_habit = db.session.get(RecoveryHabit, habit_id)
+    if (
+        catalog_habit is None
+        or not catalog_habit.is_active
+        or catalog_habit.is_archived
+    ):
+        return _not_found()
+
+    # Premium habits are a paid feature; the UI hides them, the API must too.
+    if catalog_habit.premium_only and not current_user.is_premium:
+        return jsonify({"error": "Premium required"}), 403
+
+    habit, created = habit_service.add_user_habit(user_id, habit_id)
+
+    if created:
+        snapshot_service.generate_snapshot(user_id, target_date=date.today())
+
+    return jsonify({"created": created, "user_habit_id": habit.id})
+
+
+@recovery_bp.delete("/habits/<int:user_habit_id>")
+def remove_habit(user_habit_id):
+    if not _owns_user_habit(user_habit_id):
+        return _not_found()
+
+    habit = habit_service.remove_user_habit(user_habit_id)
+
+    if habit is None:
+        return jsonify({"error": "habit not found"}), 404
+
+    snapshot_service.generate_snapshot(habit.user_id, target_date=date.today())
+
+    return jsonify({"removed": user_habit_id}), 200
+
+
+@recovery_bp.post("/habits/logs")
+def log_habit():
+    data = request.get_json(silent=True) or {}
+
+    user_habit_id = data.get("user_habit_id")
+
+    if user_habit_id is None:
+        return jsonify({"error": ("user_habit_id is required")}), 400
+
+    try:
+        user_habit_id = int(user_habit_id)
+    except (TypeError, ValueError):
+        return jsonify({"error": ("user_habit_id " "must be integer")}), 400
+
+    if not _owns_user_habit(user_habit_id):
+        return _not_found()
+
+    log = habit_service.log_habit(user_habit_id)
+
+    if log is None:
+        return jsonify({"error": ("user_habit not found")}), 404
+
+    user_id = log.user_id
+
+    snapshot = snapshot_service.generate_snapshot(user_id, target_date=date.today())
+
+    return (
+        jsonify(
+            {
+                "logged": log.id,
+                "completed": True,
+                "snapshot": (snapshot.to_dict() if snapshot else None),
+            }
+        ),
+        200,
+    )
+
+
+@recovery_bp.delete("/habits/logs/<int:user_habit_id>")
+def unlog_habit(user_habit_id):
+    if not _owns_user_habit(user_habit_id):
+        return _not_found()
+
+    result = habit_service.unlog_habit(user_habit_id)
+
+    if result is None:
+        return jsonify({"error": ("user_habit not found")}), 404
+
+    return jsonify({"removed": user_habit_id, "completed": False}), 200
+
+
+@recovery_bp.get("/snapshot/<int:user_id>")
+def get_snapshot(user_id):
+    if _is_other_user(user_id):
+        return _not_found()
+
+    raw_date = request.args.get("date")
+
+    if raw_date:
+        try:
+            dt = datetime.fromisoformat(raw_date).date()
+        except ValueError:
+            return jsonify({"error": ("Invalid date format")}), 400
+
+        snapshot = stats_service.get_daily_snapshot(user_id, dt)
+    else:
+        snapshot = stats_service.get_last_snapshot(user_id)
+
+    if snapshot is None:
+        return jsonify({"snapshot": None}), 200
+
+    habits = habit_service.get_user_habits_with_status(user_id, snapshot.date)
+
+    recs = recommendation_service.build_recommendations(
+        user_id=user_id,
+        sleep_score=snapshot.sleep_score,
+        recovery_score=snapshot.recovery_score,
+        energy_score=snapshot.energy_score,
+        habit_score=snapshot.habit_score,
+        target_date=snapshot.date,
+    )
+
+    return (
+        jsonify(
+            {
+                **snapshot.to_dict(),
+                "sleep_score": int(snapshot.sleep_score or 0),
+                "habit_score": int(snapshot.habit_score or 0),
+                "training_score": int(snapshot.training_score or 0),
+                "energy_score": int(snapshot.energy_score or 0),
+                "recovery_score": int(snapshot.recovery_score or 0),
+                "habits": habits,
+                "recommendations": {
+                    "total": len(recs),
+                    "items": recs,
+                },
+            }
+        ),
+        200,
+    )
+
+
+@recovery_bp.get("/heatmap/<int:user_id>")
+def get_heatmap(user_id):
+    if _is_other_user(user_id):
+        return _not_found()
+
+    raw_year = request.args.get("year")
+
+    try:
+        year = int(raw_year) if raw_year is not None else date.today().year
+    except ValueError:
+        return jsonify({"error": ("year must be integer")}), 400
+
+    if not MIN_YEAR <= year <= MAX_YEAR:
+        return jsonify({"error": "year is out of range"}), 400
+
+    heatmap = stats_service.get_heatmap(user_id, year)
+
+    return (
+        jsonify(
+            {
+                "days": [
+                    {
+                        "date": (snapshot.date.isoformat()),
+                        "recovery_score": (snapshot.recovery_score),
+                        "level": getattr(snapshot, "level", 0),
+                    }
+                    for snapshot in heatmap
+                ]
+            }
+        ),
+        200,
+    )
+
+
+@recovery_bp.get("/recommendations/<int:user_id>")
+def get_recommendations(user_id):
+    if _is_other_user(user_id):
+        return _not_found()
+
+    raw_date = request.args.get("date")
+
+    if raw_date:
+        try:
+            target_date = datetime.fromisoformat(raw_date).date()
+        except ValueError:
+            return jsonify({"error": ("Invalid date format")}), 400
+    else:
+        target_date = date.today()
+
+    snapshot = stats_service.get_daily_snapshot(user_id, target_date)
+
+    if snapshot is None:
+        snapshot = snapshot_service.generate_snapshot(user_id, target_date=target_date)
+
+    recs = recommendation_service.build_recommendations(
+        user_id=user_id,
+        sleep_score=snapshot.sleep_score,
+        recovery_score=snapshot.recovery_score,
+        energy_score=snapshot.energy_score,
+        habit_score=snapshot.habit_score,
+        target_date=target_date,
+    )
+
+    return (
+        jsonify(
+            {
+                "recovery_score": (snapshot.recovery_score),
+                "recommendations": {
+                    "total": len(recs),
+                    "items": recs,
+                },
+            }
+        ),
+        200,
+    )
+
+
+@recovery_bp.get("/day-details/<int:user_id>")
+def get_day_details(user_id):
+    if _is_other_user(user_id):
+        return _not_found()
+
+    raw_date = request.args.get("date")
+
+    if not raw_date:
+        return jsonify({"error": "date is required"}), 400
+
+    try:
+        dt = datetime.fromisoformat(raw_date).date()
+    except ValueError:
+        return jsonify({"error": "Invalid date format"}), 400
+
+    try:
+        snapshot = stats_service.get_daily_snapshot(user_id, dt)
+    except Exception:
+        current_app.logger.exception(
+            "Error while fetching daily snapshot for user %s date %s",
+            user_id,
+            raw_date,
+        )
+        snapshot = None
+
+    try:
+        if snapshot is not None:
+            try:
+                habits = habit_service.get_user_habits_with_status(user_id, dt)
+            except Exception:
+                current_app.logger.exception(
+                    "Error while fetching user habits for user %s",
+                    user_id,
+                )
+                habits = []
+
+            try:
+                recs = recommendation_service.build_recommendations(
+                    user_id=user_id,
+                    sleep_score=snapshot.sleep_score,
+                    recovery_score=snapshot.recovery_score,
+                    energy_score=snapshot.energy_score,
+                    habit_score=snapshot.habit_score,
+                    target_date=dt,
+                )
+            except Exception:
+                current_app.logger.exception(
+                    "Error while building recommendations for user %s",
+                    user_id,
+                )
+                recs = []
+
+            base = {
+                **snapshot.to_dict(),
+                "sleep_score": int(snapshot.sleep_score or 0),
+                "habit_score": int(snapshot.habit_score or 0),
+                "training_score": int(snapshot.training_score or 0),
+                "energy_score": int(snapshot.energy_score or 0),
+                "recovery_score": int(snapshot.recovery_score or 0),
+                "habits": habits,
+                "recommendations": recs,
+            }
+
+            return (
+                jsonify(
+                    {
+                        "date": raw_date,
+                        "has_data": True,
+                        "recovery": {
+                            "score": base.get("recovery_score"),
+                            "status": None,
+                            "energy_score": base.get("energy_score"),
+                        },
+                        "sleep": {
+                            "duration_minutes": base.get("sleep_duration_minutes"),
+                            "quality_score": base.get("sleep_score"),
+                            "bedtime": base.get("sleep_start"),
+                            "wake_time": base.get("sleep_end"),
+                        },
+                        "training": {
+                            **_training_day_summary(
+                                user_id, dt, base.get("training_score")
+                            ),
+                            "sessions": base.get("training_sessions", 0),
+                            "exercises": base.get("training_exercises", []),
+                        },
+                        "habits": {
+                            "completed": len(
+                                [habit for habit in habits if habit.get("completed")]
+                            ),
+                            "total": len(habits),
+                            "score": base.get("habit_score"),
+                            "items": habits,
+                        },
+                        "recommendations": {
+                            "total": len(recs),
+                            "items": recs,
+                        },
+                    }
+                ),
+                200,
+            )
+
+        try:
+            habits = habit_service.get_user_habits_with_status(user_id, dt)
+        except Exception:
+            current_app.logger.exception(
+                "Error while fetching user habits (fallback) for user %s",
+                user_id,
+            )
+            habits = []
+
+        try:
+            recs = recommendation_service.build_recommendations(
+                user_id=user_id,
+                sleep_score=0,
+                recovery_score=0,
+                energy_score=0,
+                habit_score=0,
+                target_date=dt,
+            )
+        except Exception:
+            current_app.logger.exception(
+                "Error while building recommendations (fallback) for user %s",
+                user_id,
+            )
+            recs = []
+
+        sleep_entry = None
+
+        try:
+            if hasattr(sleep_service, "get_sleep_for_date"):
+                sleep_entry = sleep_service.get_sleep_for_date(user_id, dt)
+            elif hasattr(sleep_service, "get_sleep_by_date"):
+                sleep_entry = sleep_service.get_sleep_by_date(user_id, dt)
+        except Exception:
+            current_app.logger.exception(
+                "Error while fetching sleep entry for user %s date %s",
+                user_id,
+                raw_date,
+            )
+            sleep_entry = None
+
+        from backend.app.models.training_session import TrainingSession
+
+        sessions = (
+            TrainingSession.query.filter(
+                TrainingSession.user_id == user_id,
+                TrainingSession.started_at >= datetime.combine(dt, datetime.min.time()),
+                TrainingSession.started_at <= datetime.combine(dt, datetime.max.time()),
+            )
+            .order_by(TrainingSession.started_at.asc())
+            .all()
+        )
+
+        training_exercises = []
+
+        training_summary = _training_day_summary(user_id, dt)
+
+        training_sessions = len(sessions)
+
+        for session in sessions:
+            for exercise in session.exercises:
+                training_exercises.append(
+                    {
+                        "session_id": session.id,
+                        "exercise_id": (exercise.exercise_id),
+                        "sets": (
+                            exercise.sets_done
+                            if exercise.sets_done is not None
+                            else exercise.sets_planned
+                        ),
+                        "reps": (
+                            exercise.reps_done
+                            if exercise.reps_done is not None
+                            else exercise.reps_planned
+                        ),
+                        "duration_sec": (
+                            exercise.duration_sec_done
+                            if exercise.duration_sec_done is not None
+                            else exercise.duration_sec_planned
+                        ),
+                        "load": (
+                            exercise.load_done
+                            if exercise.load_done is not None
+                            else exercise.load_planned
+                        ),
+                        "rpe": exercise.rpe,
+                    }
+                )
+
+        has_any = bool(sleep_entry is not None or habits or recs or training_exercises)
+
+        return (
+            jsonify(
+                {
+                    "date": raw_date,
+                    "has_data": has_any,
+                    "recovery": {
+                        "score": None,
+                        "status": None,
+                        "energy_score": None,
+                    },
+                    "sleep": {
+                        "duration_minutes": (
+                            getattr(sleep_entry, "duration_minutes", None)
+                            if sleep_entry
+                            else None
+                        ),
+                        "quality_score": (
+                            getattr(sleep_entry, "quality_score", None)
+                            if sleep_entry
+                            else None
+                        ),
+                        "bedtime": (
+                            getattr(sleep_entry, "sleep_start", None)
+                            if sleep_entry
+                            else None
+                        ),
+                        "wake_time": (
+                            getattr(sleep_entry, "sleep_end", None)
+                            if sleep_entry
+                            else None
+                        ),
+                    },
+                    "training": {
+                        **training_summary,
+                        "sessions": training_sessions,
+                        "exercises": training_exercises,
+                    },
+                    "habits": {
+                        "completed": len(
+                            [habit for habit in habits if habit.get("completed")]
+                        ),
+                        "total": len(habits),
+                        "score": None,
+                        "items": habits,
+                    },
+                    "recommendations": {
+                        "total": len(recs),
+                        "items": recs,
+                    },
+                }
+            ),
+            200,
+        )
+
+    except Exception:
+        current_app.logger.exception(
+            "Unhandled error in day-details endpoint for user %s date %s",
+            user_id,
+            raw_date,
+        )
+
+        return (
+            jsonify(
+                {
+                    "date": raw_date,
+                    "has_data": False,
+                    "recovery": {
+                        "score": None,
+                        "status": None,
+                        "energy_score": None,
+                    },
+                    "sleep": {
+                        "duration_minutes": None,
+                        "quality_score": None,
+                        "bedtime": None,
+                        "wake_time": None,
+                    },
+                    "training": {
+                        "load": None,
+                        "sessions": 0,
+                        "exercises": [],
+                    },
+                    "habits": {
+                        "completed": 0,
+                        "total": 0,
+                        "score": None,
+                        "items": [],
+                    },
+                    "recommendations": {
+                        "total": 0,
+                        "items": [],
+                    },
+                }
+            ),
+            200,
+        )
+

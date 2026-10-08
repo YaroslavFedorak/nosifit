@@ -1,0 +1,76 @@
+:root {
+  --nf-bg: #07090d;
+  --nf-bg-soft: #0b0e14;
+  --nf-bg-elevated: #10141c;
+
+  --nf-surface: #0f131a;
+  --nf-surface-soft: #131821;
+  --nf-surface-strong: #171d27;
+  --nf-surface-deep: #090c11;
+
+  --nf-yellow: #f4c84a;
+  --nf-yellow-soft: #ffe39a;
+  --nf-blue: #42c7d8;
+  --nf-blue-soft: #8be3ec;
+  --nf-violet: #9d7bea;
+  --nf-violet-soft: #c8b7ff;
+  --nf-green: #65d6a0;
+  --nf-green-soft: rgba(101, 214, 160, 0.12);
+  --nf-red: #f06f7a;
+  --nf-red-soft: rgba(240, 111, 122, 0.12);
+  --nf-orange: #f3a45d;
+
+  /* Module accents: one source of truth for each section's colour. */
+  --nf-accent-training: #f4c84a;
+  --nf-accent-nutrition: #9b5de5;
+  --nf-accent-nutrition-soft: #c79bff;
+  --nf-accent-recovery: #42c7d8;
+
+  --nf-text-main: #f3f5f7;
+  --nf-text-muted: #9da6b3;
+  --nf-text-soft: #707b89;
+  --nf-text-inverse: #101318;
+
+  --nf-border-subtle: rgba(255, 255, 255, 0.075);
+  --nf-border-soft: rgba(255, 255, 255, 0.045);
+  --nf-border-strong: rgba(255, 255, 255, 0.13);
+  --nf-border-input: rgba(255, 255, 255, 0.10);
+
+  /* Interactive surfaces (inputs, hovered rows). Used by several widgets. */
+  --nf-surface-input: #151a23;
+  --nf-surface-hover: #181e29;
+
+  --nf-radius-xl: 24px;
+  --nf-radius-lg: 18px;
+  --nf-radius-md: 14px;
+  --nf-radius-sm: 10px;
+  --nf-radius-xs: 7px;
+  --nf-radius-pill: 999px;
+
+  --nf-shadow-sm: 0 8px 24px rgba(0, 0, 0, 0.18);
+  --nf-shadow-soft: 0 12px 32px rgba(0, 0, 0, 0.24);
+  --nf-shadow-md: 0 16px 42px rgba(0, 0, 0, 0.28);
+  --nf-shadow-lg: 0 28px 70px rgba(0, 0, 0, 0.38);
+
+  --nf-glow-yellow: 0 0 0 1px rgba(244, 200, 74, 0.16), 0 12px 36px rgba(244, 200, 74, 0.10);
+  --nf-glow-violet: 0 0 0 1px rgba(157, 123, 234, 0.16), 0 12px 36px rgba(157, 123, 234, 0.10);
+  --nf-glow-blue: 0 0 0 1px rgba(66, 199, 216, 0.14), 0 12px 36px rgba(66, 199, 216, 0.08);
+
+  --nf-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --nf-transition-fast: 180ms var(--nf-ease);
+  --nf-transition: 280ms var(--nf-ease);
+  --nf-transition-slow: 420ms var(--nf-ease);
+
+  --nf-max-width: 1440px;
+  --nf-page-padding-x: 28px;
+  --nf-sidebar-width: 248px;
+  --nf-content-gap: 24px;
+
+  /* Compatibility aliases for older page styles. */
+  --bg: var(--nf-bg);
+  --text: var(--nf-text-main);
+  --text-muted: var(--nf-text-muted);
+  --surface: var(--nf-surface);
+  --surface-soft: var(--nf-surface-soft);
+  --border: var(--nf-border-subtle);
+}

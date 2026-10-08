@@ -1,0 +1,87 @@
+.training-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0px 0;
+    margin-bottom: 0px;
+}
+
+.training-header-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.training-header-icon-box {
+    width: 48px;
+    height: 48px;
+    background: var(--card-soft);
+    border: 1px solid var(--border-soft);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.training-header-icon svg {
+    width: 22px;
+    height: 22px;
+    color: var(--accent);
+}
+
+.training-header-text {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.training-title {
+    font-size: 21px;
+    font-weight: 600;
+}
+
+.training-subtitle {
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+.training-header-right {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.training-header-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 3px;
+}
+
+.training-header-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: var(--text-muted);
+}
+
+.training-header-value {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+@media (max-width: 960px) {
+    .training-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .training-header-right {
+        align-items: flex-start;
+    }
+
+    .training-header-info {
+        align-items: flex-start;
+    }
+}

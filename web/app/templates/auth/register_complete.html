@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="{{ locale }}">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Завершення реєстрації — NosiFit</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    {% include "components/brand_head.html" %}
+    <link rel="stylesheet" href="/static/css/auth/register_complete.css" />
+  </head>
+
+  <body>
+    <div class="bg"></div>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+
+    <div class="auth-card">
+      <div class="progress-wrapper">
+        <div class="progress-line">
+          <div class="progress-fill" style="width: 100%"></div>
+        </div>
+
+        <div class="progress-steps">
+          <div class="step completed" data-label="{{ auth_t("steps.account") }}"></div>
+          <div class="step completed" data-label="{{ auth_t("steps.verification") }}"></div>
+          <div class="step active" data-label="{{ auth_t("steps.profile") }}"></div>
+        </div>
+      </div>
+
+      <div class="brand-compact">
+        <h1 class="brand-title">
+          <img src="{{ url_for('static', filename='img/brand/nosifit-lockup-on-dark.svg') }}" class="brand-logo" alt="NosiFit" />
+        </h1>
+      </div>
+
+      <h2 class="auth-card-title">{{ auth_t("registerComplete.title") }}</h2>
+
+      <p class="muted">
+        {{ auth_t("registerComplete.text") }}
+      </p>
+
+      {% include "auth/_flashes.html" %}
+      <form method="POST" action="{{ url_for('auth.register_complete') }}">
+        <div class="auth-actions">
+          <button class="cmp-btn-primary" type="submit">
+            {{ auth_t("registerComplete.submit") }}
+          </button>
+
+          <a class="link-muted" href="{{ url_for('auth.register') }}">
+            {{ auth_t("common.back") }}
+          </a>
+        </div>
+      </form>
+    </div>
+  </body>
+</html>

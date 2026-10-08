@@ -1,0 +1,251 @@
+{
+    "title": "Trening",
+    "subtitle": "Planuj treningi • Analizuj postępy • Otrzymuj rekomendacje",
+    "today": "Dzisiaj",
+    "todayWorkout": "Dzisiejszy trening",
+    "trainingPlan": "Plan treningowy",
+    "workoutName": "Nazwa treningu",
+    "addExercise": "Dodaj ćwiczenie",
+    "saveWorkout": "Zapisz trening",
+    "weeklySets": {
+        "title": "Serie w tygodniu",
+        "period": "Od poniedziałku",
+        "emptyTitle": "W tym tygodniu nie ma jeszcze treningów",
+        "emptyText": "Dodaj trening, aby zobaczyć tygodniową objętość.",
+        "loadErrorTitle": "Nie udało się wczytać danych",
+        "loadErrorText": "Odśwież stronę za chwilę.",
+        "ariaRow": "{muscle}: {sets} z {target} serii"
+    },
+    "weakPoints": "Słabe punkty",
+    "recommendedExercises": "Polecane ćwiczenia",
+    "muscleBalance": "Balans mięśni",
+    "balanced": "Zrównoważone",
+    "overloaded": "Przeciążone",
+    "recommendations": {
+        "weakPointsEmpty": "Za mało danych, aby określić słabe grupy mięśni",
+        "weakPointsDescription": "Dodaj kilka treningów, aby otrzymać spersonalizowaną analizę",
+        "exercisesEmpty": "Brak spersonalizowanych rekomendacji",
+        "exercisesDescription": "Dodaj kilka treningów, aby system mógł przeanalizować postępy",
+        "balanceEmpty": "Za mało danych, aby przeanalizować balans mięśni",
+        "balanceDescription": "Kontynuuj treningi, aby otrzymać analizę grup mięśniowych",
+        "noBalancedGroups": "Brak grup w zakresie równowagi",
+        "noOverloadedGroups": "Brak przeciążonych grup",
+        "reasons": {
+            "improvesWeakMuscleGroup": "Wzmacnia słabą grupę mięśni",
+            "improvesWeakMovementPattern": "Poprawia słaby wzorzec ruchu",
+            "helpsReverseRegression": "Pomaga odzyskać postępy",
+            "helpsBreakPlateau": "Pomaga przełamać stagnację",
+            "supportsAnUndertrainedMuscle": "Wzmacnia niedotrenowaną grupę mięśni",
+            "addsExerciseVariety": "Dodaje różnorodność ćwiczeń",
+            "targetsYourWeakPoint": "Celuje w twój słaby punkt",
+            "progression": "Wspiera progres",
+            "lowFrequency": "Ta grupa mięśni jest trenowana zbyt rzadko",
+            "highFrequency": "Uwzględnia wysoką częstotliwość treningów"
+        },
+        "training": {
+            "reasons": {
+                "belowTarget": "Mało serii w ostatnich 7 dniach",
+                "undertrained": "Od kilku tygodni za mało serii",
+                "weakPoint": "Pracuje nad twoim słabym punktem",
+                "focus": "Zgodne z twoim fokusem treningowym",
+                "frequency": "Kilka dni bez treningu",
+                "recovered": "Odpoczęte i gotowe",
+                "lowReadiness": "Wciąż regeneruje się po ostatnim treningu",
+                "moderateReadiness": "Jeszcze nie w pełni odpoczęte — zrób mniej serii",
+                "accumulatedFatigue": "Kilka ciężkich dni z rzędu — daj odpocząć",
+                "highVolume": "W ostatnich 7 dniach serii jest już dość",
+                "withinTarget": "Liczba serii z 7 dni mieści się w celu",
+                "ready": "Mięśnie są wystarczająco zregenerowane"
+            },
+            "guidance": {
+                "heading": "Co trenować dzisiaj",
+                "holdBack": "Lepiej nie obciążać",
+                "verdict": {
+                    "no_history": {
+                        "title": "Brak treningów",
+                        "message": "Zapisz trening, a tutaj pojawi się, co warto trenować i dlaczego."
+                    },
+                    "focus": {
+                        "title": "Warto potrenować",
+                        "message": "Te mięśnie już odpoczęły, a serii było na nie za mało."
+                    },
+                    "train": {
+                        "title": "Brak wyraźnego priorytetu",
+                        "message": "Objętość mieści się w celu. Jeśli trenujesz dziś, możesz podtrzymać te mięśnie."
+                    },
+                    "rest": {
+                        "title": "Dziś lepiej odpocząć",
+                        "message": "Dodatkowa praca nie jest teraz potrzebna, a część mięśni wciąż się regeneruje.",
+                        "messageFatigue": "Kilka dni z rzędu było duże obciążenie — daj mięśniom odpocząć."
+                    },
+                    "balanced": {
+                        "title": "Dziś brak wyraźnego priorytetu",
+                        "message": "Serie z ostatnich 7 dni są rozłożone równomiernie — możesz zrobić zaplanowany trening."
+                    }
+                },
+                "kind": {
+                    "priority": "Priorytet",
+                    "train": "Można trenować",
+                    "reduce": "Mniej serii",
+                    "enough": "Cel osiągnięty",
+                    "rest": "Odpoczynek"
+                },
+                "action": {
+                    "priority": "Dodaj około {sets} serii",
+                    "train": "Około {sets} serii, by podtrzymać objętość"
+                },
+                "noExercises": "Dodatkowe ćwiczenia nie są teraz potrzebne — trenuj według planu."
+            }
+        }
+    },
+    "muscles": {
+        "spine": "Kręgosłup",
+        "traps": "Czworoboczny",
+        "abs": "Brzuch",
+        "obliques": "Skośne",
+        "hipFlexors": "Zginacze bioder",
+        "chest": "Klatka piersiowa",
+        "back": "Plecy",
+        "glutes": "Pośladki",
+        "quads": "Czworogłowe",
+        "shoulders": "Barki",
+        "triceps": "Tricepsy",
+        "biceps": "Bicepsy",
+        "core": "Core",
+        "legs": "Nogi",
+        "lowerBack": "Dolne plecy",
+        "lats": "Najszersze grzbietu",
+        "upperBack": "Środek pleców",
+        "forearms": "Przedramiona",
+        "hamstrings": "Dwugłowe uda",
+        "calves": "Łydki",
+        "adductors": "Przywodziciele",
+        "neck": "Szyja"
+    },
+    "heatmap": {
+        "yearActivity": "Aktywność w ciągu roku",
+        "year": "Rok",
+        "calendar": "Kalendarz",
+        "activityHeatmap": "Mapa aktywności w ciągu roku",
+        "less": "Mniej",
+        "more": "Więcej",
+        "load": "{percent}% obciążenia ({load} jednostek)",
+        "ariaLabel": "{date}: {percent}% obciążenia",
+        "emptyDay": "Brak treningów tego dnia",
+        "session": "Sesja",
+        "exerciseMeta": "{sets}×{reps}, {load} kg",
+        "exerciseMetaNoLoad": "{sets}×{reps}",
+        "exerciseMetaDuration": "{sets}×{seconds} s, {load} kg",
+        "exerciseMetaDurationNoLoad": "{sets}×{seconds} s",
+        "error": "Błąd",
+        "loadError": "Nie udało się załadować danych.",
+        "intensity": "{percent}% · ≈ {sets} ciężkich serii",
+        "ariaIntensity": "{date}: {percent}% · ≈ {sets} ciężkich serii"
+    },
+    "months": {
+        "jan": "Sty",
+        "feb": "Lut",
+        "mar": "Mar",
+        "apr": "Kwi",
+        "may": "Maj",
+        "jun": "Cze",
+        "jul": "Lip",
+        "aug": "Sie",
+        "sep": "Wrz",
+        "oct": "Paź",
+        "nov": "Lis",
+        "dec": "Gru"
+    },
+    "monthNames": {
+        "jan": "Styczeń",
+        "feb": "Luty",
+        "mar": "Marzec",
+        "apr": "Kwiecień",
+        "may": "Maj",
+        "jun": "Czerwiec",
+        "jul": "Lipiec",
+        "aug": "Sierpień",
+        "sep": "Wrzesień",
+        "oct": "Październik",
+        "nov": "Listopad",
+        "dec": "Grudzień"
+    },
+    "weekdays": {
+        "mon": "Pon",
+        "tue": "Wt",
+        "wed": "Śr",
+        "thu": "Czw",
+        "fri": "Pt",
+        "sat": "Sob",
+        "sun": "Ndz"
+    },
+    "plan": {
+        "title": "Mój plan treningowy",
+        "help": "Pomoc",
+        "helpChooseDay": "Wybierz dzień, dodaj ćwiczenia i ustaw powtórzenia, serie oraz ciężar",
+        "helpReorder": "Przeciągnij ćwiczenia, aby zmienić ich kolejność",
+        "name": "Nazwa planu",
+        "namePlaceholder": "Na przykład: Full Body",
+        "dayExercises": "Ćwiczenia na ten dzień",
+        "empty": "Plan na ten dzień jest pusty",
+        "emptyDescription": "Dodaj pierwsze ćwiczenie, aby rozpocząć trening",
+        "exercisesCount": "ćwiczeń",
+        "setsCount": "serii",
+        "save": "Zapisz plan",
+        "saved": "Plan zapisany",
+        "saveError": "Nie udało się zapisać planu"
+    },
+    "exercisePicker": {
+        "title": "Wybór ćwiczeń",
+        "search": "Szukaj ćwiczeń",
+        "all": "Wszystkie",
+        "chest": "Klatka",
+        "back": "Plecy",
+        "legs": "Nogi",
+        "shoulders": "Barki",
+        "arms": "Ramiona",
+        "core": "Core",
+        "empty": "Nie znaleziono ćwiczeń"
+    },
+    "exercise": {
+        "execution": "Szczegóły ćwiczenia",
+        "sets": "Serie",
+        "reps": "Powtórzenia",
+        "seconds": "Sekundy",
+        "perSide": "/ stronę",
+        "weight": "Ciężar (kg)",
+        "rpe": "RPE",
+        "fallback": "Ćwiczenie"
+    },
+    "workout": {
+        "add": "Dodaj trening",
+        "setsShort": "serie",
+        "repsShort": "powt.",
+        "weightShort": "kg"
+    },
+    "summary": {
+        "exercises": "ćwiczeń",
+        "sets": "serii"
+    },
+    "calendar": {
+        "month": "Miesiąc",
+        "close": "Zamknij",
+        "previousMonth": "Poprzedni miesiąc",
+        "nextMonth": "Następny miesiąc"
+    },
+    "dayDetails": {
+        "day": "Dzień",
+        "close": "Zamknij"
+    },
+    "session": {
+        "saved": "Trening zapisany"
+    },
+    "common": {
+        "cancel": "Anuluj",
+        "close": "Zamknij",
+        "save": "Zapisz",
+        "error": "Błąd",
+        "loading": "Ładowanie",
+        "noData": "Brak danych"
+    }
+}

@@ -1,0 +1,14 @@
+﻿{
+    "units": {
+        "hours": "год",
+        "calories": "ккал",
+        "grams": "г",
+        "milliliters": "л"
+    },
+    "page": {
+        "title": "Панель — Nosi Fit",
+        "heading": "Панель",
+        "subtitle": "Навантаження, відновлення і прогрес за сьогодні",
+        "today": "Сьогодні"
+    }
+}

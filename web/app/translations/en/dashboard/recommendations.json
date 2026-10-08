@@ -1,0 +1,82 @@
+{
+    "recommendations": {
+        "title": "Recommendations",
+        "categories": {
+            "training": "Training",
+            "recovery": "Recovery",
+            "nutrition": "Nutrition"
+        },
+        "emptyCategory": "No recommendation at the moment",
+        "dailyTitle": "Main recommendation",
+        "emptyDaily": "No main recommendation for today",
+        "empty": "No recommendations",
+        "training": {
+            "reasons": {
+                "weakMuscle": "Improves a weak muscle group",
+                "weakPoint": "Targets your weak point",
+                "weakPattern": "Improves a weak movement pattern",
+                "regression": "Helps reverse regression",
+                "plateau": "Helps break a plateau",
+                "frequency": "No training for a few days",
+                "diversity": "Adds exercise variety",
+                "belowTarget": "Few sets in the last 7 days",
+                "undertrained": "Too few sets for several weeks",
+                "focus": "You asked for more attention here",
+                "recovered": "Rested and ready",
+                "lowReadiness": "Still recovering from recent training",
+                "moderateReadiness": "Not fully rested yet — do fewer sets",
+                "accumulatedFatigue": "Several heavy days in a row — let it rest",
+                "highVolume": "Already enough sets in the last 7 days",
+                "withinTarget": "Sets in the last 7 days are within your target",
+                "ready": "Recovered enough to train"
+            },
+            "summary": {
+                "recovery": "Recovery should be prioritized",
+                "highLoad": "Training load is high",
+                "muscles": "Some muscle groups need more attention",
+                "patterns": "Some movement patterns need more work",
+                "balanced": "Training looks balanced."
+            }
+        },
+        "recovery": {
+            "fullRecovery": {
+                "title": "Focus on recovery",
+                "message": "Focus on recovery today and avoid high-intensity training"
+            },
+            "lightTraining": {
+                "title": "Choose light training",
+                "message": "Choose a light workout today and focus on technique"
+            },
+            "lowEnergy": {
+                "title": "Low energy",
+                "message": "Your energy level is low — choose light activity or active recovery"
+            },
+            "completeHabits": {
+                "title": "Complete recovery habits",
+                "message": "Complete your recovery habits to support better recovery"
+            },
+            "veryHighLoad": {
+                "title": "Very high training load",
+                "message": "Today's training load is very high. Focus on recovery before your next intense workout."
+            },
+            "highLoad": {
+                "title": "High training load",
+                "message": "Today's training load is high. Avoid adding unnecessary volume."
+            },
+            "muscleRest": {
+                "title": "Allow more recovery",
+                "message": "Give {muscle} more time to recover after significant recent training"
+            },
+            "muscleTraining": {
+                "title": "Train {muscle}",
+                "message": "Consider training {muscle} due to low recent training volume"
+            }
+        },
+        "items": {
+            "empty": {
+                "title": "No nutrition recommendations",
+                "message": "Your nutrition looks balanced"
+            }
+        }
+    }
+}

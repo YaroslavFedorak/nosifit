@@ -1,0 +1,66 @@
+{% extends base_template %}
+
+{% block title %}Демо — NosiFit{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/pages/demo.css') }}" />
+{% endblock %}
+
+{% block body %}
+<main class="demo-page">
+  {% include "public/demo/_hero.html" %}
+  {% include "public/demo/_guide.html" %}
+
+  <section class="demo-dashboard" aria-labelledby="demo-dashboard-title">
+    <header class="demo-dashboard-header">
+      <div>
+        <span class="demo-eyebrow" data-i18n="dashboard.eyebrow">Огляд дня</span>
+        <h2 id="demo-dashboard-title" data-i18n="dashboard.title">Дашборд</h2>
+        <p data-i18n="dashboard.description">Один звичайний день: тренування, їжа, сон і як усе це разом вплинуло на стан.</p>
+      </div>
+      <div class="demo-date">
+        <span data-i18n="dashboard.dateLabel">Сьогодні</span>
+        <strong data-i18n="dashboard.date">28 вер</strong>
+      </div>
+    </header>
+
+    {% include "public/demo/widgets/_scores.html" %}
+    {% include "public/demo/widgets/_heatmap.html" %}
+
+    <div class="demo-dashboard-grid">
+      {% include "public/demo/widgets/_training.html" %}
+      {% include "public/demo/widgets/_nutrition.html" %}
+      {% include "public/demo/widgets/_recovery.html" %}
+      {% include "public/demo/widgets/_habits.html" %}
+    </div>
+
+    {% include "public/demo/widgets/_recommendation.html" %}
+  </section>
+
+  <section class="demo-explainer">
+    <div>
+      <span class="demo-eyebrow" data-i18n="explainer.eyebrow">Що NosiFit робить із записами</span>
+      <h2 data-i18n="explainer.title">Не просто список записів</h2>
+      <p data-i18n="explainer.text">Якщо записувати регулярно, NosiFit покаже не лише сьогоднішній день, а й те, як сон і їжа впливають на ваші тренування.</p>
+    </div>
+    <div class="demo-explainer-grid">
+      <article><span>01</span><h3 data-i18n="explainer.data.title">Ви записуєте</h3><p data-i18n="explainer.data.text">Вправи, їжу, воду, сон і звички — у будь-який момент дня.</p></article>
+      <article><span>02</span><h3 data-i18n="explainer.context.title">Дашборд показує все разом</h3><p data-i18n="explainer.context.text">Навантаження, харчування і відновлення на одному екрані.</p></article>
+      <article><span>03</span><h3 data-i18n="explainer.trend.title">Календар показує історію</h3><p data-i18n="explainer.trend.text">Видно, як змінюється ваш стан тиждень за тижнем, а не лише за один день.</p></article>
+    </div>
+  </section>
+
+  <section class="demo-register-panel">
+    <div>
+      <span class="demo-eyebrow" data-i18n="register.eyebrow">Після реєстрації</span>
+      <h2 data-i18n="register.title">Далі — ваші власні дані</h2>
+      <p data-i18n="register.text">Записуйте свої тренування, їжу, воду, сон і звички, а NosiFit покаже, як змінюються ваші показники.</p>
+    </div>
+    <a href="{{ url_for('auth.register') }}" class="demo-register-button" data-i18n="register.cta">Створити акаунт</a>
+  </section>
+</main>
+{% endblock %}
+
+{% block scripts %}
+<script type="module" src="{{ url_for('static', filename='js/pages/demo.js') }}"></script>
+{% endblock %}

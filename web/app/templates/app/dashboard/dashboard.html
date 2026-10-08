@@ -1,0 +1,312 @@
+{% extends "app/base_app.html" %} {% block title %}{{ dashboard_t("page.title")
+}}{% endblock %} {% block styles %}
+
+<link
+  rel="stylesheet"
+  href="{{ url_for(
+        'static',
+        filename='css/pages/dashboard/dashboard.css'
+    ) }}"
+/>
+
+{% endblock %} {% block body_class %}dashboard-page{% endblock %} {% block body
+%}
+
+<div class="dashboard-page-wrapper">
+  <div class="dashboard-header">
+    <div class="dashboard-header-left">
+      <div class="dashboard-header-icon-box">
+        <span class="dashboard-header-icon" id="dashboard-header-icon">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="22"
+            height="22"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="white"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path
+              d="M12 3v17a1 1 0 0 1-1 1H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6a1 1 0 0 1-1 1H3"
+            />
+
+            <path d="M16 19h6" />
+
+            <path d="M19 22v-6" />
+          </svg>
+        </span>
+      </div>
+
+      <div class="dashboard-header-text">
+        <h1 class="dashboard-title">{{ dashboard_t("page.heading") }}</h1>
+
+        <div class="dashboard-subtitle">{{ dashboard_t("page.subtitle") }}</div>
+      </div>
+    </div>
+
+    <div class="dashboard-header-right">
+      <div class="dashboard-header-info">
+        <div class="dashboard-header-label">
+          {{ dashboard_t("page.today") }}
+        </div>
+
+        <div id="dashboard-header-date" class="dashboard-header-value"></div>
+      </div>
+    </div>
+  </div>
+
+  <main class="dashboard-main-grid">
+    <div class="dashboard-left">
+      <div class="dashboard-primary-row">
+        <section class="db-card db-card-session">
+          <div class="db-card-header">
+            <div class="db-card-heading">
+              <h2 class="db-card-title">{{ dashboard_t("workout.title") }}</h2>
+            </div>
+
+            <div class="db-session-header-actions">
+              <input
+                id="dashboard-workout-title"
+                class="db-session-title-input"
+                type="text"
+                placeholder="{{ dashboard_t('workout.titlePlaceholder') }}"
+                autocomplete="off"
+              />
+
+              <button
+                id="dashboard-open-training"
+                class="db-btn db-btn-secondary"
+                type="button"
+              >
+                {{ dashboard_t("workout.planButton") }}
+              </button>
+            </div>
+          </div>
+
+          <div class="db-session-content" id="dashboard-training-session">
+            <div class="db-session-exercise-box">
+              <div
+                id="dashboard-workout-exercise-list"
+                class="db-session-exercise-list"
+              ></div>
+            </div>
+
+            <div class="db-session-actions">
+              <button
+                id="dashboard-add-exercise"
+                class="db-btn db-btn-secondary"
+                type="button"
+              >
+                + {{ dashboard_t("workout.addExercise") }}
+              </button>
+
+              <button
+                id="dashboard-save-workout"
+                class="db-btn db-btn-primary"
+                type="button"
+              >
+                {{ dashboard_t("workout.save") }}
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <section class="db-card db-card-nutrition">
+          <div class="db-card-header">
+            <div class="db-card-heading">
+              <h2 class="db-card-title">
+                {{ dashboard_t("nutrition.title") }}
+              </h2>
+            </div>
+
+            <div class="db-nutrition-header-actions">
+              <button
+                type="button"
+                class="db-btn db-nutrition-new-meal"
+                id="dashboard-open-add-meal"
+              >
+                {{ dashboard_t("nutrition.newMeal") }}
+              </button>
+            </div>
+          </div>
+
+          <div class="db-nutrition-content" id="dashboard-nutrition">
+            <div class="db-nutrition-meals-box">
+              <div
+                id="dashboard-meals-list"
+                class="db-nutrition-meals-list"
+              ></div>
+            </div>
+
+            <div class="db-nutrition-footer">
+              <div class="db-nutrition-footer-group">
+                <div class="db-nutrition-stat">
+                  <span class="db-nutrition-stat-label">
+                    {{ dashboard_t("nutrition.water") }}
+                  </span>
+
+                  <strong id="dashboard-water" class="db-nutrition-stat-value">
+                    —
+                  </strong>
+                </div>
+
+                <button
+                  id="dashboard-add-water"
+                  class="db-btn db-btn-secondary"
+                  type="button"
+                >
+                  + {{ dashboard_t("nutrition.addWater") }}
+                </button>
+              </div>
+
+              <div class="db-nutrition-footer-group db-nutrition-weight-group">
+                <div class="db-nutrition-stat">
+                  <span class="db-nutrition-stat-label">
+                    {{ dashboard_t("nutrition.weight") }}
+                  </span>
+
+                  <strong id="dashboard-weight" class="db-nutrition-stat-value">
+                    —
+                  </strong>
+                </div>
+
+                <button
+                  id="dashboard-open-update-weight"
+                  class="db-btn db-btn-secondary"
+                  type="button"
+                >
+                  {{ dashboard_t("nutrition.updateWeight") }}
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <section class="db-card db-card-heatmap">
+        {% include "app/dashboard/dashboard_heatmap.html" %}
+      </section>
+    </div>
+
+    <div class="dashboard-right">
+      <section class="db-card db-card-recovery">
+        <div class="db-card-header">
+          <div class="db-card-heading">
+            <h2 class="db-card-title">{{ dashboard_t("recovery.title") }}</h2>
+          </div>
+        </div>
+
+        <div id="dashboard-recovery" class="db-recovery-content">
+          <div class="db-recovery-sleep">
+            <div class="db-recovery-section-header">
+              <div class="db-recovery-section-title">
+                {{ dashboard_t("recovery.labels.sleep") }}
+              </div>
+            </div>
+
+            <div class="sleep-top">
+              <div class="sleep-top-left">
+                <strong id="dashboard-sleep-duration" class="sleep-duration">
+                  —
+                </strong>
+
+                <span id="dashboard-sleep-range" class="sleep-range"> — </span>
+              </div>
+
+              <div
+                id="dashboard-sleep-icon"
+                class="sleep-icon"
+                aria-hidden="true"
+              ></div>
+
+              <button
+                id="dashboard-add-sleep"
+                class="sleep-add-btn"
+                type="button"
+              >
+                {{ dashboard_t("recovery.labels.addSleep") }}
+              </button>
+            </div>
+
+            <div class="sleep-bottom">
+              <span id="dashboard-sleep-quality" class="sleep-status"> — </span>
+
+              <span id="dashboard-sleep-meta" class="sleep-meta"> — </span>
+            </div>
+          </div>
+
+          <div class="db-recovery-habits">
+            <div class="db-recovery-section-header">
+              <div class="db-recovery-section-title">
+                {{ dashboard_t("recovery.labels.habits") }}
+              </div>
+
+              <div class="db-recovery-habits-header-actions">
+                <button
+                  id="dashboard-open-recovery"
+                  class="db-btn db-btn-secondary"
+                  type="button"
+                  data-user-id="{{ current_user.id }}"
+                >
+                  {{ dashboard_t("recovery.labels.addHabit") }}
+                </button>
+              </div>
+            </div>
+
+            <div
+              id="dashboard-habits-list"
+              class="db-recovery-habits-list"
+            ></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="db-card db-card-recommendations">
+        <div class="db-card-header">
+          <div class="db-card-heading">
+            <h2 class="db-card-title">
+              {{ dashboard_t("recommendations.title") }}
+            </h2>
+          </div>
+        </div>
+
+        <div
+          id="dashboard-recommendations"
+          class="db-recommendations-content"
+        ></div>
+      </section>
+    </div>
+  </main>
+</div>
+
+{% include "app/dashboard/modals/exercise/modal.html" %} {% include
+"app/dashboard/modals/plan/modal.html" %} {% include
+"app/nutrition/modals/modal_add_item.html" %} {% include
+"app/nutrition/modals/modal_edit_meal.html" %}  {% include
+"app/nutrition/modals/modal_edit_item.html" %} {% include
+"app/nutrition/modals/water_add.html" %} {% include
+"app/nutrition/modals/weight_add.html" %} {% include
+"app/dashboard/modals/recovery/habit_modal.html" %} {% include
+"app/dashboard/modals/recovery/sleep_modal.html" %} {% include
+"app/dashboard/modals/heatmap/calendar.html" %} {% include
+"app/dashboard/modals/heatmap/day_details.html" %}
+
+<script
+  type="module"
+  src="{{ url_for( 
+        'static', 
+        filename='js/dashboard/dashboard.js' 
+    ) }}"
+></script>
+
+<script
+  type="module"
+  src="{{ url_for( 
+        'static', 
+        filename='js/dashboard/widgets/nutrition/index.js' 
+    ) }}"
+></script>
+
+{% endblock %}

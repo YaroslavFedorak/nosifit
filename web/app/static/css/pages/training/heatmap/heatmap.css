@@ -1,0 +1,358 @@
+.tr-card-heatmap {
+    padding: 0;
+    margin-top: auto;
+}
+
+.tr-heatmap-container {
+    background: var(--card);
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius-lg);
+    padding: 10px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    position: relative;
+    overflow: visible;
+}
+
+.tr-heatmap-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.tr-heatmap-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.tr-select {
+    padding: 5px 9px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-input);
+    background: var(--surface-input);
+    color: var(--text);
+    font-size: 12px;
+}
+
+.tr-heatmap-content {
+    width: 100%;
+    position: relative;
+}
+
+.tr-heatmap-months {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 845px;
+    margin: 0 auto;
+    padding: 0;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    line-height: 1;
+    color: var(--text-muted);
+}
+
+.tr-heatmap-months span {
+    display: block;
+    flex: 0 0 auto;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.tr-heatmap-grid {
+    display: grid;
+    grid-template-columns: repeat(53, minmax(0, 1fr));
+    grid-template-rows: repeat(7, 13px);
+    grid-auto-flow: column;
+    gap: 3px;
+    padding: 6px 0;
+    justify-content: center;
+    align-items: start;
+    max-width: 845px;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.heatmap-cell {
+    width: 100%;
+    max-width: 13px;
+    height: 13px;
+    justify-self: center;
+    border-radius: 3px;
+    background: #1a1f27;
+    position: relative;
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+.heatmap-cell[data-level="0"] {
+    background: #1a1f27;
+}
+
+.heatmap-cell[data-level="1"] {
+    background: #665c1a;
+}
+
+.heatmap-cell[data-level="2"] {
+    background: #a68f1a;
+}
+
+.heatmap-cell[data-level="3"] {
+    background: #ffd43b;
+}
+
+.heatmap-cell[data-level="4"] {
+    background: #ffe680;
+}
+
+.heatmap-cell[data-level="5"] {
+    background: #ff9f43;
+}
+
+.heatmap-cell[data-level="6"] {
+    background: #ff6b6b;
+}
+
+.heatmap-cell.today {
+    outline: 2px solid var(--accent);
+    outline-offset: -2px;
+}
+
+.heatmap-cell:hover {
+    transform: scale(1.2);
+    z-index: 5;
+}
+
+.heatmap-tooltip {
+    position: fixed;
+    left: 0;
+    top: 0;
+    display: block;
+    min-width: max-content;
+    padding: 6px 9px;
+    border-radius: var(--radius-sm);
+    background: #0b0d10;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+    color: #fff;
+    font-size: 13px;
+    line-height: 1.3;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(4px);
+    transition:
+        opacity 160ms ease,
+        transform 160ms ease,
+        visibility 160ms ease;
+    z-index: 10000;
+}
+
+.heatmap-tooltip.is-visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.tr-heatmap-legend {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 2px;
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+.legend-box {
+    width: 14px;
+    height: 14px;
+    border-radius: 3px;
+}
+
+.legend-box.level-1 {
+    background: #665c1a;
+}
+
+.legend-box.level-2 {
+    background: #a68f1a;
+}
+
+.legend-box.level-3 {
+    background: #ffd43b;
+}
+
+.legend-box.level-4 {
+    background: #ffe680;
+}
+
+.legend-box.level-5 {
+    background: #ff9f43;
+}
+
+.legend-box.level-6 {
+    background: #ff6b6b;
+}
+
+.tr-calendar-modal {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.65);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    backdrop-filter: blur(4px);
+}
+
+.tr-calendar-modal.open {
+    display: flex !important;
+}
+
+.tr-calendar-dialog {
+    background: var(--card);
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius-lg);
+    width: 90%;
+    max-width: 520px;
+    padding: 20px;
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.tr-calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.tr-calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 10px;
+}
+
+.tr-calendar-item {
+    background: var(--card-soft);
+    border-radius: var(--radius-sm);
+    padding: 6px 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 12px;
+    cursor: pointer;
+    border: 1px solid var(--border-soft);
+}
+
+.tr-calendar-item:hover {
+    border-color: var(--accent);
+}
+
+.tr-calendar-date {
+    font-weight: 600;
+}
+
+.tr-calendar-load {
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+.tr-level-0 {
+    background: #1a1f27;
+}
+
+.tr-level-1 {
+    background: #665c1a;
+}
+
+.tr-level-2 {
+    background: #a68f1a;
+}
+
+.tr-level-3 {
+    background: #ffd43b;
+}
+
+.tr-level-4 {
+    background: #ffe680;
+}
+
+.tr-level-5 {
+    background: #ff9f43;
+}
+
+.tr-level-6 {
+    background: #ff6b6b;
+}
+
+.tr-day-details-body {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    font-size: 13px;
+}
+
+.tr-day-session {
+    background: var(--card-soft);
+    border-radius: var(--radius-sm);
+    padding: 8px 10px;
+}
+
+.tr-day-session-title {
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.tr-day-exercise {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+}
+
+.tr-ex-name {
+    font-weight: 500;
+}
+
+.tr-ex-meta {
+    color: var(--text-muted);
+}
+
+@media (max-width: 900px) {
+    .tr-heatmap-container {
+        padding: 12px;
+    }
+
+    .tr-heatmap-content {
+        overflow-x: hidden;
+    }
+
+    .tr-heatmap-months {
+        width: 100%;
+        max-width: none;
+        margin: 0;
+    }
+
+    .tr-heatmap-grid {
+        width: 100%;
+        max-width: none;
+        margin: 0;
+        grid-template-columns: repeat(53, minmax(0, 1fr));
+        gap: 2px;
+    }
+
+    .heatmap-cell {
+        max-width: none;
+    }
+
+    .tr-calendar-dialog {
+        max-width: 95%;
+    }
+}

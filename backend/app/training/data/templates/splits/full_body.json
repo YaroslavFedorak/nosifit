@@ -1,0 +1,74 @@
+{
+    "name": "Full Body",
+    "days": {
+        "day1": {
+            "name": "Full Body A",
+            "exercises": [
+                {
+                    "id": "barbell-back-squat"
+                },
+                {
+                    "id": "bench-press"
+                },
+                {
+                    "id": "barbell-row"
+                },
+                {
+                    "id": "lateral-raises"
+                },
+                {
+                    "id": "bicep-curl"
+                },
+                {
+                    "id": "plank"
+                }
+            ]
+        },
+        "day2": {
+            "name": "Full Body B",
+            "exercises": [
+                {
+                    "id": "barbell-deadlift"
+                },
+                {
+                    "id": "dumbbell-shoulder-press"
+                },
+                {
+                    "id": "lat-pulldown"
+                },
+                {
+                    "id": "tricep-pushdown"
+                },
+                {
+                    "id": "hammer-curl"
+                },
+                {
+                    "id": "hanging-leg-raise"
+                }
+            ]
+        },
+        "day3": {
+            "name": "Full Body C",
+            "exercises": [
+                {
+                    "id": "lunges"
+                },
+                {
+                    "id": "incline-dumbbell-press"
+                },
+                {
+                    "id": "seated-row"
+                },
+                {
+                    "id": "face-pull"
+                },
+                {
+                    "id": "glute-bridge"
+                },
+                {
+                    "id": "side-plank"
+                }
+            ]
+        }
+    }
+}

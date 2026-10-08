@@ -1,0 +1,30 @@
+.tr-form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.tr-form-field label {
+    font-size: 14px;
+    color: var(--text-muted);
+}
+
+.tr-form-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.tr-form-save {
+    padding: 10px 16px;
+    font-size: 14px;
+}
+
+.tr-form-row {
+    display: flex;
+    gap: 12px;
+}
+
+.tr-form-row>* {
+    flex: 1;
+}

@@ -1,0 +1,118 @@
+#recommendations-widget.panel-content {
+    padding: 10px 12px;
+}
+
+.rec-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 7px;
+}
+
+.rec-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 7px;
+    padding: 8px 9px;
+    min-width: 0;
+    min-height: 0;
+    background: var(--card-soft);
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius-md);
+    transition:
+        background-color 0.18s ease,
+        border-color 0.18s ease,
+        transform 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.rec-item:hover {
+    background: var(--surface-hover);
+    border-color: var(--border-input);
+    transform: translateY(-1px);
+}
+
+.rec-icon {
+    width: 18px;
+    height: 50px;
+    flex: 0 0 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent);
+    margin-top: 1px;
+}
+
+.rec-icon svg {
+    width: 30px;
+    height: 30px;
+    display: block;
+    flex: 0 0 30px;
+}
+
+.rec-body {
+    min-width: 0;
+    flex: 1 1 auto;
+    overflow: hidden;
+}
+
+.rec-title {
+    min-width: 0;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.25;
+    color: var(--text);
+    overflow-wrap: anywhere;
+}
+
+.rec-text {
+    margin-top: 2px;
+    font-size: 13px;
+    line-height: 1.3;
+    color: var(--text-muted);
+    display: -webkit-box;
+    line-clamp: 2;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+}
+
+@media (max-width: 900px) {
+    .rec-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    #recommendations-widget.panel-content {
+        padding: 8px 10px;
+    }
+
+    .rec-grid {
+        gap: 6px;
+    }
+
+    .rec-item {
+        gap: 7px;
+        padding: 7px 8px;
+    }
+
+    .rec-icon {
+        width: 18px;
+        height: 18px;
+        flex-basis: 18px;
+    }
+
+    .rec-icon svg {
+        width: 18px;
+        height: 18px;
+    }
+
+    .rec-title {
+        font-size: 12px;
+    }
+
+    .rec-text {
+        font-size: 11px;
+        line-height: 1.25;
+    }
+}
