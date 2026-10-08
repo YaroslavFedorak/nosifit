@@ -152,14 +152,15 @@ def test_given_sessions_are_analysed(app, user, catalog):
 # --- heatmap ----------------------------------------------------------------
 
 
-def test_heatmap_reports_hard_sets_and_level(client, user, catalog):
+def test_heatmap_reports_intensity_percent_and_hard_sets(client, user, catalog):
     add_session(user, catalog, 0, [("bench-press", {"sets_done": 5, "reps_done": "8", "rpe": 9})])
     login(client)
     days = client.get("/api/training/heatmap").get_json()["days"]
-    assert all({"date", "hard_sets", "level", "is_today"} <= set(day) for day in days)
-    assert all("percent" not in day and "load" not in day for day in days)
+    assert all({"date", "hard_sets", "intensity_percent", "is_today"} <= set(day) for day in days)
+    assert all({"percent", "load", "level"}.isdisjoint(day) for day in days)
     trained = [day for day in days if day["hard_sets"] > 0]
-    assert trained and all(1 <= day["level"] <= 4 for day in trained)
+    assert trained and all(1 <= day["intensity_percent"] <= 100 for day in trained)
+    assert all(day["intensity_percent"] == 0 for day in days if day["hard_sets"] == 0)
 
 
 def test_heatmap_queries_are_constant(app, client, user, catalog):

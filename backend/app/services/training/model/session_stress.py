@@ -13,9 +13,10 @@ work a session or day contained and never blocks or prioritises muscles.
 from collections import defaultdict
 from datetime import date, timedelta
 from statistics import median
-from typing import Callable, Dict, Iterable, Mapping, Sequence
+from typing import Callable, Dict, Iterable, List, Mapping, Sequence
 
 from . import parameters as P
+from .numeric import round_half_up
 from .stimulus import Dose
 
 
@@ -48,29 +49,55 @@ def daily_stress(doses: Iterable[Dose], day_of: Callable) -> Dict[date, float]:
     return dict(per_day)
 
 
+def _baseline_days(per_day: Mapping[date, float], day: date) -> List[float]:
+    start = day - timedelta(days=P.STRESS_BASELINE_DAYS)
+    return [v for d, v in per_day.items() if start <= d < day and v > 0]
+
+
 def typical_session_stress(per_day: Mapping[date, float], day: date) -> float:
     """Median stress proxy of training days before ``day`` (with a floor)."""
-    start = day - timedelta(days=P.STRESS_BASELINE_DAYS)
-    values = [v for d, v in per_day.items() if start <= d < day and v > 0]
+    values = _baseline_days(per_day, day)
     baseline = median(values) if values else 0.0
     return max(baseline, P.STRESS_MIN_TYPICAL_SETS)
 
 
-def stress_level(value: float, typical: float) -> int:
+def heatmap_typical_stress(per_day: Mapping[date, float], day: date) -> float:
+    """Typical session for the heatmap: the user's median shrunk toward a prior.
+
+    (k * median + w * prior) / (k + w), k = training days in the baseline
+    window. Without history it is the prior; with history it converges to the
+    user's own median smoothly instead of switching at a threshold.
+    """
+    values = _baseline_days(per_day, day)
+    weight = P.HEATMAP_PRIOR_SESSIONS
+    prior = P.HEATMAP_PRIOR_TYPICAL_STRESS
+    if not values:
+        return prior
+    return (len(values) * median(values) + weight * prior) / (len(values) + weight)
+
+
+def intensity_percent(value: float, typical: float) -> int:
+    """Relative intensity of a day for the heatmap, 0-100.
+
+    Linear in the ratio to the typical session and capped at
+    HEATMAP_FULL_SCALE_RATIO; any training day shows at least 1%.
+    """
     if value <= 0:
         return 0
     ratio = value / typical
-    return 1 + sum(1 for bound in P.STRESS_LEVEL_RATIOS if ratio >= bound)
+    percent = round_half_up(100 * min(1.0, ratio / P.HEATMAP_FULL_SCALE_RATIO))
+    return max(percent, 1)
 
 
 def day_levels(per_day: Mapping[date, float], days: Sequence[date]) -> Dict[date, Dict]:
     result = {}
     for day in days:
         value = per_day.get(day, 0.0)
-        typical = typical_session_stress(per_day, day)
+        heatmap_typical = heatmap_typical_stress(per_day, day)
         result[day] = {
             "session_training_stress_proxy": round(value, 1),
-            "typical": round(typical, 1),
-            "level": stress_level(value, typical),
+            # Recovery notes compare against this baseline (unchanged floor).
+            "typical": round(typical_session_stress(per_day, day), 1),
+            "intensity_percent": intensity_percent(value, heatmap_typical),
         }
     return result
