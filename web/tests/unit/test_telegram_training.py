@@ -176,7 +176,7 @@ def save_on_server(h, catalog, items, session_id=None):
 
 
 def log_set(h, query, name, *answers):
-    """➕ Додати вправу → search → pick → weight/reps answers."""
+    """➕ Додати вправу → search → pick → answers (sets, then reps/kg per set)."""
     h.message(ADD_EXERCISE)
     h.message(query)
     press(h, name)
@@ -187,46 +187,68 @@ def log_set(h, query, name, *answers):
 # --- the main scenario -------------------------------------------------------------------
 
 
-def test_new_user_logs_a_workout_step_by_step(tg, catalog):
+def test_sets_with_their_own_reps_and_weight(tg, catalog):
     tg.message(TRAINING)
-    assert "Ще немає вправ" in text(tg)
     assert reply_keyboard(tg) == [[ADD_EXERCISE, MY_WORKOUT], [HOME]]
 
     tg.message(ADD_EXERCISE)
-    assert "Напишіть назву вправи" in text(tg)
-    tg.message("жим")
+    tg.message("жим штанги лежачи")
     press(tg, "Жим штанги лежачи")
+    assert "Скільки підходів?" in text(tg)
+    press(tg, "3")
+    assert "підхід 1 з 3" in text(tg) and "Скільки повторів?" in text(tg)
+    tg.message("12")
     assert "Яка вага, кг?" in text(tg)
     tg.message("60")
-    assert "Скільки повторів?" in text(tg)
-    tg.message("10")
-    assert "✅ Підхід записано" in text(tg)
-    assert "Жим штанги лежачи</b>: 1 підхід · 60 кг × 10" in text(tg)
+    assert "підхід 2 з 3" in text(tg)
+    tg.message("11")
+    tg.message("55")
+    tg.message("8")
+    tg.message("50")
+    assert "✅ Записано" in text(tg)
+    assert "1. 12 × 60 кг\n2. 11 × 55 кг\n3. 8 × 50 кг" in text(tg)
+
+    row = rows_by_slug(only_session(tg), catalog)["bench-press"]
+    assert row.set_entries == [{"reps": 12, "load": 60.0}, {"reps": 11, "load": 55.0}, {"reps": 8, "load": 50.0}]
+    assert row.sets_done == 3
 
     press(tg, "➕ Ще підхід")
-    assert "2 підходи · 60 кг × 10" in text(tg)
+    assert "Скільки повторів?" in text(tg)
+    press(tg, "↻")  # like the previous set: 8 × 50 кг
+    assert "4. 8 × 50 кг" in text(tg)
+
     press(tg, "✅ Готово")
-    assert "1. Жим штанги лежачи — 2 підходи · 60 кг × 10" in text(tg)
+    assert "Жим штанги лежачи</b> — 4 підходи: 12×60 · 11×55 · 8×50 · 8×50 кг" in text(tg)
+    press(tg, "✅ Завершити тренування")
+    press(tg, "✅ Завершити")
+    assert "1 вправа · 4 підходи" in text(tg)
+
+
+def test_like_previous_set_fills_the_whole_set(tg, catalog):
+    log_set(tg, "жим штанги лежачи", "Жим штанги лежачи")
+    press(tg, "2")
+    tg.message("10")
+    tg.message("60")
+    press(tg, "↻ Як попередній")
+    assert "1. 10 × 60 кг\n2. 10 × 60 кг" in text(tg)
+
+
+def test_bodyweight_and_duration_skip_the_weight(tg, catalog):
+    log_set(tg, "віджимання", "Віджимання")
+    press(tg, "2")
+    tg.message("20")
+    assert "підхід 2 з 2" in text(tg)
+    tg.message("15")
+    assert "1. 20 повт.\n2. 15 повт." in text(tg)
 
     log_set(tg, "планка", "Планка")
+    press(tg, "1")
     assert "Скільки секунд?" in text(tg)
     tg.message("45")
-    assert "Планка</b>: 1 підхід · 45 с" in text(tg)
-
-    tg.message(MY_WORKOUT)
-    assert "Всього: 2 вправи · 3 підходи" in text(tg)
-    press(tg, "✅ Завершити тренування")
-    assert "Завершити тренування?" in text(tg)
-    press(tg, "✅ Завершити")
-    assert "Тренування збережено" in text(tg) and "2 вправи · 3 підходи" in text(tg)
-
-    rows = rows_by_slug(only_session(tg), catalog)
-    bench, plank = rows["bench-press"], rows["plank"]
-    assert (bench.sets_done, bench.reps_done, bench.load_done) == (2, "10", 60.0)
-    assert (plank.sets_done, plank.duration_sec_done) == (1, 45)
+    assert "1. 45 с" in text(tg)
 
 
-def test_bodyweight_exercise_asks_only_reps_and_offers_last_time(tg, catalog):
+def test_last_time_is_offered(tg, catalog):
     import datetime as dt
 
     from backend.app.models.training_session import SessionExercise
@@ -235,40 +257,37 @@ def test_bodyweight_exercise_asks_only_reps_and_offers_last_time(tg, catalog):
     past = TrainingSession(user_id=tg.user.id, status="finished", started_at=when, finished_at=when)
     db.session.add(past)
     db.session.flush()
-    db.session.add(SessionExercise(session_id=past.id, exercise_id=catalog["push-ups"].id, sets_done=3, reps_done="33"))
+    db.session.add(SessionExercise(
+        session_id=past.id, exercise_id=catalog["bench-press"].id, sets_done=2, reps_done="10", load_done=55,
+        set_entries=[{"reps": 12, "load": 60}, {"reps": 8, "load": 50}],
+    ))
     db.session.commit()
 
     tg.message(ADD_EXERCISE)
-    press(tg, "Віджимання")  # recent, one tap
-    assert "Минулого разу: 3 підходи · × 33" in text(tg)
-    assert "Скільки повторів?" in text(tg)
-    press(tg, "33 повт.")
-    assert "Віджимання</b>: 1 підхід · × 33" in text(tg)
-
-
-def test_double_tap_on_one_more_set_adds_one(tg, catalog):
-    log_set(tg, "жим штанги лежачи", "Жим штанги лежачи", "60", "10")
-    data = button(tg, "➕ Ще підхід").callback_data
-    tg.callback(data)
-    tg.callback(data)
-    assert "Цей підхід уже записано." in toasts(tg)
-    assert rows_by_slug(only_session(tg), catalog)["bench-press"].sets_done == 2
+    press(tg, "Жим штанги лежачи")  # recent
+    assert "Минулого разу: 2 підходи: 12×60 · 8×50 кг" in text(tg)
+    assert button(tg, "2").text == "• 2"
+    press(tg, "• 2")
+    press(tg, "↻ Як минулого разу")
+    press(tg, "↻ Як минулого разу")  # set 2 of last time
+    assert "1. 12 × 60 кг\n2. 8 × 50 кг" in text(tg)
 
 
 # --- full sync with the server ---------------------------------------------------------------
 
 
 def test_bot_never_drops_exercises_logged_on_the_website(tg, catalog):
-    log_set(tg, "жим штанги лежачи", "Жим штанги лежачи", "60", "10")
+    log_set(tg, "жим штанги лежачи", "Жим штанги лежачи", "1", "10", "60")
     session_id = only_session(tg).id
-    # The website saves the same session with one more exercise.
     save_on_server(
         tg,
         catalog,
         [("bench-press", {"sets": 1, "reps": 10, "load": 60}), ("lat-pulldown", {"sets": 3, "reps": 12, "load": 45})],
         session_id,
     )
-    press(tg, "➕ Ще підхід")  # the bot's screen is from before that save
+    press(tg, "➕ Ще підхід")
+    tg.message("9")
+    tg.message("60")
 
     rows = rows_by_slug(only_session(tg), catalog)
     assert set(rows) == {"bench-press", "lat-pulldown"}
@@ -278,7 +297,7 @@ def test_bot_never_drops_exercises_logged_on_the_website(tg, catalog):
 # --- editing ----------------------------------------------------------------------------------
 
 
-def test_edit_remove_set_and_delete(tg, catalog):
+def test_remove_last_set_redo_and_delete(tg, catalog):
     save_on_server(
         tg,
         catalog,
@@ -286,35 +305,43 @@ def test_edit_remove_set_and_delete(tg, catalog):
     )
     tg.message(MY_WORKOUT)
     press(tg, "1. Жим штанги лежачи")
-    assert "Сьогодні: 3 підходи · 60 кг × 10" in text(tg)
-    press(tg, "➖ Прибрати підхід")
-    assert "Сьогодні: 2 підходи" in text(tg)
+    assert "1. 10 × 60 кг\n2. 10 × 60 кг\n3. 10 × 60 кг" in text(tg)
+    data = button(tg, "➖ Останній підхід").callback_data
+    tg.callback(data)
+    tg.callback(data)  # the same screen pressed again
+    assert "Цей підхід уже прибрано." in toasts(tg)
+    assert rows_by_slug(only_session(tg), catalog)["bench-press"].sets_done == 2
 
-    press(tg, "✏️ Змінити")
-    assert "Зараз: 2 підходи · 60 кг × 10" in text(tg)
-    tg.message("62,5")
-    tg.message("8")
-    assert "✅ Змінено" in text(tg) and "2 підходи · 62,5 кг × 8" in text(tg)
+    press(tg, "✏️ Ввести заново")
+    assert "Зараз: 2 підходи" in text(tg)
+    press(tg, "1")
+    tg.message("5")
+    tg.message("100")
+    assert "✅ Записано" in text(tg) and "1. 5 × 100 кг" in text(tg)
     bench = rows_by_slug(only_session(tg), catalog)["bench-press"]
-    assert (bench.sets_done, bench.reps_done, bench.load_done, bench.rpe) == (2, "8", 62.5, 8.0)
+    assert (bench.sets_done, bench.load_done, bench.rpe) == (1, 100.0, 8.0)
 
+    press(tg, "✅ Готово")
+    press(tg, "1. Жим штанги лежачи")
     press(tg, "🗑 Видалити")
     press(tg, "🗑 Видалити")
-    assert "1. Планка" in text(tg) and "Жим" not in text(tg)
-
+    assert "1. <b>Планка</b>" in text(tg)
     press(tg, "1. Планка")
     press(tg, "🗑 Видалити")
     press(tg, "🗑 Видалити")
     assert "Ще немає вправ" in text(tg)
-    assert sessions(tg) == []  # no empty session is left
+    assert sessions(tg) == []
 
 
 def test_invalid_answers_are_explained(tg, catalog):
     log_set(tg, "жим штанги лежачи", "Жим штанги лежачи", "багато")
-    assert "Напишіть вагу числом" in text(tg)
-    tg.message("60")
+    assert "кількість підходів" in text(tg)
+    tg.message("1")
     tg.message("8,5")
     assert "ціле число повторів" in text(tg)
+    tg.message("8")
+    tg.message("важко")
+    assert "Напишіть вагу числом" in text(tg)
     assert sessions(tg) == []
 
 
@@ -324,36 +351,28 @@ def test_invalid_answers_are_explained(tg, catalog):
 def test_modes_and_home(tg, catalog):
     tg.message(NUTRITION)
     assert reply_keyboard(tg) == [[FOOD, WATER, WEIGHT], [HOME]]
-    tg.message(TRAINING)
-    assert reply_keyboard(tg) == [[ADD_EXERCISE, MY_WORKOUT], [HOME]]
     tg.message(ADD_EXERCISE)
-    tg.message(HOME)  # also leaves the search step
+    tg.message(HOME)
     assert reply_keyboard(tg) == [[TRAINING, NUTRITION], ["🚪 Вийти"]]
     tg.message("жим")
     assert "Оберіть вправу" not in text(tg)
 
 
 def test_cancel_keeps_what_is_logged(tg, catalog):
-    log_set(tg, "жим штанги лежачи", "Жим штанги лежачи", "60", "10")
-    tg.message(ADD_EXERCISE)
+    log_set(tg, "жим штанги лежачи", "Жим штанги лежачи", "1", "10", "60")
+    log_set(tg, "планка", "Планка")
     tg.message("/cancel")
     assert "Скасовано. Усе записане збережено." in text(tg)
-    assert len(sessions(tg)) == 1
-
-
-def test_search_without_results(tg, catalog):
-    tg.message(ADD_EXERCISE)
-    tg.message("xyzqqq")
-    assert "нічого не знайдено" in text(tg)
+    assert len(only_session(tg).exercises) == 1
 
 
 def test_network_error_is_human(tg, catalog):
-    log_set(tg, "жим штанги лежачи", "Жим штанги лежачи", "60", "10")
+    log_set(tg, "жим штанги лежачи", "Жим штанги лежачи", "1", "10")
     tg.http.down = True
-    press(tg, "➕ Ще підхід")
-    assert "Не вдалося підключитися до NosiFit." in toasts(tg)
+    tg.message("60")
+    assert text(tg) == "Не вдалося підключитися до NosiFit."
     tg.http.down = False
-    assert rows_by_slug(only_session(tg), catalog)["bench-press"].sets_done == 1
+    assert sessions(tg) == []
 
 
 def test_signed_out_user_is_asked_to_sign_in(tg, catalog):

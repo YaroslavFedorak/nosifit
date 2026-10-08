@@ -138,6 +138,8 @@ def test_exercises_done_before_rank_first_and_carry_last_values(client, user, ca
     assert slugs(result)[0] == "dumbbell-bench-press"
     assert result["items"][0]["last"] == {
         "sets": 3, "reps": "10", "reps_count": 10, "duration_sec": None, "load": 24.0, "rir": 2, "rpe": 8.0,
+        # logged before sets were stored: three equal sets
+        "set_entries": [{"reps": 10, "load": 24.0}] * 3,
     }
 
 
@@ -366,3 +368,52 @@ def test_strict_first_save_creates_the_session(client, user, catalog):
     )
     assert response.status_code == 200
     assert today(client)["id"] == response.get_json()["id"]
+
+
+# --- sets with their own reps and kg -----------------------------------------------
+
+
+def test_each_set_keeps_its_reps_and_kg(client, user, catalog):
+    login(client)
+    sets = [{"reps": 12, "load": 60}, {"reps": 11, "load": 55}, {"reps": 8, "load": 50}]
+    save(client, [{"exercise": {"id": catalog["bench-press"].id}, "set_entries": sets}])
+
+    row = SessionExercise.query.one()
+    assert row.set_entries == [{"reps": 12, "load": 60.0}, {"reps": 11, "load": 55.0}, {"reps": 8, "load": 50.0}]
+    # what the training model reads: 3 sets, mean reps, kg weighted by reps
+    assert (row.sets_done, row.reps_done) == (3, "10")
+    assert row.load_done == pytest.approx((12 * 60 + 11 * 55 + 8 * 50) / 31, abs=0.01)
+
+    logged = today(client)["exercises"][0]
+    assert logged["set_entries"] == row.set_entries
+    assert today(client)["totals"]["sets"] == 3
+
+
+def test_duration_sets(client, user, catalog):
+    login(client)
+    save(client, [{"exercise": {"id": catalog["plank"].id}, "set_entries": [{"duration_sec": 60, "load": 0}, {"duration_sec": 40, "load": 0}]}])
+    row = SessionExercise.query.one()
+    assert (row.sets_done, row.duration_sec_done, row.reps_done) == (2, 50, None)
+
+
+@pytest.mark.parametrize(
+    "sets",
+    [[], [{"reps": 0, "load": 10}], [{"load": 10}], [{"reps": 5, "duration_sec": 5, "load": 0}], [{"reps": 5, "load": -1}], "3x10"],
+)
+def test_invalid_sets_are_rejected(client, user, catalog, sets):
+    login(client)
+    response = client.post(
+        "/api/training/sessions/complete",
+        json={"exercises": [{"exercise": {"id": catalog["bench-press"].id}, "set_entries": sets}]},
+    )
+    assert response.status_code == 400
+    assert TrainingSession.query.count() == 0
+
+
+def test_saving_without_sets_drops_stale_sets(client, user, catalog):
+    login(client)
+    first = save(client, [{"exercise": {"id": catalog["bench-press"].id}, "set_entries": [{"reps": 12, "load": 60}]}])
+    save(client, [item(catalog, "bench-press", sets=4, reps=6, load=80)], first["id"])
+    row = SessionExercise.query.one()
+    assert row.set_entries is None
+    assert today(client)["exercises"][0]["set_entries"] == [{"reps": 6, "load": 80.0}] * 4

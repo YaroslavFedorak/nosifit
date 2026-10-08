@@ -22,6 +22,10 @@ import {
     persistSessionId
 } from "./state.js";
 
+import {
+    entriesOf
+} from "./sets.js";
+
 export function initSession(): void {
     const saveButton =
         document.getElementById(
@@ -61,6 +65,7 @@ export function initSession(): void {
                             ? { duration_sec: item.duration_sec }
                             : { reps: item.reps }),
                         load: item.load,
+                        set_entries: entriesOf(item),
                         ...(item.rpe != null
                             ? { rpe: item.rpe }
                             : {})

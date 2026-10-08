@@ -1,20 +1,17 @@
 """Today's workout as the bot sends it to the NosiFit API.
 
-The server keeps one row per exercise (sets x reps or seconds, kg, RPE).
-Every change in the bot starts from the server's current workout, changes
-one exercise and sends the whole list to /api/training/sessions/complete,
-which replaces the session's exercises. The bot keeps no copy of its own,
-so changes made on the website are never overwritten.
+Each exercise is a list of sets, every set with its own reps (or seconds)
+and kg. Every change in the bot starts from the server's current workout,
+changes one exercise and sends the whole list to
+/api/training/sessions/complete, which replaces the session's exercises.
+The bot keeps no copy of its own, so changes made on the website are never
+overwritten.
 """
 
 import html
 import re
 
-DEFAULT_REPS = 10
-DEFAULT_SECONDS = 30
-
-# Same limits as the API.
-MAX_SETS = 100
+MAX_SETS = 30
 MAX_REPS = 100
 MAX_SECONDS = 3600
 MAX_LOAD = 2000.0
@@ -45,58 +42,38 @@ def is_duration(exercise: dict) -> bool:
     return exercise.get("measurement_type") == "duration"
 
 
+def count_key(exercise: dict) -> str:
+    return "duration_sec" if is_duration(exercise) else "reps"
+
+
 def item_from_session(row: dict) -> dict:
-    """A logged exercise. ``reps_text`` and ``rpe`` keep what is stored
-    ("8-12", 7.5) so re-sending the list changes nothing by accident."""
-    duration = is_duration(row)
-    item = {
+    """A logged exercise with its sets. ``rpe`` is kept as stored."""
+    return {
         "id": str(row["id"]),
         "name": row.get("name") or "Вправа",
         "measurement_type": row.get("measurement_type"),
         "load_type": row.get("load_type"),
         "accepts_load": bool(row.get("accepts_load")),
-        "sets": int(row.get("sets") or 0),
-        "reps": None if duration else int(row.get("reps_count") or DEFAULT_REPS),
-        "seconds": int(row.get("duration_sec") or DEFAULT_SECONDS) if duration else None,
-        "load": _load_of(row.get("load")),
+        "entries": [dict(entry) for entry in row.get("set_entries") or []],
         "rpe": row.get("rpe"),
     }
-    if not duration and row.get("reps") not in (None, ""):
-        item["reps_text"] = str(row["reps"])
-    return item
 
 
 def new_item(exercise: dict) -> dict:
-    return item_from_session({**exercise, "sets": 0, "reps": None, "reps_count": None, "rpe": None, "load": 0})
+    return item_from_session({**exercise, "set_entries": [], "rpe": None})
 
 
 def find(items: list[dict], key: str) -> int | None:
     return next((i for i, item in enumerate(items) if key_of(item["id"]) == key), None)
 
 
-def set_values(item: dict, *, count: int | None, load: float | None) -> None:
-    """Reps (or seconds) and kg of the exercise, as entered."""
-    if count is not None:
-        if item["reps"] is None:
-            item["seconds"] = count
-        else:
-            item["reps"] = count
-            item.pop("reps_text", None)
-    if load is not None:
-        item["load"] = round(load, 2)
-
-
 def payload(items: list[dict]) -> list[dict]:
     """The exercises list of /sessions/complete (exercises with sets only)."""
     result = []
     for item in items:
-        if item["sets"] <= 0:
+        if not item["entries"]:
             continue
-        entry = {"exercise": {"id": item["id"]}, "sets": item["sets"], "load": item["load"] or 0}
-        if item["reps"] is None:
-            entry["duration_sec"] = item["seconds"]
-        else:
-            entry["reps"] = item.get("reps_text") or item["reps"]
+        entry = {"exercise": {"id": item["id"]}, "set_entries": item["entries"]}
         if item.get("rpe") is not None:
             entry["rpe"] = item["rpe"]
         result.append(entry)
@@ -104,8 +81,8 @@ def payload(items: list[dict]) -> list[dict]:
 
 
 def totals(items: list[dict]) -> tuple[int, int]:
-    done = [item for item in items if item["sets"] > 0]
-    return len(done), sum(item["sets"] for item in done)
+    done = [item for item in items if item["entries"]]
+    return len(done), sum(len(item["entries"]) for item in done)
 
 
 # --- Input ------------------------------------------------------------------------
@@ -114,6 +91,12 @@ def totals(items: list[dict]) -> tuple[int, int]:
 def parse_number(text: str) -> float | None:
     match = _NUMBER_RE.search(text or "")
     return float(match.group().replace(",", ".")) if match else None
+
+
+def check_sets(value: float | None) -> str | None:
+    if value is None or value != int(value) or not 1 <= value <= MAX_SETS:
+        return f"Напишіть кількість підходів від 1 до {MAX_SETS}."
+    return None
 
 
 def check_load(value: float | None) -> str | None:
@@ -152,27 +135,49 @@ def count_exercises(count: int) -> str:
     return f"{count} {_plural(count, 'вправа', 'вправи', 'вправ')}"
 
 
-def format_set(item: dict) -> str:
-    """One set: "60 кг × 10", "× 12", "45 с"."""
-    if item["reps"] is None:
-        effort = f"{item['seconds']} с"
+def _shows_load(item: dict) -> bool:
+    return bool(item.get("accepts_load")) and any(_load_of(e.get("load")) for e in item["entries"])
+
+
+def format_entry(item: dict, entry: dict) -> str:
+    """One set: "12 × 60 кг", "12 повт.", "45 с"."""
+    if is_duration(item):
+        text = f"{entry.get('duration_sec')} с"
     else:
-        effort = f"× {item.get('reps_text') or item['reps']}"
-    if item["load"] and item["accepts_load"]:
-        prefix = "+" if item.get("load_type") == "bodyweight" else ""
-        return f"{prefix}{format_number(item['load'])} кг {effort}"
-    return effort
+        text = f"{entry.get('reps')} повт."
+    load = _load_of(entry.get("load"))
+    if load and item.get("accepts_load"):
+        sign = "+" if item.get("load_type") == "bodyweight" else ""
+        unit = text.split()[0] if not is_duration(item) else text
+        return f"{unit} × {sign}{format_number(load)} кг"
+    return text
 
 
-def format_logged(item: dict) -> str:
-    """"3 підходи · 60 кг × 10"."""
-    return f"{count_sets(item['sets'])} · {format_set(item)}"
+def format_sets_inline(item: dict) -> str:
+    """"3 підходи: 12×60 · 11×55 · 8×50 кг"."""
+    entries = item["entries"]
+    if not entries:
+        return "ще немає підходів"
+    key = count_key(item)
+    if _shows_load(item):
+        sign = "+" if item.get("load_type") == "bodyweight" else ""
+        parts = [f"{e.get(key)}×{sign}{format_number(_load_of(e.get('load')))}" for e in entries]
+        unit = "с · кг" if is_duration(item) else "кг"
+    else:
+        parts = [str(e.get(key)) for e in entries]
+        unit = "с" if is_duration(item) else "повт."
+    return f"{count_sets(len(entries))}: {' · '.join(parts)} {unit}"
+
+
+def format_sets_block(item: dict) -> str:
+    """One line per set: "1. 12 × 60 кг"."""
+    return "\n".join(f"{n}. {format_entry(item, e)}" for n, e in enumerate(item["entries"], start=1))
 
 
 def format_last(last: dict | None, exercise: dict) -> str | None:
-    if not last or not last.get("sets"):
+    if not last or not last.get("set_entries"):
         return None
-    return format_logged(item_from_session({**exercise, **last}))
+    return format_sets_inline(item_from_session({**exercise, **last}))
 
 
 def short_name(name: str, limit: int = 32) -> str:

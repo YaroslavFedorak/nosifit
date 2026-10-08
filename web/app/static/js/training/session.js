@@ -4,6 +4,7 @@ import { renderWorkoutList } from "./workout.js";
 import { t } from "../i18n/index.js";
 import { isDurationExercise } from "./measurement.js";
 import { persistSessionId } from "./state.js";
+import { entriesOf } from "./sets.js";
 export function initSession() {
     const saveButton = document.getElementById("tr-save-workout");
     const titleInput = document.getElementById("tr-workout-title");
@@ -27,6 +28,7 @@ export function initSession() {
                         ? { duration_sec: item.duration_sec }
                         : { reps: item.reps }),
                     load: item.load,
+                    set_entries: entriesOf(item),
                     ...(item.rpe != null
                         ? { rpe: item.rpe }
                         : {})

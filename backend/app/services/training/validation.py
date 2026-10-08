@@ -44,6 +44,34 @@ def clean_set_data(data):
         cleaned["rpe"] = bounded_number(data["rpe"], 0, 10)
     if "rir" in data:
         cleaned["rpe"] = rpe_from_rir(bounded_number(data["rir"], 0, MAX_LOGGED_RIR))
+    if data.get("set_entries") is not None:
+        cleaned["set_entries"] = clean_set_entries(data["set_entries"])
+    return cleaned
+
+
+MAX_SET_ENTRIES = 30
+
+
+def clean_set_entries(value):
+    """Sets as logged one by one: reps or seconds, and kg, per set."""
+    if value is None:
+        return None
+    if not isinstance(value, list) or not 1 <= len(value) <= MAX_SET_ENTRIES:
+        raise ValidationError(f"set_entries must be a list of 1 to {MAX_SET_ENTRIES} sets")
+    cleaned = []
+    for entry in value:
+        if not isinstance(entry, dict):
+            raise ValidationError("each set must be an object")
+        reps = bounded_number(entry.get("reps"), 1, 100, integer=True)
+        seconds = bounded_number(entry.get("duration_sec"), 1, 3600, integer=True)
+        if (reps is None) == (seconds is None):
+            raise ValidationError("each set needs reps or duration_sec")
+        cleaned.append(
+            {
+                **({"reps": reps} if reps is not None else {"duration_sec": seconds}),
+                "load": bounded_number(entry.get("load"), 0, 2000) or 0.0,
+            }
+        )
     return cleaned
 
 
