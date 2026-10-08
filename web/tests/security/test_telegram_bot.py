@@ -184,7 +184,13 @@ def backend(monkeypatch):
     monkeypatch.setattr(
         runtime,
         "link_url",
-        make("link_url", lambda user: ("https://nosifit.example/auth/telegram/link/" + "T" * 43, 600)),
+        make(
+            "link_url",
+            lambda user, via="password": (
+                f"https://nosifit.example/auth/telegram/link/{'T' * 43}?via={via}",
+                600,
+            ),
+        ),
     )
     return calls, behaviour
 
@@ -226,12 +232,12 @@ def test_bot_leaves_groups_it_is_added_to(bot):
 # --- /start and the menu --------------------------------------------------------------------
 
 
-def test_start_offers_login_register_connect_help(bot, backend):
+def test_start_offers_login_register_help(bot, backend):
     bot.message("/start")
 
     markup = bot.sent()[-1].reply_markup
     data = [row[0].callback_data for row in markup.inline_keyboard]
-    assert data == ["auth:login", "auth:register", "auth:connect", "auth:help"]
+    assert data == ["auth:login", "auth:register", "auth:help"]
     assert "Ласкаво просимо до NosiFit" in bot.texts()[0]
 
 
@@ -273,17 +279,20 @@ def test_username_substitution_reaches_the_server_as_a_different_id(bot, backend
     assert calls["login"][0][0].id == 999
 
 
-def test_unknown_telegram_is_offered_registration_or_connection(bot, backend):
+def test_unknown_telegram_is_asked_how_it_signs_in(bot, backend):
+    """One "Log in" button; first time it asks for the website sign-in method."""
     _, behaviour = backend
     behaviour["login"] = "not_linked"
 
     bot.callback("auth:login")
 
     last = bot.sent()[-1]
-    assert "ще не підключено" in last.text
+    assert "ще не підключено" in last.text and "Як ви входите" in last.text
     assert [r[0].callback_data for r in last.reply_markup.inline_keyboard] == [
+        "auth:connect:google",
+        "auth:connect:github",
+        "auth:connect:password",
         "auth:register",
-        "auth:connect",
     ]
     assert not runtime.is_authenticated(111)
 
@@ -407,27 +416,49 @@ def test_codes_and_emails_are_not_logged(bot, backend, caplog):
 # --- Connect an existing account ---------------------------------------------------------
 
 
-def test_connect_sends_a_protected_one_time_link(bot, backend):
+@pytest.mark.parametrize(
+    "via, label",
+    [
+        ("google", "Увійти через Google"),
+        ("github", "Увійти через GitHub"),
+        ("password", "Увійти з email і паролем"),
+    ],
+)
+def test_each_sign_in_method_gets_its_own_protected_link(bot, backend, via, label):
     calls, _ = backend
-    bot.callback("auth:connect")
+    bot.callback(f"auth:connect:{via}")
 
     message = bot.sent()[-1]
-    assert calls["link_url"][0][0].id == 111
+    user, requested_via = calls["link_url"][0]
+    assert (user.id, requested_via) == (111, via)
     assert message.protect_content is True
     button = message.reply_markup.inline_keyboard[0][0]
+    assert label in button.text
     assert button.url.startswith("https://nosifit.example/auth/telegram/link/")
+    assert "пароль" not in message.text.lower() or via == "password"
 
 
-def test_connect_deep_link_from_the_profile_page(bot, backend):
+def test_unknown_method_is_not_sent_to_the_server(bot, backend):
     calls, _ = backend
-    bot.message("/start connect")
-    assert len(calls["link_url"]) == 1
+    bot.callback("auth:connect:evil")
+    assert calls["link_url"] == []
+
+
+def test_connect_command_and_old_buttons_show_the_method_choice(bot, backend):
+    calls, _ = backend
+    bot.callback("auth:connect")  # button from an older message
+    bot.message("/connect")
+    bot.message("/start connect")  # profile page's "Connect Telegram"
+
+    assert calls["link_url"] == []
+    menus = [m.reply_markup for m in bot.sent()[-3:]]
+    assert all(m.inline_keyboard[0][0].callback_data == "auth:connect:google" for m in menus)
 
 
 def test_already_linked_telegram_is_told_to_log_in(bot, backend):
     _, behaviour = backend
     behaviour["link_url"] = "already_linked"
-    bot.callback("auth:connect")
+    bot.callback("auth:connect:google")
     assert "уже підключено" in bot.texts()[-1]
 
 

@@ -21,8 +21,11 @@ The identity is Telegram's numeric user id (`from_user.id`). The `@username`
 is stored only for display: usernames change and can be taken over.
 One Telegram account belongs to at most one NosiFit account and vice versa.
 
-`/start` shows **🔐 Увійти**, **✨ Створити акаунт**, **🔗 Підключити акаунт**
-and **❓ Допомога**.
+`/start` shows **🔐 Увійти**, **✨ Створити новий акаунт** and **❓ Допомога**.
+The first **🔐 Увійти** of a Telegram account that is not connected yet asks
+how the user signs in to the website: **Google**, **GitHub**, **email і пароль**
+(or create a new account), and continues with "Connect an existing account"
+below.
 
 ### Log in
 
@@ -49,10 +52,13 @@ same verified email also works.
 
 ### Connect an existing account
 
-1. **🔗 Підключити акаунт** (or "Connect Telegram" on the profile page, which
-   opens `t.me/<bot>?start=connect`).
+1. **🔐 Увійти** → the user picks Google, GitHub or email + password (also
+   `/connect`, and "Connect Telegram" on the profile page, which opens
+   `t.me/<bot>?start=connect`).
 2. The bot sends a one-time link, valid 10 minutes, as a protected message
-   (cannot be forwarded or saved).
+   (cannot be forwarded or saved). The link carries the chosen method
+   (`?via=google|github|password`, a closed list): a browser without a recent
+   sign-in goes straight to Google's / GitHub's sign-in page.
 3. The user opens it in a browser. The first open swaps the token for a
    secret kept in that browser's session, so the URL is dead afterwards
    (copies from history or logs are useless).
@@ -154,8 +160,8 @@ variable is unset.
 The previous bot logged in by sending the user's email and password to
 `/auth/login` and kept the session only in memory, so there is no stored
 Telegram data to migrate. After the upgrade every existing bot user presses
-**🔗 Підключити акаунт** once and confirms in the browser; from then on
-**🔐 Увійти** is a single tap.
+**🔐 Увійти**, picks how they sign in to the website and confirms in the
+browser once; from then on **🔐 Увійти** is a single tap.
 
 ## Notes
 

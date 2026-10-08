@@ -3,7 +3,7 @@ from aiogram.filters import Command, CommandObject, CommandStart
 from aiogram.fsm.context import FSMContext
 from aiogram.types import ChatMemberUpdated, Message
 
-from telegram_bot.handlers.auth import HELP_TEXT, do_connect
+from telegram_bot.handlers.auth import HELP_TEXT, choose_method
 from telegram_bot.keyboards.auth import auth_menu
 from telegram_bot.keyboards.main import main_menu
 from telegram_bot.runtime import is_authenticated
@@ -28,7 +28,7 @@ async def start(message: Message, state: FSMContext, command: CommandObject) -> 
 
     # t.me/<bot>?start=connect from the profile page's "Connect Telegram".
     if (command.args or "").strip() == "connect" and not is_authenticated(message.from_user.id):
-        await do_connect(message, state)
+        await choose_method(message, state)
         return
 
     if not is_authenticated(message.from_user.id):

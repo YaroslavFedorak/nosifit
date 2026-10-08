@@ -25,14 +25,16 @@ from aiogram.types import CallbackQuery, LinkPreviewOptions, Message
 from telegram_bot import runtime
 from telegram_bot.keyboards.auth import (
     CONNECT_CB,
+    CONNECT_VIA,
+    CONNECT_VIA_CB,
     HELP_CB,
     LOGIN_CB,
     REGISTER_CB,
     RESEND_CB,
     auth_menu,
     code_menu,
+    connect_menu,
     link_menu,
-    not_linked_menu,
     retry_login_menu,
 )
 from telegram_bot.keyboards.main import LOGIN, LOGOUT, main_menu
@@ -61,17 +63,22 @@ ALREADY_LINKED = (
 
 HELP_TEXT = (
     "<b>NosiFit у Telegram</b>\n\n"
-    "🔐 <b>Увійти</b> — якщо Telegram уже підключено до вашого акаунта.\n"
-    "✨ <b>Створити акаунт</b> — новий акаунт NosiFit: потрібен лише email "
-    "і код із листа. Пароль не потрібен.\n"
-    "🔗 <b>Підключити акаунт</b> — якщо акаунт NosiFit уже є (email, Google "
-    "чи GitHub): бот дасть одноразове посилання, відкрийте його в браузері, "
-    "увійдіть у NosiFit і підтвердіть.\n\n"
-    "Бот ніколи не просить пароль від NosiFit. Пароль для сайту можна "
-    "встановити через «Забули пароль?» на сторінці входу.\n"
+    "🔐 <b>Увійти</b>. Першого разу бот запитає, як ви входите на сайт "
+    "NosiFit — через Google, GitHub чи email і пароль — і дасть посилання. "
+    "Увійдіть у браузері звичним способом і натисніть «Підключити». Далі "
+    "«Увійти» в боті спрацьовує одним натиском.\n"
+    "✨ <b>Створити новий акаунт</b> — потрібен лише email і код із листа.\n\n"
+    "Бот ніколи не просить пароль: вхід через Google, GitHub чи пароль "
+    "відбувається лише на сайті NosiFit у браузері.\n"
     "Відключити Telegram: сайт → Профіль → Підключені акаунти.\n\n"
     "/start — меню\n/login — увійти\n/register — створити акаунт\n"
-    "/connect — підключити наявний акаунт\n/logout — вийти\n/cancel — скасувати дію"
+    "/logout — вийти\n/cancel — скасувати дію"
+)
+
+CHOOSE_METHOD_TEXT = (
+    "Як ви входите на сайт NosiFit?\n\n"
+    "Оберіть свій спосіб: бот дасть посилання, ви увійдете в браузері й "
+    "підтвердите. Це потрібно лише один раз."
 )
 
 
@@ -107,9 +114,9 @@ async def do_login(event, state: FSMContext) -> None:
         if exc.code == "not_linked":
             await _answer(
                 event,
-                "Цей Telegram ще не підключено до NosiFit.\n\n"
-                "Створіть новий акаунт або підключіть наявний:",
-                reply_markup=not_linked_menu(),
+                "Цей Telegram ще не підключено до акаунта NosiFit.\n\n"
+                + CHOOSE_METHOD_TEXT,
+                reply_markup=connect_menu(),
             )
         elif exc.code == "rate_limited":
             await _answer(event, RATE_LIMITED)
@@ -346,17 +353,27 @@ async def enter_code(message: Message, state: FSMContext) -> None:
 # --- Connect an existing account --------------------------------------------------------
 
 
-async def do_connect(event, state: FSMContext) -> None:
+async def choose_method(event, state: FSMContext) -> None:
+    await _ack(event)
+    await state.clear()
+    await _answer(event, CHOOSE_METHOD_TEXT, reply_markup=connect_menu())
+
+
+async def do_connect(event, state: FSMContext, via: str) -> None:
     await _ack(event)
     await state.clear()
     user = _tg_user(event)
+
+    if via not in CONNECT_VIA:
+        await _answer(event, CHOOSE_METHOD_TEXT, reply_markup=connect_menu())
+        return
 
     if not link_throttle.allow(user.id):
         await _answer(event, RATE_LIMITED)
         return
 
     try:
-        url, expires_in = await asyncio.to_thread(runtime.link_url, user)
+        url, expires_in = await asyncio.to_thread(runtime.link_url, user, via)
     except TelegramAuthError as exc:
         if exc.code == "already_linked":
             await _answer(event, ALREADY_LINKED, reply_markup=retry_login_menu())
@@ -372,18 +389,24 @@ async def do_connect(event, state: FSMContext) -> None:
         return
 
     minutes = max(1, expires_in // 60)
+    method = CONNECT_VIA[via][1]
+    sign_in_step = (
+        "2. Увійдіть у NosiFit своїм email і паролем (на сайті, не тут).\n"
+        if via == "password"
+        else f"2. Увійдіть через {method} — відкриється сторінка {method}.\n"
+    )
     text = (
-        "🔗 <b>Підключення до наявного акаунта NosiFit</b>\n\n"
-        "1. Відкрийте посилання кнопкою нижче.\n"
-        "2. Увійдіть у NosiFit, якщо ще не увійшли.\n"
-        "3. Перевірте акаунт і натисніть «Підключити».\n"
+        f"🔗 <b>Вхід через {method}</b>\n\n"
+        "1. Натисніть кнопку нижче — відкриється браузер.\n"
+        + sign_in_step
+        + "3. Перевірте свій акаунт і натисніть «Підключити».\n"
         "4. Поверніться сюди й натисніть «🔐 Увійти».\n\n"
         f"Посилання одноразове й діє {minutes} хв. Нікому його не пересилайте."
     )
     message = event.message if isinstance(event, CallbackQuery) else event
     # protect_content: the link cannot be forwarded or saved from the chat.
     try:
-        await message.answer(text, reply_markup=link_menu(url), protect_content=True)
+        await message.answer(text, reply_markup=link_menu(url, via), protect_content=True)
     except TelegramBadRequest:
         # Telegram rejects some URLs in buttons (e.g. http://localhost).
         await message.answer(
@@ -393,11 +416,17 @@ async def do_connect(event, state: FSMContext) -> None:
         )
 
 
+@router.callback_query(F.data.in_(set(CONNECT_VIA_CB.values())))
+async def connect_via_callback(callback: CallbackQuery, state: FSMContext) -> None:
+    await do_connect(callback, state, callback.data.rsplit(":", 1)[1])
+
+
+# Buttons in messages sent before the per-method choice existed.
 @router.callback_query(F.data == CONNECT_CB)
 async def connect_callback(callback: CallbackQuery, state: FSMContext) -> None:
-    await do_connect(callback, state)
+    await choose_method(callback, state)
 
 
 @router.message(Command("connect"))
 async def connect_command(message: Message, state: FSMContext) -> None:
-    await do_connect(message, state)
+    await choose_method(message, state)

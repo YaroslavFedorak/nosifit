@@ -20,6 +20,7 @@ import logging
 
 from flask import (
     Blueprint,
+    current_app,
     flash,
     make_response,
     redirect,
@@ -45,6 +46,14 @@ logger = logging.getLogger(__name__)
 telegram_link_bp = Blueprint("telegram_link", __name__, url_prefix="/auth/telegram")
 
 OPEN_LIMIT_PER_IP = (30, 15 * 60)
+
+# ?via= on the link: the sign-in the user picked in the bot. Only these
+# fixed endpoints can be targets, so the parameter is no open redirect.
+LINK_SIGN_IN_METHODS = {
+    "google": ("google_oauth.google_login", "GOOGLE_CLIENT_ID"),
+    "github": ("github.github_login", "GITHUB_CLIENT_ID"),
+    "password": ("telegram_link.link_page", None),
+}
 CONFIRM_LIMIT_PER_USER = (10, 15 * 60)
 CONFIRM_LIMIT_PER_IP = (30, 15 * 60)
 
@@ -74,6 +83,16 @@ def open_link(token):
 
     row, session_hash = claimed
     set_pending_link(session_hash, tg.token_expiry_timestamp(row))
+
+    # Straight to the sign-in the user chose in the bot (Google/GitHub open
+    # their own page); after it the pending link brings them to Confirm.
+    via = request.args.get("via")
+    if via in LINK_SIGN_IN_METHODS and not (
+        current_user.is_authenticated and is_recently_authenticated()
+    ):
+        endpoint, required_config = LINK_SIGN_IN_METHODS[via]
+        if required_config is None or current_app.config.get(required_config):
+            return _no_referrer(redirect(url_for(endpoint)))
     return _no_referrer(redirect(url_for("telegram_link.link_page")))
 
 
@@ -85,7 +104,11 @@ def link_page():
         return _invalid()
 
     if not current_user.is_authenticated:
-        flash("Увійдіть у свій акаунт NosiFit, щоб підключити Telegram.", "info")
+        flash(
+            "Увійдіть у свій акаунт NosiFit (паролем, Google чи GitHub), "
+            "щоб підключити Telegram.",
+            "info",
+        )
         return redirect(url_for("auth.login"))
 
     if not is_recently_authenticated():
