@@ -44,16 +44,57 @@
         },
         "training": {
             "reasons": {
-                "belowTarget": "Below your weekly target",
-                "undertrained": "Consistently below target volume",
+                "belowTarget": "Few sets in the last 7 days",
+                "undertrained": "Too few sets for several weeks",
                 "weakPoint": "Targets your weak point",
-                "focus": "Matches your training focus",
-                "frequency": "Not trained in the last few days",
-                "recovered": "Recovered and ready",
+                "focus": "You asked for more attention here",
+                "frequency": "No training for a few days",
+                "recovered": "Rested and ready",
                 "lowReadiness": "Still recovering from recent training",
-                "moderateReadiness": "Partly recovered — keep volume modest",
-                "accumulatedFatigue": "Fatigue has built up over several days",
-                "highVolume": "Already above your weekly target"
+                "moderateReadiness": "Not fully rested yet — do fewer sets",
+                "accumulatedFatigue": "Several heavy days in a row — let it rest",
+                "highVolume": "Already enough sets in the last 7 days",
+                "withinTarget": "Sets in the last 7 days are within your target",
+                "ready": "Recovered enough to train"
+            },
+            "guidance": {
+                "heading": "What to train today",
+                "holdBack": "Better to hold back",
+                "verdict": {
+                    "no_history": {
+                        "title": "No workouts yet",
+                        "message": "Log a workout and this will show what to train and why."
+                    },
+                    "focus": {
+                        "title": "Worth training today",
+                        "message": "These muscles have recovered and got too few sets recently."
+                    },
+                    "train": {
+                        "title": "No clear priority",
+                        "message": "Your volume is within target. If you train today, these muscles are a good fit."
+                    },
+                    "rest": {
+                        "title": "Better to rest today",
+                        "message": "No extra work is needed right now, and some muscles are still recovering.",
+                        "messageFatigue": "Several days of heavy training in a row — give your muscles a rest."
+                    },
+                    "balanced": {
+                        "title": "No clear priority today",
+                        "message": "Your sets over the last 7 days are evenly spread — go ahead with your planned workout."
+                    }
+                },
+                "kind": {
+                    "priority": "Priority",
+                    "train": "Good to train",
+                    "reduce": "Fewer sets",
+                    "enough": "Target met",
+                    "rest": "Rest"
+                },
+                "action": {
+                    "priority": "Add about {sets} sets",
+                    "train": "About {sets} sets to keep your volume"
+                },
+                "noExercises": "No extra exercises are needed right now — follow your plan."
             }
         }
     },

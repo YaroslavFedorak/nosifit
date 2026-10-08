@@ -12,18 +12,28 @@ type RecommendationItem = {
     score?: number;
 };
 
-type MuscleData = {
-    weak?: string[];
-    balanced?: string[];
-    overloaded?: string[];
-    totals?: Record<string, number>;
-    balance_ratio?: Record<string, number>;
+// "What to train today and why", decided by the training model on the
+// backend. Every text is an i18n key; nothing is computed here.
+type GuidanceItem = {
+    muscle?: string;
+    kind?: string;
+    label?: string;
+    reasons?: string[];
+    action?: string;
+    params?: Record<string, string | number>;
+};
+
+type Guidance = {
+    verdict?: string;
+    title?: string;
     message?: string;
+    muscles?: GuidanceItem[];
+    warnings?: GuidanceItem[];
 };
 
 export type RecommendationsData = {
     load?: unknown;
-    muscles?: MuscleData;
+    muscles?: unknown;
     patterns?: unknown;
     progression?: unknown;
     recovery?: unknown;
@@ -31,8 +41,12 @@ export type RecommendationsData = {
     frequency?: unknown;
     recommended_exercises?: RecommendationItem[];
     summary?: string;
+    guidance?: Guidance;
     [key: string]: unknown;
 };
+
+const GUIDANCE_KEY =
+    "recommendations.training.guidance.";
 
 function safeArray<T>(
     value: T[] | T | null | undefined
@@ -94,63 +108,27 @@ export function translateMuscle(
         : capitalize(value);
 }
 
-function translateReason(
-    value: unknown
+// The backend sends i18n keys only; an unknown key is dropped rather than
+// shown raw.
+function translateKey(
+    value: unknown,
+    params: Record<string, string | number> = {}
 ): string {
-    const raw =
+    const key =
         String(
             value || ""
         ).trim();
 
-    // The engine sends i18n keys (recommendations.training.reasons.*).
-    if (raw.startsWith("recommendations.")) {
-        const translated =
-            t(raw);
-
-        if (translated !== raw) {
-            return translated;
-        }
-    }
-
-    const key =
-        raw.toLowerCase();
-
-    const reasonKeys: Record<string, string> = {
-        "improves weak muscle group":
-            "recommendations.reasons.improvesWeakMuscleGroup",
-        "improves weak movement pattern":
-            "recommendations.reasons.improvesWeakMovementPattern",
-        "helps reverse regression":
-            "recommendations.reasons.helpsReverseRegression",
-        "helps break plateau":
-            "recommendations.reasons.helpsBreakPlateau",
-        "supports an undertrained muscle":
-            "recommendations.reasons.supportsAnUndertrainedMuscle",
-        "adds exercise variety":
-            "recommendations.reasons.addsExerciseVariety",
-        "targets your weak point":
-            "recommendations.reasons.targetsYourWeakPoint",
-        progression:
-            "recommendations.reasons.progression",
-        "low frequency":
-            "recommendations.reasons.lowFrequency",
-        "high frequency":
-            "recommendations.reasons.highFrequency"
-    };
-
-    const translationKey =
-        reasonKeys[key];
-
-    if (!translationKey) {
-        return capitalize(value);
+    if (!key) {
+        return "";
     }
 
     const translated =
-        t(translationKey);
+        t(key, params);
 
-    return translated !== translationKey
+    return translated !== key
         ? translated
-        : capitalize(value);
+        : "";
 }
 
 function translateExercise(
@@ -179,71 +157,147 @@ function translateExercise(
 export function renderRecommendations(
     data: RecommendationsData | null | undefined
 ): void {
-    const muscles =
-        data?.muscles || {};
-
-    const recommendations =
-        safeArray(
-            data?.recommended_exercises
-        );
-
-    renderWeakPoints(
-        muscles
+    renderGuidance(
+        data?.guidance
     );
 
     renderRecommendedExercises(
-        recommendations
-    );
-
-    renderBalance(
-        muscles
+        safeArray(
+            data?.recommended_exercises
+        ),
+        Boolean(
+            data?.guidance?.verdict &&
+            data.guidance.verdict !== "no_history"
+        )
     );
 }
 
-function renderWeakPoints(
-    muscles: MuscleData
+function renderGuidanceItem(
+    item: GuidanceItem
+): string {
+    const kind =
+        String(
+            item.kind || ""
+        ).replace(/[^a-z_]/g, "");
+
+    const reasons =
+        safeArray(
+            item.reasons
+        )
+            .map(reason => translateKey(reason))
+            .filter(Boolean);
+
+    const action =
+        translateKey(
+            item.action,
+            item.params ?? {}
+        );
+
+    return `
+        <div class="tr-guidance-item tr-guidance-item-${kind}">
+            <div class="tr-guidance-item-top">
+                <span class="tr-guidance-muscle">
+                    ${translateMuscle(item.muscle)}
+                </span>
+
+                <span class="tr-guidance-badge">
+                    ${translateKey(item.label)}
+                </span>
+            </div>
+
+            ${reasons
+                .map(
+                    reason => `
+                        <div class="tr-guidance-reason">
+                            ${reason}
+                        </div>
+                    `
+                )
+                .join("")}
+
+            ${
+                action
+                    ? `<div class="tr-guidance-action">${action}</div>`
+                    : ""
+            }
+        </div>
+    `;
+}
+
+function renderGuidance(
+    guidance: Guidance | undefined
 ): void {
     const box =
         document.getElementById(
-            "tr-weak-points"
+            "tr-guidance"
         );
 
     if (!box) {
         return;
     }
 
-    const items =
+    const verdict =
+        String(
+            guidance?.verdict || "no_history"
+        ).replace(/[^a-z_]/g, "");
+
+    const title =
+        translateKey(
+            guidance?.title ||
+            `${GUIDANCE_KEY}verdict.no_history.title`
+        );
+
+    const message =
+        translateKey(
+            guidance?.message ||
+            `${GUIDANCE_KEY}verdict.no_history.message`
+        );
+
+    const muscles =
         safeArray(
-            muscles.weak
-        )
-            .filter(Boolean)
-            .slice(0, 4);
+            guidance?.muscles
+        ).filter(item => item && item.muscle);
 
-    if (items.length === 0) {
-        box.innerHTML = `
-            <div class="tr-rec-empty">
-                <strong>${t("recommendations.weakPointsEmpty")}</strong>
-                <span>${t("recommendations.weakPointsDescription")}</span>
-            </div>
-        `;
+    const warnings =
+        safeArray(
+            guidance?.warnings
+        ).filter(item => item && item.muscle);
 
-        return;
-    }
+    box.innerHTML = `
+        <div class="tr-guidance-verdict tr-guidance-verdict-${verdict}">
+            <strong>${title}</strong>
+            <span>${message}</span>
+        </div>
 
-    box.innerHTML =
-        items
-            .map(
-                muscle => `
-                    <div class="tr-weak-item">
-                        ${translateMuscle(muscle)}
+        ${
+            muscles.length > 0
+                ? `
+                    <div class="tr-guidance-list">
+                        ${muscles.map(renderGuidanceItem).join("")}
                     </div>
                 `
-            )
-            .join("");
+                : ""
+        }
+
+        ${
+            warnings.length > 0
+                ? `
+                    <div class="tr-guidance-subtitle">
+                        ${t(`${GUIDANCE_KEY}holdBack`)}
+                    </div>
+
+                    <div class="tr-guidance-list">
+                        ${warnings.map(renderGuidanceItem).join("")}
+                    </div>
+                `
+                : ""
+        }
+    `;
 }
 
 function renderRecommendedExercises(
-    list: RecommendationItem[]
+    list: RecommendationItem[],
+    hasHistory: boolean
 ): void {
     const box =
         document.getElementById(
@@ -271,12 +325,20 @@ function renderRecommendedExercises(
             .slice(0, 3);
 
     if (items.length === 0) {
-        box.innerHTML = `
-            <div class="tr-rec-empty">
-                <strong>${t("recommendations.exercisesEmpty")}</strong>
-                <span>${t("recommendations.exercisesDescription")}</span>
-            </div>
-        `;
+        // With training history an empty list means nothing needs extra
+        // work, not that there is too little data.
+        box.innerHTML = hasHistory
+            ? `
+                <div class="tr-rec-empty">
+                    <span>${t(`${GUIDANCE_KEY}noExercises`)}</span>
+                </div>
+            `
+            : `
+                <div class="tr-rec-empty">
+                    <strong>${t("recommendations.exercisesEmpty")}</strong>
+                    <span>${t("recommendations.exercisesDescription")}</span>
+                </div>
+            `;
 
         return;
     }
@@ -288,6 +350,7 @@ function renderRecommendedExercises(
                     safeArray(
                         item.reasons
                     )
+                        .map(reason => translateKey(reason))
                         .filter(Boolean)
                         .slice(0, 2);
 
@@ -298,112 +361,17 @@ function renderRecommendedExercises(
                             <span>${translateExercise(item)}</span>
                         </div>
 
-                        ${
-                            reasons.length > 0
-                                ? reasons
-                                      .map(
-                                          reason => `
-                                            <div class="tr-rec-item-tag">
-                                                ${translateReason(reason)}
-                                            </div>
-                                        `
-                                      )
-                                      .join("")
-                                : ""
-                        }
+                        ${reasons
+                            .map(
+                                reason => `
+                                    <div class="tr-rec-item-tag">
+                                        ${reason}
+                                    </div>
+                                `
+                            )
+                            .join("")}
                     </div>
                 `;
             })
             .join("");
-}
-
-function renderBalance(
-    muscles: MuscleData
-): void {
-    const balancedBox =
-        document.getElementById(
-            "tr-balance-balanced"
-        );
-
-    const overloadedBox =
-        document.getElementById(
-            "tr-balance-overloaded"
-        );
-
-    if (
-        !balancedBox ||
-        !overloadedBox
-    ) {
-        return;
-    }
-
-    const balanced =
-        safeArray(
-            muscles.balanced
-        )
-            .filter(Boolean)
-            .slice(0, 3);
-
-    const overloaded =
-        safeArray(
-            muscles.overloaded
-        )
-            .filter(Boolean)
-            .slice(0, 3);
-
-    if (
-        balanced.length === 0 &&
-        overloaded.length === 0
-    ) {
-        balancedBox.innerHTML = `
-            <div class="tr-rec-empty tr-balance-empty">
-                <strong>${t("recommendations.balanceEmpty")}</strong>
-                <span>${t("recommendations.balanceDescription")}</span>
-            </div>
-        `;
-
-        overloadedBox.innerHTML = "";
-
-        return;
-    }
-
-    if (balanced.length === 0) {
-        balancedBox.innerHTML = `
-            <div class="tr-rec-empty tr-balance-empty">
-                <span>${t("recommendations.noBalancedGroups")}</span>
-            </div>
-        `;
-    } else {
-        balancedBox.innerHTML =
-            balanced
-                .map(
-                    muscle => `
-                        <div class="tr-balance-item tr-balance-item-balanced">
-                            ${ICONS.balanced}
-                            <span>${translateMuscle(muscle)}</span>
-                        </div>
-                    `
-                )
-                .join("");
-    }
-
-    if (overloaded.length === 0) {
-        overloadedBox.innerHTML = `
-            <div class="tr-rec-empty tr-balance-empty">
-                <span>${t("recommendations.noOverloadedGroups")}</span>
-            </div>
-        `;
-    } else {
-        overloadedBox.innerHTML =
-            overloaded
-                .map(
-                    muscle => `
-                        <div class="tr-balance-item tr-balance-item-overloaded">
-                            ${ICONS.overloaded}
-                            <span>${translateMuscle(muscle)}</span>
-                        </div>
-                    `
-                )
-                .join("");
-    }
 }

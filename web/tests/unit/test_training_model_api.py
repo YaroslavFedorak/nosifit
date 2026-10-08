@@ -120,6 +120,22 @@ def test_recommendations_endpoint_keeps_contract_and_adds_muscle_status(client, 
     assert statuses["chest"]["target"] is not None
     assert set(statuses) <= MUSCLES
 
+    guidance = data["guidance"]
+    assert guidance["verdict"] in ("focus", "train", "rest", "balanced")
+    assert guidance["title"].startswith("recommendations.training.guidance.verdict.")
+    for item in guidance["muscles"] + guidance["warnings"]:
+        assert item["muscle"] in MUSCLES
+        assert all(reason.startswith("recommendations.training.reasons.") for reason in item["reasons"])
+
+
+def test_recommendations_guidance_without_training(client, user, catalog):
+    login(client)
+    response = client.get("/api/training/recommendations")
+    assert response.status_code == 200
+    guidance = response.get_json()["guidance"]
+    assert guidance["verdict"] == "no_history"
+    assert guidance["muscles"] == [] and guidance["warnings"] == []
+
 
 def test_recommendation_queries_do_not_grow_with_history(app, user, catalog):
     add_session(user, catalog, 1, [("bench-press", {"sets_done": 4, "reps_done": "8"})])
@@ -294,6 +310,9 @@ def test_legacy_exercise_id_muscle_loads_are_ignored(client, user, catalog):
     named |= {row["muscle"] for row in data["muscle_status"]}
     assert named <= MUSCLES
     assert data["muscles"]["totals"]["chest"] > 0  # computed from the logged sets
+    guidance = data["guidance"]
+    assert guidance["verdict"] != "no_history"
+    assert {i["muscle"] for i in guidance["muscles"] + guidance["warnings"]} <= MUSCLES
 
     summary = TrainingDashboardService.get_session(user.id, session.id)["summary"]["muscles"]
     assert set(summary["weak"] + summary["balanced"] + summary["overloaded"]) <= MUSCLES

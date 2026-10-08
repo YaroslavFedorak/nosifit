@@ -44,16 +44,57 @@
         },
         "training": {
             "reasons": {
-                "belowTarget": "Poniżej tygodniowego celu",
-                "undertrained": "Stale poniżej docelowej objętości",
+                "belowTarget": "Mało serii w ostatnich 7 dniach",
+                "undertrained": "Od kilku tygodni za mało serii",
                 "weakPoint": "Pracuje nad twoim słabym punktem",
                 "focus": "Zgodne z twoim fokusem treningowym",
-                "frequency": "Nie trenowana od kilku dni",
-                "recovered": "Zregenerowana i gotowa",
+                "frequency": "Kilka dni bez treningu",
+                "recovered": "Odpoczęte i gotowe",
                 "lowReadiness": "Wciąż regeneruje się po ostatnim treningu",
-                "moderateReadiness": "Częściowo zregenerowana — utrzymaj umiarkowaną objętość",
-                "accumulatedFatigue": "Zmęczenie narastało przez kilka dni",
-                "highVolume": "Już powyżej tygodniowego celu"
+                "moderateReadiness": "Jeszcze nie w pełni odpoczęte — zrób mniej serii",
+                "accumulatedFatigue": "Kilka ciężkich dni z rzędu — daj odpocząć",
+                "highVolume": "W ostatnich 7 dniach serii jest już dość",
+                "withinTarget": "Liczba serii z 7 dni mieści się w celu",
+                "ready": "Mięśnie są wystarczająco zregenerowane"
+            },
+            "guidance": {
+                "heading": "Co trenować dzisiaj",
+                "holdBack": "Lepiej nie obciążać",
+                "verdict": {
+                    "no_history": {
+                        "title": "Brak treningów",
+                        "message": "Zapisz trening, a tutaj pojawi się, co warto trenować i dlaczego."
+                    },
+                    "focus": {
+                        "title": "Warto potrenować",
+                        "message": "Te mięśnie już odpoczęły, a serii było na nie za mało."
+                    },
+                    "train": {
+                        "title": "Brak wyraźnego priorytetu",
+                        "message": "Objętość mieści się w celu. Jeśli trenujesz dziś, możesz podtrzymać te mięśnie."
+                    },
+                    "rest": {
+                        "title": "Dziś lepiej odpocząć",
+                        "message": "Dodatkowa praca nie jest teraz potrzebna, a część mięśni wciąż się regeneruje.",
+                        "messageFatigue": "Kilka dni z rzędu było duże obciążenie — daj mięśniom odpocząć."
+                    },
+                    "balanced": {
+                        "title": "Dziś brak wyraźnego priorytetu",
+                        "message": "Serie z ostatnich 7 dni są rozłożone równomiernie — możesz zrobić zaplanowany trening."
+                    }
+                },
+                "kind": {
+                    "priority": "Priorytet",
+                    "train": "Można trenować",
+                    "reduce": "Mniej serii",
+                    "enough": "Cel osiągnięty",
+                    "rest": "Odpoczynek"
+                },
+                "action": {
+                    "priority": "Dodaj około {sets} serii",
+                    "train": "Około {sets} serii, by podtrzymać objętość"
+                },
+                "noExercises": "Dodatkowe ćwiczenia nie są teraz potrzebne — trenuj według planu."
             }
         }
     },

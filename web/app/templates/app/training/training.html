@@ -100,12 +100,12 @@ Nosi Fit {% endblock %} {% block styles %} {{ super() }}
       <section class="tr-card tr-card-recommendations">
         <div class="tr-rec-section">
           <div class="tr-rec-section-title">
-            <span id="tr-icon-weak"></span>
+            <span id="tr-icon-guidance"></span>
 
-            <span> {{ training_t("weakPoints") }} </span>
+            <span> {{ training_t("recommendations.training.guidance.heading") }} </span>
           </div>
 
-          <div id="tr-weak-points" class="tr-weak-grid"></div>
+          <div id="tr-guidance" class="tr-guidance" aria-live="polite"></div>
         </div>
 
         <div class="tr-rec-section">
@@ -116,32 +116,6 @@ Nosi Fit {% endblock %} {% block styles %} {{ super() }}
           </div>
 
           <div id="tr-rec-grid" class="tr-rec-line"></div>
-        </div>
-
-        <div class="tr-rec-section tr-balance-section">
-          <div class="tr-rec-section-title">
-            <span id="tr-icon-balance"></span>
-
-            <span> {{ training_t("muscleBalance") }} </span>
-          </div>
-
-          <div class="tr-balance-grid">
-            <div class="tr-balance-col">
-              <div class="tr-balance-group-title">
-                {{ training_t("balanced") }}
-              </div>
-
-              <div id="tr-balance-balanced" class="tr-balance-list"></div>
-            </div>
-
-            <div class="tr-balance-col">
-              <div class="tr-balance-group-title">
-                {{ training_t("overloaded") }}
-              </div>
-
-              <div id="tr-balance-overloaded" class="tr-balance-list"></div>
-            </div>
-          </div>
         </div>
       </section>
     </div>
@@ -157,9 +131,8 @@ Nosi Fit {% endblock %} {% block styles %} {{ super() }}
 <script type="module" nonce="{{ csp_nonce() }}">
   import { ICONS } from "/static/js/icons/index.js";
 
-  document.getElementById("tr-icon-weak").innerHTML = ICONS.weak;
+  document.getElementById("tr-icon-guidance").innerHTML = ICONS.weak;
   document.getElementById("tr-icon-recommended").innerHTML = ICONS.recommended;
-  document.getElementById("tr-icon-balance").innerHTML = ICONS.balance;
   document.getElementById("training-header-icon").innerHTML = ICONS.exercise;
 </script>
 
