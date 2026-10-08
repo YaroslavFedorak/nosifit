@@ -35,34 +35,20 @@ export type WorkoutExercise = {
     fromPlan: boolean;
 };
 
-export type AnalyticsData = {
-    performance?: {
-        pushups?: number | null;
-        squats?: number | null;
-        situps?: number | null;
-        [key: string]: unknown;
-    };
-    recovery?: {
-        sleep?: number | null;
-        stress?: number | null;
-        soreness?: number | null;
-        [key: string]: unknown;
-    };
-    raw_performance?: StrengthPerformance | null;
-    performance_raw?: StrengthPerformance | null;
-    [key: string]: unknown;
+export type WeeklyMuscleSets = {
+    muscle: string;
+    sets: number;
+    target_sets: number;
 };
 
-export type StrengthPerformance = {
-    pushups?: number | null;
-    squats?: number | null;
-    situps?: number | null;
-    pushups_level?: unknown;
-    squats_level?: unknown;
-    situps_level?: unknown;
-    pushups_progress?: unknown;
-    squats_progress?: unknown;
-    situps_progress?: unknown;
+export type WeeklySets = {
+    week_start: string;
+    week_end: string;
+    muscles: WeeklyMuscleSets[];
+};
+
+export type AnalyticsData = {
+    weekly_sets?: WeeklySets | null;
     [key: string]: unknown;
 };
 
@@ -372,25 +358,6 @@ export const TrainingAPI = {
     ): Promise<HeatmapResponse> {
         return jsonFetch<HeatmapResponse>(
             `${BASE}/heatmap?year=${year}`
-        );
-    },
-
-    strengthTest(
-        payload: {
-            pushups: number;
-            squats: number;
-            situps: number;
-        }
-    ): Promise<{
-        raw_performance?: StrengthPerformance;
-        [key: string]: unknown;
-    }> {
-        return jsonFetch(
-            `${BASE}/strength-test`,
-            {
-                method: "POST",
-                body: JSON.stringify(payload)
-            }
         );
     },
 

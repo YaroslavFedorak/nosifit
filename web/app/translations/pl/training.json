@@ -7,17 +7,14 @@
     "workoutName": "Nazwa treningu",
     "addExercise": "Dodaj ćwiczenie",
     "saveWorkout": "Zapisz trening",
-    "strengthTest": {
-        "title": "Test siły",
-        "takeTest": "Rozpocznij test",
-        "pushups": "Pompki",
-        "squats": "Przysiady",
-        "situps": "Brzuszki",
-        "description": "Maksymalna liczba powtórzeń bez przerw.",
-        "finish": "Zakończ test",
-        "saved": "Test zapisany. Rekomendacje zaktualizowane",
-        "invalidValues": "Wprowadź poprawne wartości.",
-        "saveError": "Nie udało się zapisać testu. Spróbuj ponownie."
+    "weeklySets": {
+        "title": "Serie w tygodniu",
+        "period": "Od poniedziałku",
+        "emptyTitle": "W tym tygodniu nie ma jeszcze treningów",
+        "emptyText": "Dodaj trening, aby zobaczyć tygodniową objętość.",
+        "loadErrorTitle": "Nie udało się wczytać danych",
+        "loadErrorText": "Odśwież stronę za chwilę.",
+        "ariaRow": "{muscle}: {sets} z {target} serii"
     },
     "weakPoints": "Słabe punkty",
     "recommendedExercises": "Polecane ćwiczenia",
@@ -201,12 +198,6 @@
     },
     "session": {
         "saved": "Trening zapisany"
-    },
-    "strengthLevels": {
-        "low": "Niski",
-        "medium": "Średni",
-        "good": "Dobry",
-        "excellent": "Doskonały"
     },
     "common": {
         "cancel": "Anuluj",

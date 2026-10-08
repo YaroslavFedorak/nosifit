@@ -81,36 +81,18 @@ Nosi Fit {% endblock %} {% block styles %} {{ super() }}
     </div>
 
     <div class="training-right">
-      <section class="tr-card tr-card-strength">
+      <section class="tr-card tr-card-weekly-sets">
         <div class="tr-card-header">
-          <h3 class="tr-card-title">{{ training_t("strengthTest.title") }}</h3>
+          <h3 class="tr-card-title">{{ training_t("weeklySets.title") }}</h3>
 
-          <button
-            id="tr-strength-open"
-            class="tr-btn tr-btn-primary"
-            type="button"
-          >
-            {{ training_t("strengthTest.takeTest") }}
-          </button>
+          <span class="tr-weekly-sets-period">
+            {{ training_t("weeklySets.period") }}
+          </span>
         </div>
 
-        <div class="tr-strength-results-grid">
-          <div class="tr-strength-result-box">
-            <h4>{{ training_t("strengthTest.pushups") }}</h4>
-
-            <span id="st-result-pushups">—</span>
-          </div>
-
-          <div class="tr-strength-result-box">
-            <h4>{{ training_t("strengthTest.squats") }}</h4>
-
-            <span id="st-result-squats">—</span>
-          </div>
-
-          <div class="tr-strength-result-box">
-            <h4>{{ training_t("strengthTest.situps") }}</h4>
-
-            <span id="st-result-situps">—</span>
+        <div id="tr-weekly-sets-body" class="tr-weekly-sets-body" aria-busy="true">
+          <div class="tr-weekly-sets-loading">
+            {{ training_t("common.loading") }}…
           </div>
         </div>
       </section>
@@ -168,7 +150,6 @@ Nosi Fit {% endblock %} {% block styles %} {{ super() }}
 
 {% include "app/training/modals/training_exercise_modals.html" %} {% include
 "app/training/modals/training_misc_modals.html" %} {% include
-"app/training/modals/training_strength_test_modal.html" %} {% include
 "app/training/modals/training_calendar_modal.html" %} {% include
 "app/training/modals/training_day_details_modal.html" %} {% include
 "app/training/modals/plan/modal.html" %}

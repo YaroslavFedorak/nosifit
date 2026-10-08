@@ -24,6 +24,7 @@ from .selection import ExercisePrescription, select_exercises
 from .session_stress import daily_stress, day_levels, summarize
 from .status import MuscleStatus, compute_statuses
 from .stimulus import Dose
+from .weekly_sets import week_start, weekly_muscle_sets
 
 
 @dataclass
@@ -160,6 +161,33 @@ class TrainingModelService:
             datetime.combine(target_day, time.max),
         )
         return result[target_day]
+
+    @staticmethod
+    def weekly_sets(
+        user,
+        today: date,
+        day_of: Callable[[datetime], date],
+        until: datetime,
+    ) -> Dict:
+        """Effective sets per major muscle from Monday through ``today``.
+
+        Sessions are placed on days like the heatmap does: by
+        ``finished_at or started_at`` mapped through ``day_of``. The query
+        starts a day early so a session started late on Sunday and finished
+        on Monday is still found."""
+        start = week_start(today)
+        since = datetime.combine(start - timedelta(days=1), time.min)
+        sessions = repository.load_sessions(user.id, since, until)
+        loads = [
+            session.muscle_loads
+            for session in sessions
+            if repository.session_time(session) is not None
+            and start <= day_of(repository.session_time(session)) <= today
+        ]
+        result = weekly_muscle_sets(loads, repository.load_context(user))
+        result["week_start"] = start.isoformat()
+        result["week_end"] = today.isoformat()
+        return result
 
     @staticmethod
     def training_readiness_score(user, target_day: Optional[date] = None) -> int:

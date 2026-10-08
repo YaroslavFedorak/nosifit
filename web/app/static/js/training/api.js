@@ -108,12 +108,6 @@ export const TrainingAPI = {
     getHeatmap(year = new Date().getFullYear()) {
         return jsonFetch(`${BASE}/heatmap?year=${year}`);
     },
-    strengthTest(payload) {
-        return jsonFetch(`${BASE}/strength-test`, {
-            method: "POST",
-            body: JSON.stringify(payload)
-        });
-    },
     getToday() {
         return jsonFetch(`${BASE}/today`);
     },
