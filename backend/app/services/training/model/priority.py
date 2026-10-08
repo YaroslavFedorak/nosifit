@@ -168,6 +168,8 @@ def _reasons(status: MuscleStatus, is_weak: bool, focus: Optional[float], action
         reasons.append(base + "undertrained")
     elif status.below_target:
         reasons.append(base + "belowTarget")
+    elif status.volume_zone == "within" and action in ("prioritize", "train"):
+        reasons.append(base + "withinTarget")
     if is_weak:
         reasons.append(base + "weakPoint")
     elif focus is not None and focus > P.FOCUS_NEUTRAL:
@@ -175,6 +177,9 @@ def _reasons(status: MuscleStatus, is_weak: bool, focus: Optional[float], action
     guideline_interval = 7.0 / P.MIN_EXPOSURES_PER_WEEK
     if status.days_since_trained is None or status.days_since_trained > guideline_interval:
         reasons.append(base + "frequency")
-    if action in ("prioritize", "train") and status.readiness_level == "recovered":
-        reasons.append(base + "recovered")
+    if action in ("prioritize", "train"):
+        if status.readiness_level == "recovered":
+            reasons.append(base + "recovered")
+        elif status.readiness_level == "ready":
+            reasons.append(base + "ready")
     return tuple(reasons)

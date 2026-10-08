@@ -2,7 +2,8 @@
 
 Raw physiological values stay internal; the payload exposes levels, states,
 rounded weekly set counts with their target bands, and reason keys.
-The top-level keys of /api/training/recommendations are kept compatible.
+The top-level keys of /api/training/recommendations are kept compatible;
+``guidance`` (what to train today and why) was added next to them.
 """
 
 import math
@@ -11,11 +12,13 @@ from datetime import timedelta
 from typing import Dict, List
 
 from . import parameters as P
+from .guidance import TRAIN_KINDS, Guidance, MuscleGuidance, build_guidance
 from .selection import pattern_family
 from .service import TrainingAnalysis
 from .status import statuses_by_state
 
 SUMMARY = "recommendations.training.summary."
+GUIDANCE = "recommendations.training.guidance."
 
 
 def _round_half(value: float) -> float:
@@ -163,6 +166,34 @@ def _summary(analysis: TrainingAnalysis, recovery: Dict) -> str:
     return SUMMARY + "balanced"
 
 
+def _guidance_item(item: MuscleGuidance) -> Dict:
+    return {
+        "muscle": item.muscle,
+        "kind": item.kind,
+        "label": GUIDANCE + "kind." + item.kind,
+        "reasons": list(item.reasons),
+        # Warnings carry no action: their label and reason already say it.
+        "action": GUIDANCE + "action." + item.kind if item.kind in TRAIN_KINDS else None,
+        "params": {"sets": item.suggested_sets},
+    }
+
+
+def guidance_payload(analysis: TrainingAnalysis) -> Dict:
+    """"What to train today and why" as i18n keys; no internal numbers."""
+    guidance: Guidance = build_guidance(analysis.plans, analysis.statuses, bool(analysis.doses))
+    verdict = GUIDANCE + "verdict." + guidance.verdict
+    message = verdict + ".message"
+    if guidance.verdict == "rest" and guidance.accumulated_fatigue:
+        message = verdict + ".messageFatigue"
+    return {
+        "verdict": guidance.verdict,
+        "title": verdict + ".title",
+        "message": message,
+        "muscles": [_guidance_item(item) for item in guidance.muscles],
+        "warnings": [_guidance_item(item) for item in guidance.warnings],
+    }
+
+
 def recommendation_payload(analysis: TrainingAnalysis) -> Dict:
     recovery = _recovery_section(analysis)
     recommended = []
@@ -195,4 +226,5 @@ def recommendation_payload(analysis: TrainingAnalysis) -> Dict:
         "frequency": _frequency_section(analysis),
         "recommended_exercises": recommended,
         "summary": _summary(analysis, recovery),
+        "guidance": guidance_payload(analysis),
     }

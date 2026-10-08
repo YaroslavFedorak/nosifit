@@ -639,5 +639,15 @@ DISPLAY_MIN_SETS = _param(
     "Muscles or patterns below this exposure are omitted from summaries.",
     "Display rounding.", "n/a", True,
 )
+GUIDANCE_MAX_MUSCLES = _param(
+    "GUIDANCE_MAX_MUSCLES", 3, "muscles",
+    "Most muscles shown as 'train today' in the guidance block.",
+    "Display choice: a short list stays readable.", "n/a", True,
+)
+GUIDANCE_MAX_WARNINGS = _param(
+    "GUIDANCE_MAX_WARNINGS", 3, "muscles",
+    "Most muscles shown as 'hold back' (rest / fewer sets / enough volume).",
+    "Display choice.", "n/a", True,
+)
 
 MODEL_VERSION = 2
