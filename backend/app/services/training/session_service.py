@@ -103,6 +103,46 @@ class TrainingSessionService:
         db.session.commit()
 
     @staticmethod
+    def replace_exercises(session, exercises, fatigue_after=None):
+        """Save a workout again: its exercises become ``exercises``.
+
+        The workout page sends the whole current workout on every save, so a
+        repeated save must update the session instead of creating another
+        one. The legacy cumulative PerformanceState.training_load only gets
+        the difference, so it still equals the sum over sessions.
+        """
+        previous_load = session.internal_load or 0
+        session.exercises.clear()
+        db.session.flush()
+
+        for exercise_id, set_data in exercises:
+            TrainingSessionService.update_exercise(session, exercise_id, set_data)
+
+        db.session.refresh(session)
+        session.status = "finished"
+        session.finished_at = datetime.utcnow()
+        if fatigue_after is not None:
+            session.fatigue_after = fatigue_after
+
+        rpes = [ex.rpe for ex in session.exercises if ex.rpe is not None]
+        session.rpe_avg = sum(rpes) / len(rpes) if rpes else None
+
+        TrainingSessionService._compute_session_load(session, session.user)
+
+        performance = (
+            PerformanceState.query.filter_by(user_id=session.user_id)
+            .order_by(PerformanceState.created_at.desc())
+            .first()
+        )
+        if performance is not None:
+            performance.training_load = (performance.training_load or 0) + (
+                (session.internal_load or 0) - previous_load
+            )
+
+        db.session.commit()
+        return session
+
+    @staticmethod
     def finish_session(session, fatigue_after=None):
         session.status = "finished"
         session.finished_at = datetime.utcnow()

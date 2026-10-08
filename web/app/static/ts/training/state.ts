@@ -22,6 +22,10 @@ const STORAGE_KEY =
 const STORAGE_DATE_KEY =
     "dashboard_training_date";
 
+// Session created by today's first "save workout"; later saves update it.
+const STORAGE_SESSION_KEY =
+    "dashboard_training_session_id";
+
 export type DailyTrainingExercise = {
     id: string;
     databaseId: string | null;
@@ -192,6 +196,10 @@ export function getDailyExercises(): DailyTrainingExercise[] {
                 STORAGE_DATE_KEY
             );
 
+            localStorage.removeItem(
+                STORAGE_SESSION_KEY
+            );
+
             return [];
         }
 
@@ -295,9 +303,48 @@ export function persistWorkout(
     }
 }
 
+export function getDailySessionId(): string | null {
+    try {
+        if (
+            localStorage.getItem(
+                STORAGE_DATE_KEY
+            ) !== getTodayKey()
+        ) {
+            return null;
+        }
+
+        return localStorage.getItem(
+            STORAGE_SESSION_KEY
+        );
+    } catch {
+        return null;
+    }
+}
+
+export function persistSessionId(
+    sessionId: number | string
+): void {
+    try {
+        localStorage.setItem(
+            STORAGE_SESSION_KEY,
+            String(sessionId)
+        );
+
+        localStorage.setItem(
+            STORAGE_DATE_KEY,
+            getTodayKey()
+        );
+    } catch {
+        return;
+    }
+}
+
 export function initDailyState(): void {
     const saved =
         getDailyExercises();
+
+    trainingStore.sessionId =
+        getDailySessionId();
 
     trainingStore.workout =
         saved.map(item => {

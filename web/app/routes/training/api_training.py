@@ -25,7 +25,7 @@ from zoneinfo import ZoneInfo
 
 from werkzeug.exceptions import BadRequest, HTTPException
 
-from backend.app.utils.validation import ValidationError, bounded_number
+from backend.app.utils.validation import ValidationError, as_db_id, bounded_number
 from backend.app.services.training.validation import (
     clean_exercise_id as _clean_exercise_id,
     clean_fatigue as _clean_fatigue,
@@ -488,6 +488,37 @@ def delete_plan(plan_id):
         return _error(e)
 
 
+def _saved_workout_today(session_id):
+    """The user's session saved earlier today from the workout page, if any.
+
+    Only today's sessions can be re-saved this way; anything else (another
+    user's id, an older day, garbage) falls back to creating a new session.
+    """
+    session_id = as_db_id(session_id)
+    if session_id is None:
+        return None
+    session = TrainingSession.query.filter_by(id=session_id, user_id=current_user.id).first()
+    if session is None or session.started_at is None:
+        return None
+    if _local_date(session.started_at) != _local_today():
+        return None
+    return session
+
+
+def _completed_session_payload(session):
+    summary = TrainingModelService.session_summary(session)
+    return {
+        "id": session.id,
+        "rpe_avg": session.rpe_avg,
+        # Legacy multiplier-based value; kept until its consumers move.
+        "internal_load": session.internal_load,
+        "hard_sets": summary["hard_sets"],
+        "session_training_stress_proxy": summary["session_training_stress_proxy"],
+        "volume_load_kg": summary["volume_load_kg"],
+        "muscle_sets": summary["muscle_sets"],
+    }
+
+
 @training_api_bp.route("/sessions/complete", methods=["POST"])
 @login_required
 def complete_session():
@@ -523,6 +554,13 @@ def complete_session():
                 )
             )
 
+        saved = _saved_workout_today(data.get("session_id"))
+        if saved is not None:
+            session = TrainingSessionService.replace_exercises(
+                saved, exercises, fatigue_after
+            )
+            return jsonify(_completed_session_payload(session))
+
         existing = (
             TrainingSession.query.filter_by(
                 user_id=current_user.id,
@@ -555,20 +593,7 @@ def complete_session():
             fatigue_after,
         )
 
-        summary = TrainingModelService.session_summary(session)
-
-        return jsonify(
-            {
-                "id": session.id,
-                "rpe_avg": session.rpe_avg,
-                # Legacy multiplier-based value; kept until its consumers move.
-                "internal_load": session.internal_load,
-                "hard_sets": summary["hard_sets"],
-                "session_training_stress_proxy": summary["session_training_stress_proxy"],
-                "volume_load_kg": summary["volume_load_kg"],
-                "muscle_sets": summary["muscle_sets"],
-            }
-        )
+        return jsonify(_completed_session_payload(session))
 
     except Exception as e:
         return _error(e)

@@ -18,6 +18,10 @@ import {
     isDurationExercise
 } from "./measurement.js";
 
+import {
+    persistSessionId
+} from "./state.js";
+
 export function initSession(): void {
     const saveButton =
         document.getElementById(
@@ -41,6 +45,9 @@ export function initSession(): void {
                 );
 
             const payload = {
+                // Re-saving today's workout updates the same session.
+                session_id:
+                    trainingStore.sessionId,
                 title:
                     titleInput?.value ||
                     null,
@@ -65,6 +72,10 @@ export function initSession(): void {
 
                 trainingStore.sessionId =
                     response.id;
+
+                persistSessionId(
+                    response.id
+                );
 
                 showSavedToast();
 

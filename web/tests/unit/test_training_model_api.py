@@ -297,3 +297,87 @@ def test_legacy_exercise_id_muscle_loads_are_ignored(client, user, catalog):
 
     summary = TrainingDashboardService.get_session(user.id, session.id)["summary"]["muscles"]
     assert set(summary["weak"] + summary["balanced"] + summary["overloaded"]) <= MUSCLES
+
+
+# --- re-saving today's workout ---------------------------------------------
+
+
+def _save(client, items, session_id=None):
+    payload = {"exercises": items}
+    if session_id is not None:
+        payload["session_id"] = session_id
+    response = client.post("/api/training/sessions/complete", json=payload)
+    assert response.status_code == 200, response.get_json()
+    return response.get_json()
+
+
+def test_saving_after_each_exercise_keeps_one_session(client, user, catalog):
+    """Regression: saving the growing workout after every exercise created a
+    new session each time, so earlier exercises were counted again."""
+    from backend.app.training.models.performance_state import PerformanceState
+
+    login(client)
+    push = {"exercise": {"id": catalog["push-ups"].id}, "sets": 3, "reps": "33"}
+    plank = {"exercise": {"id": catalog["plank"].id}, "sets": 2, "duration_sec": 120}
+    back = {"exercise": {"id": catalog["back-extension"].id}, "sets": 4, "reps": "7-12", "load": 15}
+
+    first = _save(client, [push])
+    second = _save(client, [push, plank], first["id"])
+    third = _save(client, [push, plank, back], second["id"])
+
+    assert first["id"] == second["id"] == third["id"]
+    sessions = TrainingSession.query.filter_by(user_id=user.id).all()
+    assert len(sessions) == 1
+    assert sorted(e.exercise_id for e in sessions[0].exercises) == sorted(
+        catalog[s].id for s in ("push-ups", "plank", "back-extension")
+    )
+    assert sessions[0].status == "finished"
+    assert third["hard_sets"] > second["hard_sets"] > first["hard_sets"]
+    assert set(third["muscle_sets"]) <= MUSCLES
+
+    # One save of the full workout gives the same numbers as saving it in steps.
+    one_shot_user_hard_sets = third["hard_sets"]
+    performance = PerformanceState.query.filter_by(user_id=user.id).all()
+    assert len(performance) == 1
+    assert performance[0].training_load == pytest.approx(sessions[0].internal_load)
+    assert one_shot_user_hard_sets == pytest.approx(
+        TrainingModelService.session_summary(sessions[0])["hard_sets"]
+    )
+
+
+def test_resave_can_remove_an_exercise(client, user, catalog):
+    login(client)
+    push = {"exercise": {"id": catalog["push-ups"].id}, "sets": 3, "reps": "10"}
+    plank = {"exercise": {"id": catalog["plank"].id}, "sets": 2, "duration_sec": 60}
+    first = _save(client, [push, plank])
+    _save(client, [push], first["id"])
+    session = db.session.get(TrainingSession, first["id"])
+    assert [e.exercise_id for e in session.exercises] == [catalog["push-ups"].id]
+
+
+@pytest.mark.parametrize("session_id", ["abc", -1, 0, True, None])
+def test_invalid_session_id_creates_a_new_session(client, user, catalog, session_id):
+    login(client)
+    push = {"exercise": {"id": catalog["push-ups"].id}, "sets": 3, "reps": "10"}
+    first = _save(client, [push])
+    second = _save(client, [push], session_id)
+    assert second["id"] != first["id"]
+
+
+def test_other_users_or_old_sessions_are_never_resaved(client, user, catalog):
+    from backend.app.models.user import User
+    from werkzeug.security import generate_password_hash
+
+    other = User(username="other", email="other@example.com", password=generate_password_hash("x" * 12))
+    db.session.add(other)
+    db.session.commit()
+    foreign = add_session(other, catalog, 0, [("plank", {"sets_done": 2, "duration_sec_done": 60})])
+    old = add_session(user, catalog, 3, [("plank", {"sets_done": 2, "duration_sec_done": 60})])
+
+    login(client)
+    push = {"exercise": {"id": catalog["push-ups"].id}, "sets": 3, "reps": "10"}
+    for target in (foreign, old):
+        result = _save(client, [push], target.id)
+        assert result["id"] != target.id
+        db.session.refresh(target)
+        assert [e.exercise_id for e in target.exercises] == [catalog["plank"].id]
