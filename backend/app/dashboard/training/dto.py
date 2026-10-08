@@ -98,7 +98,6 @@ def training_session_to_dict(session):
         "exercise_count": len(session_exercises),
         "rpe_avg": session.rpe_avg,
         "internal_load": session.internal_load or 0,
-        "muscle_loads": session.muscle_loads or {},
         "exercises": session_exercises,
     }
 

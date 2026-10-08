@@ -23,7 +23,8 @@
         "sleep": "Sleep",
         "load": "Load",
         "habits": "Habits",
-        "training": "Training"
+        "training": "Training",
+        "trainingReadiness": "Training readiness"
     },
     "time": {
         "sleep": "{hours} h {minutes} min"
@@ -344,5 +345,11 @@
             "midnight_hint": "Sleep across midnight will be detected automatically.",
             "save": "Save sleep"
         }
+    },
+    "readiness": {
+        "low": "Low readiness",
+        "moderate": "Moderate readiness",
+        "ready": "Ready",
+        "recovered": "Recovered"
     }
 }

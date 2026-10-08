@@ -17,8 +17,16 @@
                 "weakPattern": "Improves a weak movement pattern",
                 "regression": "Helps reverse regression",
                 "plateau": "Helps break a plateau",
-                "frequency": "Supports an undertrained muscle",
-                "diversity": "Adds exercise variety"
+                "frequency": "Not trained in the last few days",
+                "diversity": "Adds exercise variety",
+                "belowTarget": "Below your weekly target",
+                "undertrained": "Consistently below target volume",
+                "focus": "Matches your training focus",
+                "recovered": "Recovered and ready",
+                "lowReadiness": "Still recovering from recent training",
+                "moderateReadiness": "Partly recovered — keep volume modest",
+                "accumulatedFatigue": "Fatigue has built up over several days",
+                "highVolume": "Already above your weekly target"
             },
             "summary": {
                 "recovery": "Recovery should be prioritized",

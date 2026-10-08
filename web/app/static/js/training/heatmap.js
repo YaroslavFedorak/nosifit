@@ -238,12 +238,10 @@ function getHeatmapTooltip() {
 }
 function showHeatmapTooltip(cell) {
     const tooltip = getHeatmapTooltip();
-    const percent = Number(cell.dataset.percent) || 0;
-    const load = Number(cell.dataset.load) || 0;
+    const sets = Number(cell.dataset.hardSets) || 0;
     tooltip.textContent =
-        t("heatmap.load", {
-            percent,
-            load
+        t("heatmap.hardSets", {
+            sets
         });
     tooltip.classList.add("is-visible");
     const rect = cell.getBoundingClientRect();
@@ -291,8 +289,7 @@ function createEmptyDay(date) {
     return {
         date,
         level: 0,
-        percent: 0,
-        load: 0,
+        hard_sets: 0,
         is_today: false
     };
 }
@@ -322,8 +319,7 @@ function renderHeatmap(days) {
         }
         level =
             Math.max(0, Math.min(6, Math.round(level)));
-        const percent = Number(day.percent) || 0;
-        const load = Number(day.load) || 0;
+        const sets = Number(day.hard_sets) || 0;
         const todayClass = day.is_today
             ? " today"
             : "";
@@ -332,12 +328,11 @@ function renderHeatmap(days) {
                     class="heatmap-cell${todayClass}"
                     data-date="${dateString}"
                     data-level="${level}"
-                    data-percent="${percent}"
-                    data-load="${load}"
+                    data-hard-sets="${sets}"
                     role="gridcell"
-                    aria-label="${t("heatmap.ariaLabel", {
+                    aria-label="${t("heatmap.ariaHardSets", {
             date: formatDate(current),
-            percent
+            sets
         })}"
                 ></div>
             `);
@@ -371,7 +366,7 @@ function renderCalendarMonth() {
             .map(day => {
             const date = new Date(`${day.date}T12:00:00`);
             const level = Math.max(0, Math.min(6, Math.round(Number(day.level) || 0)));
-            const percent = Number(day.percent) || 0;
+            const sets = Number(day.hard_sets) || 0;
             return `
                         <div
                             class="tr-calendar-item tr-level-${level}"
@@ -381,7 +376,7 @@ function renderCalendarMonth() {
                                 ${date.getDate()}
                             </div>
                             <div class="tr-calendar-load">
-                                ${percent}%
+                                ${t("heatmap.setsShort", { sets })}
                             </div>
                         </div>
                     `;

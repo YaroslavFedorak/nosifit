@@ -21,7 +21,9 @@ from backend.app.services.recovery import (
 )
 
 from backend.app.models.recovery.habit import RecoveryHabit
-from backend.app.services.training.load_service import TrainingLoadService
+from backend.app.models.user import User
+from backend.app.services.training.model import TrainingModelService
+from backend.app.services.training.model.readiness import readiness_level
 
 recovery_bp = Blueprint("recovery", __name__, url_prefix="/api/recovery")
 
@@ -58,12 +60,43 @@ sleep_service = SleepService()
 habit_service = HabitService()
 snapshot_service = SnapshotService()
 stats_service = StatsService()
-training_load_service = TrainingLoadService()
 recommendation_service = RecommendationService()
 
 
 MAX_SLEEP_DURATION = timedelta(hours=24)
 MIN_YEAR, MAX_YEAR = 2000, 2100
+
+
+def _training_day_summary(user_id, day, readiness_score=None):
+    """Training part of the day details: readiness level (score kept for the
+    bar) and the day's hard sets. The legacy 'load' number is no longer sent."""
+    summary = {
+        "readiness_score": readiness_score,
+        "readiness_level": None,
+        "hard_sets": 0.0,
+        "session_training_stress_proxy": 0.0,
+    }
+    try:
+        if readiness_score is None:
+            user = db.session.get(User, user_id)
+            if user is not None:
+                readiness_score = TrainingModelService.training_readiness_score(user, day)
+        stress = TrainingModelService.day_stress(user_id, day)
+        summary.update(
+            readiness_score=readiness_score,
+            readiness_level=(
+                readiness_level(readiness_score / 100.0)
+                if readiness_score is not None
+                else None
+            ),
+            hard_sets=stress["hard_sets"],
+            session_training_stress_proxy=stress["session_training_stress_proxy"],
+        )
+    except Exception:
+        current_app.logger.exception(
+            "Error while building training summary for user %s date %s", user_id, day
+        )
+    return summary
 
 
 def parse_iso(dt: str) -> datetime:
@@ -274,15 +307,12 @@ def get_snapshot(user_id):
 
     habits = habit_service.get_user_habits_with_status(user_id, snapshot.date)
 
-    daily_load = training_load_service.get_daily_load(user_id, target_day=snapshot.date)
-
     recs = recommendation_service.build_recommendations(
         user_id=user_id,
         sleep_score=snapshot.sleep_score,
         recovery_score=snapshot.recovery_score,
         energy_score=snapshot.energy_score,
         habit_score=snapshot.habit_score,
-        daily_load=daily_load,
         target_date=snapshot.date,
     )
 
@@ -360,15 +390,12 @@ def get_recommendations(user_id):
     if snapshot is None:
         snapshot = snapshot_service.generate_snapshot(user_id, target_date=target_date)
 
-    daily_load = training_load_service.get_daily_load(user_id, target_day=target_date)
-
     recs = recommendation_service.build_recommendations(
         user_id=user_id,
         sleep_score=snapshot.sleep_score,
         recovery_score=snapshot.recovery_score,
         energy_score=snapshot.energy_score,
         habit_score=snapshot.habit_score,
-        daily_load=daily_load,
         target_date=target_date,
     )
 
@@ -423,25 +450,12 @@ def get_day_details(user_id):
                 habits = []
 
             try:
-                daily_load = training_load_service.get_daily_load(
-                    user_id, target_day=dt
-                )
-            except Exception:
-                current_app.logger.exception(
-                    "Error while fetching daily load for user %s date %s",
-                    user_id,
-                    raw_date,
-                )
-                daily_load = None
-
-            try:
                 recs = recommendation_service.build_recommendations(
                     user_id=user_id,
                     sleep_score=snapshot.sleep_score,
                     recovery_score=snapshot.recovery_score,
                     energy_score=snapshot.energy_score,
                     habit_score=snapshot.habit_score,
-                    daily_load=daily_load,
                     target_date=dt,
                 )
             except Exception:
@@ -479,7 +493,9 @@ def get_day_details(user_id):
                             "wake_time": base.get("sleep_end"),
                         },
                         "training": {
-                            "load": base.get("training_score"),
+                            **_training_day_summary(
+                                user_id, dt, base.get("training_score")
+                            ),
                             "sessions": base.get("training_sessions", 0),
                             "exercises": base.get("training_exercises", []),
                         },
@@ -510,15 +526,12 @@ def get_day_details(user_id):
             habits = []
 
         try:
-            daily_load = training_load_service.get_daily_load(user_id, target_day=dt)
-
             recs = recommendation_service.build_recommendations(
                 user_id=user_id,
                 sleep_score=0,
                 recovery_score=0,
                 energy_score=0,
                 habit_score=0,
-                daily_load=daily_load,
                 target_date=dt,
             )
         except Exception:
@@ -557,7 +570,7 @@ def get_day_details(user_id):
 
         training_exercises = []
 
-        training_load = training_load_service.get_daily_load(user_id, target_date=dt)
+        training_summary = _training_day_summary(user_id, dt)
 
         training_sessions = len(sessions)
 
@@ -626,7 +639,7 @@ def get_day_details(user_id):
                         ),
                     },
                     "training": {
-                        "load": training_load,
+                        **training_summary,
                         "sessions": training_sessions,
                         "exercises": training_exercises,
                     },

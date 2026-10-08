@@ -4,17 +4,11 @@ from typing import Any, Dict, List, Optional
 from backend.app.models.recovery.daily_recovery_snapshot import (
     DailyRecoverySnapshot,
 )
+from backend.app.extensions import db
 from backend.app.models.user import User
-from backend.app.models.training_session import TrainingSession
-from backend.app.services.training.load.session import build_daily_loads
-from backend.app.services.recovery.constants import (
-    MAX_RECOMMENDATIONS,
-    MUSCLE_HIGH_LOAD,
-    MUSCLE_LOW_LOAD,
-    MUSCLE_TRAINING_GAP_DAYS,
-    MUSCLE_TRAINING_RECOVERY_DAYS,
-)
-from backend.app.services.training.load_service import TrainingLoadService
+from backend.app.services.recovery.constants import MAX_RECOMMENDATIONS
+from backend.app.services.training.model import TrainingModelService
+from backend.app.services.training.model import parameters as training_parameters
 
 
 class RecommendationService:
@@ -40,89 +34,18 @@ class RecommendationService:
         }
 
     @staticmethod
-    def _get_daily_load(user_id: int, target_date: date) -> Optional[float]:
-        try:
-            user = User.query.get(user_id)
-            if user is None:
-                return None
-
-            sessions = TrainingSession.query.filter(
-                TrainingSession.user_id == user_id,
-                TrainingSession.started_at >= target_date,
-                TrainingSession.started_at < target_date + timedelta(days=1),
-            ).all()
-
-            daily_loads = build_daily_loads(sessions, user)
-            return float(daily_loads.get(target_date, 0.0))
-
-        except Exception:
+    def _training_analysis(user_id: int, target_date: date):
+        user = db.session.get(User, user_id)
+        if user is None:
             return None
+        return TrainingModelService.analyse_user(user, target_date)
 
     @staticmethod
-    def _build_context(
-        user_id: int,
-        target_date: date,
-        window_days: int = 7,
-    ) -> Dict[str, Any]:
-        start_date = target_date - timedelta(days=window_days - 1)
-        end_date = target_date + timedelta(days=1)
-
-        sessions = (
-            TrainingSession.query.filter(
-                TrainingSession.user_id == user_id,
-                TrainingSession.started_at >= start_date,
-                TrainingSession.started_at < end_date,
-            )
-            .order_by(TrainingSession.started_at.asc())
-            .all()
-        )
-
-        muscle_total_load: Dict[str, float] = {}
-        muscle_daily_load: Dict[str, Dict[date, float]] = {}
-        last_trained: Dict[str, date] = {}
-
-        for session in sessions:
-            if not session.started_at:
-                continue
-
-            session_date = session.started_at.date()
-
-            for muscle, load in (session.muscle_loads or {}).items():
-                try:
-                    numeric_load = float(load or 0)
-                except (TypeError, ValueError):
-                    continue
-
-                if numeric_load <= 0:
-                    continue
-
-                muscle_total_load[muscle] = (
-                    muscle_total_load.get(muscle, 0.0) + numeric_load
-                )
-
-                if muscle not in muscle_daily_load:
-                    muscle_daily_load[muscle] = {}
-
-                muscle_daily_load[muscle][session_date] = (
-                    muscle_daily_load[muscle].get(session_date, 0.0) + numeric_load
-                )
-
-                previous_date = last_trained.get(muscle)
-
-                if previous_date is None or session_date > previous_date:
-                    last_trained[muscle] = session_date
-
-        muscle_average_load: Dict[str, float] = {}
-
-        for muscle, daily_loads in muscle_daily_load.items():
-            muscle_average_load[muscle] = sum(daily_loads.values()) / window_days
-
-        return {
-            "sessions": sessions,
-            "muscle_total_load": muscle_total_load,
-            "muscle_average_load": muscle_average_load,
-            "last_trained": last_trained,
-        }
+    def _day_stress(user_id: int, target_date: date) -> Optional[Dict[str, Any]]:
+        try:
+            return TrainingModelService.day_stress(user_id, target_date)
+        except Exception:
+            return None
 
     @staticmethod
     def _recovery_recommendations(
@@ -210,12 +133,22 @@ class RecommendationService:
 
     @staticmethod
     def _training_recommendations(
-        daily_load: Optional[float],
+        day_stress: Optional[Dict[str, Any]],
     ) -> List[Dict[str, Any]]:
-        if daily_load is None:
+        """A day far above the user's typical session (stress proxy) earns a
+        recovery note. Relative to the user's own baseline, not a fixed load."""
+        if not day_stress or day_stress.get("session_training_stress_proxy", 0) <= 0:
             return []
 
-        if daily_load >= 180:
+        ratio = day_stress["session_training_stress_proxy"] / day_stress["typical"]
+        thresholds = training_parameters.HIGH_DAY_STRESS_RATIOS
+        reason = {
+            "session_training_stress_proxy": day_stress["session_training_stress_proxy"],
+            "typical_session": day_stress["typical"],
+        }
+        params = {"hard_sets": day_stress.get("hard_sets", 0)}
+
+        if ratio >= thresholds["very_high"]:
             return [
                 {
                     "type": "training",
@@ -223,16 +156,12 @@ class RecommendationService:
                     "priority": "high",
                     "title_key": "recommendations.recovery.veryHighLoad.title",
                     "message_key": "recommendations.recovery.veryHighLoad.message",
-                    "params": {
-                        "load": round(daily_load, 2),
-                    },
-                    "reason": {
-                        "daily_load": round(daily_load, 2),
-                    },
+                    "params": params,
+                    "reason": reason,
                 }
             ]
 
-        if daily_load >= 140:
+        if ratio >= thresholds["high"]:
             return [
                 {
                     "type": "training",
@@ -240,12 +169,8 @@ class RecommendationService:
                     "priority": "medium",
                     "title_key": "recommendations.recovery.highLoad.title",
                     "message_key": "recommendations.recovery.highLoad.message",
-                    "params": {
-                        "load": round(daily_load, 2),
-                    },
-                    "reason": {
-                        "daily_load": round(daily_load, 2),
-                    },
+                    "params": params,
+                    "reason": reason,
                 }
             ]
 
@@ -253,79 +178,55 @@ class RecommendationService:
 
     @staticmethod
     def _muscle_recommendations(
-        muscle_total_load: Dict[str, float],
-        muscle_average_load: Dict[str, float],
-        last_trained: Dict[str, date],
+        analysis,
         recovery_score: Optional[int],
-        target_date: date,
     ) -> List[Dict[str, Any]]:
+        """Rest notes for fatigued muscles and train notes for Stage 1 targets."""
+        if analysis is None:
+            return []
+
         recommendations: List[Dict[str, Any]] = []
+        statuses = analysis.statuses
 
-        for muscle, recent_load in muscle_total_load.items():
-            average_load = muscle_average_load.get(muscle, 0.0)
+        for plan in analysis.plans:
+            status = statuses[plan.muscle]
+            reason = {
+                "state": status.state,
+                "readiness": status.readiness_level,
+                "weekly_sets": round(status.exposure_smoothed, 1),
+            }
 
-            relative_load = recent_load / average_load if average_load > 0 else 0.0
-
-            last_training_date = last_trained.get(muscle)
-
-            days_since_training = (
-                (target_date - last_training_date).days
-                if last_training_date is not None
-                else 999
-            )
-
-            if (
-                recent_load >= MUSCLE_HIGH_LOAD
-                and days_since_training <= MUSCLE_TRAINING_RECOVERY_DAYS
-            ):
+            if plan.action == "rest":
                 recommendations.append(
                     {
                         "type": "muscle",
-                        "id": f"rest_{muscle}",
-                        "muscle": muscle,
+                        "id": f"rest_{plan.muscle}",
+                        "muscle": plan.muscle,
                         "priority": "high",
                         "title_key": "recommendations.recovery.muscleRest.title",
                         "message_key": "recommendations.recovery.muscleRest.message",
-                        "params": {
-                            "muscle": muscle,
-                        },
-                        "reason": {
-                            "recent_load": round(recent_load, 2),
-                            "days_since": days_since_training,
-                            "relative": round(relative_load, 2),
-                        },
+                        "params": {"muscle": plan.muscle},
+                        "reason": reason,
                     }
                 )
-
                 continue
 
+            # A low overall recovery score suppresses suggestions to add work.
             if recovery_score is not None and recovery_score < 45:
                 continue
 
-            if (
-                recent_load < MUSCLE_LOW_LOAD
-                or relative_load < 0.6
-                or days_since_training >= MUSCLE_TRAINING_GAP_DAYS
-            ):
+            if plan.action == "prioritize":
                 recommendations.append(
                     {
                         "type": "exercise",
-                        "id": f"train_{muscle}",
-                        "muscle": muscle,
+                        "id": f"train_{plan.muscle}",
+                        "muscle": plan.muscle,
                         "priority": "medium",
                         "title_key": "recommendations.recovery.muscleTraining.title",
                         "message_key": "recommendations.recovery.muscleTraining.message",
-                        "params": {
-                            "muscle": muscle,
-                        },
-                        "suggested_sets": 3,
-                        "suggested_reps": "8-12",
-                        "suggested_rpe": 7,
-                        "reason": {
-                            "recent_load": round(recent_load, 2),
-                            "days_since": days_since_training,
-                            "relative": round(relative_load, 2),
-                        },
+                        "params": {"muscle": plan.muscle},
+                        "suggested_sets": plan.allocated_sets,
+                        "reason": reason,
                     }
                 )
 
@@ -360,17 +261,12 @@ class RecommendationService:
         if habit_score is None:
             habit_score = recovery_data.get("habit_score")
 
-        if daily_load is None:
-            daily_load = RecommendationService._get_daily_load(
-                user_id=user_id,
-                target_date=target_date,
-            )
-
-        context = RecommendationService._build_context(
-            user_id=user_id,
-            target_date=target_date,
-            window_days=7,
-        )
+        # ``daily_load`` (legacy number) is accepted for compatibility but no
+        # longer used: training notes come from the training model.
+        try:
+            analysis = RecommendationService._training_analysis(user_id, target_date)
+        except Exception:
+            analysis = None
 
         recommendations: List[Dict[str, Any]] = []
 
@@ -389,17 +285,14 @@ class RecommendationService:
 
         recommendations.extend(
             RecommendationService._training_recommendations(
-                daily_load=daily_load,
+                RecommendationService._day_stress(user_id, target_date),
             )
         )
 
         recommendations.extend(
             RecommendationService._muscle_recommendations(
-                muscle_total_load=context["muscle_total_load"],
-                muscle_average_load=context["muscle_average_load"],
-                last_trained=context["last_trained"],
+                analysis,
                 recovery_score=recovery_score,
-                target_date=target_date,
             )
         )
 

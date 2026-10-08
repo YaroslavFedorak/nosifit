@@ -69,8 +69,8 @@ export type StrengthPerformance = {
 export type HeatmapDay = {
     date?: string;
     level?: number | null;
-    percent?: number | null;
-    load?: number | null;
+    hard_sets?: number | null;
+    session_training_stress_proxy?: number | null;
     is_today?: boolean;
     [key: string]: unknown;
 };

@@ -44,6 +44,20 @@
             "progression": "Supports progress",
             "lowFrequency": "This muscle group is trained too infrequently",
             "highFrequency": "Accounts for high training frequency"
+        },
+        "training": {
+            "reasons": {
+                "belowTarget": "Below your weekly target",
+                "undertrained": "Consistently below target volume",
+                "weakPoint": "Targets your weak point",
+                "focus": "Matches your training focus",
+                "frequency": "Not trained in the last few days",
+                "recovered": "Recovered and ready",
+                "lowReadiness": "Still recovering from recent training",
+                "moderateReadiness": "Partly recovered — keep volume modest",
+                "accumulatedFatigue": "Fatigue has built up over several days",
+                "highVolume": "Already above your weekly target"
+            }
         }
     },
     "muscles": {
@@ -86,7 +100,10 @@
         "exerciseMetaDuration": "{sets}×{seconds} s, {load} kg",
         "exerciseMetaDurationNoLoad": "{sets}×{seconds} s",
         "error": "Error",
-        "loadError": "Failed to load data."
+        "loadError": "Failed to load data.",
+        "hardSets": "{sets} hard sets",
+        "ariaHardSets": "{date}: {sets} hard sets",
+        "setsShort": "{sets} sets"
     },
     "months": {
         "jan": "Jan",

@@ -1,4 +1,12 @@
 from datetime import datetime
+from functools import lru_cache
+
+from backend.app.training.exercises.catalog import MUSCLES_PATH, load_reference_slugs
+
+
+@lru_cache(maxsize=1)
+def _known_muscles():
+    return frozenset(load_reference_slugs(MUSCLES_PATH))
 
 
 def calculate_training_score(session):
@@ -39,6 +47,9 @@ def analyze_muscles(muscle_loads):
     values = {}
 
     for muscle, load in muscle_loads.items():
+        # Sessions finished before the v2 model stored exercise ids here.
+        if str(muscle) not in _known_muscles():
+            continue
         try:
             value = float(load or 0)
         except (TypeError, ValueError):

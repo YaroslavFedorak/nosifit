@@ -13,7 +13,7 @@ from backend.app.training.models.muscle import Muscle
 from backend.app.training.models.equipment import TEEquipment
 from backend.app.training.models.user_pref import UserPreference
 from backend.app.services.training.session_service import TrainingSessionService
-from backend.app.services.training.load import compute_daily_load_index
+from backend.app.services.training.model import TrainingModelService
 from backend.app.training.training_analysis.recommendations_engine import (
     build_recommendations,
 )
@@ -44,12 +44,9 @@ def _local_today():
     return _local_now().date()
 
 
-def _session_local_date(session):
-    return (
-        session.started_at.replace(tzinfo=dt.timezone.utc)
-        .astimezone(APP_TIMEZONE)
-        .date()
-    )
+def _local_date(moment):
+    """Local calendar date of a naive UTC datetime."""
+    return moment.replace(tzinfo=dt.timezone.utc).astimezone(APP_TIMEZONE).date()
 
 
 training_api_bp = Blueprint("training_api", __name__, url_prefix="/api/training")
@@ -382,46 +379,30 @@ def heatmap():
 
         utc_end = local_end.astimezone(dt.timezone.utc).replace(tzinfo=None)
 
-        sessions = TrainingSession.query.filter(
-            TrainingSession.user_id == current_user.id,
-            TrainingSession.started_at >= utc_start,
-            TrainingSession.started_at <= utc_end,
+        today = _local_today()
+        calendar = [start + dt.timedelta(days=i) for i in range((end - start).days + 1)]
+        stress = TrainingModelService.stress_days(
+            current_user.id,
+            [d for d in calendar if d <= today],
+            _local_date,
+            utc_start,
+            utc_end,
         )
 
         days = []
-        d = start
-        today = _local_today()
-
-        while d <= end:
-            day_sessions = [s for s in sessions if _session_local_date(s) == d]
-            load_today = sum(s.internal_load or 0 for s in day_sessions)
-
-            if d > today or not day_sessions:
-                days.append(
-                    {
-                        "date": d.strftime("%Y-%m-%d"),
-                        "load": int(load_today),
-                        "percent": 0,
-                        "level": 0,
-                        "is_today": d == today,
-                    }
-                )
-                d += dt.timedelta(days=1)
-                continue
-
-            idx = compute_daily_load_index(current_user, sessions, d)
-
+        for d in calendar:
+            item = stress.get(d) or {}
             days.append(
                 {
                     "date": d.strftime("%Y-%m-%d"),
-                    "load": int(load_today),
-                    "percent": idx["percent"],
-                    "level": idx["level"],
+                    "hard_sets": item.get("hard_sets", 0.0),
+                    "session_training_stress_proxy": item.get(
+                        "session_training_stress_proxy", 0.0
+                    ),
+                    "level": item.get("level", 0),
                     "is_today": d == today,
                 }
             )
-
-            d += dt.timedelta(days=1)
 
         return jsonify({"days": days})
     except Exception as e:
@@ -574,12 +555,18 @@ def complete_session():
             fatigue_after,
         )
 
+        summary = TrainingModelService.session_summary(session)
+
         return jsonify(
             {
                 "id": session.id,
                 "rpe_avg": session.rpe_avg,
+                # Legacy multiplier-based value; kept until its consumers move.
                 "internal_load": session.internal_load,
-                "muscle_loads": session.muscle_loads or {},
+                "hard_sets": summary["hard_sets"],
+                "session_training_stress_proxy": summary["session_training_stress_proxy"],
+                "volume_load_kg": summary["volume_load_kg"],
+                "muscle_sets": summary["muscle_sets"],
             }
         )
 
@@ -773,15 +760,8 @@ def analytics():
 @login_required
 def recommendations():
     try:
-        sessions = (
-            TrainingSession.query.filter_by(user_id=current_user.id)
-            .order_by(TrainingSession.started_at.desc())
-            .all()
-        )
-
         result = build_recommendations(
             user=current_user,
-            sessions=sessions,
             target_day=dt.date.today(),
         )
 

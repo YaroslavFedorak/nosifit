@@ -1,5 +1,5 @@
 from datetime import date
-from typing import List, Mapping, Any, Set
+from typing import List, Mapping, Any, Optional, Set
 
 from backend.app.training.exercises.prescription import (
     default_entry,
@@ -548,9 +548,28 @@ def _build_summary(
 
 def build_recommendations(
     user: Any,
+    sessions: Optional[List] = None,
+    target_day: Optional[date] = None,
+) -> dict:
+    """Training recommendations from the v2 training model.
+
+    ``sessions`` may be passed to analyse a given set of sessions; otherwise
+    the model loads the user's recent history itself (batched, no N+1).
+    """
+    from backend.app.services.training.model import TrainingModelService
+    from backend.app.services.training.model.payload import recommendation_payload
+
+    analysis = TrainingModelService.analyse_user(user, target_day, sessions)
+    return recommendation_payload(analysis)
+
+
+def _build_recommendations_legacy(
+    user: Any,
     sessions: List,
     target_day: date,
 ) -> RecommendationPackage:
+    """Legacy engine (median-relative classification). No longer called;
+    kept until the cleanup pass removes the old load engine."""
     exercises: List[Exercise] = Exercise.query.all()
 
     exercise_map: Mapping[object, Exercise] = {

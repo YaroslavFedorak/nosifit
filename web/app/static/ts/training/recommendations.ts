@@ -97,12 +97,23 @@ function translateMuscle(
 function translateReason(
     value: unknown
 ): string {
-    const key =
+    const raw =
         String(
             value || ""
-        )
-            .trim()
-            .toLowerCase();
+        ).trim();
+
+    // The engine sends i18n keys (recommendations.training.reasons.*).
+    if (raw.startsWith("recommendations.")) {
+        const translated =
+            t(raw);
+
+        if (translated !== raw) {
+            return translated;
+        }
+    }
+
+    const key =
+        raw.toLowerCase();
 
     const reasonKeys: Record<string, string> = {
         "improves weak muscle group":

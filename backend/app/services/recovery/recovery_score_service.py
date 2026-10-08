@@ -2,16 +2,14 @@ from typing import Tuple, Optional
 
 from backend.app.services.recovery.sleep_service import SleepService
 from backend.app.services.recovery.habit_service import HabitService
-from backend.app.services.training.load_service import TrainingLoadService
+from backend.app.extensions import db
+from backend.app.models.user import User
+from backend.app.services.training.model import TrainingModelService
 from backend.app.services.recovery.constants import (
     SLEEP_WEIGHT,
     TRAINING_WEIGHT,
     HABIT_WEIGHT,
     SLEEP_DEBT_DIVISOR,
-    HEAVY_LOAD_RECOVERY_PENALTY,
-    VERY_HEAVY_LOAD_RECOVERY_PENALTY,
-    TRAINING_LOAD_HEAVY,
-    TRAINING_LOAD_VERY_HEAVY,
 )
 
 
@@ -19,7 +17,6 @@ class RecoveryScoreService:
     def __init__(self):
         self.sleep_service = SleepService()
         self.habit_service = HabitService()
-        self.training_load = TrainingLoadService()
 
     def calculate_sleep_score(self, duration_minutes: int) -> int:
         return self.sleep_service.calculate_sleep_score(duration_minutes)
@@ -34,18 +31,12 @@ class RecoveryScoreService:
         return int((completed / len(habits)) * 100)
 
     def calculate_training_score(self, user_id: int, target_date=None) -> int:
-        load = self.training_load.get_daily_load(user_id, target_day=target_date)
-        if load <= 40:
-            return 30
-        if load <= 80:
-            return 60
-        if load <= 120:
-            return 80
-        if load <= 160:
-            return 90
-        if load <= 180:
-            return 70
-        return 50
+        """Readiness (0-100) of recently trained muscles from the training
+        model; 100 when nothing was trained recently. Higher = more recovered."""
+        user = db.session.get(User, user_id)
+        if user is None:
+            return 100
+        return TrainingModelService.training_readiness_score(user, target_date)
 
     def calculate_energy_score(
         self, sleep_score: Optional[int], habit_score: int
@@ -64,17 +55,13 @@ class RecoveryScoreService:
     def _compute_penalties(
         self, user_id: int, required_minutes: int, target_date=None
     ) -> Tuple[int, int]:
-        load = self.training_load.get_daily_load(user_id, target_day=target_date)
         debt_minutes = self.sleep_service.calculate_sleep_debt_minutes(
             user_id, required_minutes
         )
 
+        # Training fatigue is already part of the training score (readiness);
+        # the former extra penalty on the raw legacy load is not applied.
         load_penalty = 0
-        if load > TRAINING_LOAD_HEAVY:
-            load_penalty += HEAVY_LOAD_RECOVERY_PENALTY
-        if load > TRAINING_LOAD_VERY_HEAVY:
-            load_penalty += VERY_HEAVY_LOAD_RECOVERY_PENALTY
-
         debt_penalty = debt_minutes // SLEEP_DEBT_DIVISOR
         return load_penalty, debt_penalty
 

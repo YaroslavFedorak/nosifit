@@ -262,7 +262,7 @@ def test_recommendations_carry_prescriptions(app, user, catalog):
     recommended = result["recommended_exercises"]
 
     assert recommended
-    assert result["patterns"]["pattern_loads"]
+    assert result["patterns"]["pattern_sets"]
 
     for item in recommended:
         exercise = catalog[item["slug"]]
