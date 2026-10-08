@@ -18,7 +18,7 @@ function capitalize(value) {
     return (text.charAt(0).toUpperCase() +
         text.slice(1));
 }
-function translateMuscle(value) {
+export function translateMuscle(value) {
     const key = String(value || "")
         .trim()
         .toLowerCase();

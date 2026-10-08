@@ -69,7 +69,7 @@ function capitalize(
     );
 }
 
-function translateMuscle(
+export function translateMuscle(
     value: unknown
 ): string {
     const key =

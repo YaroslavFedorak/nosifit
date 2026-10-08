@@ -381,3 +381,82 @@ def test_other_users_or_old_sessions_are_never_resaved(client, user, catalog):
         assert result["id"] != target.id
         db.session.refresh(target)
         assert [e.exercise_id for e in target.exercises] == [catalog["plank"].id]
+
+
+# --- weekly sets widget -----------------------------------------------------
+
+
+def _stored_session(user, started, finished, muscle_loads):
+    session = TrainingSession(
+        user_id=user.id, status="finished", started_at=started, finished_at=finished, muscle_loads=muscle_loads
+    )
+    db.session.add(session)
+    db.session.commit()
+    return session
+
+
+def test_weekly_sets_cover_monday_to_today_only(app, user):
+    from backend.app.models.user import User
+    from werkzeug.security import generate_password_hash
+
+    at = dt.datetime
+    wednesday = dt.date(2026, 10, 7)
+    _stored_session(user, at(2026, 10, 4, 10), at(2026, 10, 4, 11), {"chest": 5.0})  # last Sunday
+    _stored_session(user, at(2026, 10, 4, 23, 30), at(2026, 10, 5, 0, 30), {"chest": 1.0})  # ends Monday
+    _stored_session(user, at(2026, 10, 5, 10), at(2026, 10, 5, 11), {"chest": 2.0, "lats": 3.0})
+    _stored_session(user, at(2026, 10, 7, 9), at(2026, 10, 7, 10), {"chest": 4.0, "triceps": 1.5})
+    _stored_session(user, at(2026, 10, 7, 18), None, {})  # started, never finished
+    _stored_session(user, at(2026, 10, 8, 9), at(2026, 10, 8, 10), {"chest": 9.0})  # after "today"
+
+    other = User(username="other", email="other@example.com", password=generate_password_hash("x" * 12))
+    db.session.add(other)
+    db.session.commit()
+    _stored_session(other, at(2026, 10, 6, 9), at(2026, 10, 6, 10), {"chest": 9.0})
+
+    result = TrainingModelService.weekly_sets(
+        user, wednesday, lambda moment: moment.date(), at(2026, 10, 7, 23, 59)
+    )
+    sets = {row["muscle"]: row["sets"] for row in result["muscles"]}
+
+    assert (result["week_start"], result["week_end"]) == ("2026-10-05", "2026-10-07")
+    assert sets["chest"] == 7.0
+    assert sets["lats"] == 3.0
+    assert sets["triceps"] == 1.5
+    assert sum(sets.values()) == 11.5
+
+
+def test_weekly_sets_use_the_profile_goal_and_experience(app, user):
+    user.experience = "advanced"
+    db.session.add(UserTrainingGoals(user_id=user.id, primary_goal="hypertrophy", focus_upper=10, focus_lower=0, focus_core=5))
+    db.session.commit()
+
+    result = TrainingModelService.weekly_sets(
+        user, dt.date(2026, 10, 7), lambda moment: moment.date(), dt.datetime(2026, 10, 7, 23, 59)
+    )
+    lower, upper = P.WEEKLY_SET_TARGETS["hypertrophy"]["advanced"]
+    assert {row["target_sets"] for row in result["muscles"]} == {(lower + upper) / 2}
+
+
+def test_analytics_weekly_sets_match_the_saved_session_without_duplicates(client, user, catalog):
+    login(client)
+    bench = {"exercise": {"id": catalog["bench-press"].id}, "sets": 4, "reps": "8", "load": 60, "rpe": 8}
+    squat = {"exercise": {"id": catalog["barbell-back-squat"].id}, "sets": 3, "reps": "6", "load": 80, "rpe": 8}
+
+    first = _save(client, [bench])
+    saved = _save(client, [bench, squat], first["id"])  # re-saving updates the same session
+
+    weekly = client.get("/api/training/analytics").get_json()["weekly_sets"]
+    sets = {row["muscle"]: row["sets"] for row in weekly["muscles"]}
+
+    assert [row["muscle"] for row in weekly["muscles"]] == list(P.MAJOR_MUSCLES)
+    for muscle in P.MAJOR_MUSCLES:
+        assert sets[muscle] == pytest.approx(saved["muscle_sets"].get(muscle, 0.0), abs=0.05)
+    assert sets["chest"] > 0 and sets["quads"] > 0
+
+
+def test_analytics_weekly_sets_are_empty_without_training(client, user):
+    login(client)
+    weekly = client.get("/api/training/analytics").get_json()["weekly_sets"]
+    assert len(weekly["muscles"]) == len(P.MAJOR_MUSCLES)
+    assert all(row["sets"] == 0 for row in weekly["muscles"])
+    assert all(row["target_sets"] > 0 for row in weekly["muscles"])

@@ -1,7 +1,8 @@
 import { TrainingAPI } from "./api.js";
 import { trainingStore } from "./store.js";
 import { loadTranslations } from "../i18n/index.js";
-import { renderCurrentDate, renderAnalytics, renderStrengthTestResults } from "./dashboard.js";
+import { renderCurrentDate } from "./dashboard.js";
+import { renderWeeklySets } from "./weekly_sets.js";
 import { loadPlan } from "./plans.js";
 import { renderWorkoutList } from "./workout.js";
 import { initExercisePicker, openExercisePicker } from "./exercise_picker.js";
@@ -9,7 +10,6 @@ import { initSession } from "./session.js";
 import { initPlanModal } from "./plan_modal.js";
 import { renderRecommendations } from "./recommendations.js";
 import { initHeatmap } from "./heatmap.js";
-import { initStrengthTest } from "./strength_test.js";
 import { initDailyState, persistWorkout } from "./state.js";
 import { defaultPrescription } from "./measurement.js";
 document.addEventListener("DOMContentLoaded", async () => {
@@ -36,13 +36,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         }),
         TrainingAPI.getAnalytics()
             .then(data => {
-            renderAnalytics(data);
-            renderStrengthTestResults(data.raw_performance ??
-                data.performance_raw ??
-                null);
+            renderWeeklySets(data.weekly_sets);
         })
             .catch(() => {
-            return;
+            renderWeeklySets(null);
         }),
         TrainingAPI.getRecommendations()
             .then(data => {
@@ -85,5 +82,4 @@ document.addEventListener("DOMContentLoaded", async () => {
     initExercisePicker();
     initPlanModal();
     renderWorkoutList();
-    initStrengthTest();
 });

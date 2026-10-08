@@ -3,10 +3,12 @@ import { trainingStore } from "./store.js";
 import { loadTranslations } from "../i18n/index.js";
 
 import {
-    renderCurrentDate,
-    renderAnalytics,
-    renderStrengthTestResults
+    renderCurrentDate
 } from "./dashboard.js";
+
+import {
+    renderWeeklySets
+} from "./weekly_sets.js";
 
 import { loadPlan } from "./plans.js";
 
@@ -27,10 +29,6 @@ import {
 } from "./recommendations.js";
 
 import { initHeatmap } from "./heatmap.js";
-
-import {
-    initStrengthTest
-} from "./strength_test.js";
 
 import {
     initDailyState,
@@ -74,16 +72,12 @@ document.addEventListener(
 
             TrainingAPI.getAnalytics()
                 .then(data => {
-                    renderAnalytics(data);
-
-                    renderStrengthTestResults(
-                        data.raw_performance ??
-                        data.performance_raw ??
-                        null
+                    renderWeeklySets(
+                        data.weekly_sets
                     );
                 })
                 .catch(() => {
-                    return;
+                    renderWeeklySets(null);
                 }),
 
             TrainingAPI.getRecommendations()
@@ -162,6 +156,5 @@ document.addEventListener(
         initExercisePicker();
         initPlanModal();
         renderWorkoutList();
-        initStrengthTest();
     }
 );

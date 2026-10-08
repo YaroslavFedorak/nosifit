@@ -7,17 +7,14 @@
     "workoutName": "Workout name",
     "addExercise": "Add exercise",
     "saveWorkout": "Save workout",
-    "strengthTest": {
-        "title": "Strength test",
-        "takeTest": "Take the test",
-        "pushups": "Push-ups",
-        "squats": "Squats",
-        "situps": "Sit-ups",
-        "description": "Maximum repetitions without breaks.",
-        "finish": "Finish test",
-        "saved": "Test saved. Recommendations updated",
-        "invalidValues": "Enter valid values.",
-        "saveError": "Failed to save the test. Please try again."
+    "weeklySets": {
+        "title": "Weekly sets",
+        "period": "Since Monday",
+        "emptyTitle": "No workouts this week yet",
+        "emptyText": "Log a workout to see your weekly volume.",
+        "loadErrorTitle": "Couldn't load the data",
+        "loadErrorText": "Try refreshing the page a bit later.",
+        "ariaRow": "{muscle}: {sets} of {target} sets"
     },
     "weakPoints": "Weak points",
     "recommendedExercises": "Recommended exercises",
@@ -201,12 +198,6 @@
     },
     "session": {
         "saved": "Workout saved"
-    },
-    "strengthLevels": {
-        "low": "Low",
-        "medium": "Medium",
-        "good": "Good",
-        "excellent": "Excellent"
     },
     "common": {
         "cancel": "Cancel",

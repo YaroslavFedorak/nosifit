@@ -773,6 +773,12 @@ def analytics():
                 "squats": performance["squats"],
                 "situps": performance["situps"],
             },
+            "weekly_sets": TrainingModelService.weekly_sets(
+                current_user,
+                _local_today(),
+                _local_date,
+                dt.datetime.utcnow(),
+            ),
         }
 
         return jsonify(result)
