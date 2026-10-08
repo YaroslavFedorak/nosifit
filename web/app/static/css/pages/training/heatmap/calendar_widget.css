@@ -125,6 +125,14 @@
     color: #000;
 }
 
+/* Text on the bright levels: the accent colour is unreadable on yellow. */
+.tr-level-3 .tr-calendar-date,
+.tr-level-3 .tr-calendar-load,
+.tr-level-4 .tr-calendar-date,
+.tr-level-4 .tr-calendar-load {
+    color: #1a1a1a;
+}
+
 .tr-level-5 {
     background: #ff9f43;
 }

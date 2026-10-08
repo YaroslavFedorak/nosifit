@@ -68,7 +68,8 @@ export type StrengthPerformance = {
 
 export type HeatmapDay = {
     date?: string;
-    level?: number | null;
+    // Relative intensity of the day vs the user's typical session (0-100).
+    intensity_percent?: number | null;
     hard_sets?: number | null;
     session_training_stress_proxy?: number | null;
     is_today?: boolean;

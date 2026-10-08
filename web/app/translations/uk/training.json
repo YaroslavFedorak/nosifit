@@ -101,9 +101,8 @@
         "exerciseMetaDurationNoLoad": "{sets}×{seconds} с",
         "error": "Помилка",
         "loadError": "Не вдалося завантажити дані.",
-        "hardSets": "{sets} важких підходів",
-        "ariaHardSets": "{date}: {sets} важких підходів",
-        "setsShort": "{sets} підх."
+        "intensity": "{percent}% · ≈ {sets} важких підходів",
+        "ariaIntensity": "{date}: {percent}% · ≈ {sets} важких підходів"
     },
     "months": {
         "jan": "Січ",

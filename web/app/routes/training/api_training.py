@@ -399,7 +399,7 @@ def heatmap():
                     "session_training_stress_proxy": item.get(
                         "session_training_stress_proxy", 0.0
                     ),
-                    "level": item.get("level", 0),
+                    "intensity_percent": item.get("intensity_percent", 0),
                     "is_today": d == today,
                 }
             )

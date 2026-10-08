@@ -564,12 +564,27 @@ PROGRESSION_THRESHOLDS = _param(
 
 # --- Session training stress proxy (dashboard/heatmap tree only) ------------
 
-STRESS_LEVEL_RATIOS = _param(
-    "STRESS_LEVEL_RATIOS", (0.85, 1.15, 1.5), "x typical session",
-    "Heatmap levels: 0 = no training, then 1-4 as the day's stress proxy "
-    "passes these multiples of the user's typical session. Descriptive only; "
-    "never blocks muscles.",
+HEATMAP_FULL_SCALE_RATIO = _param(
+    "HEATMAP_FULL_SCALE_RATIO", 1.5, "x typical session",
+    "Heatmap intensity_percent = 100 * min(1, day stress / typical / ratio): a "
+    "typical session reads ~67%, 1.5x typical or more reads 100%. Relative "
+    "intensity of the day for display; not a physiological load percentage "
+    "and never used for decisions.",
     "Engineering choice.", "n/a", heuristic=True,
+)
+HEATMAP_PRIOR_TYPICAL_STRESS = _param(
+    "HEATMAP_PRIOR_TYPICAL_STRESS", 14.0, "stress proxy units",
+    "Prior 'typical session' of the heatmap for users without history: "
+    "roughly a normal ~10 hard-set session done with new exercises (novelty "
+    "raises a new user's stress proxy), so such a session reads ~67%. "
+    "Display only; the recovery notes keep STRESS_MIN_TYPICAL_SETS.",
+    "Engineering choice.", "n/a", heuristic=True,
+)
+HEATMAP_PRIOR_SESSIONS = _param(
+    "HEATMAP_PRIOR_SESSIONS", 2, "sessions",
+    "Weight of the prior in the heatmap baseline: (k * median + w * prior) / "
+    "(k + w). It fades as the user's own training days accumulate.",
+    "Engineering choice (shrinkage toward a prior).", "n/a", heuristic=True,
 )
 STRESS_BASELINE_DAYS = _param(
     "STRESS_BASELINE_DAYS", 56, "days",

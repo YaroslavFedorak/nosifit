@@ -101,9 +101,8 @@
         "exerciseMetaDurationNoLoad": "{sets}×{seconds} s",
         "error": "Error",
         "loadError": "Failed to load data.",
-        "hardSets": "{sets} hard sets",
-        "ariaHardSets": "{date}: {sets} hard sets",
-        "setsShort": "{sets} sets"
+        "intensity": "{percent}% · ≈ {sets} hard sets",
+        "ariaIntensity": "{date}: {percent}% · ≈ {sets} hard sets"
     },
     "months": {
         "jan": "Jan",

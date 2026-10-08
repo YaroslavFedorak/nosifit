@@ -554,11 +554,62 @@ function getHeatmapTooltip(): HTMLDivElement {
     return tooltip;
 }
 
+function intensityPercent(
+    day: HeatmapDay
+): number {
+    const percent =
+        Number(
+            day.intensity_percent
+        );
+
+    return Number.isFinite(percent)
+        ? Math.max(
+            0,
+            Math.min(
+                100,
+                Math.round(percent)
+            )
+        )
+        : 0;
+}
+
+// Colour bucket for the existing 0-4 heatmap styles; display only.
+function intensityColorLevel(
+    percent: number
+): number {
+    if (percent <= 0) {
+        return 0;
+    }
+
+    return Math.min(
+        4,
+        Math.ceil(
+            percent / 25
+        )
+    );
+}
+
+// Hard sets are explanatory; users see whole numbers.
+function roundedHardSets(
+    day: HeatmapDay
+): number {
+    return Math.round(
+        Number(
+            day.hard_sets
+        ) || 0
+    );
+}
+
 function showHeatmapTooltip(
     cell: HTMLElement
 ): void {
     const tooltip =
         getHeatmapTooltip();
+
+    const percent =
+        Number(
+            cell.dataset.intensity
+        ) || 0;
 
     const sets =
         Number(
@@ -567,8 +618,9 @@ function showHeatmapTooltip(
 
     tooltip.textContent =
         t(
-            "heatmap.hardSets",
+            "heatmap.intensity",
             {
+                percent,
                 sets
             }
         );
@@ -663,7 +715,7 @@ function createEmptyDay(
 ): HeatmapDay {
     return {
         date,
-        level: 0,
+        intensity_percent: 0,
         hard_sets: 0,
         is_today: false
     };
@@ -736,30 +788,20 @@ function renderHeatmap(
                 dateString
             );
 
-        let level =
-            Number(
-                day.level
+        const percent =
+            intensityPercent(
+                day
             );
 
-        if (
-            !Number.isFinite(level)
-        ) {
-            level = 0;
-        }
-
-        level =
-            Math.max(
-                0,
-                Math.min(
-                    6,
-                    Math.round(level)
-                )
+        const level =
+            intensityColorLevel(
+                percent
             );
 
         const sets =
-            Number(
-                day.hard_sets
-            ) || 0;
+            roundedHardSets(
+                day
+            );
 
         const todayClass =
             day.is_today
@@ -772,14 +814,16 @@ function renderHeatmap(
                     class="heatmap-cell${todayClass}"
                     data-date="${dateString}"
                     data-level="${level}"
+                    data-intensity="${percent}"
                     data-hard-sets="${sets}"
                     role="gridcell"
                     aria-label="${t(
-                        "heatmap.ariaHardSets",
+                        "heatmap.ariaIntensity",
                         {
                             date: formatDate(
                                 current
                             ),
+                            percent,
                             sets
                         }
                     )}"
@@ -852,23 +896,15 @@ function renderCalendarMonth(): void {
                             `${day.date}T12:00:00`
                         );
 
-                    const level =
-                        Math.max(
-                            0,
-                            Math.min(
-                                6,
-                                Math.round(
-                                    Number(
-                                        day.level
-                                    ) || 0
-                                )
-                            )
+                    const percent =
+                        intensityPercent(
+                            day
                         );
 
-                    const sets =
-                        Number(
-                            day.hard_sets
-                        ) || 0;
+                    const level =
+                        intensityColorLevel(
+                            percent
+                        );
 
                     return `
                         <div
@@ -879,7 +915,7 @@ function renderCalendarMonth(): void {
                                 ${date.getDate()}
                             </div>
                             <div class="tr-calendar-load">
-                                ${t("heatmap.setsShort", { sets })}
+                                ${percent}%
                             </div>
                         </div>
                     `;
