@@ -10,7 +10,7 @@
   "equipment": {
     "title": "Обладнання — NOSIFIT",
     "heading": "Обладнання",
-    "subtitle": "Тут буде список доступного обладнання."
+    "subtitle": "Скоро тут з'явиться список обладнання."
   },
   "premium": {
     "title": "Premium",
@@ -22,7 +22,7 @@
   "questionnaire": {
     "title": "Анкета",
     "heading": "Персональна анкета",
-    "environment": "Де ти тренуєшся",
+    "environment": "Де ви тренуєтесь",
     "gym": "Зал",
     "home": "Дім",
     "outdoor": "Вулиця",
@@ -49,6 +49,6 @@
   "tracker": {
     "title": "Трекінг — NOSIFIT",
     "heading": "Ваш графік",
-    "subtitle": "Тут будуть ваші трекери."
+    "subtitle": "Скоро тут з'являться ваші трекери."
   }
 }

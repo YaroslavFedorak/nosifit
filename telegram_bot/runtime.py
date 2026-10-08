@@ -48,7 +48,7 @@ def get_api(user_id: int) -> NosiFitAPI:
     if api is None or api.expired:
         _sessions.pop(user_id, None)
         raise NosiFitAPIError(
-            "Ви не увійшли в NosiFit. Натисніть /start → «Увійти»."
+            "Спочатку увійдіть: /start → «Увійти»."
         )
     return api
 

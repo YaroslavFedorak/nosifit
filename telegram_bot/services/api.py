@@ -15,7 +15,7 @@ ERROR_MESSAGES = {
     "invalid_category": "Оберіть тип прийому їжі.",
     "invalid_entry": "Перевірте кількість продукту: до 5000 г / мл або до 100 шт.",
     "invalid_product": "Перевірте значення продукту: калорії до 950, білки, жири й вуглеводи до 100 г на 100 г.",
-    "invalid_water": "Вкажіть об'єм від 0.05 до 5 л.",
+    "invalid_water": "Вкажіть від 0,05 до 5 л.",
     "invalid_weight": "Вкажіть вагу від 20 до 400 кг.",
     "meal_not_found": "Цей прийом їжі вже видалено.",
     "entry_not_found": "Цей продукт уже видалено.",
@@ -51,7 +51,7 @@ class NosiFitAPI:
         if needs_login:
             self.expired = True
             raise NosiFitAPIError(
-                "Сесія NosiFit завершилася. Натисніть /start, щоб увійти знову.",
+                "Сесія закінчилась. Увійдіть ще раз: /login",
                 "session_expired",
             )
         if not response.ok:
@@ -60,13 +60,13 @@ class NosiFitAPI:
             except ValueError:
                 payload = {}
             code = payload.get("code")
-            detail = ERROR_MESSAGES.get(code) or "NosiFit не зміг виконати запит. Спробуйте ще раз."
+            detail = ERROR_MESSAGES.get(code) or "Щось пішло не так. Спробуйте ще раз."
             raise NosiFitAPIError(detail, code)
         return response
 
     def ensure_authenticated(self) -> None:
         if not self.session.cookies:
-            raise NosiFitAPIError("Ви не авторизовані. Виконайте вхід у NosiFit.")
+            raise NosiFitAPIError("Спочатку увійдіть: /login")
 
     def get_day(self, locale: str = "uk") -> dict:
         self.ensure_authenticated()

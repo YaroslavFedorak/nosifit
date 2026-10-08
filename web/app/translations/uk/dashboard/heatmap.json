@@ -11,7 +11,7 @@
         "nextMonth": "Наступний місяць",
         "date": "Дата",
         "currentMetric": "Поточний показник",
-        "dayUnavailable": "Інформація про цей день недоступна",
+        "dayUnavailable": "За цей день немає даних",
         "metrics": {
             "balance": "Баланс дня",
             "training": "Тренування",

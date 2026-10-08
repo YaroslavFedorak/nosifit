@@ -22,6 +22,6 @@ async def cancel(message: Message, state: FSMContext) -> None:
 @router.message()
 async def unknown(message: Message) -> None:
     await message.answer(
-        "Оберіть дію через кнопки нижче або введіть /help.",
+        "Не зрозумів. Скористайтеся кнопками внизу або /help.",
         reply_markup=main_menu(authenticated=is_authenticated(message.from_user.id)),
     )

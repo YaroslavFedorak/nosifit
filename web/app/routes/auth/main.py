@@ -226,7 +226,7 @@ def reset_with_token(token):
     user = verify_reset_token(token)
 
     if user is None:
-        flash("Посилання недійсне або прострочене.", "error")
+        flash("Посилання застаріло. Запросіть нове.", "error")
         return redirect(url_for("auth.reset_password"))
 
     if request.method == "POST":
@@ -238,7 +238,7 @@ def reset_with_token(token):
             return redirect(request.url)
 
         if password != confirm:
-            flash("Паролі не співпадають.", "error")
+            flash("Паролі не збігаються.", "error")
             return redirect(request.url)
 
         problem = password_problem(password)

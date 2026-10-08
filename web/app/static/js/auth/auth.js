@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const p2 = registerForm.querySelector('input[name="confirm_password"]');
       if (p1 && p2 && p1.value !== p2.value) {
         e.preventDefault();
-        showInlineError(p2, 'Паролі не співпадають');
+        showInlineError(p2, 'Паролі не збігаються');
       }
     });
   }
