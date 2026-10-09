@@ -259,7 +259,7 @@ def _format_pending(
                 f"{_format_number(float(item.get('amount') or item.get('weight') or 0))} {unit}"
             )
     if pending:
-        lines.extend(["", "Чернетка:"])
+        lines.extend(["", "Ви додаєте:"])
         for index, item in enumerate(pending, start=1):
             unit = UNIT_LABELS.get(item["unit"], item["unit"])
             lines.append(
@@ -269,7 +269,7 @@ def _format_pending(
         totals = _pending_totals(pending)
         lines.extend([
             "",
-            "<b>Підсумок чернетки</b>",
+            "<b>Разом</b>",
             f"🔥 {totals['calories']:.0f} ккал",
             f"🥩 {totals['protein']:.1f} г білка · 🥑 {totals['fat']:.1f} г жирів",
             f"🍞 {totals['carbs']:.1f} г вуглеводів",
@@ -467,11 +467,15 @@ async def _show_review(message: Message, state: FSMContext, *, edit: bool = Fals
     data = await state.get_data()
     pending = data.get("pending", [])
     await state.set_state(NutritionStates.reviewing)
-    dish_name = data.get("draft_dish_name")
-    text = _format_pending(
-        data.get("category"), pending, data.get("existing_items", []), dish_name
-    )
-    keyboard = review_keyboard(pending, dish_name)
+    if data.get("building_dish"):
+        text = _format_new_dish(data.get("dish_builder_name") or "", pending)
+        keyboard = review_keyboard(pending, building_dish=True)
+    else:
+        dish_name = data.get("draft_dish_name")
+        text = _format_pending(
+            data.get("category"), pending, data.get("existing_items", []), dish_name
+        )
+        keyboard = review_keyboard(pending, dish_name)
     if edit:
         await _safe_edit(message, text, reply_markup=keyboard)
     else:
@@ -830,12 +834,16 @@ async def enter_amount(message: Message, state: FSMContext) -> None:
         pending.append(item)
     await state.update_data(pending=pending, editing_index=None)
 
+    if data.get("building_dish"):
+        await _show_review(message, state)
+        return
+
     # The product was picked without a meal (old buttons after a bot restart
     # wipe the in-memory state): keep the draft and ask for the meal first.
     if not data.get("category") and not data.get("meal_id"):
         await state.set_state(NutritionStates.choosing_meal)
         await message.answer(
-            f"Додано в чернетку: <b>{html.escape(item['name'])}</b>.\n\n"
+            f"Додано: <b>{html.escape(item['name'])}</b>.\n\n"
             "До якого прийому їжі його записати?",
             reply_markup=meal_categories(),
         )
@@ -897,7 +905,7 @@ async def delete_pending_item(callback: CallbackQuery, state: FSMContext) -> Non
 
     pending.pop(index)
     await state.update_data(pending=pending)
-    if not pending:
+    if not pending and not data.get("building_dish"):
         await _safe_edit(
             callback.message,
             f"🍽 <b>{html.escape(meal_name(data.get('category')))}</b>\n\n"
@@ -905,15 +913,7 @@ async def delete_pending_item(callback: CallbackQuery, state: FSMContext) -> Non
             reply_markup=review_keyboard(pending),
         )
         return
-
-    await _safe_edit(
-        callback.message,
-        _format_pending(
-            data.get("category"), pending, data.get("existing_items", []),
-            data.get("draft_dish_name"),
-        ),
-        reply_markup=review_keyboard(pending, data.get("draft_dish_name")),
-    )
+    await _show_review(callback.message, state, edit=True)
 
 
 @router.callback_query(NutritionStates.reviewing, F.data == "nutrition:more")
@@ -970,7 +970,7 @@ async def save_meal(callback: CallbackQuery, state: FSMContext) -> None:
         await state.set_state(NutritionStates.reviewing)
         await callback.message.answer(
             f"Не вдалося зберегти прийом: {exc}\n\n"
-            "Чернетку збережено. Спробуйте ще раз."
+            "Вибрані продукти не втрачено — спробуйте ще раз."
         )
         return
 
@@ -1533,8 +1533,8 @@ async def _show_dishes(callback: CallbackQuery, state: FSMContext, offset: int =
     else:
         text = (
             "🍲 <b>Мої страви</b>\n\n"
-            "Збережених страв поки немає. Додайте продукти в чернетку прийому їжі "
-            "й натисніть «💾 Зберегти як страву» — наступного разу вистачить одного натискання."
+            "Збережених страв поки немає. Натисніть «➕ Нова страва», "
+            "щоб скласти свою, — наступного разу вистачить одного натискання."
         )
     await _safe_edit(
         callback.message,
@@ -1720,6 +1720,19 @@ async def name_dish(message: Message, state: FSMContext) -> None:
         await message.answer("Назва страви — від 1 до 120 символів.")
         return
     data = await state.get_data()
+    if data.get("building_dish"):
+        await state.update_data(dish_builder_name=name)
+        if data.get("pending"):
+            # Renamed after "name already taken": save right away.
+            await _save_dish_builder(message, message.from_user.id, state)
+            return
+        await state.set_state(NutritionStates.searching_product)
+        await message.answer(
+            f"🍲 <b>{html.escape(name)}</b>\n\n"
+            "Додайте продукти: напишіть назву першого, наприклад <b>вівсяні пластівці</b>.",
+            reply_markup=catalog_keyboard(),
+        )
+        return
     try:
         dish = await asyncio.to_thread(
             _api(message.from_user.id).create_dish, name, _draft_items(data.get("pending", []))
@@ -1752,3 +1765,130 @@ async def update_dish_from_draft(callback: CallbackQuery, state: FSMContext) -> 
         return
     await state.update_data(dishes=[])
     await callback.answer("♻️ Страву оновлено", show_alert=False)
+
+
+# ---------- New dish from «Мої страви» and the back buttons ----------
+
+
+def _format_new_dish(name: str, pending: list[dict]) -> str:
+    lines = [f"🍲 <b>Нова страва «{html.escape(name)}»</b>"]
+    if not pending:
+        lines.extend(["", "Поки без продуктів. Натисніть «➕ Додати продукт»."])
+        return "\n".join(lines)
+    lines.append("")
+    for index, item in enumerate(pending, start=1):
+        unit = UNIT_LABELS.get(item["unit"], item["unit"])
+        lines.append(f"{index}. {html.escape(item['name'])} — {_format_number(item['amount'])} {unit}")
+    totals = _pending_totals(pending)
+    lines.extend([
+        "",
+        f"🔥 {totals['calories']:.0f} ккал · 🥩 {totals['protein']:.1f} г · "
+        f"🥑 {totals['fat']:.1f} г · 🍞 {totals['carbs']:.1f} г",
+        f"🌾 Клітковина: {_nutrient_text(totals['fiber'], totals['fiber_complete'])}"
+        f" · 🍬 Цукор: {_nutrient_text(totals['sugar'], totals['sugar_complete'])}",
+    ])
+    return "\n".join(lines)
+
+
+def _new_dish_name_keyboard():
+    from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+
+    return InlineKeyboardMarkup(inline_keyboard=[[
+        InlineKeyboardButton(text="← Мої страви", callback_data="nutrition:dishes"),
+        InlineKeyboardButton(text="✕ Скасувати", callback_data="nutrition:cancel"),
+    ]])
+
+
+@router.callback_query(F.data == "nutrition:dish_new")
+async def new_dish(callback: CallbackQuery, state: FSMContext) -> None:
+    """➕ Нова страва: name, then products, then save — no meal involved."""
+    await callback.answer()
+    await state.update_data(
+        building_dish=True,
+        dish_builder_name=None,
+        pending=[],
+        editing_index=None,
+        draft_dish_id=None,
+        draft_dish_name=None,
+    )
+    await state.set_state(NutritionStates.naming_dish)
+    await _safe_edit(
+        callback.message,
+        "🍲 <b>Нова страва</b>\n\nЯк її назвати? Наприклад, <b>Моя вівсянка</b>.",
+        reply_markup=_new_dish_name_keyboard(),
+    )
+
+
+async def _save_dish_builder(message: Message, user_id: int, state: FSMContext, *, edit: bool = False) -> None:
+    data = await state.get_data()
+    try:
+        dish = await asyncio.to_thread(
+            _api(user_id).create_dish,
+            data.get("dish_builder_name") or "",
+            _draft_items(data.get("pending", [])),
+        )
+    except NosiFitAPIError as exc:
+        if getattr(exc, "code", None) == "duplicate_dish":
+            # Keep the products, ask only for another name.
+            await state.set_state(NutritionStates.naming_dish)
+            await message.answer(f"{exc}\nНапишіть іншу назву.", reply_markup=_new_dish_name_keyboard())
+            return
+        await message.answer(f"Не вдалося зберегти страву: {exc}")
+        return
+    await state.update_data(
+        building_dish=False, dish_builder_name=None, pending=[], editing_index=None, dishes=[]
+    )
+    await state.set_state(None)
+    text = "✅ Страву збережено в «Мої страви».\n\n" + _format_dish(dish)
+    if edit:
+        await _safe_edit(message, text, reply_markup=dish_keyboard(dish["id"]))
+    else:
+        await message.answer(text, reply_markup=dish_keyboard(dish["id"]))
+
+
+@router.callback_query(NutritionStates.reviewing, F.data == "nutrition:dish_builder_save")
+async def save_new_dish(callback: CallbackQuery, state: FSMContext) -> None:
+    await callback.answer()
+    await _save_dish_builder(callback.message, callback.from_user.id, state, edit=True)
+
+
+@router.callback_query(F.data == "nutrition:meal_back")
+async def meal_back(callback: CallbackQuery, state: FSMContext) -> None:
+    """From the meal time back to choosing the meal; picked products stay."""
+    await callback.answer()
+    await state.set_state(NutritionStates.choosing_meal)
+    await _safe_edit(
+        callback.message,
+        "🍽 <b>Додати їжу</b>\n\nОберіть прийом їжі:",
+        reply_markup=meal_categories(),
+    )
+
+
+@router.callback_query(F.data == "nutrition:catalog_back_to_products")
+async def review_back(callback: CallbackQuery, state: FSMContext) -> None:
+    """From the list being added back to picking products."""
+    await callback.answer()
+    await _show_product_menu(callback, state)
+
+
+@router.callback_query(F.data.in_({"nutrition:step_back", "nutrition:catalog_back"}))
+async def step_back(callback: CallbackQuery, state: FSMContext) -> None:
+    """One step back from wherever the user is, keeping what they picked.
+
+    Products already chosen (for a meal or a new dish) → that list; a meal
+    chosen without products → from the catalog to the meal choice, from a
+    deeper step to the catalog; nothing chosen → the nutrition menu.
+    """
+    await callback.answer()
+    data = await state.get_data()
+    if data.get("pending") or (data.get("building_dish") and data.get("dish_builder_name")):
+        await state.update_data(editing_index=None)
+        await _show_review(callback.message, state, edit=True)
+        return
+    if data.get("category"):
+        if callback.data == "nutrition:catalog_back":
+            await meal_back(callback, state)
+        else:
+            await _show_product_menu(callback, state)
+        return
+    await back_to_nutrition(callback, state)

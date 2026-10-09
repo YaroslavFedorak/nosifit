@@ -143,7 +143,7 @@ def test_adding_a_product_saves_in_one_request(tg):
     tg.message("куряче філе")
     press(tg, "Куряче філе")
     tg.message("150")
-    assert "Підсумок чернетки" in text(tg)
+    assert "Разом" in text(tg)
     sent = requests_during(tg, lambda: press(tg, "Зберегти"))
     assert sent == [("POST", "/api/nutrition/log")]
     assert "Прийом їжі збережено" in text(tg)
@@ -243,7 +243,7 @@ def test_dish_from_main_menu_asks_for_the_meal(tg, oatmeal):
     assert "До якого прийому їжі" in text(tg)
     tg.callback("nutrition:meal:snack")
     press(tg, "Пропустити")
-    assert "Підсумок чернетки" in text(tg)
+    assert "Разом" in text(tg)
     press(tg, "Зберегти")
     assert len(entries(tg)) == 3
 
@@ -284,7 +284,7 @@ def test_save_failure_keeps_the_draft(tg):
     tg.message("100")
     tg.http.down = True
     press(tg, "Зберегти")
-    assert "Чернетку збережено" in tg.texts()[-1]
+    assert "не втрачено" in tg.texts()[-1]
     tg.http.down = False
     tg.callback("nutrition:save")  # the review buttons are still on screen
     assert [(e.name, e.amount) for e in entries(tg)] == [("Банан", 100)]
@@ -298,3 +298,64 @@ def test_duplicate_dish_name_is_explained(tg, oatmeal):
     press(tg, "Зберегти як страву")
     tg.message("моя вівсянка")
     assert "уже є страва з такою назвою" in tg.texts()[-1]
+
+
+# --- ➕ Нова страва from «Мої страви» -----------------------------------------------
+
+
+def test_new_dish_from_my_dishes_menu(tg, food):
+    tg.callback("nutrition:dishes")
+    press(tg, "Нова страва")
+    tg.message("Сніданок чемпіона")
+    assert "Сніданок чемпіона" in text(tg)
+    tg.message("вівсянка")
+    press(tg, "Вівсянка")
+    tg.message("80")
+    assert "Нова страва «Сніданок чемпіона»" in text(tg)
+    press(tg, "Додати продукт")
+    tg.message("банан")
+    press(tg, "Банан")
+    tg.message("120")
+    sent = requests_during(tg, lambda: press(tg, "Зберегти страву"))
+    assert sent == [("POST", "/api/nutrition/dishes")]
+    assert "збережено" in text(tg) and button(tg, "Додати")
+
+    dish = Dish.query.filter_by(user_id=tg.user.id).one()
+    assert dish.name == "Сніданок чемпіона"
+    assert [(i.product_id, i.amount) for i in dish.items] == [
+        (food["oats"].id, 80), (food["banana"].id, 120),
+    ]
+    assert entries(tg) == []  # building a dish logs nothing
+
+
+def test_new_dish_with_a_taken_name_keeps_the_products(tg, oatmeal, food):
+    tg.callback("nutrition:dishes")
+    press(tg, "Нова страва")
+    tg.message("Моя вівсянка")
+    tg.message("яблуко")
+    press(tg, "Яблуко")
+    tg.message("150")
+    press(tg, "Зберегти страву")
+    assert "іншу назву" in tg.texts()[-1]
+    tg.message("Яблучний перекус")
+    assert Dish.query.filter_by(name="Яблучний перекус").one().items[0].amount == 150
+
+
+def test_back_buttons_keep_the_chosen_products(tg, food):
+    start_breakfast(tg)
+    tg.message("банан")
+    press(tg, "Банан")
+    # Amount screen: back without losing anything (nothing chosen yet → catalog).
+    press(tg, "← Назад")
+    assert "Додати продукт" in text(tg)
+    tg.message("банан")
+    press(tg, "Банан")
+    tg.message("100")
+    press(tg, "Додати ще")
+    tg.message("яблуко")
+    press(tg, "Яблуко")
+    press(tg, "← Назад")  # amount → back to the list, banana still there
+    assert "Банан — 100" in text(tg)
+    press(tg, "← Назад")  # list → catalog
+    press(tg, "← Назад")  # catalog → list again (products are kept)
+    assert "Банан — 100" in text(tg)
