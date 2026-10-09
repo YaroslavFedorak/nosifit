@@ -1,0 +1,49 @@
+{% set H = L.history %}
+<section class="lp-section lp-history" aria-labelledby="lp-history-title">
+  <div class="lp-wrap">
+    <header class="lp-head lp-head-row" data-reveal>
+      <div>
+        <p class="lp-eyebrow">{{ H.eyebrow }}</p>
+        <h2 id="lp-history-title" class="lp-h2">{{ H.title }}</h2>
+        <p class="lp-lead">{{ H.text }}</p>
+      </div>
+      <div class="lp-segmented" data-js-only role="group" aria-label="{{ H.metricsAria }}">
+        {% for key in ["balance", "training", "recovery", "nutrition"] %}
+        <button type="button" class="lp-segment" data-metric="{{ key }}" aria-pressed="{{ 'true' if loop.first else 'false' }}">{{ H.metrics[key] }}</button>
+        {% endfor %}
+      </div>
+    </header>
+
+    <div class="lp-heat cmp-card" data-reveal data-js-only
+         data-heat
+         data-label-no-data="{{ H.noData }}"
+         data-label-level="{{ H.level }}"
+         {% for key in ["balance", "training", "recovery", "nutrition"] %}data-label-{{ key }}="{{ H.metrics[key] }}" {% endfor %}>
+      <div class="lp-heat-scroll" data-heat-scroll>
+        <div class="lp-heat-inner">
+          <div class="lp-heat-months" data-heat-months aria-hidden="true"></div>
+          <div class="lp-heat-grid" data-heat-grid role="group" tabindex="0" aria-label="{{ H.gridAria }}" aria-describedby="lp-heat-readout"></div>
+        </div>
+      </div>
+
+      <div class="lp-heat-foot">
+        <p class="lp-heat-readout" id="lp-heat-readout" data-heat-readout aria-live="polite"></p>
+        <span class="lp-sample">{{ L.sample }}</span>
+        <div class="lp-legend" aria-hidden="true">
+          <span>{{ H.less }}</span>
+          {% for level in range(7) %}<i style="background: var(--nf-heat-{{ level }})"></i>{% endfor %}
+          <span>{{ H.more }}</span>
+        </div>
+      </div>
+    </div>
+
+    <dl class="lp-stats" data-reveal>
+      {% for n in [1, 2, 3] %}
+      <div class="lp-stat">
+        <dt>{{ H["stat" ~ n ~ "Label"] }}</dt>
+        <dd>{{ H["stat" ~ n] }}</dd>
+      </div>
+      {% endfor %}
+    </dl>
+  </div>
+</section>

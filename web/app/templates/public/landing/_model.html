@@ -1,0 +1,25 @@
+{% set D = L.model %}
+<section class="lp-section lp-model" aria-labelledby="lp-model-title">
+  <div class="lp-wrap">
+    <header class="lp-head" data-reveal>
+      <p class="lp-eyebrow">{{ D.eyebrow }}</p>
+      <h2 id="lp-model-title" class="lp-h2">{{ D.title }}</h2>
+      <p class="lp-lead">{{ D.text }}</p>
+    </header>
+
+    <ol class="lp-pipeline" aria-label="{{ D.stepsAria }}" data-reveal>
+      {% for n in [1, 2, 3, 4] %}
+      <li class="lp-pipe-step{% if n == 3 %} is-sleep{% endif %}{% if n == 4 %} is-out{% endif %}">
+        <span class="lp-index-num">0{{ n }}</span>
+        <strong>{{ D["step" ~ n] }}</strong>
+        <span class="lp-frag-meta">{{ D["step" ~ n ~ "Note"] }}</span>
+      </li>
+      {% endfor %}
+    </ol>
+
+    <div class="lp-model-note" data-reveal>
+      <p>{{ D.note }}</p>
+      <a class="lp-text-link" href="{{ url_for('info.info_page') }}">{{ D.link }} <span aria-hidden="true">→</span></a>
+    </div>
+  </div>
+</section>

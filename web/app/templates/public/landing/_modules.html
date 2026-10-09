@@ -1,0 +1,179 @@
+{% from "public/landing/_icons.html" import module_icon %}
+{% set M = L.modules %}
+{% set T = M.training %}
+{% set N = M.nutrition %}
+{% set R = M.recovery %}
+
+<section class="lp-section lp-modules" aria-labelledby="lp-modules-title">
+  <div class="lp-wrap">
+    <header class="lp-head" data-reveal>
+      <p class="lp-eyebrow">{{ M.eyebrow }}</p>
+      <h2 id="lp-modules-title" class="lp-h2">{{ M.title }}</h2>
+    </header>
+
+    <div class="lp-modules-grid">
+      <nav class="lp-index" aria-label="{{ M.indexAria }}">
+        <ol>
+          {% for key in ["dashboard", "training", "nutrition", "recovery"] %}
+          <li>
+            <a href="#lp-m-{{ key }}" class="lp-index-link" data-module="{{ key }}" data-index-link="{{ key }}">
+              <span class="lp-index-num">0{{ loop.index }}</span>
+              <span>{{ M[key].name }}</span>
+            </a>
+          </li>
+          {% endfor %}
+        </ol>
+      </nav>
+
+      <div class="lp-chapters">
+        {# 01 Dashboard: recommendation tiles, as the dashboard shows them #}
+        <article class="lp-chapter" id="lp-m-dashboard" data-chapter="dashboard" data-module="dashboard" aria-labelledby="lp-m-dashboard-title" data-reveal>
+          <header class="lp-chapter-head">
+            <p class="lp-chapter-kicker"><span class="lp-index-num">01</span> {{ M.dashboard.name }}<span class="lp-sample">{{ L.sample }}</span></p>
+            <h3 id="lp-m-dashboard-title" class="lp-h3">{{ M.dashboard.title }}</h3>
+            <p class="lp-chapter-text">{{ M.dashboard.text }}</p>
+          </header>
+
+          <div class="lp-frag cmp-card">
+            <ul class="lp-rec-tiles">
+              <li class="lp-rec-tile" data-module="training">
+                <span class="lp-rec-icon" aria-hidden="true">{{ module_icon("training") }}</span>
+                <span class="lp-micro">{{ M.dashboard.recTraining }}</span>
+                <strong>{{ M.dashboard.recTrainingTitle }}</strong>
+              </li>
+              <li class="lp-rec-tile" data-module="recovery">
+                <span class="lp-rec-icon" aria-hidden="true">{{ module_icon("recovery") }}</span>
+                <span class="lp-micro">{{ M.dashboard.recRecovery }}</span>
+                <strong>{{ M.dashboard.recRecoveryTitle }}</strong>
+              </li>
+              <li class="lp-rec-tile" data-module="nutrition">
+                <span class="lp-rec-icon" aria-hidden="true">{{ module_icon("nutrition") }}</span>
+                <span class="lp-micro">{{ M.dashboard.recNutrition }}</span>
+                <strong>{{ M.dashboard.recNutritionTitle }}</strong>
+              </li>
+            </ul>
+            <p class="lp-daily">
+              <span class="lp-micro">{{ M.dashboard.daily }}</span>
+              <span>{{ M.dashboard.dailyText }}</span>
+            </p>
+          </div>
+        </article>
+
+        {# 02 Training: weekly sets per muscle against the target band #}
+        <article class="lp-chapter" id="lp-m-training" data-chapter="training" data-module="training" aria-labelledby="lp-m-training-title" data-reveal>
+          <header class="lp-chapter-head">
+            <p class="lp-chapter-kicker"><span class="lp-index-num">02</span> {{ T.name }}<span class="lp-sample">{{ L.sample }}</span></p>
+            <h3 id="lp-m-training-title" class="lp-h3">{{ T.title }}</h3>
+            <p class="lp-chapter-text">{{ T.text }}</p>
+          </header>
+
+          <div class="lp-frag cmp-card lp-frag-training">
+            <div class="lp-frag-head">
+              <span class="lp-frag-title">{{ T.widget }}</span>
+              <span class="lp-frag-meta">{{ T.period }}</span>
+            </div>
+            <ul class="lp-sets">
+              {% for muscle, sets, target in [("chest", 9, 12), ("back", 11, 12), ("legs", 6, 14), ("shoulders", 10, 10), ("arms", 7, 10)] %}
+              {% set pct = [100, (sets * 100 / target) | round | int] | min %}
+              <li class="lp-sets-row{% if sets >= target %} is-reached{% endif %}">
+                <span class="lp-sets-name">{{ T[muscle] }}</span>
+                <span class="lp-sets-value">{{ sets }} / {{ target }}</span>
+                <span class="lp-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ pct }}" aria-label="{{ T[muscle] }}: {{ sets }} / {{ target }}"><span style="--v: {{ pct }}%"></span></span>
+              </li>
+              {% endfor %}
+            </ul>
+            <div class="lp-readiness">
+              <span class="lp-micro">{{ T.readiness }}</span>
+              <span class="lp-steps" aria-hidden="true"><i class="is-on"></i><i class="is-on"></i><i></i><i></i></span>
+              <strong>{{ T.readinessValue }}</strong>
+            </div>
+            <p class="lp-next">{{ module_icon("arrow") }}<span>{{ T.next }}</span></p>
+          </div>
+        </article>
+
+        {# 03 Nutrition: macros, water and weight in one card #}
+        <article class="lp-chapter" id="lp-m-nutrition" data-chapter="nutrition" data-module="nutrition" aria-labelledby="lp-m-nutrition-title" data-reveal>
+          <header class="lp-chapter-head">
+            <p class="lp-chapter-kicker"><span class="lp-index-num">03</span> {{ N.name }}<span class="lp-sample" id="lp-nutrition-sample">{{ L.sample }}</span></p>
+            <h3 id="lp-m-nutrition-title" class="lp-h3">{{ N.title }}</h3>
+            <p class="lp-chapter-text">{{ N.text }}</p>
+          </header>
+
+          <div class="lp-frag cmp-card lp-frag-nutrition">
+            <div class="lp-nutri-macros">
+              <div class="lp-kcal">
+                <span class="lp-micro">{{ N.kcal }}</span>
+                <strong class="lp-big">{{ N.kcalValue }} <small>{{ N.kcalGoal }}</small></strong>
+                <span class="lp-bar" aria-hidden="true"><span style="--v: 77%"></span></span>
+              </div>
+              <dl class="lp-macros">
+                {% for key, value, goal in [("protein", 128, 150), ("fat", 62, 80), ("carbs", 196, 260)] %}
+                <div class="lp-macro">
+                  <dt>{{ N[key] }}</dt>
+                  <dd>{{ value }} <small>/ {{ goal }}</small></dd>
+                  <span class="lp-bar" aria-hidden="true"><span style="--v: {{ (value * 100 / goal) | round | int }}%"></span></span>
+                </div>
+                {% endfor %}
+              </dl>
+            </div>
+
+            <div class="lp-water" data-module="water" data-water data-current="1.5" data-goal="2.5" data-step="0.25">
+              <span class="lp-micro">{{ N.water }}</span>
+              <strong class="lp-big" data-water-value aria-live="polite">{{ N.waterValue }}</strong>
+              <span class="lp-water-cells" aria-hidden="true">
+                {%- for i in range(10) %}<i{% if i < 6 %} class="is-on"{% endif %}></i>{% endfor -%}
+              </span>
+              <button type="button" class="lp-mini-btn" data-water-add aria-describedby="lp-nutrition-sample">{{ N.add }}</button>
+            </div>
+
+            <div class="lp-weight" data-module="weight">
+              <span class="lp-micro">{{ N.weight }}</span>
+              <strong class="lp-big">{{ N.weightValue }}</strong>
+              <span class="lp-frag-meta">{{ N.weightTrend }}</span>
+              <svg class="lp-spark" viewBox="0 0 160 44" preserveAspectRatio="none" role="img" aria-label="{{ N.chartAria }}">
+                <polyline points="2,8 24,11 47,10 69,17 92,21 114,24 137,31 158,36" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke" />
+              </svg>
+            </div>
+          </div>
+        </article>
+
+        {# 04 Recovery: sleep, the 5-segment score and habits #}
+        <article class="lp-chapter" id="lp-m-recovery" data-chapter="recovery" data-module="recovery" aria-labelledby="lp-m-recovery-title" data-reveal>
+          <header class="lp-chapter-head">
+            <p class="lp-chapter-kicker"><span class="lp-index-num">04</span> {{ R.name }}<span class="lp-sample">{{ L.sample }}</span></p>
+            <h3 id="lp-m-recovery-title" class="lp-h3">{{ R.title }}</h3>
+            <p class="lp-chapter-text">{{ R.text }}</p>
+          </header>
+
+          <div class="lp-frag cmp-card lp-frag-recovery">
+            <div class="lp-sleep">
+              <span class="lp-micro">{{ R.sleep }}</span>
+              <strong class="lp-big">{{ R.sleepValue }}</strong>
+              <span class="lp-frag-meta">{{ R.sleepRange }}</span>
+              <span class="lp-state is-good">{{ R.sleepQuality }}</span>
+            </div>
+            <div class="lp-score">
+              <span class="lp-micro">{{ R.score }}</span>
+              <span class="lp-score-bar" role="img" aria-label="{{ R.scoreAria }}">
+                {%- for i in range(5) %}<i{% if i < 4 %} class="is-on"{% endif %}></i>{% endfor -%}
+              </span>
+              <span class="lp-frag-meta">{{ R.scoreStatus }}</span>
+            </div>
+            <div class="lp-habits-box">
+              <span class="lp-micro" id="lp-habits-label">{{ R.habits }}</span>
+              <ul class="lp-habits" aria-labelledby="lp-habits-label">
+                {% for key, done in [("habit1", true), ("habit2", true), ("habit3", false)] %}
+                <li class="lp-habit{% if done %} is-done{% endif %}">
+                  <span class="lp-habit-check" aria-hidden="true">{% if done %}{{ module_icon("check") }}{% endif %}</span>
+                  <span>{{ R[key] }}</span>
+                  <span class="lp-sr">— {{ R.done if done else R.notDone }}</span>
+                </li>
+                {% endfor %}
+              </ul>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </div>
+</section>

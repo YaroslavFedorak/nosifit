@@ -25,6 +25,16 @@
   --nf-accent-nutrition: #9b5de5;
   --nf-accent-nutrition-soft: #c79bff;
   --nf-accent-recovery: #42c7d8;
+  --nf-accent-water: #3fa8ff;
+
+  /* Day-level heatmap scale (dashboard heatmap levels 0-6). */
+  --nf-heat-0: #1a1f27;
+  --nf-heat-1: #665c1a;
+  --nf-heat-2: #a68f1a;
+  --nf-heat-3: #ffd43b;
+  --nf-heat-4: #ffe680;
+  --nf-heat-5: #ff9f43;
+  --nf-heat-6: #ff6b6b;
 
   --nf-text-main: #f3f5f7;
   --nf-text-muted: #9da6b3;

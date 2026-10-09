@@ -1,0 +1,69 @@
+{% macro session_row() -%}
+<div class="lp-session-row">
+  <span class="lp-session-name">{{ L.context.exercise }}</span>
+  <span class="lp-session-dose">{{ L.context.dose }}</span>
+</div>
+{%- endmacro %}
+
+<section class="lp-section lp-context" aria-labelledby="lp-context-title">
+  <div class="lp-wrap">
+    <header class="lp-head" data-reveal>
+      <p class="lp-eyebrow">{{ L.context.eyebrow }}</p>
+      <h2 id="lp-context-title" class="lp-h2">{{ L.context.title }}</h2>
+      <p class="lp-lead">{{ L.context.text }}</p>
+    </header>
+
+    <div class="lp-compare">
+      <figure class="lp-compare-col lp-compare-plain" data-reveal>
+        <figcaption class="lp-compare-title">{{ L.context.tracker }}</figcaption>
+        <ol class="lp-compare-days">
+          <li class="lp-compare-day">
+            <span class="lp-day-tag">{{ L.context.tue }}</span>
+            {{ session_row() }}
+          </li>
+          <li class="lp-compare-day">
+            <span class="lp-day-tag">{{ L.context.fri }}</span>
+            {{ session_row() }}
+          </li>
+        </ol>
+        <p class="lp-compare-foot">{{ L.context.trackerFoot }}</p>
+      </figure>
+
+      <figure class="lp-compare-col lp-compare-nosifit cmp-card" data-reveal>
+        <figcaption class="lp-compare-title">
+          <img src="{{ url_for('static', filename='img/brand/nosifit-mark-on-dark.svg') }}" alt="" width="18" height="18" />
+          {{ L.context.nosifit }}
+        </figcaption>
+        <ol class="lp-compare-days">
+          <li class="lp-compare-day">
+            <span class="lp-day-tag">{{ L.context.tue }}</span>
+            {{ session_row() }}
+            <p class="lp-context-chips">
+              <span class="lp-chip" data-module="recovery">{{ L.context.tueSleep }}</span>
+              <span class="lp-chip" data-module="nutrition">{{ L.context.tueKcal }}</span>
+              <span class="lp-chip" data-module="water">{{ L.context.tueWater }}</span>
+            </p>
+            <p class="lp-verdict">
+              <span class="lp-state is-good">{{ L.context.tueState }}</span>
+              <span>{{ L.context.tueNote }}</span>
+            </p>
+          </li>
+          <li class="lp-compare-day">
+            <span class="lp-day-tag">{{ L.context.fri }}</span>
+            {{ session_row() }}
+            <p class="lp-context-chips">
+              <span class="lp-chip is-flag" data-module="recovery">{{ L.context.friSleep }}</span>
+              <span class="lp-chip is-flag" data-module="nutrition">{{ L.context.friKcal }}</span>
+              <span class="lp-chip is-flag" data-module="water">{{ L.context.friWater }}</span>
+            </p>
+            <p class="lp-verdict">
+              <span class="lp-state is-low">{{ L.context.friState }}</span>
+              <span>{{ L.context.friNote }}</span>
+            </p>
+          </li>
+        </ol>
+        <p class="lp-compare-foot">{{ L.context.nosifitFoot }}</p>
+      </figure>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,13 @@
+<section class="lp-section lp-cta" aria-labelledby="lp-cta-title">
+  <div class="lp-wrap lp-cta-inner" data-reveal>
+    <img class="lp-cta-mark" src="{{ url_for('static', filename='img/brand/nosifit-mark-on-dark.svg') }}" alt="" width="56" height="56" />
+    <div class="lp-cta-copy">
+      <h2 id="lp-cta-title" class="lp-h2">{{ L.cta.title }}</h2>
+      <p class="lp-lead">{{ L.cta.text }}</p>
+    </div>
+    <div class="lp-actions">
+      <a href="{{ url_for('auth.register') }}" class="cmp-btn cmp-btn-primary cmp-btn-lg">{{ L.cta.start }}</a>
+      <a href="{{ url_for('public.demo') }}" class="cmp-btn cmp-btn-ghost cmp-btn-lg">{{ L.cta.demo }}</a>
+    </div>
+  </div>
+</section>

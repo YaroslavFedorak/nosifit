@@ -34,9 +34,11 @@
     <div class="bg-glow-static glow-yellow" aria-hidden="true"></div>
     <div class="bg-glow-dynamic" aria-hidden="true"></div>
 
+    {% block before_nav %}{% endblock %}
     {% include "components/public_nav.html" %}
 
     <main class="public-wrapper">{% block body %}{% endblock %}</main>
+    {% block after_main %}{% endblock %}
 
     {% block scripts %}{% endblock %}
   </body>

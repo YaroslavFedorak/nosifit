@@ -1,0 +1,17 @@
+<footer class="lp-footer">
+  <div class="lp-wrap lp-footer-inner">
+    <a href="{{ url_for('root.landing') }}" class="lp-footer-logo" aria-label="NosiFit">
+      <img src="{{ url_for('static', filename='img/brand/nosifit-lockup-on-dark.svg') }}" alt="NosiFit" width="104" height="24" />
+    </a>
+    <nav aria-label="{{ L.footer.aria }}">
+      <ul class="lp-footer-links">
+        <li><a href="{{ url_for('public.about') }}">{{ L.footer.about }}</a></li>
+        <li><a href="{{ url_for('info.info_page') }}">{{ L.footer.info }}</a></li>
+        <li><a href="{{ url_for('public.demo') }}">{{ L.footer.demo }}</a></li>
+        <li><a href="{{ url_for('public.contact') }}">{{ L.footer.contact }}</a></li>
+        <li><a href="{{ url_for('auth.login') }}">{{ L.footer.login }}</a></li>
+      </ul>
+    </nav>
+    <p class="lp-footer-copy">© {{ current_year }} {{ L.footer.rights }}</p>
+  </div>
+</footer>
