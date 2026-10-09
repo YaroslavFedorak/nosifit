@@ -7,6 +7,7 @@ from backend.app.models import Meal, MealItem, Product
 from backend.app.models.user import User
 from backend.app.models.user_profile import UserProfile
 
+from backend.app.services.nutrition.calculation_service import partial_totals
 from backend.app.services.nutrition.goals_service import get_goals
 from backend.app.services.nutrition.quality_service import calculate_quality
 from backend.app.services.nutrition.product_service import normalize_locale
@@ -59,7 +60,23 @@ def get_meal_totals(meals):
     }
 
 
-def _meal_load_options():
+def get_partial_totals(meals):
+    """Fiber and sugar of the day, keeping "unknown" apart from 0.
+
+    Needs ``meal.items`` loaded (the day queries eager-load them).
+    """
+    items = [item for meal in meals for item in meal.items]
+    fiber, fiber_complete = partial_totals(items, "fiber")
+    sugar, sugar_complete = partial_totals(items, "sugar")
+    return {
+        "fiber": fiber,
+        "fiber_complete": fiber_complete,
+        "sugar": sugar,
+        "sugar_complete": sugar_complete,
+    }
+
+
+def meal_load_options():
     return (
         selectinload(Meal.items)
         .selectinload(MealItem.product)
@@ -76,7 +93,7 @@ def get_daily_nutrition_data(user_id, locale="uk"):
 
     meals = (
         Meal.query
-        .options(_meal_load_options())
+        .options(meal_load_options())
         .filter(Meal.user_id == user_id, Meal.date == today)
         .order_by(Meal.time.asc().nullsfirst(), Meal.id.asc())
         .all()
@@ -88,6 +105,7 @@ def get_daily_nutrition_data(user_id, locale="uk"):
     ).all()
 
     totals = get_meal_totals(meals)
+    totals.update(get_partial_totals(meals))
     yesterday_totals = get_meal_totals(yesterday_meals)
 
     progress = {
@@ -96,6 +114,9 @@ def get_daily_nutrition_data(user_id, locale="uk"):
         "fat": totals["fat"],
         "carbs": totals["carbs"],
         "fiber": totals["fiber"],
+        "fiber_complete": totals["fiber_complete"],
+        "sugar": totals["sugar"],
+        "sugar_complete": totals["sugar_complete"],
         "calories_percent": calculate_percent(totals["calories"], goals["calories"]),
         "protein_percent": calculate_percent(totals["protein"], goals["protein"]),
         "fat_percent": calculate_percent(totals["fat"], goals["fat"]),
@@ -185,7 +206,10 @@ def get_daily_nutrition_data(user_id, locale="uk"):
         "carb_goal": goals["carbs"],
         "carb_percent": progress["carbs_percent"],
         "fiber": totals["fiber"],
+        "fiber_complete": totals["fiber_complete"],
         "fiber_goal": goals.get("fiber", 30),
+        "sugar": totals["sugar"],
+        "sugar_complete": totals["sugar_complete"],
         "balance_status": balance_status,
         "kcal_yesterday": yesterday_totals["calories"],
         "protein_yesterday": yesterday_totals["protein"],

@@ -1,0 +1,1096 @@
+# NosiFit system product catalog. One row per product, ";"-separated.
+# Values are NOT typed here: build_catalog.py reads them from the cited source
+# row (usda = FoodData Central SR Legacy fdc_id, ciqual = CIQUAL 2020 alim_code,
+# recipe = key in recipes.json) and writes products.json.
+# unit: default unit (g / ml / pcs); grams_per_unit: density for ml, weight of
+# one piece for pcs, 1 for g. liquid: ml of fluid per 100 g (hydration).
+# fallback: extra source rows for nutrients the primary one does not report.
+# flags: fiber_free = no plant ingredients, so fiber is 0 by definition;
+# loq_zero = below-quantification-limit values are 0 (pure fats).
+key;category;source;source_id;unit;grams_per_unit;liquid;uk;en;pl;ru;fallback;flags;brand
+# --- poultry ---
+chicken_breast_raw;poultry;ciqual;36017;g;1;0;Куряче філе;Chicken breast, skinless;Pierś z kurczaka bez skóry;Куриное филе
+chicken_breast_boiled;poultry;usda;171478;g;1;0;Куряче філе відварене;Chicken breast, boiled;Pierś z kurczaka gotowana;Куриное филе отварное
+chicken_breast_roasted;poultry;usda;171477;g;1;0;Куряче філе запечене;Chicken breast, roasted;Pierś z kurczaka pieczona;Куриное филе запечённое
+chicken_breast_fried;poultry;usda;171078;g;1;0;Куряче філе смажене;Chicken breast, pan-fried;Pierś z kurczaka smażona;Куриное филе жареное
+chicken_breast_grilled;poultry;ciqual;36018;g;1;0;Куряче філе гриль;Chicken breast, grilled;Pierś z kurczaka grillowana;Куриное филе гриль
+chicken_breast_skin_raw;poultry;ciqual;36029;g;1;0;Куряча грудка зі шкірою;Chicken breast with skin;Pierś z kurczaka ze skórą;Куриная грудка с кожей
+chicken_breast_skin_roasted;poultry;ciqual;36032;g;1;0;Куряча грудка зі шкірою запечена;Chicken breast with skin, roasted;Pierś z kurczaka ze skórą pieczona;Куриная грудка с кожей запечённая
+chicken_thigh_raw;poultry;ciqual;36019;g;1;0;Куряче стегно без шкіри;Chicken thigh, skinless;Udko z kurczaka bez skóry;Куриное бедро без кожи
+chicken_thigh_skin_raw;poultry;ciqual;36002;g;1;0;Куряче стегно зі шкірою;Chicken thigh with skin;Udko z kurczaka ze skórą;Куриное бедро с кожей
+chicken_thigh_roasted;poultry;usda;171069;g;1;0;Куряче стегно запечене без шкіри;Chicken thigh, skinless, roasted;Udko z kurczaka bez skóry pieczone;Куриное бедро без кожи запечённое
+chicken_leg_skin_roasted;poultry;ciqual;36004;g;1;0;Куряча ніжка запечена;Chicken leg, roasted;Noga z kurczaka pieczona;Куриная ножка запечённая
+chicken_leg_boiled;poultry;ciqual;36030;g;1;0;Куряча ніжка відварена;Chicken leg, boiled;Noga z kurczaka gotowana;Куриная ножка отварная
+chicken_drumstick_raw;poultry;ciqual;36022;g;1;0;Куряча гомілка;Chicken drumstick;Podudzie z kurczaka;Куриная голень
+chicken_drumstick_roasted;poultry;usda;171126;g;1;0;Куряча гомілка запечена;Chicken drumstick, roasted;Podudzie z kurczaka pieczone;Куриная голень запечённая
+chicken_wing_raw;poultry;ciqual;36023;g;1;0;Курячі крильця;Chicken wings;Skrzydełka z kurczaka;Куриные крылышки
+chicken_wing_roasted;poultry;ciqual;36033;g;1;0;Курячі крильця запечені;Chicken wings, roasted;Skrzydełka z kurczaka pieczone;Куриные крылышки запечённые
+chicken_wing_marinated;poultry;ciqual;36035;g;1;0;Курячі крильця мариновані запечені;Chicken wings, marinated, roasted;Skrzydełka marynowane pieczone;Куриные крылышки маринованные запечённые
+chicken_whole_raw;poultry;ciqual;36016;g;1;0;Курка (тушка) зі шкірою;Whole chicken with skin;Kurczak cały ze skórą;Курица (тушка) с кожей
+chicken_whole_roasted;poultry;ciqual;36005;g;1;0;Курка запечена;Roast chicken;Kurczak pieczony;Курица запечённая
+chicken_rotisserie;poultry;usda;171123;g;1;0;Курка гриль (грудка зі шкірою);Rotisserie chicken breast with skin;Kurczak z rożna (pierś ze skórą);Курица гриль (грудка с кожей)
+chicken_meat_raw;poultry;ciqual;36003;g;1;0;Куряче м'ясо без шкіри;Chicken meat, skinless;Mięso z kurczaka bez skóry;Куриное мясо без кожи
+chicken_meat_boiled;poultry;usda;171451;g;1;0;Куряче м'ясо відварене;Chicken meat, boiled;Mięso z kurczaka gotowane;Куриное мясо отварное
+chicken_hen_raw;poultry;ciqual;36000;g;1;0;Курка домашня (суповий набір);Stewing hen with skin;Kura rosołowa;Курица домашняя (суповой набор)
+chicken_skin_raw;poultry;usda;171452;g;1;0;Куряча шкіра;Chicken skin;Skóra z kurczaka;Куриная кожа
+chicken_mince_raw;poultry;usda;171116;g;1;0;Курячий фарш;Ground chicken;Mielone z kurczaka;Куриный фарш
+chicken_mince_cooked;poultry;usda;171117;g;1;0;Курячий фарш смажений;Ground chicken, cooked;Mielone z kurczaka smażone;Куриный фарш жареный
+chicken_liver_raw;poultry;ciqual;40111;g;1;0;Куряча печінка;Chicken liver;Wątróbka drobiowa;Куриная печень
+chicken_liver_cooked;poultry;ciqual;40116;g;1;0;Куряча печінка тушкована;Chicken liver, cooked;Wątróbka drobiowa duszona;Куриная печень тушёная
+chicken_heart_cooked;poultry;usda;171059;g;1;0;Курячі серця тушковані;Chicken hearts, cooked;Serca drobiowe duszone;Куриные сердечки тушёные
+chicken_gizzard_raw;poultry;usda;171456;g;1;0;Курячі шлунки;Chicken gizzards;Żołądki drobiowe;Куриные желудки
+chicken_gizzard_cooked;poultry;usda;171457;g;1;0;Курячі шлунки тушковані;Chicken gizzards, cooked;Żołądki drobiowe duszone;Куриные желудки тушёные
+turkey_breast_raw;poultry;ciqual;36304;g;1;0;Індиче філе;Turkey breast;Pierś z indyka;Филе индейки
+turkey_breast_roasted;poultry;usda;171496;g;1;0;Індиче філе запечене;Turkey breast, roasted;Pierś z indyka pieczona;Филе индейки запечённое
+turkey_escalope_fried;poultry;ciqual;36306;g;1;0;Індиче філе смажене;Turkey breast, pan-fried;Pierś z indyka smażona;Филе индейки жареное
+turkey_meat_raw;poultry;ciqual;36301;g;1;0;Індичка (м'ясо);Turkey meat;Mięso z indyka;Индейка (мясо)
+turkey_meat_roasted;poultry;ciqual;36302;g;1;0;Індичка запечена;Turkey, roasted;Indyk pieczony;Индейка запечённая
+turkey_thigh_raw;poultry;ciqual;36307;g;1;0;Індиче стегно без шкіри;Turkey thigh, skinless;Udo z indyka bez skóry;Бедро индейки без кожи
+turkey_leg_skin_raw;poultry;ciqual;36305;g;1;0;Індиче стегно зі шкірою;Turkey leg with skin;Udo z indyka ze skórą;Бедро индейки с кожей
+turkey_wing_raw;poultry;ciqual;36310;g;1;0;Індичі крила;Turkey wings;Skrzydła z indyka;Крылья индейки
+turkey_mince_raw;poultry;usda;172850;g;1;0;Індичий фарш;Ground turkey;Mielone z indyka;Фарш из индейки
+turkey_mince_cooked;poultry;usda;172851;g;1;0;Індичий фарш смажений;Ground turkey, cooked;Mielone z indyka smażone;Фарш из индейки жареный
+turkey_liver_raw;poultry;ciqual;40115;g;1;0;Печінка індички;Turkey liver;Wątróbka z indyka;Печень индейки
+duck_meat_raw;poultry;ciqual;36201;g;1;0;Качка (м'ясо без шкіри);Duck meat, skinless;Kaczka bez skóry;Утка (мясо без кожи)
+duck_skin_raw;poultry;ciqual;36204;g;1;0;Качка зі шкірою;Duck with skin;Kaczka ze skórą;Утка с кожей
+duck_roasted;poultry;ciqual;36200;g;1;0;Качка запечена зі шкірою;Roast duck with skin;Kaczka pieczona ze skórą;Утка запечённая с кожей
+duck_breast_cooked;poultry;ciqual;36205;g;1;0;Качина грудка смажена;Duck breast, pan-fried;Pierś z kaczki smażona;Утиная грудка жареная
+goose_meat_raw;poultry;ciqual;36500;g;1;0;Гуска (м'ясо);Goose meat;Gęsina;Гусь (мясо)
+goose_roasted;poultry;ciqual;36503;g;1;0;Гуска запечена зі шкірою;Roast goose with skin;Gęś pieczona ze skórą;Гусь запечённый с кожей
+quail_raw;poultry;ciqual;36100;g;1;0;Перепілка;Quail;Przepiórka;Перепёлка
+rabbit_raw;meat;ciqual;34001;g;1;0;Кролик;Rabbit;Królik;Кролик
+rabbit_braised;meat;ciqual;34000;g;1;0;Кролик тушкований;Rabbit, braised;Królik duszony;Кролик тушёный
+# --- beef and veal ---
+beef_tenderloin_raw;meat;ciqual;6116;g;1;0;Яловича вирізка;Beef tenderloin;Polędwica wołowa;Говяжья вырезка
+beef_sirloin_raw;meat;ciqual;6111;g;1;0;Яловичина (філе, сирлойн);Beef sirloin;Antrykot wołowy (sirloin);Говядина (филе, сирлойн)
+beef_sirloin_grilled;meat;ciqual;6110;g;1;0;Стейк яловичий смажений;Beef steak, pan-fried;Stek wołowy smażony;Стейк говяжий жареный
+beef_ribeye_raw;meat;ciqual;6103;g;1;0;Рібай (антрекот);Beef rib-eye steak;Antrykot (rib-eye);Рибай (антрекот)
+beef_ribeye_grilled;meat;ciqual;6100;g;1;0;Рібай смажений;Rib-eye steak, grilled;Antrykot grillowany;Рибай жареный
+beef_rump_raw;meat;ciqual;6206;g;1;0;Яловичина пісна (огузок);Beef rump, lean;Wołowina chuda (kostrzec);Говядина постная (огузок)
+beef_topside_raw;meat;ciqual;6160;g;1;0;Яловичина (тазостегнова частина);Beef topside;Wołowina (zrazowa);Говядина (тазобедренная часть)
+beef_shoulder_raw;meat;ciqual;6002;g;1;0;Яловичина (лопатка);Beef shoulder;Wołowina (łopatka);Говядина (лопатка)
+beef_chuck_raw;meat;ciqual;6270;g;1;0;Яловичина (шия, для тушкування);Beef chuck;Wołowina (karkówka);Говядина (шея, для тушения)
+beef_stew_raw;meat;ciqual;6231;g;1;0;Яловичина для гуляшу;Beef stewing meat;Wołowina gulaszowa;Говядина для гуляша
+beef_stew_cooked;meat;ciqual;6230;g;1;0;Яловичина тушкована;Beef, stewed;Wołowina duszona;Говядина тушёная
+beef_boiled;meat;ciqual;6151;g;1;0;Яловичина відварена;Beef, boiled;Wołowina gotowana;Говядина отварная
+beef_roast;meat;ciqual;6105;g;1;0;Ростбіф;Roast beef;Rostbef;Ростбиф
+beef_brisket_raw;meat;ciqual;6130;g;1;0;Яловича грудинка;Beef brisket (thin flank);Mostek wołowy;Говяжья грудинка
+beef_short_ribs_raw;meat;ciqual;6122;g;1;0;Яловичі ребра;Beef short ribs;Żeberka wołowe;Говяжьи рёбра
+beef_oxtail_raw;meat;ciqual;6311;g;1;0;Бичачий хвіст;Oxtail;Ogon wołowy;Бычий хвост
+beef_mince_5_raw;meat;ciqual;6250;g;1;0;Яловичий фарш 5%;Ground beef 5% fat;Mielona wołowina 5%;Говяжий фарш 5%
+beef_mince_10_raw;meat;ciqual;6252;g;1;0;Яловичий фарш 10%;Ground beef 10% fat;Mielona wołowina 10%;Говяжий фарш 10%
+beef_mince_15_raw;meat;ciqual;6254;g;1;0;Яловичий фарш 15%;Ground beef 15% fat;Mielona wołowina 15%;Говяжий фарш 15%
+beef_mince_20_raw;meat;ciqual;6256;g;1;0;Яловичий фарш 20%;Ground beef 20% fat;Mielona wołowina 20%;Говяжий фарш 20%
+beef_mince_10_cooked;meat;ciqual;6253;g;1;0;Яловичий фарш 10% смажений;Ground beef 10%, cooked;Mielona wołowina 10% smażona;Говяжий фарш 10% жареный
+beef_mince_20_cooked;meat;ciqual;6257;g;1;0;Яловичий фарш 20% смажений;Ground beef 20%, cooked;Mielona wołowina 20% smażona;Говяжий фарш 20% жареный
+veal_escalope_raw;meat;ciqual;6521;g;1;0;Телятина (ескалоп);Veal escalope;Cielęcina (eskalopka);Телятина (эскалоп)
+veal_tenderloin_raw;meat;ciqual;6522;g;1;0;Теляча вирізка;Veal tenderloin;Polędwica cielęca;Телячья вырезка
+veal_shoulder_raw;meat;ciqual;6560;g;1;0;Телятина (лопатка);Veal shoulder;Łopatka cielęca;Телятина (лопатка)
+veal_escalope_cooked;meat;ciqual;6520;g;1;0;Телятина смажена (ескалоп);Veal escalope, cooked;Eskalopka cielęca smażona;Телятина жареная (эскалоп)
+# --- pork ---
+pork_tenderloin_raw;meat;ciqual;28201;g;1;0;Свиняча вирізка;Pork tenderloin;Polędwiczka wieprzowa;Свиная вырезка
+pork_tenderloin_cooked;meat;ciqual;28202;g;1;0;Свиняча вирізка запечена;Pork tenderloin, roasted;Polędwiczka wieprzowa pieczona;Свиная вырезка запечённая
+pork_loin_raw;meat;ciqual;28003;g;1;0;Свинина (корейка);Pork loin;Schab wieprzowy;Свинина (корейка)
+pork_loin_cooked;meat;ciqual;28007;g;1;0;Свинина (корейка) запечена;Pork loin, roasted;Schab pieczony;Свинина (корейка) запечённая
+pork_chop_raw;meat;ciqual;28100;g;1;0;Свиняча відбивна;Pork chop;Kotlet schabowy (surowy);Свиная отбивная
+pork_chop_grilled;meat;ciqual;28101;g;1;0;Свиняча відбивна смажена;Pork chop, grilled;Kotlet wieprzowy smażony;Свиная отбивная жареная
+pork_ham_raw;meat;ciqual;28460;g;1;0;Свинина пісна (окіст);Lean pork (leg);Wieprzowina chuda (szynka);Свинина постная (окорок)
+pork_shoulder_raw;meat;ciqual;28001;g;1;0;Свиняча лопатка;Pork shoulder;Łopatka wieprzowa;Свиная лопатка
+pork_shoulder_cooked;meat;ciqual;28010;g;1;0;Свиняча лопатка запечена;Pork shoulder, roasted;Łopatka wieprzowa pieczona;Свиная лопатка запечённая
+pork_neck_raw;meat;ciqual;28302;g;1;0;Свиняча шия (ошийок);Pork neck;Karkówka;Свиная шея
+pork_belly_raw;meat;ciqual;28002;g;1;0;Свиняча грудинка;Pork belly;Boczek wieprzowy surowy;Свиная грудинка
+pork_ribs_raw;meat;ciqual;28400;g;1;0;Свинячі ребра;Pork spare ribs;Żeberka wieprzowe;Свиные рёбра
+pork_ribs_cooked;meat;ciqual;28401;g;1;0;Свинячі ребра тушковані;Pork spare ribs, braised;Żeberka wieprzowe duszone;Свиные рёбра тушёные
+pork_knuckle_raw;meat;ciqual;28004;g;1;0;Свиняча рулька;Pork knuckle;Golonka wieprzowa;Свиная рулька
+pork_roast_cooked;meat;ciqual;28301;g;1;0;Буженина (запечена свинина);Roast pork;Pieczeń wieprzowa;Буженина (запечённая свинина)
+pork_mince_raw;meat;usda;167902;g;1;0;Свинячий фарш;Ground pork;Mielona wieprzowina;Свиной фарш
+pork_mince_cooked;meat;usda;167903;g;1;0;Свинячий фарш смажений;Ground pork, cooked;Mielona wieprzowina smażona;Свиной фарш жареный
+pork_beef_mince_raw;meat;recipe;pork_beef_mince;g;1;0;Фарш свино-яловичий;Ground pork and beef;Mielone wieprzowo-wołowe;Фарш свино-говяжий
+pork_fat_raw;meat;ciqual;28470;g;1;0;Сало свиняче;Pork back fat (salo);Słonina;Сало свиное
+pork_fat_salted;meat;usda;168287;g;1;0;Сало солоне;Salt pork (salted fatback);Słonina solona;Сало солёное
+pork_jowl_raw;meat;ciqual;28471;g;1;0;Свиняча щокова частина;Pork jowl;Podgardle wieprzowe;Свиная щековина
+# --- lamb, game, other meat ---
+lamb_leg_raw;meat;ciqual;21502;g;1;0;Баранина (окіст);Lamb leg;Udziec jagnięcy;Баранина (окорок)
+lamb_leg_roasted;meat;ciqual;21503;g;1;0;Баранина запечена;Lamb leg, roasted;Udziec jagnięcy pieczony;Баранина запечённая
+lamb_shoulder_raw;meat;ciqual;21504;g;1;0;Баранина (лопатка);Lamb shoulder;Łopatka jagnięca;Баранина (лопатка)
+lamb_chop_raw;meat;ciqual;21521;g;1;0;Баранячі реберця (корейка);Lamb chops;Kotleciki jagnięce;Бараньи рёбрышки (корейка)
+lamb_chop_grilled;meat;ciqual;21524;g;1;0;Баранячі реберця гриль;Lamb chops, grilled;Kotleciki jagnięce grillowane;Бараньи рёбрышки гриль
+lamb_mince_raw;meat;usda;174370;g;1;0;Баранячий фарш;Ground lamb;Mielona jagnięcina;Бараний фарш
+mutton_raw;meat;ciqual;21001;g;1;0;Баранина доросла (м'ясо);Mutton;Baranina;Баранина взрослая (мясо)
+goat_raw;meat;ciqual;21800;g;1;0;Козлятина;Goat meat;Koźlęcina;Козлятина
+venison_raw;meat;ciqual;14006;g;1;0;Оленина;Venison;Dziczyzna (jeleń);Оленина
+wild_boar_raw;meat;ciqual;14002;g;1;0;Кабан (м'ясо);Wild boar;Dzik;Кабан (мясо)
+horse_raw;meat;ciqual;6903;g;1;0;Конина;Horse meat;Konina;Конина
+# --- offal ---
+beef_liver_raw;meat;ciqual;40104;g;1;0;Яловича печінка;Beef liver;Wątroba wołowa;Говяжья печень
+beef_liver_cooked;meat;ciqual;40105;g;1;0;Яловича печінка смажена;Beef liver, cooked;Wątroba wołowa smażona;Говяжья печень жареная
+pork_liver_raw;meat;ciqual;40119;g;1;0;Свиняча печінка;Pork liver;Wątroba wieprzowa;Свиная печень
+veal_liver_raw;meat;ciqual;40106;g;1;0;Теляча печінка;Calf liver;Wątróbka cielęca;Телячья печень
+beef_heart_raw;meat;ciqual;40052;g;1;0;Яловиче серце;Beef heart;Serce wołowe;Говяжье сердце
+pork_heart_raw;meat;ciqual;40060;g;1;0;Свиняче серце;Pork heart;Serce wieprzowe;Свиное сердце
+beef_tongue_raw;meat;ciqual;40202;g;1;0;Яловичий язик;Beef tongue;Ozór wołowy;Говяжий язык
+beef_tongue_cooked;meat;ciqual;40203;g;1;0;Яловичий язик відварений;Beef tongue, boiled;Ozór wołowy gotowany;Говяжий язык отварной
+pork_tongue_raw;meat;ciqual;40205;g;1;0;Свинячий язик;Pork tongue;Ozór wieprzowy;Свиной язык
+beef_kidney_raw;meat;ciqual;40402;g;1;0;Яловичі нирки;Beef kidneys;Nerki wołowe;Говяжьи почки
+beef_tripe_raw;meat;ciqual;40502;g;1;0;Рубець яловичий;Beef tripe;Flaki wołowe;Рубец говяжий
+# --- cured meat, sausages ---
+ham_cooked;meat;ciqual;28900;g;1;0;Шинка варена;Cooked ham;Szynka gotowana;Ветчина варёная
+ham_cooked_smoked;meat;ciqual;28803;g;1;0;Шинка варено-копчена;Cooked smoked ham;Szynka gotowana wędzona;Ветчина варёно-копчёная
+ham_chicken;meat;ciqual;28963;g;1;0;Шинка куряча;Chicken ham, sliced;Szynka z kurczaka;Ветчина куриная
+ham_turkey;meat;ciqual;28964;g;1;0;Шинка з індички;Turkey ham, sliced;Szynka z indyka;Ветчина из индейки
+ham_dry_cured;meat;ciqual;28812;g;1;0;Шинка сиров'ялена;Dry-cured ham;Szynka dojrzewająca;Ветчина сыровяленая
+ham_parma;meat;ciqual;28844;g;1;0;Прошуто (пармська шинка);Parma ham (prosciutto);Szynka parmeńska;Прошутто (пармская ветчина)
+ham_serrano;meat;ciqual;28845;g;1;0;Хамон серрано;Serrano ham;Szynka serrano;Хамон серрано
+pork_loin_smoked;meat;ciqual;28727;g;1;0;Карбонад (копчена корейка);Back bacon (smoked pork loin);Polędwica wędzona (schab);Карбонад (копчёная корейка)
+bacon_raw;meat;ciqual;28502;g;1;0;Бекон копчений;Bacon, smoked;Boczek wędzony;Бекон копчёный
+bacon_fried;meat;usda;168322;g;1;0;Бекон смажений;Bacon, pan-fried;Boczek smażony;Бекон жареный
+pork_belly_salted;meat;ciqual;28550;g;1;0;Грудинка солона;Salt-cured pork belly;Boczek solony;Грудинка солёная
+bresaola;meat;ciqual;28503;g;1;0;Бресаола (в'ялена яловичина);Bresaola (air-dried beef);Bresaola;Брезаола (вяленая говядина)
+corned_beef;meat;ciqual;28505;g;1;0;Яловичина консервована;Corned beef, canned;Wołowina konserwowa;Говядина консервированная
+sausage_cooked;meat;usda;173856;g;1;0;Ковбаса варена;Cooked sausage (pork bologna);Kiełbasa parzona;Колбаса варёная
+mortadella;meat;ciqual;30789;g;1;0;Мортаделла;Mortadella;Mortadela;Мортаделла
+bologna;meat;usda;172013;g;1;0;Ковбаса болонська;Bologna sausage;Kiełbasa bolońska;Колбаса болонская
+frankfurters;meat;ciqual;30134;pcs;45;0;Сосиски;Frankfurters;Parówki;Сосиски
+frankfurters_chicken;meat;ciqual;30131;pcs;45;0;Сосиски курячі;Chicken frankfurters;Parówki drobiowe;Сосиски куриные
+sausage_strasbourg;meat;ciqual;30742;pcs;45;0;Сосиски свинячі (страсбурзькі);Strasbourg sausages;Parówki strasburskie;Сосиски свиные (страсбургские)
+cervelat;meat;ciqual;30730;pcs;100;0;Сардельки;Saveloy (cervelat);Serdelki;Сардельки
+kielbasa;meat;usda;173879;g;1;0;Ковбаса напівкопчена;Kielbasa (Polish smoked sausage);Kiełbasa wędzona;Колбаса полукопчёная
+kielbasa_fried;meat;usda;173878;g;1;0;Ковбаса напівкопчена смажена;Kielbasa, pan-fried;Kiełbasa smażona;Колбаса полукопчёная жареная
+smoked_link_sausage;meat;usda;174584;g;1;0;Ковбаски копчені свинячі;Smoked pork link sausage;Kiełbaski wędzone wieprzowe;Колбаски копчёные свиные
+dry_sausage;meat;ciqual;30300;g;1;0;Ковбаса сирокопчена;Dry-cured sausage;Kiełbasa surowa dojrzewająca;Колбаса сырокопчёная
+salami;meat;ciqual;30350;g;1;0;Салямі;Salami;Salami;Салями
+chorizo;meat;ciqual;30316;g;1;0;Чорізо;Chorizo;Chorizo;Чоризо
+pepperoni;meat;usda;174575;g;1;0;Пепероні;Pepperoni;Pepperoni;Пепперони
+italian_sausage_raw;meat;usda;171631;g;1;0;Ковбаски свинячі сирі (італійські);Italian pork sausage, raw;Kiełbaski wieprzowe surowe;Колбаски свиные сырые (итальянские)
+liver_sausage;meat;ciqual;30176;g;1;0;Ковбаса ліверна;Liver sausage;Kiełbasa pasztetowa (wątrobianka);Колбаса ливерная
+black_pudding;meat;ciqual;8703;g;1;0;Кров'янка;Black pudding (blood sausage);Kaszanka (salceson czarny);Кровяная колбаса
+pate_pork_liver;meat;ciqual;8305;g;1;0;Паштет печінковий свинячий;Pork liver pâté;Pasztet z wątróbki wieprzowej;Паштет печёночный свиной
+pate_chicken_liver;meat;ciqual;8316;g;1;0;Паштет з курячої печінки;Chicken liver pâté;Pasztet z wątróbki drobiowej;Паштет из куриной печени
+head_cheese;meat;ciqual;8400;g;1;0;Зельц;Head cheese (brawn);Salceson;Зельц
+# --- fish ---
+salmon_raw;fish;ciqual;26036;g;1;0;Лосось (сьомга);Salmon, farmed;Łosoś hodowlany;Лосось (сёмга)
+salmon_wild_raw;fish;ciqual;26161;g;1;0;Лосось дикий;Salmon, wild;Łosoś dziki;Лосось дикий
+salmon_baked;fish;ciqual;26230;g;1;0;Лосось запечений;Salmon, baked;Łosoś pieczony;Лосось запечённый
+salmon_grilled;fish;ciqual;26229;g;1;0;Лосось смажений;Salmon, pan-fried;Łosoś smażony;Лосось жареный
+salmon_steamed;fish;ciqual;26038;g;1;0;Лосось на пару;Salmon, steamed;Łosoś gotowany na parze;Лосось на пару
+salmon_smoked;fish;ciqual;26037;g;1;0;Лосось слабосолений / копчений;Smoked salmon;Łosoś wędzony;Лосось слабосолёный / копчёный
+salmon_canned;fish;usda;173724;g;1;0;Горбуша консервована;Pink salmon, canned;Łosoś różowy w puszce;Горбуша консервированная
+salmon_pink_raw;fish;usda;173689;g;1;0;Кета;Chum salmon (keta);Łosoś keta;Кета
+salmon_sockeye_raw;fish;usda;173691;g;1;0;Нерка;Sockeye salmon;Łosoś nerka;Нерка
+trout_raw;fish;ciqual;27008;g;1;0;Форель;Trout;Pstrąg;Форель
+trout_baked;fish;ciqual;27006;g;1;0;Форель запечена;Trout, baked;Pstrąg pieczony;Форель запечённая
+trout_smoked;fish;ciqual;27029;g;1;0;Форель копчена;Smoked trout;Pstrąg wędzony;Форель копчёная
+cod_raw;fish;ciqual;26043;g;1;0;Тріска;Cod;Dorsz;Треска
+cod_baked;fish;ciqual;26023;g;1;0;Тріска запечена;Cod, baked;Dorsz pieczony;Треска запечённая
+cod_steamed;fish;ciqual;26025;g;1;0;Тріска на пару;Cod, steamed;Dorsz na parze;Треска на пару
+hake_raw;fish;ciqual;26044;g;1;0;Хек;Hake;Morszczuk;Хек
+hake_cooked;fish;ciqual;26120;g;1;0;Хек тушкований;Hake, braised;Morszczuk duszony;Хек тушёный
+pollock_raw;fish;ciqual;26006;g;1;0;Минтай;Alaska pollock;Mintaj;Минтай
+pollock_cooked;fish;usda;173726;g;1;0;Минтай приготований;Alaska pollock, cooked;Mintaj gotowany;Минтай приготовленный
+haddock_raw;fish;ciqual;26122;g;1;0;Пікша;Haddock;Plamiak;Пикша
+haddock_smoked;fish;ciqual;26090;g;1;0;Пікша копчена;Smoked haddock;Plamiak wędzony;Пикша копчёная
+saithe_raw;fish;ciqual;26134;g;1;0;Сайда;Saithe (coley);Czarniak;Сайда
+tuna_raw;fish;ciqual;26053;g;1;0;Тунець;Tuna;Tuńczyk;Тунец
+tuna_baked;fish;ciqual;26041;g;1;0;Тунець запечений;Tuna, baked;Tuńczyk pieczony;Тунец запечённый
+tuna_canned_water;fish;ciqual;26039;g;1;0;Тунець консервований у власному соку;Tuna canned in water;Tuńczyk w sosie własnym;Тунец консервированный в собственном соку
+tuna_canned_oil;fish;ciqual;26245;g;1;0;Тунець консервований в олії;Tuna canned in oil;Tuńczyk w oleju;Тунец консервированный в масле
+mackerel_raw;fish;ciqual;26051;g;1;0;Скумбрія;Mackerel;Makrela;Скумбрия
+mackerel_baked;fish;ciqual;26019;g;1;0;Скумбрія запечена;Mackerel, baked;Makrela pieczona;Скумбрия запечённая
+mackerel_smoked;fish;ciqual;26087;g;1;0;Скумбрія копчена;Smoked mackerel;Makrela wędzona;Скумбрия копчёная
+mackerel_salted;fish;usda;168149;g;1;0;Скумбрія солона;Salted mackerel;Makrela solona;Скумбрия солёная
+mackerel_tomato;fish;ciqual;26086;g;1;0;Скумбрія в томатному соусі;Mackerel in tomato sauce, canned;Makrela w sosie pomidorowym;Скумбрия в томатном соусе
+herring_raw;fish;ciqual;26011;g;1;0;Оселедець свіжий;Herring, fresh;Śledź świeży;Сельдь свежая
+herring_smoked;fish;ciqual;26013;g;1;0;Оселедець копчений;Smoked herring;Śledź wędzony;Сельдь копчёная
+herring_marinated;fish;ciqual;26010;g;1;0;Оселедець маринований;Marinated herring (rollmops);Śledź marynowany;Сельдь маринованная
+herring_fried;fish;ciqual;26012;g;1;0;Оселедець смажений;Herring, fried;Śledź smażony;Сельдь жареная
+sardine_raw;fish;ciqual;26065;g;1;0;Сардина;Sardine;Sardynka;Сардина
+sardines_oil;fish;ciqual;26034;g;1;0;Сардини в олії;Sardines in oil, canned;Sardynki w oleju;Сардины в масле
+sardines_tomato;fish;ciqual;26035;g;1;0;Сардини в томатному соусі;Sardines in tomato sauce, canned;Sardynki w pomidorach;Сардины в томатном соусе
+sprat_raw;fish;ciqual;26173;g;1;0;Кілька (шпрот) свіжа;European sprat;Szprot;Килька (шпрот) свежая
+anchovy_raw;fish;ciqual;26079;g;1;0;Анчоус;Anchovy;Sardela (anchois);Анчоус
+anchovy_salted;fish;ciqual;26177;g;1;0;Анчоуси солоні;Anchovies, salted;Anchois solone;Анчоусы солёные
+capelin_raw;fish;ciqual;26108;g;1;0;Мойва;Capelin;Gromadnik;Мойва
+horse_mackerel_raw;fish;ciqual;26113;g;1;0;Ставрида;Horse mackerel;Ostrobok;Ставрида
+smelt_raw;fish;ciqual;26083;g;1;0;Корюшка;Smelt;Stynka;Корюшка
+carp_raw;fish;ciqual;27003;g;1;0;Короп;Carp;Karp;Карп
+carp_baked;fish;ciqual;27004;g;1;0;Короп запечений;Carp, baked;Karp pieczony;Карп запечённый
+pike_raw;fish;ciqual;27011;g;1;0;Щука;Northern pike;Szczupak;Щука
+perch_raw;fish;ciqual;27010;g;1;0;Окунь річковий;European perch;Okoń;Окунь речной
+pike_perch_raw;fish;ciqual;27024;g;1;0;Судак;Pike-perch (zander);Sandacz;Судак
+redfish_raw;fish;ciqual;26210;g;1;0;Окунь морський;Golden redfish;Karmazyn;Окунь морской
+bream_raw;fish;ciqual;26170;g;1;0;Лящ;Freshwater bream;Leszcz;Лещ
+tilapia_raw;fish;ciqual;27019;g;1;0;Тилапія;Tilapia;Tilapia;Тилапия
+pangasius_cooked;fish;ciqual;27018;g;1;0;Пангасіус;Pangasius fillet;Panga;Пангасиус
+catfish_raw;fish;usda;174186;g;1;0;Сом;Catfish;Sum;Сом
+sea_bass_raw;fish;ciqual;26072;g;1;0;Сибас;European sea bass;Labraks;Сибас
+sea_bass_baked;fish;ciqual;27030;g;1;0;Сибас запечений;Sea bass, baked;Labraks pieczony;Сибас запечённый
+dorado_raw;fish;ciqual;26088;g;1;0;Дорадо;Gilthead seabream (dorado);Dorada;Дорадо
+dorado_baked;fish;ciqual;27031;g;1;0;Дорадо запечена;Dorado, baked;Dorada pieczona;Дорадо запечённая
+flounder_raw;fish;ciqual;26055;g;1;0;Камбала;Plaice (flounder);Gładzica (flądra);Камбала
+halibut_raw;fish;ciqual;26154;g;1;0;Палтус;Greenland halibut;Halibut;Палтус
+sole_raw;fish;ciqual;26058;g;1;0;Морський язик;Common sole;Sola;Морской язык
+eel_raw;fish;ciqual;27016;g;1;0;Вугор;Eel;Węgorz;Угорь
+sturgeon_raw;fish;ciqual;27012;g;1;0;Осетер;Sturgeon;Jesiotr;Осётр
+swordfish_raw;fish;ciqual;26082;g;1;0;Риба-меч;Swordfish;Miecznik;Рыба-меч
+red_caviar;fish;ciqual;26275;g;1;0;Ікра червона (лососева);Salmon roe (red caviar);Kawior z łososia;Икра красная (лососёвая)
+black_caviar;fish;ciqual;26005;g;1;0;Ікра чорна;Caviar;Kawior;Икра чёрная
+fish_sticks;fish;ciqual;26029;g;1;0;Рибні палички;Fish fingers, breaded;Paluszki rybne;Рыбные палочки
+fish_breaded_fried;fish;ciqual;26030;g;1;0;Риба в паніровці смажена;Fish, breaded, fried;Ryba panierowana smażona;Рыба в панировке жареная
+crab_sticks;seafood;ciqual;26046;g;1;0;Крабові палички;Surimi crab sticks;Paluszki krabowe;Крабовые палочки
+# --- seafood ---
+shrimp_raw;seafood;ciqual;10021;g;1;0;Креветки;Shrimp;Krewetki;Креветки
+shrimp_cooked;seafood;ciqual;10007;g;1;0;Креветки варені;Shrimp, boiled;Krewetki gotowane;Креветки варёные
+shrimp_fried_breaded;seafood;usda;171970;g;1;0;Креветки в паніровці смажені;Shrimp, breaded and fried;Krewetki panierowane smażone;Креветки в панировке жареные
+squid_raw;seafood;ciqual;10001;g;1;0;Кальмар;Squid;Kalmar;Кальмар
+mussels_raw;seafood;ciqual;10014;g;1;0;Мідії;Mussels;Małże;Мидии
+mussels_canned;seafood;ciqual;10028;g;1;0;Мідії консервовані;Mussels, canned;Małże w puszce;Мидии консервированные
+octopus_raw;seafood;ciqual;10018;g;1;0;Восьминіг;Octopus;Ośmiornica;Осьминог
+octopus_cooked;seafood;ciqual;10079;g;1;0;Восьминіг варений;Octopus, cooked;Ośmiornica gotowana;Осьминог варёный
+cuttlefish_raw;seafood;ciqual;10016;g;1;0;Каракатиця;Cuttlefish;Mątwa;Каракатица
+scallop_raw;seafood;ciqual;10045;g;1;0;Гребінці (морські);Scallops;Przegrzebki;Гребешки (морские)
+oyster_raw;seafood;ciqual;10035;pcs;15;0;Устриці;Oysters;Ostrygi;Устрицы
+crab_cooked;seafood;ciqual;10025;g;1;0;Краб варений;Crab, boiled;Krab gotowany;Краб варёный
+lobster_cooked;seafood;ciqual;10009;g;1;0;Омар варений;Lobster, boiled;Homar gotowany;Омар варёный
+crayfish_cooked;seafood;ciqual;10031;g;1;0;Раки варені;Crayfish, cooked;Raki gotowane;Раки варёные
+seafood_mix;seafood;ciqual;10080;g;1;0;Морський коктейль;Seafood mix, frozen;Owoce morza (mix);Морской коктейль
+clams_cooked;seafood;ciqual;10027;g;1;0;Клеми (венерки) варені;Clams, cooked;Małże (venus) gotowane;Моллюски (венерки) варёные
+# --- eggs ---
+egg_raw;eggs;ciqual;22000;pcs;50;0;Яйце куряче;Egg;Jajko;Яйцо куриное
+egg_boiled;eggs;ciqual;22010;pcs;50;0;Яйце варене;Egg, hard-boiled;Jajko na twardo;Яйцо варёное
+egg_soft_boiled;eggs;ciqual;22014;pcs;50;0;Яйце некруто;Egg, soft-boiled;Jajko na miękko;Яйцо всмятку
+egg_fried;eggs;ciqual;22501;pcs;46;0;Яєчня (смажене яйце);Fried egg;Jajko sadzone;Яичница (жареное яйцо)
+egg_scrambled;eggs;ciqual;22502;g;1;0;Яєчня-бовтанка;Scrambled eggs;Jajecznica;Яичница-болтунья
+egg_poached;eggs;ciqual;22011;pcs;50;0;Яйце пашот;Egg, poached;Jajko w koszulce;Яйцо пашот
+omelette;eggs;usda;172185;g;1;0;Омлет;Omelette;Omlet;Омлет
+egg_white_raw;eggs;ciqual;22001;g;1;0;Яєчний білок;Egg white;Białko jaja;Яичный белок
+egg_yolk_raw;eggs;ciqual;22002;g;1;0;Яєчний жовток;Egg yolk;Żółtko jaja;Яичный желток
+quail_egg;eggs;ciqual;22050;pcs;10;0;Яйце перепелине;Quail egg;Jajko przepiórcze;Яйцо перепелиное
+duck_egg;eggs;ciqual;22060;pcs;70;0;Яйце качине;Duck egg;Jajko kacze;Яйцо утиное
+# --- milk and fermented milk ---
+milk_whole;dairy;ciqual;19023;ml;1.03;water;Молоко 3,6%;Milk 3.6% (whole);Mleko 3,6%;Молоко 3,6%;;fiber_free
+milk_25;dairy;recipe;milk_25;ml;1.03;water;Молоко 2,5%;Milk 2.5%;Mleko 2,5%;Молоко 2,5%
+milk_15;dairy;ciqual;19041;ml;1.03;water;Молоко 1,5%;Milk 1.5%;Mleko 1,5%;Молоко 1,5%;;fiber_free
+milk_1;dairy;usda;170872;ml;1.03;water;Молоко 1%;Milk 1%;Mleko 1%;Молоко 1%;;fiber_free
+milk_skim;dairy;ciqual;19050;ml;1.03;water;Молоко знежирене;Skimmed milk;Mleko odtłuszczone;Молоко обезжиренное;;fiber_free
+milk_lactose_free;dairy;ciqual;19060;ml;1.03;water;Молоко безлактозне 1,5%;Lactose-free milk 1.5%;Mleko bez laktozy 1,5%;Молоко безлактозное 1,5%;;fiber_free
+goat_milk;dairy;ciqual;19200;ml;1.03;water;Молоко козяче;Goat milk;Mleko kozie;Молоко козье;;fiber_free
+condensed_milk;dairy;ciqual;19027;g;1;0;Згущене молоко з цукром;Sweetened condensed milk;Mleko skondensowane słodzone;Сгущённое молоко с сахаром;;fiber_free
+evaporated_milk;dairy;ciqual;19026;g;1;0;Молоко згущене без цукру;Evaporated milk;Mleko zagęszczone niesłodzone;Молоко сгущённое без сахара;;fiber_free
+milk_powder;dairy;ciqual;19021;g;1;0;Сухе молоко;Milk powder, whole;Mleko w proszku;Сухое молоко;;fiber_free
+milk_powder_skim;dairy;ciqual;19054;g;1;0;Сухе молоко знежирене;Skimmed milk powder;Mleko w proszku odtłuszczone;Сухое обезжиренное молоко;;fiber_free
+kefir_32;dairy;ciqual;19865;ml;1.03;water;Кефір 3,2%;Kefir 3.2%;Kefir 3,2%;Кефир 3,2%;;fiber_free
+kefir_25;dairy;recipe;kefir_25;ml;1.03;water;Кефір 2,5%;Kefir 2.5%;Kefir 2,5%;Кефир 2,5%
+kefir_1;dairy;usda;170904;ml;1.03;water;Кефір 1%;Kefir 1%;Kefir 1%;Кефир 1%;;fiber_free
+prostokvasha;dairy;ciqual;19805;ml;1.03;water;Кисле молоко;Soured milk (fermented milk drink);Zsiadłe mleko;Простокваша;;fiber_free
+buttermilk;dairy;usda;170874;ml;1.03;water;Маслянка;Buttermilk;Maślanka;Пахта;;fiber_free
+yogurt_plain;dairy;ciqual;19593;g;1;0;Йогурт натуральний 1,5%;Plain yogurt 1.5%;Jogurt naturalny 1,5%;Йогурт натуральный 1,5%;;fiber_free
+yogurt_plain_whole;dairy;usda;171284;g;1;0;Йогурт натуральний 3,2%;Plain yogurt, whole milk;Jogurt naturalny 3%;Йогурт натуральный 3,2%;;fiber_free
+yogurt_skim;dairy;ciqual;19594;g;1;0;Йогурт натуральний знежирений;Plain yogurt, fat-free;Jogurt naturalny 0%;Йогурт натуральный обезжиренный;;fiber_free
+yogurt_fruit;dairy;ciqual;19587;g;1;0;Йогурт фруктовий;Fruit yogurt;Jogurt owocowy;Йогурт фруктовый
+yogurt_flavoured;dairy;ciqual;19575;g;1;0;Йогурт солодкий (ванільний тощо);Flavoured sweet yogurt;Jogurt smakowy;Йогурт сладкий (ванильный и т.п.)
+yogurt_drink;dairy;ciqual;19508;ml;1.03;water;Йогурт питний;Drinking yogurt, sweetened;Jogurt pitny;Йогурт питьевой
+yogurt_protein_fruit;dairy;ciqual;19669;g;1;0;Йогурт протеїновий з фруктами;High-protein yogurt with fruit;Jogurt proteinowy z owocami;Йогурт протеиновый с фруктами
+greek_yogurt_0;dairy;usda;170894;g;1;0;Грецький йогурт 0%;Greek yogurt, nonfat;Jogurt grecki 0%;Греческий йогурт 0%;;fiber_free
+greek_yogurt_2;dairy;usda;170903;g;1;0;Грецький йогурт 2%;Greek yogurt, low-fat;Jogurt grecki 2%;Греческий йогурт 2%;;fiber_free
+greek_yogurt_fruit;dairy;usda;170905;g;1;0;Грецький йогурт фруктовий;Greek yogurt with fruit;Jogurt grecki owocowy;Греческий йогурт фруктовый
+sour_cream_15;dairy;ciqual;19431;g;1;0;Сметана 15–20%;Sour cream 15–20%;Śmietana 18%;Сметана 15–20%;;fiber_free
+sour_cream_30;dairy;ciqual;19410;g;1;0;Сметана 30%;Sour cream 30%;Śmietana 30%;Сметана 30%;;fiber_free
+cream_10;dairy;usda;171255;ml;1.01;0;Вершки 10–12%;Cream 10–12% (half and half);Śmietanka 12%;Сливки 10–12%;;fiber_free
+cream_20;dairy;ciqual;19430;ml;1.01;0;Вершки 20%;Cream 20%;Śmietanka 18–20%;Сливки 20%;;fiber_free
+cream_33;dairy;ciqual;19415;ml;1;0;Вершки 30–33%;Whipping cream 30–33%;Śmietanka 30%;Сливки 30–33%;;fiber_free
+whipped_cream;dairy;ciqual;19420;g;1;0;Збиті вершки (балончик);Whipped cream, aerosol;Bita śmietana (spray);Взбитые сливки (баллончик);;fiber_free
+butter;dairy;ciqual;16400;g;1;0;Масло вершкове 82%;Butter 82%;Masło 82%;Масло сливочное 82%
+butter_salted;dairy;ciqual;16403;g;1;0;Масло вершкове солоне;Salted butter;Masło solone;Масло сливочное солёное
+butter_light;dairy;ciqual;16410;g;1;0;Масло вершкове 60%;Light butter 60%;Masło 60%;Масло сливочное 60%
+cottage_cheese_1;dairy;usda;173417;g;1;0;Сир зернистий 1%;Cottage cheese 1%;Serek wiejski 1%;Творог зернёный 1%;;fiber_free
+cottage_cheese_4;dairy;usda;172179;g;1;0;Сир зернистий 4%;Cottage cheese 4% (creamed);Serek wiejski 4%;Творог зернёный 4%;;fiber_free
+fromage_blanc_3;dairy;ciqual;19646;g;1;0;Сир м'який кисломолочний 3% (фромаж блан);Fromage blanc 3% (soft curd cheese);Serek twarogowy kremowy 3%;Творог мягкий 3% (фромаж блан);;fiber_free
+fromage_blanc_0;dairy;ciqual;19644;g;1;0;Сир м'який кисломолочний 0% (фромаж блан);Fromage blanc, fat-free;Serek twarogowy kremowy 0%;Творог мягкий 0% (фромаж блан);;fiber_free
+ricotta;cheese;usda;170851;g;1;0;Рікота;Ricotta;Ricotta;Рикотта;;fiber_free
+mascarpone;cheese;ciqual;19584;g;1;0;Маскарпоне;Mascarpone;Mascarpone;Маскарпоне;;fiber_free
+cream_cheese;cheese;usda;173418;g;1;0;Крем-сир;Cream cheese;Serek śmietankowy (cream cheese);Крем-сыр;;fiber_free
+cream_cheese_light;cheese;usda;169079;g;1;0;Крем-сир легкий;Cream cheese, low-fat;Serek śmietankowy light;Крем-сыр лёгкий;;fiber_free
+spread_cheese_herbs;cheese;ciqual;19530;g;1;0;Сир вершковий з травами;Cream cheese spread with garlic and herbs;Serek kremowy z ziołami;Сыр сливочный с травами
+# --- cheese ---
+hard_cheese;cheese;ciqual;12100;g;1;0;Сир твердий;Hard cheese;Ser twardy;Сыр твёрдый;;fiber_free
+hard_cheese_light;cheese;ciqual;12760;g;1;0;Сир твердий легкий 13%;Hard cheese, reduced fat;Ser twardy light;Сыр твёрдый лёгкий 13%;;fiber_free
+gouda;cheese;ciqual;12736;g;1;0;Гауда;Gouda;Gouda;Гауда;;fiber_free
+edam;cheese;ciqual;12729;g;1;0;Едам;Edam;Edam;Эдам;;fiber_free
+maasdam;cheese;ciqual;12741;g;1;0;Маасдам;Maasdam;Maasdam;Маасдам;;fiber_free
+emmental;cheese;ciqual;12115;g;1;0;Емменталь;Emmental;Ementaler;Эмменталь;;fiber_free
+cheddar;cheese;ciqual;12726;g;1;0;Чедер;Cheddar;Cheddar;Чеддер;;fiber_free
+gruyere;cheese;ciqual;12114;g;1;0;Грюєр;Gruyère;Gruyère;Грюйер;;fiber_free
+parmesan;cheese;ciqual;12120;g;1;0;Пармезан;Parmesan;Parmezan;Пармезан;;fiber_free
+grana_padano;cheese;ciqual;12123;g;1;0;Грана Падано;Grana Padano;Grana Padano;Грана Падано;;fiber_free
+mozzarella;cheese;ciqual;19590;g;1;0;Моцарела;Mozzarella;Mozzarella;Моцарелла;;fiber_free
+mozzarella_buffalo;cheese;ciqual;19591;g;1;0;Моцарела з буйволиного молока;Buffalo mozzarella;Mozzarella z mleka bawolego;Моцарелла из буйволиного молока;;fiber_free
+mozzarella_pizza;cheese;usda;171244;g;1;0;Моцарела для піци;Mozzarella, low-moisture;Mozzarella do pizzy;Моцарелла для пиццы;;fiber_free
+feta;cheese;ciqual;12066;g;1;0;Фета;Feta;Feta;Фета;;fiber_free
+brynza;cheese;ciqual;12060;g;1;0;Бринза (розсольний сир з коров'ячого молока);Brine cheese, cow's milk (feta-type);Ser solankowy (bryndza krowia);Брынза (рассольный сыр из коровьего молока);;fiber_free
+camembert;cheese;ciqual;12001;g;1;0;Камамбер;Camembert;Camembert;Камамбер;;fiber_free
+brie;cheese;ciqual;12020;g;1;0;Брі;Brie;Brie;Бри;;fiber_free
+blue_cheese;cheese;ciqual;12520;g;1;0;Сир з блакитною пліснявою;Blue cheese;Ser pleśniowy niebieski;Сыр с голубой плесенью;;fiber_free
+gorgonzola;cheese;ciqual;12524;g;1;0;Горгонзола;Gorgonzola;Gorgonzola;Горгонзола;;fiber_free
+goat_cheese;cheese;ciqual;12803;g;1;0;Сир козячий;Goat cheese;Ser kozi;Сыр козий;;fiber_free
+provolone;cheese;ciqual;12716;g;1;0;Проволоне;Provolone;Provolone;Проволоне;;fiber_free
+raclette;cheese;ciqual;12749;g;1;0;Раклет;Raclette;Raclette;Раклет;;fiber_free
+processed_cheese_slices;cheese;ciqual;12300;g;1;0;Сир плавлений (скибочки);Processed cheese slices;Ser topiony w plasterkach;Сыр плавленый (ломтики);;fiber_free
+processed_cheese;cheese;ciqual;12310;g;1;0;Сир плавлений;Processed cheese;Ser topiony;Сыр плавленый;;fiber_free
+cheese_spread;cheese;ciqual;12315;g;1;0;Сир вершковий для намазування;Cream cheese spread;Serek do smarowania;Сыр сливочный для намазывания;;fiber_free
+# --- grains and porridge ---
+rice_white_raw;grains;ciqual;9100;g;1;0;Рис білий (сухий);White rice, dry;Ryż biały (suchy);Рис белый (сухой)
+rice_white_cooked;grains;ciqual;9104;g;1;0;Рис білий варений;White rice, cooked;Ryż biały gotowany;Рис белый варёный
+rice_parboiled_raw;grains;ciqual;9101;g;1;0;Рис пропарений (сухий);Parboiled rice, dry;Ryż parboiled (suchy);Рис пропаренный (сухой)
+rice_parboiled_cooked;grains;ciqual;9105;g;1;0;Рис пропарений варений;Parboiled rice, cooked;Ryż parboiled gotowany;Рис пропаренный варёный
+rice_brown_raw;grains;ciqual;9102;g;1;0;Рис бурий (сухий);Brown rice, dry;Ryż brązowy (suchy);Рис бурый (сухой)
+rice_brown_cooked;grains;ciqual;9103;g;1;0;Рис бурий варений;Brown rice, cooked;Ryż brązowy gotowany;Рис бурый варёный
+rice_basmati_raw;grains;ciqual;9119;g;1;0;Рис басматі (сухий);Basmati rice, dry;Ryż basmati (suchy);Рис басмати (сухой)
+rice_basmati_cooked;grains;ciqual;9125;g;1;0;Рис басматі варений;Basmati rice, cooked;Ryż basmati gotowany;Рис басмати варёный
+rice_jasmine_cooked;grains;ciqual;9124;g;1;0;Рис жасмин варений;Jasmine rice, cooked;Ryż jaśminowy gotowany;Рис жасмин варёный
+rice_wild_raw;grains;ciqual;9108;g;1;0;Рис дикий (сухий);Wild rice, dry;Ryż dziki (suchy);Рис дикий (сухой)
+rice_wild_cooked;grains;ciqual;9111;g;1;0;Рис дикий варений;Wild rice, cooked;Ryż dziki gotowany;Рис дикий варёный
+rice_mix_raw;grains;ciqual;9121;g;1;0;Суміш рису (сухий);Rice mix, dry;Mieszanka ryżów (sucha);Смесь риса (сухой)
+buckwheat_raw;grains;usda;170685;g;1;0;Гречка (суха);Buckwheat groats, dry;Kasza gryczana (sucha);Гречка (сухая);usda:170687
+buckwheat_cooked;grains;usda;170686;g;1;0;Гречка варена;Buckwheat, cooked;Kasza gryczana gotowana;Гречка варёная
+oat_flakes;grains;ciqual;32140;g;1;0;Вівсяні пластівці;Rolled oats;Płatki owsiane;Овсяные хлопья
+oat_porridge_water;grains;ciqual;9313;g;1;0;Вівсяна каша на воді;Oatmeal porridge (water);Owsianka na wodzie;Овсяная каша на воде
+oat_bran;grains;usda;168872;g;1;0;Вівсяні висівки;Oat bran;Otręby owsiane;Овсяные отруби
+wheat_bran;grains;usda;169722;g;1;0;Пшеничні висівки;Wheat bran;Otręby pszenne;Пшеничные отруби
+barley_pearl_raw;grains;ciqual;9321;g;1;0;Перлова крупа (суха);Pearl barley, dry;Kasza jęczmienna perłowa (sucha);Перловая крупа (сухая)
+barley_pearl_cooked;grains;ciqual;9322;g;1;0;Перлова каша;Pearl barley, cooked;Kasza jęczmienna gotowana;Перловая каша
+millet_cooked;grains;ciqual;9331;g;1;0;Пшоняна каша на воді;Millet, cooked;Kasza jaglana gotowana;Пшённая каша на воде
+bulgur_raw;grains;ciqual;9690;g;1;0;Булгур (сухий);Bulgur, dry;Bulgur (suchy);Булгур (сухой)
+bulgur_cooked;grains;ciqual;9691;g;1;0;Булгур варений;Bulgur, cooked;Bulgur gotowany;Булгур варёный
+couscous_raw;grains;ciqual;9681;g;1;0;Кускус (сухий);Couscous, dry;Kuskus (suchy);Кускус (сухой)
+couscous_cooked;grains;ciqual;9683;g;1;0;Кускус готовий;Couscous, cooked;Kuskus gotowany;Кускус готовый
+quinoa_cooked;grains;ciqual;9341;g;1;0;Кіноа варена;Quinoa, cooked;Komosa ryżowa gotowana;Киноа варёная
+semolina_raw;grains;ciqual;9610;g;1;0;Манна крупа;Semolina;Kasza manna;Манная крупа
+semolina_cooked;grains;ciqual;9611;g;1;0;Манна каша;Semolina porridge;Kasza manna gotowana;Манная каша
+cornmeal;grains;usda;169697;g;1;0;Кукурудзяне борошно / крупа;Cornmeal, whole-grain;Mąka / kasza kukurydziana;Кукурузная мука / крупа
+polenta_cooked;grains;ciqual;9615;g;1;0;Кукурудзяна каша (полента);Polenta, cooked;Polenta gotowana;Кукурузная каша (полента)
+spelt_raw;grains;ciqual;9001;g;1;0;Спельта (зерно);Spelt;Orkisz;Спельта (зерно)
+wheat_groats_raw;grains;ciqual;9080;g;1;0;Пшениця (крупа швидкого приготування);Wheat berries, pre-cooked, dry;Pszenica (kasza błyskawiczna);Пшеница (крупа быстрого приготовления)
+amaranth_raw;grains;ciqual;9345;g;1;0;Амарант;Amaranth;Amarantus;Амарант
+rye_grain;grains;usda;168884;g;1;0;Жито (зерно);Rye grain;Żyto (ziarno);Рожь (зерно)
+wheat_germ;grains;ciqual;9660;g;1;0;Зародки пшениці;Wheat germ;Zarodki pszenne;Зародыши пшеницы
+# --- pasta and noodles ---
+pasta_dry;pasta;ciqual;9810;g;1;0;Макарони (сухі);Pasta, dry;Makaron (suchy);Макароны (сухие)
+pasta_cooked;pasta;ciqual;9811;g;1;0;Макарони варені;Pasta, cooked;Makaron gotowany;Макароны варёные
+pasta_whole_dry;pasta;ciqual;9870;g;1;0;Макарони цільнозернові (сухі);Wholemeal pasta, dry;Makaron pełnoziarnisty (suchy);Макароны цельнозерновые (сухие)
+pasta_whole_cooked;pasta;ciqual;9871;g;1;0;Макарони цільнозернові варені;Wholemeal pasta, cooked;Makaron pełnoziarnisty gotowany;Макароны цельнозерновые варёные
+pasta_egg_dry;pasta;ciqual;9821;g;1;0;Локшина яєчна (суха);Egg noodles, dry;Makaron jajeczny (suchy);Лапша яичная (сухая)
+pasta_egg_cooked;pasta;ciqual;9822;g;1;0;Локшина яєчна варена;Egg noodles, cooked;Makaron jajeczny gotowany;Лапша яичная варёная
+pasta_fresh_raw;pasta;ciqual;9815;g;1;0;Паста свіжа яєчна;Fresh egg pasta;Świeży makaron jajeczny;Паста свежая яичная
+pasta_gluten_free_dry;pasta;ciqual;9874;g;1;0;Макарони безглютенові (сухі);Gluten-free pasta, dry;Makaron bezglutenowy (suchy);Макароны безглютеновые (сухие)
+pasta_lentil_cooked;pasta;ciqual;9876;g;1;0;Паста з сочевиці варена;Lentil pasta, cooked;Makaron z soczewicy gotowany;Паста из чечевицы варёная
+rice_noodles_dry;pasta;ciqual;9900;g;1;0;Рисова локшина (суха);Rice noodles, dry;Makaron ryżowy (suchy);Рисовая лапша (сухая)
+rice_noodles_cooked;pasta;ciqual;9901;g;1;0;Рисова локшина варена;Rice noodles, cooked;Makaron ryżowy gotowany;Рисовая лапша варёная
+glass_noodles_dry;pasta;ciqual;9902;g;1;0;Фунчоза (суха);Glass noodles, dry;Makaron sojowy (szklany);Фунчоза (сухая)
+instant_noodles_dry;pasta;ciqual;9863;g;1;0;Локшина швидкого приготування (суха);Instant noodles, dry;Zupka chińska (sucha);Лапша быстрого приготовления (сухая)
+instant_noodles_cooked;pasta;ciqual;9085;g;1;0;Локшина швидкого приготування готова;Instant noodles, prepared;Zupka chińska (przygotowana);Лапша быстрого приготовления готовая
+gnocchi;pasta;ciqual;25510;g;1;0;Ньокі картопляні;Potato gnocchi, cooked;Kopytka / gnocchi;Ньокки картофельные
+# --- bread ---
+bread_wheat;bread;ciqual;7000;g;1;0;Хліб пшеничний;Wheat bread;Chleb pszenny;Хлеб пшеничный
+baguette;bread;ciqual;7001;g;1;0;Багет;Baguette;Bagietka;Багет
+bread_loaf;bread;ciqual;7200;g;1;0;Батон / тостовий хліб;Sandwich loaf (white);Chleb tostowy;Батон / тостовый хлеб
+bread_toast_whole;bread;ciqual;7111;g;1;0;Тостовий хліб цільнозерновий;Wholemeal sandwich loaf;Chleb tostowy pełnoziarnisty;Тостовый хлеб цельнозерновой
+bread_whole_grain;bread;ciqual;7110;g;1;0;Хліб цільнозерновий;Wholemeal bread;Chleb pełnoziarnisty;Хлеб цельнозерновой
+bread_multigrain;bread;ciqual;7113;g;1;0;Хліб багатозерновий;Multigrain bread;Chleb wieloziarnisty;Хлеб многозерновой
+bread_rye_wheat;bread;ciqual;7125;g;1;0;Хліб житньо-пшеничний;Rye-wheat bread;Chleb żytnio-pszenny;Хлеб ржано-пшеничный
+bread_bran;bread;ciqual;7115;g;1;0;Хліб з висівками;Bran bread;Chleb z otrębami;Хлеб с отрубями
+bread_gluten_free;bread;ciqual;7130;g;1;0;Хліб безглютеновий;Gluten-free bread;Chleb bezglutenowy;Хлеб безглютеновый
+bread_brioche;bread;ciqual;7210;g;1;0;Хліб бріош;Brioche bread;Chleb maślany (brioszka);Хлеб бриошь
+bread_country;bread;ciqual;7100;g;1;0;Хліб сільський (на заквасці);Country-style bread;Chleb wiejski;Хлеб деревенский
+pita;bread;ciqual;7180;pcs;60;0;Піта;Pita bread;Pita;Пита
+tortilla_wheat;bread;ciqual;7815;pcs;60;0;Тортилья пшенична;Wheat tortilla;Tortilla pszenna;Тортилья пшеничная
+tortilla_corn;bread;ciqual;7813;pcs;40;0;Тортилья кукурудзяна;Corn tortilla;Tortilla kukurydziana;Тортилья кукурузная
+bagel;bread;ciqual;7258;pcs;90;0;Бейгл;Bagel;Bajgiel;Бейгл
+burger_bun;bread;ciqual;7259;pcs;60;0;Булочка для бургера;Burger bun;Bułka do hamburgerów;Булочка для бургера
+english_muffin;bread;ciqual;7257;pcs;60;0;Англійський мафін;English muffin;Muffin angielski;Английский маффин
+panini_bread;bread;ciqual;7170;g;1;0;Чіабата / хліб для паніні;Ciabatta / panini bread;Ciabatta;Чиабатта / хлеб для панини
+pretzel;bread;ciqual;7263;pcs;90;0;Брецель;Pretzel (soft);Precel;Брецель
+toast_dry;bread;ciqual;7004;g;1;0;Тост підсмажений;Toast;Tost opiekany;Тост поджаренный
+rusk;bread;ciqual;7300;g;1;0;Сухарі;Rusks;Sucharki;Сухари
+crispbread;bread;ciqual;7410;g;1;0;Хлібці хрусткі;Crispbread;Pieczywo chrupkie;Хлебцы хрустящие
+crispbread_whole;bread;ciqual;7420;g;1;0;Хлібці цільнозернові;Wholemeal crispbread;Pieczywo chrupkie pełnoziarniste;Хлебцы цельнозерновые
+rice_cakes;bread;ciqual;7352;pcs;8;0;Хлібці рисові;Rice cakes;Wafle ryżowe;Хлебцы рисовые
+crackers;snacks;ciqual;7351;g;1;0;Крекери пшеничні;Wheat crackers;Krakersy pszenne;Крекеры пшеничные
+breadsticks;snacks;ciqual;7525;g;1;0;Гриссіні (хлібні палички);Breadsticks (grissini);Paluszki chlebowe;Гриссини (хлебные палочки)
+croutons;snacks;ciqual;7432;g;1;0;Сухарики (грінки) снекові;Croutons;Grzanki;Сухарики
+breadcrumbs;ingredients;ciqual;7500;g;1;0;Панірувальні сухарі;Breadcrumbs;Bułka tarta;Панировочные сухари
+# --- breakfast cereals ---
+corn_flakes;grains;ciqual;32014;g;1;0;Кукурудзяні пластівці;Corn flakes;Płatki kukurydziane;Кукурузные хлопья
+corn_flakes_frosted;grains;ciqual;32107;g;1;0;Кукурудзяні пластівці глазуровані;Frosted corn flakes;Płatki kukurydziane lukrowane;Кукурузные хлопья глазированные
+muesli;grains;ciqual;32004;g;1;0;Мюслі;Muesli;Musli;Мюсли
+muesli_no_sugar;grains;ciqual;32113;g;1;0;Мюслі без цукру;Muesli, no added sugar;Musli bez cukru;Мюсли без сахара
+granola;grains;ciqual;32108;g;1;0;Гранола (хрусткі мюслі);Granola (crunchy muesli);Granola;Гранола (хрустящие мюсли)
+granola_chocolate;grains;ciqual;32109;g;1;0;Гранола з шоколадом;Chocolate granola;Granola czekoladowa;Гранола с шоколадом
+cereal_chocolate;grains;ciqual;32013;g;1;0;Сухий сніданок шоколадний;Chocolate breakfast cereal;Płatki czekoladowe;Сухой завтрак шоколадный
+cereal_rice_chocolate;grains;ciqual;32012;g;1;0;Рисові кульки шоколадні;Chocolate puffed rice cereal;Ryżowe kulki czekoladowe;Рисовые шарики шоколадные
+cereal_filled;grains;ciqual;32017;g;1;0;Подушечки з шоколадною начинкою;Filled cereal pillows, chocolate;Poduszki z nadzieniem czekoladowym;Подушечки с шоколадной начинкой
+cereal_fibre;grains;ciqual;32116;g;1;0;Висівкові пластівці (з високим вмістом клітковини);High-fibre bran cereal;Płatki z otrębami (bogate w błonnik);Отрубные хлопья (с высоким содержанием клетчатки)
+cereal_diet;grains;ciqual;32030;g;1;0;Пластівці пшенично-рисові (фітнес);Wheat and rice flakes (diet-style);Płatki pszenno-ryżowe (fitness);Хлопья пшенично-рисовые (фитнес)
+# --- legumes and soy ---
+beans_red_cooked;legumes;ciqual;20503;g;1;0;Квасоля червона варена;Red kidney beans, cooked;Fasola czerwona gotowana;Фасоль красная варёная
+beans_white_cooked;legumes;ciqual;20502;g;1;0;Квасоля біла варена;White beans, cooked;Fasola biała gotowana;Фасоль белая варёная
+beans_red_canned;legumes;ciqual;20524;g;1;0;Квасоля червона консервована;Red kidney beans, canned;Fasola czerwona z puszki;Фасоль красная консервированная
+beans_white_canned;legumes;ciqual;20511;g;1;0;Квасоля біла консервована;White beans, canned;Fasola biała z puszki;Фасоль белая консервированная
+beans_red_dry;legumes;ciqual;20525;g;1;0;Квасоля червона (суха);Red kidney beans, dry;Fasola czerwona (sucha);Фасоль красная (сухая)
+beans_white_dry;legumes;ciqual;20501;g;1;0;Квасоля біла (суха);White beans, dry;Fasola biała (sucha);Фасоль белая (сухая)
+chickpeas_cooked;legumes;ciqual;20507;g;1;0;Нут варений;Chickpeas, cooked;Ciecierzyca gotowana;Нут варёный
+chickpeas_canned;legumes;ciqual;20532;g;1;0;Нут консервований;Chickpeas, canned;Ciecierzyca z puszki;Нут консервированный
+chickpeas_dry;legumes;ciqual;20516;g;1;0;Нут (сухий);Chickpeas, dry;Ciecierzyca (sucha);Нут (сухой)
+lentils_cooked;legumes;ciqual;20505;g;1;0;Сочевиця варена;Lentils, cooked;Soczewica gotowana;Чечевица варёная
+lentils_red_cooked;legumes;ciqual;20589;g;1;0;Сочевиця червона варена;Red lentils, cooked;Soczewica czerwona gotowana;Чечевица красная варёная
+lentils_green_cooked;legumes;ciqual;20587;g;1;0;Сочевиця зелена варена;Green lentils, cooked;Soczewica zielona gotowana;Чечевица зелёная варёная
+lentils_dry;legumes;ciqual;20504;g;1;0;Сочевиця (суха);Lentils, dry;Soczewica (sucha);Чечевица (сухая)
+lentils_red_dry;legumes;ciqual;20535;g;1;0;Сочевиця червона (суха);Red lentils, dry;Soczewica czerwona (sucha);Чечевица красная (сухая)
+split_peas_dry;legumes;ciqual;20515;g;1;0;Горох колотий (сухий);Split peas, dry;Groch łuskany (suchy);Горох колотый (сухой)
+split_peas_cooked;legumes;ciqual;20506;g;1;0;Горох варений;Split peas, cooked;Groch gotowany;Горох варёный
+mung_beans_cooked;legumes;ciqual;20531;g;1;0;Маш варений;Mung beans, cooked;Fasola mung gotowana;Маш варёный
+broad_beans_cooked;legumes;ciqual;20500;g;1;0;Боби варені;Broad beans, cooked;Bób gotowany;Бобы варёные
+edamame;legumes;usda;168411;g;1;0;Едамаме;Edamame, cooked;Edamame;Эдамаме
+tofu;legumes;ciqual;20904;g;1;0;Тофу;Tofu;Tofu;Тофу
+tofu_smoked;legumes;ciqual;20912;g;1;0;Тофу копчений;Smoked tofu;Tofu wędzone;Тофу копчёный
+soy_textured;legumes;ciqual;20591;g;1;0;Соєве м'ясо (регідроване);Textured soy protein, rehydrated;Granulat sojowy (namoczony);Соевое мясо (регидрированное)
+seitan;legumes;ciqual;25598;g;1;0;Сейтан;Seitan;Seitan;Сейтан
+# --- potatoes and tubers ---
+potato_raw;vegetables;ciqual;4008;g;1;0;Картопля;Potato;Ziemniak;Картофель
+potato_young_raw;vegetables;ciqual;4023;g;1;0;Молода картопля;New potato;Młode ziemniaki;Молодой картофель
+potato_boiled;vegetables;ciqual;4003;g;1;0;Картопля варена;Boiled potatoes;Ziemniaki gotowane;Картофель варёный
+potato_baked;vegetables;ciqual;4026;g;1;0;Картопля запечена;Baked potato;Ziemniak pieczony;Картофель запечённый
+potato_fried;vegetables;ciqual;4015;g;1;0;Картопля смажена;Fried potatoes (pan-fried);Ziemniaki smażone;Картофель жареный
+potato_mashed;vegetables;ciqual;4018;g;1;0;Картопляне пюре (з молоком і маслом);Mashed potatoes with milk and butter;Puree ziemniaczane;Картофельное пюре (с молоком и маслом)
+potato_flakes;vegetables;ciqual;4022;g;1;0;Картопляне пюре швидкого приготування (суміш);Instant mashed potato flakes;Puree ziemniaczane w płatkach;Картофельное пюре быстрого приготовления (смесь)
+french_fries;fast_food;ciqual;4032;g;1;0;Картопля фрі;French fries;Frytki;Картофель фри
+french_fries_oven;vegetables;ciqual;4030;g;1;0;Картопля фрі з духовки;Oven fries;Frytki z piekarnika;Картофель фри из духовки
+potato_wedges;vegetables;ciqual;4025;g;1;0;Картопляні дольки запечені зі спеціями;Potato wedges, spiced, baked;Ćwiartki ziemniaczane pieczone;Картофельные дольки запечённые
+potato_pancakes;prepared;usda;170092;g;1;0;Деруни;Potato pancakes;Placki ziemniaczane;Драники
+sweet_potato_raw;vegetables;ciqual;4101;g;1;0;Батат;Sweet potato;Batat;Батат
+sweet_potato_cooked;vegetables;ciqual;4102;g;1;0;Батат запечений;Sweet potato, cooked;Batat pieczony;Батат запечённый
+jerusalem_artichoke;vegetables;ciqual;20196;g;1;0;Топінамбур;Jerusalem artichoke;Topinambur;Топинамбур
+# --- vegetables ---
+tomato;vegetables;ciqual;20047;pcs;120;0;Помідор;Tomato;Pomidor;Помидор
+tomato_cherry;vegetables;ciqual;20172;g;1;0;Помідори чері;Cherry tomatoes;Pomidorki koktajlowe;Помидоры черри
+tomato_baked;vegetables;ciqual;20334;g;1;0;Помідори запечені;Tomatoes, roasted;Pomidory pieczone;Помидоры запечённые
+cucumber;vegetables;ciqual;20019;pcs;120;0;Огірок;Cucumber;Ogórek;Огурец
+bell_pepper_red;vegetables;ciqual;20087;pcs;150;0;Перець болгарський червоний;Red bell pepper;Papryka czerwona;Перец болгарский красный
+bell_pepper_green;vegetables;ciqual;20085;pcs;150;0;Перець болгарський зелений;Green bell pepper;Papryka zielona;Перец болгарский зелёный
+bell_pepper_yellow;vegetables;ciqual;20168;pcs;150;0;Перець болгарський жовтий;Yellow bell pepper;Papryka żółta;Перец болгарский жёлтый
+bell_pepper_fried;vegetables;ciqual;20329;g;1;0;Перець болгарський смажений;Bell pepper, sautéed;Papryka smażona;Перец болгарский жареный
+chili_pepper;vegetables;ciqual;20151;g;1;0;Перець чилі;Chili pepper;Papryczka chili;Перец чили
+carrot;vegetables;ciqual;20009;pcs;60;0;Морква;Carrot;Marchew;Морковь
+carrot_boiled;vegetables;ciqual;20306;g;1;0;Морква варена;Carrot, boiled;Marchew gotowana;Морковь варёная
+onion;vegetables;ciqual;20034;pcs;100;0;Цибуля ріпчаста;Onion;Cebula;Лук репчатый
+onion_red;vegetables;ciqual;20238;pcs;100;0;Цибуля червона;Red onion;Cebula czerwona;Лук красный
+onion_fried;vegetables;ciqual;20322;g;1;0;Цибуля пасерована (без олії);Onion, sautéed without fat;Cebula podsmażona bez tłuszczu;Лук пассерованный (без масла)
+spring_onion;vegetables;ciqual;11003;g;1;0;Цибуля зелена;Spring onion / chives;Szczypiorek;Лук зелёный
+leek;vegetables;ciqual;20039;g;1;0;Цибуля-порей;Leek;Por;Лук-порей
+garlic;vegetables;ciqual;11000;pcs;5;0;Часник;Garlic;Czosnek;Чеснок
+cabbage_white;vegetables;ciqual;20116;g;1;0;Капуста білокачанна;White cabbage;Kapusta biała;Капуста белокочанная
+cabbage_boiled;vegetables;ciqual;20308;g;1;0;Капуста білокачанна варена;White cabbage, boiled;Kapusta biała gotowana;Капуста белокочанная варёная
+cabbage_red;vegetables;ciqual;20014;g;1;0;Капуста червонокачанна;Red cabbage;Kapusta czerwona;Капуста краснокочанная
+cabbage_chinese;vegetables;ciqual;20167;g;1;0;Капуста пекінська;Chinese cabbage;Kapusta pekińska;Капуста пекинская
+cauliflower;vegetables;ciqual;20016;g;1;0;Капуста цвітна;Cauliflower;Kalafior;Капуста цветная
+cauliflower_cooked;vegetables;ciqual;20017;g;1;0;Капуста цвітна варена;Cauliflower, cooked;Kalafior gotowany;Капуста цветная варёная
+broccoli;vegetables;ciqual;20057;g;1;0;Броколі;Broccoli;Brokuł;Брокколи
+broccoli_boiled;vegetables;ciqual;20303;g;1;0;Броколі варена;Broccoli, boiled;Brokuł gotowany;Брокколи варёная
+broccoli_steamed;vegetables;ciqual;20304;g;1;0;Броколі на пару;Broccoli, steamed;Brokuł na parze;Брокколи на пару
+brussels_sprouts;vegetables;ciqual;20058;g;1;0;Брюссельська капуста;Brussels sprouts;Brukselka;Брюссельская капуста
+kohlrabi;vegetables;ciqual;20065;g;1;0;Кольрабі;Kohlrabi;Kalarepa;Кольраби
+kale;vegetables;ciqual;20218;g;1;0;Кейл (капуста листова);Kale;Jarmuż;Кейл (капуста листовая)
+zucchini;vegetables;ciqual;20020;g;1;0;Кабачок;Zucchini;Cukinia;Кабачок
+zucchini_baked;vegetables;ciqual;20313;g;1;0;Кабачок запечений;Zucchini, roasted;Cukinia pieczona;Кабачок запечённый
+eggplant;vegetables;ciqual;20053;g;1;0;Баклажан;Eggplant;Bakłażan;Баклажан
+eggplant_baked;vegetables;ciqual;20300;g;1;0;Баклажан запечений;Eggplant, roasted;Bakłażan pieczony;Баклажан запечённый
+pumpkin;vegetables;ciqual;20166;g;1;0;Гарбуз;Pumpkin;Dynia;Тыква
+pumpkin_butternut;vegetables;ciqual;20138;g;1;0;Гарбуз мускатний (батернат);Butternut squash;Dynia piżmowa;Тыква мускатная (баттернат)
+pumpkin_baked;vegetables;ciqual;20332;g;1;0;Гарбуз запечений;Pumpkin, roasted;Dynia pieczona;Тыква запечённая
+beetroot;vegetables;ciqual;20091;g;1;0;Буряк;Beetroot;Burak;Свёкла
+beetroot_cooked;vegetables;ciqual;20003;g;1;0;Буряк варений;Beetroot, cooked;Burak gotowany;Свёкла варёная
+radish;vegetables;ciqual;20045;g;1;0;Редиска;Radish;Rzodkiewka;Редис
+radish_black;vegetables;ciqual;20089;g;1;0;Редька чорна;Black radish;Rzodkiew czarna;Редька чёрная
+turnip;vegetables;ciqual;20064;g;1;0;Ріпа;Turnip;Rzepa;Репа
+celeriac;vegetables;ciqual;20055;g;1;0;Селера (корінь);Celeriac;Seler korzeniowy;Сельдерей (корень)
+celery;vegetables;ciqual;20023;g;1;0;Селера (стебло);Celery stalk;Seler naciowy;Сельдерей (стебель)
+parsnip;vegetables;ciqual;20181;g;1;0;Пастернак;Parsnip;Pasternak;Пастернак
+spinach;vegetables;ciqual;20059;g;1;0;Шпинат;Spinach;Szpinak;Шпинат
+spinach_cooked;vegetables;ciqual;20336;g;1;0;Шпинат варений;Spinach, boiled;Szpinak gotowany;Шпинат варёный
+lettuce;vegetables;ciqual;20031;g;1;0;Салат листовий;Lettuce;Sałata;Салат листовой
+lettuce_iceberg;vegetables;ciqual;20200;g;1;0;Салат айсберг;Iceberg lettuce;Sałata lodowa;Салат айсберг
+lettuce_romaine;vegetables;ciqual;20171;g;1;0;Салат ромен;Romaine lettuce;Sałata rzymska;Салат ромэн
+arugula;vegetables;ciqual;20217;g;1;0;Руккола;Arugula;Rukola;Руккола
+lambs_lettuce;vegetables;ciqual;20099;g;1;0;Салат корн (валеріанела);Lamb's lettuce;Roszponka;Салат корн (валерианелла)
+salad_mix;vegetables;ciqual;20272;g;1;0;Мікс салатів;Mixed salad leaves;Mieszanka sałat;Микс салатов
+swiss_chard;vegetables;ciqual;20004;g;1;0;Мангольд;Swiss chard;Boćwina;Мангольд
+sorrel;vegetables;ciqual;20111;g;1;0;Щавель;Sorrel;Szczaw;Щавель
+asparagus;vegetables;ciqual;20279;g;1;0;Спаржа зелена;Green asparagus;Szparagi zielone;Спаржа зелёная
+asparagus_cooked;vegetables;ciqual;20299;g;1;0;Спаржа варена;Asparagus, boiled;Szparagi gotowane;Спаржа варёная
+green_beans;vegetables;ciqual;20061;g;1;0;Квасоля стручкова;Green beans;Fasolka szparagowa;Фасоль стручковая
+green_beans_cooked;vegetables;ciqual;20320;g;1;0;Квасоля стручкова варена;Green beans, boiled;Fasolka szparagowa gotowana;Фасоль стручковая варёная
+green_peas;vegetables;ciqual;20072;g;1;0;Горошок зелений;Green peas;Groszek zielony;Горошек зелёный
+green_peas_frozen;vegetables;ciqual;20084;g;1;0;Горошок зелений заморожений;Green peas, frozen;Groszek mrożony;Горошек зелёный замороженный
+green_peas_canned;vegetables;ciqual;20036;g;1;0;Горошок консервований;Green peas, canned;Groszek konserwowy;Горошек консервированный
+corn_canned;vegetables;ciqual;20066;g;1;0;Кукурудза консервована;Sweet corn, canned;Kukurydza konserwowa;Кукуруза консервированная
+corn_cob_cooked;vegetables;ciqual;20049;g;1;0;Кукурудза варена (качан);Corn on the cob, cooked;Kolba kukurydzy gotowana;Кукуруза варёная (початок)
+mushrooms;vegetables;ciqual;20056;g;1;0;Печериці;Button mushrooms;Pieczarki;Шампиньоны
+mushrooms_fried;vegetables;ciqual;20125;g;1;0;Печериці смажені (без олії);Mushrooms, sautéed without fat;Pieczarki smażone bez tłuszczu;Шампиньоны жареные (без масла)
+mushrooms_canned;vegetables;ciqual;20079;g;1;0;Печериці консервовані;Mushrooms, canned;Pieczarki marynowane;Шампиньоны консервированные
+oyster_mushroom;vegetables;ciqual;20114;g;1;0;Глива;Oyster mushroom;Boczniak;Вешенка
+chanterelle;vegetables;ciqual;20103;g;1;0;Лисички;Chanterelles;Kurki;Лисички
+porcini;vegetables;ciqual;20160;g;1;0;Білі гриби;Porcini;Borowik;Белые грибы
+shiitake_dried;vegetables;ciqual;20211;g;1;0;Шиітаке сушені;Shiitake, dried;Shiitake suszone;Шиитаке сушёные
+artichoke;vegetables;ciqual;20052;g;1;0;Артишок;Artichoke;Karczoch;Артишок
+fennel;vegetables;ciqual;20028;g;1;0;Фенхель;Fennel;Koper włoski;Фенхель
+avocado;vegetables;ciqual;13004;pcs;150;0;Авокадо;Avocado;Awokado;Авокадо
+dill;vegetables;ciqual;11093;g;1;0;Кріп;Dill;Koperek;Укроп
+parsley;vegetables;ciqual;11014;g;1;0;Петрушка (зелень);Parsley;Natka pietruszki;Петрушка (зелень)
+coriander;vegetables;ciqual;11094;g;1;0;Кінза;Coriander leaves;Kolendra;Кинза
+basil;vegetables;ciqual;11033;g;1;0;Базилік;Basil;Bazylia;Базилик
+mint;vegetables;ciqual;11027;g;1;0;М'ята;Mint;Mięta;Мята
+mixed_vegetables_frozen;vegetables;ciqual;20271;g;1;0;Овочева суміш заморожена;Mixed vegetables, frozen;Mieszanka warzyw mrożona;Овощная смесь замороженная
+peas_carrots_frozen;vegetables;ciqual;20214;g;1;0;Горошок з морквою заморожені;Peas and carrots, frozen;Groszek z marchewką mrożony;Горошек с морковью замороженный
+tomatoes_canned;vegetables;ciqual;20048;g;1;0;Помідори консервовані (очищені);Canned peeled tomatoes;Pomidory z puszki;Помидоры консервированные (очищенные)
+tomato_passata;sauces;ciqual;20170;g;1;0;Томатне пюре (пасата);Tomato passata;Passata pomidorowa;Томатное пюре (пассата)
+tomato_paste;sauces;ciqual;20068;g;1;0;Томатна паста;Tomato paste;Koncentrat pomidorowy;Томатная паста
+sun_dried_tomatoes;vegetables;ciqual;20256;g;1;0;В'ялені томати в олії;Sun-dried tomatoes in oil;Suszone pomidory w oleju;Вяленые томаты в масле
+pickles_fermented;vegetables;usda;169379;g;1;0;Огірки солоні (квашені);Sour pickles (brine-fermented);Ogórki kiszone;Огурцы солёные (квашеные)
+pickles_vinegar;vegetables;usda;168558;g;1;0;Огірки мариновані;Dill pickles (vinegar);Ogórki konserwowe;Огурцы маринованные
+sauerkraut;vegetables;usda;169279;g;1;0;Капуста квашена;Sauerkraut;Kapusta kiszona;Капуста квашеная
+beets_pickled;vegetables;usda;170480;g;1;0;Буряк маринований;Pickled beets;Buraczki marynowane;Свёкла маринованная
+olives_green;vegetables;usda;169096;g;1;0;Оливки зелені;Green olives;Oliwki zielone;Оливки зелёные
+olives_black;vegetables;usda;169094;g;1;0;Маслини;Black olives;Oliwki czarne;Маслины
+capers;vegetables;usda;172238;g;1;0;Каперси;Capers;Kapary;Каперсы
+seaweed_kelp;vegetables;usda;168457;g;1;0;Морська капуста (ламінарія);Kelp (sea cabbage);Wodorosty (kelp);Морская капуста (ламинария)
+# --- fruits ---
+banana;fruits;ciqual;13005;pcs;120;0;Банан;Banana;Banan;Банан
+apple;fruits;ciqual;13039;pcs;180;0;Яблуко;Apple;Jabłko;Яблоко
+apple_baked;fruits;ciqual;13175;g;1;0;Яблуко печене;Baked apple;Jabłko pieczone;Яблоко печёное
+pear;fruits;ciqual;13037;pcs;170;0;Груша;Pear;Gruszka;Груша
+orange;fruits;ciqual;13034;pcs;180;0;Апельсин;Orange;Pomarańcza;Апельсин
+mandarin;fruits;usda;169105;pcs;70;0;Мандарин;Mandarin;Mandarynka;Мандарин
+lemon;fruits;ciqual;13009;g;1;0;Лимон;Lemon;Cytryna;Лимон
+lime;fruits;ciqual;13067;g;1;0;Лайм;Lime;Limonka;Лайм
+grapefruit;fruits;ciqual;13040;g;1;0;Грейпфрут;Grapefruit;Grejpfrut;Грейпфрут
+kiwi;fruits;ciqual;13021;pcs;75;0;Ківі;Kiwi;Kiwi;Киви
+pineapple;fruits;ciqual;13002;g;1;0;Ананас;Pineapple;Ananas;Ананас
+mango;fruits;ciqual;13025;g;1;0;Манго;Mango;Mango;Манго
+papaya;fruits;ciqual;13035;g;1;0;Папая;Papaya;Papaja;Папайя
+peach;fruits;ciqual;13043;pcs;150;0;Персик;Peach;Brzoskwinia;Персик
+nectarine;fruits;ciqual;13148;pcs;140;0;Нектарин;Nectarine;Nektarynka;Нектарин
+apricot;fruits;ciqual;13000;pcs;40;0;Абрикос;Apricot;Morela;Абрикос
+plum;fruits;ciqual;13100;pcs;30;0;Слива;Plum;Śliwka;Слива
+cherry;fruits;ciqual;13008;g;1;0;Черешня;Sweet cherries;Czereśnie;Черешня
+sour_cherry;fruits;ciqual;13110;g;1;0;Вишня;Sour cherries;Wiśnie;Вишня
+grapes;fruits;ciqual;13112;g;1;0;Виноград;Grapes;Winogrona;Виноград
+watermelon;fruits;ciqual;13036;g;1;0;Кавун;Watermelon;Arbuz;Арбуз
+melon;fruits;ciqual;13742;g;1;0;Диня;Melon (honeydew);Melon;Дыня
+melon_cantaloupe;fruits;ciqual;13026;g;1;0;Диня канталупа;Cantaloupe melon;Melon kantalupa;Дыня канталупа
+pomegranate;fruits;ciqual;13018;g;1;0;Гранат;Pomegranate;Granat;Гранат
+persimmon;fruits;ciqual;13066;pcs;170;0;Хурма;Persimmon;Persymona (kaki);Хурма
+fig;fruits;ciqual;13012;pcs;50;0;Інжир;Fig;Figa;Инжир
+quince;fruits;ciqual;13010;g;1;0;Айва;Quince;Pigwa;Айва
+lychee;fruits;ciqual;13023;g;1;0;Лічі;Lychee;Liczi;Личи
+passion_fruit;fruits;ciqual;13016;g;1;0;Маракуя;Passion fruit;Marakuja;Маракуйя
+coconut_fresh;fruits;ciqual;15006;g;1;0;Кокос (м'якоть);Coconut, fresh;Kokos (miąższ);Кокос (мякоть)
+rhubarb;fruits;ciqual;13047;g;1;0;Ревінь;Rhubarb;Rabarbar;Ревень
+feijoa;fruits;ciqual;13061;g;1;0;Фейхоа;Feijoa;Feijoa;Фейхоа
+fruit_salad;fruits;ciqual;13134;g;1;0;Фруктовий салат;Fruit salad;Sałatka owocowa;Фруктовый салат
+# --- berries ---
+strawberry;berries;ciqual;13014;g;1;0;Полуниця;Strawberries;Truskawki;Клубника
+raspberry;berries;ciqual;13015;g;1;0;Малина;Raspberries;Maliny;Малина
+raspberry_frozen;berries;ciqual;13136;g;1;0;Малина заморожена;Raspberries, frozen;Maliny mrożone;Малина замороженная
+blueberry;berries;ciqual;13028;g;1;0;Чорниця / лохина;Blueberries;Borówki;Черника / голубика
+blueberry_frozen;berries;ciqual;13132;g;1;0;Чорниця заморожена;Blueberries, frozen;Borówki mrożone;Черника замороженная
+blackberry;berries;ciqual;13029;g;1;0;Ожина;Blackberries;Jeżyny;Ежевика
+blackcurrant;berries;ciqual;13007;g;1;0;Смородина чорна;Blackcurrants;Czarna porzeczka;Смородина чёрная
+redcurrant;berries;ciqual;13019;g;1;0;Смородина червона;Redcurrants;Czerwona porzeczka;Смородина красная
+cranberry;berries;ciqual;13113;g;1;0;Журавлина;Cranberries;Żurawina;Клюква
+mulberry;berries;ciqual;13071;g;1;0;Шовковиця;Mulberries;Morwa;Шелковица
+berry_mix;berries;ciqual;13997;g;1;0;Ягідний мікс;Mixed red berries;Mieszanka owoców jagodowych;Ягодный микс
+# --- dried and processed fruit ---
+dried_apricots;fruits;ciqual;13001;g;1;0;Курага;Dried apricots;Suszone morele;Курага
+dates;fruits;ciqual;13011;g;1;0;Фініки;Dates;Daktyle;Финики
+dried_figs;fruits;ciqual;13013;g;1;0;Інжир сушений;Dried figs;Suszone figi;Инжир сушёный
+prunes;fruits;ciqual;13042;g;1;0;Чорнослив;Prunes;Suszone śliwki;Чернослив
+raisins;fruits;ciqual;13046;g;1;0;Родзинки;Raisins;Rodzynki;Изюм
+dried_apple;fruits;ciqual;13111;g;1;0;Яблука сушені;Dried apple;Suszone jabłka;Яблоки сушёные
+dried_banana;fruits;ciqual;13089;g;1;0;Банан сушений;Dried banana;Suszony banan;Банан сушёный
+dried_cranberries;fruits;ciqual;13178;g;1;0;Журавлина сушена;Dried cranberries, sweetened;Żurawina suszona;Клюква сушёная
+apple_puree;fruits;ciqual;13187;g;1;0;Яблучне пюре без цукру;Apple purée, no added sugar;Mus jabłkowy bez cukru;Яблочное пюре без сахара
+fruit_puree;fruits;ciqual;13153;g;1;0;Фруктове пюре без цукру;Fruit purée, no added sugar;Mus owocowy bez cukru;Фруктовое пюре без сахара
+apple_compote;fruits;ciqual;13038;g;1;0;Яблучне пюре з цукром;Apple compote (sweetened purée);Mus jabłkowy słodzony;Яблочное пюре с сахаром
+peaches_canned;fruits;ciqual;13730;g;1;0;Персики консервовані;Canned peaches in syrup;Brzoskwinie w syropie;Персики консервированные
+pineapple_canned;fruits;ciqual;13716;g;1;0;Ананас консервований;Canned pineapple in juice;Ananas w soku;Ананас консервированный
+# --- nuts and seeds ---
+almonds;nuts;ciqual;15041;g;1;0;Мигдаль;Almonds;Migdały;Миндаль
+almonds_roasted_salted;nuts;ciqual;15042;g;1;0;Мигдаль смажений солоний;Almonds, roasted, salted;Migdały prażone solone;Миндаль жареный солёный
+peanuts;nuts;ciqual;15001;g;1;0;Арахіс;Peanuts;Orzeszki ziemne;Арахис
+peanuts_roasted_salted;nuts;ciqual;15002;g;1;0;Арахіс смажений солоний;Peanuts, roasted, salted;Orzeszki ziemne prażone solone;Арахис жареный солёный
+walnuts;nuts;ciqual;15005;g;1;0;Волоські горіхи;Walnuts;Orzechy włoskie;Грецкие орехи
+hazelnuts;nuts;ciqual;15004;g;1;0;Фундук;Hazelnuts;Orzechy laskowe;Фундук
+cashews;nuts;ciqual;15054;g;1;0;Кеш'ю;Cashews, roasted;Nerkowce prażone;Кешью
+pistachios;nuts;ciqual;15044;g;1;0;Фісташки;Pistachios, roasted;Pistacje prażone;Фисташки
+pistachios_salted;nuts;ciqual;15009;g;1;0;Фісташки солоні;Pistachios, roasted, salted;Pistacje solone;Фисташки солёные
+pecans;nuts;ciqual;15026;g;1;0;Пекан;Pecans;Orzechy pekan;Пекан
+macadamia;nuts;ciqual;15027;g;1;0;Макадамія;Macadamia nuts;Orzechy makadamia;Макадамия
+brazil_nuts;nuts;ciqual;15008;g;1;0;Бразильський горіх;Brazil nuts;Orzechy brazylijskie;Бразильский орех
+pine_nuts;nuts;ciqual;15025;g;1;0;Кедрові горіхи;Pine nuts;Orzeszki piniowe;Кедровые орехи
+coconut_dried;nuts;ciqual;15007;g;1;0;Кокосова стружка;Desiccated coconut;Wiórki kokosowe;Кокосовая стружка
+chestnuts_roasted;nuts;ciqual;15021;g;1;0;Каштани печені;Roasted chestnuts;Kasztany pieczone;Каштаны печёные
+trail_mix;nuts;ciqual;15049;g;1;0;Горіхи з родзинками (студентська суміш);Trail mix (nuts and raisins);Mieszanka studencka;Орехи с изюмом (студенческая смесь)
+peanut_butter;nuts;ciqual;15202;g;1;0;Арахісова паста;Peanut butter;Masło orzechowe;Арахисовая паста
+tahini;seeds;ciqual;15203;g;1;0;Тахіні (кунжутна паста);Tahini;Tahini;Тахини (кунжутная паста)
+sunflower_seeds;seeds;ciqual;15011;g;1;0;Насіння соняшнику;Sunflower seeds;Słonecznik (pestki);Семечки подсолнечника
+sunflower_seeds_roasted;seeds;ciqual;15045;g;1;0;Насіння соняшнику смажене солоне;Sunflower seeds, roasted, salted;Słonecznik prażony solony;Семечки жареные солёные
+pumpkin_seeds;seeds;usda;170556;g;1;0;Гарбузове насіння;Pumpkin seeds;Pestki dyni;Тыквенные семечки
+sesame_seeds;seeds;ciqual;15010;g;1;0;Кунжут;Sesame seeds;Sezam;Кунжут
+flaxseed;seeds;ciqual;15034;g;1;0;Насіння льону;Flaxseed;Siemię lniane;Семена льна
+hemp_seeds;seeds;usda;170148;g;1;0;Насіння конопель (очищене);Hemp seeds, hulled;Nasiona konopi łuskane;Семена конопли (очищенные)
+# --- oils and fats ---
+sunflower_oil;oils;ciqual;17440;ml;0.92;0;Олія соняшникова;Sunflower oil;Olej słonecznikowy;Масло подсолнечное;;loq_zero
+olive_oil;oils;ciqual;17270;ml;0.92;0;Оливкова олія;Olive oil, extra virgin;Oliwa z oliwek;Оливковое масло;;loq_zero
+rapeseed_oil;oils;ciqual;17130;ml;0.92;0;Олія ріпакова;Rapeseed oil;Olej rzepakowy;Масло рапсовое;;loq_zero
+corn_oil;oils;ciqual;17190;ml;0.92;0;Олія кукурудзяна;Corn oil;Olej kukurydziany;Масло кукурузное;;loq_zero
+linseed_oil;oils;ciqual;17180;ml;0.92;0;Олія лляна;Linseed oil;Olej lniany;Масло льняное;;loq_zero
+sesame_oil;oils;ciqual;17400;ml;0.92;0;Олія кунжутна;Sesame oil;Olej sezamowy;Масло кунжутное;;loq_zero
+walnut_oil;oils;ciqual;17220;ml;0.92;0;Олія з волоського горіха;Walnut oil;Olej z orzechów włoskich;Масло грецкого ореха;;loq_zero
+avocado_oil;oils;ciqual;17100;ml;0.92;0;Олія авокадо;Avocado oil;Olej z awokado;Масло авокадо;;loq_zero
+coconut_oil;oils;ciqual;16040;g;1;0;Кокосова олія;Coconut oil;Olej kokosowy;Кокосовое масло;;loq_zero
+ghee;oils;ciqual;16401;g;1;0;Масло топлене (гі);Ghee (clarified butter);Masło klarowane;Масло топлёное (гхи);;loq_zero
+lard;oils;ciqual;16520;g;1;0;Смалець;Lard;Smalec;Смалец;;loq_zero
+margarine;oils;ciqual;16615;g;1;0;Маргарин 80%;Margarine 80%;Margaryna 80%;Маргарин 80%;;loq_zero
+spread_60;oils;ciqual;16741;g;1;0;Спред рослинний 60%;Vegetable fat spread 60%;Margaryna do smarowania 60%;Спред растительный 60%;;loq_zero
+fish_oil;oils;ciqual;17630;ml;0.92;0;Риб'ячий жир;Cod liver oil;Tran;Рыбий жир;;loq_zero
+# --- sauces and condiments ---
+ketchup;sauces;ciqual;11008;g;1;0;Кетчуп;Ketchup;Ketchup;Кетчуп
+ketchup_light;sauces;ciqual;11073;g;1;0;Кетчуп зі зниженим вмістом цукру;Ketchup, reduced sugar;Ketchup o obniżonej zawartości cukru;Кетчуп с пониженным содержанием сахара
+mayonnaise;sauces;ciqual;11054;g;1;0;Майонез;Mayonnaise;Majonez;Майонез
+mayonnaise_light;sauces;ciqual;11079;g;1;0;Майонез легкий;Light mayonnaise;Majonez light;Майонез лёгкий
+mustard;sauces;ciqual;11013;g;1;0;Гірчиця;Mustard;Musztarda;Горчица
+mustard_grain;sauces;ciqual;11021;g;1;0;Гірчиця зерниста;Wholegrain mustard;Musztarda francuska (z ziarnami);Горчица зернистая
+horseradish;sauces;usda;173472;g;1;0;Хрін (столовий);Horseradish, prepared;Chrzan tarty;Хрен (столовый)
+soy_sauce;sauces;ciqual;11104;ml;1.1;0;Соєвий соус;Soy sauce;Sos sojowy;Соевый соус
+bbq_sauce;sauces;ciqual;11100;g;1;0;Соус барбекю;Barbecue sauce;Sos barbecue;Соус барбекю
+teriyaki;sauces;ciqual;11301;g;1;0;Соус теріякі;Teriyaki sauce;Sos teriyaki;Соус терияки
+sweet_sour_sauce;sauces;ciqual;11163;g;1;0;Кисло-солодкий соус;Sweet and sour sauce;Sos słodko-kwaśny;Кисло-сладкий соус
+pesto;sauces;ciqual;11179;g;1;0;Песто;Pesto;Pesto;Песто
+tomato_sauce;sauces;ciqual;11107;g;1;0;Томатний соус;Tomato sauce;Sos pomidorowy;Томатный соус
+bolognese_sauce;sauces;ciqual;11114;g;1;0;Соус болоньєзе;Bolognese sauce;Sos boloński;Соус болоньезе
+bechamel;sauces;ciqual;11143;g;1;0;Соус бешамель;Béchamel sauce;Sos beszamelowy;Соус бешамель
+curry_sauce;sauces;ciqual;11132;g;1;0;Соус каррі;Curry sauce;Sos curry;Соус карри
+tartar_sauce;sauces;ciqual;11051;g;1;0;Соус тартар;Tartar sauce;Sos tatarski;Соус тартар
+garlic_sauce;sauces;ciqual;11168;g;1;0;Часниковий соус (айолі);Garlic mayonnaise (aioli);Sos czosnkowy (aioli);Чесночный соус (айоли)
+burger_sauce;sauces;ciqual;11196;g;1;0;Соус для бургерів;Burger sauce;Sos do burgerów;Соус для бургеров
+salad_dressing;sauces;ciqual;11187;g;1;0;Заправка для салату;Salad dressing;Sos do sałatek;Заправка для салата
+vinaigrette;sauces;ciqual;11108;g;1;0;Заправка олія з оцтом (вінегрет);Vinaigrette (olive oil and vinegar);Winegret (oliwa z octem);Заправка масло с уксусом (винегрет)
+tzatziki;sauces;ciqual;19863;g;1;0;Дзадзикі;Tzatziki;Tzatziki;Дзадзики
+hummus;sauces;ciqual;25621;g;1;0;Хумус;Hummus;Hummus;Хумус
+guacamole;sauces;ciqual;25620;g;1;0;Гуакамоле;Guacamole;Guacamole;Гуакамоле
+fish_sauce;sauces;ciqual;11194;ml;1.2;0;Рибний соус;Fish sauce;Sos rybny;Рыбный соус
+vinegar;sauces;ciqual;11018;ml;1;0;Оцет столовий;Vinegar;Ocet;Уксус столовый;;loq_zero
+vinegar_cider;sauces;ciqual;11090;ml;1;0;Оцет яблучний;Apple cider vinegar;Ocet jabłkowy;Уксус яблочный;;loq_zero
+vinegar_balsamic;sauces;ciqual;11091;ml;1.2;0;Бальзамічний оцет;Balsamic vinegar;Ocet balsamiczny;Бальзамический уксус
+stock_cube_chicken;ingredients;ciqual;11174;g;1;0;Бульйонний кубик курячий;Chicken stock cube;Kostka rosołowa drobiowa;Бульонный кубик куриный
+stock_cube_beef;ingredients;ciqual;11001;g;1;0;Бульйонний кубик яловичий;Beef stock cube;Kostka rosołowa wołowa;Бульонный кубик говяжий
+# --- baking and cooking ingredients ---
+flour_wheat;ingredients;ciqual;9436;g;1;0;Борошно пшеничне;Wheat flour;Mąka pszenna;Мука пшеничная
+flour_wheat_whole;ingredients;ciqual;9415;g;1;0;Борошно пшеничне цільнозернове;Wholemeal wheat flour;Mąka pszenna pełnoziarnista;Мука пшеничная цельнозерновая
+flour_rye;ingredients;ciqual;9532;g;1;0;Борошно житнє;Rye flour;Mąka żytnia;Мука ржаная
+flour_rye_whole;ingredients;ciqual;9530;g;1;0;Борошно житнє обдирне;Wholemeal rye flour;Mąka żytnia pełnoziarnista;Мука ржаная обдирная
+flour_spelt;ingredients;ciqual;9480;g;1;0;Борошно спельтове;Spelt flour;Mąka orkiszowa;Мука из спельты
+flour_buckwheat;ingredients;ciqual;9540;g;1;0;Борошно гречане;Buckwheat flour;Mąka gryczana;Мука гречневая
+flour_corn;ingredients;ciqual;9545;g;1;0;Борошно кукурудзяне;Corn flour;Mąka kukurydziana;Мука кукурузная
+flour_rice;ingredients;ciqual;9520;g;1;0;Борошно рисове;Rice flour;Mąka ryżowa;Мука рисовая
+flour_oat;ingredients;recipe;oat_flour;g;1;0;Борошно вівсяне;Oat flour;Mąka owsiana;Мука овсяная
+flour_chickpea;ingredients;ciqual;9580;g;1;0;Борошно нутове;Chickpea flour;Mąka z ciecierzycy;Мука нутовая
+flour_almond;ingredients;recipe;almond_flour;g;1;0;Борошно мигдальне;Almond flour;Mąka migdałowa;Мука миндальная
+starch_corn;ingredients;usda;169698;g;1;0;Крохмаль кукурудзяний;Cornstarch;Skrobia kukurydziana;Крахмал кукурузный
+sugar;ingredients;ciqual;31016;g;1;0;Цукор;Sugar;Cukier;Сахар
+sugar_brown;ingredients;ciqual;31017;g;1;0;Цукор коричневий;Brown sugar;Cukier trzcinowy;Сахар коричневый
+sugar_vanilla;ingredients;ciqual;31044;g;1;0;Ванільний цукор;Vanilla sugar;Cukier wanilinowy;Ванильный сахар
+salt;ingredients;ciqual;11017;g;1;0;Сіль;Salt;Sól;Соль
+yeast_fresh;ingredients;ciqual;11010;g;1;0;Дріжджі пресовані;Fresh yeast;Drożdże świeże;Дрожжи прессованные
+yeast_dry;ingredients;ciqual;11045;g;1;0;Дріжджі сухі;Dry yeast;Drożdże suszone;Дрожжи сухие
+baking_powder;ingredients;ciqual;11046;g;1;0;Розпушувач;Baking powder;Proszek do pieczenia;Разрыхлитель
+baking_soda;ingredients;ciqual;11507;g;1;0;Сода харчова;Baking soda;Soda oczyszczona;Сода пищевая
+gelatin;ingredients;ciqual;11007;g;1;0;Желатин;Gelatine;Żelatyna;Желатин
+nutritional_yeast;ingredients;ciqual;11009;g;1;0;Харчові дріжджі (пластівці);Nutritional yeast;Płatki drożdżowe;Пищевые дрожжи (хлопья)
+cocoa_powder;ingredients;usda;169593;g;1;0;Какао-порошок;Cocoa powder, unsweetened;Kakao w proszku;Какао-порошок
+poppy_seeds;seeds;ciqual;11061;g;1;0;Мак;Poppy seeds;Mak;Мак
+black_pepper;ingredients;ciqual;11015;g;1;0;Перець чорний мелений;Black pepper, ground;Pieprz czarny mielony;Перец чёрный молотый
+paprika;ingredients;ciqual;11049;g;1;0;Паприка мелена;Paprika;Papryka mielona;Паприка молотая
+cinnamon;ingredients;ciqual;11025;g;1;0;Кориця;Cinnamon;Cynamon;Корица
+turmeric;ingredients;ciqual;11089;g;1;0;Куркума;Turmeric;Kurkuma;Куркума
+curry_powder;ingredients;ciqual;11005;g;1;0;Каррі (приправа);Curry powder;Curry (przyprawa);Карри (приправа)
+ginger_fresh;ingredients;ciqual;11074;g;1;0;Імбир (корінь);Ginger root;Imbir świeży;Имбирь (корень)
+ginger_ground;ingredients;ciqual;11006;g;1;0;Імбир мелений;Ground ginger;Imbir mielony;Имбирь молотый
+cumin;ingredients;ciqual;11042;g;1;0;Зіра (кмин римський);Cumin;Kmin rzymski;Зира (кумин)
+caraway;ingredients;ciqual;11064;g;1;0;Кмин;Caraway;Kminek;Тмин
+bay_leaf;ingredients;ciqual;11053;g;1;0;Лавровий лист;Bay leaves;Liść laurowy;Лавровый лист
+nutmeg;ingredients;ciqual;11048;g;1;0;Мускатний горіх;Nutmeg;Gałka muszkatołowa;Мускатный орех
+oregano_dried;ingredients;ciqual;11035;g;1;0;Орегано сушений;Oregano, dried;Oregano suszone;Орегано сушёный
+basil_dried;ingredients;ciqual;11032;g;1;0;Базилік сушений;Basil, dried;Bazylia suszona;Базилик сушёный
+provence_herbs;ingredients;ciqual;11060;g;1;0;Прованські трави;Herbes de Provence;Zioła prowansalskie;Прованские травы
+garlic_powder;ingredients;ciqual;11023;g;1;0;Часник сушений мелений;Garlic powder;Czosnek granulowany;Чеснок сушёный молотый
+cayenne;ingredients;ciqual;11088;g;1;0;Перець кайєнський;Cayenne pepper;Pieprz cayenne;Перец кайенский
+# --- sugar, honey, jam ---
+honey;sweets;ciqual;31008;g;1;0;Мед;Honey;Miód;Мёд
+maple_syrup;sweets;ciqual;31034;g;1;0;Кленовий сироп;Maple syrup;Syrop klonowy;Кленовый сироп
+agave_syrup;sweets;ciqual;31089;g;1;0;Сироп агави;Agave syrup;Syrop z agawy;Сироп агавы
+jam;sweets;ciqual;31006;g;1;0;Варення / джем;Jam;Dżem;Варенье / джем
+jam_strawberry;sweets;ciqual;31024;g;1;0;Джем полуничний;Strawberry jam;Dżem truskawkowy;Джем клубничный
+jam_apricot;sweets;ciqual;31037;g;1;0;Джем абрикосовий;Apricot jam;Dżem morelowy;Джем абрикосовый
+jam_cherry;sweets;ciqual;31038;g;1;0;Джем вишневий;Cherry jam;Dżem wiśniowy;Джем вишнёвый
+jam_raspberry;sweets;ciqual;31062;g;1;0;Джем малиновий;Raspberry jam;Dżem malinowy;Джем малиновый
+jam_plum;sweets;ciqual;31053;g;1;0;Повидло сливове;Plum jam;Powidła śliwkowe;Повидло сливовое
+marmalade_orange;sweets;ciqual;31039;g;1;0;Конфітюр апельсиновий;Orange marmalade;Marmolada pomarańczowa;Конфитюр апельсиновый
+jam_low_sugar;sweets;ciqual;31110;g;1;0;Джем зі зниженим вмістом цукру;Reduced-sugar jam;Dżem niskosłodzony;Джем с пониженным содержанием сахара
+dulce_de_leche;sweets;ciqual;31040;g;1;0;Варена згущенка;Dulce de leche (boiled condensed milk);Kajmak (masa krówkowa);Варёная сгущёнка
+# --- chocolate and confectionery ---
+chocolate_dark_70;sweets;ciqual;31074;g;1;0;Чорний шоколад 70%+;Dark chocolate 70%+;Czekolada gorzka 70%+;Тёмный шоколад 70%+
+chocolate_dark;sweets;ciqual;31005;g;1;0;Чорний шоколад (до 70%);Dark chocolate (under 70%);Czekolada deserowa;Тёмный шоколад (до 70%)
+chocolate_milk;sweets;ciqual;31004;g;1;0;Молочний шоколад;Milk chocolate;Czekolada mleczna;Молочный шоколад
+chocolate_white;sweets;ciqual;31010;g;1;0;Білий шоколад;White chocolate;Czekolada biała;Белый шоколад
+chocolate_nuts;sweets;ciqual;31018;g;1;0;Молочний шоколад з горіхами;Milk chocolate with nuts;Czekolada mleczna z orzechami;Молочный шоколад с орехами
+chocolate_no_sugar;sweets;ciqual;31020;g;1;0;Шоколад без цукру (з підсолоджувачем);Sugar-free milk chocolate;Czekolada bez cukru;Шоколад без сахара (с подсластителем)
+chocolate_bar_biscuit;sweets;ciqual;31000;g;1;0;Шоколадний батончик з печивом;Chocolate bar with biscuit;Baton czekoladowy z herbatnikiem;Шоколадный батончик с печеньем
+chocolate_bar_caramel;sweets;ciqual;31001;g;1;0;Шоколадний батончик (карамель, нуга);Chocolate-coated caramel bar;Baton czekoladowy z karmelem;Шоколадный батончик (карамель, нуга)
+chocolate_bar_coconut;sweets;ciqual;31002;g;1;0;Кокосовий батончик у шоколаді;Coconut bar, chocolate coated;Baton kokosowy w czekoladzie;Кокосовый батончик в шоколаде
+chocolate_candies_filled;sweets;ciqual;31063;g;1;0;Цукерки шоколадні з горіховою начинкою;Chocolates with nut or praline filling;Czekoladki z nadzieniem orzechowym;Конфеты шоколадные с ореховой начинкой
+chocolate_dragee;sweets;ciqual;31041;g;1;0;Драже в шоколаді;Sugar-coated chocolate candies;Drażetki czekoladowe;Драже в шоколаде
+chocolate_peanuts;sweets;ciqual;31042;g;1;0;Арахіс у шоколадній глазурі;Chocolate-coated peanuts;Orzeszki w czekoladzie;Арахис в шоколадной глазури
+chocolate_spread;sweets;ciqual;31032;g;1;0;Шоколадно-горіхова паста;Chocolate hazelnut spread;Krem czekoladowo-orzechowy;Шоколадно-ореховая паста
+candies;sweets;ciqual;31003;g;1;0;Цукерки (асорті);Candies (assorted);Cukierki;Конфеты (ассорти)
+hard_candy;sweets;ciqual;31059;g;1;0;Льодяники;Hard candy, lollipops;Landrynki;Леденцы
+caramel_soft;sweets;ciqual;31081;g;1;0;Ірис (м'яка карамель);Soft caramel (toffee);Krówki / toffi;Ирис (мягкая карамель)
+jelly_candy;sweets;ciqual;31060;g;1;0;Желейні цукерки;Jelly candy (gummies);Żelki;Желейные конфеты
+fruit_jelly;sweets;ciqual;31014;g;1;0;Мармелад;Fruit jelly (pâte de fruits);Marmolada owocowa (galaretki);Мармелад
+marshmallow;sweets;ciqual;31050;g;1;0;Маршмелоу;Marshmallows;Pianki;Маршмеллоу
+zefir_chocolate;sweets;ciqual;31093;g;1;0;Маршмелоу в шоколаді;Chocolate-covered marshmallows;Pianki w czekoladzie;Маршмеллоу в шоколаде
+nougat;sweets;ciqual;31033;g;1;0;Нуга;Nougat;Nugat;Нуга
+marzipan;sweets;ciqual;15201;g;1;0;Марципан;Marzipan;Marcepan;Марципан
+candied_fruits;sweets;ciqual;31027;g;1;0;Цукати;Candied fruits;Owoce kandyzowane;Цукаты
+chewing_gum;sweets;ciqual;31054;pcs;1.5;0;Жувальна гумка без цукру;Sugar-free chewing gum;Guma do żucia bez cukru;Жевательная резинка без сахара
+meringue;sweets;ciqual;24520;g;1;0;Безе;Meringue;Beza;Безе
+# --- biscuits, cakes, pastries ---
+biscuits_plain;sweets;ciqual;24001;g;1;0;Печиво;Biscuits (cookies);Herbatniki;Печенье
+biscuits_butter;sweets;ciqual;24015;g;1;0;Печиво вершкове;Butter biscuits;Herbatniki maślane;Печенье сливочное
+biscuits_shortbread;sweets;ciqual;24049;g;1;0;Пісочне печиво;Shortbread;Kruche ciasteczka;Песочное печенье
+biscuits_chocolate_chip;sweets;ciqual;24684;g;1;0;Печиво з шоколадною крихтою;Chocolate chip cookies;Ciastka z kawałkami czekolady;Печенье с шоколадной крошкой
+biscuits_chocolate_covered;sweets;ciqual;24038;g;1;0;Печиво в шоколадній глазурі;Chocolate-covered biscuits;Herbatniki w czekoladzie;Печенье в шоколадной глазури
+biscuits_sandwich;sweets;ciqual;24231;g;1;0;Печиво-сендвіч з шоколадною начинкою;Sandwich cookies, chocolate filling;Ciastka przekładane czekoladowe;Печенье-сэндвич с шоколадной начинкой
+biscuits_breakfast;sweets;ciqual;24034;g;1;0;Печиво для сніданку (злакове);Breakfast biscuits (cereal);Ciastka zbożowe śniadaniowe;Печенье для завтрака (злаковое)
+biscuits_oat;sweets;usda;172725;g;1;0;Вівсяне печиво;Oatmeal cookies;Ciastka owsiane;Овсяное печенье
+biscuits_ginger;sweets;ciqual;23200;g;1;0;Пряник;Gingerbread;Piernik;Пряник
+biscuits_speculoos;sweets;ciqual;24009;g;1;0;Печиво спекулос (карамелізоване);Speculoos biscuits;Ciastka speculoos;Печенье спекулос
+sponge_fingers;sweets;ciqual;24430;g;1;0;Савоярді;Ladyfingers (sponge fingers);Biszkopty podłużne;Савоярди
+wafers;sweets;ciqual;24313;g;1;0;Вафлі;Wafers;Wafle;Вафли
+wafers_chocolate;sweets;ciqual;24311;g;1;0;Вафлі з шоколадною начинкою;Chocolate wafers;Wafle czekoladowe;Вафли с шоколадной начинкой
+waffle_soft;sweets;ciqual;23851;g;1;0;Бельгійські вафлі;Belgian waffle;Gofr;Бельгийские вафли
+croissant;sweets;ciqual;7620;pcs;60;0;Круасан;Croissant;Rogalik francuski (croissant);Круассан
+croissant_chocolate;sweets;ciqual;7730;pcs;70;0;Круасан з шоколадом;Chocolate croissant;Croissant z czekoladą;Круассан с шоколадом
+brioche_bun;sweets;ciqual;7740;g;1;0;Булочка здобна;Sweet bun (brioche);Bułka maślana;Булочка сдобная
+raisin_bun;sweets;ciqual;7720;g;1;0;Булочка з родзинками (листкова);Raisin pastry;Drożdżówka z rodzynkami;Булочка с изюмом (слоёная)
+milk_roll;sweets;ciqual;7711;g;1;0;Булочка молочна;Milk bread roll;Bułka mleczna;Булочка молочная
+apple_turnover;sweets;ciqual;23480;g;1;0;Листкове тістечко з яблуками;Apple turnover;Ciastko francuskie z jabłkami;Слойка с яблоками
+doughnut;sweets;ciqual;23880;pcs;60;0;Пончик;Doughnut;Pączek;Пончик
+doughnut_jam;sweets;ciqual;23881;pcs;70;0;Пончик з джемом;Jam doughnut;Pączek z dżemem;Пончик с джемом
+muffin;sweets;ciqual;23950;pcs;80;0;Мафін;Muffin;Muffinka;Маффин
+brownie;sweets;ciqual;23032;g;1;0;Брауні;Brownie;Brownie;Брауни
+cake_chocolate;sweets;ciqual;23585;g;1;0;Торт шоколадний;Chocolate cake;Ciasto czekoladowe;Торт шоколадный
+cake_sponge;sweets;ciqual;23594;g;1;0;Бісквіт;Sponge cake;Biszkopt;Бисквит
+cake_pound;sweets;ciqual;23080;g;1;0;Кекс;Pound cake;Babka (keks);Кекс
+cake_fruit;sweets;ciqual;23909;g;1;0;Кекс з фруктами;Fruit cake;Keks z bakaliami;Кекс с фруктами
+cake_marble;sweets;ciqual;23925;g;1;0;Мармуровий кекс;Marble cake;Babka marmurkowa;Мраморный кекс
+cheesecake;sweets;ciqual;19689;g;1;0;Чізкейк;Cheesecake;Sernik (cheesecake);Чизкейк
+tiramisu;sweets;ciqual;19698;g;1;0;Тірамісу;Tiramisu;Tiramisu;Тирамису
+eclair;sweets;ciqual;23477;pcs;70;0;Еклер;Éclair;Ekler;Эклер
+profiteroles;sweets;ciqual;23457;g;1;0;Профітролі із заварним кремом;Cream puffs (custard);Ptysie z kremem;Профитроли с заварным кремом
+napoleon;sweets;ciqual;24666;g;1;0;Наполеон (мільфей);Mille-feuille (Napoleon cake);Napoleonka (kremówka);Наполеон (мильфей)
+apple_pie;sweets;ciqual;23490;g;1;0;Пиріг яблучний (тарт);Apple tart;Szarlotka (tarta jabłkowa);Пирог яблочный (тарт)
+fruit_tart;sweets;ciqual;23499;g;1;0;Пиріг фруктовий;Fruit tart;Tarta owocowa;Пирог фруктовый
+lemon_tart;sweets;ciqual;23485;g;1;0;Лимонний тарт;Lemon tart;Tarta cytrynowa;Лимонный тарт
+apple_crumble;sweets;ciqual;23493;g;1;0;Яблучний крамбл;Apple crumble;Kruszonka z jabłkami;Яблочный крамбл
+baklava;sweets;ciqual;23300;g;1;0;Пахлава;Baklava;Baklawa;Пахлава
+macaron;sweets;ciqual;23024;pcs;12;0;Макарон (мигдальне тістечко);Macaron;Makaronik;Макарон (миндальное пирожное)
+crepe_plain;prepared;ciqual;23799;g;1;0;Млинці;Crêpes (pancakes);Naleśniki;Блины
+crepe_jam;prepared;ciqual;23820;g;1;0;Млинці з джемом;Crêpes with jam;Naleśniki z dżemem;Блины с джемом
+crepe_chocolate;prepared;ciqual;23821;g;1;0;Млинці з шоколадною пастою;Crêpes with chocolate spread;Naleśniki z kremem czekoladowym;Блины с шоколадной пастой
+french_toast;prepared;ciqual;39236;g;1;0;Грінки солодкі (французький тост);French toast;Tosty francuskie;Гренки сладкие (французский тост)
+# --- desserts and ice cream ---
+ice_cream;sweets;ciqual;39527;g;1;0;Морозиво;Ice cream;Lody;Мороженое
+ice_cream_premium;sweets;ciqual;39520;g;1;0;Морозиво пломбір;Premium ice cream;Lody śmietankowe premium;Мороженое пломбир
+ice_cream_cone;sweets;ciqual;39509;pcs;90;0;Морозиво ріжок;Ice cream cone;Lody w rożku;Мороженое рожок
+ice_cream_chocolate_stick;sweets;ciqual;39503;pcs;70;0;Ескімо (морозиво в глазурі);Chocolate-coated ice cream bar;Lody na patyku w czekoladzie;Эскимо (мороженое в глазури)
+frozen_yogurt;sweets;ciqual;39517;g;1;0;Заморожений йогурт;Frozen yogurt;Mrożony jogurt;Замороженный йогурт
+sorbet;sweets;ciqual;39524;g;1;0;Сорбет;Sorbet;Sorbet;Сорбет
+ice_lolly;sweets;ciqual;39526;pcs;60;0;Фруктовий лід;Ice lolly;Lody wodne;Фруктовый лёд
+pudding_chocolate;sweets;ciqual;39200;g;1;0;Пудинг шоколадний;Chocolate pudding;Budyń czekoladowy;Пудинг шоколадный
+pudding_vanilla;sweets;ciqual;39229;g;1;0;Пудинг ванільний;Vanilla pudding;Budyń waniliowy;Пудинг ванильный
+chocolate_mousse;sweets;ciqual;39206;g;1;0;Шоколадний мус;Chocolate mousse;Mus czekoladowy;Шоколадный мусс
+panna_cotta;sweets;ciqual;19685;g;1;0;Панакота;Panna cotta;Panna cotta;Панна-котта
+creme_brulee;sweets;ciqual;39213;g;1;0;Крем-брюле;Crème brûlée;Crème brûlée;Крем-брюле
+flan;sweets;ciqual;19674;g;1;0;Крем-карамель (флан);Flan (crème caramel);Flan;Крем-карамель (флан)
+rice_pudding;sweets;ciqual;39212;g;1;0;Рисовий пудинг;Rice pudding;Ryż na mleku (pudding);Рисовый пудинг
+custard;sweets;ciqual;39710;g;1;0;Заварний крем;Custard (pastry cream);Krem budyniowy;Заварной крем
+# --- cereal bars and snacks ---
+cereal_bar;snacks;ciqual;31113;g;1;0;Злаковий батончик з фруктами;Cereal bar with fruit;Baton zbożowy z owocami;Злаковый батончик с фруктами
+cereal_bar_chocolate;snacks;ciqual;31106;g;1;0;Злаковий батончик з шоколадом;Chocolate cereal bar;Baton zbożowy czekoladowy;Злаковый батончик с шоколадом
+cereal_bar_nuts;snacks;ciqual;31114;g;1;0;Злаковий батончик з горіхами;Cereal bar with nuts;Baton zbożowy z orzechami;Злаковый батончик с орехами
+cereal_bar_light;snacks;ciqual;31104;g;1;0;Злаковий батончик легкий;Low-calorie cereal bar;Baton zbożowy light;Злаковый батончик лёгкий
+chips;snacks;ciqual;4004;g;1;0;Чипси картопляні;Potato crisps;Chipsy ziemniaczane;Чипсы картофельные
+chips_light;snacks;ciqual;4038;g;1;0;Чипси картопляні легкі;Reduced-fat potato crisps;Chipsy light;Чипсы картофельные лёгкие
+tortilla_chips;snacks;ciqual;38105;g;1;0;Кукурудзяні чипси (начос);Tortilla chips;Chipsy kukurydziane (nachos);Кукурузные чипсы (начос)
+corn_puffs;snacks;ciqual;38400;g;1;0;Кукурудзяні палички (снеки);Corn puffs;Chrupki kukurydziane;Кукурузные палочки (снеки)
+pretzels_mini;snacks;ciqual;38107;g;1;0;Солоні крендельки / соломка;Mini pretzels, salted sticks;Precelki / paluszki;Солёные крендельки / соломка
+crackers_salty;snacks;ciqual;38402;g;1;0;Крекери солоні;Salty crackers;Krakersy solone;Крекеры солёные
+crackers_cheese;snacks;ciqual;38401;g;1;0;Крекери з сиром;Cheese crackers;Krakersy serowe;Крекеры с сыром
+popcorn_salted;snacks;ciqual;9230;g;1;0;Попкорн солоний;Popcorn, salted;Popcorn solony;Попкорн солёный
+popcorn_plain;snacks;ciqual;9231;g;1;0;Попкорн без олії та солі;Air-popped popcorn;Popcorn bez tłuszczu;Попкорн без масла и соли
+popcorn_caramel;snacks;ciqual;9232;g;1;0;Попкорн карамельний;Caramel popcorn;Popcorn karmelowy;Попкорн карамельный
+peanuts_coated;snacks;ciqual;38406;g;1;0;Арахіс у хрусткій глазурі;Coated peanuts;Orzeszki w panierce;Арахис в хрустящей глазури
+prawn_crackers;snacks;ciqual;38104;g;1;0;Креветкові чипси;Prawn crackers;Chipsy krewetkowe;Креветочные чипсы
+# --- beverages ---
+water;beverages;ciqual;18008;ml;1;100;Вода;Water;Woda;Вода
+water_sparkling;beverages;ciqual;18046;ml;1;100;Вода газована;Sparkling water;Woda gazowana;Вода газированная
+coffee_black;beverages;ciqual;18004;ml;1;water;Кава чорна;Black coffee;Kawa czarna;Кофе чёрный
+espresso;beverages;ciqual;18071;ml;1;water;Еспресо;Espresso;Espresso;Эспрессо
+coffee_instant;beverages;ciqual;18073;ml;1;water;Кава розчинна (готова);Instant coffee, prepared;Kawa rozpuszczalna;Кофе растворимый (готовый)
+cappuccino;beverages;ciqual;18151;ml;1;water;Капучино / кава з молоком (без цукру);Cappuccino / coffee with milk (no sugar);Cappuccino / kawa z mlekiem;Капучино / кофе с молоком (без сахара)
+coffee_3in1;beverages;ciqual;18160;g;1;0;Кава 3 в 1 (суміш);Instant coffee 3-in-1 mix;Kawa 3 w 1 (proszek);Кофе 3 в 1 (смесь)
+coffee_instant_powder;beverages;ciqual;18005;g;1;0;Кава розчинна (порошок);Instant coffee powder;Kawa rozpuszczalna (proszek);Кофе растворимый (порошок)
+tea_black;beverages;ciqual;18154;ml;1;water;Чай чорний;Black tea;Herbata czarna;Чай чёрный
+tea_green;beverages;usda;171917;ml;1;water;Чай зелений;Green tea;Herbata zielona;Чай зелёный
+tea_herbal;beverages;ciqual;18022;ml;1;water;Трав'яний чай;Herbal tea;Herbata ziołowa;Травяной чай
+iced_tea;beverages;ciqual;18075;ml;1;water;Холодний чай солодкий;Iced tea, sweetened;Herbata mrożona słodzona;Холодный чай сладкий
+cocoa_drink;beverages;usda;171874;ml;1.05;water;Какао з молоком;Hot cocoa with milk;Kakao na mleku;Какао с молоком
+cocoa_powder_sweet;beverages;ciqual;18101;g;1;0;Какао-напій (суміш з цукром);Sweetened cocoa drink powder;Kakao rozpuszczalne słodzone;Какао-напиток (смесь с сахаром)
+juice_orange;beverages;ciqual;2070;ml;1.04;water;Сік апельсиновий;Orange juice;Sok pomarańczowy;Сок апельсиновый
+juice_apple;beverages;ciqual;2074;ml;1.04;water;Сік яблучний;Apple juice;Sok jabłkowy;Сок яблочный
+juice_grape;beverages;ciqual;2016;ml;1.05;water;Сік виноградний;Grape juice;Sok winogronowy;Сок виноградный
+juice_tomato;beverages;ciqual;2053;ml;1.02;water;Сік томатний;Tomato juice;Sok pomidorowy;Сок томатный
+juice_multifruit;beverages;ciqual;2035;ml;1.04;water;Сік мультифрукт;Multifruit juice;Sok wieloowocowy;Сок мультифрукт
+juice_pineapple;beverages;ciqual;2073;ml;1.04;water;Сік ананасовий;Pineapple juice;Sok ananasowy;Сок ананасовый
+juice_grapefruit;beverages;ciqual;2027;ml;1.04;water;Сік грейпфрутовий;Grapefruit juice;Sok grejpfrutowy;Сок грейпфрутовый
+juice_pomegranate;beverages;ciqual;2017;ml;1.05;water;Сік гранатовий;Pomegranate juice;Sok z granatów;Сок гранатовый
+juice_carrot;beverages;ciqual;2006;ml;1.03;water;Сік морквяний;Carrot juice;Sok marchwiowy;Сок морковный
+juice_vegetable;beverages;ciqual;2075;ml;1.03;water;Сік овочевий;Vegetable juice;Sok warzywny;Сок овощной
+juice_lemon;beverages;ciqual;2028;ml;1.03;water;Сік лимонний;Lemon juice;Sok z cytryny;Сок лимонный
+nectar_peach;beverages;ciqual;2371;ml;1.05;water;Нектар персиковий;Peach nectar;Nektar brzoskwiniowy;Нектар персиковый
+nectar_multifruit;beverages;ciqual;2061;ml;1.05;water;Нектар мультифрукт;Multifruit nectar;Nektar wieloowocowy;Нектар мультифрукт
+smoothie;beverages;ciqual;2500;ml;1.05;water;Смузі фруктовий;Fruit smoothie;Smoothie owocowe;Смузи фруктовый
+cola;beverages;ciqual;18018;ml;1.04;water;Кола;Cola;Cola;Кола
+cola_zero;beverages;ciqual;18060;ml;1;water;Кола без цукру;Cola, sugar-free;Cola zero;Кола без сахара
+soda_sweet;beverages;ciqual;18026;ml;1.04;water;Газований напій солодкий;Soft drink, sweetened;Napój gazowany słodzony;Газированный напиток сладкий
+soda_fruit;beverages;ciqual;18048;ml;1.04;water;Газований напій фруктовий;Fruit soft drink, carbonated;Napój gazowany owocowy;Газированный напиток фруктовый
+lemonade;beverages;ciqual;18010;ml;1.03;water;Лимонад;Lemonade;Lemoniada;Лимонад
+tonic;beverages;ciqual;18344;ml;1.03;water;Тонік;Tonic water;Tonik;Тоник
+energy_drink;beverages;ciqual;18352;ml;1.04;water;Енергетичний напій;Energy drink;Napój energetyczny;Энергетический напиток
+energy_drink_zero;beverages;ciqual;18353;ml;1;water;Енергетичний напій без цукру;Energy drink, sugar-free;Napój energetyczny bez cukru;Энергетический напиток без сахара;usda:171870
+kombucha;beverages;ciqual;18025;ml;1;water;Комбуча;Kombucha;Kombucha;Комбуча
+coconut_water;beverages;ciqual;18011;ml;1.02;water;Кокосова вода;Coconut water;Woda kokosowa;Кокосовая вода
+soy_drink;beverages;ciqual;18900;ml;1.03;water;Соєвий напій без цукру;Soy drink, unsweetened;Napój sojowy niesłodzony;Соевый напиток без сахара
+soy_drink_sweet;beverages;ciqual;18902;ml;1.04;water;Соєвий напій солодкий;Soy drink, sweetened;Napój sojowy słodzony;Соевый напиток сладкий
+almond_drink;beverages;ciqual;18107;ml;1.02;water;Мигдальний напій без цукру;Almond drink, unsweetened;Napój migdałowy niesłodzony;Миндальный напиток без сахара
+oat_drink;beverages;ciqual;18905;ml;1.03;water;Вівсяний напій;Oat drink;Napój owsiany;Овсяный напиток
+rice_drink;beverages;ciqual;18904;ml;1.03;water;Рисовий напій;Rice drink;Napój ryżowy;Рисовый напиток
+coconut_drink;beverages;ciqual;18907;ml;1.02;water;Кокосовий напій;Coconut drink;Napój kokosowy;Кокосовый напиток
+coconut_milk;ingredients;ciqual;18041;ml;1;0;Кокосове молоко (для готування);Coconut milk (cooking);Mleczko kokosowe;Кокосовое молоко (для готовки)
+milk_chocolate_drink;beverages;ciqual;19122;ml;1.06;water;Молоко шоколадне;Chocolate milk;Mleko czekoladowe;Молоко шоколадное
+milkshake;beverages;ciqual;39001;ml;1.05;water;Молочний коктейль;Milkshake;Koktajl mleczny;Молочный коктейль
+protein_whey;other;usda;173180;g;1;0;Протеїн сироватковий (порошок);Whey protein powder;Białko serwatkowe (proszek);Протеин сывороточный (порошок)
+protein_whey_isolate;other;usda;173177;g;1;0;Протеїн ізолят (порошок);Whey protein isolate powder;Izolat białka serwatkowego;Протеин изолят (порошок)
+protein_soy;other;usda;173181;g;1;0;Протеїн соєвий (порошок);Soy protein powder;Białko sojowe (proszek);Протеин соевый (порошок)
+# --- alcoholic beverages ---
+beer;beverages;ciqual;5001;ml;1.01;0;Пиво світле;Beer (lager, 4–5%);Piwo jasne;Пиво светлое
+beer_dark;beverages;ciqual;5000;ml;1.01;0;Пиво темне;Dark beer;Piwo ciemne;Пиво тёмное
+beer_wheat;beverages;ciqual;5009;ml;1.01;0;Пиво пшеничне;Wheat beer;Piwo pszeniczne;Пиво пшеничное
+beer_non_alcoholic;beverages;ciqual;5030;ml;1.01;water;Пиво безалкогольне;Non-alcoholic beer;Piwo bezalkoholowe;Пиво безалкогольное
+wine_red;beverages;ciqual;5214;ml;0.99;0;Вино червоне сухе;Red wine, dry;Wino czerwone wytrawne;Вино красное сухое
+wine_white;beverages;ciqual;5215;ml;0.99;0;Вино біле сухе;White wine, dry;Wino białe wytrawne;Вино белое сухое
+wine_sweet;beverages;ciqual;1006;ml;1.02;0;Вино біле солодке;Sweet white wine;Wino białe słodkie;Вино белое сладкое
+sparkling_wine;beverages;ciqual;5207;ml;0.99;0;Шампанське / ігристе вино;Champagne / sparkling wine;Szampan / wino musujące;Шампанское / игристое вино
+cider;beverages;ciqual;5003;ml;1.01;0;Сидр;Cider;Cydr;Сидр
+vodka;beverages;ciqual;1008;ml;0.95;0;Горілка;Vodka;Wódka;Водка
+whisky;beverages;ciqual;1005;ml;0.95;0;Віскі;Whisky;Whisky;Виски
+cognac;beverages;ciqual;1023;ml;0.95;0;Коньяк / бренді;Cognac / brandy;Koniak / brandy;Коньяк / бренди
+rum;beverages;ciqual;1004;ml;0.95;0;Ром;Rum;Rum;Ром
+gin;beverages;ciqual;1002;ml;0.95;0;Джин;Gin;Gin;Джин
+liqueur;beverages;ciqual;1003;ml;1.1;0;Лікер;Liqueur;Likier;Ликёр
+# --- prepared dishes ---
+beef_stew_carrots;prepared;ciqual;25065;g;1;0;Яловичина тушкована з морквою;Beef stew with carrots;Gulasz wołowy z marchewką;Говядина тушёная с морковью
+beef_bourguignon;prepared;ciqual;25033;g;1;0;Яловичина в червоному вині (бургіньйон);Beef bourguignon;Wołowina po burgundzku;Говядина в красном вине (бургиньон)
+chicken_curry;prepared;ciqual;25174;g;1;0;Курка каррі з кокосовим молоком;Chicken curry with coconut milk;Kurczak curry z mlekiem kokosowym;Курица карри с кокосовым молоком
+meatballs_beef;prepared;ciqual;25163;g;1;0;Фрикадельки яловичі;Beef meatballs, cooked;Klopsiki wołowe;Фрикадельки говяжьи
+meatballs_pork_beef;prepared;ciqual;25186;g;1;0;Тефтелі свино-яловичі;Pork and beef meatballs;Klopsiki wieprzowo-wołowe;Тефтели свино-говяжьи
+chicken_nuggets;fast_food;ciqual;36027;g;1;0;Курячі нагетси;Chicken nuggets;Nuggetsy z kurczaka;Куриные наггетсы
+turkey_schnitzel;prepared;ciqual;36318;g;1;0;Шніцель у паніровці;Breaded schnitzel (turkey or veal);Sznycel panierowany;Шницель в панировке
+chicken_skewer;prepared;ciqual;25504;g;1;0;Шашлик курячий;Chicken skewers;Szaszłyk z kurczaka;Шашлык куриный
+beef_skewer;prepared;ciqual;25505;g;1;0;Шашлик яловичий;Beef skewers;Szaszłyk wołowy;Шашлык говяжий
+mixed_skewer;prepared;ciqual;25506;g;1;0;Шашлик асорті;Mixed meat skewers;Szaszłyk mieszany;Шашлык ассорти
+stuffed_cabbage;prepared;ciqual;25106;g;1;0;Голубці (фаршировані капустяні листки);Stuffed cabbage rolls;Gołąbki;Голубцы
+stuffed_peppers;prepared;ciqual;25511;g;1;0;Фаршировані овочі (перець, кабачки);Stuffed vegetables;Faszerowane warzywa;Фаршированные овощи (перец, кабачки)
+stuffed_tomatoes;prepared;ciqual;25103;g;1;0;Фаршировані помідори;Stuffed tomatoes;Faszerowane pomidory;Фаршированные помидоры
+chili_con_carne;prepared;ciqual;25111;g;1;0;Чилі кон карне;Chili con carne;Chili con carne;Чили кон карне
+moussaka;prepared;ciqual;25123;g;1;0;Мусака;Moussaka;Musaka;Мусака
+shepherds_pie;prepared;ciqual;25009;g;1;0;Картопляна запіканка з м'ясом;Shepherd's pie;Zapiekanka ziemniaczana z mięsem;Картофельная запеканка с мясом
+ratatouille;prepared;ciqual;25018;g;1;0;Рататуй (овочеве рагу);Ratatouille;Ratatouille (leczo warzywne);Рататуй (овощное рагу)
+vegetables_au_gratin;prepared;ciqual;25162;g;1;0;Овочі запечені з сиром;Vegetables au gratin;Zapiekanka warzywna;Овощи запечённые с сыром
+potato_gratin;prepared;ciqual;25056;g;1;0;Картопляний гратен;Potato gratin;Zapiekanka ziemniaczana;Картофельный гратен
+cauliflower_gratin;prepared;ciqual;25101;g;1;0;Цвітна капуста запечена з сиром;Cauliflower au gratin;Kalafior zapiekany;Цветная капуста запечённая с сыром
+stir_fry_vegetables;prepared;ciqual;20262;g;1;0;Овочі смажені (заморожена суміш);Pan-fried vegetable mix;Warzywa na patelnię;Овощи жареные (замороженная смесь)
+beans_tomato_sauce;prepared;ciqual;20194;g;1;0;Квасоля в томатному соусі;Baked beans in tomato sauce;Fasolka w sosie pomidorowym;Фасоль в томатном соусе
+paella;prepared;ciqual;25031;g;1;0;Паелья;Paella;Paella;Паэлья
+fried_rice;prepared;ciqual;25088;g;1;0;Смажений рис з овочами (кантонський);Fried rice (Cantonese);Ryż smażony po kantońsku;Жареный рис с овощами (кантонский)
+rice_chicken;prepared;ciqual;25184;g;1;0;Рис з куркою;Rice with chicken;Ryż z kurczakiem;Рис с курицей
+risotto_vegetables;prepared;ciqual;25187;g;1;0;Різото з овочами;Vegetable risotto;Risotto z warzywami;Ризотто с овощами
+risotto_seafood;prepared;ciqual;25188;g;1;0;Різото з морепродуктами;Seafood risotto;Risotto z owocami morza;Ризотто с морепродуктами
+couscous_chicken;prepared;ciqual;25138;g;1;0;Кускус з куркою;Couscous with chicken;Kuskus z kurczakiem;Кускус с курицей
+pasta_bolognese;prepared;ciqual;25085;g;1;0;Паста болоньєзе;Pasta bolognese;Spaghetti bolognese;Паста болоньезе
+pasta_carbonara;prepared;ciqual;25135;g;1;0;Паста карбонара;Pasta carbonara;Spaghetti carbonara;Паста карбонара
+pasta_cheese_sauce;prepared;ciqual;25198;g;1;0;Макарони з сирним соусом;Pasta with cheese sauce;Makaron z sosem serowym;Макароны с сырным соусом
+pasta_bake;prepared;ciqual;25122;g;1;0;Макарони запечені з сиром;Pasta bake with cheese;Zapiekanka makaronowa;Макароны запечённые с сыром
+lasagna;prepared;ciqual;25081;g;1;0;Лазанья з м'ясом;Lasagna with meat;Lasagne z mięsem;Лазанья с мясом
+lasagna_vegetables;prepared;ciqual;25218;g;1;0;Лазанья овочева;Vegetable lasagna;Lasagne warzywne;Лазанья овощная
+ravioli_meat;prepared;ciqual;25158;g;1;0;Равіолі з м'ясом;Meat ravioli, cooked;Ravioli z mięsem;Равиоли с мясом
+ravioli_cheese;prepared;ciqual;25149;g;1;0;Равіолі з сиром;Cheese ravioli, cooked;Ravioli z serem;Равиоли с сыром
+noodles_shrimp;prepared;ciqual;25183;g;1;0;Локшина з креветками смажена;Stir-fried noodles with shrimps;Makaron z krewetkami smażony;Лапша с креветками жареная
+dumplings_shrimp;prepared;ciqual;25110;g;1;0;Дім-самы з креветками;Steamed shrimp dumplings;Pierożki na parze z krewetkami;Дим-самы с креветками
+spring_roll;prepared;ciqual;25419;g;1;0;Спрінг-роли;Spring rolls;Sajgonki świeże;Спринг-роллы
+egg_roll;prepared;ciqual;25420;g;1;0;Нем (смажені рулетики);Fried egg rolls (nem);Sajgonki smażone;Нэм (жареные роллы)
+sushi;prepared;ciqual;25456;g;1;0;Суші / роли з морепродуктами;Sushi / maki rolls with seafood;Sushi;Суши / роллы с морепродуктами
+falafel;prepared;ciqual;25571;g;1;0;Фалафель;Falafel;Falafel;Фалафель
+tempeh;legumes;ciqual;20917;g;1;0;Темпе;Tempeh;Tempeh;Темпе
+plant_burger;prepared;ciqual;25593;g;1;0;Рослинна котлета (бургер);Plant-based burger patty;Burger roślinny;Растительная котлета (бургер)
+cheese_souffle;prepared;ciqual;25020;g;1;0;Сирне суфле;Cheese soufflé;Suflet serowy;Сырное суфле
+omelette_cheese;eggs;ciqual;22506;g;1;0;Омлет з сиром;Cheese omelette;Omlet z serem;Омлет с сыром
+omelette_vegetables;eggs;ciqual;22511;g;1;0;Омлет з овочами;Vegetable omelette;Omlet z warzywami;Омлет с овощами
+tortilla_espanola;prepared;ciqual;22510;g;1;0;Іспанська тортилья (омлет з картоплею);Spanish tortilla;Tortilla hiszpańska;Испанская тортилья
+fish_white_cooked;fish;ciqual;26249;g;1;0;Біла риба приготована;White fish, cooked;Ryba biała gotowana;Белая рыба приготовленная
+fish_in_sauce;prepared;ciqual;26054;g;1;0;Риба в соусі;Fish in sauce;Ryba w sosie;Рыба в соусе
+quiche;prepared;ciqual;25405;g;1;0;Кіш лорен;Quiche Lorraine;Quiche lotaryńska;Киш лорен
+vegetable_tart;prepared;ciqual;25417;g;1;0;Овочевий пиріг (тарт);Vegetable tart;Tarta warzywna;Овощной пирог (тарт)
+crepe_ham_cheese;prepared;ciqual;25410;g;1;0;Млинці з шинкою та сиром;Crêpes with ham and cheese;Naleśniki z szynką i serem;Блины с ветчиной и сыром
+puff_cheese;prepared;ciqual;25401;g;1;0;Слойка з сиром;Cheese puff pastry;Ciasto francuskie z serem;Слойка с сыром
+puff_meat;prepared;ciqual;25402;g;1;0;Слойка з м'ясом;Meat puff pastry;Ciasto francuskie z mięsem;Слойка с мясом
+puff_ham_cheese;prepared;ciqual;25508;g;1;0;Слойка з шинкою та сиром;Ham and cheese puff pastry;Ciasto francuskie z szynką i serem;Слойка с ветчиной и сыром
+croissant_ham_cheese;prepared;ciqual;26266;g;1;0;Круасан з шинкою та сиром;Croissant with ham and cheese;Croissant z szynką i serem;Круассан с ветчиной и сыром
+samosa;prepared;ciqual;25108;g;1;0;Самса;Samosa;Samosa;Самса
+# --- salads ---
+salad_vegetable;prepared;ciqual;25616;g;1;0;Салат овочевий (без заправки);Vegetable salad, no dressing;Sałatka warzywna bez sosu;Салат овощной (без заправки)
+salad_greek;prepared;ciqual;26262;g;1;0;Грецький салат;Greek salad;Sałatka grecka;Греческий салат
+salad_caesar;prepared;ciqual;25628;g;1;0;Салат Цезар з куркою;Caesar salad with chicken;Sałatka Cezar z kurczakiem;Салат Цезарь с курицей
+salad_coleslaw;prepared;ciqual;26259;g;1;0;Коулслоу (капустяний салат);Coleslaw;Surówka coleslaw;Коулслоу (капустный салат)
+salad_carrot;prepared;ciqual;26257;g;1;0;Морква тертая з заправкою;Grated carrot salad;Surówka z marchewki;Морковь тёртая с заправкой
+salad_beetroot;prepared;ciqual;26258;g;1;0;Салат з буряка з заправкою;Beetroot salad;Sałatka z buraków;Салат из свёклы с заправкой
+salad_cucumber_cream;prepared;ciqual;26260;g;1;0;Огірки з вершковим соусом;Cucumber salad with cream sauce;Mizeria;Огурцы со сливочным соусом
+salad_potato;prepared;ciqual;25609;g;1;0;Картопляний салат;Potato salad;Sałatka ziemniaczana;Картофельный салат
+salad_pasta;prepared;ciqual;25615;g;1;0;Салат з макаронами;Pasta salad;Sałatka makaronowa;Салат с макаронами
+salad_rice;prepared;ciqual;26263;g;1;0;Салат з рисом;Rice salad;Sałatka ryżowa;Салат с рисом
+tabbouleh;prepared;ciqual;25608;g;1;0;Табуле;Tabbouleh;Tabbouleh;Табуле
+# --- soups ---
+soup_vegetable;prepared;ciqual;25903;ml;1.02;0;Суп овочевий;Vegetable soup;Zupa warzywna;Суп овощной
+soup_chicken_vegetables;prepared;ciqual;25901;ml;1.02;0;Суп курячий з овочами;Chicken and vegetable soup;Zupa z kurczaka z warzywami;Суп куриный с овощами
+soup_chicken_noodle;prepared;ciqual;25908;ml;1.02;0;Суп курячий з локшиною;Chicken noodle soup;Rosół z makaronem;Суп куриный с лапшой
+soup_lentil;prepared;ciqual;25900;ml;1.03;0;Суп сочевичний;Lentil soup;Zupa z soczewicy;Суп чечевичный
+soup_pea;prepared;ciqual;25965;ml;1.03;0;Суп гороховий;Split pea soup;Grochówka;Суп гороховый
+soup_mushroom;prepared;ciqual;25912;ml;1.02;0;Суп грибний (крем-суп);Mushroom cream soup;Zupa grzybowa (krem);Суп грибной (крем-суп)
+soup_tomato;prepared;ciqual;25914;ml;1.02;0;Суп томатний;Tomato soup;Zupa pomidorowa;Суп томатный
+soup_pumpkin;prepared;ciqual;25945;ml;1.02;0;Крем-суп гарбузовий;Pumpkin soup;Zupa dyniowa;Крем-суп тыквенный
+soup_leek_potato;prepared;ciqual;25907;ml;1.02;0;Суп картопляний з пореєм;Leek and potato soup;Zupa ziemniaczana z porem;Суп картофельный с пореем
+soup_onion;prepared;ciqual;25910;ml;1.02;0;Цибулевий суп;Onion soup;Zupa cebulowa;Луковый суп
+soup_minestrone;prepared;ciqual;25916;ml;1.02;0;Мінестроне;Minestrone;Minestrone;Минестроне
+soup_fish;prepared;ciqual;25904;ml;1.02;0;Суп рибний;Fish soup;Zupa rybna;Суп рыбный
+soup_gazpacho;prepared;ciqual;25967;ml;1.02;0;Гаспачо;Gazpacho;Gazpacho;Гаспачо
+broth_chicken;prepared;ciqual;25947;ml;1;0;Бульйон курячий;Chicken broth;Bulion drobiowy;Бульон куриный
+broth_beef;prepared;ciqual;25930;ml;1;0;Бульйон яловичий;Beef broth;Bulion wołowy;Бульон говяжий
+broth_vegetable;prepared;ciqual;25948;ml;1;0;Бульйон овочевий;Vegetable broth;Bulion warzywny;Бульон овощной
+soup_miso;prepared;ciqual;25972;ml;1;0;Місо-суп;Miso soup;Zupa miso;Мисо-суп
+soup_noodle_asian;prepared;ciqual;25955;ml;1;0;Суп азійський з локшиною;Asian noodle soup;Zupa azjatycka z makaronem;Суп азиатский с лапшой
+# --- pizza, sandwiches, fast food ---
+pizza_margherita;fast_food;ciqual;25404;g;1;0;Піца Маргарита;Pizza Margherita;Pizza Margherita;Пицца Маргарита
+pizza_ham_cheese;fast_food;ciqual;25435;g;1;0;Піца з шинкою та сиром;Ham and cheese pizza;Pizza z szynką i serem;Пицца с ветчиной и сыром
+pizza_salami;fast_food;ciqual;25462;g;1;0;Піца з салямі / пепероні;Salami (pepperoni) pizza;Pizza salami;Пицца с салями / пепперони
+pizza_four_cheese;fast_food;ciqual;25478;g;1;0;Піца чотири сири;Four cheese pizza;Pizza cztery sery;Пицца четыре сыра
+pizza_vegetables;fast_food;ciqual;25472;g;1;0;Піца овочева;Vegetable pizza;Pizza wegetariańska;Пицца овощная
+pizza_chicken;fast_food;ciqual;26272;g;1;0;Піца з куркою;Chicken pizza;Pizza z kurczakiem;Пицца с курицей
+pizza_tuna;fast_food;ciqual;26270;g;1;0;Піца з тунцем;Tuna pizza;Pizza z tuńczykiem;Пицца с тунцом
+pizza_seafood;fast_food;ciqual;25463;g;1;0;Піца з морепродуктами;Seafood pizza;Pizza z owocami morza;Пицца с морепродуктами
+pizza_mushrooms;fast_food;ciqual;25548;g;1;0;Піца з шинкою та грибами;Ham and mushroom pizza;Pizza z szynką i pieczarkami;Пицца с ветчиной и грибами
+pizza;fast_food;ciqual;25516;g;1;0;Піца (в середньому);Pizza (average);Pizza (średnio);Пицца (в среднем)
+hamburger;fast_food;ciqual;25413;g;1;0;Гамбургер;Hamburger;Hamburger;Гамбургер
+cheeseburger;fast_food;ciqual;25414;g;1;0;Чізбургер;Cheeseburger;Cheeseburger;Чизбургер
+chicken_burger;fast_food;ciqual;25502;g;1;0;Чікенбургер;Chicken burger;Burger z kurczakiem;Чикенбургер
+fish_burger;fast_food;ciqual;25416;g;1;0;Фішбургер;Fish burger;Burger rybny;Фишбургер
+hot_dog;fast_food;ciqual;25403;g;1;0;Хот-дог;Hot dog;Hot dog;Хот-дог
+kebab_pita;fast_food;ciqual;25428;g;1;0;Шаурма в піті (кебаб);Kebab in pita;Kebab w picie;Шаурма в пите (кебаб)
+kebab_baguette;fast_food;ciqual;25429;g;1;0;Кебаб у багеті;Kebab in baguette;Kebab w bagietce;Кебаб в багете
+burrito;fast_food;ciqual;25459;g;1;0;Буріто;Burrito;Burrito;Буррито
+fajitas;fast_food;ciqual;25460;g;1;0;Фахітас;Fajitas;Fajitas;Фахитас
+taco;fast_food;usda;170763;g;1;0;Тако з яловичиною;Beef taco, soft;Taco z wołowiną;Тако с говядиной
+quesadilla;fast_food;usda;170765;g;1;0;Кесадилья з куркою;Chicken quesadilla;Quesadilla z kurczakiem;Кесадилья с курицей
+nachos_cheese;fast_food;usda;170291;g;1;0;Начос з сиром;Nachos with cheese;Nachos z serem;Начос с сыром
+onion_rings;fast_food;usda;170697;g;1;0;Цибулеві кільця;Onion rings, fried;Krążki cebulowe;Луковые кольца
+fried_chicken_pieces;fast_food;usda;170718;g;1;0;Курка у фритюрі (шматочки);Fried chicken pieces, boneless;Kurczak smażony w panierce;Курица во фритюре (кусочки)
+shrimp_fried;fast_food;usda;172037;g;1;0;Креветки у фритюрі;Fried breaded shrimp;Krewetki w panierce smażone;Креветки во фритюре
+sandwich_ham_cheese;fast_food;ciqual;25485;g;1;0;Сендвіч з шинкою та сиром;Ham and cheese sandwich (baguette);Kanapka z szynką i serem;Сэндвич с ветчиной и сыром
+sandwich_chicken;fast_food;ciqual;25476;g;1;0;Сендвіч з куркою та овочами;Chicken salad sandwich (baguette);Kanapka z kurczakiem;Сэндвич с курицей и овощами
+sandwich_tuna;fast_food;ciqual;25431;g;1;0;Сендвіч з тунцем;Tuna sandwich (baguette);Kanapka z tuńczykiem;Сэндвич с тунцом
+sandwich_egg;fast_food;ciqual;25532;g;1;0;Сендвіч з яйцем та овочами;Egg salad sandwich;Kanapka z jajkiem;Сэндвич с яйцом и овощами
+sandwich_toast_ham_cheese;fast_food;ciqual;25547;g;1;0;Тост з шинкою та сиром;Grilled ham and cheese sandwich;Tost z szynką i serem;Тост с ветчиной и сыром
+club_sandwich;fast_food;usda;170752;g;1;0;Клаб-сендвіч з куркою;Grilled chicken club sandwich;Club sandwich z kurczakiem;Клаб-сэндвич с курицей
+sub_turkey;fast_food;usda;170706;g;1;0;Саб-сендвіч з індичкою;Turkey sub sandwich;Kanapka sub z indykiem;Саб-сэндвич с индейкой
+wrap_chicken_grilled;fast_food;usda;170786;g;1;0;Рол (врап) з куркою гриль;Grilled chicken wrap;Wrap z grillowanym kurczakiem;Ролл (врап) с курицей гриль
+wrap_chicken_crispy;fast_food;usda;170785;g;1;0;Рол (врап) з хрусткою куркою;Crispy chicken wrap;Wrap z chrupiącym kurczakiem;Ролл (врап) с хрустящей курицей
+mashed_potato_fast;fast_food;usda;170699;g;1;0;Картопляне пюре (фастфуд);Mashed potatoes (fast food);Puree ziemniaczane (fast food);Картофельное пюре (фастфуд)
+coleslaw_fast;fast_food;usda;170300;g;1;0;Салат коулслоу (фастфуд);Coleslaw (fast food);Coleslaw (fast food);Салат коулслоу (фастфуд)
+big_mac;fast_food;usda;170720;g;1;0;Біг Мак;Big Mac;Big Mac;Биг Мак;;;McDonald's
+mcd_cheeseburger;fast_food;usda;170320;g;1;0;Чізбургер McDonald's;McDonald's Cheeseburger;Cheeseburger McDonald's;Чизбургер McDonald's;;;McDonald's
+mcd_hamburger;fast_food;usda;170717;g;1;0;Гамбургер McDonald's;McDonald's Hamburger;Hamburger McDonald's;Гамбургер McDonald's;;;McDonald's
+mcd_quarter_pounder;fast_food;usda;170719;g;1;0;Квотер Паундер з сиром;Quarter Pounder with Cheese;Quarter Pounder z serem;Квотер Паундер с сыром;;;McDonald's
+mcd_filet_o_fish;fast_food;usda;170319;g;1;0;Філе-о-Фіш;Filet-O-Fish;Filet-O-Fish;Филе-о-Фиш;;;McDonald's
+mcd_fries;fast_food;usda;170721;g;1;0;Картопля фрі McDonald's;McDonald's french fries;Frytki McDonald's;Картофель фри McDonald's;;;McDonald's
+bk_whopper;fast_food;usda;170727;g;1;0;Воппер;Whopper;Whopper;Воппер;;;Burger King
+bk_whopper_cheese;fast_food;usda;170728;g;1;0;Воппер з сиром;Whopper with cheese;Whopper z serem;Воппер с сыром;;;Burger King
+kfc_popcorn_chicken;fast_food;usda;170737;g;1;0;Попкорн-чікен KFC;KFC Popcorn Chicken;Popcorn Chicken KFC;Попкорн-чикен KFC;;;KFC
+kfc_strips;fast_food;usda;170341;g;1;0;Курячі стрипси KFC;KFC Crispy Chicken Strips;Stripsy KFC;Куриные стрипсы KFC;;;KFC
+kfc_wing;fast_food;usda;170347;g;1;0;Курячі крильця KFC (оригінальний рецепт);KFC Original Recipe wing;Skrzydełko KFC;Куриные крылышки KFC (оригинальный рецепт);;;KFC
+kfc_coleslaw;fast_food;usda;170340;g;1;0;Коулслоу KFC;KFC Coleslaw;Coleslaw KFC;Коулслоу KFC;;;KFC
+# --- Ukrainian products from manufacturer labels ---
+tvorog_0;dairy;label;4820045704543;g;1;0;Сир кисломолочний 0,2%;Quark (tvorog) 0.2%;Twaróg chudy 0,2%;Творог 0,2%;;fiber_free
+tvorog_5;dairy;label;4820045704529;g;1;0;Сир кисломолочний 5%;Quark (tvorog) 5%;Twaróg 5%;Творог 5%;;fiber_free
+tvorog_9;dairy;label;4823065731704;g;1;0;Сир кисломолочний 9%;Quark (tvorog) 9%;Twaróg 9%;Творог 9%;;fiber_free
+ryazhenka_4;dairy;label;4820222763783;ml;1.03;0;Ряжанка 4%;Ryazhenka (baked fermented milk) 4%;Riażenka 4%;Ряженка 4%;;fiber_free
+ryazhenka_32;dairy;label;4823005211839;ml;1.03;0;Ряжанка 3,2%;Ryazhenka (baked fermented milk) 3.2%;Riażenka 3,2%;Ряженка 3,2%;;fiber_free
+ayran;dairy;label;4823005206330;ml;1.02;0;Айран;Ayran;Ajran;Айран;;fiber_free
+glazed_curd;sweets;label;4820202535324;pcs;36;0;Сирок глазурований;Glazed curd snack bar;Batonik twarogowy w polewie;Сырок глазированный
+suluguni;cheese;label;2200363305080;g;1;0;Сулугуні;Suluguni cheese;Ser suluguni;Сулугуни;;fiber_free
+sausage_doctor;meat;label;4823036504726;g;1;0;Ковбаса варена «Лікарська»;Cooked sausage, doctor's style;Kiełbasa parzona typu doktorska;Колбаса варёная «Докторская»;;fiber_free
+# --- Ukrainian dishes calculated from recipes ---
+borscht;prepared;recipe;borscht;ml;1.03;0;Борщ український з м'ясом;Ukrainian borscht with beef;Barszcz ukraiński z mięsem;Борщ украинский с мясом
+borscht_lenten;prepared;recipe;borscht_lenten;ml;1.03;0;Борщ пісний;Vegetarian borscht;Barszcz ukraiński postny;Борщ постный
+green_borscht;prepared;recipe;green_borscht;ml;1.02;0;Зелений борщ (щавлевий);Green (sorrel) borscht;Zupa szczawiowa;Зелёный борщ (щавелевый)
+kapusniak;prepared;recipe;kapusniak;ml;1.02;0;Капусняк;Sauerkraut soup (kapusniak);Kapuśniak;Капустняк
+okroshka;prepared;recipe;okroshka;ml;1.03;0;Окрошка на кефірі;Okroshka (cold kefir soup);Okroszka na kefirze;Окрошка на кефире
+varenyky_potato;prepared;recipe;varenyky_potato;g;1;0;Вареники з картоплею;Varenyky with potato;Pierogi z ziemniakami;Вареники с картошкой
+varenyky_cheese;prepared;recipe;varenyky_cheese;g;1;0;Вареники з сиром;Varenyky with quark;Pierogi z twarogiem;Вареники с творогом
+varenyky_cherry;prepared;recipe;varenyky_cherry;g;1;0;Вареники з вишнею;Varenyky with sour cherries;Pierogi z wiśniami;Вареники с вишней
+pelmeni;prepared;recipe;pelmeni;g;1;0;Пельмені;Pelmeni (meat dumplings);Pielmienie;Пельмени
+syrnyky;prepared;recipe;syrnyky;g;1;0;Сирники;Syrnyky (quark pancakes);Placuszki twarogowe (syrniki);Сырники
+nalysnyky;prepared;recipe;nalysnyky;g;1;0;Налисники з сиром;Crêpes filled with quark;Naleśniki z twarogiem;Блинчики с творогом
+cottage_casserole;prepared;recipe;cottage_casserole;g;1;0;Сирна запіканка;Quark casserole;Zapiekanka twarogowa;Творожная запеканка
+plov;prepared;recipe;plov;g;1;0;Плов з куркою;Plov with chicken;Pilaw z kurczakiem;Плов с курицей
+stewed_cabbage;prepared;recipe;stewed_cabbage;g;1;0;Капуста тушкована з м'ясом;Braised cabbage with pork (bigos-style);Bigos;Капуста тушёная с мясом
+olivier;prepared;recipe;olivier;g;1;0;Салат Олів'є;Olivier salad;Sałatka jarzynowa (Olivier);Салат Оливье
+vinegret;prepared;recipe;vinegret;g;1;0;Вінегрет;Vinegret (beetroot salad);Winegret;Винегрет
+salad_cabbage;prepared;recipe;salad_cabbage;g;1;0;Салат з капусти з морквою;Cabbage and carrot salad;Surówka z kapusty i marchewki;Салат из капусты с морковью
+salad_tomato_cucumber_oil;prepared;recipe;salad_tomato_cucumber_oil;g;1;0;Салат з помідорів і огірків з олією;Tomato and cucumber salad with oil;Sałatka z pomidorów i ogórków z olejem;Салат из помидоров и огурцов с маслом
+salad_tomato_cucumber_sour_cream;prepared;recipe;salad_tomato_cucumber_sour_cream;g;1;0;Салат з помідорів і огірків зі сметаною;Tomato and cucumber salad with sour cream;Sałatka z pomidorów i ogórków ze śmietaną;Салат из помидоров и огурцов со сметаной
+oatmeal_milk;grains;recipe;oatmeal_milk;g;1;0;Вівсяна каша на молоці;Oatmeal porridge with milk;Owsianka na mleku;Овсяная каша на молоке
+rice_porridge_milk;grains;recipe;rice_porridge_milk;g;1;0;Рисова каша на молоці;Rice porridge with milk;Ryż na mleku;Рисовая каша на молоке
+semolina_milk;grains;recipe;semolina_milk;g;1;0;Манна каша на молоці;Semolina porridge with milk;Kasza manna na mleku;Манная каша на молоке
+buckwheat_milk;grains;recipe;buckwheat_milk;g;1;0;Гречка з молоком;Buckwheat with milk;Kasza gryczana z mlekiem;Гречка с молоком
+sandwich_butter;prepared;recipe;sandwich_butter;g;1;0;Бутерброд з маслом;Bread and butter;Kanapka z masłem;Бутерброд с маслом
+sandwich_cheese;prepared;recipe;sandwich_cheese;g;1;0;Бутерброд з маслом і сиром;Bread with butter and cheese;Kanapka z masłem i serem;Бутерброд с маслом и сыром
+sandwich_sausage;prepared;recipe;sandwich_sausage;g;1;0;Бутерброд з ковбасою;Bread with cooked sausage;Kanapka z kiełbasą;Бутерброд с колбасой

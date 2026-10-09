@@ -62,7 +62,7 @@ def _calculate_totals(items):
         "protein": sum(item["protein"] for item in items),
         "fat": sum(item["fat"] for item in items),
         "carbs": sum(item["carbs"] for item in items),
-        "fiber": sum(item.get("fiber", 0) for item in items),
+        "fiber": sum(item.get("fiber") or 0 for item in items),
     }
 
 

@@ -37,6 +37,7 @@
         }
     },
     "fields": {
+        "sugar": "Sugar",
         "name": "Name",
         "calories": "Calories",
         "protein": "Protein",
@@ -251,7 +252,7 @@
         "emptyRecent": "Foods you add will show up here",
         "emptyMine": "You haven't created any foods yet",
         "editMyProductTitle": "Edit my food",
-        "editHint": "Changes also apply to meals where this food is already logged.",
+        "editHint": "New values apply to what you log from now on; meals already logged keep their values.",
         "deleteProduct": "Delete food",
         "editProductData": "Edit food",
         "ownBadge": "mine"
@@ -265,6 +266,7 @@
         }
     },
     "errors": {
+        "duplicate_product": "You already have a product with this name.",
         "generic": "Couldn't save. Please try again.",
         "network": "Can't reach the server. Check your connection and try again.",
         "session_expired": "Your session has ended. Reload the page and sign in again.",

@@ -1,29 +1,34 @@
 from __future__ import annotations
 
-from sqlalchemy import func, or_
+from sqlalchemy import case, func, or_, text
 from sqlalchemy.orm import selectinload
 
 from backend.app.extensions import db
-from backend.app.models import Meal, MealItem, Product, ProductFavorite, ProductName
+from backend.app.models import Product, ProductFavorite, ProductName
 from backend.app.repositories.product_repository import (
     get_favorite_products,
     get_product_for_user,
     get_recent_products,
     get_user_product,
 )
+from backend.app.utils.name_normalization import normalize_name
 
 
 SUPPORTED_LOCALES = {"uk", "en", "pl", "ru"}
 SUPPORTED_SOURCES = {"system", "user", "imported"}
 SUPPORTED_UNITS = {"g", "ml", "pcs"}
 PRODUCT_CATEGORIES = {
-    "meat", "fish", "dairy", "eggs", "grains", "bread", "vegetables",
-    "fruits", "legumes", "nuts", "oils", "sweets", "beverages", "other",
+    "meat", "poultry", "fish", "seafood", "eggs", "dairy", "cheese",
+    "grains", "pasta", "bread", "legumes", "vegetables", "fruits", "berries",
+    "nuts", "seeds", "oils", "sauces", "prepared", "fast_food", "sweets",
+    "snacks", "beverages", "ingredients", "other",
 }
 
 
 class ProductServiceError(ValueError):
-    pass
+    def __init__(self, message, code="invalid_product"):
+        super().__init__(message)
+        self.code = code
 
 
 def normalize_locale(locale: str | None) -> str:
@@ -42,6 +47,10 @@ def get_product_name(product, locale="uk") -> str:
         or names.get("uk")
         or next(iter(names.values()), "Unnamed product")
     )
+
+
+def _round(value, digits=2):
+    return None if value is None else round(value, digits)
 
 
 def serialize_product(
@@ -70,17 +79,43 @@ def serialize_product(
         "category": product.category,
         "source": product.source,
         "barcode": product.barcode,
+        # Every value is per 100 g; ``ml`` and ``pcs`` convert through
+        # ``grams_per_unit``. None = unknown (shown as "—"), not 0.
         "kcal_per_100g": round(product.kcal_per_100g, 2),
         "protein_per_100g": round(product.protein_per_100g, 2),
         "fat_per_100g": round(product.fat_per_100g, 2),
         "carbs_per_100g": round(product.carbs_per_100g, 2),
-        "fiber_per_100g": round(product.fiber_per_100g, 2),
+        "fiber_per_100g": _round(product.fiber_per_100g),
+        "sugar_per_100g": _round(product.sugar_per_100g),
+        "saturated_fat_per_100g": _round(product.saturated_fat_per_100g),
+        "salt_per_100g": _round(product.salt_per_100g, 3),
         "liquid_ml_per_100g": round(product.liquid_ml_per_100g, 2),
         "default_unit": product.default_unit,
         "grams_per_unit": product.grams_per_unit,
+        "data_source": product.data_source,
+        "source_ref": product.source_ref,
+        "verified": bool(product.verified),
         "is_favorite": is_favorite,
         # The user's own products can be edited and deleted.
         "is_own": product.owner_user_id is not None and product.owner_user_id == user_id,
+        "is_active": bool(product.is_active),
+    }
+
+
+def favorite_ids_for(user_id, product_ids) -> set[int]:
+    if not product_ids:
+        return set()
+    return {
+        product_id
+        for (product_id,) in (
+            ProductFavorite.query
+            .with_entities(ProductFavorite.product_id)
+            .filter(
+                ProductFavorite.user_id == user_id,
+                ProductFavorite.product_id.in_(list(product_ids)),
+            )
+            .all()
+        )
     }
 
 
@@ -88,20 +123,7 @@ def serialize_product_list(products, user_id, locale="uk"):
     if not products:
         return []
 
-    favorite_ids = {
-        product_id
-        for (product_id,) in (
-            ProductFavorite.query
-            .with_entities(ProductFavorite.product_id)
-            .filter(
-                ProductFavorite.user_id == user_id,
-                ProductFavorite.product_id.in_(
-                    [product.id for product in products]
-                ),
-            )
-            .all()
-        )
-    }
+    favorite_ids = favorite_ids_for(user_id, [product.id for product in products])
 
     return [
         serialize_product(
@@ -114,6 +136,174 @@ def serialize_product_list(products, user_id, locale="uk"):
     ]
 
 
+# --- search -----------------------------------------------------------------
+
+# Typo-tolerant fallback threshold for pg_trgm word similarity (0..1).
+FUZZY_THRESHOLD = 0.4
+MAX_QUERY_LENGTH = 80
+
+
+def _visible_products(user_id):
+    return Product.query.filter(
+        Product.is_active.is_(True),
+        or_(
+            Product.owner_user_id.is_(None),
+            Product.owner_user_id == user_id,
+        ),
+    )
+
+
+def _escape_like(value: str) -> str:
+    return value.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_")
+
+
+def _load_in_order(product_ids):
+    if not product_ids:
+        return []
+    products = (
+        Product.query
+        .options(selectinload(Product.names))
+        .filter(Product.id.in_(product_ids))
+        .all()
+    )
+    by_id = {product.id: product for product in products}
+    return [by_id[product_id] for product_id in product_ids if product_id in by_id]
+
+
+def _ranked_match_ids(user_id, normalized, raw_query, category, limit, offset):
+    """Ids of products whose name contains every query word, best first.
+
+    Rank: exact name, name starts with the query, a word starts with the
+    query, then any position. Own products come before the catalog at the
+    same rank, shorter (more generic) names before longer ones. Every
+    locale is searched; the GIN trigram index serves the ``LIKE '%…%'``.
+    """
+    name = ProductName.normalized_name
+    escaped = _escape_like(normalized)
+
+    rank = case(
+        (name == normalized, 0),
+        (name.like(f"{escaped}%", escape="\\"), 1),
+        (name.like(f"% {escaped}%", escape="\\"), 2),
+        else_=3,
+    )
+
+    word_filters = [
+        name.like(f"%{_escape_like(word)}%", escape="\\")
+        for word in normalized.split()
+    ]
+    brand_filter = Product.brand.ilike(f"%{_escape_like(raw_query)}%", escape="\\")
+
+    query = (
+        _visible_products(user_id)
+        .join(ProductName, ProductName.product_id == Product.id)
+        .filter(or_(db.and_(*word_filters), brand_filter))
+    )
+    if category:
+        query = query.filter(Product.category == category)
+
+    rows = (
+        query
+        .with_entities(Product.id)
+        .group_by(Product.id)
+        .order_by(
+            func.min(rank),
+            func.bool_or(Product.owner_user_id.is_not(None)).desc(),
+            func.min(func.length(name)),
+            Product.id,
+        )
+        .offset(offset)
+        .limit(limit)
+        .all()
+    )
+    return [row[0] for row in rows]
+
+
+def _fuzzy_match_ids(user_id, normalized, category, limit, offset):
+    """Typo-tolerant fallback ("куряче фле" → "куряче філе").
+
+    Runs only when the exact word match finds nothing, so a normal search
+    costs one query. ``<%`` (word similarity) can use the trigram index.
+    """
+    db.session.execute(
+        text("SELECT set_config('pg_trgm.word_similarity_threshold', :t, true)"),
+        {"t": str(FUZZY_THRESHOLD)},
+    )
+    name = ProductName.normalized_name
+    score = func.word_similarity(normalized, name)
+
+    query = (
+        _visible_products(user_id)
+        .join(ProductName, ProductName.product_id == Product.id)
+        .filter(name.op("%>")(normalized))
+    )
+    if category:
+        query = query.filter(Product.category == category)
+
+    rows = (
+        query
+        .with_entities(Product.id)
+        .group_by(Product.id)
+        .order_by(
+            # Best matching words plus whole-name closeness: "куряче фле"
+            # ranks "Куряче філе" above "Яйце куряче", "грчка" ranks
+            # "Гречка" above "Борошно гречане".
+            func.max(score + func.similarity(normalized, name)).desc(),
+            Product.id,
+        )
+        .offset(offset)
+        .limit(limit)
+        .all()
+    )
+    return [row[0] for row in rows]
+
+
+def search_products_page(
+    user_id,
+    query="",
+    locale="uk",
+    limit=20,
+    category=None,
+    offset=0,
+):
+    """``(products, has_more)`` for one page of search results."""
+    locale = normalize_locale(locale)
+    raw_query = (query or "").strip()[:MAX_QUERY_LENGTH]
+    normalized = normalize_name(raw_query)
+    category = (category or "").strip().lower() or None
+    limit = min(max(int(limit), 1), 50)
+    offset = max(int(offset), 0)
+
+    if category and category not in PRODUCT_CATEGORIES:
+        return [], False
+
+    # One extra row tells whether there is a next page.
+    if not normalized:
+        product_query = _visible_products(user_id).options(selectinload(Product.names))
+        if category:
+            product_query = product_query.filter(Product.category == category)
+        products = (
+            product_query
+            .order_by(Product.source.desc(), Product.id.desc())
+            .offset(offset)
+            .limit(limit + 1)
+            .all()
+        )
+    else:
+        ids = _ranked_match_ids(user_id, normalized, raw_query, category, limit + 1, offset)
+        # Fuzzy results only when the exact list is empty altogether (on a
+        # later page that needs one cheap check), never mixed into it.
+        if not ids and (
+            offset == 0
+            or not _ranked_match_ids(user_id, normalized, raw_query, category, 1, 0)
+        ):
+            ids = _fuzzy_match_ids(user_id, normalized, category, limit + 1, offset)
+        products = _load_in_order(ids)
+
+    has_more = len(products) > limit
+    return serialize_product_list(products[:limit], user_id, locale), has_more
+
+
 def search_products(
     user_id,
     query="",
@@ -122,86 +312,8 @@ def search_products(
     category=None,
     offset=0,
 ):
-    locale = normalize_locale(locale)
-    query = (query or "").strip()
-    category = (category or "").strip().lower() or None
-    limit = min(max(int(limit), 1), 50)
-    offset = max(int(offset), 0)
-
-    product_query = (
-        Product.query
-        .options(selectinload(Product.names))
-        .filter(
-            Product.is_active.is_(True),
-            or_(
-                Product.owner_user_id.is_(None),
-                Product.owner_user_id == user_id,
-            ),
-        )
-    )
-
-    if category:
-        if category not in PRODUCT_CATEGORIES:
-            return []
-        product_query = product_query.filter(Product.category == category)
-
-    if not query:
-        return serialize_product_list(
-            product_query
-            .order_by(Product.source.desc(), Product.id.desc())
-            .offset(offset)
-            .limit(limit)
-            .all(),
-            user_id,
-            locale,
-        )
-
-    # Match names in every language: people often type a product the way
-    # they know it, regardless of the interface language. Results are still
-    # displayed in the user's locale.
-    name_filter = ProductName.locale.in_(SUPPORTED_LOCALES)
-    exact_products = (
-        product_query
-        .join(ProductName)
-        .filter(
-            name_filter,
-            or_(
-                ProductName.name.ilike(f"%{query}%"),
-                Product.brand.ilike(f"%{query}%"),
-            ),
-        )
-        .distinct()
-        .order_by(Product.source.desc(), Product.id.desc())
-        .offset(offset)
-        .limit(limit)
-        .all()
-    )
-    if exact_products:
-        return serialize_product_list(exact_products, user_id, locale)
-
-    similarity = func.greatest(
-        func.word_similarity(query, ProductName.name),
-        func.similarity(query, ProductName.name),
-        func.similarity(query, func.coalesce(Product.brand, "")),
-    )
-    fuzzy_products = (
-        product_query
-        .join(ProductName)
-        .filter(
-            name_filter,
-            similarity >= (0.30 if len(query) <= 3 else 0.35),
-        )
-        .group_by(Product.id)
-        .order_by(
-            func.max(similarity).desc(),
-            Product.source.desc(),
-            Product.id.desc(),
-        )
-        .offset(offset)
-        .limit(limit)
-        .all()
-    )
-    return serialize_product_list(fuzzy_products, user_id, locale)
+    products, _ = search_products_page(user_id, query, locale, limit, category, offset)
+    return products
 
 
 def get_product(user_id, product_id, locale="uk"):
@@ -212,6 +324,8 @@ def get_product(user_id, product_id, locale="uk"):
     return serialize_product(product, user_id, locale)
 
 
+# --- user products ----------------------------------------------------------
+
 # Per-100 g sanity limits. Pure fat is ~900 kcal / 100 g, so anything above
 # these values is a typo.
 NUTRITION_LIMITS = {
@@ -220,18 +334,32 @@ NUTRITION_LIMITS = {
     "fat_per_100g": 100.0,
     "carbs_per_100g": 100.0,
     "fiber_per_100g": 100.0,
+    "sugar_per_100g": 100.0,
+    "saturated_fat_per_100g": 100.0,
+    "salt_per_100g": 100.0,
     "liquid_ml_per_100g": 100.0,
 }
+
+REQUIRED_NUTRIENTS = (
+    "kcal_per_100g",
+    "protein_per_100g",
+    "fat_per_100g",
+    "carbs_per_100g",
+    "liquid_ml_per_100g",
+)
+# Not everyone knows these for a homemade product: missing = unknown (NULL).
+OPTIONAL_NUTRIENTS = (
+    "fiber_per_100g",
+    "sugar_per_100g",
+    "saturated_fat_per_100g",
+    "salt_per_100g",
+)
 
 MAX_PRODUCT_NAME_LENGTH = 120
 MAX_GRAMS_PER_UNIT = 5000.0
 
 
-def _nutrition_value(data, key):
-    raw = data.get(key, 0)
-    if raw in (None, ""):
-        raw = 0
-
+def _number(raw, key):
     try:
         value = float(raw)
     except (TypeError, ValueError):
@@ -245,6 +373,32 @@ def _nutrition_value(data, key):
         raise ProductServiceError(f"{key} cannot be greater than {limit:g}")
 
     return value
+
+
+def _nutrition_value(data, key):
+    raw = data.get(key, 0)
+    if raw in (None, ""):
+        raw = 0
+    return _number(raw, key)
+
+
+def _optional_nutrition_value(data, key):
+    """None (unknown) when missing or blank; an explicit 0 stays 0."""
+    raw = data.get(key)
+    if raw is None or (isinstance(raw, str) and not raw.strip()):
+        return None
+    return _number(raw, key)
+
+
+def _check_consistency(product):
+    # Label values are rounded, so a part can never exceed its whole.
+    if product.sugar_per_100g is not None and product.sugar_per_100g > product.carbs_per_100g:
+        raise ProductServiceError("sugar_per_100g cannot exceed carbs_per_100g")
+    if (
+        product.saturated_fat_per_100g is not None
+        and product.saturated_fat_per_100g > product.fat_per_100g
+    ):
+        raise ProductServiceError("saturated_fat_per_100g cannot exceed fat_per_100g")
 
 
 def _grams_per_unit(value):
@@ -279,15 +433,47 @@ def _text(data, key, max_length=None):
     return value
 
 
-def create_user_product(user_id, data, locale="uk"):
-    locale = normalize_locale(locale)
-    name = _text(data, "name")
-
+def _product_name_value(data):
+    name = " ".join(_text(data, "name").split())
     if not name:
         raise ProductServiceError("Product name is required")
-
     if len(name) > MAX_PRODUCT_NAME_LENGTH:
         raise ProductServiceError("Product name is too long")
+    normalized = normalize_name(name)
+    if not normalized:
+        raise ProductServiceError("Product name must contain letters or digits")
+    return name, normalized
+
+
+def _ensure_unique_name(user_id, normalized, exclude_id=None):
+    query = Product.query.filter(
+        Product.owner_user_id == user_id,
+        Product.is_active.is_(True),
+        Product.normalized_name == normalized,
+    )
+    if exclude_id is not None:
+        query = query.filter(Product.id != exclude_id)
+    if db.session.query(query.exists()).scalar():
+        raise ProductServiceError(
+            "You already have a product with this name",
+            "duplicate_product",
+        )
+
+
+def find_own_product_by_name(user_id, name):
+    normalized = normalize_name(name)
+    if not normalized:
+        return None
+    return Product.query.filter(
+        Product.owner_user_id == user_id,
+        Product.is_active.is_(True),
+        Product.normalized_name == normalized,
+    ).first()
+
+
+def create_user_product(user_id, data, locale="uk"):
+    locale = normalize_locale(locale)
+    name, normalized = _product_name_value(data)
 
     unit = (_text(data, "default_unit") or "g").lower()
     if unit not in SUPPORTED_UNITS:
@@ -299,23 +485,27 @@ def create_user_product(user_id, data, locale="uk"):
     if category not in PRODUCT_CATEGORIES:
         raise ProductServiceError("Unsupported product category")
 
+    _ensure_unique_name(user_id, normalized)
+
     product = Product(
         owner_user_id=user_id,
         source="user",
+        normalized_name=normalized,
         brand=_text(data, "brand", MAX_BRAND_LENGTH) or None,
         # Barcodes are unique across all products; a user-chosen value could
         # collide with (and block) another user's product. Not used by the UI.
         barcode=None,
-        kcal_per_100g=_nutrition_value(data, "kcal_per_100g"),
-        protein_per_100g=_nutrition_value(data, "protein_per_100g"),
-        fat_per_100g=_nutrition_value(data, "fat_per_100g"),
-        carbs_per_100g=_nutrition_value(data, "carbs_per_100g"),
-        fiber_per_100g=_nutrition_value(data, "fiber_per_100g"),
-        liquid_ml_per_100g=_nutrition_value(data, "liquid_ml_per_100g"),
         category=category,
         default_unit=unit,
         grams_per_unit=grams_per_unit,
+        data_source="user",
+        verified=False,
     )
+    for key in REQUIRED_NUTRIENTS:
+        setattr(product, key, _nutrition_value(data, key))
+    for key in OPTIONAL_NUTRIENTS:
+        setattr(product, key, _optional_nutrition_value(data, key))
+    _check_consistency(product)
 
     db.session.add(product)
     db.session.flush()
@@ -325,6 +515,7 @@ def create_user_product(user_id, data, locale="uk"):
             product_id=product.id,
             locale=locale,
             name=name,
+            normalized_name=normalized,
         )
     )
 
@@ -332,57 +523,12 @@ def create_user_product(user_id, data, locale="uk"):
     return serialize_product(product, user_id, locale)
 
 
-def _recalculate_product_entries(user_id, product, locale="uk"):
-    """Re-apply the product's (corrected) values to everything already logged.
-
-    Fixing a typo in a user's own product should fix the days it was used on,
-    not only future entries.
-    """
-    from backend.app.services.nutrition.calculation_service import (
-        NutritionValidationError,
-        calculate_product_nutrition,
-    )
-    from backend.app.services.nutrition.meal_service import recalc_meal_totals
-
-    items = (
-        MealItem.query
-        .join(Meal)
-        .filter(
-            MealItem.product_id == product.id,
-            Meal.user_id == user_id,
-        )
-        .all()
-    )
-
-    meals = {}
-    for item in items:
-        try:
-            nutrition = calculate_product_nutrition(
-                product,
-                item.amount if item.amount is not None else (item.weight or 100),
-                item.unit or product.default_unit,
-            )
-        except NutritionValidationError:
-            continue
-
-        item.name = get_product_name(product, locale)
-        item.weight = nutrition.grams
-        item.calories = int(nutrition.calories)
-        item.protein = nutrition.protein
-        item.fat = nutrition.fat
-        item.carbs = nutrition.carbs
-        item.fiber = nutrition.fiber
-        item.liquid_ml = nutrition.liquid_ml
-        meals[item.meal_id] = item.meal
-
-    db.session.flush()
-    for meal in meals.values():
-        recalc_meal_totals(meal)
-
-    return len(items)
-
-
 def update_user_product(user_id, product_id, data, locale="uk"):
+    """Edit the user's own product.
+
+    Logged entries keep the values they were logged with (each entry stores
+    its own snapshot), so this never rewrites history.
+    """
     product = get_user_product(user_id, product_id)
     if product is None or not product.is_active:
         return None
@@ -390,18 +536,16 @@ def update_user_product(user_id, product_id, data, locale="uk"):
     locale = normalize_locale(locale)
 
     if "name" in data:
-        name = _text(data, "name")
-        if not name:
-            raise ProductServiceError("Product name cannot be empty")
-
-        if len(name) > MAX_PRODUCT_NAME_LENGTH:
-            raise ProductServiceError("Product name is too long")
+        name, normalized = _product_name_value(data)
+        _ensure_unique_name(user_id, normalized, exclude_id=product.id)
+        product.normalized_name = normalized
 
         # A user's product has one name; keep every locale row in sync so a
         # language switch never brings the old (wrong) name back.
         names = ProductName.query.filter_by(product_id=product.id).all()
         for localized in names:
             localized.name = name
+            localized.normalized_name = normalized
 
         if not any(localized.locale == locale for localized in names):
             db.session.add(
@@ -409,19 +553,17 @@ def update_user_product(user_id, product_id, data, locale="uk"):
                     product_id=product.id,
                     locale=locale,
                     name=name,
+                    normalized_name=normalized,
                 )
             )
 
-    for key in (
-        "kcal_per_100g",
-        "protein_per_100g",
-        "fat_per_100g",
-        "carbs_per_100g",
-        "fiber_per_100g",
-        "liquid_ml_per_100g",
-    ):
+    for key in REQUIRED_NUTRIENTS:
         if key in data:
             setattr(product, key, _nutrition_value(data, key))
+    for key in OPTIONAL_NUTRIENTS:
+        if key in data:
+            setattr(product, key, _optional_nutrition_value(data, key))
+    _check_consistency(product)
 
     if "brand" in data:
         product.brand = _text(data, "brand", MAX_BRAND_LENGTH) or None
@@ -439,14 +581,10 @@ def update_user_product(user_id, product_id, data, locale="uk"):
         product.default_unit = unit
 
     if "grams_per_unit" in data:
-        grams_per_unit = _grams_per_unit(data["grams_per_unit"])
-
-        product.grams_per_unit = grams_per_unit
+        product.grams_per_unit = _grams_per_unit(data["grams_per_unit"])
 
     db.session.flush()
     db.session.expire(product, ["names"])
-    _recalculate_product_entries(user_id, product, locale)
-
     db.session.commit()
     return serialize_product(product, user_id, locale)
 
@@ -459,7 +597,7 @@ def archive_user_product(user_id, product_id):
     if not product.is_active:
         return False
 
-    # Archived, not deleted: meals that already used it keep their history.
+    # Archived, not deleted: meals and dishes that already use it keep it.
     product.is_active = False
     ProductFavorite.query.filter_by(product_id=product.id).delete()
     db.session.commit()

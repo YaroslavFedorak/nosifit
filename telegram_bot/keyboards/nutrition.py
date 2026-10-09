@@ -54,7 +54,10 @@ def nutrition_menu() -> InlineKeyboardMarkup:
         inline_keyboard=[
             [InlineKeyboardButton(text="➕ Додати їжу", callback_data="nutrition:add")],
             [InlineKeyboardButton(text="🍽 Прийоми сьогодні", callback_data="nutrition:today")],
-            [InlineKeyboardButton(text="👤 Мої продукти", callback_data="nutrition:catalog:mine")],
+            [
+                InlineKeyboardButton(text="🍲 Мої страви", callback_data="nutrition:dishes"),
+                InlineKeyboardButton(text="👤 Мої продукти", callback_data="nutrition:catalog:mine"),
+            ],
         ]
     )
 
@@ -155,7 +158,8 @@ def catalog_keyboard(mode: str = "search") -> InlineKeyboardMarkup:
             InlineKeyboardButton(text="👤 Мої продукти", callback_data="nutrition:catalog:mine"),
         ],
         [
-            InlineKeyboardButton(text="➕ Додати свій продукт", callback_data="nutrition:my-product"),
+            InlineKeyboardButton(text="🍲 Мої страви", callback_data="nutrition:dishes"),
+            InlineKeyboardButton(text="➕ Свій продукт", callback_data="nutrition:my-product"),
         ],
         [InlineKeyboardButton(text="← Назад", callback_data="nutrition:product_menu"), InlineKeyboardButton(text="✕ Скасувати", callback_data="nutrition:cancel")],
     ]
@@ -244,15 +248,20 @@ def amount_keyboard(unit: str, own_product_id: int | None = None) -> InlineKeybo
     return InlineKeyboardMarkup(inline_keyboard=rows)
 
 
-def review_keyboard(pending: list[dict]) -> InlineKeyboardMarkup:
+def review_keyboard(pending: list[dict], dish_name: str | None = None) -> InlineKeyboardMarkup:
+    """The draft: ✏️ amount, 🔁 replace, 🗑 remove, for this meal only."""
     rows = []
     for index, item in enumerate(pending):
         name = item.get("name", "Продукт")
         rows.append(
             [
                 InlineKeyboardButton(
-                    text=f"✏️ {name[:28]}",
+                    text=f"✏️ {name[:24]}",
                     callback_data=f"nutrition:edit:{index}",
+                ),
+                InlineKeyboardButton(
+                    text="🔁",
+                    callback_data=f"nutrition:replace:{index}",
                 ),
                 InlineKeyboardButton(
                     text="🗑",
@@ -275,10 +284,86 @@ def review_keyboard(pending: list[dict]) -> InlineKeyboardMarkup:
             )
         )
     rows.append(action_row)
+    if pending:
+        dish_row = [
+            InlineKeyboardButton(text="💾 Зберегти як страву", callback_data="nutrition:save_dish")
+        ]
+        if dish_name:
+            dish_row.append(
+                InlineKeyboardButton(
+                    text=f"♻️ Оновити «{dish_name[:14]}»",
+                    callback_data="nutrition:update_dish",
+                )
+            )
+        rows.append(dish_row)
     rows.append(
         [InlineKeyboardButton(text="✕ Скасувати", callback_data="nutrition:cancel")]
     )
     return InlineKeyboardMarkup(inline_keyboard=rows)
+
+
+DISHES_PAGE = 8
+
+
+def dishes_keyboard(dishes: list[dict], *, offset: int = 0, has_more: bool = False) -> InlineKeyboardMarkup:
+    """Saved dishes, most recently used first."""
+    rows = [
+        [
+            InlineKeyboardButton(
+                text=f"🍲 {dish['name'][:30]} · {dish['totals']['calories']:.0f} ккал",
+                callback_data=f"nutrition:dish:{dish['id']}",
+            )
+        ]
+        for dish in dishes[offset:offset + DISHES_PAGE]
+    ]
+    if has_more:
+        rows.append([
+            InlineKeyboardButton(
+                text="Показати ще",
+                callback_data=f"nutrition:dishes_more:{offset + DISHES_PAGE}",
+            )
+        ])
+    rows.append([
+        InlineKeyboardButton(text="← Назад", callback_data="nutrition:product_menu"),
+        InlineKeyboardButton(text="✕ Скасувати", callback_data="nutrition:cancel"),
+    ])
+    return InlineKeyboardMarkup(inline_keyboard=rows)
+
+
+def dish_keyboard(dish_id: int) -> InlineKeyboardMarkup:
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(text="✅ Додати", callback_data=f"nutrition:dish_add:{dish_id}"),
+                InlineKeyboardButton(text="✏️ Змінити", callback_data=f"nutrition:dish_edit:{dish_id}"),
+            ],
+            [InlineKeyboardButton(text="🗑 Видалити страву", callback_data=f"nutrition:dish_delete:{dish_id}")],
+            [
+                InlineKeyboardButton(text="← Мої страви", callback_data="nutrition:dishes"),
+                InlineKeyboardButton(text="✕ Скасувати", callback_data="nutrition:cancel"),
+            ],
+        ]
+    )
+
+
+def dish_delete_keyboard(dish_id: int) -> InlineKeyboardMarkup:
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(text="Так, видалити", callback_data=f"nutrition:dish_delete_yes:{dish_id}"),
+                InlineKeyboardButton(text="Ні", callback_data=f"nutrition:dish:{dish_id}"),
+            ]
+        ]
+    )
+
+
+def skip_keyboard(callback_data: str) -> InlineKeyboardMarkup:
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [InlineKeyboardButton(text="Не знаю / пропустити", callback_data=callback_data)],
+            [InlineKeyboardButton(text="✕ Скасувати", callback_data="nutrition:cancel")],
+        ]
+    )
 
 
 def product_brand_keyboard() -> InlineKeyboardMarkup:
@@ -315,6 +400,8 @@ PRODUCT_FIELDS = {
     "protein_per_100g": "Білки",
     "fat_per_100g": "Жири",
     "carbs_per_100g": "Вуглеводи",
+    "sugar_per_100g": "Цукор",
+    "fiber_per_100g": "Клітковина",
 }
 
 
@@ -327,6 +414,7 @@ def my_product_keyboard(product_id: int) -> InlineKeyboardMarkup:
         inline_keyboard=[
             [field("name"), field("brand"), field("kcal_per_100g")],
             [field("protein_per_100g"), field("fat_per_100g"), field("carbs_per_100g")],
+            [field("sugar_per_100g"), field("fiber_per_100g")],
             [InlineKeyboardButton(text="🗑 Видалити продукт", callback_data=f"nutrition:myprod_delete:{product_id}")],
             [InlineKeyboardButton(text="← Мої продукти", callback_data="nutrition:catalog:mine")],
         ]

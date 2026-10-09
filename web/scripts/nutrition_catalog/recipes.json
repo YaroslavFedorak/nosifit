@@ -1,0 +1,830 @@
+{
+ "pork_beef_mince": {
+  "note": "Homemade mince, pork and beef 1:1",
+  "ingredients": [
+   [
+    "pork_mince_raw",
+    50
+   ],
+   [
+    "beef_mince_15_raw",
+    50
+   ]
+  ],
+  "exact": true
+ },
+ "milk_25": {
+  "note": "Milk standardised to 2.5% fat: whole (3.63%) and semi-skimmed (1.55%) milk, 46:54",
+  "ingredients": [
+   [
+    "milk_whole",
+    46
+   ],
+   [
+    "milk_15",
+    54
+   ]
+  ],
+  "exact": true
+ },
+ "kefir_25": {
+  "note": "Kefir standardised to 2.5% fat: kefir 3.5% and kefir 1% mixed 60:40",
+  "ingredients": [
+   [
+    "kefir_32",
+    60
+   ],
+   [
+    "kefir_1",
+    40
+   ]
+  ],
+  "exact": true
+ },
+ "oat_flour": {
+  "note": "Oat flour is milled rolled oats: same composition",
+  "ingredients": [
+   [
+    "oat_flakes",
+    100
+   ]
+  ],
+  "exact": true
+ },
+ "almond_flour": {
+  "note": "Almond flour is ground blanched almonds: same composition",
+  "ingredients": [
+   [
+    "almonds",
+    100
+   ]
+  ],
+  "exact": true
+ },
+ "borscht": {
+  "note": "Typical home recipe: beef, beetroot, cabbage, potato, carrot, onion, tomato paste, oil, water. No cooking-loss correction.",
+  "ingredients": [
+   [
+    "beef_brisket_raw",
+    300
+   ],
+   [
+    "beetroot",
+    400
+   ],
+   [
+    "cabbage_white",
+    400
+   ],
+   [
+    "potato_raw",
+    400
+   ],
+   [
+    "carrot",
+    150
+   ],
+   [
+    "onion",
+    150
+   ],
+   [
+    "tomato_paste",
+    50
+   ],
+   [
+    "sunflower_oil",
+    30
+   ],
+   [
+    "sugar",
+    10
+   ],
+   [
+    "salt",
+    15
+   ],
+   [
+    "water",
+    2500
+   ]
+  ]
+ },
+ "borscht_lenten": {
+  "note": "Typical home recipe without meat. No cooking-loss correction.",
+  "ingredients": [
+   [
+    "beetroot",
+    400
+   ],
+   [
+    "cabbage_white",
+    400
+   ],
+   [
+    "potato_raw",
+    400
+   ],
+   [
+    "carrot",
+    150
+   ],
+   [
+    "onion",
+    150
+   ],
+   [
+    "beans_red_cooked",
+    200
+   ],
+   [
+    "tomato_paste",
+    50
+   ],
+   [
+    "sunflower_oil",
+    30
+   ],
+   [
+    "sugar",
+    10
+   ],
+   [
+    "salt",
+    15
+   ],
+   [
+    "water",
+    2500
+   ]
+  ]
+ },
+ "green_borscht": {
+  "note": "Typical home recipe: sorrel, potato, egg, chicken. No cooking-loss correction.",
+  "ingredients": [
+   [
+    "chicken_hen_raw",
+    400
+   ],
+   [
+    "sorrel",
+    300
+   ],
+   [
+    "potato_raw",
+    400
+   ],
+   [
+    "egg_boiled",
+    150
+   ],
+   [
+    "carrot",
+    100
+   ],
+   [
+    "onion",
+    100
+   ],
+   [
+    "salt",
+    12
+   ],
+   [
+    "water",
+    2000
+   ]
+  ]
+ },
+ "kapusniak": {
+  "note": "Typical home recipe: sauerkraut, pork ribs, potato. No cooking-loss correction.",
+  "ingredients": [
+   [
+    "pork_ribs_raw",
+    300
+   ],
+   [
+    "sauerkraut",
+    400
+   ],
+   [
+    "potato_raw",
+    300
+   ],
+   [
+    "carrot",
+    100
+   ],
+   [
+    "onion",
+    100
+   ],
+   [
+    "sunflower_oil",
+    20
+   ],
+   [
+    "salt",
+    8
+   ],
+   [
+    "water",
+    2000
+   ]
+  ]
+ },
+ "okroshka": {
+  "note": "Typical home recipe on kefir 2.5%.",
+  "ingredients": [
+   [
+    "kefir_25",
+    1000
+   ],
+   [
+    "cucumber",
+    200
+   ],
+   [
+    "radish",
+    150
+   ],
+   [
+    "potato_boiled",
+    200
+   ],
+   [
+    "egg_boiled",
+    150
+   ],
+   [
+    "sausage_cooked",
+    200
+   ],
+   [
+    "dill",
+    20
+   ],
+   [
+    "spring_onion",
+    30
+   ],
+   [
+    "salt",
+    6
+   ]
+  ]
+ },
+ "varenyky_potato": {
+  "note": "Dough (flour, water, egg, oil) with potato and fried onion filling, boiled. No cooking-loss correction.",
+  "ingredients": [
+   [
+    "flour_wheat",
+    300
+   ],
+   [
+    "water",
+    150
+   ],
+   [
+    "egg_raw",
+    50
+   ],
+   [
+    "sunflower_oil",
+    10
+   ],
+   [
+    "salt",
+    4
+   ],
+   [
+    "potato_boiled",
+    500
+   ],
+   [
+    "onion",
+    100
+   ],
+   [
+    "sunflower_oil",
+    20
+   ]
+  ]
+ },
+ "varenyky_cheese": {
+  "note": "Dough with quark 5%, egg and sugar filling, boiled.",
+  "ingredients": [
+   [
+    "flour_wheat",
+    300
+   ],
+   [
+    "water",
+    150
+   ],
+   [
+    "egg_raw",
+    50
+   ],
+   [
+    "sunflower_oil",
+    10
+   ],
+   [
+    "salt",
+    4
+   ],
+   [
+    "tvorog_5",
+    500
+   ],
+   [
+    "egg_raw",
+    50
+   ],
+   [
+    "sugar",
+    30
+   ]
+  ]
+ },
+ "varenyky_cherry": {
+  "note": "Dough with sour cherries and sugar filling, boiled.",
+  "ingredients": [
+   [
+    "flour_wheat",
+    300
+   ],
+   [
+    "water",
+    150
+   ],
+   [
+    "egg_raw",
+    50
+   ],
+   [
+    "sunflower_oil",
+    10
+   ],
+   [
+    "salt",
+    4
+   ],
+   [
+    "sour_cherry",
+    500
+   ],
+   [
+    "sugar",
+    60
+   ]
+  ]
+ },
+ "pelmeni": {
+  "note": "Dough with pork and beef mince and onion filling, boiled.",
+  "ingredients": [
+   [
+    "flour_wheat",
+    300
+   ],
+   [
+    "water",
+    150
+   ],
+   [
+    "egg_raw",
+    50
+   ],
+   [
+    "sunflower_oil",
+    10
+   ],
+   [
+    "salt",
+    4
+   ],
+   [
+    "pork_beef_mince_raw",
+    400
+   ],
+   [
+    "onion",
+    100
+   ],
+   [
+    "salt",
+    4
+   ]
+  ]
+ },
+ "syrnyky": {
+  "note": "Quark 5%, egg, flour, sugar, pan-fried in oil (oil fully counted). No cooking-loss correction.",
+  "ingredients": [
+   [
+    "tvorog_5",
+    500
+   ],
+   [
+    "egg_raw",
+    50
+   ],
+   [
+    "flour_wheat",
+    60
+   ],
+   [
+    "sugar",
+    30
+   ],
+   [
+    "sunflower_oil",
+    30
+   ]
+  ]
+ },
+ "nalysnyky": {
+  "note": "Crêpes filled with quark 5%, egg and sugar.",
+  "ingredients": [
+   [
+    "crepe_plain",
+    400
+   ],
+   [
+    "tvorog_5",
+    400
+   ],
+   [
+    "egg_raw",
+    50
+   ],
+   [
+    "sugar",
+    30
+   ]
+  ]
+ },
+ "cottage_casserole": {
+  "note": "Quark 5%, eggs, semolina, sugar, butter, baked. No cooking-loss correction.",
+  "ingredients": [
+   [
+    "tvorog_5",
+    500
+   ],
+   [
+    "egg_raw",
+    100
+   ],
+   [
+    "semolina_raw",
+    50
+   ],
+   [
+    "sugar",
+    60
+   ],
+   [
+    "butter",
+    20
+   ]
+  ]
+ },
+ "plov": {
+  "note": "Rice, chicken thigh, carrot, onion, oil, garlic and the water the rice absorbs. No evaporation correction.",
+  "ingredients": [
+   [
+    "rice_white_raw",
+    300
+   ],
+   [
+    "chicken_thigh_raw",
+    400
+   ],
+   [
+    "carrot",
+    200
+   ],
+   [
+    "onion",
+    150
+   ],
+   [
+    "sunflower_oil",
+    60
+   ],
+   [
+    "garlic",
+    20
+   ],
+   [
+    "salt",
+    10
+   ],
+   [
+    "water",
+    600
+   ]
+  ]
+ },
+ "stewed_cabbage": {
+  "note": "Fresh and sauerkraut cabbage braised with pork shoulder, carrot, onion, tomato paste, oil.",
+  "ingredients": [
+   [
+    "cabbage_white",
+    600
+   ],
+   [
+    "sauerkraut",
+    300
+   ],
+   [
+    "pork_shoulder_raw",
+    300
+   ],
+   [
+    "carrot",
+    100
+   ],
+   [
+    "onion",
+    100
+   ],
+   [
+    "tomato_paste",
+    40
+   ],
+   [
+    "sunflower_oil",
+    40
+   ],
+   [
+    "salt",
+    8
+   ]
+  ]
+ },
+ "olivier": {
+  "note": "Typical recipe: potato, carrot, egg, pickles, peas, cooked sausage, mayonnaise, onion.",
+  "ingredients": [
+   [
+    "potato_boiled",
+    300
+   ],
+   [
+    "carrot_boiled",
+    150
+   ],
+   [
+    "egg_boiled",
+    200
+   ],
+   [
+    "pickles_fermented",
+    150
+   ],
+   [
+    "green_peas_canned",
+    150
+   ],
+   [
+    "sausage_doctor",
+    250
+   ],
+   [
+    "mayonnaise",
+    150
+   ],
+   [
+    "onion",
+    50
+   ]
+  ]
+ },
+ "vinegret": {
+  "note": "Typical recipe: beetroot, potato, carrot, pickles, sauerkraut, onion, sunflower oil.",
+  "ingredients": [
+   [
+    "beetroot_cooked",
+    300
+   ],
+   [
+    "potato_boiled",
+    250
+   ],
+   [
+    "carrot_boiled",
+    150
+   ],
+   [
+    "pickles_fermented",
+    150
+   ],
+   [
+    "sauerkraut",
+    150
+   ],
+   [
+    "onion",
+    50
+   ],
+   [
+    "sunflower_oil",
+    40
+   ]
+  ]
+ },
+ "salad_cabbage": {
+  "note": "Cabbage, carrot, sunflower oil, vinegar, sugar.",
+  "ingredients": [
+   [
+    "cabbage_white",
+    300
+   ],
+   [
+    "carrot",
+    100
+   ],
+   [
+    "sunflower_oil",
+    20
+   ],
+   [
+    "vinegar",
+    10
+   ],
+   [
+    "sugar",
+    5
+   ],
+   [
+    "salt",
+    3
+   ]
+  ]
+ },
+ "salad_tomato_cucumber_oil": {
+  "note": "Tomato, cucumber, onion, sunflower oil, dill.",
+  "ingredients": [
+   [
+    "tomato",
+    200
+   ],
+   [
+    "cucumber",
+    200
+   ],
+   [
+    "onion",
+    30
+   ],
+   [
+    "sunflower_oil",
+    20
+   ],
+   [
+    "dill",
+    10
+   ],
+   [
+    "salt",
+    3
+   ]
+  ]
+ },
+ "salad_tomato_cucumber_sour_cream": {
+  "note": "Tomato, cucumber, sour cream 15–20%, dill.",
+  "ingredients": [
+   [
+    "tomato",
+    200
+   ],
+   [
+    "cucumber",
+    200
+   ],
+   [
+    "sour_cream_15",
+    60
+   ],
+   [
+    "dill",
+    10
+   ],
+   [
+    "salt",
+    3
+   ]
+  ]
+ },
+ "oatmeal_milk": {
+  "note": "Rolled oats cooked in milk 2.5%. No evaporation correction.",
+  "ingredients": [
+   [
+    "oat_flakes",
+    60
+   ],
+   [
+    "milk_25",
+    250
+   ]
+  ]
+ },
+ "rice_porridge_milk": {
+  "note": "Rice cooked in milk 2.5% with sugar and butter. No evaporation correction.",
+  "ingredients": [
+   [
+    "rice_white_raw",
+    100
+   ],
+   [
+    "milk_25",
+    500
+   ],
+   [
+    "sugar",
+    15
+   ],
+   [
+    "butter",
+    10
+   ]
+  ]
+ },
+ "semolina_milk": {
+  "note": "Semolina cooked in milk 2.5% with sugar and butter. No evaporation correction.",
+  "ingredients": [
+   [
+    "semolina_raw",
+    60
+   ],
+   [
+    "milk_25",
+    500
+   ],
+   [
+    "sugar",
+    15
+   ],
+   [
+    "butter",
+    10
+   ]
+  ]
+ },
+ "buckwheat_milk": {
+  "note": "Cooked buckwheat with milk 2.5%.",
+  "ingredients": [
+   [
+    "buckwheat_cooked",
+    200
+   ],
+   [
+    "milk_25",
+    150
+   ]
+  ]
+ },
+ "sandwich_butter": {
+  "note": "Wheat bread 40 g with butter 10 g.",
+  "ingredients": [
+   [
+    "bread_wheat",
+    40
+   ],
+   [
+    "butter",
+    10
+   ]
+  ]
+ },
+ "sandwich_cheese": {
+  "note": "Wheat bread 40 g, butter 5 g, hard cheese 20 g.",
+  "ingredients": [
+   [
+    "bread_wheat",
+    40
+   ],
+   [
+    "butter",
+    5
+   ],
+   [
+    "hard_cheese",
+    20
+   ]
+  ]
+ },
+ "sandwich_sausage": {
+  "note": "Wheat bread 40 g with cooked sausage 30 g.",
+  "ingredients": [
+   [
+    "bread_wheat",
+    40
+   ],
+   [
+    "sausage_doctor",
+    30
+   ]
+  ]
+ }
+}

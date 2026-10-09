@@ -5,7 +5,17 @@ from flask_login import current_user, login_required
 
 from backend.app.models import Meal
 from backend.app.services.nutrition.calculation_service import NutritionValidationError
-from backend.app.services.nutrition.day_service import get_daily_nutrition_data
+from backend.app.services.nutrition.day_service import meal_load_options, get_daily_nutrition_data
+from backend.app.services.nutrition.dish_service import (
+    DishServiceError,
+    create_dish,
+    delete_dish,
+    get_user_dish,
+    list_dishes,
+    log_food,
+    serialize_dish,
+    update_dish,
+)
 from backend.app.services.nutrition.meal_categories import normalize_meal_category
 from backend.app.services.nutrition.item_service import add_item_service, add_items_service, delete_item_service, update_item_service
 from backend.app.services.nutrition.meal_service import add_meal_service, copy_meal_service, delete_meal_service, update_meal_service
@@ -13,12 +23,13 @@ from backend.app.services.nutrition.product_service import (
     ProductServiceError,
     archive_user_product,
     create_user_product,
+    find_own_product_by_name,
     get_favorites,
     get_product,
     get_recent,
     get_user_products,
     normalize_locale,
-    search_products,
+    search_products_page,
     set_favorite,
     update_user_product,
 )
@@ -39,6 +50,18 @@ MAX_BULK_ITEMS = 50
 def _error(message, code, status=400):
     """JSON error with a stable ``code`` the clients can translate."""
     return jsonify({"error": message, "code": code}), status
+
+
+def _product_error(exc):
+    status = 409 if exc.code == "duplicate_product" else 400
+    return _error(str(exc), exc.code, status)
+
+
+def _int_arg(name, default):
+    try:
+        return int(request.args.get(name, default))
+    except (TypeError, ValueError):
+        return default
 
 
 def _item_payload(data):
@@ -117,16 +140,15 @@ def api_products():
     except (TypeError, ValueError):
         offset = 0
 
-    return jsonify({
-        "products": search_products(
-            current_user.id,
-            query=query,
-            locale=locale,
-            limit=limit,
-            category=category,
-            offset=offset,
-        )
-    })
+    products, has_more = search_products_page(
+        current_user.id,
+        query=query,
+        locale=locale,
+        limit=limit,
+        category=category,
+        offset=offset,
+    )
+    return jsonify({"products": products, "has_more": has_more})
 
 
 @nutrition_api.get("/products/recent")
@@ -186,7 +208,7 @@ def api_create_product():
             normalize_locale(data.get("locale")),
         )
     except ProductServiceError as exc:
-        return _error(str(exc), "invalid_product")
+        return _product_error(exc)
     return jsonify(product), 201
 
 
@@ -202,7 +224,7 @@ def api_update_product(product_id):
             normalize_locale(data.get("locale")),
         )
     except ProductServiceError as exc:
-        return _error(str(exc), "invalid_product")
+        return _product_error(exc)
 
     if product is None:
         return _error("Product not found", "product_not_found", 404)
@@ -294,6 +316,27 @@ def _legacy_item_to_product(data):
     if not name:
         raise NutritionValidationError("Product name is required")
 
+    values = {
+        "kcal_per_100g": data.get("calories", 0),
+        "protein_per_100g": data.get("protein", 0),
+        "fat_per_100g": data.get("fat", 0),
+        "carbs_per_100g": data.get("carbs", 0),
+    }
+    # The same manual entry twice: reuse the product made the first time,
+    # as long as its values match (product names are unique per user).
+    existing = find_own_product_by_name(current_user.id, name)
+    if existing is not None:
+        same = all(
+            abs(float(getattr(existing, key)) - float(value or 0)) < 1e-6
+            for key, value in values.items()
+        )
+        if same:
+            return existing.id
+        raise ProductServiceError(
+            "You already have a product with this name",
+            "duplicate_product",
+        )
+
     product = create_user_product(
         current_user.id,
         {
@@ -303,7 +346,8 @@ def _legacy_item_to_product(data):
             "protein_per_100g": data.get("protein", 0),
             "fat_per_100g": data.get("fat", 0),
             "carbs_per_100g": data.get("carbs", 0),
-            "fiber_per_100g": data.get("fiber", 0),
+            # Not sent = unknown, not 0 g.
+            "fiber_per_100g": data.get("fiber"),
             "default_unit": "g",
             "grams_per_unit": 1,
         },
@@ -443,6 +487,101 @@ def api_delete_entry(item_id):
 @login_required
 def api_delete_item(item_id):
     return _delete_item(item_id)
+
+
+@nutrition_api.get("/dishes")
+@login_required
+def api_dishes():
+    dishes, has_more = list_dishes(
+        current_user.id,
+        locale=normalize_locale(request.args.get("locale")),
+        query=request.args.get("q", ""),
+        sort=request.args.get("sort", "recent"),
+        limit=_int_arg("limit", 20),
+        offset=_int_arg("offset", 0),
+    )
+    return jsonify({"dishes": dishes, "has_more": has_more})
+
+
+@nutrition_api.post("/dishes")
+@login_required
+def api_create_dish():
+    data = request.get_json(silent=True) or {}
+    try:
+        dish = create_dish(current_user.id, data, normalize_locale(data.get("locale")))
+    except DishServiceError as exc:
+        return _error(str(exc), exc.code, exc.status)
+    return jsonify(dish), 201
+
+
+@nutrition_api.get("/dishes/<int:dish_id>")
+@login_required
+def api_dish(dish_id):
+    dish = get_user_dish(current_user.id, dish_id)
+    if dish is None:
+        return _error("Dish not found", "dish_not_found", 404)
+    return jsonify(serialize_dish(dish, normalize_locale(request.args.get("locale"))))
+
+
+@nutrition_api.patch("/dishes/<int:dish_id>")
+@login_required
+def api_update_dish(dish_id):
+    data = request.get_json(silent=True) or {}
+    try:
+        dish = update_dish(
+            current_user.id, dish_id, data, normalize_locale(data.get("locale"))
+        )
+    except DishServiceError as exc:
+        return _error(str(exc), exc.code, exc.status)
+    if dish is None:
+        return _error("Dish not found", "dish_not_found", 404)
+    return jsonify(dish)
+
+
+@nutrition_api.delete("/dishes/<int:dish_id>")
+@login_required
+def api_delete_dish(dish_id):
+    if not delete_dish(current_user.id, dish_id):
+        return _error("Dish not found", "dish_not_found", 404)
+    return jsonify({"status": "ok"})
+
+
+@nutrition_api.post("/log")
+@login_required
+def api_log_food():
+    """Log products or a dish into a meal in one request.
+
+    Finds or creates the meal for (date, category), stores every entry with
+    its nutrition snapshot and, with ``"return": "day"``, answers with the
+    same payload as ``GET /day`` so a client needs no second request.
+    """
+    data = request.get_json(silent=True) or {}
+    try:
+        logged = log_food(current_user.id, data)
+    except DishServiceError as exc:
+        return _error(str(exc), exc.code, exc.status)
+
+    locale = normalize_locale(data.get("locale"))
+    payload = {
+        "status": "ok",
+        "meal_id": logged.meal_id,
+        "ids": logged.entry_ids,
+    }
+    if data.get("return") == "day":
+        if logged.date == date.today():
+            payload["day"] = get_daily_nutrition_data(current_user.id, locale)
+        else:
+            payload["day"] = get_day_details(current_user.id, logged.date, locale)
+    else:
+        # Reloaded with entries, products and names in three queries; the
+        # committed objects would lazy-load each product (N+1).
+        meal = (
+            Meal.query.options(meal_load_options())
+            .filter_by(id=logged.meal_id)
+            .one()
+        )
+        payload["meal"] = serialize_meal(meal, locale)
+    return jsonify(payload), 201
 
 
 @nutrition_api.post("/copy-yesterday")

@@ -6,6 +6,7 @@ from backend.app.models import Meal, MealItem, Product, UserWeight
 from backend.app.models.user_profile import UserProfile
 from backend.app.services.nutrition.goals_service import get_goals
 from backend.app.services.nutrition.product_service import normalize_locale
+from backend.app.services.nutrition.day_service import get_partial_totals
 from backend.app.services.nutrition.serializers import serialize_meal
 from backend.app.services.nutrition.water_service import (
     calculate_water,
@@ -166,8 +167,8 @@ def get_day_details(user_id, target_date, locale="uk"):
         "protein": sum(meal.total_protein or 0 for meal in meals),
         "fat": sum(meal.total_fat or 0 for meal in meals),
         "carbs": sum(meal.total_carbs or 0 for meal in meals),
-        "fiber": sum(meal.total_fiber or 0 for meal in meals),
     }
+    totals.update(get_partial_totals(meals))
 
     serialized_meals = [serialize_meal(meal, locale) for meal in meals]
 
@@ -203,7 +204,14 @@ def get_day_details(user_id, target_date, locale="uk"):
         "protein": round(totals["protein"], 1),
         "fat": round(totals["fat"], 1),
         "carbs": round(totals["carbs"], 1),
-        "fiber": round(totals["fiber"], 1),
+        "fiber": (
+            round(totals["fiber"], 1) if totals["fiber"] is not None else None
+        ),
+        "fiber_complete": totals["fiber_complete"],
+        "sugar": (
+            round(totals["sugar"], 1) if totals["sugar"] is not None else None
+        ),
+        "sugar_complete": totals["sugar_complete"],
         "fiber_goal": goals.get("fiber", 30),
         "calorie_goal": goals.get("calories", 0),
         "protein_goal": goals.get("protein", 0),
