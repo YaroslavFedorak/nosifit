@@ -165,16 +165,20 @@ def test_session_payload_mapping(exercises):
         exercises["push-ups"], {"sets": 3, "reps": 12, "duration_sec": 45}
     )
 
+    # Values sent without per-set entries clear stored sets, which would no
+    # longer match them (set_entries, PR #23).
     assert plank_fields == {
         "sets_done": 3,
         "load_done": 0,
         "duration_sec_done": 45,
         "reps_done": None,
+        "set_entries": None,
     }
     assert push_fields == {
         "sets_done": 3,
         "reps_done": "12",
         "duration_sec_done": None,
+        "set_entries": None,
     }
 
 
