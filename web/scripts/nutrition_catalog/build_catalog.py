@@ -448,9 +448,13 @@ def build(usda_dir, ciqual_path, output=OUTPUT_JSON):
                 "version": 1,
                 "basis": "per 100 g edible portion; carbs = available carbohydrates",
                 "sources": {
-                    "usda_sr_legacy": "USDA FoodData Central SR Legacy 2018-04 (CC0)",
-                    "ciqual_2020": "ANSES-CIQUAL French food composition table 2020 (Etalab Open Licence 2.0)",
-                    "open_food_facts": "Manufacturer labels via Open Food Facts (ODbL), snapshot in label_data.json",
+                    # Attribution and licence terms: see SOURCES.md.
+                    "usda_sr_legacy": "USDA ARS, FoodData Central SR Legacy, 2018-04 (CC0 1.0)",
+                    "ciqual_2020": "Anses. 2020. Ciqual French food composition table, updated 2020-07-07, "
+                                   "https://ciqual.anses.fr/ (Licence Ouverte / Etalab 2.0); "
+                                   "derived values marked in 'derived' are NosiFit's",
+                    "open_food_facts": "Open Food Facts contributors, https://world.openfoodfacts.org/ "
+                                       "(ODbL 1.0 / DbCL 1.0), extract in label_data.json",
                     "nosifit_recipe": "Calculated from the listed catalog ingredients",
                 },
                 "products": built,
