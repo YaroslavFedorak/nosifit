@@ -13,6 +13,11 @@ from telegram_bot.keyboards.nutrition import (
     UNIT_LABELS,
     amount_keyboard,
     catalog_keyboard,
+    dish_delete_keyboard,
+    dish_keyboard,
+    dishes_keyboard,
+    DISHES_PAGE,
+    skip_keyboard,
     PRODUCT_FIELDS,
     meal_categories,
     meal_detail_keyboard,
@@ -31,7 +36,6 @@ from telegram_bot.keyboards.nutrition import (
     review_keyboard,
 )
 from telegram_bot.services.api import NosiFitAPIError
-from telegram_bot.services.nutrition import get_or_create_meal
 from telegram_bot.states.nutrition import NutritionStates
 
 
@@ -48,6 +52,8 @@ PRODUCT_LIMITS = {
     "new_product_fat": 100.0,
     "new_product_carbs": 100.0,
 }
+# Values a user may not know: "-" stores them as unknown (NULL).
+OPTIONAL_PRODUCT_FIELDS = {"sugar_per_100g", "fiber_per_100g"}
 TIME_PATTERN = re.compile(r"(?:[01]?\d|2[0-3])[:.][0-5]\d")
 
 
@@ -89,6 +95,17 @@ def _normalize_time(text: str) -> str | None:
     return f"{int(hours):02d}:{minutes}"
 
 
+def _nutrient_text(value, complete: bool = True) -> str:
+    """Fiber or sugar: "—" when unknown, "≥ x г" when only partly known.
+
+    Unknown is never shown as 0 g.
+    """
+    if value is None:
+        return "—"
+    text = f"{_format_number(float(value))} г"
+    return text if complete else f"≥ {text}"
+
+
 def _format_day(day: dict) -> str:
     progress = day.get("progress", {})
     goals = day.get("goals", {})
@@ -99,6 +116,8 @@ def _format_day(day: dict) -> str:
         f"🥩 {progress.get('protein', 0):.1f} / {goals.get('protein', 0):.1f} г білка",
         f"🥑 {progress.get('fat', 0):.1f} / {goals.get('fat', 0):.1f} г жирів",
         f"🍞 {progress.get('carbs', 0):.1f} / {goals.get('carbs', 0):.1f} г вуглеводів",
+        f"🌾 Клітковина: {_nutrient_text(progress.get('fiber'), progress.get('fiber_complete', True))}"
+        f" · 🍬 Цукор: {_nutrient_text(progress.get('sugar'), progress.get('sugar_complete', True))}",
         "",
         f"<b>Прийоми їжі: {len(day.get('meals', []))}</b>",
     ]
@@ -143,7 +162,9 @@ def _format_product(product: dict) -> str:
         f"🔥 {product.get('kcal_per_100g', 0):.0f} ккал / 100 г\n"
         f"🥩 {product.get('protein_per_100g', 0):.1f} г білка · "
         f"🥑 {product.get('fat_per_100g', 0):.1f} г жирів\n"
-        f"🍞 {product.get('carbs_per_100g', 0):.1f} г вуглеводів\n\n"
+        f"🍞 {product.get('carbs_per_100g', 0):.1f} г вуглеводів\n"
+        f"🍬 Цукор: {_nutrient_text(product.get('sugar_per_100g'))} · "
+        f"🌾 Клітковина: {_nutrient_text(product.get('fiber_per_100g'))}\n\n"
         f"Одиниця за замовчуванням: <b>{unit}</b>"
     )
 
@@ -174,27 +195,60 @@ def _format_catalog(mode: str, products: list[dict], query: str = "") -> str:
     )
 
 
-def _pending_totals(pending: list[dict]) -> tuple[float, float, float, float]:
-    calories = protein = fat = carbs = 0.0
+def _pending_totals(pending: list[dict]) -> dict:
+    """Draft totals, computed locally (no request). Fiber and sugar keep
+    "unknown" apart from 0: ``None`` when no item knows them, and a
+    ``*_complete`` flag when only some do."""
+    totals = {"calories": 0.0, "protein": 0.0, "fat": 0.0, "carbs": 0.0}
+    partial = {"fiber": [], "sugar": []}
     for item in pending:
         amount = float(item["amount"])
         unit = item["unit"]
         grams_per_unit = float(item.get("grams_per_unit") or 1)
         grams = amount if unit == "g" else amount * grams_per_unit
         factor = grams / 100.0
-        calories += float(item.get("kcal_per_100g") or 0) * factor
-        protein += float(item.get("protein_per_100g") or 0) * factor
-        fat += float(item.get("fat_per_100g") or 0) * factor
-        carbs += float(item.get("carbs_per_100g") or 0) * factor
-    return calories, protein, fat, carbs
+        totals["calories"] += float(item.get("kcal_per_100g") or 0) * factor
+        totals["protein"] += float(item.get("protein_per_100g") or 0) * factor
+        totals["fat"] += float(item.get("fat_per_100g") or 0) * factor
+        totals["carbs"] += float(item.get("carbs_per_100g") or 0) * factor
+        for name in partial:
+            value = item.get(f"{name}_per_100g")
+            partial[name].append(None if value is None else float(value) * factor)
+    for name, values in partial.items():
+        known = [value for value in values if value is not None]
+        totals[name] = sum(known) if known or not values else None
+        totals[f"{name}_complete"] = len(known) == len(values)
+    return totals
+
+
+def _pending_item(source: dict, amount: float, unit: str) -> dict:
+    """A draft line from a product or a dish component (per-100 g values)."""
+    return {
+        "product_id": source.get("product_id", source.get("id")),
+        "name": source.get("name", "Продукт"),
+        "amount": amount,
+        "unit": unit,
+        "kcal_per_100g": source.get("kcal_per_100g", 0),
+        "protein_per_100g": source.get("protein_per_100g", 0),
+        "fat_per_100g": source.get("fat_per_100g", 0),
+        "carbs_per_100g": source.get("carbs_per_100g", 0),
+        "fiber_per_100g": source.get("fiber_per_100g"),
+        "sugar_per_100g": source.get("sugar_per_100g"),
+        "grams_per_unit": source.get("grams_per_unit", 1),
+    }
 
 
 def _format_pending(
     category: str,
     pending: list[dict],
     existing: list[dict] | None = None,
+    dish_name: str | None = None,
 ) -> str:
     lines = [f"🍽 <b>{html.escape(meal_name(category))}</b>"]
+    if dish_name:
+        lines.append(
+            f"🍲 Страва «{html.escape(dish_name)}» — зміни стосуються лише цього прийому."
+        )
     existing = existing or []
     if existing:
         lines.extend(["", "У прийомі вже є:"])
@@ -212,13 +266,15 @@ def _format_pending(
                 f"{index}. {html.escape(item['name'])} — "
                 f"{_format_number(item['amount'])} {unit}"
             )
-        calories, protein, fat, carbs = _pending_totals(pending)
+        totals = _pending_totals(pending)
         lines.extend([
             "",
             "<b>Підсумок чернетки</b>",
-            f"🔥 {calories:.0f} ккал",
-            f"🥩 {protein:.1f} г білка · 🥑 {fat:.1f} г жирів",
-            f"🍞 {carbs:.1f} г вуглеводів",
+            f"🔥 {totals['calories']:.0f} ккал",
+            f"🥩 {totals['protein']:.1f} г білка · 🥑 {totals['fat']:.1f} г жирів",
+            f"🍞 {totals['carbs']:.1f} г вуглеводів",
+            f"🌾 Клітковина: {_nutrient_text(totals['fiber'], totals['fiber_complete'])}"
+            f" · 🍬 Цукор: {_nutrient_text(totals['sugar'], totals['sugar_complete'])}",
         ])
     return "\n".join(lines)
 
@@ -349,8 +405,8 @@ async def _perform_product_search(
 ) -> None:
     data = await state.get_data()
     try:
-        matches = await asyncio.to_thread(
-            _api(message.from_user.id).search_products,
+        matches, has_more = await asyncio.to_thread(
+            _api(message.from_user.id).search_products_page,
             query,
             "uk",
             SEARCH_LIMIT,
@@ -402,7 +458,7 @@ async def _perform_product_search(
             query=query,
             category=None,
             offset=offset,
-            has_more=len(matches) == SEARCH_LIMIT,
+            has_more=has_more,
         ),
     )
 
@@ -411,11 +467,15 @@ async def _show_review(message: Message, state: FSMContext, *, edit: bool = Fals
     data = await state.get_data()
     pending = data.get("pending", [])
     await state.set_state(NutritionStates.reviewing)
-    text = _format_pending(data.get("category"), pending, data.get("existing_items", []))
+    dish_name = data.get("draft_dish_name")
+    text = _format_pending(
+        data.get("category"), pending, data.get("existing_items", []), dish_name
+    )
+    keyboard = review_keyboard(pending, dish_name)
     if edit:
-        await _safe_edit(message, text, reply_markup=review_keyboard(pending))
+        await _safe_edit(message, text, reply_markup=keyboard)
     else:
-        await message.answer(text, reply_markup=review_keyboard(pending))
+        await message.answer(text, reply_markup=keyboard)
 
 
 async def _safe_edit(message: Message, text: str, *, reply_markup=None) -> None:
@@ -598,8 +658,8 @@ async def more_product_results(callback: CallbackQuery, state: FSMContext) -> No
         return
 
     try:
-        matches = await asyncio.to_thread(
-            _api(callback.from_user.id).search_products,
+        matches, has_more = await asyncio.to_thread(
+            _api(callback.from_user.id).search_products_page,
             query,
             "uk",
             SEARCH_LIMIT,
@@ -622,7 +682,7 @@ async def more_product_results(callback: CallbackQuery, state: FSMContext) -> No
             query=query,
             category=None,
             offset=offset,
-            has_more=len(matches) == SEARCH_LIMIT,
+            has_more=has_more,
         ),
     )
 
@@ -703,6 +763,8 @@ async def choose_product(callback: CallbackQuery, state: FSMContext) -> None:
         product_protein_per_100g=product.get("protein_per_100g", 0),
         product_fat_per_100g=product.get("fat_per_100g", 0),
         product_carbs_per_100g=product.get("carbs_per_100g", 0),
+        product_fiber_per_100g=product.get("fiber_per_100g"),
+        product_sugar_per_100g=product.get("sugar_per_100g"),
         product_grams_per_unit=product.get("grams_per_unit", 1),
     )
     await state.set_state(NutritionStates.entering_amount)
@@ -746,17 +808,21 @@ async def enter_amount(message: Message, state: FSMContext) -> None:
         return
 
     pending = list(data.get("pending", []))
-    item = {
-        "product_id": data["product_id"],
-        "name": data["product_name"],
-        "amount": amount,
-        "unit": data["product_unit"],
-        "kcal_per_100g": data.get("product_kcal_per_100g", 0),
-        "protein_per_100g": data.get("product_protein_per_100g", 0),
-        "fat_per_100g": data.get("product_fat_per_100g", 0),
-        "carbs_per_100g": data.get("product_carbs_per_100g", 0),
-        "grams_per_unit": data.get("product_grams_per_unit", 1),
-    }
+    item = _pending_item(
+        {
+            "product_id": data["product_id"],
+            "name": data["product_name"],
+            "kcal_per_100g": data.get("product_kcal_per_100g", 0),
+            "protein_per_100g": data.get("product_protein_per_100g", 0),
+            "fat_per_100g": data.get("product_fat_per_100g", 0),
+            "carbs_per_100g": data.get("product_carbs_per_100g", 0),
+            "fiber_per_100g": data.get("product_fiber_per_100g"),
+            "sugar_per_100g": data.get("product_sugar_per_100g"),
+            "grams_per_unit": data.get("product_grams_per_unit", 1),
+        },
+        amount,
+        data["product_unit"],
+    )
     editing_index = data.get("editing_index")
     if editing_index is not None and 0 <= int(editing_index) < len(pending):
         pending[int(editing_index)] = item
@@ -801,6 +867,8 @@ async def edit_pending_item(callback: CallbackQuery, state: FSMContext) -> None:
         product_protein_per_100g=item.get("protein_per_100g", 0),
         product_fat_per_100g=item.get("fat_per_100g", 0),
         product_carbs_per_100g=item.get("carbs_per_100g", 0),
+        product_fiber_per_100g=item.get("fiber_per_100g"),
+        product_sugar_per_100g=item.get("sugar_per_100g"),
         product_grams_per_unit=item.get("grams_per_unit", 1),
     )
     await state.set_state(NutritionStates.entering_amount)
@@ -840,8 +908,11 @@ async def delete_pending_item(callback: CallbackQuery, state: FSMContext) -> Non
 
     await _safe_edit(
         callback.message,
-        _format_pending(data.get("category"), pending, data.get("existing_items", [])),
-        reply_markup=review_keyboard(pending),
+        _format_pending(
+            data.get("category"), pending, data.get("existing_items", []),
+            data.get("draft_dish_name"),
+        ),
+        reply_markup=review_keyboard(pending, data.get("draft_dish_name")),
     )
 
 
@@ -873,27 +944,28 @@ async def save_meal(callback: CallbackQuery, state: FSMContext) -> None:
         )
         return
 
+    items = [
+        {"product_id": item["product_id"], "amount": item["amount"], "unit": item["unit"]}
+        for item in pending
+    ]
     try:
         api = _api(callback.from_user.id)
-        meal_id = int(data.get("meal_id") or 0)
-        if not meal_id:
-            day = await asyncio.to_thread(api.get_day)
-            meal = await asyncio.to_thread(get_or_create_meal, api, day, category, data.get("meal_time"))
-            meal_id = meal["id"]
-
-        await asyncio.to_thread(
-            api.add_entries,
-            meal_id,
-            [
-                {
-                    "product_id": item["product_id"],
-                    "amount": item["amount"],
-                    "unit": item["unit"],
-                }
-                for item in pending
-            ],
-        )
-        updated_day = await asyncio.to_thread(api.get_day)
+        if category:
+            # One request: the server finds or creates the meal, stores the
+            # snapshot entries (tagged with the dish they came from) and
+            # returns the updated day.
+            result = await asyncio.to_thread(
+                api.log_food,
+                category,
+                items,
+                dish_id=data.get("draft_dish_id"),
+                time=data.get("meal_time"),
+            )
+            updated_day = result["day"]
+        else:
+            # A meal opened from "today" without a known category.
+            await asyncio.to_thread(api.add_entries, int(data.get("meal_id") or 0), items)
+            updated_day = await asyncio.to_thread(api.get_day)
     except NosiFitAPIError as exc:
         await state.set_state(NutritionStates.reviewing)
         await callback.message.answer(
@@ -1138,22 +1210,84 @@ async def my_product_carbs(message: Message, state: FSMContext) -> None:
     if value is None or value > PRODUCT_LIMITS["new_product_carbs"]:
         await message.answer("Введіть число від 0 до 100 (на 100 г).")
         return
-    data = await state.get_data()
-    try:
-        product = await asyncio.to_thread(
-            _api(message.from_user.id).create_product,
-            {
-                "name": data["new_product_name"],
-                "brand": data.get("new_product_brand"),
-                "kcal_per_100g": data["new_product_kcal"],
-                "protein_per_100g": data["new_product_protein"],
-                "fat_per_100g": data["new_product_fat"],
-                "carbs_per_100g": value,
-                "fiber_per_100g": 0,
-                "default_unit": "g",
-                "grams_per_unit": 1,
-            },
+    await state.update_data(new_product_carbs=value)
+    await state.set_state(NutritionStates.product_sugar)
+    await message.answer(
+        "Скільки з них цукру на 100 г? Якщо на етикетці немає — пропустіть.",
+        reply_markup=skip_keyboard("nutrition:skip_sugar"),
+    )
+
+
+async def _read_optional_number(message: Message, state: FSMContext, key: str, limit: float) -> bool:
+    value = _parse_number(message.text or "")
+    if value is None or value > limit:
+        await message.answer(
+            f"Введіть число від 0 до {_format_number(limit)} або натисніть «пропустити».",
+            reply_markup=skip_keyboard(
+                "nutrition:skip_sugar" if key == "new_product_sugar" else "nutrition:skip_fiber"
+            ),
         )
+        return False
+    await state.update_data(**{key: value})
+    return True
+
+
+async def _ask_product_fiber(message: Message, state: FSMContext) -> None:
+    await state.set_state(NutritionStates.product_fiber)
+    await message.answer(
+        "Клітковина на 100 г? Не знаєте — пропустіть, це не завадить.",
+        reply_markup=skip_keyboard("nutrition:skip_fiber"),
+    )
+
+
+@router.message(NutritionStates.product_sugar)
+async def my_product_sugar(message: Message, state: FSMContext) -> None:
+    data = await state.get_data()
+    limit = float(data.get("new_product_carbs") or 0)
+    if await _read_optional_number(message, state, "new_product_sugar", limit):
+        await _ask_product_fiber(message, state)
+
+
+@router.callback_query(NutritionStates.product_sugar, F.data == "nutrition:skip_sugar")
+async def my_product_sugar_skip(callback: CallbackQuery, state: FSMContext) -> None:
+    await callback.answer()
+    # Unknown stays unknown (NULL), never 0.
+    await state.update_data(new_product_sugar=None)
+    await _ask_product_fiber(callback.message, state)
+
+
+@router.message(NutritionStates.product_fiber)
+async def my_product_fiber(message: Message, state: FSMContext) -> None:
+    if await _read_optional_number(message, state, "new_product_fiber", 100.0):
+        await _create_my_product(message, message.from_user.id, state)
+
+
+@router.callback_query(NutritionStates.product_fiber, F.data == "nutrition:skip_fiber")
+async def my_product_fiber_skip(callback: CallbackQuery, state: FSMContext) -> None:
+    await callback.answer()
+    await state.update_data(new_product_fiber=None)
+    await _create_my_product(callback.message, callback.from_user.id, state)
+
+
+async def _create_my_product(message: Message, user_id: int, state: FSMContext) -> None:
+    data = await state.get_data()
+    value = data["new_product_carbs"]
+    payload = {
+        "name": data["new_product_name"],
+        "brand": data.get("new_product_brand"),
+        "kcal_per_100g": data["new_product_kcal"],
+        "protein_per_100g": data["new_product_protein"],
+        "fat_per_100g": data["new_product_fat"],
+        "carbs_per_100g": value,
+        "default_unit": "g",
+        "grams_per_unit": 1,
+    }
+    # Sent only when known: a missing value is stored as unknown, not 0.
+    for key, field in (("new_product_sugar", "sugar_per_100g"), ("new_product_fiber", "fiber_per_100g")):
+        if data.get(key) is not None:
+            payload[field] = data[key]
+    try:
+        product = await asyncio.to_thread(_api(user_id).create_product, payload)
     except NosiFitAPIError as exc:
         await message.answer(f"Не вдалося створити продукт: {exc}")
         return
@@ -1166,8 +1300,9 @@ async def my_product_carbs(message: Message, state: FSMContext) -> None:
         product_protein_per_100g=product.get("protein_per_100g", data["new_product_protein"]),
         product_fat_per_100g=product.get("fat_per_100g", data["new_product_fat"]),
         product_carbs_per_100g=product.get("carbs_per_100g", value),
+        product_fiber_per_100g=product.get("fiber_per_100g"),
+        product_sugar_per_100g=product.get("sugar_per_100g"),
         product_grams_per_unit=product.get("grams_per_unit", 1),
-        new_product_carbs=value,
     )
     await state.set_state(NutritionStates.entering_amount)
     await message.answer(
@@ -1201,8 +1336,11 @@ def _format_my_product(product: dict) -> str:
         f"Білки: <b>{_format_number(float(product.get('protein_per_100g') or 0))}</b> г · "
         f"Жири: <b>{_format_number(float(product.get('fat_per_100g') or 0))}</b> г · "
         f"Вуглеводи: <b>{_format_number(float(product.get('carbs_per_100g') or 0))}</b> г\n"
+        f"Цукор: <b>{_nutrient_text(product.get('sugar_per_100g'))}</b> · "
+        f"Клітковина: <b>{_nutrient_text(product.get('fiber_per_100g'))}</b>\n"
         f"Одиниця: {unit}\n\n"
-        "Що змінити? Нові значення підтягнуться і в уже записані прийоми з цим продуктом."
+        "Що змінити? Нові значення діють для нових записів; "
+        "уже записані прийоми їжі не зміняться."
     )
 
 
@@ -1258,6 +1396,8 @@ async def my_product_edit_field(callback: CallbackQuery, state: FSMContext) -> N
             f"Введіть нове значення «{PRODUCT_FIELDS[field]}» на 100 г "
             f"(від 0 до {limit}), наприклад <b>12,5</b>:"
         )
+        if field in OPTIONAL_PRODUCT_FIELDS:
+            prompt += "\nНе знаєте — надішліть «-»."
     await _safe_edit(callback.message, prompt, reply_markup=my_product_edit_cancel_keyboard(int(product_id)))
 
 
@@ -1278,6 +1418,8 @@ async def my_product_save_field(message: Message, state: FSMContext) -> None:
                 reply_markup=my_product_edit_cancel_keyboard(product_id),
             )
             return
+    elif field in OPTIONAL_PRODUCT_FIELDS and (message.text or "").strip() in ("-", "—"):
+        value = None  # unknown
     else:
         value = _parse_number(message.text or "")
         limit = 950.0 if field == "kcal_per_100g" else 100.0
@@ -1340,3 +1482,273 @@ async def my_product_brand_clear(callback: CallbackQuery, state: FSMContext) -> 
         return
     await state.set_state(None)
     await _send_my_product(callback.message, callback.from_user.id, product_id, edit=True, prefix="✅ Бренд прибрано.\n\n")
+
+
+# ---------- Saved dishes ("Мої страви") ----------
+#
+# A dish is a template. Picking it fills the meal draft with its components;
+# "✏️ Змінити" lets the user change amounts, remove, replace or add products
+# for this meal only, and saving logs the draft in one request. The template
+# itself changes only through "♻️ Оновити страву".
+
+
+def _format_dish(dish: dict) -> str:
+    lines = [f"🍲 <b>{html.escape(dish.get('name', 'Страва'))}</b>", ""]
+    for item in dish.get("items", []):
+        unit = UNIT_LABELS.get(item.get("unit", "g"), item.get("unit", "g"))
+        archived = "" if item.get("is_active", True) else " <i>(продукт видалено)</i>"
+        lines.append(
+            f"• {html.escape(item.get('name', 'Продукт'))} — "
+            f"{_format_number(float(item.get('amount') or 0))} {unit}{archived}"
+        )
+    totals = dish.get("totals", {})
+    lines.extend([
+        "",
+        f"🔥 {totals.get('calories', 0):.0f} ккал · 🥩 {totals.get('protein', 0):.1f} г · "
+        f"🥑 {totals.get('fat', 0):.1f} г · 🍞 {totals.get('carbs', 0):.1f} г",
+        f"🌾 Клітковина: {_nutrient_text(totals.get('fiber'), totals.get('fiber_complete', True))}"
+        f" · 🍬 Цукор: {_nutrient_text(totals.get('sugar'), totals.get('sugar_complete', True))}",
+    ])
+    return "\n".join(lines)
+
+
+async def _show_dishes(callback: CallbackQuery, state: FSMContext, offset: int = 0) -> None:
+    data = await state.get_data()
+    dishes = list(data.get("dishes", [])) if offset else []
+    try:
+        page, has_more = await asyncio.to_thread(
+            _api(callback.from_user.id).list_dishes, "uk", DISHES_PAGE, offset
+        )
+    except NosiFitAPIError as exc:
+        await callback.message.answer(f"Не вдалося завантажити страви: {exc}")
+        return
+    dishes.extend(page)
+    # Cached for the preview: opening a dish needs no request.
+    await state.update_data(dishes=dishes)
+    if dishes:
+        text = (
+            "🍲 <b>Мої страви</b>\n\n"
+            "Нещодавні — зверху. Натисніть страву, щоб переглянути склад."
+        )
+    else:
+        text = (
+            "🍲 <b>Мої страви</b>\n\n"
+            "Збережених страв поки немає. Додайте продукти в чернетку прийому їжі "
+            "й натисніть «💾 Зберегти як страву» — наступного разу вистачить одного натискання."
+        )
+    await _safe_edit(
+        callback.message,
+        text,
+        reply_markup=dishes_keyboard(dishes, offset=offset, has_more=has_more),
+    )
+
+
+async def _get_dish(callback: CallbackQuery, state: FSMContext, dish_id: int) -> dict | None:
+    data = await state.get_data()
+    dish = next((item for item in data.get("dishes", []) if item.get("id") == dish_id), None)
+    if dish is not None:
+        return dish
+    try:
+        return await asyncio.to_thread(_api(callback.from_user.id).get_dish, dish_id)
+    except NosiFitAPIError as exc:
+        await callback.message.answer(str(exc))
+        return None
+
+
+async def _load_dish_into_draft(state: FSMContext, dish: dict) -> bool:
+    """Append the dish components to the draft; True if the draft is the dish."""
+    data = await state.get_data()
+    pending = list(data.get("pending", []))
+    is_dish_only = not pending
+    pending.extend(
+        _pending_item(item, float(item["amount"]), item["unit"])
+        for item in dish.get("items", [])
+    )
+    await state.update_data(
+        pending=pending,
+        editing_index=None,
+        # Entries are tagged with the dish only when the draft is that dish.
+        draft_dish_id=dish["id"] if is_dish_only else None,
+        draft_dish_name=dish.get("name") if is_dish_only else None,
+    )
+    return is_dish_only
+
+
+async def _continue_with_draft(callback: CallbackQuery, state: FSMContext) -> None:
+    if (await state.get_data()).get("category"):
+        await _show_review(callback.message, state, edit=True)
+        return
+    await state.set_state(NutritionStates.choosing_meal)
+    await _safe_edit(
+        callback.message,
+        "До якого прийому їжі додати?",
+        reply_markup=meal_categories(),
+    )
+
+
+@router.callback_query(F.data == "nutrition:dishes")
+async def dishes(callback: CallbackQuery, state: FSMContext) -> None:
+    await callback.answer()
+    await _show_dishes(callback, state)
+
+
+@router.callback_query(F.data.startswith("nutrition:dishes_more:"))
+async def dishes_more(callback: CallbackQuery, state: FSMContext) -> None:
+    await callback.answer()
+    await _show_dishes(callback, state, int(callback.data.rsplit(":", 1)[1]))
+
+
+@router.callback_query(F.data.startswith("nutrition:dish:"))
+async def dish_view(callback: CallbackQuery, state: FSMContext) -> None:
+    await callback.answer()
+    dish = await _get_dish(callback, state, int(callback.data.rsplit(":", 1)[1]))
+    if dish is None:
+        return
+    await _safe_edit(callback.message, _format_dish(dish), reply_markup=dish_keyboard(dish["id"]))
+
+
+@router.callback_query(F.data.startswith("nutrition:dish_add:"))
+async def dish_add(callback: CallbackQuery, state: FSMContext) -> None:
+    await callback.answer()
+    dish = await _get_dish(callback, state, int(callback.data.rsplit(":", 1)[1]))
+    if dish is None:
+        return
+    data = await state.get_data()
+    category = data.get("category")
+    if category and not data.get("pending"):
+        # Fast path: the meal is known and the draft is empty, so the dish
+        # is logged as saved in a single request.
+        try:
+            result = await asyncio.to_thread(
+                _api(callback.from_user.id).log_food,
+                category,
+                None,
+                dish_id=dish["id"],
+                time=data.get("meal_time"),
+            )
+        except NosiFitAPIError as exc:
+            await callback.message.answer(f"Не вдалося додати страву: {exc}")
+            return
+        await state.clear()
+        await _safe_edit(
+            callback.message,
+            f"✅ <b>{html.escape(dish['name'])}</b> додано.\n\n" + _format_day(result["day"]),
+            reply_markup=nutrition_menu(),
+        )
+        return
+    await _load_dish_into_draft(state, dish)
+    await _continue_with_draft(callback, state)
+
+
+@router.callback_query(F.data.startswith("nutrition:dish_edit:"))
+async def dish_edit(callback: CallbackQuery, state: FSMContext) -> None:
+    await callback.answer()
+    dish = await _get_dish(callback, state, int(callback.data.rsplit(":", 1)[1]))
+    if dish is None:
+        return
+    await _load_dish_into_draft(state, dish)
+    await _continue_with_draft(callback, state)
+
+
+@router.callback_query(F.data.startswith("nutrition:dish_delete:"))
+async def dish_delete(callback: CallbackQuery, state: FSMContext) -> None:
+    await callback.answer()
+    dish_id = int(callback.data.rsplit(":", 1)[1])
+    await _safe_edit(
+        callback.message,
+        "Видалити цю страву?\n\nУже записані прийоми їжі не зміняться.",
+        reply_markup=dish_delete_keyboard(dish_id),
+    )
+
+
+@router.callback_query(F.data.startswith("nutrition:dish_delete_yes:"))
+async def dish_delete_confirm(callback: CallbackQuery, state: FSMContext) -> None:
+    await callback.answer()
+    dish_id = int(callback.data.rsplit(":", 1)[1])
+    try:
+        await asyncio.to_thread(_api(callback.from_user.id).delete_dish, dish_id)
+    except NosiFitAPIError as exc:
+        if getattr(exc, "code", None) != "dish_not_found":
+            await callback.message.answer(str(exc))
+            return
+    data = await state.get_data()
+    if data.get("draft_dish_id") == dish_id:
+        await state.update_data(draft_dish_id=None, draft_dish_name=None)
+    await _show_dishes(callback, state)
+
+
+@router.callback_query(NutritionStates.reviewing, F.data.startswith("nutrition:replace:"))
+async def replace_pending_item(callback: CallbackQuery, state: FSMContext) -> None:
+    await callback.answer()
+    index = int(callback.data.rsplit(":", 1)[1])
+    pending = (await state.get_data()).get("pending", [])
+    if index < 0 or index >= len(pending):
+        await callback.message.answer("Цю позицію вже видалено.")
+        return
+    # The next product picked takes this line's place (see enter_amount).
+    await state.update_data(editing_index=index)
+    await state.set_state(NutritionStates.searching_product)
+    await _safe_edit(
+        callback.message,
+        f"🔁 <b>Заміна: {html.escape(pending[index].get('name', 'Продукт'))}</b>\n\n"
+        "Напишіть назву продукту, яким замінити.",
+        reply_markup=catalog_keyboard(),
+    )
+
+
+def _draft_items(pending: list[dict]) -> list[dict]:
+    return [
+        {"product_id": item["product_id"], "amount": item["amount"], "unit": item["unit"]}
+        for item in pending
+    ]
+
+
+@router.callback_query(NutritionStates.reviewing, F.data == "nutrition:save_dish")
+async def save_draft_as_dish(callback: CallbackQuery, state: FSMContext) -> None:
+    await callback.answer()
+    await state.set_state(NutritionStates.naming_dish)
+    await callback.message.answer(
+        "💾 Як назвати страву? Наприклад, <b>Моя вівсянка</b>.",
+        reply_markup=my_product_cancel_keyboard(),
+    )
+
+
+@router.message(NutritionStates.naming_dish)
+async def name_dish(message: Message, state: FSMContext) -> None:
+    name = " ".join((message.text or "").split())
+    if not name or len(name) > 120:
+        await message.answer("Назва страви — від 1 до 120 символів.")
+        return
+    data = await state.get_data()
+    try:
+        dish = await asyncio.to_thread(
+            _api(message.from_user.id).create_dish, name, _draft_items(data.get("pending", []))
+        )
+    except NosiFitAPIError as exc:
+        await message.answer(f"Не вдалося зберегти страву: {exc}")
+        return
+    # The draft is now this dish: saving the meal tags its entries with it.
+    await state.update_data(draft_dish_id=dish["id"], draft_dish_name=dish["name"], dishes=[])
+    await message.answer(f"✅ Страву «{html.escape(dish['name'])}» збережено в «Мої страви».")
+    await _show_review(message, state)
+
+
+@router.callback_query(NutritionStates.reviewing, F.data == "nutrition:update_dish")
+async def update_dish_from_draft(callback: CallbackQuery, state: FSMContext) -> None:
+    data = await state.get_data()
+    dish_id = data.get("draft_dish_id")
+    if not dish_id:
+        await callback.answer()
+        return
+    try:
+        await asyncio.to_thread(
+            _api(callback.from_user.id).update_dish,
+            int(dish_id),
+            {"items": _draft_items(data.get("pending", []))},
+        )
+    except NosiFitAPIError as exc:
+        await callback.answer()
+        await callback.message.answer(f"Не вдалося оновити страву: {exc}")
+        return
+    await state.update_data(dishes=[])
+    await callback.answer("♻️ Страву оновлено", show_alert=False)

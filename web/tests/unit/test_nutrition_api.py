@@ -181,7 +181,9 @@ def test_translation_falls_back_to_default_locale(app):
     assert ru["page"]["title"] != uk["page"]["title"]
 
 
-def test_edit_own_product_recalculates_logged_entries(app, client, user):
+def test_edit_own_product_keeps_logged_entries(app, client, user):
+    # Logged entries are snapshots: editing the product only affects what is
+    # logged from now on (owner's decision, 2026-10-09).
     login(client)
 
     product = client.post(
@@ -204,9 +206,16 @@ def test_edit_own_product_recalculates_logged_entries(app, client, user):
     assert response.get_json()["name"] == "Сирник"
 
     meal = client.get("/api/nutrition/day").get_json()["meals"][0]
-    assert meal["items"][0]["calories"] == 440
-    assert meal["items"][0]["protein"] == 30
-    assert meal["total_calories"] == 440
+    assert meal["items"][0]["calories"] == 1800
+    assert meal["items"][0]["protein"] == 2
+    assert meal["items"][0]["name"] == "Сирник крвий"
+    assert meal["total_calories"] == 1800
+
+    # Changing the amount rescales from the entry's snapshot, not the product.
+    entry_id = meal["items"][0]["id"]
+    client.patch(f"/api/nutrition/entries/{entry_id}", json={"amount": 100})
+    meal = client.get("/api/nutrition/day").get_json()["meals"][0]
+    assert meal["items"][0]["calories"] == 900
 
     # Name is the same in every language, not only the one used for editing.
     uk_name = client.get(f"/api/nutrition/products/{product['id']}?locale=uk").get_json()["name"]

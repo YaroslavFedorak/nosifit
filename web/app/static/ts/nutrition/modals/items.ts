@@ -691,11 +691,20 @@ export function setupItemModals(onRefresh: RefreshCallback): void {
             "product-fat": 100,
             "product-carbs": 100,
             "product-fiber": 100,
+            "product-sugar": 100,
         };
+        // Fiber and sugar may be unknown: an empty field is sent as null
+        // ("unknown"), never as 0.
+        const optional = new Set(["product-fiber", "product-sugar"]);
 
-        const values: Record<string, number> = {};
+        const values: Record<string, number | null> = {};
         for (const [id, max] of Object.entries(limits)) {
             const raw = getValue(id).trim();
+            if (!raw && optional.has(id)) {
+                markInvalid(id, false);
+                values[id] = null;
+                continue;
+            }
             const value = raw ? parseNumber(raw) : 0;
             const invalid = !Number.isFinite(value) || value < 0 || value > max;
             markInvalid(id, invalid);
@@ -728,11 +737,12 @@ export function setupItemModals(onRefresh: RefreshCallback): void {
             name,
             brand: getValue("product-brand").trim() || null,
             locale: getLocale(),
-            kcal_per_100g: values["product-kcal"],
-            protein_per_100g: values["product-protein"],
-            fat_per_100g: values["product-fat"],
-            carbs_per_100g: values["product-carbs"],
+            kcal_per_100g: values["product-kcal"] ?? 0,
+            protein_per_100g: values["product-protein"] ?? 0,
+            fat_per_100g: values["product-fat"] ?? 0,
+            carbs_per_100g: values["product-carbs"] ?? 0,
             fiber_per_100g: values["product-fiber"],
+            sugar_per_100g: values["product-sugar"],
             liquid_ml_per_100g: (document.getElementById("product-is-liquid") as HTMLInputElement | null)?.checked ? 100 : 0,
             default_unit: unit,
             grams_per_unit: gramsPerUnit,
@@ -812,6 +822,7 @@ export function openProductModal(product: Product | null): void {
         ["product-fat", product ? product.fat_per_100g : ""],
         ["product-carbs", product ? product.carbs_per_100g : ""],
         ["product-fiber", product ? product.fiber_per_100g : ""],
+        ["product-sugar", product ? product.sugar_per_100g : ""],
     ];
 
     fields.forEach(([id, value]) => {

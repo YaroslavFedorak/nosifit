@@ -20,6 +20,10 @@ ERROR_MESSAGES = {
     "meal_not_found": "Цей прийом їжі вже видалено.",
     "entry_not_found": "Цей продукт уже видалено.",
     "nothing_to_copy": "Учора не було записів.",
+    "duplicate_product": "У вас уже є продукт з такою назвою.",
+    "duplicate_dish": "У вас уже є страва з такою назвою.",
+    "dish_not_found": "Цю страву вже видалено.",
+    "invalid_dish": "Перевірте назву страви (до 120 символів).",
     "product_not_found": "Цей продукт уже видалено.",
     "session_not_found": "Тренування не знайдено — можливо, почався новий день.",
     "telegram_session_scope": "Це доступно лише на сайті.",
@@ -94,6 +98,17 @@ class NosiFitAPI:
         category: str | None = None,
         offset: int = 0,
     ) -> list[dict]:
+        return self.search_products_page(query, locale, limit, category, offset)[0]
+
+    def search_products_page(
+        self,
+        query: str,
+        locale: str = "uk",
+        limit: int = 8,
+        category: str | None = None,
+        offset: int = 0,
+    ) -> tuple[list[dict], bool]:
+        """One page of results and whether the server has more."""
         self.ensure_authenticated()
         payload = self._request(
             "GET",
@@ -106,7 +121,7 @@ class NosiFitAPI:
                 **({"category": category} if category else {}),
             },
         ).json()
-        return payload.get("products", [])
+        return payload.get("products", []), bool(payload.get("has_more"))
 
     def get_products(
         self, locale: str = "uk", limit: int = 50, category: str | None = None
@@ -292,6 +307,79 @@ class NosiFitAPI:
                 "locale": locale,
             },
         ).json()
+
+    def log_food(
+        self,
+        category: str,
+        items: list[dict] | None = None,
+        *,
+        dish_id: int | None = None,
+        time: str | None = None,
+        locale: str = "uk",
+    ) -> dict:
+        """Log products or a dish in one request; returns the updated day.
+
+        The server finds or creates today's meal of ``category``, stores every
+        entry with its nutrition snapshot and answers with the same payload
+        as ``get_day`` (under ``"day"``), so no follow-up request is needed.
+        """
+        self.ensure_authenticated()
+        body = {"category": category, "locale": locale, "return": "day"}
+        if items is not None:
+            body["items"] = items
+        if dish_id is not None:
+            body["dish_id"] = dish_id
+        if time:
+            body["time"] = time
+        return self._request("POST", "/api/nutrition/log", json=body).json()
+
+    def list_dishes(
+        self,
+        locale: str = "uk",
+        limit: int = 8,
+        offset: int = 0,
+        sort: str = "recent",
+        query: str = "",
+    ) -> tuple[list[dict], bool]:
+        self.ensure_authenticated()
+        payload = self._request(
+            "GET",
+            "/api/nutrition/dishes",
+            params={
+                "locale": locale,
+                "limit": limit,
+                "offset": offset,
+                "sort": sort,
+                **({"q": query} if query else {}),
+            },
+        ).json()
+        return payload.get("dishes", []), bool(payload.get("has_more"))
+
+    def get_dish(self, dish_id: int, locale: str = "uk") -> dict:
+        self.ensure_authenticated()
+        return self._request(
+            "GET", f"/api/nutrition/dishes/{dish_id}", params={"locale": locale}
+        ).json()
+
+    def create_dish(self, name: str, items: list[dict], locale: str = "uk") -> dict:
+        self.ensure_authenticated()
+        return self._request(
+            "POST",
+            "/api/nutrition/dishes",
+            json={"name": name, "items": items, "locale": locale},
+        ).json()
+
+    def update_dish(self, dish_id: int, data: dict, locale: str = "uk") -> dict:
+        self.ensure_authenticated()
+        return self._request(
+            "PATCH",
+            f"/api/nutrition/dishes/{dish_id}",
+            json={**data, "locale": locale},
+        ).json()
+
+    def delete_dish(self, dish_id: int) -> dict:
+        self.ensure_authenticated()
+        return self._request("DELETE", f"/api/nutrition/dishes/{dish_id}").json()
 
     def get_water(self) -> dict:
         self.ensure_authenticated()

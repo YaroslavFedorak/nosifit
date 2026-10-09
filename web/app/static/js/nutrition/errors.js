@@ -20,6 +20,7 @@ const KNOWN_CODES = new Set([
     "nothing_to_copy",
     "session_expired",
     "product_not_found",
+    "duplicate_product",
 ]);
 /** Human, translated text for any error thrown while talking to the API. */
 export function describeError(error) {

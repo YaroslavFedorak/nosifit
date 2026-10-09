@@ -2,6 +2,7 @@ from datetime import date, datetime, time
 
 from backend.app.extensions import db
 from backend.app.models import Meal, MealItem
+from backend.app.services.nutrition.calculation_service import sum_known
 from backend.app.services.nutrition.meal_categories import normalize_meal_category
 
 
@@ -36,7 +37,10 @@ def recalc_meal_totals(meal):
     meal.total_protein = sum(item.protein or 0 for item in meal.items)
     meal.total_fat = sum(item.fat or 0 for item in meal.items)
     meal.total_carbs = sum(item.carbs or 0 for item in meal.items)
-    meal.total_fiber = sum(item.fiber or 0 for item in meal.items)
+    # Fiber and sugar may be unknown for some products: sum what is known,
+    # NULL when nothing is.
+    meal.total_fiber = sum_known(item.fiber for item in meal.items)
+    meal.total_sugar = sum_known(item.sugar for item in meal.items)
 
 
 def add_meal_service(user_id, data):
@@ -138,6 +142,12 @@ def copy_meal_service(user_id, meal_id):
             fat=source_item.fat,
             carbs=source_item.carbs,
             fiber=source_item.fiber,
+            sugar=source_item.sugar,
+            saturated_fat=source_item.saturated_fat,
+            salt=source_item.salt,
+            basis=source_item.basis,
+            dish_id=source_item.dish_id,
+            dish_name=source_item.dish_name,
             liquid_ml=source_item.liquid_ml,
             category_id=source_item.category_id,
         )

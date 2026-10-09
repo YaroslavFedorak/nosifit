@@ -25,7 +25,9 @@ class Meal(db.Model):
     total_protein = db.Column(db.Float, nullable=False, default=0)
     total_fat = db.Column(db.Float, nullable=False, default=0)
     total_carbs = db.Column(db.Float, nullable=False, default=0)
-    total_fiber = db.Column(db.Float, nullable=False, default=0)
+    # Sums of the known values; NULL when no item has a known value.
+    total_fiber = db.Column(db.Float, nullable=True)
+    total_sugar = db.Column(db.Float, nullable=True)
 
     created_at = db.Column(
         db.DateTime,

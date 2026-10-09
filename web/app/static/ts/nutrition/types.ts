@@ -10,10 +10,18 @@ export interface Product {
     protein_per_100g: number;
     fat_per_100g: number;
     carbs_per_100g: number;
-    fiber_per_100g: number;
+    /** null = unknown (not 0). */
+    fiber_per_100g: number | null;
+    sugar_per_100g?: number | null;
+    saturated_fat_per_100g?: number | null;
+    salt_per_100g?: number | null;
     liquid_ml_per_100g: number;
     default_unit: NutritionUnit;
     grams_per_unit: number;
+    /** Where catalog values come from, e.g. "ciqual_2020" / "13039". */
+    data_source?: string | null;
+    source_ref?: string | null;
+    verified?: boolean;
     is_favorite: boolean;
     /** The user's own product: can be edited and deleted. */
     is_own?: boolean;
@@ -28,7 +36,9 @@ export interface ProductPayload {
     protein_per_100g: number;
     fat_per_100g: number;
     carbs_per_100g: number;
-    fiber_per_100g: number;
+    /** Optional: leave out (or null) when unknown. */
+    fiber_per_100g?: number | null;
+    sugar_per_100g?: number | null;
     liquid_ml_per_100g?: number;
     default_unit: NutritionUnit;
     grams_per_unit: number;
@@ -36,6 +46,7 @@ export interface ProductPayload {
 
 export interface ProductListResponse {
     products: Product[];
+    has_more?: boolean;
 }
 
 export interface MealItem {
@@ -49,8 +60,11 @@ export interface MealItem {
     protein: number;
     fat: number;
     carbs: number;
-    fiber?: number;
+    fiber?: number | null;
+    sugar?: number | null;
     liquid_ml?: number;
+    dish_id?: number | null;
+    dish_name?: string | null;
 }
 
 export interface Meal {
@@ -63,7 +77,10 @@ export interface Meal {
     total_protein?: number;
     total_fat?: number;
     total_carbs?: number;
-    total_fiber?: number;
+    total_fiber?: number | null;
+    total_sugar?: number | null;
+    fiber_complete?: boolean;
+    sugar_complete?: boolean;
     items?: MealItem[];
 }
 
@@ -79,8 +96,11 @@ export interface NutritionDay {
     carb?: number;
     carb_goal?: number;
     carb_percent?: number;
-    fiber?: number;
+    fiber?: number | null;
+    fiber_complete?: boolean;
     fiber_goal?: number;
+    sugar?: number | null;
+    sugar_complete?: boolean;
     kcal_balance?: number;
     balance_status?: string;
     kcal_diff_label?: number;
@@ -163,7 +183,10 @@ export interface NutritionDayDetails {
     protein: number;
     fat: number;
     carbs: number;
-    fiber: number;
+    fiber: number | null;
+    fiber_complete?: boolean;
+    sugar?: number | null;
+    sugar_complete?: boolean;
     fiber_goal: number;
     calorie_goal: number;
     protein_goal: number;

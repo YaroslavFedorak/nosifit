@@ -1,0 +1,149 @@
+{
+ "source": "Open Food Facts contributors, https://world.openfoodfacts.org/. This extract is available under the Open Database License (ODbL) 1.0, https://opendatacommons.org/licenses/odbl/1-0/; contents under DbCL 1.0. Values as printed on the manufacturer's label. See SOURCES.md.",
+ "products": {
+  "2200363305080": {
+   "brand": "Славія",
+   "product_name": "Сир розсільний \"Сулугуні\" масова частка жиру в сухій речовині 45%",
+   "url": "https://world.openfoodfacts.org/product/2200363305080",
+   "retrieved": "2026-10-09",
+   "per_100g": {
+    "kcal": 304,
+    "protein": 25,
+    "fat": 22.5,
+    "carbs": 0.4,
+    "sugar": 0.4,
+    "fiber": null,
+    "saturated_fat": 15.2,
+    "salt": 1.9
+   }
+  },
+  "4820045704529": {
+   "brand": "Молокія, ПрАТ \"Тернопільський молокозавод\"",
+   "product_name": "Сир кисломолочний, 5.0% жиру",
+   "url": "https://world.openfoodfacts.org/product/4820045704529",
+   "retrieved": "2026-10-09",
+   "per_100g": {
+    "kcal": 116,
+    "protein": 16,
+    "fat": 5,
+    "carbs": 1.8,
+    "sugar": 1.8,
+    "fiber": null,
+    "saturated_fat": 3.15,
+    "salt": 0.4
+   }
+  },
+  "4820045704543": {
+   "brand": "Молокія, Тернопільський молокозавод",
+   "product_name": "Сир кисломолочний, 0.2% жиру",
+   "url": "https://world.openfoodfacts.org/product/4820045704543",
+   "retrieved": "2026-10-09",
+   "per_100g": {
+    "kcal": 73,
+    "protein": 16,
+    "fat": 0.2,
+    "carbs": 1.8,
+    "sugar": 1.8,
+    "fiber": null,
+    "saturated_fat": 0.12,
+    "salt": 0.3925
+   }
+  },
+  "4820202535324": {
+   "brand": "ТМ «Злагода»",
+   "product_name": "Сирок глазурований 23% з ароматом карамелі з цукром та наповнювачем з кокосовою стружкою Кокос",
+   "url": "https://world.openfoodfacts.org/product/4820202535324",
+   "retrieved": "2026-10-09",
+   "per_100g": {
+    "kcal": 413.95,
+    "protein": 8.84,
+    "fat": 26.05,
+    "carbs": 36.05,
+    "sugar": 26.05,
+    "fiber": 0,
+    "saturated_fat": 19,
+    "salt": 0.21
+   }
+  },
+  "4820222763783": {
+   "brand": "Галичина, ТОВ \"Молочна компанія Галичина\"",
+   "product_name": "Ряжанка, 4% жиру",
+   "url": "https://world.openfoodfacts.org/product/4820222763783",
+   "retrieved": "2026-10-09",
+   "per_100g": {
+    "kcal": 62,
+    "protein": 3,
+    "fat": 4,
+    "carbs": 3.5,
+    "sugar": 3.5,
+    "fiber": null,
+    "saturated_fat": 2.6,
+    "salt": 0.1
+   }
+  },
+  "4823005206330": {
+   "brand": "Яготинський",
+   "product_name": "Айран",
+   "url": "https://world.openfoodfacts.org/product/4823005206330",
+   "retrieved": "2026-10-09",
+   "per_100g": {
+    "kcal": 40,
+    "protein": 2.5,
+    "fat": 2,
+    "carbs": 2.9,
+    "sugar": 2.9,
+    "fiber": null,
+    "saturated_fat": 1.38,
+    "salt": 0.62
+   }
+  },
+  "4823005211839": {
+   "brand": "Яготинське, Яготинський маслозавод",
+   "product_name": "Ряжанка \"Яготинська\", 3.2% жиру",
+   "url": "https://world.openfoodfacts.org/product/4823005211839",
+   "retrieved": "2026-10-09",
+   "per_100g": {
+    "kcal": 57,
+    "protein": 3,
+    "fat": 3.2,
+    "carbs": 4,
+    "sugar": 4,
+    "fiber": null,
+    "saturated_fat": 2.2,
+    "salt": 0.08
+   }
+  },
+  "4823036504726": {
+   "brand": "Алан",
+   "product_name": "Ковбаса Варена «Лікарська»",
+   "url": "https://world.openfoodfacts.org/product/4823036504726",
+   "retrieved": "2026-10-09",
+   "per_100g": {
+    "kcal": 224,
+    "protein": 13,
+    "fat": 18.3,
+    "carbs": 1.7,
+    "sugar": 1.4,
+    "fiber": null,
+    "saturated_fat": 7.1,
+    "salt": null
+   }
+  },
+  "4823065731704": {
+   "brand": "President",
+   "product_name": "Сир кисломолочний \"Сирна Традиція\", 9% жиру",
+   "url": "https://world.openfoodfacts.org/product/4823065731704",
+   "retrieved": "2026-10-09",
+   "per_100g": {
+    "kcal": 145,
+    "protein": 14,
+    "fat": 9,
+    "carbs": 2,
+    "sugar": 2,
+    "fiber": 0,
+    "saturated_fat": 5.85,
+    "salt": 0.1
+   }
+  }
+ }
+}

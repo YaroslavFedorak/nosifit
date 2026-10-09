@@ -70,6 +70,14 @@ class User(db.Model, UserMixin):
         foreign_keys="ProductFavorite.user_id",
     )
 
+    nutrition_dishes = db.relationship(
+        "Dish",
+        back_populates="user",
+        cascade="all, delete-orphan",
+        lazy="dynamic",
+        foreign_keys="Dish.user_id",
+    )
+
     sleep_entries = db.relationship(
         "SleepEntry",
         back_populates="user",

@@ -37,6 +37,7 @@
         }
     },
     "fields": {
+        "sugar": "Cukry",
         "name": "Nazwa",
         "calories": "Kalorie",
         "protein": "Białko",
@@ -251,7 +252,7 @@
         "emptyRecent": "Tutaj pojawią się ostatnio dodawane produkty",
         "emptyMine": "Nie masz jeszcze własnych produktów",
         "editMyProductTitle": "Edytuj mój produkt",
-        "editHint": "Zmiany obejmą też posiłki, w których ten produkt jest już zapisany.",
+        "editHint": "Nowe wartości dotyczą kolejnych wpisów; zapisane już posiłki się nie zmienią.",
         "deleteProduct": "Usuń produkt",
         "editProductData": "Edytuj produkt",
         "ownBadge": "mój"
@@ -265,6 +266,7 @@
         }
     },
     "errors": {
+        "duplicate_product": "Masz już produkt o tej nazwie.",
         "generic": "Nie udało się zapisać. Spróbuj ponownie.",
         "network": "Brak połączenia z serwerem. Sprawdź internet i spróbuj ponownie.",
         "session_expired": "Sesja wygasła. Odśwież stronę i zaloguj się ponownie.",

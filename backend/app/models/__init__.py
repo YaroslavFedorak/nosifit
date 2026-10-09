@@ -15,6 +15,7 @@ from backend.app.models.nutrition.user_water import UserWater
 from backend.app.models.nutrition.product import Product
 from backend.app.models.nutrition.product_name import ProductName
 from backend.app.models.nutrition.product_favorite import ProductFavorite
+from backend.app.models.nutrition.dish import Dish, DishItem
 
 # Training Session Engine
 from backend.app.models.training_session import TrainingSession, SessionExercise
