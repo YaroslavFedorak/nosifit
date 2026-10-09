@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "nosifit",
-    "landingTitle": "nosifit — Twój osobisty asystent fitness"
+    "landingTitle": "nosifit — trening, odżywianie i regeneracja w jednym kontekście"
   },
   "nav": {
     "home": "Strona główna",
@@ -12,61 +12,217 @@
     "register": "Rejestracja"
   },
   "landing": {
-    "title": "Wszystko, czego potrzebujesz, aby<br>lepiej trenować, regenerować się i żyć",
-    "subtitle": "NosiFit łączy trening, odżywianie, sen, nawyki i regenerację w jednej aplikacji. Analizuje Twoje dane i podpowiada, co ma znaczenie w danym momencie.",
-    "startNow": "Utwórz konto",
-    "tryDemo": "Zobacz demo",
-    "note": "Zacznij od własnych danych. Bez zbędnej komplikacji.",
-    "overview": {
-      "label": "Przykładowy dzień",
-      "title": "Twój stan dzisiaj",
-      "status": "W normie",
-      "recovery": "Regeneracja",
-      "training": "Obciążenie",
-      "trainingValue": "Umiarkowane",
-      "sleep": "Sen",
-      "water": "Woda",
-      "meals": "Posiłki",
-      "recommendationLabel": "Rekomendacja",
-      "recommendation": "Dzisiejsze obciążenie jest umiarkowane. Kontynuuj zgodnie z planem i zwróć uwagę na regenerację."
+    "skip": "Przejdź do treści",
+    "sample": "Przykładowe dane",
+    "hero": {
+      "eyebrow": "Trening · odżywianie · woda · waga · regeneracja",
+      "title": "Wszystkie dane o formie w jednym kontekście",
+      "lead": "Trening, odżywianie, woda, waga i regeneracja w jednym miejscu. NosiFit zestawia je dzień po dniu, a rekomendacje uwzględniają kontekst dnia.",
+      "start": "Załóż konto",
+      "demo": "Zobacz demo",
+      "note": "Rejestracja jest bezpłatna. Demo działa bez konta."
     },
-    "areas": {
-      "eyebrow": "W jednym miejscu",
-      "title": "Najważniejsze elementy Twojej rutyny",
-      "text": "NosiFit nie ogranicza się do treningów. Pomaga zobaczyć zależność między obciążeniem, odżywianiem i regeneracją.",
-      "open": "Dowiedz się więcej",
+    "day": {
+      "label": "Przykładowy dzień",
+      "date": "pt., 9 paź",
+      "aria": "Przykładowy dzień w NosiFit: pięć sygnałów i wynikająca z nich rekomendacja",
       "training": {
-        "title": "Trening",
-        "text": "Zapisuj ćwiczenia, serie, powtórzenia i obciążenie. Obserwuj historię oraz zmiany w czasie."
+        "label": "Trening",
+        "value": "Plecy · 14 serii",
+        "meta": "2 dni temu"
       },
       "nutrition": {
-        "title": "Odżywianie",
-        "text": "Dodawaj posiłki, kalorie, makroskładniki i wodę, aby widzieć odżywianie razem z resztą danych."
+        "label": "Odżywianie",
+        "value": "1840 / 2400 kcal"
       },
-      "recovery": {
-        "title": "Regeneracja",
-        "text": "Śledź sen, regenerację i inne sygnały pomagające ocenić gotowość do treningu."
+      "water": {
+        "label": "Woda",
+        "value": "1,5 / 2,5 l"
       },
-      "habits": {
-        "title": "Nawyki",
-        "text": "Zapisuj regularne działania i obserwuj, jak wiążą się z Twoją rutyną i regeneracją."
+      "weight": {
+        "label": "Waga",
+        "value": "78,4 kg",
+        "meta": "−0,3 w tym tygodniu"
+      },
+      "sleep": {
+        "label": "Sen",
+        "value": "5 h 40 min",
+        "meta": "mniej niż zwykle"
+      },
+      "recLabel": "Rekomendacja · trening",
+      "recTitle": "Plecy: 3 serie z RIR 2 zamiast 5",
+      "because": "Dlaczego",
+      "reasons": {
+        "sleep": "sen 5 h 40 min",
+        "recent": "plecy — 2 dni temu",
+        "readiness": "umiarkowana gotowość"
       }
     },
     "context": {
-      "eyebrow": "Jak to działa",
-      "title": "Od pojedynczych zapisów do pełniejszego obrazu",
-      "text": "Zapisujesz to, co dzieje się w ciągu dnia. NosiFit łączy dane, analizuje je i wykorzystuje dostępny kontekst do tworzenia rekomendacji.",
-      "records": "Zapisy",
-      "recordsText": "Trening, odżywianie, sen, woda i nawyki.",
-      "analysis": "Analiza",
-      "analysisText": "Dane są porównywane i analizowane razem, a nie osobno.",
-      "recommendations": "Rekomendacje",
-      "recommendationsText": "Otrzymuj praktyczne wskazówki na podstawie najnowszych danych."
+      "eyebrow": "Kontekst",
+      "title": "Ten sam trening, inny dzień",
+      "text": "Dziennik treningowy widzi serie. NosiFit widzi też dzień wokół nich.",
+      "tracker": "Dziennik treningowy",
+      "nosifit": "NosiFit",
+      "exercise": "Wyciskanie leżąc",
+      "dose": "4 × 8 · 80 kg",
+      "tue": "Wt",
+      "fri": "Pt",
+      "tueSleep": "sen 7 h 50 min",
+      "tueKcal": "2350 kcal",
+      "tueWater": "woda 2,4 l",
+      "friSleep": "sen 5 h 10 min",
+      "friKcal": "1600 kcal",
+      "friWater": "woda 0,9 l",
+      "tueState": "Gotowa",
+      "friState": "Niska gotowość",
+      "tueNote": "Trenuj według planu",
+      "friNote": "2 serie zamiast 4",
+      "trackerFoot": "Dwa identyczne wpisy.",
+      "nosifitFoot": "Dwa różne dni."
+    },
+    "modules": {
+      "eyebrow": "Produkt",
+      "title": "Co widzisz w środku",
+      "indexAria": "Sekcje NosiFit",
+      "dashboard": {
+        "name": "Panel",
+        "title": "Jeden ekran na dzień",
+        "text": "Trening, jedzenie, sen i nawyki obok siebie. Rekomendacje biorą pod uwagę wszystko naraz.",
+        "recTraining": "Trening",
+        "recTrainingTitle": "Plecy: 3 serie, RIR 2",
+        "recRecovery": "Regeneracja",
+        "recRecoveryTitle": "Połóż się przed 23:30",
+        "recNutrition": "Odżywianie",
+        "recNutritionTitle": "Jeszcze 40 g białka dziś",
+        "daily": "Podsumowanie dnia",
+        "dailyText": "Umiarkowane obciążenie: krótszy trening, więcej snu."
+      },
+      "training": {
+        "name": "Trening",
+        "title": "Objętość na mięsień, nie tylko dziennik",
+        "text": "Każda seria z własnymi powtórzeniami i ciężarem. Serie tygodniowe porównywane z zakresem docelowym.",
+        "widget": "Serie w tygodniu",
+        "period": "Od poniedziałku",
+        "chest": "Klatka",
+        "back": "Plecy",
+        "legs": "Nogi",
+        "shoulders": "Barki",
+        "arms": "Ramiona",
+        "readiness": "Gotowość treningowa",
+        "readinessValue": "Umiarkowana gotowość",
+        "next": "Dalej: plecy — 3 serie, 8–10 powtórzeń, RIR 2"
+      },
+      "nutrition": {
+        "name": "Odżywianie",
+        "title": "Jedzenie, woda i waga razem",
+        "text": "Kalorie i makroskładniki, woda w ciągu dnia i trend wagi — bez osobnych aplikacji.",
+        "kcal": "Kalorie",
+        "protein": "Białko",
+        "fat": "Tłuszcze",
+        "carbs": "Węglowodany",
+        "water": "Woda",
+        "waterValue": "1,5 / 2,5 l",
+        "add": "+0,25 l",
+        "weight": "Waga",
+        "weightValue": "78,4 kg",
+        "weightTrend": "−1,6 kg w 8 tygodni",
+        "chartAria": "Waga przez 8 tygodni: od 80,0 do 78,4 kg",
+        "kcalValue": "1840",
+        "kcalGoal": "/ 2400"
+      },
+      "recovery": {
+        "name": "Regeneracja",
+        "title": "Sen i nawyki jako sygnały",
+        "text": "Sen, nawyki i obciążenie składają się na ocenę regeneracji. Widać też, z czego wynika.",
+        "sleep": "Sen",
+        "sleepValue": "7 h 42 min",
+        "sleepRange": "23:40 – 07:22",
+        "sleepQuality": "Dobry sen",
+        "score": "Regeneracja",
+        "scoreStatus": "Dobrze",
+        "scoreAria": "Regeneracja: 4 z 5",
+        "habits": "Nawyki",
+        "habit1": "Rozciąganie",
+        "habit2": "Spacer 30 min",
+        "habit3": "Magnez",
+        "done": "zrobione",
+        "notDone": "niezrobione"
+      }
+    },
+    "history": {
+      "eyebrow": "Historia",
+      "title": "Rok w kratkach",
+      "text": "Każda kratka to dzień. W aplikacji każdy dzień otwiera się ze wszystkimi wpisami.",
+      "metricsAria": "Wskaźnik heatmapy",
+      "metrics": {
+        "balance": "Bilans dnia",
+        "training": "Trening",
+        "recovery": "Regeneracja",
+        "nutrition": "Odżywianie"
+      },
+      "gridAria": "Heatmapa za rok. Strzałkami można przechodzić między dniami.",
+      "less": "Mniej",
+      "more": "Więcej",
+      "noData": "Brak wpisów",
+      "level": "poziom {level}",
+      "stat1": "4,1",
+      "stat1Label": "treningu na tydzień",
+      "stat2": "7 h 12 min",
+      "stat2Label": "średni sen",
+      "stat3": "−2,4 kg",
+      "stat3Label": "w 12 tygodni"
+    },
+    "telegram": {
+      "eyebrow": "Telegram",
+      "title": "Wpis w dziesięć sekund",
+      "text": "Bot to szybkie wejście dla treningu, jedzenia, wody i wagi. Wpisy trafiają na to samo konto, co na stronie.",
+      "point1": "Logowanie przez połączony Telegram — bot nigdy nie pyta o hasło.",
+      "point2": "Jeden trening dziennie: bot i strona edytują ten sam wpis.",
+      "open": "Otwórz @{bot}",
+      "chatAria": "Przykład: zapis wody przez bota NosiFit w Telegramie. Bot aktualizuje swoją wiadomość po naciśnięciu przycisku.",
+      "bot": "NosiFit",
+      "menuWater": "💧 Woda",
+      "menuWeight": "⚖️ Waga",
+      "other": "✏️ Inna ilość",
+      "unit": "l",
+      "menuFood": "🍽 Jedzenie",
+      "menuHome": "🏠 Start",
+      "added": "✅ +0.5 l",
+      "today": "💧 Woda dziś",
+      "progress": "1.5 / 2.5 l · 60%",
+      "choose": "Wybierz, ile dodać:"
+    },
+    "model": {
+      "eyebrow": "Model",
+      "title": "Skąd biorą się rekomendacje",
+      "text": "Model obciążenia jest heurystyczny i oparty na badaniach. Część współczynników to założenia inżynierskie i tak są oznaczone.",
+      "step1": "Serie · powtórzenia · RIR",
+      "step1Note": "Twoje wpisy",
+      "step2": "Bodziec i zmęczenie",
+      "step2Note": "zmęczenie maleje z czasem",
+      "step3": "Gotowość × sen",
+      "step3Note": "niedobór snu ją obniża",
+      "step4": "Serie na dziś",
+      "step4Note": "w tygodniowym zakresie",
+      "stepsAria": "Etapy modelu obciążenia",
+      "note": "Pokazuje poziomy i stany, a nie dokładne procenty. To wskazówka do decyzji, a nie pomiar medyczny.",
+      "link": "Jak działa NosiFit"
     },
     "cta": {
-      "eyebrow": "NosiFit",
-      "title": "Zobacz, jak działa w praktyce",
-      "text": "Zobacz rzeczywisty przykład aplikacji albo utwórz własne konto i zacznij zapisywać swoje dane."
+      "title": "Zacznij od jednego dnia",
+      "text": "Trening, posiłek albo noc snu — panel wypełnia się od pierwszego wpisu.",
+      "start": "Załóż konto",
+      "demo": "Zobacz demo"
+    },
+    "footer": {
+      "aria": "Linki w stopce",
+      "about": "O NosiFit",
+      "info": "Jak to działa",
+      "demo": "Demo",
+      "contact": "Kontakt",
+      "login": "Zaloguj się",
+      "rights": "NosiFit"
     }
   },
   "contact": {

@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "nosifit",
-    "landingTitle": "nosifit — Your personal fitness assistant"
+    "landingTitle": "nosifit — training, nutrition and recovery in one context"
   },
   "nav": {
     "home": "Home",
@@ -12,61 +12,217 @@
     "register": "Register"
   },
   "landing": {
-    "title": "Everything you need to<br>train, recover and live better",
-    "subtitle": "NosiFit brings training, nutrition, sleep, habits and recovery together in one app. It uses your data to provide recommendations based on what is happening now.",
-    "startNow": "Create an account",
-    "tryDemo": "View demo",
-    "note": "Start with your own data. No unnecessary complexity.",
-    "overview": {
-      "label": "Example day",
-      "title": "Your state today",
-      "status": "On track",
-      "recovery": "Recovery",
-      "training": "Training load",
-      "trainingValue": "Moderate",
-      "sleep": "Sleep",
-      "water": "Water",
-      "meals": "Meals",
-      "recommendationLabel": "Recommendation",
-      "recommendation": "Today's workload is moderate. Continue as planned and give recovery some attention."
+    "skip": "Skip to content",
+    "sample": "Sample data",
+    "hero": {
+      "eyebrow": "Training · nutrition · water · weight · recovery",
+      "title": "All your fitness data in one context",
+      "lead": "Training, nutrition, water, weight and recovery in one place. NosiFit lines them up by day, and recommendations take the whole day into account.",
+      "start": "Create an account",
+      "demo": "View demo",
+      "note": "Signing up is free. The demo works without an account."
     },
-    "areas": {
-      "eyebrow": "In one place",
-      "title": "The parts of your daily state",
-      "text": "NosiFit goes beyond workouts. It helps you see the relationship between training load, nutrition and recovery.",
-      "open": "Learn more",
+    "day": {
+      "label": "Sample day",
+      "date": "Fri, 9 Oct",
+      "aria": "Sample day in NosiFit: five signals and the recommendation that follows from them",
       "training": {
-        "title": "Training",
-        "text": "Record exercises, sets, repetitions and workload. Follow your history and changes over time."
+        "label": "Training",
+        "value": "Back · 14 sets",
+        "meta": "2 days ago"
       },
       "nutrition": {
-        "title": "Nutrition",
-        "text": "Log meals, calories, macros and water so nutrition can be viewed alongside the rest of your data."
+        "label": "Nutrition",
+        "value": "1,840 / 2,400 kcal"
       },
-      "recovery": {
-        "title": "Recovery",
-        "text": "Track sleep, recovery and other signals that help you understand your readiness for training."
+      "water": {
+        "label": "Water",
+        "value": "1.5 / 2.5 L"
       },
-      "habits": {
-        "title": "Habits",
-        "text": "Record regular actions and see how they relate to your routine and recovery."
+      "weight": {
+        "label": "Weight",
+        "value": "78.4 kg",
+        "meta": "−0.3 this week"
+      },
+      "sleep": {
+        "label": "Sleep",
+        "value": "5 h 40 min",
+        "meta": "below usual"
+      },
+      "recLabel": "Recommendation · training",
+      "recTitle": "Back: 3 sets at RIR 2 instead of 5",
+      "because": "Why",
+      "reasons": {
+        "sleep": "sleep 5 h 40 min",
+        "recent": "back — 2 days ago",
+        "readiness": "moderate readiness"
       }
     },
     "context": {
-      "eyebrow": "How it works",
-      "title": "From separate records to a clearer picture",
-      "text": "You record what happens throughout your day. NosiFit brings the data together, analyzes it and uses the available context for recommendations.",
-      "records": "Records",
-      "recordsText": "Training, nutrition, sleep, water and habits.",
-      "analysis": "Analysis",
-      "analysisText": "Data is compared and considered together rather than in isolation.",
-      "recommendations": "Recommendations",
-      "recommendationsText": "Get practical suggestions based on your latest data."
+      "eyebrow": "Context",
+      "title": "The same workout, a different day",
+      "text": "A workout tracker sees sets. NosiFit also sees the day around them.",
+      "tracker": "Workout log",
+      "nosifit": "NosiFit",
+      "exercise": "Bench press",
+      "dose": "4 × 8 · 80 kg",
+      "tue": "Tue",
+      "fri": "Fri",
+      "tueSleep": "sleep 7 h 50 min",
+      "tueKcal": "2,350 kcal",
+      "tueWater": "water 2.4 L",
+      "friSleep": "sleep 5 h 10 min",
+      "friKcal": "1,600 kcal",
+      "friWater": "water 0.9 L",
+      "tueState": "Ready",
+      "friState": "Low readiness",
+      "tueNote": "Train as planned",
+      "friNote": "2 sets instead of 4",
+      "trackerFoot": "Two identical entries.",
+      "nosifitFoot": "Two different days."
+    },
+    "modules": {
+      "eyebrow": "Product",
+      "title": "What you see inside",
+      "indexAria": "NosiFit sections",
+      "dashboard": {
+        "name": "Dashboard",
+        "title": "One screen for the day",
+        "text": "Workout, food, sleep and habits side by side. Recommendations come from all of them at once.",
+        "recTraining": "Training",
+        "recTrainingTitle": "Back: 3 sets, RIR 2",
+        "recRecovery": "Recovery",
+        "recRecoveryTitle": "In bed before 23:30",
+        "recNutrition": "Nutrition",
+        "recNutritionTitle": "40 g more protein today",
+        "daily": "Day summary",
+        "dailyText": "Moderate load: a shorter session and more sleep."
+      },
+      "training": {
+        "name": "Training",
+        "title": "Volume per muscle, not just a log",
+        "text": "Every set with its own reps and weight. Weekly sets are compared with a target band.",
+        "widget": "Weekly sets",
+        "period": "Since Monday",
+        "chest": "Chest",
+        "back": "Back",
+        "legs": "Legs",
+        "shoulders": "Shoulders",
+        "arms": "Arms",
+        "readiness": "Training readiness",
+        "readinessValue": "Moderate readiness",
+        "next": "Next: back — 3 sets, 8–10 reps, RIR 2"
+      },
+      "nutrition": {
+        "name": "Nutrition",
+        "title": "Food, water and weight together",
+        "text": "Calories and macros, daily water and the weight trend — no separate apps.",
+        "kcal": "Calories",
+        "protein": "Protein",
+        "fat": "Fat",
+        "carbs": "Carbs",
+        "water": "Water",
+        "waterValue": "1.5 / 2.5 L",
+        "add": "+0.25 L",
+        "weight": "Weight",
+        "weightValue": "78.4 kg",
+        "weightTrend": "−1.6 kg in 8 weeks",
+        "chartAria": "Weight over 8 weeks: from 80.0 to 78.4 kg",
+        "kcalValue": "1,840",
+        "kcalGoal": "/ 2,400"
+      },
+      "recovery": {
+        "name": "Recovery",
+        "title": "Sleep and habits as signals",
+        "text": "Sleep, habits and load add up to a recovery score, and you can see what it is made of.",
+        "sleep": "Sleep",
+        "sleepValue": "7 h 42 min",
+        "sleepRange": "23:40 – 07:22",
+        "sleepQuality": "Good sleep",
+        "score": "Recovery",
+        "scoreStatus": "Good",
+        "scoreAria": "Recovery: 4 of 5",
+        "habits": "Habits",
+        "habit1": "Stretching",
+        "habit2": "30 min walk",
+        "habit3": "Magnesium",
+        "done": "done",
+        "notDone": "not done"
+      }
+    },
+    "history": {
+      "eyebrow": "History",
+      "title": "A year in cells",
+      "text": "Each cell is a day. In the app any day opens with everything you logged.",
+      "metricsAria": "Heatmap metric",
+      "metrics": {
+        "balance": "Daily balance",
+        "training": "Training",
+        "recovery": "Recovery",
+        "nutrition": "Nutrition"
+      },
+      "gridAria": "Heatmap for the year. Use the arrow keys to move between days.",
+      "less": "Less",
+      "more": "More",
+      "noData": "No entries",
+      "level": "level {level}",
+      "stat1": "4.1",
+      "stat1Label": "workouts per week",
+      "stat2": "7 h 12 min",
+      "stat2Label": "average sleep",
+      "stat3": "−2.4 kg",
+      "stat3Label": "in 12 weeks"
+    },
+    "telegram": {
+      "eyebrow": "Telegram",
+      "title": "Log it in ten seconds",
+      "text": "The bot is a quick way in for workouts, food, water and weight. Entries go to the same account you use on the website.",
+      "point1": "Sign in with your connected Telegram — the bot never asks for a password.",
+      "point2": "One workout per day: the bot and the website edit the same entry.",
+      "open": "Open @{bot}",
+      "chatAria": "Example: logging water with the NosiFit Telegram bot. The bot updates its message after a button is pressed.",
+      "bot": "NosiFit",
+      "menuWater": "💧 Water",
+      "menuWeight": "⚖️ Weight",
+      "other": "✏️ Other amount",
+      "unit": "L",
+      "menuFood": "🍽 Food",
+      "menuHome": "🏠 Home",
+      "added": "✅ +0.5 L",
+      "today": "💧 Water today",
+      "progress": "1.5 / 2.5 L · 60%",
+      "choose": "Choose how much to add:"
+    },
+    "model": {
+      "eyebrow": "Model",
+      "title": "Where recommendations come from",
+      "text": "The training-load model is evidence-informed and heuristic. Some coefficients are engineering assumptions, and they are labelled as such.",
+      "step1": "Sets · reps · RIR",
+      "step1Note": "what you logged",
+      "step2": "Stimulus and fatigue",
+      "step2Note": "fatigue decays over time",
+      "step3": "Readiness × sleep",
+      "step3Note": "short sleep lowers it",
+      "step4": "Sets for today",
+      "step4Note": "within the weekly band",
+      "stepsAria": "Stages of the training-load model",
+      "note": "It shows levels and states, not exact percentages. A hint for decisions, not a medical measurement.",
+      "link": "How NosiFit works"
     },
     "cta": {
-      "eyebrow": "NosiFit",
-      "title": "See how it works in practice",
-      "text": "View a real example of the app or create your own account and start tracking your data."
+      "title": "Start with one day",
+      "text": "A workout, a meal or a night of sleep — the dashboard fills in from the first entry.",
+      "start": "Create an account",
+      "demo": "View demo"
+    },
+    "footer": {
+      "aria": "Footer links",
+      "about": "About NosiFit",
+      "info": "How it works",
+      "demo": "Demo",
+      "contact": "Contact",
+      "login": "Log in",
+      "rights": "NosiFit"
     }
   },
   "contact": {

@@ -3,145 +3,31 @@
 {% block title %}{{ public_t("meta.landingTitle") }}{% endblock %}
 
 {% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/components/buttons.css') }}" />
+<link rel="stylesheet" href="{{ url_for('static', filename='css/components/cards.css') }}" />
 <link rel="stylesheet" href="{{ url_for('static', filename='css/pages/landing.css') }}" />
 {% endblock %}
 
+{% block before_nav %}
+<a class="lp-skip" href="#lp-content">{{ L.skip }}</a>
+{% endblock %}
+
 {% block body %}
-<main class="landing">
-  <section class="landing-hero">
-    <div class="landing-container landing-hero-grid">
-      <div class="landing-hero-copy">
-        <span class="landing-eyebrow">NosiFit</span>
-        <h1 class="landing-title">{{ public_t("landing.title") | safe }}</h1>
-        <p class="landing-lead">{{ public_t("landing.subtitle") }}</p>
+<div class="lp" id="lp-content" tabindex="-1">
+  {% include "public/landing/_hero.html" %}
+  {% include "public/landing/_context.html" %}
+  {% include "public/landing/_modules.html" %}
+  {% include "public/landing/_history.html" %}
+  {% include "public/landing/_telegram.html" %}
+  {% include "public/landing/_model.html" %}
+  {% include "public/landing/_cta.html" %}
+</div>
+{% endblock %}
 
-        <div class="landing-actions">
-          <a href="{{ url_for('auth.register') }}" class="landing-button landing-button-primary">
-            {{ public_t("landing.startNow") }}
-          </a>
-          <a href="{{ url_for('public.demo') }}" class="landing-button landing-button-secondary">
-            {{ public_t("landing.tryDemo") }}
-          </a>
-        </div>
+{% block after_main %}
+{% include "public/landing/_footer.html" %}
+{% endblock %}
 
-        <p class="landing-note">{{ public_t("landing.note") }}</p>
-      </div>
-
-      <div class="landing-overview">
-        <div class="landing-overview-header">
-          <div>
-            <span class="landing-overview-label">{{ public_t("landing.overview.label") }}</span>
-            <h2>{{ public_t("landing.overview.title") }}</h2>
-          </div>
-          <span class="landing-status">{{ public_t("landing.overview.status") }}</span>
-        </div>
-
-        <div class="landing-overview-score">
-          <div>
-            <span>{{ public_t("landing.overview.recovery") }}</span>
-            <strong>82</strong>
-          </div>
-          <div class="landing-score-meta">
-            <span>{{ public_t("landing.overview.training") }}</span>
-            <strong>{{ public_t("landing.overview.trainingValue") }}</strong>
-          </div>
-        </div>
-
-        <div class="landing-overview-row">
-          <div>
-            <span>{{ public_t("landing.overview.sleep") }}</span>
-            <strong>7h 42m</strong>
-          </div>
-          <div>
-            <span>{{ public_t("landing.overview.water") }}</span>
-            <strong>1.8 L</strong>
-          </div>
-          <div>
-            <span>{{ public_t("landing.overview.meals") }}</span>
-            <strong>3</strong>
-          </div>
-        </div>
-
-        <div class="landing-overview-recommendation">
-          <span class="landing-recommendation-label">{{ public_t("landing.overview.recommendationLabel") }}</span>
-          <p>{{ public_t("landing.overview.recommendation") }}</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="landing-section landing-areas">
-    <div class="landing-container">
-      <div class="landing-section-heading">
-        <span class="landing-eyebrow">{{ public_t("landing.areas.eyebrow") }}</span>
-        <h2>{{ public_t("landing.areas.title") }}</h2>
-        <p>{{ public_t("landing.areas.text") }}</p>
-      </div>
-
-      <div class="landing-area-grid">
-        {% for key in ["training", "nutrition", "recovery", "habits"] %}
-        <a href="{{ url_for('auth.register') }}" class="landing-area-card">
-          <span class="landing-area-number">0{{ loop.index }}</span>
-          <div>
-            <h3>{{ public_t("landing.areas." ~ key ~ ".title") }}</h3>
-            <p>{{ public_t("landing.areas." ~ key ~ ".text") }}</p>
-          </div>
-          <span class="landing-area-link">{{ public_t("landing.areas.open") }}</span>
-        </a>
-        {% endfor %}
-      </div>
-    </div>
-  </section>
-
-  <section class="landing-section landing-context">
-    <div class="landing-container landing-context-grid">
-      <div class="landing-section-heading">
-        <span class="landing-eyebrow">{{ public_t("landing.context.eyebrow") }}</span>
-        <h2>{{ public_t("landing.context.title") }}</h2>
-        <p>{{ public_t("landing.context.text") }}</p>
-      </div>
-
-      <div class="landing-flow">
-        <div class="landing-flow-item">
-          <span>01</span>
-          <strong>{{ public_t("landing.context.records") }}</strong>
-          <p>{{ public_t("landing.context.recordsText") }}</p>
-        </div>
-        <div class="landing-flow-line"></div>
-        <div class="landing-flow-item">
-          <span>02</span>
-          <strong>{{ public_t("landing.context.analysis") }}</strong>
-          <p>{{ public_t("landing.context.analysisText") }}</p>
-        </div>
-        <div class="landing-flow-line"></div>
-        <div class="landing-flow-item">
-          <span>03</span>
-          <strong>{{ public_t("landing.context.recommendations") }}</strong>
-          <p>{{ public_t("landing.context.recommendationsText") }}</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="landing-section landing-cta">
-    <div class="landing-container">
-      <div class="landing-cta-card">
-        <div>
-          <span class="landing-eyebrow">{{ public_t("landing.cta.eyebrow") }}</span>
-          <h2>{{ public_t("landing.cta.title") }}</h2>
-          <p>{{ public_t("landing.cta.text") }}</p>
-        </div>
-
-        <div class="landing-cta-actions">
-          <a href="{{ url_for('public.demo') }}" class="landing-button landing-button-secondary">
-            {{ public_t("landing.tryDemo") }}
-          </a>
-          <a href="{{ url_for('auth.register') }}" class="landing-button landing-button-primary">
-            {{ public_t("landing.startNow") }}
-          </a>
-        </div>
-      </div>
-    </div>
-  </section>
-</main>
+{% block scripts %}
+<script type="module" src="{{ url_for('static', filename='js/pages/landing.js') }}"></script>
 {% endblock %}

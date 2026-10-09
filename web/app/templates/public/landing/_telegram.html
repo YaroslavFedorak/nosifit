@@ -1,0 +1,54 @@
+{% set G = L.telegram %}
+<section class="lp-section lp-telegram" aria-labelledby="lp-telegram-title">
+  <div class="lp-wrap lp-split">
+    <div class="lp-split-copy" data-reveal>
+      <p class="lp-eyebrow">{{ G.eyebrow }}</p>
+      <h2 id="lp-telegram-title" class="lp-h2">{{ G.title }}</h2>
+      <p class="lp-lead">{{ G.text }}</p>
+      <ul class="lp-points">
+        <li>{{ G.point1 }}</li>
+        <li>{{ G.point2 }}</li>
+      </ul>
+      {% if telegram_bot %}
+      <a class="cmp-btn cmp-btn-ghost" href="https://t.me/{{ telegram_bot }}" rel="noopener" target="_blank">{{ G.open | replace("{bot}", telegram_bot) }}</a>
+      {% endif %}
+    </div>
+
+    {# The bot's real water flow: an inline button press edits the bot's
+       message in place; the reply keyboard is the nutrition mode menu. #}
+    <figure class="lp-chat cmp-card" data-reveal aria-label="{{ G.chatAria }}">
+      <figcaption class="lp-chat-head">
+        <img src="{{ url_for('static', filename='img/brand/nosifit-avatar.svg') }}" alt="" width="32" height="32" />
+        <span>
+          <strong>{{ G.bot }}</strong>
+          <span class="lp-frag-meta">bot</span>
+        </span>
+        <span class="lp-sample">{{ L.sample }}</span>
+      </figcaption>
+
+      <ol class="lp-chat-log">
+        <li class="lp-msg is-out">{{ G.menuWater }}</li>
+        <li class="lp-msg">
+          <p>{{ G.added }}</p>
+          <p class="lp-msg-title">{{ G.today }}</p>
+          <p class="lp-msg-value">{{ G.progress }}</p>
+          <p>{{ G.choose }}</p>
+          <div class="lp-chat-keys" aria-hidden="true">
+            {% for preset in ["0.25", "0.33", "0.5", "1"] %}
+            <span class="lp-chat-key">+{{ preset }} {{ G.unit }}</span>
+            {% endfor %}
+            <span class="lp-chat-key is-wide">{{ G.other }}</span>
+            <span class="lp-chat-key is-wide">− 0.25 {{ G.unit }}</span>
+          </div>
+        </li>
+      </ol>
+
+      <div class="lp-chat-menu" aria-hidden="true">
+        <span>{{ G.menuFood }}</span>
+        <span>{{ G.menuWater }}</span>
+        <span>{{ G.menuWeight }}</span>
+        <span class="is-wide">{{ G.menuHome }}</span>
+      </div>
+    </figure>
+  </div>
+</section>
