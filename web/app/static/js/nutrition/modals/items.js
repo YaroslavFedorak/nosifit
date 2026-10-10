@@ -5,6 +5,7 @@
 import { NutritionAPI } from "../api.js";
 import { formatAmount, mealCategoryLabel, normalizeMealCategory, suggestMealCategory, unitLabel, } from "../categories.js";
 import { describeError } from "../errors.js";
+import { setupBarcodeScanner } from "./barcode.js";
 import { getLocale, nutrition_t } from "../../i18n/index.js";
 import { closeModal, emitNutritionChange, getValue, markInvalid, onClick, openModal, parseNumber, setBusy, setModalError, setValue, } from "./modal.js";
 const PICKER_ID = "modal-add-item";
@@ -541,6 +542,19 @@ export function setupItemModals(onRefresh) {
     };
     document.getElementById("product-unit")?.addEventListener("change", syncGramsField);
     onClick(["open-add-my-product"], () => openProductModal(null));
+    setupBarcodeScanner({
+        onProduct: async (product) => {
+            // The scanned product becomes the selection, like a clicked row;
+            // an imported one is in "My products", where it can be edited.
+            setValue("add-item-search", "");
+            if (product.is_own)
+                setCatalogMode("mine");
+            applyCatalogVisibility();
+            selectProduct(product);
+            await loadCatalog();
+        },
+        onCreateOwn: (prefill) => openProductModal(null, prefill),
+    });
     onClick(["close-add-product"], () => closeModal(PRODUCT_ID));
     const saveProduct = document.getElementById("save-add-product");
     saveProduct?.addEventListener("click", async () => {
@@ -562,6 +576,12 @@ export function setupItemModals(onRefresh) {
         // Fiber and sugar may be unknown: an empty field is sent as null
         // ("unknown"), never as 0.
         const optional = new Set(["product-fiber", "product-sugar"]);
+        // From a barcode scan the macros must come from the label: a blank
+        // field is a value the scan did not have, not a 0.
+        const barcode = getValue("product-barcode").trim();
+        const required = barcode && !editingProduct
+            ? new Set(["product-kcal", "product-protein", "product-fat", "product-carbs"])
+            : new Set();
         const values = {};
         for (const [id, max] of Object.entries(limits)) {
             const raw = getValue(id).trim();
@@ -569,6 +589,11 @@ export function setupItemModals(onRefresh) {
                 markInvalid(id, false);
                 values[id] = null;
                 continue;
+            }
+            if (!raw && required.has(id)) {
+                markInvalid(id, true);
+                setModalError(PRODUCT_ID, nutrition_t("errors.invalid_product"));
+                return;
             }
             const value = raw ? parseNumber(raw) : 0;
             const invalid = !Number.isFinite(value) || value < 0 || value > max;
@@ -598,6 +623,8 @@ export function setupItemModals(onRefresh) {
         const payload = {
             name,
             brand: getValue("product-brand").trim() || null,
+            // Only when created from a scan: the product is then found by it.
+            ...(barcode && !editingProduct ? { barcode } : {}),
             locale: getLocale(),
             kcal_per_100g: values["product-kcal"] ?? 0,
             protein_per_100g: values["product-protein"] ?? 0,
@@ -670,24 +697,29 @@ export function setupItemModals(onRefresh) {
         editingProduct = null;
     });
 }
-/** Opens "My product" empty (create) or filled with an own product (edit). */
-export function openProductModal(product) {
+/**
+ * Opens "My product" empty (create), filled with an own product (edit) or
+ * prefilled from a barcode scan (create; missing values stay empty).
+ */
+export function openProductModal(product, prefill) {
     editingProduct = product;
+    const scanned = prefill?.values ?? {};
     const fields = [
-        ["product-name", product ? product.name : getValue("add-item-search").trim()],
-        ["product-brand", product?.brand ?? ""],
-        ["product-kcal", product ? product.kcal_per_100g : ""],
-        ["product-protein", product ? product.protein_per_100g : ""],
-        ["product-fat", product ? product.fat_per_100g : ""],
-        ["product-carbs", product ? product.carbs_per_100g : ""],
-        ["product-fiber", product ? product.fiber_per_100g : ""],
-        ["product-sugar", product ? product.sugar_per_100g : ""],
+        ["product-name", product ? product.name : prefill ? (prefill.name ?? "") : getValue("add-item-search").trim()],
+        ["product-brand", product?.brand ?? prefill?.brand ?? ""],
+        ["product-kcal", product ? product.kcal_per_100g : scanned.kcal_per_100g],
+        ["product-protein", product ? product.protein_per_100g : scanned.protein_per_100g],
+        ["product-fat", product ? product.fat_per_100g : scanned.fat_per_100g],
+        ["product-carbs", product ? product.carbs_per_100g : scanned.carbs_per_100g],
+        ["product-fiber", product ? product.fiber_per_100g : scanned.fiber_per_100g],
+        ["product-sugar", product ? product.sugar_per_100g : scanned.sugar_per_100g],
     ];
     fields.forEach(([id, value]) => {
         setValue(id, value === null || value === undefined ? "" : String(value));
         markInvalid(id, false);
     });
-    const unit = product?.default_unit ?? "g";
+    setValue("product-barcode", product ? "" : (prefill?.barcode ?? ""));
+    const unit = product?.default_unit ?? prefill?.unit ?? "g";
     setValue("product-unit", unit);
     setValue("product-grams-per-unit", unit === "pcs" ? String(product?.grams_per_unit ?? 100) : "100");
     markInvalid("product-grams-per-unit", false);

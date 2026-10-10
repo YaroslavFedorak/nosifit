@@ -119,3 +119,21 @@ class Config:
             else None
         )
     )
+
+    # --- Barcode lookup (Open Food Facts) ---------------------------------------
+    # Products a barcode scan cannot find in the NosiFit catalog are looked up
+    # in Open Food Facts (free, ODbL). Only the host below is ever contacted;
+    # set OFF_ENABLED=0 to keep lookups local.
+    OFF_ENABLED = _env_flag("OFF_ENABLED", True)
+    OFF_BASE_URL = (os.getenv("OFF_BASE_URL") or "https://world.openfoodfacts.org").rstrip("/")
+    # Open Food Facts asks every app to identify itself: "AppName/Version (contact)".
+    OFF_USER_AGENT = os.getenv("OFF_USER_AGENT") or (
+        "NosiFit/0.1 (+https://github.com/YaroslavFedorak/NosiFit)"
+    )
+    OFF_TIMEOUT_SECONDS = float(os.getenv("OFF_TIMEOUT_SECONDS", "5"))
+    # Outbound budget for the whole app (all workers share it through the
+    # rate-limit storage), below Open Food Facts' published per-IP limit.
+    OFF_MAX_REQUESTS_PER_MINUTE = int(os.getenv("OFF_MAX_REQUESTS_PER_MINUTE", "10"))
+    # How long answers are reused before asking again.
+    OFF_CACHE_FOUND_DAYS = int(os.getenv("OFF_CACHE_FOUND_DAYS", "30"))
+    OFF_CACHE_NOT_FOUND_DAYS = int(os.getenv("OFF_CACHE_NOT_FOUND_DAYS", "7"))

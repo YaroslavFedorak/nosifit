@@ -28,6 +28,10 @@ Redis (rate-limit counters only).
 | `RATELIMIT_REDIS_URL` | `${{Redis.REDIS_URL}}` — **required**: the private (`redis.railway.internal`) URL, never `REDIS_PUBLIC_URL`. The app does not start in production without it |
 | `TELEGRAM_BOT_API_SECRET` | output of `python -c "import secrets; print(secrets.token_hex(32))"`; the **same value** on the `bot` service. Signs the bot's `/api/telegram/*` requests. Unset → Telegram sign-in is off (404). Shorter than 32 characters → the app refuses to start |
 | `TELEGRAM_BOT_USERNAME` | optional, bot username without `@`: the profile page then shows a "Connect Telegram" button (`t.me/<bot>?start=connect`) |
+| `OFF_USER_AGENT` | recommended: `NosiFit/<version> (<contact email or URL>)` — Open Food Facts asks every app to identify itself. Default: `NosiFit/0.1 (+https://github.com/YaroslavFedorak/NosiFit)` |
+| `OFF_ENABLED` | optional, `0` keeps barcode lookups local (catalog and cache only). Default on |
+| `OFF_MAX_REQUESTS_PER_MINUTE` | optional, app-wide budget for Open Food Facts product requests (shared through Redis). Default `10`, below Open Food Facts' per-IP read limit |
+| `OFF_TIMEOUT_SECONDS`, `OFF_CACHE_FOUND_DAYS`, `OFF_CACHE_NOT_FOUND_DAYS` | optional: read timeout (default `5`), how long a found product (`30`) and a confirmed "not found" (`7`) are reused |
 
 `postgres://` / `postgresql://` URLs are converted to the psycopg 3 driver automatically (`backend/config.py`).
 Secure + HttpOnly cookies, https links behind the proxy (ProxyFix), HSTS and the SECRET_KEY check switch on automatically on Railway.
@@ -97,11 +101,23 @@ account through a one-time link confirmed in the browser. Users of the old
 email + password bot press **🔐 Увійти** and pick how they sign in, once (the old bot kept no
 stored data, so nothing is migrated). Details: [telegram_bot/README.md](telegram_bot/README.md).
 
+### Barcode scanner
+
+Pre-deploy runs migration `a3f9c2e7d4b1`: barcodes become unique per catalog
+and per user (instead of globally) and the `nutrition_barcode_lookups` cache
+table is created. The web service needs outbound HTTPS to
+`world.openfoodfacts.org` only. The camera works only over HTTPS (Railway
+domains are). The browser decoder is self-hosted in
+`web/app/static/vendor/zxing-wasm-3.1.4/`; nothing is loaded from a CDN.
+The `bot` service decodes photos with `zxing-cpp` + Pillow (both in
+`requirements.txt`, prebuilt wheels, no system packages needed).
+
 ## Checks after deploy
 
 - `https://<domain>/healthz` → `{"status": "ok"}`
 - register with email code, log in, log in with Google and GitHub
 - password reset email arrives
 - the bot: "Створити акаунт" with a new email, then "Увійти" and save a meal
+- Nutrition → add food → "Scan barcode" on a phone: the camera opens, a scanned product can be added; the bot: a photo of a barcode finds the same product
 - the bot: "Увійти" → "Увійти через Google" → the link opens Google → Connect → "Увійти" in the bot
 - Profile → Connected accounts shows Telegram; Disconnect asks for the password

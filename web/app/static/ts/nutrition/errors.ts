@@ -26,6 +26,12 @@ const KNOWN_CODES = new Set([
     "session_expired",
     "product_not_found",
     "duplicate_product",
+    "invalid_barcode",
+    "lookup_unavailable",
+    "incomplete_product",
+    "invalid_product_data",
+    "duplicate_barcode",
+    "rate_limited",
 ]);
 
 /** Human, translated text for any error thrown while talking to the API. */

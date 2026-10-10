@@ -1060,3 +1060,185 @@
         flex: 1 0 100%;
     }
 }
+
+/* ---------- Barcode scanner ---------- */
+
+.nf-modal .nf-search-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex: 0 0 auto;
+}
+
+.nf-modal .nf-search-row .nf-search {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.nf-modal .nf-scan-open {
+    flex: 0 0 auto;
+}
+
+.nf-modal .nf-scan-camera {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 4 / 3;
+    max-height: 46dvh;
+    border: 1px solid var(--nfm-border);
+    border-radius: var(--nfm-radius);
+    background: #000;
+}
+
+.nf-modal .nf-scan-camera[hidden] {
+    display: none;
+}
+
+.nf-modal .nf-scan-video {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Where to hold the barcode: a wide box in the middle. */
+.nf-modal .nf-scan-frame {
+    position: absolute;
+    inset: 32% 10%;
+    border: 2px solid var(--nfm-accent-soft);
+    border-radius: 10px;
+    box-shadow: 0 0 0 999px rgba(0, 0, 0, 0.35);
+    pointer-events: none;
+}
+
+.nf-modal .nf-scan-status {
+    margin: 0;
+}
+
+.nf-modal .nf-scan-status[hidden] {
+    display: none;
+}
+
+.nf-modal .nf-scan-manual {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 10px;
+    align-items: end;
+}
+
+.nf-modal .nf-scan-result {
+    display: grid;
+    gap: 10px;
+    padding: 12px;
+    border: 1px solid var(--nfm-border);
+    border-radius: var(--nfm-radius);
+    background: rgba(255, 255, 255, 0.015);
+}
+
+.nf-modal .nf-scan-result[hidden] {
+    display: none;
+}
+
+.nf-modal .nf-scan-product {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 4px 10px;
+    min-width: 0;
+}
+
+.nf-modal .nf-scan-name {
+    color: var(--nfm-text);
+    font-size: 15px;
+    font-weight: 650;
+    overflow-wrap: anywhere;
+}
+
+.nf-modal .nf-scan-brand,
+.nf-modal .nf-scan-code {
+    color: var(--nfm-muted);
+    font-size: 12px;
+}
+
+.nf-modal .nf-scan-code {
+    margin-left: auto;
+    font-variant-numeric: tabular-nums;
+}
+
+.nf-modal .nf-scan-source,
+.nf-modal .nf-scan-note,
+.nf-modal .nf-scan-problem,
+.nf-modal .nf-scan-attribution {
+    margin: 0;
+    color: var(--nfm-muted);
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.nf-modal .nf-scan-source.is-unverified {
+    color: var(--nf-yellow, #f4c84a);
+}
+
+.nf-modal .nf-scan-problem {
+    color: var(--nfm-danger);
+}
+
+.nf-modal .nf-scan-attribution {
+    color: var(--nfm-soft);
+    font-size: 12px;
+}
+
+.nf-modal .nf-scan-basis {
+    color: var(--nfm-soft);
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.nf-modal .nf-scan-values dl {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 4px 16px;
+    margin: 6px 0 0;
+}
+
+.nf-modal .nf-scan-values dl div {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    font-size: 13px;
+}
+
+.nf-modal .nf-scan-values dt {
+    color: var(--nfm-muted);
+}
+
+.nf-modal .nf-scan-values dd {
+    margin: 0;
+    color: var(--nfm-text);
+    font-variant-numeric: tabular-nums;
+}
+
+.nf-modal .nf-scan-values dd.is-unknown {
+    color: var(--nfm-soft);
+}
+
+.nf-modal .nf-scan-warnings {
+    display: grid;
+    gap: 4px;
+    margin: 0;
+    padding-left: 18px;
+    color: var(--nf-yellow, #f4c84a);
+    font-size: 13px;
+    line-height: 1.45;
+}
+
+@media (max-width: 640px) {
+    .nf-modal .nf-scan-open span {
+        display: none;
+    }
+
+    .nf-modal .nf-scan-values dl {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}

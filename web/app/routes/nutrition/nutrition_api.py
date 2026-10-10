@@ -4,6 +4,11 @@ from flask import Blueprint, jsonify, request
 from flask_login import current_user, login_required
 
 from backend.app.models import Meal
+from backend.app.services.nutrition.barcode_service import (
+    BarcodeLookupError,
+    import_barcode_product,
+    lookup_barcode,
+)
 from backend.app.services.nutrition.calculation_service import NutritionValidationError
 from backend.app.services.nutrition.day_service import meal_load_options, get_daily_nutrition_data
 from backend.app.services.nutrition.dish_service import (
@@ -37,6 +42,7 @@ from backend.app.services.nutrition.recommendation_service import get_nutrition_
 from backend.app.services.nutrition.serializers import serialize_meal
 from backend.app.services.nutrition.stats_service import get_day_details, get_stats, get_year_heatmap
 from backend.app.services.nutrition.water_service import add_water_service, get_water_data
+from web.app.security import hit_limit, too_many_requests
 from backend.app.services.nutrition.weight_service import get_weight_data, update_user_weight
 
 nutrition_api = Blueprint("nutrition_api", __name__, url_prefix="/api/nutrition")
@@ -46,6 +52,11 @@ MAX_WEIGHT_KG = 400.0
 MAX_WATER_LITERS_PER_ENTRY = 5.0
 MAX_BULK_ITEMS = 50
 
+# Per user and minute. A lookup may reach Open Food Facts (the app-wide
+# outbound budget is enforced separately in the service).
+BARCODE_LOOKUPS_PER_MINUTE = 30
+BARCODE_IMPORTS_PER_MINUTE = 10
+
 
 def _error(message, code, status=400):
     """JSON error with a stable ``code`` the clients can translate."""
@@ -53,8 +64,15 @@ def _error(message, code, status=400):
 
 
 def _product_error(exc):
-    status = 409 if exc.code == "duplicate_product" else 400
+    status = 409 if exc.code in ("duplicate_product", "duplicate_barcode") else 400
     return _error(str(exc), exc.code, status)
+
+
+def _barcode_error(exc):
+    response = _error(str(exc), exc.code, exc.status)
+    if exc.status == 503:
+        response[0].headers["Retry-After"] = "60"
+    return response
 
 
 def _int_arg(name, default):
@@ -182,6 +200,43 @@ def api_my_products():
             normalize_locale(request.args.get("locale")),
         )
     })
+
+
+@nutrition_api.get("/products/barcode/<code>")
+@login_required
+def api_barcode_lookup(code):
+    """Product for a scanned barcode: from the catalog, or a preview from
+    Open Food Facts that ``POST …/import`` adds to the catalog."""
+    if hit_limit("barcode_lookup", current_user.id, BARCODE_LOOKUPS_PER_MINUTE, 60):
+        return too_many_requests()
+    try:
+        result = lookup_barcode(
+            current_user.id,
+            code,
+            normalize_locale(request.args.get("locale")),
+        )
+    except BarcodeLookupError as exc:
+        return _barcode_error(exc)
+    return jsonify(result)
+
+
+@nutrition_api.post("/products/barcode/<code>/import")
+@login_required
+def api_barcode_import(code):
+    """Adds the scanned product to the shared catalog. Only the barcode is
+    taken from the client; values come from the server's lookup."""
+    if hit_limit("barcode_import", current_user.id, BARCODE_IMPORTS_PER_MINUTE, 60):
+        return too_many_requests()
+    data = request.get_json(silent=True) or {}
+    try:
+        product, created = import_barcode_product(
+            current_user.id,
+            code,
+            normalize_locale(data.get("locale")),
+        )
+    except BarcodeLookupError as exc:
+        return _barcode_error(exc)
+    return jsonify({"product": product, "created": created}), 201 if created else 200
 
 
 @nutrition_api.get("/products/<int:product_id>")

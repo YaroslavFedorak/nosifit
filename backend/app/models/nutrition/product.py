@@ -13,7 +13,9 @@ class Product(db.Model):
     ``source`` says who owns the product: ``system`` (the NosiFit catalog,
     read-only for users) or ``user`` (owned by ``owner_user_id``).
     ``data_source`` and ``source_ref`` say where a system product's values come
-    from (e.g. ``ciqual_2020`` / ``13039``).
+    from (e.g. ``ciqual_2020`` / ``13039``). ``imported`` products are shared
+    catalog rows added from an external database by a barcode scan
+    (``open_food_facts`` / barcode); they are never ``verified``.
 
     Sugar, fiber, saturated fat and salt are nullable: ``None`` means unknown,
     ``0`` means a known zero. They are never coerced into each other.
@@ -44,7 +46,10 @@ class Product(db.Model):
     normalized_name = db.Column(db.String(160), nullable=True)
 
     brand = db.Column(db.String(120), nullable=True)
-    barcode = db.Column(db.String(32), nullable=True, unique=True)
+    # Canonical GTIN (services.nutrition.barcode). Unique among shared catalog
+    # products and, separately, among each user's active products: a user's
+    # private product never blocks (or reveals) a catalog barcode.
+    barcode = db.Column(db.String(32), nullable=True)
     category = db.Column(db.String(32), nullable=False, default="other", index=True)
 
     kcal_per_100g = db.Column(db.Float, nullable=False, default=0)
@@ -135,6 +140,23 @@ class Product(db.Model):
             "key",
             unique=True,
             postgresql_where=db.text("key IS NOT NULL"),
+        ),
+        db.Index(
+            "uq_nutrition_products_catalog_barcode",
+            "barcode",
+            unique=True,
+            postgresql_where=db.text(
+                "owner_user_id IS NULL AND barcode IS NOT NULL"
+            ),
+        ),
+        db.Index(
+            "uq_nutrition_products_owner_barcode",
+            "owner_user_id",
+            "barcode",
+            unique=True,
+            postgresql_where=db.text(
+                "owner_user_id IS NOT NULL AND barcode IS NOT NULL AND is_active"
+            ),
         ),
         # A user cannot have two active products with the same name.
         db.Index(

@@ -20,3 +20,4 @@ class NutritionStates(StatesGroup):
     product_fiber = State()
     naming_dish = State()
     editing_product_field = State()
+    scanning_barcode = State()

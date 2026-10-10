@@ -1,5 +1,6 @@
 import asyncio
 import html
+import io
 import re
 
 from aiogram import F, Router
@@ -35,7 +36,16 @@ from telegram_bot.keyboards.nutrition import (
     product_results,
     review_keyboard,
 )
+from backend.app.services.nutrition.barcode import looks_like_barcode
+from telegram_bot.keyboards.nutrition import barcode_result_keyboard, barcode_scan_keyboard
+from telegram_bot.security import barcode_throttle
 from telegram_bot.services.api import NosiFitAPIError
+from telegram_bot.services.barcode_reader import (
+    ALLOWED_MIME_TYPES,
+    MAX_IMAGE_BYTES,
+    BarcodeImageError,
+    decode_barcode,
+)
 from telegram_bot.states.nutrition import NutritionStates
 
 
@@ -491,6 +501,244 @@ async def _safe_edit(message: Message, text: str, *, reply_markup=None) -> None:
 
 
 
+# ---------- Barcode: photo or typed digits ----------
+#
+# The photo is downloaded into memory, decoded locally and dropped; only the
+# digits go to NosiFit, which looks them up with the same service as the
+# website (catalog → cache → Open Food Facts). Registered before the state
+# handlers below so a photo is never read as an amount or a name.
+
+BARCODE_SCAN_TEXT = (
+    "📷 <b>Штрихкод</b>\n\n"
+    "Надішліть фото штрихкоду продукту — так, щоб він був чітким і займав "
+    "більшу частину кадру. Або напишіть цифри під штрихкодом."
+)
+BARCODE_RETRY_TEXT = (
+    "Не вдалося розпізнати штрихкод. Надішліть чіткіше фото: штрихкод "
+    "ближче, рівно, без відблисків і розмиття. Або напишіть цифри під ним."
+)
+BARCODE_WARNINGS = {
+    "per_100ml": "Значення на 100 мл. У мілілітрах облік точний; у грамах вважається 1 г = 1 мл.",
+    "converted_from_serving": "Частину значень перераховано з порції на 100 г за вагою порції з етикетки.",
+    "energy_from_kj": "Калорії перераховано з кДж.",
+    "salt_from_sodium": "Сіль розраховано з натрію (× 2,5).",
+    "energy_mismatch": "Калорії помітно не збігаються з БЖВ — звірте з етикеткою.",
+    "no_nutrition_data": "У базі позначено, що на упаковці немає харчової цінності.",
+    "basis_uncertain": "Невідомо, чи значення на 100 г чи на 100 мл — звірте з етикеткою.",
+}
+BARCODE_FIELDS = {
+    "name": "назва",
+    "kcal_per_100g": "калорії",
+    "protein_per_100g": "білки",
+    "fat_per_100g": "жири",
+    "carbs_per_100g": "вуглеводи",
+    "fiber_per_100g": "клітковина",
+    "sugar_per_100g": "цукор",
+    "saturated_fat_per_100g": "насичені жири",
+    "salt_per_100g": "сіль",
+}
+
+
+async def _download_file(bot, file_id: str) -> bytes:
+    """The file's bytes, in memory only (never written to disk)."""
+    buffer = io.BytesIO()
+    try:
+        await bot.download(file_id, destination=buffer, timeout=20)
+        return buffer.getvalue()
+    finally:
+        buffer.close()
+
+
+def _barcode_file(message: Message) -> tuple[str, int | None] | None:
+    """(file_id, size) of the image in the message, or None."""
+    if message.photo:
+        # Largest size that is still within the limit (Telegram sends several).
+        sizes = [p for p in message.photo if (p.file_size or 0) <= MAX_IMAGE_BYTES]
+        best = max(sizes or message.photo, key=lambda p: p.width * p.height)
+        return best.file_id, best.file_size
+    document = message.document
+    if document and (document.mime_type or "").lower() in ALLOWED_MIME_TYPES:
+        return document.file_id, document.file_size
+    return None
+
+
+def _value_text(value, unit: str = "г") -> str:
+    return "—" if value is None else f"{_format_number(float(value))} {unit}"
+
+
+def _format_barcode_preview(result: dict) -> str:
+    preview = result["preview"]
+    basis = "100 мл" if preview.get("basis") == "100ml" else "100 г"
+    name = preview.get("name") or "Без назви"
+    brand = preview.get("brand")
+    lines = [
+        f"📷 <b>{html.escape(name)}</b>" + (f" · {html.escape(brand)}" if brand else ""),
+        f"Штрихкод: <code>{html.escape(result['barcode'])}</code>",
+        "Джерело: Open Food Facts — дані спільноти, <b>не перевірені</b> NosiFit.",
+        "",
+        f"<b>На {basis}</b>",
+        f"🔥 {_value_text(preview.get('kcal_per_100g'), 'ккал')}",
+        f"🥩 Білки: {_value_text(preview.get('protein_per_100g'))} · "
+        f"🥑 Жири: {_value_text(preview.get('fat_per_100g'))}",
+        f"🍞 Вуглеводи: {_value_text(preview.get('carbs_per_100g'))} · "
+        f"🍬 Цукор: {_value_text(preview.get('sugar_per_100g'))}",
+        f"🌾 Клітковина: {_value_text(preview.get('fiber_per_100g'))} · "
+        f"Насичені жири: {_value_text(preview.get('saturated_fat_per_100g'))} · "
+        f"Сіль: {_value_text(preview.get('salt_per_100g'))}",
+    ]
+    notes = [BARCODE_WARNINGS[w] for w in preview.get("warnings", []) if w in BARCODE_WARNINGS]
+    if result.get("stale"):
+        notes.append("Open Food Facts зараз недоступний — показано збережені раніше дані.")
+    if notes:
+        lines.append("")
+        lines.extend(f"⚠️ {note}" for note in notes)
+    if preview.get("missing"):
+        lines.append("")
+        lines.append(
+            "❗ Бракує: " + ", ".join(BARCODE_FIELDS.get(f, f) for f in preview["missing"]) + "."
+        )
+    if preview.get("invalid"):
+        lines.append(
+            "❗ Неправдоподібні значення: "
+            + ", ".join(BARCODE_FIELDS.get(f, f) for f in preview["invalid"]) + "."
+        )
+    lines.append("")
+    if preview.get("importable"):
+        lines.append("Перевірте значення з етикеткою й додайте продукт.")
+    else:
+        lines.append("Цих даних недостатньо для обліку. Створіть свій продукт з етикетки.")
+    lines.append("<i>Дані: Open Food Facts, ліцензія ODbL.</i>")
+    return "\n".join(lines)
+
+
+async def _barcode_lookup(message: Message, state: FSMContext, code: str) -> None:
+    try:
+        result = await asyncio.to_thread(_api(message.from_user.id).lookup_barcode, code)
+    except NosiFitAPIError as exc:
+        await state.set_state(NutritionStates.scanning_barcode)
+        await message.answer(str(exc), reply_markup=barcode_scan_keyboard())
+        return
+
+    barcode = result.get("barcode") or code
+    await state.update_data(barcode_code=barcode)
+
+    if result.get("status") == "found" and result.get("product"):
+        text, keyboard = await _select_product(
+            state,
+            result["product"],
+            prefix=f"📷 Штрихкод <code>{html.escape(barcode)}</code>\n",
+        )
+        await message.answer(text, reply_markup=keyboard)
+        return
+
+    await state.set_state(NutritionStates.scanning_barcode)
+    if result.get("status") == "found" and result.get("preview"):
+        await state.update_data(barcode_preview=result["preview"])
+        await message.answer(
+            _format_barcode_preview(result),
+            reply_markup=barcode_result_keyboard(barcode, bool(result["preview"].get("importable"))),
+        )
+        return
+
+    await state.update_data(barcode_preview=None)
+    await message.answer(
+        f"📷 Штрихкод <code>{html.escape(barcode)}</code>\n\n"
+        "Такого продукту немає ні в каталозі NosiFit, ні в Open Food Facts. "
+        "Створіть свій продукт з етикетки — наступного разу він знайдеться за цим штрихкодом.",
+        reply_markup=barcode_result_keyboard(barcode, False),
+    )
+
+
+@router.callback_query(F.data == "nutrition:barcode")
+async def barcode_start(callback: CallbackQuery, state: FSMContext) -> None:
+    await callback.answer()
+    await state.set_state(NutritionStates.scanning_barcode)
+    await _safe_edit(callback.message, BARCODE_SCAN_TEXT, reply_markup=barcode_scan_keyboard())
+
+
+@router.message(F.photo | F.document)
+async def barcode_photo(message: Message, state: FSMContext) -> None:
+    found = _barcode_file(message)
+    if found is None:
+        await message.answer("Надішліть фото (JPEG, PNG або WebP) зі штрихкодом.")
+        return
+    try:
+        _api(message.from_user.id)  # sign-in first: no download for strangers
+    except NosiFitAPIError as exc:
+        await message.answer(str(exc))
+        return
+    if not barcode_throttle.allow(message.from_user.id):
+        await message.answer("Забагато фото поспіль. Спробуйте за хвилину.")
+        return
+
+    file_id, size = found
+    if size is not None and size > MAX_IMAGE_BYTES:
+        await message.answer("Файл завеликий. Надішліть звичайне фото штрихкоду (до 10 МБ).")
+        return
+
+    await state.set_state(NutritionStates.scanning_barcode)
+    try:
+        data = await _download_file(message.bot, file_id)
+    except Exception:
+        await message.answer(
+            "Не вдалося отримати фото. Спробуйте ще раз або напишіть цифри під штрихкодом.",
+            reply_markup=barcode_scan_keyboard(),
+        )
+        return
+    try:
+        code = await asyncio.to_thread(decode_barcode, data)
+    except BarcodeImageError:
+        code = None
+    finally:
+        del data
+
+    if code is None:
+        await message.answer(BARCODE_RETRY_TEXT, reply_markup=barcode_scan_keyboard())
+        return
+    await _barcode_lookup(message, state, code)
+
+
+@router.callback_query(F.data.startswith("nutrition:bc_import:"))
+async def barcode_import(callback: CallbackQuery, state: FSMContext) -> None:
+    await callback.answer()
+    code = callback.data.rsplit(":", 1)[1]
+    try:
+        product = await asyncio.to_thread(_api(callback.from_user.id).import_barcode, code)
+    except NosiFitAPIError as exc:
+        await callback.message.answer(str(exc), reply_markup=barcode_result_keyboard(code, False))
+        return
+    text, keyboard = await _select_product(
+        state,
+        product,
+        prefix="✅ Продукт додано до «Мої продукти» — якщо дані неточні, "
+        "змініть їх кнопкою ✏️.\n\n",
+    )
+    await _safe_edit(callback.message, text, reply_markup=keyboard)
+
+
+@router.callback_query(F.data.startswith("nutrition:bc_own:"))
+async def barcode_own_product(callback: CallbackQuery, state: FSMContext) -> None:
+    """Own product typed from the label; it keeps the scanned barcode."""
+    await callback.answer()
+    code = callback.data.rsplit(":", 1)[1]
+    if not looks_like_barcode(code):
+        return
+    data = await state.get_data()
+    preview = data.get("barcode_preview") or {}
+    hint = ""
+    if preview.get("name"):
+        hint = f"\nНазва в Open Food Facts: <b>{html.escape(preview['name'])}</b>"
+    await state.update_data(new_product_barcode=code)
+    await state.set_state(NutritionStates.product_name)
+    await _safe_edit(
+        callback.message,
+        "➕ <b>Мій продукт</b> зі штрихкодом "
+        f"<code>{html.escape(code)}</code>{hint}\n\n"
+        "Введіть назву продукту, далі — значення з етикетки на 100 г.",
+        reply_markup=my_product_cancel_keyboard(),
+    )
+
+
 @router.message(F.text.in_({NUTRITION, FOOD}))
 async def nutrition(message: Message, state: FSMContext) -> None:
     await state.clear()
@@ -648,6 +896,10 @@ async def _handle_product_query(message: Message, state: FSMContext) -> None:
     if not query:
         await message.answer("Напишіть назву продукту або її частину.")
         return
+    if looks_like_barcode(query):
+        # Digits under a barcode, typed in: the same lookup as a scan.
+        await _barcode_lookup(message, state, query)
+        return
     await _perform_product_search(message, state, query, offset=0)
 
 
@@ -757,6 +1009,13 @@ async def choose_product(callback: CallbackQuery, state: FSMContext) -> None:
             await callback.message.answer(f"Не вдалося завантажити продукт: {exc}")
             return
 
+    text, keyboard = await _select_product(state, product)
+    await callback.message.edit_text(text, reply_markup=keyboard)
+
+
+async def _select_product(state: FSMContext, product: dict, prefix: str = ""):
+    """Makes ``product`` the one being added; returns the amount prompt."""
+    product_id = int(product["id"])
     unit = product.get("default_unit") or "g"
     default_amount = 1 if unit == "pcs" else 100
     await state.update_data(
@@ -772,13 +1031,14 @@ async def choose_product(callback: CallbackQuery, state: FSMContext) -> None:
         product_grams_per_unit=product.get("grams_per_unit", 1),
     )
     await state.set_state(NutritionStates.entering_amount)
-    await callback.message.edit_text(
-        _format_product(product)
+    text = (
+        prefix
+        + _format_product(product)
         + "\n\n"
         f"Введіть кількість у <b>{UNIT_LABELS.get(unit, unit)}</b>. "
-        f"За замовчуванням: <b>{default_amount:g}</b>.",
-        reply_markup=amount_keyboard(unit, product_id if product.get("is_own") else None),
+        f"За замовчуванням: <b>{default_amount:g}</b>."
     )
+    return text, amount_keyboard(unit, product_id if product.get("is_own") else None)
 
 
 @router.callback_query(
@@ -1106,6 +1366,7 @@ async def delete_existing_entry(callback: CallbackQuery, state: FSMContext) -> N
 @router.callback_query(F.data == "nutrition:my-product")
 async def my_product_start(callback: CallbackQuery, state: FSMContext) -> None:
     await callback.answer()
+    await state.update_data(new_product_barcode=None)
     await state.set_state(NutritionStates.product_name)
     await callback.message.edit_text(
         "➕ <b>Мій продукт</b>\n\n"
@@ -1275,6 +1536,8 @@ async def _create_my_product(message: Message, user_id: int, state: FSMContext) 
     payload = {
         "name": data["new_product_name"],
         "brand": data.get("new_product_brand"),
+        # Set when the product is typed in after a barcode scan.
+        "barcode": data.get("new_product_barcode"),
         "kcal_per_100g": data["new_product_kcal"],
         "protein_per_100g": data["new_product_protein"],
         "fat_per_100g": data["new_product_fat"],
@@ -1291,6 +1554,7 @@ async def _create_my_product(message: Message, user_id: int, state: FSMContext) 
     except NosiFitAPIError as exc:
         await message.answer(f"Не вдалося створити продукт: {exc}")
         return
+    await state.update_data(new_product_barcode=None)
 
     await state.update_data(
         product_id=product["id"],
@@ -1892,3 +2156,17 @@ async def step_back(callback: CallbackQuery, state: FSMContext) -> None:
             await _show_product_menu(callback, state)
         return
     await back_to_nutrition(callback, state)
+
+
+# After the menu handler: reply-keyboard buttons keep working while scanning.
+@router.message(NutritionStates.scanning_barcode)
+async def barcode_typed(message: Message, state: FSMContext) -> None:
+    text = (message.text or "").strip()
+    if looks_like_barcode(text):
+        await _barcode_lookup(message, state, text)
+        return
+    if text:
+        # A name instead of digits: search the catalog as usual.
+        await _perform_product_search(message, state, text, offset=0)
+        return
+    await message.answer(BARCODE_SCAN_TEXT, reply_markup=barcode_scan_keyboard())

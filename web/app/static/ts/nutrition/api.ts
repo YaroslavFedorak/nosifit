@@ -1,4 +1,5 @@
 import type {
+    BarcodeLookupResult,
     EntryUpdatePayload,
     Meal,
     MealItemPayload,
@@ -85,6 +86,19 @@ export const NutritionAPI = {
     },
     getProduct(id: number, locale = "uk"): Promise<Product> {
         return request<Product>(BASE_URL + "/products/" + id + "?locale=" + encodeURIComponent(locale));
+    },
+    /** Catalog product or external preview for a barcode (same endpoint as the Telegram bot). */
+    lookupBarcode(code: string, locale = "uk"): Promise<BarcodeLookupResult> {
+        return request<BarcodeLookupResult>(
+            BASE_URL + "/products/barcode/" + encodeURIComponent(code) + "?locale=" + encodeURIComponent(locale),
+        );
+    },
+    /** Adds a scanned product to the catalog; values are taken from the server's lookup. */
+    importBarcode(code: string, locale = "uk"): Promise<{ product: Product; created: boolean }> {
+        return request(BASE_URL + "/products/barcode/" + encodeURIComponent(code) + "/import", {
+            method: "POST",
+            body: JSON.stringify({ locale }),
+        });
     },
     createProduct(data: ProductPayload): Promise<Product> {
         return request<Product>(BASE_URL + "/products", {

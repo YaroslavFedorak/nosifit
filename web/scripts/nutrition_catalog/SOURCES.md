@@ -49,3 +49,20 @@ committed; download them from the links below to rebuild.
   ingredients (`recipes.json`). Typical home recipes are estimates
   (`verified = false`); exact blends (e.g. milk standardised to 2.5 % fat)
   are marked `verified = true`.
+
+## Open Food Facts — barcode scans (runtime)
+
+Products a user scans that are not in the catalog are looked up live in
+Open Food Facts (`GET /api/v2/product/<barcode>`, only the fields NosiFit
+needs, identified by `OFF_USER_AGENT`). After the user reviews and adds one,
+it is stored as that user's own (private, editable) product with
+`data_source = open_food_facts`, `source_ref` = barcode and `verified = false`.
+
+- Licence: the same as above — database ODbL 1.0, contents DbCL 1.0. Such
+  rows stay available under the ODbL; the scanner shows the attribution
+  "Data: Open Food Facts, ODbL licence" with every external result.
+- Changes made: values are normalized to NosiFit's per-100 g convention
+  (per-serving values converted with the label's serving size, kJ → kcal,
+  sodium × 2.5 → salt, drinks per 100 ml logged in ml). Implausible values
+  are rejected, never clamped; missing values stay unknown. Product images
+  are not requested or stored.

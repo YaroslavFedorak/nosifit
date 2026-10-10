@@ -1,4 +1,5 @@
 from dataclasses import dataclass, field
+from urllib.parse import quote
 
 import requests
 
@@ -27,6 +28,12 @@ ERROR_MESSAGES = {
     "product_not_found": "Цей продукт уже видалено.",
     "session_not_found": "Тренування не знайдено — можливо, почався новий день.",
     "telegram_session_scope": "Це доступно лише на сайті.",
+    "invalid_barcode": "Це не схоже на штрихкод: потрібні 8, 12, 13 або 14 цифр з правильною контрольною цифрою.",
+    "lookup_unavailable": "Пошук за штрихкодом тимчасово недоступний. Спробуйте за хвилину або знайдіть продукт за назвою.",
+    "incomplete_product": "У базі бракує даних про цей продукт. Створіть свій продукт з етикетки.",
+    "invalid_product_data": "Дані про цей продукт у базі неправдоподібні. Створіть свій продукт з етикетки.",
+    "duplicate_barcode": "У вас уже є продукт з цим штрихкодом.",
+    "rate_limited": "Забагато запитів. Спробуйте за хвилину.",
 }
 
 
@@ -192,6 +199,25 @@ class NosiFitAPI:
             f"/api/nutrition/products/{product_id}",
             params={"locale": locale},
         ).json()
+
+    def lookup_barcode(self, code: str, locale: str = "uk") -> dict:
+        """Catalog product or Open Food Facts preview for a barcode
+        (``status`` "found" / "not_found"); the same endpoint the website uses."""
+        self.ensure_authenticated()
+        return self._request(
+            "GET",
+            f"/api/nutrition/products/barcode/{quote(code, safe='')}",
+            params={"locale": locale},
+        ).json()
+
+    def import_barcode(self, code: str, locale: str = "uk") -> dict:
+        """Adds the scanned product to the catalog (or returns the existing one)."""
+        self.ensure_authenticated()
+        return self._request(
+            "POST",
+            f"/api/nutrition/products/barcode/{quote(code, safe='')}/import",
+            json={"locale": locale},
+        ).json()["product"]
 
     def create_meal(
         self,

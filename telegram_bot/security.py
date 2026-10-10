@@ -79,3 +79,5 @@ start_throttle = LoginThrottle(max_attempts=20, window_seconds=60)
 register_throttle = LoginThrottle(max_attempts=5, window_seconds=60 * 60)
 code_throttle = LoginThrottle(max_attempts=10, window_seconds=10 * 60)
 link_throttle = LoginThrottle(max_attempts=5, window_seconds=15 * 60)
+# Barcode photos are decoded on the bot's machine: cap the CPU one user can use.
+barcode_throttle = LoginThrottle(max_attempts=10, window_seconds=60)

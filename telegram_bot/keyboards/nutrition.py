@@ -164,8 +164,46 @@ def catalog_keyboard(mode: str = "search") -> InlineKeyboardMarkup:
             InlineKeyboardButton(text="🍲 Мої страви", callback_data="nutrition:dishes"),
             InlineKeyboardButton(text="➕ Свій продукт", callback_data="nutrition:my-product"),
         ],
+        [InlineKeyboardButton(text="📷 Штрихкод", callback_data="nutrition:barcode")],
         [InlineKeyboardButton(text="← Назад", callback_data="nutrition:catalog_back"), InlineKeyboardButton(text="✕ Скасувати", callback_data="nutrition:cancel")],
     ]
+    return InlineKeyboardMarkup(inline_keyboard=rows)
+
+
+def barcode_scan_keyboard() -> InlineKeyboardMarkup:
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(text="🔎 Знайти за назвою", callback_data="nutrition:search"),
+            ],
+            [
+                InlineKeyboardButton(text="← Назад", callback_data="nutrition:product_menu"),
+                InlineKeyboardButton(text="✕ Скасувати", callback_data="nutrition:cancel"),
+            ],
+        ]
+    )
+
+
+def barcode_result_keyboard(code: str, importable: bool) -> InlineKeyboardMarkup:
+    """After a lookup outside the catalog: add it, or make an own product."""
+    rows = []
+    if importable:
+        rows.append([
+            InlineKeyboardButton(text="✅ Додати продукт", callback_data=f"nutrition:bc_import:{code}")
+        ])
+    rows.append([
+        InlineKeyboardButton(
+            text="✍️ Ввести з етикетки (свій продукт)" if importable else "➕ Створити свій продукт",
+            callback_data=f"nutrition:bc_own:{code}",
+        )
+    ])
+    rows.append([
+        InlineKeyboardButton(text="📷 Інший штрихкод", callback_data="nutrition:barcode"),
+    ])
+    rows.append([
+        InlineKeyboardButton(text="← Назад", callback_data="nutrition:product_menu"),
+        InlineKeyboardButton(text="✕ Скасувати", callback_data="nutrition:cancel"),
+    ])
     return InlineKeyboardMarkup(inline_keyboard=rows)
 
 
