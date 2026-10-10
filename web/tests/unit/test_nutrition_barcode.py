@@ -779,3 +779,60 @@ def test_vendored_decoder_is_served_locally(app, client):
     assert wasm.status_code == 200
     assert wasm.mimetype == "application/wasm"
     assert client.get("/static/vendor/zxing-wasm-3.1.4/zxing-reader.iife.js").status_code == 200
+
+
+def test_ml_serving_on_a_product_sold_by_weight_is_not_a_drink():
+    """Package in grams, serving in ml: per 100 g, and the ml serving is not
+    turned into grams (that would need the unknown density)."""
+    preview = preview_of(
+        quantity="500 g",
+        product_quantity_unit="g",
+        serving_size="250 ml",
+        serving_quantity=250,
+        serving_quantity_unit="ml",
+        nutriments={
+            "energy-kcal_100g": 60, "proteins_100g": 3, "fat_100g": 1.5,
+            "carbohydrates_100g": 8, "sugars_serving": 20,
+        },
+    )
+    assert preview["basis"] == "100g"
+    assert preview["default_unit"] == "g"
+    assert "per_100ml" not in preview["warnings"]
+    assert preview["sugar_per_100g"] is None  # not 20 * 100 / 250
+    assert "converted_from_serving" not in preview["warnings"]
+
+    # No package evidence at all, only an ml serving: flagged, not guessed.
+    unclear = preview_of(
+        quantity="", product_quantity_unit="", serving_quantity_unit="ml",
+        nutriments={"energy-kcal_100g": 40, "proteins_100g": 0,
+                    "fat_100g": 0, "carbohydrates_100g": 10},
+    )
+    assert unclear["default_unit"] == "g"
+    assert "basis_uncertain" in unclear["warnings"]
+    assert "per_100ml" not in unclear["warnings"]
+
+
+def test_numeric_strings_from_open_food_facts_are_parsed(app, client, user, off):
+    """Real responses often carry numbers as strings; blanks stay unknown."""
+    off.answers[NUTELLA] = lambda: FakeResponse(200, {"status": 1, "product": {
+        "product_name_uk": "Батончик",
+        "product_quantity_unit": "g",
+        "serving_size": "40 g",
+        "serving_quantity": "40",
+        "nutriments": {
+            "energy-kcal_serving": "180", "proteins_serving": "4",
+            "fat_serving": "6,4", "carbohydrates_100g": "62.5",
+            "fiber_100g": "", "salt_100g": None,
+        },
+    }})
+    login(client)
+
+    preview = lookup(client, NUTELLA).get_json()["preview"]
+
+    assert preview["kcal_per_100g"] == 450
+    assert preview["protein_per_100g"] == 10
+    assert preview["fat_per_100g"] == 16
+    assert preview["carbs_per_100g"] == 62.5
+    assert preview["fiber_per_100g"] is None and preview["salt_per_100g"] is None
+    assert preview["invalid"] == {}
+    assert preview["importable"] is True

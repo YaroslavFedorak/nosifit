@@ -327,7 +327,8 @@
             "energy_from_kj": "Calories were converted from kJ.",
             "salt_from_sodium": "Salt was calculated from sodium (× 2.5).",
             "energy_mismatch": "Calories differ noticeably from the macros — check the label.",
-            "no_nutrition_data": "The database says the package has no nutrition facts."
+            "no_nutrition_data": "The database says the package has no nutrition facts.",
+            "basis_uncertain": "It is not clear whether the values are per 100 g or per 100 ml — check the label."
         },
         "fields": {
             "name": "name",

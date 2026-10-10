@@ -134,27 +134,56 @@ def _number(value):
     return None, "invalid"
 
 
-def _is_liquid(product: dict) -> bool:
-    """Open Food Facts gives ``*_100g`` per 100 ml for liquids."""
-    units = {
-        str(product.get("product_quantity_unit") or "").strip().lower(),
-        str(product.get("serving_quantity_unit") or "").strip().lower(),
-    }
-    if units & _LIQUID_UNITS:
+_SOLID_UNITS = {"g", "kg", "mg"}
+
+
+def _unit(value) -> str:
+    return str(value or "").strip().lower()
+
+
+def _is_liquid(product: dict) -> bool | None:
+    """True / False when the package says per 100 ml / 100 g, None if unclear.
+
+    Open Food Facts gives ``*_100g`` per 100 ml for liquids. Only the package
+    (``product_quantity_unit``, else ``quantity``) decides: a serving in ml
+    on a product sold by weight (yoghurt "500 g", serving "250 ml") is not a
+    drink. Without package evidence the basis stays uncertain.
+    """
+    package = _unit(product.get("product_quantity_unit"))
+    if package in _LIQUID_UNITS:
         return True
-    if units & {"g", "kg", "mg"}:
+    if package in _SOLID_UNITS:
         return False
     quantity = product.get("quantity") or ""
-    return bool(_LIQUID_QUANTITY.search(quantity)) and not _SOLID_QUANTITY.search(quantity)
-
-
-def _serving_quantity(product: dict) -> float | None:
-    """Serving size in g (or ml for liquids) when the label states it."""
-    value, _ = _number(product.get("serving_quantity"))
-    if value is None:
+    liquid = bool(_LIQUID_QUANTITY.search(quantity))
+    solid = bool(_SOLID_QUANTITY.search(quantity))
+    if liquid != solid:
+        return liquid
+    serving = _unit(product.get("serving_quantity_unit"))
+    if not serving:
         match = _SERVING_GRAMS.search(product.get("serving_size") or "")
-        if match:
-            value = float(match.group(1).replace(",", "."))
+        serving = _unit(match.group(2)) if match else ""
+    if not liquid and serving in _SOLID_UNITS | {"г"}:
+        return False
+    return None
+
+
+def _serving_quantity(product: dict, liquid: bool | None) -> float | None:
+    """Serving size in the basis unit (g, or ml for liquids) when stated.
+
+    A serving in another unit than the basis (ml for a product per 100 g)
+    is not converted: that would need the unknown density.
+    """
+    value, _ = _number(product.get("serving_quantity"))
+    unit = _unit(product.get("serving_quantity_unit"))
+    match = _SERVING_GRAMS.search(product.get("serving_size") or "")
+    if value is None and match:
+        value = float(match.group(1).replace(",", "."))
+    if not unit:
+        unit = _unit(match.group(2)) if match else "g"
+    unit = {"г": "g", "мл": "ml"}.get(unit, unit)
+    if liquid is None or unit != ("ml" if liquid else "g"):
+        return None
     if value is None or value <= 0 or value > MAX_SERVING_QUANTITY:
         return None
     return value
@@ -203,7 +232,7 @@ def normalize_external_product(product: dict, locale: str = "uk") -> dict:
     locale = normalize_locale(locale)
     nutriments = product.get("nutriments") if isinstance(product.get("nutriments"), dict) else {}
     liquid = _is_liquid(product)
-    serving = _serving_quantity(product)
+    serving = _serving_quantity(product, liquid)
 
     values: dict[str, float | None] = {}
     invalid: dict[str, str] = {}
@@ -290,6 +319,10 @@ def normalize_external_product(product: dict, locale: str = "uk") -> dict:
         # Values are per 100 ml. Logged in ml they are exact; the density is
         # unknown, so 1 g/ml is used for grams (the catalog's ml convention).
         warnings.append("per_100ml")
+    elif liquid is None:
+        # Not known whether the values are per 100 g or per 100 ml: shown as
+        # per 100 g and flagged, never converted with a guessed density.
+        warnings.append("basis_uncertain")
 
     names = _pick_names(product, locale)
     name = names.get(locale) or names.get("en") or names.get("uk") or next(iter(names.values()), None)

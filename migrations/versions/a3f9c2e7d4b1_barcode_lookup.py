@@ -23,13 +23,42 @@ branch_labels = None
 depends_on = None
 
 
+def _global_barcode_uniques(bind):
+    """(constraints, indexes) that make ``barcode`` alone globally unique.
+
+    Found by inspection, not by name: 8c4e6f2a91b7 created an unnamed
+    UniqueConstraint (PostgreSQL calls it nutrition_products_barcode_key),
+    but a database built another way may use a different name, or a plain
+    unique index.
+    """
+    inspector = sa.inspect(bind)
+    constraints = [
+        c["name"]
+        for c in inspector.get_unique_constraints("nutrition_products")
+        if c["column_names"] == ["barcode"]
+    ]
+    indexes = [
+        i["name"]
+        for i in inspector.get_indexes("nutrition_products")
+        if i.get("unique")
+        and i["column_names"] == ["barcode"]
+        and not (i.get("dialect_options") or {}).get("postgresql_where")
+        # PostgreSQL reports a constraint's backing index as an index too.
+        and i["name"] not in constraints
+    ]
+    return constraints, indexes
+
+
 def upgrade():
-    # PostgreSQL's default name for the unnamed UniqueConstraint("barcode")
-    # of 8c4e6f2a91b7.
-    op.execute(
-        "ALTER TABLE nutrition_products "
-        "DROP CONSTRAINT IF EXISTS nutrition_products_barcode_key"
-    )
+    bind = op.get_bind()
+    constraints, indexes = _global_barcode_uniques(bind)
+    for name in constraints:
+        op.drop_constraint(name, "nutrition_products", type_="unique")
+    for name in indexes:
+        op.drop_index(name, table_name="nutrition_products")
+    if any(_global_barcode_uniques(bind)):
+        # Never continue with the old global rule still in place.
+        raise RuntimeError("a global unique rule on nutrition_products.barcode remains")
     op.create_index(
         "uq_nutrition_products_catalog_barcode",
         "nutrition_products",
