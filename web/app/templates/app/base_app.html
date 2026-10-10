@@ -1,6 +1,13 @@
 <!doctype html>
 <html lang="{{ locale }}">
   <head>
+    <script nonce="{{ csp_nonce() }}">
+      try {
+        if (localStorage.getItem("nf-nav-collapsed") === "1") {
+          document.documentElement.classList.add("nf-nav-collapsed");
+        }
+      } catch (e) {}
+    </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     {% include "components/brand_head.html" %}
@@ -44,15 +51,19 @@
     <div class="bg-glow-static glow-purple" aria-hidden="true"></div>
     <div class="bg-glow-static glow-teal" aria-hidden="true"></div>
     <div class="bg-glow-static glow-yellow" aria-hidden="true"></div>
-    <div class="bg-glow-dynamic" aria-hidden="true"></div>
 
-    <div class="core-sidebar-shell" role="navigation" aria-label="{{ common_t("navigation.menu") }}">
+    <div class="core-sidebar-shell" id="app-sidebar" role="navigation" aria-label="{{ common_t("navigation.menu") }}">
       {% include "components/sidebar.html" %}
     </div>
+    <div class="nf-nav-backdrop" data-nav-close aria-hidden="true"></div>
 
     <main class="main-content" role="main">
       <div class="page-content">{% block body %}{% endblock %}</div>
     </main>
+
+    {% include "components/tabbar.html" %}
+
+    <script type="module" src="{{ url_for('static', filename='js/core/nav.js') }}"></script>
 
     {% block scripts %}{% endblock %}
   </body>

@@ -16,8 +16,7 @@
     <div class="bg"></div>
     <div class="orb orb-1"></div>
     <div class="orb orb-2"></div>
-    <div class="orb orb-3"></div>
-
+    
     <!-- Card -->
     <div class="auth-card">
       <div class="top-center">
@@ -31,7 +30,7 @@
       </div>
 
       {% include "auth/_flashes.html" %}
-      <form method="POST" class="auth-form">
+      <form method="POST" class="auth-form" {% include "auth/_validate_attrs.html" %}>
         <div class="row two-cols">
           <div class="field" data-anim>
             <label>{{ auth_t("fields.age") }}</label>
@@ -147,5 +146,6 @@
         });
       });
     </script>
+    {% include "auth/_lang.html" %}
   </body>
 </html>

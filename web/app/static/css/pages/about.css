@@ -451,3 +451,25 @@
         transition: none;
     }
 }
+
+/* Classes used by the template that had no rules. */
+.about-hero:not(:has(.about-hero-panel)) {
+    grid-template-columns: minmax(0, 1fr);
+    min-height: 0;
+}
+
+.about-step {
+    padding: 10px 14px;
+    border: 1px solid var(--nf-border-subtle);
+    border-radius: var(--nf-radius-sm);
+    background: var(--nf-surface);
+    color: var(--nf-text-muted);
+    font-size: 13px;
+    font-weight: 600;
+}
+
+@media (max-width: 720px) {
+    .about-root { padding: 24px 0 32px; }
+    .about-lead { font-size: 16px; }
+    .about-flow-row { flex-wrap: wrap; }
+}

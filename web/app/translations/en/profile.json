@@ -1,7 +1,7 @@
 {
     "page": {
         "title": "Profile",
-        "subtitle": "Personal data and training settings"
+        "subtitle": "Personal details, parameters and account settings"
     },
     "account": {
         "title": "Account",
@@ -226,5 +226,27 @@
             "rateLimited": "Too many attempts. Try again later.",
             "generic": "Something went wrong. Please try again."
         }
+    },
+    "params": {
+        "title": "Personal parameters",
+        "subtitle": "Used for nutrition targets and your training plan",
+        "edit": "Edit",
+        "focus": "Training focus",
+        "empty": "No parameters yet. Add them to get more accurate targets and advice."
+    },
+    "settings": {
+        "title": "Settings",
+        "language": "Interface language",
+        "languageHint": "Applies right away to the site and hints",
+        "modules": "Modules",
+        "modulesHint": "Which NosiFit sections you use",
+        "account": "Account",
+        "password": "Password",
+        "change": "Change",
+        "signIn": "Sign-in methods",
+        "danger": "Delete account",
+        "dangerText": "Your account and all your data will be deleted permanently. You will need to confirm with a code sent to your email.",
+        "plan": "Plan",
+        "memberSince": "Member since"
     }
 }

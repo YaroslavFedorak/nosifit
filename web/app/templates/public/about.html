@@ -18,17 +18,17 @@
 
       <div class="about-cta">
         {% if current_user.is_authenticated %}
-        <a class="btn btn-primary" href="{{ url_for('dashboard.dashboard') }}">
+        <a class="about-btn about-btn-primary" href="{{ url_for('dashboard.dashboard') }}">
           {{ public_t("common.openNosiFit") }}
         </a>
         {% else %}
-        <a class="btn btn-primary" href="{{ url_for('auth.register') }}">
+        <a class="about-btn about-btn-primary" href="{{ url_for('auth.register') }}">
           {{ public_t("common.createAccount") }}
         </a>
         {% endif %}
 
         <a
-          class="btn btn-ghost"
+          class="about-btn about-btn-secondary"
           href="{{ url_for('info.info_page', layout=request.args.get('layout', 'public')) }}"
         >
           {{ public_t("common.howItWorks") }}
@@ -36,24 +36,6 @@
       </div>
     </div>
 
-    <div class="about-hero-right">
-      <div class="about-visual">
-        <div class="about-visual-row">
-          <div class="about-visual-card">
-            <div class="about-visual-label">
-              {{ public_t("about.snapshot.recovery") }}
-            </div>
-            <div class="about-visual-value">78%</div>
-          </div>
-          <div class="about-visual-card">
-            <div class="about-visual-label">
-              {{ public_t("about.snapshot.training") }}
-            </div>
-            <div class="about-visual-value">64%</div>
-          </div>
-        </div>
-      </div>
-    </div>
   </header>
 
   <section class="about-section about-problem">
@@ -103,16 +85,16 @@
   <footer class="about-footer">
     <div class="about-cta">
       {% if current_user.is_authenticated %}
-      <a class="btn btn-primary" href="{{ url_for('dashboard.dashboard') }}">
+      <a class="about-btn about-btn-primary" href="{{ url_for('dashboard.dashboard') }}">
         {{ public_t("common.openNosiFit") }}
       </a>
       {% else %}
-      <a class="btn btn-primary" href="{{ url_for('auth.register') }}">
+      <a class="about-btn about-btn-primary" href="{{ url_for('auth.register') }}">
         {{ public_t("common.createAccount") }}
       </a>
       {% endif %}
       <a
-        class="btn btn-ghost"
+        class="about-btn about-btn-secondary"
         href="{{ url_for('info.info_page', layout=request.args.get('layout', 'public')) }}"
       >
         {{ public_t("common.howItWorks") }}

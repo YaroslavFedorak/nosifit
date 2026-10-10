@@ -1,0 +1,82 @@
+{% set genders = {"male": profile_t("body.genderMale"), "female": profile_t("body.genderFemale")} %}
+{% set activities = {
+    "sedentary": profile_t("body.activitySedentary"),
+    "light": profile_t("body.activityLight"),
+    "moderate": profile_t("body.activityModerate"),
+    "active": profile_t("body.activityActive"),
+} %}
+{% set experiences = {
+    "beginner": profile_t("body.experienceBeginner"),
+    "intermediate": profile_t("body.experienceIntermediate"),
+    "experienced": profile_t("body.experienceExperienced"),
+} %}
+{% set goals = {
+    "maintenance": profile_t("goals.goalMaintenance"),
+    "strength": profile_t("goals.goalStrength"),
+    "muscle_gain": profile_t("goals.goalMuscleGain"),
+    "fat_loss": profile_t("goals.goalFatLoss"),
+} %}
+{% set locations = {
+    "gym": profile_t("training.locationGym"),
+    "home": profile_t("training.locationHome"),
+    "outdoor": profile_t("training.locationOutdoor"),
+} %}
+
+{% set rows = [
+    (profile_t("goals.mainGoal"), goals.get(profile.goal)),
+    (profile_t("body.age"), profile.age),
+    (profile_t("body.gender"), genders.get(profile.gender)),
+    (profile_t("body.height"), (profile.height|int ~ " " ~ profile_t("body.heightUnit")) if profile.height is not none else none),
+    (profile_t("body.weight"), (profile.weight ~ " " ~ profile_t("body.weightUnit")) if profile.weight is not none else none),
+    (profile_t("body.activity"), activities.get(profile.activity)),
+    (profile_t("body.experience"), experiences.get(profile.experience)),
+    (profile_t("goals.workoutsPerWeek"), profile.workouts_per_week),
+    (profile_t("training.location"), locations.get(profile.training_location)),
+] %}
+
+{% set filled = rows|selectattr(1, "ne", none)|list|length %}
+
+<section class="profile-card">
+
+    <div class="profile-card-header">
+        <div>
+            <h2 class="profile-card-title">{{ profile_t("params.title") }}</h2>
+            <p class="profile-card-subtitle">{{ profile_t("params.subtitle") }}</p>
+        </div>
+
+        <button
+            type="button"
+            class="profile-link-btn"
+            data-modal-open="modal-edit-profile"
+        >
+            {{ profile_t("params.edit") }}
+        </button>
+    </div>
+
+    {% if filled <= 1 %}
+        <p class="profile-empty">{{ profile_t("params.empty") }}</p>
+    {% endif %}
+
+    <dl class="profile-params">
+        {% for label, value in rows %}
+        <div class="profile-param">
+            <dt>{{ label }}</dt>
+            <dd {% if value is none %}class="is-empty"{% endif %}>{{ value if value is not none else "—" }}</dd>
+        </div>
+        {% endfor %}
+    </dl>
+
+    {% if user.training_goals %}
+    <div class="profile-focus">
+        <span class="profile-focus-title">{{ profile_t("params.focus") }}</span>
+        <span class="profile-focus-values">
+            {{ profile_t("goals.upper") }} {{ user.training_goals.focus_upper }}/10
+            <span aria-hidden="true">·</span>
+            {{ profile_t("goals.lower") }} {{ user.training_goals.focus_lower }}/10
+            <span aria-hidden="true">·</span>
+            {{ profile_t("goals.core") }} {{ user.training_goals.focus_core }}/10
+        </span>
+    </div>
+    {% endif %}
+
+</section>

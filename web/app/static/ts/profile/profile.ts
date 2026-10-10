@@ -2,7 +2,6 @@ import {
     loadTranslations,
 } from "../i18n/index.js";
 import { ICONS } from "../icons/index.js";
-import { initProgress } from "./progress.js";
 import { initModals } from "./modals.js";
 import { initDeleteAccount } from "./delete-account.js";
 import { initConnectedAccounts } from "./connected-accounts.js";
@@ -39,7 +38,6 @@ const initProfile = async (): Promise<void> => {
     await loadTranslations("profile");
 
     initProfileIcon();
-    initProgress();
     initModals();
     initDeleteAccount();
     initConnectedAccounts();

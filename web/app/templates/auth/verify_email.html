@@ -16,8 +16,7 @@
     <div class="bg"></div>
     <div class="orb orb-1"></div>
     <div class="orb orb-2"></div>
-    <div class="orb orb-3"></div>
-
+    
     <div class="auth-card">
       <div class="progress-wrapper">
         <div class="progress-line">
@@ -52,7 +51,7 @@
       {% endif %}
 
       {% include "auth/_flashes.html" %}
-      <form method="POST" class="auth-form" id="verify-form">
+      <form method="POST" class="auth-form" {% include "auth/_validate_attrs.html" %} id="verify-form">
         <div class="field" data-anim>
           <label>{{ auth_t("verify.code") }}</label>
           <input
@@ -122,5 +121,6 @@
         });
       });
     </script>
+    {% include "auth/_lang.html" %}
   </body>
 </html>

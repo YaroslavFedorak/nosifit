@@ -1,202 +1,95 @@
+{% from "components/_nav_icons.html" import nav_icon %}
+
+{% macro nav_item(key, href, label, current) -%}
+<a
+  href="{{ href }}"
+  class="cmp-sidebar-item {% if current == key %}active{% endif %}"
+  {% if current == key %}aria-current="page"{% endif %}
+  title="{{ label }}"
+>
+  <span class="cmp-sidebar-icon">{{ nav_icon(key) }}</span>
+  <span class="cmp-sidebar-label">{{ label }}</span>
+</a>
+{%- endmacro %}
+
+{% set nav_active = "training" if active in ("training_plan", "training_explanation") else active %}
+
 <div class="cmp-sidebar">
   <div class="cmp-sidebar-header">
-    <a href="/" class="cmp-sidebar-brand">
+    <a href="/" class="cmp-sidebar-brand" title="{{ common_t('navigation.home') }}">
       <img
         src="{{ url_for('static', filename='img/brand/nosifit-lockup-on-dark.svg') }}"
         class="cmp-sidebar-brand-img"
         alt="NosiFit"
       />
+      <img
+        src="{{ url_for('static', filename='img/brand/nosifit-mark-on-dark.svg') }}"
+        class="cmp-sidebar-brand-mark"
+        alt=""
+        aria-hidden="true"
+      />
     </a>
 
-    <a href="/" class="cmp-sidebar-home-link">{{ common_t("navigation.home") }}</a>
+    <button
+      type="button"
+      class="cmp-sidebar-toggle"
+      data-nav-toggle
+      aria-label="{{ common_t('navigation.collapseMenu') }}"
+      data-label-collapse="{{ common_t('navigation.collapseMenu') }}"
+      data-label-expand="{{ common_t('navigation.expandMenu') }}"
+      title="{{ common_t('navigation.collapseMenu') }}"
+    >
+      {{ nav_icon("collapse") }}
+    </button>
+
+    <button
+      type="button"
+      class="cmp-sidebar-close"
+      data-nav-close
+      aria-label="{{ common_t('navigation.closeMenu') }}"
+    >
+      {{ nav_icon("close") }}
+    </button>
   </div>
 
-  <nav class="cmp-sidebar-nav">
-    <a
-      href="/profile"
-      class="cmp-sidebar-item {% if active=='profile' %}active{% endif %}"
-    >
-      <div class="cmp-sidebar-icon">
-        <svg viewBox="0 0 24 24">
-          <path d="M15 13a3 3 0 1 0-6 0" />
-          <path
-            d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5a2.5 2.5 0 0 0 0-5H20"
-          />
-          <circle cx="12" cy="8" r="2" />
-        </svg>
-      </div>
-      <span>{{ common_t("navigation.profile") }}</span>
-    </a>
+  <nav class="cmp-sidebar-nav" aria-label="{{ common_t('navigation.primary') }}">
+    {{ nav_item("dashboard", "/dashboard", common_t("navigation.dashboard"), nav_active) }}
+    {{ nav_item("training", "/training", common_t("navigation.training"), nav_active) }}
+    {{ nav_item("nutrition", "/nutrition", common_t("navigation.nutrition"), nav_active) }}
+    {{ nav_item("recovery", "/recovery", common_t("navigation.recovery"), nav_active) }}
+    {{ nav_item("tracker", "/tracker", common_t("navigation.tracker"), nav_active) }}
+    {{ nav_item("equipment", "/equipment", common_t("navigation.equipment"), nav_active) }}
 
-    <a
-      href="/dashboard"
-      class="cmp-sidebar-item {% if active=='dashboard' %}active{% endif %}"
-    >
-      <div class="cmp-sidebar-icon">
-        <svg viewBox="0 0 24 24">
-          <path
-            d="M12 3v17a1 1 0 0 1-1 1H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6a1 1 0 0 1-1 1H3"
-          />
-          <path d="M16 19h6" />
-          <path d="M19 22v-6" />
-        </svg>
-      </div>
-      <span>{{ common_t("navigation.dashboard") }}</span>
-    </a>
+    <div class="cmp-sidebar-separator" role="separator"></div>
 
-    <a
-      href="/training"
-      class="cmp-sidebar-item {% if active=='training' %}active{% endif %}"
-    >
-      <div class="cmp-sidebar-icon">
-        <svg viewBox="0 0 24 24">
-          <path
-            d="M17.596 12.768a2 2 0 1 0 2.829-2.829l-1.768-1.767a2 2 0 0 0 2.828-2.829l-2.828-2.828a2 2 0 0 0-2.829 2.828l-1.767-1.768a2 2 0 1 0-2.829 2.829z"
-          />
-          <path d="m2.5 21.5 1.4-1.4" />
-          <path d="m20.1 3.9 1.4-1.4" />
-          <path
-            d="M5.343 21.485a2 2 0 1 0 2.829-2.828l1.767 1.768a2 2 0 1 0 2.829-2.829l-6.364-6.364a2 2 0 1 0-2.829 2.829l1.768 1.767a2 2 0 0 0-2.828 2.829z"
-          />
-          <path d="m9.6 14.4 4.8-4.8" />
-        </svg>
-      </div>
-      <span>{{ common_t("navigation.training") }}</span>
-    </a>
-
-    <a
-      href="/equipment"
-      class="cmp-sidebar-item {% if active=='equipment' %}active{% endif %}"
-    >
-      <div class="cmp-sidebar-icon">
-        <svg viewBox="0 0 24 24">
-          <path d="M12 22V12" />
-          <path d="M16 17h6" />
-          <path d="M19 14v6" />
-          <path
-            d="M21 10.535V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.729l7 4a2 2 0 0 0 2 .001l1.675-.955"
-          />
-          <path d="M3.29 7 12 12l8.71-5" />
-          <path d="m7.5 4.27 8.997 5.148" />
-        </svg>
-      </div>
-      <span>{{ common_t("navigation.equipment") }}</span>
-    </a>
-
-    <a
-      href="/nutrition"
-      class="cmp-sidebar-item {% if active=='nutrition' %}active{% endif %}"
-    >
-      <div class="cmp-sidebar-icon">
-        <svg viewBox="0 0 24 24">
-          <path d="M7 21h10" />
-          <path d="M12 21a9 9 0 0 0 9-9H3a9 9 0 0 0 9 9Z" />
-          <path
-            d="M11.38 12a2.4 2.4 0 0 1-.4-4.77 2.4 2.4 0 0 1 3.2-2.77 2.4 2.4 0 0 1 3.47-.63 2.4 2.4 0 0 1 3.37 3.37 2.4 2.4 0 0 1-1.1 3.7 2.51 2.51 0 0 1 .03 1.1"
-          />
-          <path d="m13 12 4-4" />
-          <path d="M10.9 7.25A3.99 3.99 0 0 0 4 10c0 .73.2 1.41.54 2" />
-        </svg>
-      </div>
-      <span>{{ common_t("navigation.nutrition") }}</span>
-    </a>
-
-    <a
-      href="/tracker"
-      class="cmp-sidebar-item {% if active=='tracker' %}active{% endif %}"
-    >
-      <div class="cmp-sidebar-icon">
-        <svg viewBox="0 0 24 24">
-          <path d="M8 2v4" />
-          <path d="M16 2v4" />
-          <rect width="18" height="18" x="3" y="4" rx="2" />
-          <path d="M3 10h18" />
-          <path d="M8 14h.01" />
-          <path d="M12 14h.01" />
-          <path d="M16 14h.01" />
-          <path d="M8 18h.01" />
-          <path d="M12 18h.01" />
-          <path d="M16 18h.01" />
-        </svg>
-      </div>
-      <span>{{ common_t("navigation.tracker") }}</span>
-    </a>
-
-    <a
-      href="/recovery"
-      class="cmp-sidebar-item {% if active=='recovery' %}active{% endif %}"
-    >
-      <div class="cmp-sidebar-icon">
-        <svg viewBox="0 0 24 24">
-          <path
-            d="M19.414 14.414C21 12.828 22 11.5 22 9.5a5.5 5.5 0 0 0-9.591-3.676.6.6 0 0 1-.818.001A5.5 5.5 0 0 0 2 9.5c0 2.3 1.5 4 3 5.5l5.535 5.362a2 2 0 0 0 2.879.052 2.12 2.12 0 0 0-.004-3 2.124 2.124 0 1 0 3-3 2.124 2.124 0 0 0 3.004 0 2 2 0 0 0 0-2.828l-1.881-1.882a2.41 2.41 0 0 0-3.409 0l-1.71 1.71a2 2 0 0 1-2.828 0 2 2 0 0 1 0-2.828l2.823-2.762"
-          />
-        </svg>
-      </div>
-      <span>{{ common_t("navigation.recovery") }}</span>
-    </a>
-
-    <div class="cmp-sidebar-separator"></div>
-
-    <a
-      href="/premium"
-      class="cmp-sidebar-item {% if active=='premium' %}active{% endif %}"
-    >
-      <div class="cmp-sidebar-icon">
-        <svg viewBox="0 0 24 24">
-          <path d="M10.5 3 8 9l4 13 4-13-2.5-6" />
-          <path
-            d="M17 3a2 2 0 0 1 1.6.8l3 4a2 2 0 0 1 .013 2.382l-7.99 10.986a2 2 0 0 1-3.247 0l-7.99-10.986A2 2 0 0 1 2.4 7.8l2.998-3.997A2 2 0 0 1 7 3z"
-          />
-          <path d="M2 9h20" />
-        </svg>
-      </div>
-      <span>{{ common_t("navigation.premium") }}</span>
-    </a>
-
-    <a
-      href="/about?layout=app"
-      class="cmp-sidebar-item {% if active=='about' %}active{% endif %}"
-    >
-      <div class="cmp-sidebar-icon">
-        <svg viewBox="0 0 24 24">
-          <path
-            d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"
-          />
-          <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
-          <line x1="12" x2="12.01" y1="17" y2="17" />
-        </svg>
-      </div>
-      <span>{{ common_t("navigation.aboutApp") }}</span>
-    </a>
-
-    <a
-      href="/info?layout=app"
-      class="cmp-sidebar-item {% if active=='info' %}active{% endif %}"
-    >
-      <div class="cmp-sidebar-icon">
-        <svg viewBox="0 0 24 24">
-          <path
-            d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"
-          />
-          <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
-          <line x1="12" x2="12.01" y1="17" y2="17" />
-        </svg>
-      </div>
-      <span>{{ common_t("navigation.info") }}</span>
-    </a>
+    {{ nav_item("premium", "/premium", common_t("navigation.premium"), nav_active) }}
+    {{ nav_item("about", "/about?layout=app", common_t("navigation.aboutApp"), nav_active) }}
+    {{ nav_item("info", "/info?layout=app", common_t("navigation.info"), nav_active) }}
   </nav>
 
   <div class="cmp-sidebar-footer">
-    <a href="{{ url_for('auth.logout') }}" class="cmp-sidebar-logout">
-      <div class="cmp-sidebar-logout-icon">
-        <svg viewBox="0 0 24 24">
-          <path d="m16 17 5-5-5-5" />
-          <path d="M21 12H9" />
-          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-        </svg>
-      </div>
-      {{ common_t("navigation.logout") }}
+    {% if current_user.is_authenticated %}
+    <a
+      href="/profile"
+      class="cmp-sidebar-user {% if active == 'profile' %}active{% endif %}"
+      {% if active == 'profile' %}aria-current="page"{% endif %}
+      title="{{ common_t('navigation.profile') }}"
+    >
+      <span class="cmp-sidebar-avatar" aria-hidden="true">{{ (current_user.username or "?")[0]|upper }}</span>
+      <span class="cmp-sidebar-user-text">
+        <span class="cmp-sidebar-user-name">{{ current_user.username }}</span>
+        <span class="cmp-sidebar-user-sub">{{ common_t("navigation.profile") }} · {{ common_t("navigation.settings") }}</span>
+      </span>
+    </a>
+    {% endif %}
+
+    <a
+      href="{{ url_for('auth.logout') }}"
+      class="cmp-sidebar-logout"
+      title="{{ common_t('navigation.logout') }}"
+    >
+      <span class="cmp-sidebar-icon">{{ nav_icon("logout") }}</span>
+      <span class="cmp-sidebar-label">{{ common_t("navigation.logout") }}</span>
     </a>
   </div>
 </div>
