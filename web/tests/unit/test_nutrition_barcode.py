@@ -530,7 +530,7 @@ def test_names_and_brand_are_cleaned():
 # --- import ---------------------------------------------------------------------------------
 
 
-def test_import_creates_one_shared_unverified_catalog_product(app, client, user, off):
+def test_import_creates_one_private_unverified_own_product(app, client, user, off):
     off.found(NUTELLA)
     login(client)
 
@@ -543,18 +543,18 @@ def test_import_creates_one_shared_unverified_catalog_product(app, client, user,
     assert product["kcal_per_100g"] == 539
     assert product["name"] == "Горіхова паста"
     assert product["verified"] is False
-    assert product["source"] == "imported"
+    assert product["source"] == "user"
+    assert product["is_own"] is True
     assert product["data_source"] == "open_food_facts"
     assert product["source_ref"] == NUTELLA
     assert product["barcode"] == NUTELLA
     assert product["fiber_per_100g"] == 0
-    assert product["is_own"] is False
 
     row = db.session.get(Product, product["id"])
-    assert row.owner_user_id is None
-    assert {n.locale for n in row.names} == {"uk", "en"}
-    # The catalog row is now the answer; the cache entry is gone.
-    assert db.session.get(BarcodeLookup, NUTELLA) is None
+    assert row.owner_user_id == user.id
+    assert [n.locale for n in row.names] == ["uk"]
+    # The cached answer stays for other users.
+    assert db.session.get(BarcodeLookup, NUTELLA) is not None
 
     # Again: the same product, nothing new, no request.
     again = do_import(client, NUTELLA)
@@ -563,23 +563,45 @@ def test_import_creates_one_shared_unverified_catalog_product(app, client, user,
     assert Product.query.count() == 1
     assert off.count() == 1
 
-    # Searchable by name like any catalog product.
+    # In "My products" and found by name.
+    mine = client.get("/api/nutrition/products/mine").get_json()["products"]
+    assert [p["id"] for p in mine] == [product["id"]]
     found = client.get("/api/nutrition/products?q=горіхова").get_json()["products"]
     assert [p["id"] for p in found] == [product["id"]]
 
 
-def test_imported_product_is_visible_to_other_users(app, client, user, off):
+def test_imported_product_stays_private_and_others_reuse_the_cache(app, client, user, off):
     off.found(NUTELLA)
     login(client)
-    product_id = do_import(client, NUTELLA).get_json()["product"]["id"]
+    first = do_import(client, NUTELLA).get_json()["product"]["id"]
     client.get("/auth/logout")
 
     make_user("bob")
     login(client, "bob@example.com")
     body = lookup(client, NUTELLA).get_json()
-    assert body["source"] == "catalog"
-    assert body["product"]["id"] == product_id
-    assert off.count() == 1
+    assert body["source"] == "open_food_facts"  # not the other user's copy
+    assert client.get(f"/api/nutrition/products/{first}").status_code == 404
+    second = do_import(client, NUTELLA).get_json()["product"]
+    assert second["id"] != first and second["is_own"] is True
+    assert off.count() == 1  # the cached answer served both
+
+
+def test_import_with_a_taken_name_adds_the_brand(app, client, user, off):
+    off.found(NUTELLA)
+    login(client)
+    manual = {"kcal_per_100g": 1, "protein_per_100g": 0, "fat_per_100g": 0, "carbs_per_100g": 0}
+    assert client.post("/api/nutrition/products", json={"name": "Горіхова паста", **manual}).status_code == 201
+
+    product = do_import(client, NUTELLA).get_json()["product"]
+    assert product["name"] == "Горіхова паста (Ferrero)"
+
+    # Both names taken: a clear duplicate error, nothing created.
+    db.session.delete(db.session.get(Product, product["id"]))
+    db.session.commit()
+    assert client.post("/api/nutrition/products", json={"name": "Горіхова паста (Ferrero)", **manual}).status_code == 201
+    response = do_import(client, NUTELLA)
+    assert response.status_code == 409
+    assert response.get_json()["code"] == "duplicate_product"
 
 
 def test_import_of_incomplete_or_missing_product_is_refused(app, client, user, off):
@@ -652,7 +674,7 @@ def test_own_product_with_barcode_stays_private(app, client, user, off):
     client.get("/auth/logout")
 
     # Another user never sees it: they get the external data and can import
-    # it into the catalog without clashing with the private product.
+    # their own copy without clashing with the private product.
     off.found(NUTELLA)
     make_user("bob")
     login(client, "bob@example.com")
@@ -664,20 +686,50 @@ def test_own_product_with_barcode_stays_private(app, client, user, off):
     assert client.get(f"/api/nutrition/products/{own['id']}").status_code == 404
 
 
-def test_concurrent_imports_create_one_product_and_one_request(app, off):
-    users = [make_user(f"user{i}") for i in range(2)]
-    user_ids = [u.id for u in users]
+def test_concurrent_imports_by_one_user_create_one_product(app, user, off):
+    """A double tap (two requests at once) gives one product, one request."""
+    user_id = user.id
     off.found(NUTELLA)
     off.delay = 0.3
     results, errors = [], []
-    start = threading.Barrier(len(user_ids))
+    start = threading.Barrier(2)
 
-    def run(user_id):
+    def run():
         with app.app_context():
             try:
                 start.wait()
                 product, created = import_barcode_product(user_id, NUTELLA)
                 results.append((product["id"], created))
+            except Exception as exc:  # pragma: no cover - reported below
+                errors.append(exc)
+            finally:
+                db.session.remove()
+
+    threads = [threading.Thread(target=run) for _ in range(2)]
+    for thread in threads:
+        thread.start()
+    for thread in threads:
+        thread.join(30)
+
+    assert errors == []
+    assert len({product_id for product_id, _ in results}) == 1
+    assert sorted(created for _, created in results) == [False, True]
+    assert off.count() == 1
+    assert Product.query.filter_by(barcode=NUTELLA).count() == 1
+
+
+def test_concurrent_lookups_by_two_users_make_one_request(app, off):
+    user_ids = [make_user(f"user{i}").id for i in range(2)]
+    off.found(NUTELLA)
+    off.delay = 0.3
+    errors = []
+    start = threading.Barrier(2)
+
+    def run(user_id):
+        with app.app_context():
+            try:
+                start.wait()
+                import_barcode_product(user_id, NUTELLA)
             except Exception as exc:  # pragma: no cover - reported below
                 errors.append(exc)
             finally:
@@ -690,10 +742,8 @@ def test_concurrent_imports_create_one_product_and_one_request(app, off):
         thread.join(30)
 
     assert errors == []
-    assert len({product_id for product_id, _ in results}) == 1
-    assert sorted(created for _, created in results) == [False, True]
     assert off.count() == 1
-    assert Product.query.filter_by(barcode=NUTELLA).count() == 1
+    assert Product.query.filter_by(barcode=NUTELLA).count() == 2  # one each
 
 
 def test_imported_product_can_be_logged_and_history_stays_unchanged(app, client, user, off):
@@ -711,12 +761,15 @@ def test_imported_product_can_be_logged_and_history_stays_unchanged(app, client,
     assert entry.fiber == 0
     assert entry.basis["kcal_per_100g"] == 539
 
-    # Users cannot edit catalog products...
-    assert client.patch(f"/api/nutrition/products/{product['id']}", json={"kcal_per_100g": 1}).status_code == 404
-    # ...and a later correction of the catalog row leaves the entry alone.
-    row = db.session.get(Product, product["id"])
-    row.kcal_per_100g = 100
-    db.session.commit()
+    # Wrong community data can be corrected by the user...
+    response = client.patch(f"/api/nutrition/products/{product['id']}", json={"kcal_per_100g": 100})
+    assert response.status_code == 200
+    assert response.get_json()["kcal_per_100g"] == 100
+    # ...and the correction leaves the logged entry alone.
+    db.session.expire_all()
+    assert MealItem.query.one().calories == round(539 * 0.2)
+    # Deleting archives it; history still stands.
+    assert client.delete(f"/api/nutrition/products/{product['id']}").status_code == 200
     db.session.expire_all()
     assert MealItem.query.one().calories == round(539 * 0.2)
 

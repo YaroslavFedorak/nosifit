@@ -15,12 +15,13 @@ separately. Nothing external is used by nutrition calculations until the
 user imports it, and the import re-reads the cached answer on the server:
 clients send only the barcode, never nutrition values.
 
-Imported products are shared catalog rows (``source = "imported"``,
+Imported products go to the user's own products (``source = "user"``,
 ``data_source = "open_food_facts"``, ``source_ref`` = barcode, never
-``verified``), visible to every user like the rest of the catalog. They
-are created once: the catalog barcode index makes a concurrent second
-import fall back to the first one. Existing products are never
-overwritten, and meal entries keep their own snapshots anyway.
+``verified``): private, and editable or deletable when the community data
+is wrong. Each user gets one per barcode (the per-user barcode index makes
+a concurrent second import fall back to the first); other users reuse the
+cached answer. Existing products are never overwritten, and meal entries
+keep their own snapshots anyway.
 """
 
 from __future__ import annotations
@@ -546,12 +547,42 @@ def lookup_barcode(user_id, raw, locale="uk") -> dict:
     }
 
 
-def import_barcode_product(user_id, raw, locale="uk") -> tuple[dict, bool]:
-    """Adds the scanned product to the shared catalog (once).
+def _own_product_name(user_id, name: str, brand: str | None) -> tuple[str, str]:
+    """``(name, normalized)`` free among the user's active products.
 
-    Returns ``(serialized product, created)``. An existing product with the
-    barcode is returned unchanged; values always come from the server-side
-    answer, so a client cannot inject nutrition data.
+    A user may already have a product with the same name (typed by hand):
+    the brand is added to tell them apart; if that is taken too, it is a
+    duplicate the user has to resolve.
+    """
+    candidates = [name]
+    if brand:
+        candidates.append(f"{name[:MAX_PRODUCT_NAME_LENGTH - len(brand) - 3]} ({brand})")
+    for candidate in candidates:
+        normalized = normalize_name(candidate)[:160]
+        taken = Product.query.filter(
+            Product.owner_user_id == user_id,
+            Product.is_active.is_(True),
+            Product.normalized_name == normalized,
+        ).exists()
+        if not db.session.query(taken).scalar():
+            return candidate, normalized
+    raise BarcodeLookupError(
+        "You already have a product with this name", "duplicate_product", 409
+    )
+
+
+def import_barcode_product(user_id, raw, locale="uk") -> tuple[dict, bool]:
+    """Adds the scanned product to the user's own products ("My products").
+
+    The copy is private and editable like any own product, so wrong
+    community data can be corrected or deleted by the user without touching
+    anyone else; logged entries keep their own snapshots either way. It keeps
+    its origin (``data_source`` / ``source_ref``) and is never ``verified``.
+
+    Returns ``(serialized product, created)``. A product the user already
+    sees for this barcode (their own, or a catalog one) is returned
+    unchanged; values always come from the server-side answer, so a client
+    cannot inject nutrition data.
     """
     locale = normalize_locale(locale)
     code = _parse(raw)
@@ -581,11 +612,12 @@ def import_barcode_product(user_id, raw, locale="uk") -> tuple[dict, bool]:
             "The product data is incomplete", "incomplete_product", 422
         )
 
+    name, normalized = _own_product_name(user_id, preview["name"], preview["brand"])
     product = Product(
-        owner_user_id=None,
-        source="imported",
+        owner_user_id=user_id,
+        source="user",
         barcode=code,
-        normalized_name=normalize_name(preview["name"])[:160],
+        normalized_name=normalized,
         brand=preview["brand"],
         category="other",
         default_unit=preview["default_unit"],
@@ -603,19 +635,20 @@ def import_barcode_product(user_id, raw, locale="uk") -> tuple[dict, bool]:
         with db.session.begin_nested():
             db.session.add(product)
             db.session.flush()
-            for name_locale, name in preview["names"].items():
-                db.session.add(ProductName(product_id=product.id, locale=name_locale, name=name))
+            # One name, like every own product (edits keep locales in sync).
+            db.session.add(ProductName(product_id=product.id, locale=locale, name=name))
             db.session.flush()
     except IntegrityError:
-        # Someone imported the same barcode a moment earlier.
+        # The same user imported it a moment earlier (a double tap).
         db.session.rollback()
         winner = find_local_product(user_id, code)
         if winner is None:
-            raise BarcodeLookupError("Product not found", "product_not_found", 404)
+            raise BarcodeLookupError(
+                "You already have a product with this name", "duplicate_product", 409
+            )
         return serialize_product(winner, user_id, locale), False
 
-    # The catalog row is now the answer for this barcode.
-    BarcodeLookup.query.filter_by(barcode=code).delete(synchronize_session=False)
+    # The cached answer stays: other users scanning the code reuse it.
     db.session.commit()
     db.session.expire(product, ["names"])
     logger.info("Imported barcode product %s from Open Food Facts", product.id)

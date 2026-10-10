@@ -55,7 +55,7 @@ committed; download them from the links below to rebuild.
 Products a user scans that are not in the catalog are looked up live in
 Open Food Facts (`GET /api/v2/product/<barcode>`, only the fields NosiFit
 needs, identified by `OFF_USER_AGENT`). After the user reviews and adds one,
-it is stored as a shared catalog product with `source = imported`,
+it is stored as that user's own (private, editable) product with
 `data_source = open_food_facts`, `source_ref` = barcode and `verified = false`.
 
 - Licence: the same as above — database ODbL 1.0, contents DbCL 1.0. Such

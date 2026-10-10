@@ -135,8 +135,9 @@ product menu, or type the digits under the barcode into the search).
   catalog, then the cached or live Open Food Facts answer.
 - A catalog product goes straight to the amount. An Open Food Facts result is
   shown for review (marked as unverified, with warnings and missing values) and
-  is added to the shared catalog with `POST …/import`; the server takes the
-  values from its own lookup, never from the bot.
+  is added to the user's own products ("Мої продукти") with `POST …/import`,
+  where wrong values can be edited or the product deleted; the server takes
+  the values from its own lookup, never from the bot.
 - Incomplete or implausible data, or an unknown barcode, leads to "Create my
   own product": the existing step-by-step form, which keeps the barcode, so
   the next scan finds the user's private product.

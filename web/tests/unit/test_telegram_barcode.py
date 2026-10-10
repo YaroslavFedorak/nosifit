@@ -135,12 +135,13 @@ def test_photo_of_external_product_is_previewed_imported_and_logged(tg, off, pho
     assert Product.query.filter_by(barcode=NUTELLA).count() == 0
 
     press(tg, "Додати продукт")
-    assert "додано до каталогу" in text(tg)
+    assert "додано до «Мої продукти»" in text(tg)
     tg.message("20")
     press(tg, "Зберегти")
     assert [(e.name, e.amount, e.calories) for e in entries(tg)] == [("Горіхова паста", 20, 108)]
     product = Product.query.filter_by(barcode=NUTELLA).one()
-    assert product.source == "imported" and product.verified is False
+    assert product.owner_user_id == tg.user.id and product.verified is False
+    assert product.data_source == "open_food_facts"
     assert off.count() == 1
 
 

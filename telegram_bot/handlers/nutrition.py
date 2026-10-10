@@ -708,7 +708,10 @@ async def barcode_import(callback: CallbackQuery, state: FSMContext) -> None:
         await callback.message.answer(str(exc), reply_markup=barcode_result_keyboard(code, False))
         return
     text, keyboard = await _select_product(
-        state, product, prefix="✅ Продукт додано до каталогу NosiFit.\n\n"
+        state,
+        product,
+        prefix="✅ Продукт додано до «Мої продукти» — якщо дані неточні, "
+        "змініть їх кнопкою ✏️.\n\n",
     )
     await _safe_edit(callback.message, text, reply_markup=keyboard)
 
