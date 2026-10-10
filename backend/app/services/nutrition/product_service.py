@@ -471,6 +471,32 @@ def find_own_product_by_name(user_id, name):
     ).first()
 
 
+def _barcode_value(user_id, data):
+    """Optional barcode of a new own product: canonical form, one per user."""
+    raw = data.get("barcode")
+    if raw is None or (isinstance(raw, str) and not raw.strip()):
+        return None
+
+    from backend.app.services.nutrition.barcode import InvalidBarcode, normalize_barcode
+
+    try:
+        barcode = normalize_barcode(raw)
+    except InvalidBarcode as exc:
+        raise ProductServiceError(str(exc), "invalid_barcode")
+
+    taken = Product.query.filter(
+        Product.owner_user_id == user_id,
+        Product.is_active.is_(True),
+        Product.barcode == barcode,
+    ).exists()
+    if db.session.query(taken).scalar():
+        raise ProductServiceError(
+            "You already have a product with this barcode",
+            "duplicate_barcode",
+        )
+    return barcode
+
+
 def create_user_product(user_id, data, locale="uk"):
     locale = normalize_locale(locale)
     name, normalized = _product_name_value(data)
@@ -486,15 +512,16 @@ def create_user_product(user_id, data, locale="uk"):
         raise ProductServiceError("Unsupported product category")
 
     _ensure_unique_name(user_id, normalized)
+    barcode = _barcode_value(user_id, data)
 
     product = Product(
         owner_user_id=user_id,
         source="user",
         normalized_name=normalized,
         brand=_text(data, "brand", MAX_BRAND_LENGTH) or None,
-        # Barcodes are unique across all products; a user-chosen value could
-        # collide with (and block) another user's product. Not used by the UI.
-        barcode=None,
+        # Set when the product was created from a barcode scan. Unique per
+        # user only: a private product never blocks or reveals a catalog one.
+        barcode=barcode,
         category=category,
         default_unit=unit,
         grams_per_unit=grams_per_unit,

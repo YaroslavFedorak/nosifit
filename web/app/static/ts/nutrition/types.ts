@@ -44,6 +44,46 @@ export interface ProductPayload {
     grams_per_unit: number;
 }
 
+/** External product data from a barcode lookup, normalized to per 100 g / ml. */
+export interface BarcodePreview {
+    barcode: string;
+    name: string | null;
+    brand: string | null;
+    /** null = missing or invalid, never a stand-in 0. */
+    kcal_per_100g: number | null;
+    protein_per_100g: number | null;
+    fat_per_100g: number | null;
+    carbs_per_100g: number | null;
+    fiber_per_100g: number | null;
+    sugar_per_100g: number | null;
+    saturated_fat_per_100g: number | null;
+    salt_per_100g: number | null;
+    default_unit: NutritionUnit;
+    grams_per_unit: number;
+    basis: "100g" | "100ml";
+    missing: string[];
+    missing_optional: string[];
+    invalid: Record<string, string>;
+    warnings: string[];
+    complete: boolean;
+    importable: boolean;
+    data_source: string;
+    source_ref: string;
+    verified: boolean;
+}
+
+export interface BarcodeLookupResult {
+    barcode: string;
+    status: "found" | "not_found";
+    source: "catalog" | "open_food_facts";
+    /** Set when the barcode is already in the catalog (or the user's own product). */
+    product?: Product;
+    /** Set for an external result: review it, then import. */
+    preview?: BarcodePreview;
+    stale?: boolean;
+    attribution?: string;
+}
+
 export interface ProductListResponse {
     products: Product[];
     has_more?: boolean;

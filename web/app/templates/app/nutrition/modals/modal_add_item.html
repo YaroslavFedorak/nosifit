@@ -38,11 +38,19 @@
         <button type="button" class="nf-segmented-button" data-catalog-sort="mine" aria-pressed="false">{{ translate("nutrition", "catalog.myProducts") }}</button>
       </div>
 
-      <div class="nf-search">
-        <svg class="nf-search-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" /></svg>
-        <input type="search" id="add-item-search" class="nf-input nf-search-input"
-               placeholder="{{ translate("nutrition", "catalog.searchPlaceholder") }}"
-               aria-label="{{ translate("nutrition", "catalog.search") }}" autocomplete="off" />
+      <div class="nf-search-row">
+        <div class="nf-search">
+          <svg class="nf-search-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" /></svg>
+          <input type="search" id="add-item-search" class="nf-input nf-search-input"
+                 placeholder="{{ translate("nutrition", "catalog.searchPlaceholder") }}"
+                 aria-label="{{ translate("nutrition", "catalog.search") }}" autocomplete="off" />
+        </div>
+        <button class="nf-btn nf-btn--ghost nf-scan-open" type="button" id="open-barcode-scanner"
+                aria-label="{{ translate("nutrition", "barcode.scan") }}"
+                title="{{ translate("nutrition", "barcode.scan") }}">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7V5a2 2 0 0 1 2-2h2" /><path d="M17 3h2a2 2 0 0 1 2 2v2" /><path d="M21 17v2a2 2 0 0 1-2 2h-2" /><path d="M7 21H5a2 2 0 0 1-2-2v-2" /><path d="M7 8v8" /><path d="M10 8v8" /><path d="M13 8v8" /><path d="M17 8v8" /></svg>
+          <span>{{ translate("nutrition", "barcode.scan") }}</span>
+        </button>
       </div>
 
       <div class="nf-catalog-sections">
@@ -113,6 +121,7 @@
         <label class="nf-label" for="product-name">{{ translate("nutrition", "fields.name") }}</label>
         <input class="nf-input" type="text" id="product-name" maxlength="120" autocomplete="off" />
       </div>
+      <input type="hidden" id="product-barcode" />
       <div class="nf-field nf-field--wide">
         <label class="nf-label" for="product-brand">{{ translate("nutrition", "catalog.brand") }}</label>
         <input class="nf-input" type="text" id="product-brand" maxlength="120" autocomplete="off" />
@@ -182,6 +191,46 @@
       <button class="nf-btn nf-btn--primary" type="button" id="save-add-product"
               data-label-create="{{ translate("nutrition", "actions.create") }}"
               data-label-edit="{{ translate("nutrition", "actions.save") }}">{{ translate("nutrition", "actions.create") }}</button>
+    </footer>
+  </div>
+</div>
+
+{# Barcode scanner: camera (decoded in the browser) or typed digits. The
+   result comes from the shared backend lookup, like in the Telegram bot. #}
+<div class="modal nf-modal nf-modal--stacked" id="modal-scan-barcode" role="dialog" aria-modal="true" aria-labelledby="scan-barcode-title">
+  <div class="modal-content nf-modal-card nf-modal-card--medium">
+    <header class="nf-modal-header">
+      <div class="nf-modal-heading">
+        <span class="nf-modal-eyebrow">{{ translate("nutrition", "barcode.eyebrow") }}</span>
+        <h2 class="nf-modal-title" id="scan-barcode-title">{{ translate("nutrition", "barcode.title") }}</h2>
+      </div>
+      {% include "app/nutrition/modals/_close_button.html" %}
+    </header>
+
+    <div class="nf-scan-camera" id="barcode-camera" hidden>
+      <video id="barcode-video" class="nf-scan-video" playsinline muted autoplay></video>
+      <div class="nf-scan-frame" aria-hidden="true"></div>
+    </div>
+    <p class="nf-modal-hint nf-scan-status" id="barcode-status" role="status" aria-live="polite">{{ translate("nutrition", "barcode.hint") }}</p>
+
+    <form class="nf-scan-manual" id="barcode-manual-form" novalidate>
+      <div class="nf-field">
+        <label class="nf-label" for="barcode-manual">{{ translate("nutrition", "barcode.manualLabel") }}</label>
+        <input class="nf-input" type="text" id="barcode-manual" inputmode="numeric" autocomplete="off"
+               maxlength="20" placeholder="{{ translate("nutrition", "barcode.manualPlaceholder") }}" />
+      </div>
+      <button class="nf-btn nf-btn--accent-soft" type="submit" id="barcode-manual-submit">{{ translate("nutrition", "barcode.find") }}</button>
+    </form>
+
+    <div class="nf-scan-result" id="barcode-result" aria-live="polite" hidden></div>
+
+    <p class="nf-modal-error" data-modal-error role="alert" hidden></p>
+
+    <footer class="nf-modal-footer">
+      <button class="nf-btn nf-btn--ghost nf-modal-footer-start" type="button" id="barcode-rescan" hidden>{{ translate("nutrition", "barcode.scanAgain") }}</button>
+      <button class="nf-btn" type="button" id="close-scan-barcode">{{ translate("nutrition", "actions.cancel") }}</button>
+      <button class="nf-btn" type="button" id="barcode-create-own" hidden>{{ translate("nutrition", "barcode.createOwn") }}</button>
+      <button class="nf-btn nf-btn--primary" type="button" id="barcode-confirm" hidden>{{ translate("nutrition", "barcode.addProduct") }}</button>
     </footer>
   </div>
 </div>

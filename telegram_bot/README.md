@@ -121,6 +121,26 @@ Meals are stored with language-independent category keys (`breakfast`, `lunch`, 
 
 Amounts are validated before they are sent (up to 5000 g / ml or 100 pcs per entry). Backend errors carry a `code` and are shown in Ukrainian.
 
+### Barcodes
+
+Send a photo of a product barcode at any point (or press **📷 Штрихкод** in the
+product menu, or type the digits under the barcode into the search).
+
+- The photo is downloaded into memory, decoded locally with `zxing-cpp`
+  (EAN-13, EAN-8, UPC-A, UPC-E) and discarded; it is never stored, logged or
+  forwarded. Only JPEG/PNG/WebP up to 10 MB are accepted, and each user can
+  send 10 photos a minute.
+- The digits go to `GET /api/nutrition/products/barcode/<code>`, the same
+  endpoint the website's scanner uses: the user's own product, then the NosiFit
+  catalog, then the cached or live Open Food Facts answer.
+- A catalog product goes straight to the amount. An Open Food Facts result is
+  shown for review (marked as unverified, with warnings and missing values) and
+  is added to the shared catalog with `POST …/import`; the server takes the
+  values from its own lookup, never from the bot.
+- Incomplete or implausible data, or an unknown barcode, leads to "Create my
+  own product": the existing step-by-step form, which keeps the barcode, so
+  the next scan finds the user's private product.
+
 ## Menu
 
 The home keyboard has one button per mode: **🏋️ Тренування**,

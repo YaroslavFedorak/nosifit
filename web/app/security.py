@@ -266,11 +266,31 @@ def csp_nonce() -> str:
     return nonce
 
 
-def _content_security_policy(nonce: str) -> str:
+_SCANNER_FLAG = "nosifit.barcode_scanner"
+
+
+def allow_barcode_scanner() -> None:
+    """Lets the current page use the camera and WebAssembly.
+
+    Only pages with the food picker call this (nutrition, dashboard): the
+    barcode scanner reads camera frames and, without a native
+    BarcodeDetector, decodes them with the self-hosted zxing WebAssembly
+    module. Frames never leave the browser. Every other page keeps
+    ``camera=()`` and a CSP without WebAssembly. The flag lives on the
+    request itself, so it can never carry over to another response.
+    """
+    request.environ[_SCANNER_FLAG] = True
+
+
+def _content_security_policy(nonce: str, wasm: bool = False) -> str:
+    script_src = f"script-src 'self' 'nonce-{nonce}'"
+    if wasm:
+        # Compiling WebAssembly only; JS eval() stays blocked.
+        script_src += " 'wasm-unsafe-eval'"
     return "; ".join(
         [
             "default-src 'self'",
-            f"script-src 'self' 'nonce-{nonce}'",
+            script_src,
             # style="" attributes and CSSOM changes are used across templates.
             "style-src 'self' 'unsafe-inline'",
             "img-src 'self' data:",
@@ -286,13 +306,16 @@ def _content_security_policy(nonce: str) -> str:
 
 def set_security_headers(response):
     headers = response.headers
-    headers.setdefault("Content-Security-Policy", _content_security_policy(csp_nonce()))
+    scanner = bool(request.environ.get(_SCANNER_FLAG))
+    headers.setdefault(
+        "Content-Security-Policy", _content_security_policy(csp_nonce(), wasm=scanner)
+    )
     headers.setdefault("X-Content-Type-Options", "nosniff")
     headers.setdefault("X-Frame-Options", "DENY")
     headers.setdefault("Referrer-Policy", "strict-origin-when-cross-origin")
     headers.setdefault(
         "Permissions-Policy",
-        "camera=(), microphone=(), geolocation=(), payment=(), usb=()",
+        f"camera={'(self)' if scanner else '()'}, microphone=(), geolocation=(), payment=(), usb=()",
     )
     headers.setdefault("Cross-Origin-Opener-Policy", "same-origin")
     if current_app.config.get("IS_PRODUCTION"):

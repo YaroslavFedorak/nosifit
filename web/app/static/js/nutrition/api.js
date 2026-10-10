@@ -51,6 +51,17 @@ export const NutritionAPI = {
     getProduct(id, locale = "uk") {
         return request(BASE_URL + "/products/" + id + "?locale=" + encodeURIComponent(locale));
     },
+    /** Catalog product or external preview for a barcode (same endpoint as the Telegram bot). */
+    lookupBarcode(code, locale = "uk") {
+        return request(BASE_URL + "/products/barcode/" + encodeURIComponent(code) + "?locale=" + encodeURIComponent(locale));
+    },
+    /** Adds a scanned product to the catalog; values are taken from the server's lookup. */
+    importBarcode(code, locale = "uk") {
+        return request(BASE_URL + "/products/barcode/" + encodeURIComponent(code) + "/import", {
+            method: "POST",
+            body: JSON.stringify({ locale }),
+        });
+    },
     createProduct(data) {
         return request(BASE_URL + "/products", {
             method: "POST",

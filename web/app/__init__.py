@@ -1,3 +1,4 @@
+import mimetypes
 import os
 
 from dotenv import load_dotenv
@@ -10,6 +11,10 @@ from web.app.security import init_security
 
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 load_dotenv(os.path.join(BASE_DIR, ".env"))
+
+
+# The barcode scanner's WebAssembly decoder must be served as application/wasm.
+mimetypes.add_type("application/wasm", ".wasm")
 
 
 def create_app(config=None):

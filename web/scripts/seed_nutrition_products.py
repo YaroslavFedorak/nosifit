@@ -181,10 +181,12 @@ def seed_catalog(products) -> dict:
         .all()
     )
     by_key = {product.key: product for product in system if product.key}
+    # Only the old hand-typed catalog is adopted; products imported by a
+    # barcode scan (source "imported") are never overwritten by the seed.
     legacy_by_en = {
         name.name: product
         for product in system
-        if not product.key
+        if not product.key and product.source == "system"
         for name in product.names
         if name.locale == "en"
     }

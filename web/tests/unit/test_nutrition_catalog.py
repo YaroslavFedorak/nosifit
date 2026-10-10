@@ -179,3 +179,21 @@ def test_seed_rolls_back_on_failure(app, products, monkeypatch):
         db.session.commit()
     db.session.rollback()
     assert Product.query.count() == 0
+
+
+def test_seed_leaves_products_imported_by_barcode_alone(app, products):
+    imported = _legacy_product("Chicken breast", "Куряче філе")
+    imported.source = "imported"
+    imported.barcode = "4820000000016"
+    imported.kcal_per_100g = 123
+    db.session.commit()
+
+    counts = seed.seed_catalog(products)
+    db.session.commit()
+
+    assert counts["adopted"] == 0
+    db.session.expire_all()
+    row = db.session.get(Product, imported.id)
+    assert row.is_active is True
+    assert row.key is None
+    assert row.kcal_per_100g == 123
