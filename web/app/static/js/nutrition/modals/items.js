@@ -544,8 +544,11 @@ export function setupItemModals(onRefresh) {
     onClick(["open-add-my-product"], () => openProductModal(null));
     setupBarcodeScanner({
         onProduct: async (product) => {
-            // The scanned product becomes the selection, like a clicked row.
+            // The scanned product becomes the selection, like a clicked row;
+            // an imported one is in "My products", where it can be edited.
             setValue("add-item-search", "");
+            if (product.is_own)
+                setCatalogMode("mine");
             applyCatalogVisibility();
             selectProduct(product);
             await loadCatalog();
