@@ -13,131 +13,37 @@
 
 {% block body %}
 
-{% set ns = namespace(filled=0, total=12) %}
-
-{% if user.username %}
-    {% set ns.filled = ns.filled + 1 %}
-{% endif %}
-
-{% if user.email %}
-    {% set ns.filled = ns.filled + 1 %}
-{% endif %}
-
-{% if profile.age is not none %}
-    {% set ns.filled = ns.filled + 1 %}
-{% endif %}
-
-{% if profile.gender %}
-    {% set ns.filled = ns.filled + 1 %}
-{% endif %}
-
-{% if profile.height is not none %}
-    {% set ns.filled = ns.filled + 1 %}
-{% endif %}
-
-{% if profile.weight is not none %}
-    {% set ns.filled = ns.filled + 1 %}
-{% endif %}
-
-{% if profile.goal %}
-    {% set ns.filled = ns.filled + 1 %}
-{% endif %}
-
-{% if profile.activity %}
-    {% set ns.filled = ns.filled + 1 %}
-{% endif %}
-
-{% if profile.experience %}
-    {% set ns.filled = ns.filled + 1 %}
-{% endif %}
-
-{% if profile.workouts_per_week is not none %}
-    {% set ns.filled = ns.filled + 1 %}
-{% endif %}
-
-{% if profile.training_location %}
-    {% set ns.filled = ns.filled + 1 %}
-{% endif %}
-
-{% if profile.onboarding_completed %}
-    {% set ns.filled = ns.filled + 1 %}
-{% endif %}
-
-{% set completion = (ns.filled * 100 // ns.total) %}
-
-<main class="profile-page">
+<div class="profile-page">
 
     <header class="profile-header">
-
-        <div class="profile-header-left">
-
-            <div class="profile-header-icon">
-                <span
-                    class="profile-header-icon-content"
-                    data-profile-icon="user"
-                    aria-hidden="true"
-                ></span>
-            </div>
-
-            <div class="profile-header-text">
-                <h1 class="profile-title">
-                    {{ profile_t("page.title") }}
-                </h1>
-
-                <p class="profile-subtitle">
-                    {{ profile_t("page.subtitle") }}
-                </p>
-            </div>
-
+        <div class="profile-header-icon">
+            <span
+                class="profile-header-icon-content"
+                data-profile-icon="user"
+                aria-hidden="true"
+            ></span>
         </div>
 
-        {% if user.id %}
-        <div class="profile-header-id">
-            <span class="profile-header-id-label">
-                {{ profile_t("account.id") }}
-            </span>
-
-            <span class="profile-header-id-value">
-                #{{ user.id }}
-            </span>
+        <div class="profile-header-text">
+            <h1 class="profile-title">{{ profile_t("page.title") }}</h1>
+            <p class="profile-subtitle">{{ profile_t("page.subtitle") }}</p>
         </div>
-        {% endif %}
-
     </header>
 
-    <div class="profile-grid">
+    <div class="profile-layout">
 
         <div class="profile-column">
-
-            {% include "app/profile/sections/account.html" %}
-
-            {% include "app/profile/sections/connected_accounts.html" %}
-
-            {% include "app/profile/sections/body.html" %}
-
-            {% include "app/profile/sections/training.html" %}
-
+            {% include "app/profile/sections/identity.html" %}
+            {% include "app/profile/sections/params.html" %}
         </div>
 
-        <div class="profile-column">
-
-            <div class="profile-top-grid">
-
-                {% include "app/profile/sections/goals.html" %}
-
-                {% include "app/profile/sections/progress.html" %}
-
-            </div>
-
-            {% include "app/profile/sections/activity.html" %}
-
-            {% include "app/profile/sections/actions.html" %}
-
+        <div class="profile-column" id="settings">
+            {% include "app/profile/sections/settings.html" %}
         </div>
 
     </div>
 
-</main>
+</div>
 
 {% include "app/profile/modals/change_email.html" %}
 {% include "app/profile/modals/change_password.html" %}
@@ -151,5 +57,9 @@
 <script
     type="module"
     src="{{ url_for('static', filename='js/profile/profile.js') }}"
+></script>
+<script
+    type="module"
+    src="{{ url_for('static', filename='js/i18n/switcher.js') }}"
 ></script>
 {% endblock %}

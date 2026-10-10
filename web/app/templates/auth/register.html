@@ -12,7 +12,6 @@
     <div class="bg"></div>
     <div class="orb orb-1" aria-hidden="true"></div>
     <div class="orb orb-2" aria-hidden="true"></div>
-    <div class="orb orb-3" aria-hidden="true"></div>
 
     <div class="auth-card" role="main" aria-labelledby="page-title">
       <!-- progress bar with steps -->
@@ -50,7 +49,7 @@
             id="register-form"
             method="POST"
             action="/verify/send_code"
-            novalidate
+            {% include "auth/_validate_attrs.html" %}
           >
             <div class="field" data-anim>
               <label for="email">Email</label>
@@ -59,6 +58,8 @@
                 type="email"
                 name="email"
                 placeholder="example@gmail.com"
+                autocomplete="email"
+                inputmode="email"
                 required
               />
             </div>
@@ -70,6 +71,7 @@
                 type="text"
                 name="username"
                 placeholder="{{ auth_t("register.namePlaceholder") }}"
+                autocomplete="nickname"
                 required
               />
             </div>
@@ -83,6 +85,7 @@
                     type="password"
                     name="password"
                     placeholder="{{ auth_t("register.passwordPlaceholder") }}"
+                    autocomplete="new-password"
                     required
                   />
                   <button
@@ -104,6 +107,8 @@
                     type="password"
                     name="confirm_password"
                     placeholder="{{ auth_t("register.confirmPlaceholder") }}"
+                    autocomplete="new-password"
+                    data-match="p1"
                     required
                   />
                   <button
@@ -124,6 +129,7 @@
                 <input
                   id="age"
                   type="number"
+                  inputmode="numeric"
                   name="age"
                   min="14"
                   max="90"
@@ -137,6 +143,7 @@
                 <input
                   id="height"
                   type="number"
+                  inputmode="numeric"
                   name="height"
                   min="120"
                   max="230"
@@ -150,6 +157,7 @@
                 <input
                   id="weight"
                   type="number"
+                  inputmode="decimal"
                   name="weight"
                   min="35"
                   max="200"
@@ -217,9 +225,18 @@
         </div>
       </div>
 
-      <!-- footer: three centered buttons -->
-      <footer class="card-footer" role="contentinfo">
-        <div class="footer-actions" role="group" aria-label="auth actions">
+      <footer class="card-footer">
+        <button
+          type="submit"
+          form="register-form"
+          class="action-btn primary"
+        >
+          {{ auth_t("register.submit") }}
+        </button>
+
+        <div class="divider"><span>{{ auth_t("common.or") }}</span></div>
+
+        <div class="oauth-list">
           <div class="action-card google-card">
             <a
               class="action-btn oauth google"
@@ -260,16 +277,6 @@
             </a>
           </div>
 
-          <div class="action-card">
-            <button
-              type="submit"
-              form="register-form"
-              class="action-btn primary submit-large"
-              aria-label="{{ auth_t("register.submit") }}"
-            >
-              <span>{{ auth_t("register.submit") }}</span>
-            </button>
-          </div>
         </div>
       </footer>
 
@@ -278,6 +285,8 @@
         <span>{{ auth_t("register.already") }} <a href="/auth/login">{{ auth_t("common.login") }}</a></span>
       </div>
     </div>
+
+    {% include "auth/_lang.html" %}
 
     <script nonce="{{ csp_nonce() }}">
       // toggle password visibility
@@ -288,21 +297,10 @@
             const input = document.getElementById(id);
             input.type = input.type === "password" ? "text" : "password";
             btn.textContent =
-              input.type === "password" ? "{{ auth_t("common.show") }}" : "Приховати";
+              input.type === "password" ? "{{ auth_t("common.show") }}" : "{{ auth_t("common.hide") }}";
           });
         });
 
-        // stagger reveal for inputs
-        document.querySelectorAll("[data-anim]").forEach((el, i) => {
-          el.style.transition = "opacity .36s ease, transform .36s ease";
-          el.style.transitionDelay = i * 60 + "ms";
-          el.style.opacity = 0;
-          el.style.transform = "translateY(8px)";
-          requestAnimationFrame(() => {
-            el.style.opacity = 1;
-            el.style.transform = "translateY(0)";
-          });
-        });
       });
     </script>
   </body>

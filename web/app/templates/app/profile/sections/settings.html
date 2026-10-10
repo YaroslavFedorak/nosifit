@@ -1,0 +1,105 @@
+<section class="profile-card">
+
+    <div class="profile-card-header">
+        <h2 class="profile-card-title">{{ profile_t("settings.title") }}</h2>
+    </div>
+
+    <div class="profile-rows">
+
+        <div class="profile-row">
+            <div class="profile-row-text">
+                <label class="profile-row-label" for="profile-language">{{ profile_t("settings.language") }}</label>
+                <span class="profile-row-hint">{{ profile_t("settings.languageHint") }}</span>
+            </div>
+            <div class="profile-row-control">
+                {% with label=profile_t("settings.language"), select_id="profile-language" %}
+                    {% include "components/language_select.html" %}
+                {% endwith %}
+            </div>
+        </div>
+
+        <div class="profile-row">
+            <div class="profile-row-text">
+                <span class="profile-row-label">{{ profile_t("settings.modules") }}</span>
+                <span class="profile-row-hint">{{ profile_t("settings.modulesHint") }}</span>
+            </div>
+            <div class="profile-row-control profile-row-pills">
+                <span class="profile-pill {% if profile.wants_nutrition %}profile-pill-active{% endif %}">
+                    {{ profile_t("training.nutrition") }}:
+                    {{ profile_t("training.active") if profile.wants_nutrition else profile_t("training.disabled") }}
+                </span>
+                <span class="profile-pill {% if profile.wants_recovery %}profile-pill-active{% endif %}">
+                    {{ profile_t("training.recovery") }}:
+                    {{ profile_t("training.active") if profile.wants_recovery else profile_t("training.disabled") }}
+                </span>
+                <button type="button" class="profile-link-btn" data-modal-open="modal-edit-profile">
+                    {{ profile_t("settings.change") }}
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+</section>
+
+<section class="profile-card">
+
+    <div class="profile-card-header">
+        <h2 class="profile-card-title">{{ profile_t("settings.account") }}</h2>
+    </div>
+
+    <div class="profile-rows">
+
+        <div class="profile-row">
+            <div class="profile-row-text">
+                <span class="profile-row-label">{{ profile_t("account.email") }}</span>
+                <span class="profile-row-value">{{ user.email or profile_t("account.notSpecified") }}</span>
+            </div>
+            <button type="button" class="profile-link-btn" data-modal-open="modal-change-email">
+                {{ profile_t("settings.change") }}
+            </button>
+        </div>
+
+        <div class="profile-row">
+            <div class="profile-row-text">
+                <span class="profile-row-label">{{ profile_t("settings.password") }}</span>
+                {% if connected.has_password %}
+                    <span class="profile-row-value">••••••••</span>
+                {% else %}
+                    <span class="profile-row-hint">{{ profile_t("connected.notSet") }}</span>
+                {% endif %}
+            </div>
+            {% if connected.has_password %}
+                <button type="button" class="profile-link-btn" data-modal-open="modal-change-password">
+                    {{ profile_t("settings.change") }}
+                </button>
+            {% else %}
+                <a class="profile-link-btn" href="{{ url_for('auth.reset_password') }}">
+                    {{ profile_t("connected.setPassword") }}
+                </a>
+            {% endif %}
+        </div>
+
+    </div>
+
+</section>
+
+{% include "app/profile/sections/connected_accounts.html" %}
+
+<section class="profile-card profile-danger">
+
+    <div class="profile-row">
+        <div class="profile-row-text">
+            <span class="profile-row-label">{{ profile_t("settings.danger") }}</span>
+            <span class="profile-row-hint">{{ profile_t("settings.dangerText") }}</span>
+        </div>
+        <button
+            type="button"
+            class="profile-btn profile-btn-danger"
+            data-modal-open="modal-delete-account"
+        >
+            {{ profile_t("actions.deleteAccount") }}
+        </button>
+    </div>
+
+</section>

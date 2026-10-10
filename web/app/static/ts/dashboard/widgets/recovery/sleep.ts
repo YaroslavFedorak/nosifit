@@ -132,7 +132,9 @@ export function renderSleepWidget(
 
     renderSleepIcon();
 
-    if (!snapshot) {
+    // A day snapshot exists even without logged sleep (score 0); showing
+    // "quality 0/100" then would be a made-up number.
+    if (!snapshot || !snapshot.sleep_duration_minutes) {
         duration.textContent =
             "—";
 

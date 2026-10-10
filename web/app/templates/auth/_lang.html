@@ -1,0 +1,8 @@
+{# Language picker under the auth card, plus the auth form helpers. #}
+<div class="auth-lang">
+  {% with label=auth_t("validation.language"), select_id=none %}
+    {% include "components/language_select.html" %}
+  {% endwith %}
+</div>
+<script type="module" src="{{ url_for('static', filename='js/i18n/switcher.js') }}"></script>
+<script type="module" src="{{ url_for('static', filename='js/auth/validation.js') }}"></script>

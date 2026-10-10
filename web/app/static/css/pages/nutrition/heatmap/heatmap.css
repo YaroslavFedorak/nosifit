@@ -263,16 +263,22 @@
         width: 100%;
     }
 
-    .heatmap-grid {
+    /* The content box scrolls; the card around it clips overflow. */
+    .nutrition-heatmap-content {
         overflow-x: auto;
+    }
+
+    .heatmap-grid {
         grid-template-columns: repeat(53, 13px);
         width: max-content;
+        max-width: none;
+        margin: 0;
     }
 
     .heatmap-months {
-        min-width: 830px;
-        grid-template-columns: repeat(12, 1fr);
-        width: 830px;
+        width: 845px;
+        max-width: none;
+        margin: 0;
     }
 }
 

@@ -1,13 +1,21 @@
-{% extends "app/base_app.html" %} {% block title %}{{ app_t("premium.title") }}{% endblock %} {% block body %}
-<div style="padding: 40px">
-  <h1>{{ app_t("premium.title") }}</h1>
+{% extends "app/base_app.html" %}
+{% block title %}{{ app_t("premium.title") }}{% endblock %}
+{% block body %}
 
+<header class="nf-page-header">
+  <h1 class="nf-page-title">{{ app_t("premium.title") }}</h1>
+</header>
+
+<section class="nf-panel">
   {% if user.is_premium %}
-  <p>{{ app_t("premium.accountPremium") }}</p>
-  <p>{{ app_t("premium.thanks") }}</p>
+  <p class="nf-panel-title">{{ app_t("premium.accountPremium") }}</p>
+  <p class="nf-panel-text">{{ app_t("premium.thanks") }}</p>
   {% else %}
-  <p>{{ app_t("premium.accountFree") }}</p>
-  <a href="/premium/activate" class="btn btn-primary">{{ app_t("premium.activate") }}</a>
+  <p class="nf-panel-title">{{ app_t("premium.accountFree") }}</p>
+  {% if config.PREMIUM_SELF_ACTIVATION %}
+  <a href="/premium/activate" class="db-btn db-btn-primary">{{ app_t("premium.activate") }}</a>
   {% endif %}
-</div>
+  {% endif %}
+</section>
+
 {% endblock %}

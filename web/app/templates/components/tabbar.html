@@ -1,0 +1,33 @@
+{% from "components/_nav_icons.html" import nav_icon %}
+{% set tab_active = "training" if active in ("training_plan", "training_explanation") else active %}
+
+{# Mobile-only bottom navigation: the four daily sections within thumb reach,
+   everything else lives in the drawer behind "More". #}
+<nav class="nf-tabbar" aria-label="{{ common_t('navigation.primary') }}">
+  {% for key, href, label in (
+    ("dashboard", "/dashboard", common_t("navigation.dashboard")),
+    ("training", "/training", common_t("navigation.training")),
+    ("nutrition", "/nutrition", common_t("navigation.nutrition")),
+    ("recovery", "/recovery", common_t("navigation.recovery")),
+  ) %}
+  <a
+    href="{{ href }}"
+    class="nf-tabbar-item {% if tab_active == key %}active{% endif %}"
+    {% if tab_active == key %}aria-current="page"{% endif %}
+  >
+    {{ nav_icon(key) }}
+    <span>{{ label }}</span>
+  </a>
+  {% endfor %}
+
+  <button
+    type="button"
+    class="nf-tabbar-item {% if tab_active not in ('dashboard', 'training', 'nutrition', 'recovery') %}active{% endif %}"
+    data-nav-open
+    aria-haspopup="dialog"
+    aria-expanded="false"
+  >
+    {{ nav_icon("more") }}
+    <span>{{ common_t("navigation.more") }}</span>
+  </button>
+</nav>

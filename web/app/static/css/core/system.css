@@ -14,9 +14,9 @@ body.app-page .recovery-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 20px;
+  gap: var(--nf-space-4);
   min-width: 0;
-  margin-bottom: 20px;
+  margin-bottom: var(--nf-space-4);
 }
 
 body.app-page .dashboard-header-left,
@@ -33,15 +33,14 @@ body.app-page .dashboard-header-icon-box,
 body.app-page .training-header-icon-box,
 body.app-page .nutrition-header-icon-box,
 body.app-page .recovery-header-icon-box {
-  width: 42px;
-  height: 42px;
-  flex: 0 0 42px;
+  width: 40px;
+  height: 40px;
+  flex: 0 0 40px;
   display: grid;
   place-items: center;
   border: 1px solid var(--nf-border-subtle);
-  border-radius: var(--nf-radius-md);
+  border-radius: var(--nf-radius-sm);
   background: var(--nf-surface);
-  box-shadow: var(--nf-shadow-sm);
 }
 
 body.app-page .dashboard-header-icon,
@@ -50,8 +49,12 @@ body.app-page .nutrition-header-icon,
 body.app-page .recovery-header-icon {
   display: grid;
   place-items: center;
-  color: var(--nf-yellow);
+  color: var(--nf-text-main);
 }
+
+body.app-page .training-header-icon { color: var(--nf-accent-training); }
+body.app-page .nutrition-header-icon { color: var(--nf-accent-nutrition-soft); }
+body.app-page .recovery-header-icon { color: var(--nf-accent-recovery); }
 
 body.app-page .dashboard-header-icon svg,
 body.app-page .training-header-icon svg,
@@ -74,19 +77,20 @@ body.app-page .nutrition-title,
 body.app-page .recovery-title {
   margin: 0;
   color: var(--nf-text-main);
-  font-size: clamp(24px, 2.6vw, 31px);
-  line-height: 1.1;
+  font-size: clamp(20px, 2vw, 25px);
+  line-height: 1.15;
   font-weight: 680;
-  letter-spacing: -.035em;
+  letter-spacing: -.025em;
 }
 
 body.app-page .dashboard-subtitle,
 body.app-page .training-subtitle,
 body.app-page .nutrition-subtitle,
 body.app-page .recovery-subtitle {
-  margin-top: 6px;
+  margin-top: 3px;
   color: var(--nf-text-muted);
-  font-size: 12px;
+  font-size: var(--nf-text-sm);
+  line-height: 1.4;
 }
 
 body.app-page .dashboard-header-right,
@@ -131,28 +135,26 @@ body.app-page .recovery-header-value {
 
 body.app-page .db-card,
 body.app-page .tr-card,
-body.app-page .widget-card,
-body.app-page .panel-content {
+body.app-page .widget-card {
   min-width: 0;
   border: 1px solid var(--nf-border-subtle);
   border-radius: var(--nf-radius-lg);
-  background: linear-gradient(145deg, rgba(255,255,255,.028), rgba(255,255,255,.008)), var(--nf-surface);
-  box-shadow: var(--nf-shadow-sm);
+  background: var(--nf-surface);
+  box-shadow: none;
 }
 
 body.app-page .db-card,
 body.app-page .tr-card {
   position: relative;
   overflow: hidden;
-  padding: 18px;
-  transition: border-color var(--nf-transition), background var(--nf-transition), box-shadow var(--nf-transition);
+  padding: var(--nf-space-4);
+  transition: border-color var(--nf-transition);
 }
 
 body.app-page .db-card:hover,
 body.app-page .tr-card:hover,
 body.app-page .widget-card:hover {
   border-color: var(--nf-border-strong);
-  box-shadow: var(--nf-shadow-md);
 }
 
 body.app-page .db-card-header,
@@ -172,6 +174,39 @@ body.app-page .section-header h2 {
   font-size: 14px;
   font-weight: 650;
   letter-spacing: -.01em;
+}
+
+/* Column headers (title above its controls) stay left-aligned. */
+body.app-page .db-card-session .db-card-header,
+body.app-page .db-card-nutrition .db-card-header {
+  align-items: stretch;
+}
+
+body.app-page .db-card-title {
+  font-size: var(--nf-text-lg);
+}
+
+/* Section heading pair used by nutrition/recovery widgets. */
+body.app-page .widget-eyebrow {
+  color: var(--nf-text-soft);
+  font-size: var(--nf-text-xs);
+  font-weight: 650;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+body.app-page .widget-title {
+  margin-top: 2px;
+  color: var(--nf-text-main);
+  font-size: var(--nf-text-lg);
+  font-weight: 650;
+  line-height: 1.3;
+  letter-spacing: -.01em;
+}
+
+body.app-page .widget-subtitle {
+  color: var(--nf-text-muted);
+  font-size: var(--nf-text-sm);
 }
 
 body.app-page .db-card-heading,
@@ -198,7 +233,8 @@ body.app-page .water-add-button {
   background: rgba(255,255,255,.025);
   font-size: 12px;
   font-weight: 620;
-  transition: transform var(--nf-transition-fast), background var(--nf-transition-fast), border-color var(--nf-transition-fast), box-shadow var(--nf-transition-fast);
+  cursor: pointer;
+  transition: background var(--nf-transition-fast), border-color var(--nf-transition-fast);
 }
 
 body.app-page .db-btn:hover,
@@ -207,7 +243,6 @@ body.app-page .habits-add-btn:hover,
 body.app-page .sleep-add-btn:hover,
 body.app-page .weight-update-button:hover,
 body.app-page .water-add-button:hover {
-  transform: translateY(-1px);
   background: rgba(255,255,255,.055);
   border-color: rgba(255,255,255,.19);
 }
@@ -217,18 +252,16 @@ body.app-page .tr-btn-primary {
   color: var(--nf-text-inverse);
   background: var(--nf-yellow);
   border-color: rgba(244,200,74,.58);
-  box-shadow: 0 8px 24px rgba(244,200,74,.10);
 }
 
 body.app-page .db-btn-primary:hover,
 body.app-page .tr-btn-primary:hover {
   background: var(--nf-yellow-soft);
-  box-shadow: var(--nf-glow-yellow);
 }
 
 /* .nf-input fields (shared nutrition modals) bring their own styling. */
 body.app-page input:not([type="checkbox"]):not([type="radio"]):not(.nf-input),
-body.app-page select:not(.nf-input),
+body.app-page select:not(.nf-input):not(.nf-select),
 body.app-page textarea {
   border-radius: var(--nf-radius-sm);
   border-color: var(--nf-border-subtle);
@@ -236,7 +269,7 @@ body.app-page textarea {
 }
 
 body.app-page input:not([type="checkbox"]):not([type="radio"]):not(.nf-input):focus,
-body.app-page select:not(.nf-input):focus,
+body.app-page select:not(.nf-input):not(.nf-select):focus,
 body.app-page textarea:focus {
   border-color: rgba(244,200,74,.55);
   box-shadow: 0 0 0 3px rgba(244,200,74,.08);
@@ -251,13 +284,70 @@ body.app-page ::-webkit-scrollbar-thumb {
 }
 body.app-page ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,.15); }
 
-@media (max-width: 720px) {
+/* No card-in-card: the heatmap sits directly in its section card. */
+body.app-page .tr-card .tr-heatmap-container {
+  padding: 0;
+  border: 0;
+  background: none;
+}
+
+/* The legend lives inside the horizontally scrolled heatmap box; keep it
+   pinned to the visible left edge. */
+body.app-page .nutrition-heatmap-content .heatmap-legend {
+  position: sticky;
+  left: 0;
+  width: max-content;
+}
+
+/* One empty-state voice across widgets. */
+body.app-page .tr-session-empty,
+body.app-page .db-session-empty,
+body.app-page .meals-empty {
+  color: var(--nf-text-muted);
+  font-size: var(--nf-text-md);
+  font-weight: 560;
+}
+
+/* Heatmap header: eyebrow and "Calendar" share one row at every width. */
+body.app-page .heatmap-widget-header {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+body.app-page .heatmap-widget-header .heatmap-controls {
+  width: auto;
+}
+
+/* Empty states inside an already framed box need no second frame. */
+body.app-page .habits-box .empty {
+  border: 0;
+  background: none;
+  padding: 10px;
+}
+
+/* Shared page-level primitives. */
+body.app-page .db-btn:focus-visible,
+body.app-page .tr-btn:focus-visible {
+  outline: 2px solid rgba(157,123,234,.7);
+  outline-offset: 2px;
+}
+
+@media (max-width: 767.98px) {
   body.app-page .dashboard-header,
   body.app-page .training-header,
   body.app-page .nutrition-header,
   body.app-page .recovery-header {
-    align-items: flex-start;
-    margin-bottom: 16px;
+    margin-bottom: var(--nf-space-3);
+  }
+
+  body.app-page .dashboard-header-icon-box,
+  body.app-page .training-header-icon-box,
+  body.app-page .nutrition-header-icon-box,
+  body.app-page .recovery-header-icon-box {
+    width: 36px;
+    height: 36px;
+    flex-basis: 36px;
   }
 
   body.app-page .dashboard-header-right,
@@ -269,7 +359,202 @@ body.app-page ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,.15
 
   body.app-page .db-card,
   body.app-page .tr-card {
-    padding: 15px;
+    padding: 14px;
     border-radius: var(--nf-radius-md);
+  }
+
+  /* Comfortable touch targets for the shared buttons. */
+  body.app-page .db-card .db-btn,
+  body.app-page .heatmap-calendar-button,
+  body.app-page .rc-select,
+  body.app-page .tr-select,
+  body.app-page .heatmap-select,
+  body.app-page .db-session-title-input,
+  body.app-page .db-btn,
+  body.app-page .tr-btn,
+  body.app-page .habits-add-btn,
+  body.app-page .sleep-add-btn,
+  body.app-page .weight-update-button,
+  body.app-page .water-add-button {
+    min-height: 40px;
+  }
+}
+
+/* Single-column widths: widgets size to their content instead of reserving
+   desktop row heights. Lists still scroll inside a capped box.
+   Training/nutrition page grids collapse at 1180px, the dashboard's
+   training+nutrition pair only at 900px. */
+@media (max-width: 1180px) {
+  body.app-page .tr-session-exercise-box,
+  body.app-page .meals-box {
+    height: auto;
+    min-height: 0;
+    max-height: 420px;
+  }
+
+  body.app-page .tr-card-session,
+  body.app-page .tr-card-recommendations,
+  body.app-page .meals-widget {
+    height: auto;
+    min-height: 0;
+  }
+
+  /* flex: 1 collapses to zero inside an auto-height column. */
+  body.app-page .tr-session-exercise-list,
+  body.app-page .meals-list {
+    flex: 0 1 auto;
+  }
+
+  body.app-page .tr-session-empty,
+  body.app-page .meals-empty {
+    padding: 24px 12px;
+  }
+}
+
+/* Phones: keep the workout card short — title field next to "Plan",
+   "Add exercise" next to "Save" instead of four stacked rows. */
+@media (max-width: 480px) {
+  body.app-page .db-session-header-actions {
+    flex-direction: row;
+    align-items: stretch;
+  }
+
+  body.app-page .db-session-header-actions .db-btn {
+    width: auto;
+  }
+
+  body.app-page .db-session-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  body.app-page .db-session-actions .db-btn {
+    width: 100%;
+    min-width: 0;
+  }
+}
+
+@media (max-width: 899.98px) {
+  body.app-page .db-session-exercise-box,
+  body.app-page .db-nutrition-meals-box {
+    height: auto;
+    min-height: 0;
+    max-height: 420px;
+  }
+
+  body.app-page .db-nutrition-meals-list {
+    height: auto;
+    max-height: 396px;
+  }
+
+  body.app-page .db-session-exercise-list {
+    flex: 0 1 auto;
+  }
+
+  body.app-page .db-session-empty,
+  body.app-page .db-nutrition-meals-box .meals-empty {
+    min-height: 0;
+    padding: 18px 0;
+    font-size: var(--nf-text-base);
+  }
+}
+
+/* Generic page header and blocks for simple pages (equipment, tracker,
+   premium). Same metrics as the module headers above. */
+body.app-page .nf-page-header {
+  margin-bottom: var(--nf-space-4);
+}
+
+body.app-page .nf-page-title {
+  margin: 0;
+  color: var(--nf-text-main);
+  font-size: clamp(20px, 2vw, 25px);
+  line-height: 1.15;
+  font-weight: 680;
+  letter-spacing: -.025em;
+}
+
+body.app-page .nf-empty {
+  max-width: 560px;
+  margin: 0;
+  padding: var(--nf-space-6) var(--nf-space-4);
+  border: 1px dashed var(--nf-border-strong);
+  border-radius: var(--nf-radius-md);
+  color: var(--nf-text-muted);
+  font-size: var(--nf-text-base);
+  text-align: center;
+}
+
+body.app-page .nf-panel {
+  max-width: 560px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--nf-space-3);
+  padding: var(--nf-space-5);
+  border: 1px solid var(--nf-border-subtle);
+  border-radius: var(--nf-radius-lg);
+  background: var(--nf-surface);
+}
+
+body.app-page .nf-panel-title {
+  margin: 0;
+  font-size: var(--nf-text-md);
+  font-weight: 650;
+}
+
+body.app-page .nf-panel-text {
+  margin: 0;
+  color: var(--nf-text-muted);
+  font-size: var(--nf-text-base);
+}
+
+/* Phones: every dialog is a bottom sheet (nutrition and profile already
+   are), so actions sit within thumb reach and the page stays visible above. */
+@media (max-width: 600px) {
+  body.app-page .db-modal,
+  body.app-page .dashboard-recovery-modal-backdrop,
+  body.app-page .recovery-modal-backdrop,
+  body.app-page .tr-modal {
+    align-items: flex-end;
+    padding: 0;
+  }
+
+  body.app-page .db-modal-panel,
+  body.app-page .dashboard-recovery-modal,
+  body.app-page .recovery-modal,
+  body.app-page .tr-modal-content {
+    width: 100%;
+    max-width: 100%;
+    max-height: 92dvh;
+    border-width: 1px 0 0;
+    border-radius: var(--nf-radius-lg) var(--nf-radius-lg) 0 0;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  body.app-page .dashboard-recovery-modal,
+  body.app-page .recovery-modal,
+  body.app-page .tr-modal-content {
+    overflow-y: auto;
+    padding: var(--nf-space-5) var(--nf-space-4) calc(var(--nf-space-4) + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+/* Nutrition phones: weight and water side by side; the value and "% of
+   target" text carry the information, the scale/glass art is dropped. */
+@media (max-width: 599.98px) {
+  body.app-page .nutrition-quick-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--nf-space-3);
+  }
+
+  body.app-page .quick-stat-card {
+    min-width: 0;
+    padding: var(--nf-space-3);
+  }
+
+  body.app-page .weight-visual,
+  body.app-page .water-visual {
+    display: none;
   }
 }

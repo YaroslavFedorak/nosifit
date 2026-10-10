@@ -12,34 +12,130 @@
   color: var(--nf-text-main);
 }
 
+/* Stacking: page modals use z-index >= 40 and must cover the shell, so the
+   content wrappers below deliberately create no stacking context.
+   Shell order: tab bar 25 < backdrop 29 < sidebar 30 < modals.
+
+   ---------------------------------------------------------------------------
+   App shell — mobile first.
+   < 768px   : content takes the full width, navigation is a bottom tab bar
+               plus an off-canvas drawer (the sidebar) behind "More".
+   768–1199  : sidebar is a compact icon rail; the toggle opens it as an overlay.
+   >= 1200   : sidebar is expanded; the toggle collapses it to the rail and the
+               choice is remembered (html.nf-nav-collapsed).
+--------------------------------------------------------------------------- */
+
 .app-layout {
   display: block;
+  overflow-x: clip;
 }
 
 .app-layout .core-sidebar-shell {
   position: fixed;
   inset: 0 auto 0 0;
-  z-index: 20;
-  width: var(--nf-sidebar-width);
-  min-width: var(--nf-sidebar-width);
-  height: 100vh;
+  z-index: 30;
+  width: min(84vw, 300px);
+  height: 100dvh;
+  transform: translateX(-100%);
+  visibility: hidden;
+  transition: transform var(--nf-transition), visibility 0s linear 280ms;
+}
+
+.app-layout.nf-nav-open .core-sidebar-shell {
+  transform: none;
+  visibility: visible;
+  transition: transform var(--nf-transition), visibility 0s;
+}
+
+.app-layout .nf-nav-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 29;
+  background: rgba(3, 4, 7, .62);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--nf-transition);
+}
+
+.app-layout.nf-nav-open .nf-nav-backdrop {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .app-layout .main-content {
   min-height: 100vh;
-  margin-left: var(--nf-sidebar-width);
-  width: calc(100% - var(--nf-sidebar-width));
+  width: 100%;
   position: relative;
-  z-index: 1;
 }
 
 .app-layout .page-content {
   width: min(100%, var(--nf-content-max));
   min-height: 100vh;
   margin: 0 auto;
-  padding: 28px var(--nf-page-padding-x) 44px;
+  padding: var(--nf-space-4) var(--nf-space-3) calc(var(--nf-tabbar-height) + env(safe-area-inset-bottom, 0px) + var(--nf-space-6));
   position: relative;
-  z-index: 1;
+}
+
+@media (min-width: 480px) {
+  .app-layout .page-content {
+    padding-inline: var(--nf-space-4);
+  }
+}
+
+@media (min-width: 768px) {
+  .app-layout .core-sidebar-shell {
+    width: var(--nf-sidebar-rail);
+    transform: none;
+    visibility: visible;
+    transition: width var(--nf-transition);
+  }
+
+  /* Rail opened as an overlay on tablets. */
+  .app-layout.nf-nav-open .core-sidebar-shell {
+    width: var(--nf-sidebar-width);
+    box-shadow: var(--nf-shadow-lg);
+  }
+
+  .app-layout .main-content {
+    margin-left: var(--nf-sidebar-rail);
+    width: calc(100% - var(--nf-sidebar-rail));
+  }
+
+  .app-layout .page-content {
+    padding: var(--nf-space-6) var(--nf-space-6) var(--nf-space-8);
+  }
+}
+
+@media (min-width: 1200px) {
+  .app-layout .core-sidebar-shell {
+    width: var(--nf-sidebar-width);
+  }
+
+  .app-layout .main-content {
+    margin-left: var(--nf-sidebar-width);
+    width: calc(100% - var(--nf-sidebar-width));
+    transition: margin-left var(--nf-transition), width var(--nf-transition);
+  }
+
+  .app-layout .page-content {
+    padding-inline: var(--nf-page-padding-x);
+  }
+
+  .nf-nav-collapsed .app-layout .core-sidebar-shell {
+    width: var(--nf-sidebar-rail);
+  }
+
+  .nf-nav-collapsed .app-layout .main-content {
+    margin-left: var(--nf-sidebar-rail);
+    width: calc(100% - var(--nf-sidebar-rail));
+  }
+
+  /* No overlay mode on desktop. */
+  .app-layout .nf-nav-backdrop { display: none; }
+}
+
+@media (min-width: 1800px) {
+  :root { --nf-content-max: 1600px; }
 }
 
 .public-layout .public-wrapper {
@@ -70,10 +166,6 @@
   pointer-events: none;
   z-index: 0;
   border-radius: 50%;
-  transition:
-    background var(--nf-transition-slow),
-    opacity var(--nf-transition-slow),
-    transform var(--nf-transition-slow);
 }
 
 .bg-glow-static {
@@ -112,19 +204,9 @@
   animation: nf-ambient-drift 18s ease-in-out infinite alternate;
 }
 
-/* The hovered card changes only one of the three lights. */
-.app-layout:has(.db-card:hover) .glow-yellow,
-.app-layout:has(.tr-card:hover) .glow-yellow,
-.app-layout:has(.widget-card:hover) .glow-yellow {
-  background: rgba(101, 214, 160, .72);
-  opacity: .27;
-}
-
-.app-layout:has(.db-card:hover) .glow-purple,
-.app-layout:has(.tr-card:hover) .glow-purple,
-.app-layout:has(.widget-card:hover) .glow-purple {
-  opacity: .22;
-}
+/* Inside the app the background stays calm: dimmer static lights only. */
+.app-layout .bg-glow-static { opacity: .14; }
+.app-layout .bg-glow-dynamic { display: none; }
 
 @keyframes nf-ambient-drift {
   from {
@@ -154,36 +236,7 @@
 
 .u-gap-md { gap: 16px; }
 
-@media (max-width: 960px) {
-  .app-layout .core-sidebar-shell {
-    width: 220px;
-    min-width: 220px;
-  }
-
-  .app-layout .main-content {
-    margin-left: 220px;
-    width: calc(100% - 220px);
-  }
-
-  .app-layout .page-content {
-    padding-inline: 20px;
-  }
-}
-
 @media (max-width: 720px) {
-  .app-layout .core-sidebar-shell {
-    display: none;
-  }
-
-  .app-layout .main-content {
-    width: 100%;
-    margin-left: 0;
-  }
-
-  .app-layout .page-content {
-    padding: 20px 16px 32px;
-  }
-
   .u-shell,
   .u-container {
     padding-inline: 16px;
@@ -194,5 +247,16 @@
     height: 300px;
     filter: blur(90px);
     opacity: .16;
+  }
+
+  .app-layout .bg-glow-static { opacity: .08; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-layout *,
+  .app-layout *::before,
+  .app-layout *::after {
+    transition-duration: 1ms !important;
+    animation-duration: 1ms !important;
   }
 }

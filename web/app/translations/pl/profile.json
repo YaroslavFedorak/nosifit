@@ -1,7 +1,7 @@
 {
     "page": {
         "title": "Profil",
-        "subtitle": "Dane osobowe i ustawienia treningowe"
+        "subtitle": "Dane osobowe, parametry i ustawienia konta"
     },
     "account": {
         "title": "Konto",
@@ -226,5 +226,27 @@
             "rateLimited": "Zbyt wiele prób. Spróbuj później.",
             "generic": "Coś poszło nie tak. Spróbuj ponownie."
         }
+    },
+    "params": {
+        "title": "Parametry osobiste",
+        "subtitle": "Używane do norm żywieniowych i planu treningowego",
+        "edit": "Edytuj",
+        "focus": "Fokus treningowy",
+        "empty": "Brak parametrów. Dodaj je, aby otrzymywać dokładniejsze normy i porady."
+    },
+    "settings": {
+        "title": "Ustawienia",
+        "language": "Język interfejsu",
+        "languageHint": "Zmienia się od razu dla strony i podpowiedzi",
+        "modules": "Moduły",
+        "modulesHint": "Z których sekcji NosiFit korzystasz",
+        "account": "Konto",
+        "password": "Hasło",
+        "change": "Zmień",
+        "signIn": "Metody logowania",
+        "danger": "Usuwanie konta",
+        "dangerText": "Konto i wszystkie Twoje dane zostaną trwale usunięte. Potrzebne będzie potwierdzenie kodem z e-maila.",
+        "plan": "Plan",
+        "memberSince": "Z nami od"
     }
 }

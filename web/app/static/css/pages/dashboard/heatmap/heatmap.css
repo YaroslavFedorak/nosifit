@@ -249,11 +249,11 @@
         width: 100%;
     }
 
+    /* Same width as the 53-week grid, so labels sit over their weeks. */
     .heatmap-months {
-        width: max-content;
+        width: 845px;
         max-width: none;
         margin: 0;
-        justify-content: start;
     }
 
     .heatmap-grid {

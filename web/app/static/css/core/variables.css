@@ -73,8 +73,31 @@
 
   --nf-max-width: 1440px;
   --nf-page-padding-x: 28px;
-  --nf-sidebar-width: 248px;
   --nf-content-gap: 24px;
+
+  /* Spacing scale (4px base). New code uses these instead of raw values. */
+  --nf-space-1: 4px;
+  --nf-space-2: 8px;
+  --nf-space-3: 12px;
+  --nf-space-4: 16px;
+  --nf-space-5: 20px;
+  --nf-space-6: 24px;
+  --nf-space-8: 32px;
+
+  /* Type scale. */
+  --nf-text-xs: 11px;
+  --nf-text-sm: 12px;
+  --nf-text-base: 13px;
+  --nf-text-md: 14px;
+  --nf-text-lg: 16px;
+  --nf-text-xl: 20px;
+  --nf-text-2xl: 24px;
+
+  /* Touch target and app shell sizes. */
+  --nf-tap: 44px;
+  --nf-sidebar-width: 232px;
+  --nf-sidebar-rail: 68px;
+  --nf-tabbar-height: 60px;
 
   /* Compatibility aliases for older page styles. */
   --bg: var(--nf-bg);

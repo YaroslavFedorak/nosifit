@@ -27,7 +27,13 @@
     "aboutApp": "O aplikacji",
     "info": "O stronie",
     "logout": "Wyloguj się",
-    "menu": "Menu główne"
+    "menu": "Menu główne",
+    "more": "Więcej",
+    "expandMenu": "Rozwiń menu",
+    "collapseMenu": "Zwiń menu",
+    "closeMenu": "Zamknij menu",
+    "settings": "Ustawienia",
+    "primary": "Główne sekcje"
   },
   "footer": {
     "rights": "Wszelkie prawa zastrzeżone.",

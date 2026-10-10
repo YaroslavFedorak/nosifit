@@ -139,5 +139,13 @@
     "cancelledText": "Telegram was not connected. The link no longer works.",
     "invalidTitle": "Invalid link",
     "invalidText": "The link is invalid, already used or expired. Get a new one in the bot: \"Connect account\"."
+  },
+  "validation": {
+    "required": "Please fill in this field",
+    "email": "Enter a valid email address",
+    "range": "Allowed value: {min}–{max}",
+    "mismatch": "Passwords do not match",
+    "consent": "Your consent is required",
+    "language": "Language"
   }
 }

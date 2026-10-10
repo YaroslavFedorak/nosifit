@@ -139,5 +139,13 @@
     "cancelledText": "Telegram nie został połączony. Link już nie działa.",
     "invalidTitle": "Nieprawidłowy link",
     "invalidText": "Link jest nieprawidłowy, już użyty lub wygasł. Pobierz nowy w bocie: „Połącz konto”."
+  },
+  "validation": {
+    "required": "Wypełnij to pole",
+    "email": "Podaj poprawny adres e-mail",
+    "range": "Dozwolona wartość: {min}–{max}",
+    "mismatch": "Hasła nie są zgodne",
+    "consent": "Wymagana jest Twoja zgoda",
+    "language": "Język"
   }
 }

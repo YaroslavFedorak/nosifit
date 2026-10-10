@@ -1,12 +1,6 @@
 @import "./base/variables.css";
 @import "./base/layout.css";
-@import "./widgets/account.css";
-@import "./widgets/body.css";
-@import "./widgets/training.css";
-@import "./widgets/progress.css";
-@import "./widgets/goals.css";
-@import "./widgets/activity.css";
-@import "./widgets/actions.css";
+@import "./base/buttons.css";
 @import "./modals/base.css";
 @import "./modals/forms.css";
 @import "./modals/delete.css";

@@ -27,7 +27,13 @@
     "aboutApp": "About the app",
     "info": "About the site",
     "logout": "Log out",
-    "menu": "Main menu"
+    "menu": "Main menu",
+    "more": "More",
+    "expandMenu": "Expand menu",
+    "collapseMenu": "Collapse menu",
+    "closeMenu": "Close menu",
+    "settings": "Settings",
+    "primary": "Main sections"
   },
   "footer": {
     "rights": "All rights reserved.",

@@ -1,0 +1,28 @@
+<section class="profile-card profile-identity">
+
+    <div class="profile-identity-avatar" aria-hidden="true">
+        {{ (user.username or "?")[0]|upper }}
+    </div>
+
+    <div class="profile-identity-text">
+        <h2 class="profile-identity-name">
+            {{ user.username or profile_t("account.notSpecified") }}
+        </h2>
+
+        <p class="profile-identity-email">{{ user.email }}</p>
+
+        <div class="profile-identity-meta">
+            {% if user.is_premium %}
+                <span class="profile-status profile-status-accent">{{ profile_t("account.premium") }}</span>
+            {% else %}
+                <span class="profile-status">{{ profile_t("account.standard") }}</span>
+            {% endif %}
+
+            {% if user.created_at %}
+                <span class="profile-identity-since">
+                    {{ profile_t("settings.memberSince") }} {{ user.created_at.strftime("%d.%m.%Y") }}
+                </span>
+            {% endif %}
+        </div>
+    </div>
+</section>

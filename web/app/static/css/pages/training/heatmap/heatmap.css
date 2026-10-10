@@ -356,3 +356,14 @@
         max-width: 95%;
     }
 }
+/* Phones: keep cells readable and scroll the year, as on recovery. */
+@media (max-width: 600px) {
+    .tr-heatmap-content {
+        overflow-x: auto;
+    }
+
+    .tr-heatmap-months,
+    .tr-heatmap-grid {
+        min-width: 680px;
+    }
+}

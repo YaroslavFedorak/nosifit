@@ -16,7 +16,6 @@
     <div class="bg"></div>
     <div class="orb orb-1"></div>
     <div class="orb orb-2"></div>
-    <div class="orb orb-3"></div>
 
     <!-- Card -->
     <div class="auth-card">
@@ -39,20 +38,29 @@
         method="POST"
         action="{{ url_for('auth.login') }}"
         class="auth-form"
+        {% include "auth/_validate_attrs.html" %}
       >
-        <div class="field" data-anim>
-          <label>{{ auth_t("login.email") }}</label>
+        <div class="field">
+          <label for="email">{{ auth_t("login.email") }}</label>
           <input
             class="cmp-input"
             type="email"
             name="email"
+            id="email"
             placeholder="example@gmail.com"
+            autocomplete="email"
+            inputmode="email"
             required
           />
         </div>
 
-        <div class="field" data-anim>
-          <label>{{ auth_t("login.password") }}</label>
+        <div class="field">
+          <div class="field-head">
+            <label for="password">{{ auth_t("login.password") }}</label>
+            <a class="field-link" href="{{ url_for('auth.reset_password') }}">
+              {{ auth_t("login.forgotPassword") }}
+            </a>
+          </div>
           <div class="pass-row">
             <input
               class="cmp-input"
@@ -60,23 +68,22 @@
               name="password"
               id="password"
               placeholder="{{ auth_t("login.passwordPlaceholder") }}"
+              autocomplete="current-password"
               required
             />
             <button
               type="button"
               class="toggle"
               data-toggle-target="password"
+              aria-label="{{ auth_t("common.togglePassword") }}"
             >
-              Показати
+              {{ auth_t("common.show") }}
             </button>
           </div>
         </div>
 
         <div class="auth-actions">
           <button class="btn-save" type="submit">{{ auth_t("login.submit") }}</button>
-          <a class="btn-back" href="{{ url_for('auth.reset_password') }}">
-            {{ auth_t("login.forgotPassword") }}
-          </a>
         </div>
 
         <div class="divider"><span>{{ auth_t("common.or") }}</span></div>
@@ -131,6 +138,8 @@
       </div>
     </div>
 
+    {% include "auth/_lang.html" %}
+
     <script nonce="{{ csp_nonce() }}">
       function togglePass(id, btn) {
         const input = document.getElementById(id);
@@ -145,13 +154,6 @@
 
       document.querySelectorAll("[data-toggle-target]").forEach((btn) => {
         btn.addEventListener("click", () => togglePass(btn.dataset.toggleTarget, btn));
-      });
-
-      window.addEventListener("load", () => {
-        document.querySelectorAll("[data-anim]").forEach((el, i) => {
-          el.style.setProperty("--stagger", i * 60 + "ms");
-          el.classList.add("reveal");
-        });
       });
     </script>
   </body>

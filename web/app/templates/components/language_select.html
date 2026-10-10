@@ -1,0 +1,12 @@
+{# Language picker. Needs js/i18n/switcher.js on the page.
+   Native names on purpose: a user must recognise their language in any UI. #}
+<select
+  class="nf-select nf-language-select"
+  data-locale-select
+  aria-label="{{ label }}"
+  {% if select_id %}id="{{ select_id }}"{% endif %}
+>
+  {% for code, name in (("uk", "Українська"), ("en", "English"), ("pl", "Polski"), ("ru", "Русский")) %}
+  <option value="{{ code }}" {% if locale == code %}selected{% endif %}>{{ name }}</option>
+  {% endfor %}
+</select>
