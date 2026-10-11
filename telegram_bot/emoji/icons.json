@@ -6,67 +6,68 @@
       "color": "#f3a45d",
       "token": "--nf-orange",
       "fallback": "🔥",
-      "custom_emoji_id": null
+      "custom_emoji_id": "5359394864943377951"
     },
     "protein": {
       "color": "#f06f7a",
       "token": "--nf-red",
       "fallback": "🥩",
-      "custom_emoji_id": null
+      "custom_emoji_id": "5357044143442932211"
     },
     "fat": {
       "color": "#ffe39a",
       "token": "--nf-yellow-soft",
       "fallback": "🥑",
-      "custom_emoji_id": null
+      "custom_emoji_id": "5357059897382973979"
     },
     "carbs": {
       "color": "#9d7bea",
       "token": "--nf-violet",
       "fallback": "🍞",
-      "custom_emoji_id": null
+      "custom_emoji_id": "5359314793868076409"
     },
     "fiber": {
       "color": "#65d6a0",
       "token": "--nf-green",
       "fallback": "🌾",
-      "custom_emoji_id": null
+      "custom_emoji_id": "5359656389796997291"
     },
     "sugar": {
       "color": "#c8b7ff",
       "token": "--nf-violet-soft",
       "fallback": "🍬",
-      "custom_emoji_id": null
+      "custom_emoji_id": "5357400874836599210"
     },
     "meal": {
       "color": "#f3f5f7",
       "token": "--nf-text-main",
       "fallback": "🍽️",
-      "custom_emoji_id": null
+      "custom_emoji_id": "5359579290839068530"
     },
     "water": {
       "color": "#3fa8ff",
       "token": "--nf-accent-water",
       "fallback": "💧",
-      "custom_emoji_id": null
+      "custom_emoji_id": "5357222234261857370"
     },
     "training": {
       "color": "#f4c84a",
       "token": "--nf-accent-training",
       "fallback": "🏋️",
-      "custom_emoji_id": null
+      "custom_emoji_id": "5359345374035224993"
     },
     "recovery": {
       "color": "#42c7d8",
       "token": "--nf-accent-recovery",
       "fallback": "❤️",
-      "custom_emoji_id": null
+      "custom_emoji_id": "5359772126280723726"
     },
     "sleep": {
       "color": "#8be3ec",
       "token": "--nf-blue-soft",
       "fallback": "🌙",
-      "custom_emoji_id": null
+      "custom_emoji_id": "5359489968404212456"
     }
-  }
+  },
+  "pack": "nosifit_by_nosifit_bot"
 }
