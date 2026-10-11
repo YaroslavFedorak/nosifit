@@ -110,3 +110,28 @@ def test_cookies_depend_on_a_stable_secret_key(app, client, user):
         browser.set_cookie(name, value)
 
     assert browser.get(PROTECTED).status_code in (302, 401)
+
+
+def test_signed_in_user_opens_the_site_straight_into_the_dashboard(app, client, user):
+    """After a redeploy and a browser restart: landing and the login page
+    lead to the dashboard, no second sign-in."""
+    log_in(client)
+    cookies = cookies_after_login(client, "remember_token")
+
+    browser = restarted_app(app.config["SECRET_KEY"]).test_client()
+    browser.set_cookie("remember_token", cookies["remember_token"])
+
+    for path in ("/", "/auth/login"):
+        response = browser.get(path)
+        assert response.status_code == 302 and response.location.endswith("/dashboard/")
+
+
+def test_signed_out_visitor_sees_landing_and_login_form(app, client, user):
+    assert client.get("/").status_code == 200
+    assert client.get("/auth/login").status_code == 200
+
+    log_in(client)
+    client.get("/auth/logout")
+
+    assert client.get("/").status_code == 200
+    assert client.get("/auth/login").status_code == 200
