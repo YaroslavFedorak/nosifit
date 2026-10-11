@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, flash, session, url_for
-from flask_login import login_user, logout_user
+from flask_login import current_user, login_user, logout_user
 from sqlalchemy.exc import IntegrityError
 from backend.app.extensions import db
 from backend.app.models.user import User
@@ -16,6 +16,7 @@ from backend.app.utils.validation import (
 from web.app.routes.auth.telegram_session import (
     PENDING_LINK_KEY,
     carry_pending_link_over,
+    get_pending_link,
     mark_authenticated_now,
     pending_link_redirect,
 )
@@ -81,6 +82,11 @@ def login():
 
         start_user_session(user)
         return redirect(pending_link_redirect(url_for("dashboard.dashboard")))
+
+    # Already signed in: no second login. Except when connecting Telegram
+    # asks to sign in again (recent sign-in required).
+    if current_user.is_authenticated and get_pending_link() is None:
+        return redirect(url_for("dashboard.dashboard"))
 
     return render_template("auth/login.html")
 
