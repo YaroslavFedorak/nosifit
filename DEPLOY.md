@@ -18,7 +18,7 @@ Redis (rate-limit counters only).
 | Name | Value |
 |---|---|
 | `DATABASE_URL` | `${{Postgres.DATABASE_URL}}` (reference to the Postgres service) |
-| `SECRET_KEY` | output of `python -c "import secrets; print(secrets.token_hex(32))"` |
+| `SECRET_KEY` | output of `python -c "import secrets; print(secrets.token_hex(32))"`. Set it once and keep it: sessions and "remember me" cookies are signed with it, so they survive restarts and redeploys only while it stays the same (changing it signs everyone out) |
 | `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` | from Google Cloud Console |
 | `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET` | from a **separate** GitHub OAuth App for production |
 | `BREVO_API_KEY` | brevo.com (free: 300 emails/day) → *SMTP & API* → *API Keys* |

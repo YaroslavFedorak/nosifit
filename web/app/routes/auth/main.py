@@ -176,8 +176,11 @@ def register_complete():
 
 @auth_bp.route("/logout", methods=["GET", "POST"], endpoint="logout")
 def logout():
-    logout_user()
+    # Clear first: logout_user() leaves the flag that deletes the "remember
+    # me" cookie in the session; clearing after it would keep the cookie and
+    # the next request would sign the user back in.
     session.clear()
+    logout_user()
     return redirect(url_for("root.landing"))
 
 

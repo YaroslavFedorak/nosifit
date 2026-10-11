@@ -42,6 +42,9 @@ class TelegramIdentity(db.Model):
         db.DateTime(timezone=True), default=_utcnow, onupdate=_utcnow, nullable=False
     )
     last_login_at = db.Column(db.DateTime(timezone=True), nullable=True)
+    # Set by /logout in the bot: the bot then stops restoring the session
+    # after its restarts until the user logs in again.
+    bot_logged_out_at = db.Column(db.DateTime(timezone=True), nullable=True)
 
     user = db.relationship("User", back_populates="telegram_identity")
 

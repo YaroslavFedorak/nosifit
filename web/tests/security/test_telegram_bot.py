@@ -34,7 +34,9 @@ from aiogram.types import User as TgUser
 
 from telegram_bot import runtime
 from telegram_bot.bot import create_dispatcher
-from telegram_bot.services.api import NosiFitAPI
+from telegram_bot.keyboards.auth import auth_menu
+from telegram_bot.keyboards.main import main_menu
+from telegram_bot.services.api import NosiFitAPI, NosiFitAPIError
 from telegram_bot.services.telegram_auth import TelegramAuthError, TelegramUser
 from telegram_bot.handlers.start import WELCOME_TEXT
 
@@ -544,3 +546,87 @@ def test_signed_body_is_exactly_what_is_sent(monkeypatch):
     assert check_signature(
         "k" * 40, captured["headers"], "POST", "/api/telegram/link-token", captured["data"]
     )
+
+
+# --- Restart / redeploy of the bot ------------------------------------------------------
+
+
+def restart_bot():
+    """What a restart, redeploy or polling restart leaves: no process memory."""
+    runtime._sessions.clear()
+    runtime._no_restore.clear()
+
+
+def test_linked_user_stays_signed_in_after_a_restart(bot, backend, bot_auth):
+    calls, _ = backend
+    bot_auth.linked.add(111)
+    bot.callback("auth:login")
+    restart_bot()
+
+    bot.message("/start")
+
+    assert bot.sent()[-1].reply_markup == main_menu(authenticated=True)
+    assert bot_auth.restore_calls == [111]
+    assert len(calls["login"]) == 1  # no second "Log in"
+    assert runtime.get_api(111) is runtime._sessions[111]
+    assert bot_auth.restore_calls == [111]  # restored once, then cached
+
+
+def test_expired_session_is_restored_while_still_linked(bot_auth):
+    bot_auth.linked.add(5)
+    api = NosiFitAPI(base_url="http://test")
+    api.expired = True  # e.g. the password was changed on the website
+    runtime._sessions[5] = api
+
+    assert runtime.get_api(5) is not api
+
+
+def test_unlinked_user_is_not_restored_and_not_asked_on_every_message(bot, backend, bot_auth):
+    bot.message("/start")
+    bot.message("/help")
+
+    assert not runtime.is_authenticated(111)
+    assert bot_auth.restore_calls == [111]
+    assert bot.sent()[-1].reply_markup == auth_menu()
+
+
+def test_disconnected_telegram_is_not_restored(bot_auth):
+    bot_auth.linked.add(5)
+    assert runtime.is_authenticated(5)
+
+    bot_auth.linked.discard(5)  # Profile -> Connected accounts -> disconnect
+    runtime._sessions[5].expired = True  # the web app answered 401
+    runtime._no_restore.clear()
+
+    assert not runtime.is_authenticated(5)
+    with pytest.raises(NosiFitAPIError):
+        runtime.get_api(5)
+
+
+def test_logout_survives_a_restart(bot, backend, bot_auth):
+    bot_auth.linked.add(111)
+    bot.callback("auth:login")
+    bot.message("/logout")
+
+    assert bot_auth.logout_calls == [111]
+    assert not runtime.is_authenticated(111)
+    restart_bot()
+    assert not runtime.is_authenticated(111)
+
+    bot_auth.logged_out.discard(111)  # what an explicit login does on the server
+    bot.callback("auth:login")
+    assert runtime.is_authenticated(111)
+
+
+def test_failed_logout_call_still_logs_out_locally(bot, backend, bot_auth, monkeypatch):
+    bot_auth.linked.add(111)
+    bot.callback("auth:login")
+
+    def unreachable(telegram_user_id):
+        raise TelegramAuthError("unavailable", "unavailable")
+
+    monkeypatch.setattr(bot_auth, "logout", unreachable)
+    bot.message("/logout")
+
+    assert not runtime.is_authenticated(111)
+    assert "Ви вийшли" in " ".join(bot.texts())

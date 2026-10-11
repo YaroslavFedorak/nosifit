@@ -128,16 +128,36 @@ def telegram_login(telegram_user_id, data):
     if identity is None or identity.user is None:
         return _error("not_linked", 404)
 
+    # "restore": the bot lost its session (restart) and reopens it without
+    # the user pressing "Log in" - unless they logged out in the bot. It
+    # carries only the id, so the stored username is left alone.
+    restore = data.get("restore") is True
+    if restore and identity.bot_logged_out_at is not None:
+        return _error("logged_out", 401)
+
     user = identity.user
-    username = tg.clean_telegram_username(data.get("username"))
-    if username != identity.telegram_username:
-        identity.telegram_username = username
+    if not restore:
+        username = tg.clean_telegram_username(data.get("username"))
+        if username != identity.telegram_username:
+            identity.telegram_username = username
+        identity.bot_logged_out_at = None
     identity.last_login_at = tg.utcnow()
     _ensure_profile(user)
     db.session.commit()
 
     start_telegram_session(user, identity)
     return jsonify({"status": "ok", "username": user.username})
+
+
+@telegram_api_bp.post("/logout")
+@bot_signed
+def telegram_logout(telegram_user_id, data):
+    """/logout in the bot: no session restore until the next explicit login."""
+    identity = tg.identity_for_telegram(telegram_user_id)
+    if identity is not None and identity.bot_logged_out_at is None:
+        identity.bot_logged_out_at = tg.utcnow()
+        db.session.commit()
+    return jsonify({"status": "ok"})
 
 
 # --- Create an account ---------------------------------------------------------------

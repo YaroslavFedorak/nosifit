@@ -79,6 +79,24 @@ class TelegramAuthClient:
         self._post(session, "/api/telegram/login", user.payload())
         return NosiFitAPI(base_url=self.base_url, session=session)
 
+    def restore(self, telegram_user_id: int) -> NosiFitAPI:
+        """Reopen the session of a linked user after the bot lost it (restart).
+
+        TelegramAuthError not_linked / logged_out when there is none to restore.
+        """
+        session = requests.Session()
+        self._post(
+            session,
+            "/api/telegram/login",
+            {"telegram_user_id": telegram_user_id, "restore": True},
+        )
+        return NosiFitAPI(base_url=self.base_url, session=session)
+
+    def logout(self, telegram_user_id: int) -> None:
+        self._post(
+            requests.Session(), "/api/telegram/logout", {"telegram_user_id": telegram_user_id}
+        )
+
     def register_start(self, user: TelegramUser, email: str) -> None:
         self._post(
             requests.Session(), "/api/telegram/register/start", {**user.payload(), "email": email}
