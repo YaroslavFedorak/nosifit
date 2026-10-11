@@ -32,24 +32,36 @@ VS16 = "️"
 
 
 def api(method: str, fields: dict | None = None, files: dict[str, Path] | None = None) -> dict:
-    token = os.environ.get("TELEGRAM_BOT_TOKEN") or sys.exit("TELEGRAM_BOT_TOKEN is not set")
+    token = (os.environ.get("TELEGRAM_BOT_TOKEN") or "").strip().strip('"').strip("'")
+    if not token:
+        sys.exit("TELEGRAM_BOT_TOKEN is not set")
     url = f"https://api.telegram.org/bot{token}/{method}"
     fields = {k: v if isinstance(v, str) else json.dumps(v, ensure_ascii=False)
               for k, v in (fields or {}).items() if v is not None}
-    boundary = uuid.uuid4().hex
-    body = bytearray()
-    for name, value in fields.items():
-        body += f'--{boundary}\r\nContent-Disposition: form-data; name="{name}"\r\n\r\n{value}\r\n'.encode()
-    for name, path in (files or {}).items():
-        body += (f'--{boundary}\r\nContent-Disposition: form-data; name="{name}"; filename="{path.name}"\r\n'
-                 "Content-Type: image/png\r\n\r\n").encode() + path.read_bytes() + b"\r\n"
-    body += f"--{boundary}--\r\n".encode()
-    req = urllib.request.Request(url, bytes(body), {"Content-Type": f"multipart/form-data; boundary={boundary}"})
+    if fields or files:
+        boundary = uuid.uuid4().hex
+        body = bytearray()
+        for name, value in fields.items():
+            body += f'--{boundary}\r\nContent-Disposition: form-data; name="{name}"\r\n\r\n{value}\r\n'.encode()
+        for name, path in (files or {}).items():
+            body += (f'--{boundary}\r\nContent-Disposition: form-data; name="{name}"; filename="{path.name}"\r\n'
+                     "Content-Type: image/png\r\n\r\n").encode() + path.read_bytes() + b"\r\n"
+        body += f"--{boundary}--\r\n".encode()
+        req = urllib.request.Request(url, bytes(body), {"Content-Type": f"multipart/form-data; boundary={boundary}"})
+    else:
+        req = urllib.request.Request(url)  # plain GET for methods without parameters (getMe)
     try:
         with urllib.request.urlopen(req, timeout=60) as resp:
-            data = json.load(resp)
+            status, raw = resp.status, resp.read()
     except urllib.error.HTTPError as e:
-        data = json.load(e)
+        status, raw = e.code, e.read()
+    except urllib.error.URLError as e:
+        sys.exit(f"{method}: cannot reach api.telegram.org ({e.reason})")
+    try:
+        data = json.loads(raw)
+    except ValueError:
+        hint = " Check TELEGRAM_BOT_TOKEN (copy it again from Railway or @BotFather)." if status in (401, 404) else ""
+        sys.exit(f"{method}: HTTP {status}, not a Telegram API response: {raw[:200]!r}.{hint}")
     if not data.get("ok"):
         sys.exit(f"{method} failed: {data.get('error_code')} {data.get('description')}")
     return data["result"]
