@@ -37,7 +37,8 @@ def delete_final():
 
     delete_user_account(current_user._get_current_object())
 
-    logout_user()
+    # Clear first, so logout_user() can delete the "remember me" cookie.
     session.clear()
+    logout_user()
 
     return jsonify({"status": "deleted"})

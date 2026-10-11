@@ -462,6 +462,67 @@ def test_concurrent_logins_get_independent_sessions(app, victim_identity):
     assert second.get("/api/nutrition/water").status_code == 200
 
 
+def restore_payload(tg_id=TG_ALICE):
+    return {"telegram_user_id": tg_id, "restore": True}
+
+
+def test_bot_restart_restores_a_linked_user_without_a_new_login(app, victim_identity):
+    """The link is in PostgreSQL: a fresh bot process (empty cookie jar)
+    gets a session back from the Telegram id alone."""
+    fresh_bot = app.test_client()
+
+    response = bot_post(fresh_bot, "/api/telegram/login", restore_payload())
+
+    assert response.status_code == 200
+    assert fresh_bot.get("/api/nutrition/water").status_code == 200
+    identity = TelegramIdentity.query.one()
+    assert identity.telegram_username == "alice_tg"  # restore carries no username
+    assert identity.last_login_at is not None
+
+
+def test_restore_does_not_link_unknown_telegram(client, user):
+    response = bot_post(client, "/api/telegram/login", restore_payload(TG_MALLORY))
+
+    assert response.status_code == 404 and response.json["code"] == "not_linked"
+    assert TelegramIdentity.query.count() == 0
+
+
+def test_bot_logout_is_stored_and_blocks_restore_until_the_next_login(app, victim_identity):
+    assert bot_post(app.test_client(), "/api/telegram/logout", tg_payload()).status_code == 200
+    assert TelegramIdentity.query.one().bot_logged_out_at is not None
+
+    after_restart = app.test_client()
+    refused = bot_post(after_restart, "/api/telegram/login", restore_payload())
+    assert refused.status_code == 401 and refused.json["code"] == "logged_out"
+    assert after_restart.get("/api/nutrition/water").status_code in (302, 401)
+
+    # An explicit "Log in" in the bot works and re-enables restoring.
+    assert bot_post(app.test_client(), "/api/telegram/login", tg_payload()).status_code == 200
+    assert TelegramIdentity.query.one().bot_logged_out_at is None
+    assert bot_post(app.test_client(), "/api/telegram/login", restore_payload()).status_code == 200
+
+
+def test_bot_logout_needs_the_bot_signature(client, victim_identity):
+    body = json.dumps(tg_payload()).encode()
+    response = client.post("/api/telegram/logout", data=body, content_type="application/json")
+
+    assert response.status_code == 401
+    assert TelegramIdentity.query.one().bot_logged_out_at is None
+
+
+def test_bot_logout_of_unknown_telegram_is_a_no_op(client, user):
+    assert bot_post(client, "/api/telegram/logout", tg_payload(TG_MALLORY)).status_code == 200
+    assert TelegramIdentity.query.count() == 0
+
+
+def test_restore_does_not_revive_a_disconnected_telegram(client, victim_identity):
+    db.session.delete(victim_identity)
+    db.session.commit()
+
+    response = bot_post(client, "/api/telegram/login", restore_payload())
+    assert response.status_code == 404 and response.json["code"] == "not_linked"
+
+
 def test_login_is_rate_limited_per_telegram_user(client, victim_identity):
     statuses = [bot_post(client, "/api/telegram/login", tg_payload()).status_code for _ in range(21)]
     assert statuses[-1] == 429

@@ -228,6 +228,10 @@ browser once; from then on **🔐 Увійти** is a single tap.
 
 ## Notes
 
-FSM state and NosiFit sessions use process memory (aiogram MemoryStorage), so
-an in-progress registration or meal is lost when the bot restarts, and users
-press **🔐 Увійти** again. Run exactly one bot replica (one poller per token).
+FSM state uses process memory (aiogram MemoryStorage), so an in-progress
+registration or meal is lost when the bot restarts. Sign-in is not: the
+Telegram <-> NosiFit link is stored in PostgreSQL (`telegram_identities`) and
+the bot reopens a linked user's session on first use after a restart or
+redeploy (signed `/api/telegram/login` with `restore`). `/logout` in the bot is
+stored too (`bot_logged_out_at`), so it survives restarts until the next
+**🔐 Увійти**. Run exactly one bot replica (one poller per token).

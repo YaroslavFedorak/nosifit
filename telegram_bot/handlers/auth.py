@@ -162,7 +162,7 @@ async def logout_button(message: Message, state: FSMContext) -> None:
 
 @router.message(Command("logout"))
 async def logout_command(message: Message, state: FSMContext) -> None:
-    runtime.logout(message.from_user.id)
+    await asyncio.to_thread(runtime.logout, message.from_user.id)
     await state.clear()
     await message.answer(
         "Ви вийшли з NosiFit у цьому боті.",
