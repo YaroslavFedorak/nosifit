@@ -1,0 +1,72 @@
+{
+  "_comment": "Semantic key -> NosiFit custom emoji. Colors are website tokens from web/app/static/css/core/variables.css. 'fallback' is the standard emoji Telegram requires inside <tg-emoji> and in the sticker's emoji_list. custom_emoji_id stays null until the pack is registered with Telegram.",
+  "tile": "#0b0e13",
+  "icons": {
+    "calories": {
+      "color": "#f3a45d",
+      "token": "--nf-orange",
+      "fallback": "🔥",
+      "custom_emoji_id": null
+    },
+    "protein": {
+      "color": "#f06f7a",
+      "token": "--nf-red",
+      "fallback": "🥩",
+      "custom_emoji_id": null
+    },
+    "fat": {
+      "color": "#ffe39a",
+      "token": "--nf-yellow-soft",
+      "fallback": "🥑",
+      "custom_emoji_id": null
+    },
+    "carbs": {
+      "color": "#9d7bea",
+      "token": "--nf-violet",
+      "fallback": "🍞",
+      "custom_emoji_id": null
+    },
+    "fiber": {
+      "color": "#65d6a0",
+      "token": "--nf-green",
+      "fallback": "🌾",
+      "custom_emoji_id": null
+    },
+    "sugar": {
+      "color": "#c8b7ff",
+      "token": "--nf-violet-soft",
+      "fallback": "🍬",
+      "custom_emoji_id": null
+    },
+    "meal": {
+      "color": "#f3f5f7",
+      "token": "--nf-text-main",
+      "fallback": "🍽️",
+      "custom_emoji_id": null
+    },
+    "water": {
+      "color": "#3fa8ff",
+      "token": "--nf-accent-water",
+      "fallback": "💧",
+      "custom_emoji_id": null
+    },
+    "training": {
+      "color": "#f4c84a",
+      "token": "--nf-accent-training",
+      "fallback": "🏋️",
+      "custom_emoji_id": null
+    },
+    "recovery": {
+      "color": "#42c7d8",
+      "token": "--nf-accent-recovery",
+      "fallback": "❤️",
+      "custom_emoji_id": null
+    },
+    "sleep": {
+      "color": "#8be3ec",
+      "token": "--nf-blue-soft",
+      "fallback": "🌙",
+      "custom_emoji_id": null
+    }
+  }
+}

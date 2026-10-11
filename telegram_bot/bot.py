@@ -7,6 +7,7 @@ from aiogram.enums import ParseMode
 from aiogram.fsm.storage.memory import MemoryStorage
 
 from telegram_bot.config import TelegramConfig
+from telegram_bot.custom_emoji import CustomEmojiMiddleware
 from telegram_bot.handlers import auth, common, nutrition, start, training, water, weight
 from telegram_bot.security import is_private_human
 
@@ -39,6 +40,7 @@ async def main() -> None:
     # Fails fast without TELEGRAM_BOT_TOKEN / TELEGRAM_BOT_API_SECRET.
     config = TelegramConfig.from_env()
     bot = Bot(token=config.bot_token, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
+    bot.session.middleware(CustomEmojiMiddleware())
     dispatcher = create_dispatcher()
     logger.info("Starting NosiFit Telegram bot")
     logger.info("NosiFit API: %s", config.nosi_fit_base_url)
