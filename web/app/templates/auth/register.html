@@ -5,7 +5,7 @@
     <title>{{ auth_t("register.title") }} — nosifit</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     {% include "components/brand_head.html" %}
-    <link rel="stylesheet" href="/static/css/auth/register.css" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth/register.css') }}" />
   </head>
 
   <body>

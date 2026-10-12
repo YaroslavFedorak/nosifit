@@ -129,7 +129,7 @@ nosifit {% endblock %} {% block styles %} {{ super() }}
 "app/training/modals/plan/modal.html" %}
 
 <script type="module" nonce="{{ csp_nonce() }}">
-  import { ICONS } from "/static/js/icons/index.js";
+  import { ICONS } from "{{ url_for('static', filename='js/icons/index.js') }}";
 
   document.getElementById("tr-icon-guidance").innerHTML = ICONS.weak;
   document.getElementById("tr-icon-recommended").innerHTML = ICONS.recommended;

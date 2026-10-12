@@ -17,8 +17,9 @@ import type { BarcodeLookupResult, BarcodePreview, NutritionUnit, Product } from
 import { closeModal, onClick, openModal, setBusy, setModalError, setValue } from "./modal.js";
 
 const SCANNER_ID = "modal-scan-barcode";
-// Self-hosted copy of zxing-wasm (see the README in that folder).
-const BARCODE_VENDOR = "/static/vendor/zxing-wasm-3.1.4/";
+// Self-hosted copy of zxing-wasm (see the README in that folder). Resolved
+// from this module's URL so it shares the versioned, long-cached static path.
+const BARCODE_VENDOR = new URL("../../../vendor/zxing-wasm-3.1.4/", import.meta.url).href;
 const NATIVE_FORMATS = ["ean_13", "ean_8", "upc_a", "upc_e"];
 const WASM_FORMATS = ["EAN13", "EAN8", "UPCA", "UPCE"];
 const SCAN_INTERVAL_MS = 200;

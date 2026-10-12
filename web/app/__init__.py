@@ -3,9 +3,11 @@ import os
 
 from dotenv import load_dotenv
 from flask import Flask, jsonify
+from flask_compress import Compress
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 from backend.app.extensions import db, login_manager, migrate, mail, oauth
+from web.app.assets import compute_asset_version, init_assets
 from web.app.i18n import init_i18n
 from web.app.security import init_security
 
@@ -16,10 +18,30 @@ load_dotenv(os.path.join(BASE_DIR, ".env"))
 # The barcode scanner's WebAssembly decoder must be served as application/wasm.
 mimetypes.add_type("application/wasm", ".wasm")
 
+ASSET_VERSION = compute_asset_version()
+
+compress = Compress()
+
 
 def create_app(config=None):
-    app = Flask(__name__)
+    app = Flask(__name__, static_url_path=f"/static/{ASSET_VERSION}")
     app.config.from_object("backend.config.Config")
+    app.config.setdefault(
+        "COMPRESS_MIMETYPES",
+        [
+            "text/html",
+            "text/css",
+            "text/javascript",
+            "application/javascript",
+            "application/json",
+            "application/manifest+json",
+            "application/wasm",
+            "image/svg+xml",
+        ],
+    )
+    app.config.setdefault(
+        "COMPRESS_STREAMING_ENDPOINT_CONDITIONAL", ["static", "static_unversioned"]
+    )
 
     init_i18n(app)
 
@@ -27,6 +49,8 @@ def create_app(config=None):
         app.config.update(config)
 
     init_security(app)
+    init_assets(app, ASSET_VERSION)
+    compress.init_app(app)
 
     if app.config.get("IS_PRODUCTION") and not app.config.get("TESTING"):
         if not app.config.get("SECRET_KEY") or len(app.config["SECRET_KEY"]) < 32:
