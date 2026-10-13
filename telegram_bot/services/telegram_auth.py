@@ -11,7 +11,7 @@ from urllib.parse import urlsplit
 
 import requests
 
-from backend.app.utils.bot_signature import sign_request
+from shared.bot_signature import sign_request
 from telegram_bot.services.api import NosiFitAPI, NosiFitAPIError
 
 
