@@ -122,107 +122,12 @@ def create_app(config=None):
         client_kwargs={"scope": "user:email"},
     )
 
-    from web.app.routes import (
-        auth_bp,
-        google_bp,
-        github_bp,
-        email_verification_bp,
-        complete_profile_bp,
-        telegram_api_bp,
-        telegram_link_bp,
-        root_bp,
-        public_bp,
-        info_bp,
-        i18n_bp,
-        dashboard_bp,
-        dashboard_api_bp,
-        training_dashboard_api_bp,
-        training_pages_bp,
-        training_explanation_bp,
-        training_api_bp,
-        nutrition_pages_bp,
-        nutrition_api,
-        recovery_pages_bp,
-        recovery_bp,
-        assessment_pages_bp,
-        assessment_bp,
-        equipment_pages_bp,
-        equipment_api,
-        training_plan_pages_bp,
-        plan_bp,
-        premium_bp,
-        profile_pages_bp,
-        profile_view_bp,
-        profile_update_bp,
-        password_change_bp,
-        email_change_bp,
-        delete_request_bp,
-        delete_confirm_bp,
-        delete_final_bp,
-        oauth_disconnect_bp,
-        connected_accounts_bp,
-        questionnaire_pages_bp,
-        questionnaire_bp,
-        tracker_pages_bp,
-        onboarding_api,
-        injury_api,
-    )
+    # Pages and their form posts belong to web; everything under /api/ to
+    # the api package (docs/architecture.md).
+    from api import register_api
+    from web.app.routes import register_pages
 
-    app.register_blueprint(auth_bp)
-    app.register_blueprint(google_bp)
-    app.register_blueprint(github_bp)
-    app.register_blueprint(email_verification_bp)
-    app.register_blueprint(complete_profile_bp)
-    app.register_blueprint(telegram_api_bp)
-    app.register_blueprint(telegram_link_bp)
-
-    app.register_blueprint(root_bp)
-    app.register_blueprint(public_bp)
-    app.register_blueprint(info_bp)
-    app.register_blueprint(i18n_bp)
-
-    app.register_blueprint(dashboard_bp)
-    app.register_blueprint(dashboard_api_bp)
-    app.register_blueprint(training_dashboard_api_bp)
-
-    app.register_blueprint(training_pages_bp)
-    app.register_blueprint(training_explanation_bp)
-    app.register_blueprint(training_api_bp)
-
-    app.register_blueprint(nutrition_pages_bp)
-    app.register_blueprint(nutrition_api)
-
-    app.register_blueprint(recovery_pages_bp)
-    app.register_blueprint(recovery_bp)
-
-    app.register_blueprint(assessment_pages_bp)
-    app.register_blueprint(assessment_bp)
-
-    app.register_blueprint(equipment_pages_bp)
-    app.register_blueprint(equipment_api)
-
-    app.register_blueprint(training_plan_pages_bp)
-    app.register_blueprint(plan_bp)
-
-    app.register_blueprint(premium_bp)
-
-    app.register_blueprint(profile_pages_bp)
-    app.register_blueprint(profile_view_bp)
-    app.register_blueprint(profile_update_bp)
-    app.register_blueprint(password_change_bp)
-    app.register_blueprint(email_change_bp)
-    app.register_blueprint(delete_request_bp)
-    app.register_blueprint(delete_confirm_bp)
-    app.register_blueprint(delete_final_bp)
-    app.register_blueprint(oauth_disconnect_bp)
-    app.register_blueprint(connected_accounts_bp)
-
-    app.register_blueprint(questionnaire_pages_bp)
-    app.register_blueprint(questionnaire_bp)
-
-    app.register_blueprint(tracker_pages_bp)
-
-    app.register_blueprint(onboarding_api)
-    app.register_blueprint(injury_api)
+    register_pages(app)
+    register_api(app)
 
     return app

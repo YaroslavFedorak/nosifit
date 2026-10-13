@@ -74,3 +74,17 @@ def test_importing_the_bot_loads_no_backend_or_framework():
 def test_core_does_not_depend_on_the_web_layer():
     to_web = {(path, module) for path, module in imports_of("backend") if top(module) == "web"}
     assert to_web == KNOWN_CORE_TO_WEB
+
+
+def test_everything_under_api_is_registered_by_the_api_package(app):
+    """New JSON endpoints go under /api/ and into api.register_api; pages
+    and form posts stay in web."""
+    from api import api_blueprints
+
+    api_names = {blueprint.name for blueprint in api_blueprints()}
+    misplaced = []
+    for rule in app.url_map.iter_rules():
+        blueprint = rule.endpoint.rpartition(".")[0]
+        if rule.rule.startswith("/api/") != (blueprint in api_names):
+            misplaced.append((rule.rule, rule.endpoint))
+    assert misplaced == []
