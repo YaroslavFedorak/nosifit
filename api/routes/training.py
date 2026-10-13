@@ -1,11 +1,8 @@
 from functools import lru_cache
-from types import SimpleNamespace
 
-from flask import Blueprint, jsonify, request, current_app
-from sqlalchemy import func
+from flask import Blueprint, abort, jsonify, request, current_app
 from flask_login import login_required, current_user
 from backend.app.extensions import db
-from backend.app.training.models.exercise import Exercise
 from backend.app.training.exercises.prescription import (
     accepts_load,
     build_entry,
@@ -15,17 +12,15 @@ from backend.app.training.exercises.prescription import (
     performed_values,
     serialize_entry,
 )
+from backend.app.services.training import catalog_service, plan_service
 from backend.app.services.training.exercise_search import search_exercises
-from backend.app.training.models.muscle import Muscle
-from backend.app.training.models.equipment import TEEquipment
 from backend.app.training.models.user_pref import UserPreference
 from backend.app.services.training.session_service import TrainingSessionService
 from backend.app.services.training.model import TrainingModelService
 from backend.app.training.training_analysis.recommendations_engine import (
     build_recommendations,
 )
-from backend.app.models.training_session import SessionExercise, TrainingSession
-from backend.app.training.models.training_plan import TrainingPlan
+from backend.app.models.training_session import TrainingSession
 from backend.app.training.models.performance_state import PerformanceState
 import datetime as dt
 from zoneinfo import ZoneInfo
@@ -92,15 +87,6 @@ def _json_body():
     return data
 
 
-def _active_plan(user):
-    plan = (
-        TrainingPlan.query.filter_by(user_id=user.id, is_active=True)
-        .order_by(TrainingPlan.id.desc())
-        .first()
-    )
-    return plan
-
-
 def _today_key():
     return ["mon", "tue", "wed", "thu", "fri", "sat", "sun"][_local_today().weekday()]
 
@@ -150,7 +136,7 @@ def _plan_days_struct(raw):
             exercise_id = exercise.get("id") if isinstance(exercise, dict) else None
             if isinstance(exercise_id, bool) or not isinstance(exercise_id, (str, int)):
                 continue
-            obj = Exercise.query.get(exercise_id)
+            obj = catalog_service.exercise_by_id(exercise_id)
             if not obj:
                 continue
 
@@ -182,7 +168,7 @@ def _plan_days_struct(raw):
 @login_required
 def muscles():
     try:
-        return jsonify([m.to_dict() for m in Muscle.query.order_by(Muscle.name)])
+        return jsonify([m.to_dict() for m in catalog_service.list_muscles()])
     except Exception as e:
         return _error(e)
 
@@ -191,9 +177,7 @@ def muscles():
 @login_required
 def equipment():
     try:
-        return jsonify(
-            [e.to_dict() for e in TEEquipment.query.order_by(TEEquipment.name)]
-        )
+        return jsonify([e.to_dict() for e in catalog_service.list_equipment()])
     except Exception as e:
         return _error(e)
 
@@ -202,27 +186,14 @@ def equipment():
 @login_required
 def exercises():
     try:
-        q = Exercise.query
-        muscle = request.args.get("muscle")
-        equipment = request.args.get("equipment")
-        qstr = request.args.get("q")
         page = max(1, request.args.get("page", 1, type=int) or 1)
         per_page = min(max(1, request.args.get("per_page", 50, type=int) or 50), 100)
-
-        if muscle:
-            q = q.filter(
-                Exercise.muscles_primary.contains([muscle])
-                | Exercise.muscles_secondary.contains([muscle])
-            )
-
-        if equipment:
-            q = q.filter(Exercise.equipment.contains([equipment]))
-
-        if qstr:
-            q = q.filter(Exercise.name.ilike(f"%{qstr}%"))
-
-        items = q.order_by(Exercise.name).paginate(
-            page=page, per_page=per_page, error_out=False
+        items = catalog_service.find_exercises(
+            muscle=request.args.get("muscle"),
+            equipment=request.args.get("equipment"),
+            name=request.args.get("q"),
+            page=page,
+            per_page=per_page,
         )
 
         return jsonify(
@@ -254,36 +225,6 @@ def _exercise_names(locale):
         for slug, item in load_translation(locale, "exercises").items()
         if isinstance(item, dict) and isinstance(item.get("name"), str)
     }
-
-
-_catalog_cache = {"key": None, "rows": []}
-
-
-def _catalog_snapshot():
-    """The exercise catalog as plain objects, rebuilt only when it changes.
-
-    The catalog changes only when it is seeded; reading every exercise on
-    each search made the bot slow. A count + last update check is enough to
-    notice a reseed.
-    """
-    key = tuple(
-        db.session.query(func.count(Exercise.id), func.max(Exercise.updated_at)).one()
-    )
-    if key != _catalog_cache["key"]:
-        _catalog_cache["rows"] = [
-            SimpleNamespace(
-                id=row.id,
-                slug=row.slug,
-                name=row.name,
-                measurement_type=row.measurement_type,
-                load_type=row.load_type,
-                max_additional_load_kg=row.max_additional_load_kg,
-                prescription=row.prescription,
-            )
-            for row in Exercise.query.all()
-        ]
-        _catalog_cache["key"] = key
-    return _catalog_cache["rows"]
 
 
 def _bounded_arg(name, default, low, high):
@@ -363,15 +304,6 @@ def _latest_session_today(user_id):
     )
 
 
-def _catalog_rows(exercise_ids):
-    if not exercise_ids:
-        return {}
-    return {
-        exercise.id: exercise
-        for exercise in Exercise.query.filter(Exercise.id.in_(list(exercise_ids)))
-    }
-
-
 def _with_last(exercises, names, user_id):
     """Brief exercise info plus what the user did last time (before today)."""
     today_session = _latest_session_today(user_id)
@@ -408,15 +340,9 @@ def search_exercise_catalog():
             return jsonify({"items": [], "query": "", "has_more": False})
 
         names = _exercise_names(_request_locale())
-        done_ids = {
-            exercise_id
-            for (exercise_id,) in db.session.query(SessionExercise.exercise_id)
-            .join(TrainingSession, SessionExercise.session_id == TrainingSession.id)
-            .filter(TrainingSession.user_id == current_user.id)
-            .distinct()
-        }
+        done_ids = catalog_service.exercise_ids_done_by(current_user.id)
         found = search_exercises(
-            _catalog_snapshot(),
+            catalog_service.catalog_snapshot(),
             names,
             query,
             limit=limit + 1,
@@ -446,7 +372,7 @@ def recent_exercises():
             limit=limit,
             exclude_session_id=today_session.id if today_session else None,
         )
-        catalog = _catalog_rows(row.exercise_id for row in rows)
+        catalog = catalog_service.exercises_by_id(row.exercise_id for row in rows)
         names = _exercise_names(_request_locale())
         return jsonify(
             {
@@ -478,7 +404,7 @@ def today_logged_session():
             return jsonify({"session": None})
 
         rows = sorted(session.exercises, key=lambda row: row.id)
-        catalog = _catalog_rows(row.exercise_id for row in rows)
+        catalog = catalog_service.exercises_by_id(row.exercise_id for row in rows)
         names = _exercise_names(_request_locale())
         exercises = [
             {
@@ -543,7 +469,7 @@ def today():
             payload["sessionId"] = str(active.id)
             payload["title"] = "Активна сесія"
             for se in active.exercises:
-                ex_obj = Exercise.query.get(se.exercise_id)
+                ex_obj = catalog_service.exercise_by_id(se.exercise_id)
                 if not ex_obj:
                     continue
                 exercises_raw.append(
@@ -553,13 +479,13 @@ def today():
                     }
                 )
         else:
-            plan = _active_plan(current_user)
+            plan = plan_service.active_plan(current_user.id)
             if not plan or not plan.days:
                 return jsonify(payload)
 
             day = plan.days.get(_today_key()) or next(iter(plan.days.values()))
             for ex in day["exercises"]:
-                ex_obj = Exercise.query.get(ex["exercise"]["id"])
+                ex_obj = catalog_service.exercise_by_id(ex["exercise"]["id"])
                 if not ex_obj:
                     continue
                 exercises_raw.append(
@@ -615,7 +541,7 @@ def today_session():
 
         if active:
             for se in active.exercises:
-                ex = Exercise.query.get(se.exercise_id)
+                ex = catalog_service.exercise_by_id(se.exercise_id)
                 if not ex:
                     continue
                 result["exercises"].append(
@@ -623,14 +549,14 @@ def today_session():
                 )
             return jsonify(result)
 
-        plan = _active_plan(current_user)
+        plan = plan_service.active_plan(current_user.id)
         if not plan:
             return jsonify({"exercises": []})
 
         day = plan.days.get(_today_key()) or next(iter(plan.days.values()))
 
         for item in day["exercises"]:
-            ex = Exercise.query.get(item["exercise"]["id"])
+            ex = catalog_service.exercise_by_id(item["exercise"]["id"])
             if not ex:
                 continue
             result["exercises"].append(serialize_entry(ex, _plan_entry(ex, item)))
@@ -690,9 +616,7 @@ def heatmap():
 @login_required
 def plans():
     try:
-        return jsonify(
-            [p.to_dict() for p in TrainingPlan.query.filter_by(user_id=current_user.id)]
-        )
+        return jsonify([p.to_dict() for p in plan_service.list_plans(current_user.id)])
     except Exception as e:
         return _error(e)
 
@@ -703,23 +627,15 @@ def create_plan():
     try:
         data = _json_body()
 
-        if TrainingPlan.query.filter_by(user_id=current_user.id).count() >= MAX_PLANS_PER_USER:
+        if plan_service.count_plans(current_user.id) >= MAX_PLANS_PER_USER:
             return jsonify({"error": "too_many_plans"}), 400
 
-        plan = TrainingPlan(
-            user_id=current_user.id,
+        plan = plan_service.create_plan(
+            current_user.id,
             name=_clean_plan_name(data.get("name"), "Plan"),
             is_active=data.get("is_active") is True,
             days=_plan_days_struct(data.get("days", {})),
         )
-
-        if plan.is_active:
-            TrainingPlan.query.filter_by(
-                user_id=current_user.id, is_active=True
-            ).update({"is_active": False})
-
-        db.session.add(plan)
-        db.session.commit()
         return jsonify(plan.to_dict())
     except Exception as e:
         return _error(e)
@@ -729,23 +645,17 @@ def create_plan():
 @login_required
 def update_plan(plan_id):
     try:
-        plan = TrainingPlan.query.filter_by(
-            id=plan_id, user_id=current_user.id
-        ).first_or_404()
+        plan = plan_service.plan_for_user(plan_id, current_user.id)
+        if plan is None:
+            abort(404)
         data = _json_body()
 
-        plan.name = _clean_plan_name(data.get("name"), plan.name)
-        plan.days = _plan_days_struct(data.get("days", {}))
-
-        if data.get("is_active", plan.is_active) is True:
-            TrainingPlan.query.filter_by(
-                user_id=current_user.id, is_active=True
-            ).update({"is_active": False})
-            plan.is_active = True
-        else:
-            plan.is_active = False
-
-        db.session.commit()
+        plan_service.save_plan(
+            plan,
+            name=_clean_plan_name(data.get("name"), plan.name),
+            days=_plan_days_struct(data.get("days", {})),
+            make_active=data.get("is_active", plan.is_active) is True,
+        )
         return jsonify(plan.to_dict())
     except Exception as e:
         return _error(e)
@@ -755,11 +665,10 @@ def update_plan(plan_id):
 @login_required
 def delete_plan(plan_id):
     try:
-        plan = TrainingPlan.query.filter_by(
-            id=plan_id, user_id=current_user.id
-        ).first_or_404()
-        db.session.delete(plan)
-        db.session.commit()
+        plan = plan_service.plan_for_user(plan_id, current_user.id)
+        if plan is None:
+            abort(404)
+        plan_service.delete_plan(plan)
         return jsonify({"status": "ok"})
     except Exception as e:
         return _error(e)
@@ -1006,7 +915,7 @@ def day_details(date):
         for s in sessions:
             exercises = []
             for ex in s.exercises:
-                obj = Exercise.query.get(ex.exercise_id)
+                obj = catalog_service.exercise_by_id(ex.exercise_id)
                 if obj:
                     duration = is_duration_exercise(obj)
                     exercises.append(
