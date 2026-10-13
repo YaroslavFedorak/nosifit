@@ -14,9 +14,11 @@ from werkzeug.security import generate_password_hash
 
 from backend.app.extensions import db
 from backend.app.models.user import User
+from backend.app.services.training.session_service import TrainingSessionService
 from backend.app.training.exercises.catalog import load_exercise_catalog
 from backend.app.training.models.exercise import Exercise
 from backend.app.training.models.training_plan import TrainingPlan
+from backend.app.training.models.user_pref import UserPreference
 
 
 @pytest.fixture
@@ -171,4 +173,50 @@ def test_today_views_follow_the_active_plan(signed_in, bench_press):
 
     session = signed_in.get("/api/training/today-session").get_json()
     assert [e["exercise"]["id"] for e in session["exercises"]] == [bench_press.id]
+
+
+def test_strength_test_is_stored_and_shown_in_analytics(signed_in):
+    stored = signed_in.post("/api/training/strength-test", json={"pushups": 20, "squats": 30, "situps": 15})
+    assert stored.get_json() == {
+        "status": "ok",
+        "raw_performance": {"pushups": 20, "squats": 30, "situps": 15},
+    }
+
+    analytics = signed_in.get("/api/training/analytics").get_json()
+    assert analytics["raw_performance"] == {"pushups": 20, "squats": 30, "situps": 15}
+    assert analytics["performance"]["pushups"] == 20
+
+
+def test_today_shows_the_live_session_minus_avoided_muscles(signed_in, user, bench_press):
+    session_id = signed_in.post("/api/training/sessions/start", json={}).get_json()["id"]
+    signed_in.post(f"/api/training/sessions/{session_id}/exercise/{bench_press.id}", json={"sets_done": 3})
+
+    today = signed_in.get("/api/training/today").get_json()
+    assert today["sessionId"] == str(session_id)
+    assert [e["exercise"]["id"] for e in today["exercises"]] == [bench_press.id]
+
+    db.session.add(UserPreference(user_id=user.id, key="injury_chest", value="true"))
+    db.session.commit()
+    assert signed_in.get("/api/training/today").get_json()["exercises"] == []
+    # The live session view lists everything that was logged.
+    session = signed_in.get("/api/training/today-session").get_json()
+    assert [e["exercise"]["id"] for e in session["exercises"]] == [bench_press.id]
+
+
+def test_other_users_sessions_are_not_reachable(signed_in, bench_press):
+    other = User(username="other", email="other@example.com", password=generate_password_hash("password123"))
+    db.session.add(other)
+    db.session.commit()
+    theirs = TrainingSessionService.start_session(other)
+
+    assert signed_in.post(f"/api/training/sessions/{theirs.id}/finish", json={}).status_code == 404
+    edited = signed_in.post(f"/api/training/sessions/{theirs.id}/exercise/{bench_press.id}", json={"sets_done": 1})
+    assert edited.status_code == 404
+    strict = signed_in.post(
+        "/api/training/sessions/complete",
+        json={"session_id": theirs.id, "strict": True, "exercises": [{"exercise": {"id": bench_press.id}, "sets": 1}]},
+    )
+    assert strict.status_code == 404 and strict.get_json() == {"error": "session_not_found"}
+    # Their session is still live; nothing was attached to it.
+    assert signed_in.post("/api/training/sessions/start", json={}).get_json()["id"] != theirs.id
 

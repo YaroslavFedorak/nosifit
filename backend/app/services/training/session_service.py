@@ -215,3 +215,44 @@ class TrainingSessionService:
             .order_by(TrainingSession.started_at.asc())
             .all()
         )
+
+    @staticmethod
+    def active_session(user_id):
+        """The user's newest session still in progress, if any."""
+        return (
+            TrainingSession.query.filter_by(user_id=user_id, status="active")
+            .order_by(TrainingSession.started_at.desc())
+            .first()
+        )
+
+    @staticmethod
+    def session_for_user(session_id, user_id):
+        return TrainingSession.query.filter_by(id=session_id, user_id=user_id).first()
+
+    @staticmethod
+    def active_session_for_user(session_id, user_id):
+        return TrainingSession.query.filter_by(
+            id=session_id, user_id=user_id, status="active"
+        ).first()
+
+    @staticmethod
+    def latest_started_between(user_id, start, end):
+        """Newest session started in [start, end) (naive UTC), if any."""
+        return (
+            TrainingSession.query.filter(
+                TrainingSession.user_id == user_id,
+                TrainingSession.started_at >= start,
+                TrainingSession.started_at < end,
+            )
+            .order_by(TrainingSession.started_at.desc(), TrainingSession.id.desc())
+            .first()
+        )
+
+    @staticmethod
+    def sessions_started_within(user_id, start, end):
+        """Sessions started in [start, end] (naive UTC), in no set order."""
+        return TrainingSession.query.filter(
+            TrainingSession.user_id == user_id,
+            TrainingSession.started_at >= start,
+            TrainingSession.started_at <= end,
+        )

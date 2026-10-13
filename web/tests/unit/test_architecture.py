@@ -103,3 +103,14 @@ def test_api_route_modules_live_in_the_api_package():
 def test_api_route_modules_do_not_import_the_web_layer():
     to_web = {(path, module) for path, module in imports_of("api/routes") if top(module) == "web"}
     assert to_web == KNOWN_API_TO_WEB
+
+
+def test_api_leaves_database_access_to_core_services():
+    """Routes parse input and shape output; queries and writes live in core."""
+    database = {"sqlalchemy", "flask_sqlalchemy", "backend.app.extensions"}
+    offending = {
+        (path, module)
+        for path, module in imports_of("api")
+        if top(module) in database or module in database or ".models." in f".{module}."
+    }
+    assert offending == set()

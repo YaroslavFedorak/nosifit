@@ -2,7 +2,6 @@ from functools import lru_cache
 
 from flask import Blueprint, abort, jsonify, request, current_app
 from flask_login import login_required, current_user
-from backend.app.extensions import db
 from backend.app.training.exercises.prescription import (
     accepts_load,
     build_entry,
@@ -12,16 +11,13 @@ from backend.app.training.exercises.prescription import (
     performed_values,
     serialize_entry,
 )
-from backend.app.services.training import catalog_service, plan_service
+from backend.app.services.training import catalog_service, performance_service, plan_service
 from backend.app.services.training.exercise_search import search_exercises
-from backend.app.training.models.user_pref import UserPreference
 from backend.app.services.training.session_service import TrainingSessionService
 from backend.app.services.training.model import TrainingModelService
 from backend.app.training.training_analysis.recommendations_engine import (
     build_recommendations,
 )
-from backend.app.models.training_session import TrainingSession
-from backend.app.training.models.performance_state import PerformanceState
 import datetime as dt
 from zoneinfo import ZoneInfo
 
@@ -57,7 +53,7 @@ training_api_bp = Blueprint("training_api", __name__, url_prefix="/api/training"
 
 
 def _error(e):
-    if isinstance(e, HTTPException):  # 404 from first_or_404, 400 from bad JSON
+    if isinstance(e, HTTPException):  # 404 from abort, 400 from bad JSON
         raise e
     if isinstance(e, ValidationError):
         return jsonify({"error": "invalid_input", "message": str(e)}), 400
@@ -293,15 +289,7 @@ def _today_utc_bounds():
 
 def _latest_session_today(user_id):
     start, end = _today_utc_bounds()
-    return (
-        TrainingSession.query.filter(
-            TrainingSession.user_id == user_id,
-            TrainingSession.started_at >= start,
-            TrainingSession.started_at < end,
-        )
-        .order_by(TrainingSession.started_at.desc(), TrainingSession.id.desc())
-        .first()
-    )
+    return TrainingSessionService.latest_started_between(user_id, start, end)
 
 
 def _with_last(exercises, names, user_id):
@@ -435,16 +423,9 @@ def today_logged_session():
 @login_required
 def today():
     try:
-        active = (
-            TrainingSession.query.filter_by(user_id=current_user.id, status="active")
-            .order_by(TrainingSession.started_at.desc())
-            .first()
-        )
+        active = TrainingSessionService.active_session(current_user.id)
 
-        prefs = {
-            p.key: p.value
-            for p in UserPreference.query.filter_by(user_id=current_user.id)
-        }
+        prefs = performance_service.training_preferences(current_user.id)
         avoid = [
             k.split("injury_")[1]
             for k, v in prefs.items()
@@ -531,11 +512,7 @@ def today():
 @login_required
 def today_session():
     try:
-        active = (
-            TrainingSession.query.filter_by(user_id=current_user.id, status="active")
-            .order_by(TrainingSession.started_at.desc())
-            .first()
-        )
+        active = TrainingSessionService.active_session(current_user.id)
 
         result = {"exercises": []}
 
@@ -683,7 +660,7 @@ def _saved_workout_today(session_id):
     session_id = as_db_id(session_id)
     if session_id is None:
         return None
-    session = TrainingSession.query.filter_by(id=session_id, user_id=current_user.id).first()
+    session = TrainingSessionService.session_for_user(session_id, current_user.id)
     if session is None or session.started_at is None:
         return None
     if _local_date(session.started_at) != _local_today():
@@ -774,14 +751,7 @@ def complete_session():
             )
             return jsonify(_completed_session_payload(session))
 
-        existing = (
-            TrainingSession.query.filter_by(
-                user_id=current_user.id,
-                status="active",
-            )
-            .order_by(TrainingSession.started_at.desc())
-            .first()
-        )
+        existing = TrainingSessionService.active_session(current_user.id)
 
         if existing:
             TrainingSessionService.finish_session(
@@ -821,11 +791,9 @@ def update_session_exercise(session_id, exercise_id):
         data = _clean_set_data(_json_body())
         exercise_id = _clean_exercise_id(exercise_id)
 
-        session = TrainingSession.query.filter_by(
-            id=session_id,
-            user_id=current_user.id,
-            status="active",
-        ).first_or_404()
+        session = TrainingSessionService.active_session_for_user(session_id, current_user.id)
+        if session is None:
+            abort(404)
 
         se = TrainingSessionService.update_exercise(session, exercise_id, data)
 
@@ -851,11 +819,7 @@ def start_session():
         data = _json_body()
         fatigue_before = _clean_fatigue(data.get("fatigue_before"))
 
-        existing = (
-            TrainingSession.query.filter_by(user_id=current_user.id, status="active")
-            .order_by(TrainingSession.started_at.desc())
-            .first()
-        )
+        existing = TrainingSessionService.active_session(current_user.id)
         if existing:
             return jsonify({"id": existing.id})
 
@@ -875,11 +839,9 @@ def finish_session(session_id):
         data = _json_body()
         fatigue_after = _clean_fatigue(data.get("fatigue_after"))
 
-        session = TrainingSession.query.filter_by(
-            id=session_id,
-            user_id=current_user.id,
-            status="active",
-        ).first_or_404()
+        session = TrainingSessionService.active_session_for_user(session_id, current_user.id)
+        if session is None:
+            abort(404)
 
         TrainingSessionService.finish_session(session, fatigue_after)
 
@@ -905,10 +867,8 @@ def day_details(date):
 
         utc_end = local_end.astimezone(dt.timezone.utc).replace(tzinfo=None)
 
-        sessions = TrainingSession.query.filter(
-            TrainingSession.user_id == current_user.id,
-            TrainingSession.started_at >= utc_start,
-            TrainingSession.started_at <= utc_end,
+        sessions = TrainingSessionService.sessions_started_within(
+            current_user.id, utc_start, utc_end
         )
 
         result = []
@@ -956,9 +916,7 @@ def day_details(date):
 @login_required
 def analytics():
     try:
-        perf = current_user.performance_states.order_by(
-            PerformanceState.created_at.desc()
-        ).first()
+        perf = performance_service.latest_performance(current_user)
         rec = current_user.fatigue_state
 
         performance = {
@@ -1027,15 +985,9 @@ def strength_test():
         squats = bounded_number(data.get("squats", 0), 0, 10000, integer=True) or 0
         situps = bounded_number(data.get("situps", 0), 0, 10000, integer=True) or 0
 
-        perf = PerformanceState(
-            user_id=current_user.id,
-            pushups=pushups,
-            squats=squats,
-            situps=situps,
+        performance_service.record_strength_test(
+            current_user.id, pushups=pushups, squats=squats, situps=situps
         )
-
-        db.session.add(perf)
-        db.session.commit()
 
         return jsonify(
             {

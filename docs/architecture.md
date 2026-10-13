@@ -40,6 +40,8 @@ bot ─────┘        (bot reaches core only over HTTP)
   templates or sessions.
 - `api` and `web` do not import each other's route modules. Logic both need
   belongs in `core`. Modules in `api/routes/` do not import `web` at all.
+- `api` does no database work itself: no `db`, no models, no SQLAlchemy.
+  Queries and writes are `core` services the routes call.
 
 `web/tests/unit/test_architecture.py` checks these rules on every test run,
 and also that every route under `/api/` is registered by `api.register_api`
@@ -76,7 +78,9 @@ authentication and deployment stay the same until the interim audit.
    green after each module. Route moves done for every module: injuries,
    equipment, onboarding, translations, dashboard, recovery, nutrition,
    training, telegram. The verification codes and the Telegram link
-   sign-in methods moved into `core` with the last one.
+   sign-in methods moved into `core` with the last one. The database work
+   followed, one pull request per module: no module under `api/` imports
+   `db`, a model or SQLAlchemy any more, and the boundary test keeps it so.
 4. **Interim audit**: what is separated, what remains in routes, test
    coverage.
 
