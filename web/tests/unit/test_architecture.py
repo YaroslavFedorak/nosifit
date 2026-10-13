@@ -19,12 +19,17 @@ FRAMEWORK = {"flask", "flask_login", "flask_sqlalchemy", "flask_migrate", "flask
 # leaves this list when its module moves into api/routes.
 API_STILL_IN_WEB = {
     "dashboard_api",
-    "i18n",
     "nutrition_api",
     "recovery",
     "telegram_api",
     "training_api",
     "training_dashboard_api",
+}
+
+# api -> web, to be removed when translation loading moves out of web
+# (the page templates use the same loader and files).
+KNOWN_API_TO_WEB = {
+    ("api/routes/i18n.py", "web.app.i18n.locale"),
 }
 
 # core -> web, to be removed when rate limiting moves into core.
@@ -111,4 +116,4 @@ def test_api_route_modules_live_in_the_api_package():
 
 def test_api_route_modules_do_not_import_the_web_layer():
     to_web = {(path, module) for path, module in imports_of("api/routes") if top(module) == "web"}
-    assert to_web == set()
+    assert to_web == KNOWN_API_TO_WEB
