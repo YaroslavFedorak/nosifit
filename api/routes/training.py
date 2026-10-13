@@ -40,7 +40,7 @@ from backend.app.services.training.validation import (
     clean_set_data as _clean_set_data,
     rir_from_rpe,
 )
-from web.app.i18n.locale import DEFAULT_LOCALE, SUPPORTED_LOCALES, load_translation
+from shared.i18n import DEFAULT_LOCALE, SUPPORTED_LOCALES, load_translation
 
 APP_TIMEZONE = ZoneInfo("Europe/Warsaw")
 
