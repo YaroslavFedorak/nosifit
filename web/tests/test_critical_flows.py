@@ -13,6 +13,7 @@ import pytest
 
 from backend.app.extensions import db
 from backend.app.models.recovery.habit import RecoveryHabit
+from backend.app.models.user import User
 from backend.app.training.exercises.catalog import load_exercise_catalog
 from backend.app.training.models.exercise import Exercise
 
@@ -182,7 +183,6 @@ def test_workout_edits_validate_input(signed_in, bench_press):
 
 def test_workouts_of_other_users_are_not_reachable(signed_in, bench_press, app):
     from backend.app.models.training_session import TrainingSession
-    from backend.app.models.user import User
 
     other = User(username="other", email="other@example.com", password="x")
     db.session.add(other)
@@ -296,3 +296,147 @@ def test_recovery_data_of_other_users_is_hidden(signed_in, user):
         f"/api/recovery/recommendations/{other_id}",
     ):
         assert signed_in.get(path).status_code == 404, path
+
+
+# --- Account deletion -----------------------------------------------------------------
+
+
+def _rows_left_for(user_id):
+    """Rows in any table with a foreign key to users that still point at user_id."""
+    from sqlalchemy import text
+
+    references = db.session.execute(
+        text(
+            """
+            SELECT c.conrelid::regclass::text, a.attname
+            FROM pg_constraint c
+            JOIN pg_attribute a ON a.attrelid = c.conrelid AND a.attnum = ANY (c.conkey)
+            WHERE c.contype = 'f' AND c.confrelid = 'users'::regclass
+            """
+        )
+    ).all()
+    assert len(references) > 15  # sanity: the query sees the real schema
+    left = {}
+    for table, column in references:
+        count = db.session.execute(
+            text(f'SELECT count(*) FROM {table} WHERE "{column}" = :uid'), {"uid": user_id}
+        ).scalar()
+        if count:
+            left[table] = count
+    return left
+
+
+def test_account_with_data_in_every_module_can_be_deleted(signed_in, user, bench_press, monkeypatch):
+    """Production schema (migrations), a user who used every part of the app,
+    and the same three steps the profile page sends."""
+    from werkzeug.security import generate_password_hash
+
+    from backend.app.models.injury import Injury
+    from backend.app.models.nutrition.category import Category
+    from backend.app.models.nutrition.plan import NutritionPlan
+    from backend.app.models.nutrition.product import Product
+    from backend.app.models.nutrition.saved_meal import SavedMeal
+    from backend.app.models.nutrition.user_goals import UserGoals
+    from backend.app.models.oauth_account import OAuthAccount
+    from backend.app.models.telegram import TelegramIdentity
+    from backend.app.models.user_equipment import UserEquipment
+    from backend.app.models.user_goals import UserTrainingGoals
+    from backend.app.models.user_injury import UserInjury
+    from backend.app.models.user_profile import UserProfile
+    from backend.app.training.models.performance_state import PerformanceState
+    from backend.app.training.models.training_plan import TrainingPlan
+    from backend.app.training.models.user_pref import UserPreference
+
+    uid = user.id
+
+    # Training: a finished workout.
+    session = signed_in.post("/api/dashboard/training/session", json={}).get_json()["session"]
+    signed_in.post(f"/api/dashboard/training/session/{session['id']}/exercise", json={"exercise_id": bench_press.id})
+    signed_in.patch(
+        f"/api/dashboard/training/session/{session['id']}/exercise/{bench_press.id}",
+        json={"sets_done": 3, "reps_done": 8, "load_done": 60},
+    )
+    assert signed_in.post(f"/api/dashboard/training/session/{session['id']}/finish", json={}).status_code == 200
+
+    # Nutrition: an entry that creates the user's own product, a dish made of
+    # it, the dish logged into a meal, a favorite, water and weight.
+    meal_id = signed_in.post("/api/nutrition/meals", json={"category": "lunch"}).get_json()["id"]
+    assert signed_in.post(
+        "/api/nutrition/items",
+        json={"meal_id": meal_id, "name": "Granola", "calories": 450, "protein": 10, "fat": 15, "carbs": 65},
+    ).status_code == 201
+    own_product = Product.query.filter_by(owner_user_id=uid).one()
+    dish = signed_in.post(
+        "/api/nutrition/dishes", json={"name": "Bowl", "items": [{"product_id": own_product.id, "amount": 80}]}
+    )
+    assert dish.status_code == 201
+    assert signed_in.post("/api/nutrition/log", json={"category": "breakfast", "dish_id": dish.get_json()["id"]}).status_code in (200, 201)
+    assert signed_in.post(f"/api/nutrition/products/{own_product.id}/favorite", json={}).status_code == 200
+    signed_in.post("/api/nutrition/water", json={"amount": 1})
+    signed_in.post("/api/nutrition/weight", json={"weight": 81})
+
+    # Recovery: a habit with a log, and sleep (both write daily snapshots).
+    habit = RecoveryHabit(slug="walk", name="Walk", points=5)
+    db.session.add(habit)
+    db.session.commit()
+    user_habit_id = signed_in.post(f"/api/recovery/habits/add/{habit.id}").get_json()["user_habit_id"]
+    signed_in.post("/api/recovery/habits/logs", json={"user_habit_id": user_habit_id})
+    today = dt.date.today()
+    signed_in.post(
+        "/api/recovery/sleep",
+        json={"sleep_start": f"{today - dt.timedelta(days=1)}T23:00:00", "sleep_end": f"{today}T07:00:00"},
+    )
+
+    # Profile, goals, plans and sign-in methods the API above does not create.
+    injury = Injury(name="Knee")
+    db.session.add(injury)
+    db.session.flush()
+    for row in (
+        UserProfile(user_id=uid, training_location="home"),
+        UserGoals(user_id=uid),
+        UserTrainingGoals(user_id=uid, primary_goal="strength"),
+        UserInjury(user_id=uid, injury_id=injury.id),
+        UserEquipment(user_id=uid, equipment_id=1),
+        UserPreference(user_id=uid, key="units"),
+        TrainingPlan(user_id=uid, name="Plan"),
+        PerformanceState(user_id=uid),
+        NutritionPlan(user_id=uid, calories=2400, protein=150, fats=70, carbs=280),
+        Category(user_id=uid, name="Snacks"),
+        SavedMeal(user_id=uid, name="Usual lunch"),
+        OAuthAccount(user_id=uid, provider="google", provider_user_id="g-1"),
+        TelegramIdentity(user_id=uid, telegram_user_id=12345),
+    ):
+        # Some of these exist already: the flows above create them.
+        if not type(row).query.filter_by(user_id=uid).first():
+            db.session.add(row)
+    db.session.commit()
+
+    # Someone else's data must survive.
+    other = User(username="other", email="other@example.com", password=generate_password_hash(PASSWORD))
+    db.session.add(other)
+    db.session.commit()
+    other_id = other.id
+    db.session.add(UserProfile(user_id=other_id, training_location="gym"))
+    db.session.commit()
+
+    assert len(_rows_left_for(uid)) >= 20, _rows_left_for(uid)
+
+    sent = {}
+    monkeypatch.setattr(
+        "web.app.routes.profile.delete_account_request.send_email_code",
+        lambda email, code: sent.update(code=code),
+    )
+    assert signed_in.post("/profile/delete/request").get_json() == {"status": "sent"}
+    assert signed_in.post("/profile/delete/confirm", json={"code": sent["code"]}).get_json() == {"status": "ok"}
+    response = signed_in.post("/profile/delete/final", json={"email": user.email.upper(), "password": PASSWORD})
+
+    assert response.status_code == 200, response.get_json()
+    assert response.get_json() == {"status": "deleted"}
+
+    db.session.expire_all()
+    assert db.session.get(User, uid) is None
+    assert _rows_left_for(uid) == {}
+    assert db.session.get(User, other_id) is not None
+    assert UserProfile.query.filter_by(user_id=other_id).count() == 1
+    # Signed out: the app sends the browser to the login page.
+    assert signed_in.get("/dashboard/").status_code == 302
