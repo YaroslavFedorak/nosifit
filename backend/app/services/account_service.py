@@ -9,7 +9,6 @@ from backend.app.models.nutrition.saved_meal import SavedMeal
 from backend.app.models.nutrition.user_goals import UserGoals
 from backend.app.models.nutrition.user_water import UserWater
 from backend.app.models.nutrition.user_weight import UserWeight
-from backend.app.models.recovery_plan import RecoveryPlan
 from backend.app.models.telegram import TelegramIdentity
 from backend.app.models.user_goals import UserTrainingGoals
 from backend.app.models.user_injury import UserInjury
@@ -24,7 +23,6 @@ _UNCASCADED = (
     UserWeight,
     UserGoals,
     SavedMeal,
-    RecoveryPlan,
     UserInjury,
     UserTrainingGoals,
     UserProfile,
