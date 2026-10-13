@@ -10,11 +10,11 @@ def api_blueprints():
     # Imported on call, after the app and its extensions exist.
     from api.routes.equipment import equipment_api
     from api.routes.injuries import injury_api
+    from api.routes.onboarding import onboarding_api
     from web.app.routes import (
         dashboard_api_bp,
         i18n_bp,
         nutrition_api,
-        onboarding_api,
         recovery_bp,
         telegram_api_bp,
         training_api_bp,

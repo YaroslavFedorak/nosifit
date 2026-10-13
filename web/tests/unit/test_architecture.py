@@ -21,7 +21,6 @@ API_STILL_IN_WEB = {
     "dashboard_api",
     "i18n",
     "nutrition_api",
-    "onboarding_api",
     "recovery",
     "telegram_api",
     "training_api",
