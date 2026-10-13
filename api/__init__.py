@@ -14,9 +14,9 @@ def api_blueprints():
     from api.routes.i18n import i18n_bp
     from api.routes.injuries import injury_api
     from api.routes.onboarding import onboarding_api
+    from api.routes.recovery import recovery_bp
     from web.app.routes import (
         nutrition_api,
-        recovery_bp,
         telegram_api_bp,
         training_api_bp,
     )
