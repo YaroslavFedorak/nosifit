@@ -100,3 +100,19 @@ def test_rate_limited_barcode_lookups_answer_429_json(app, signed_in, monkeypatc
     ):
         assert response.status_code == 429
         assert response.get_json() == {"error": "Too many requests. Try again later.", "code": "rate_limited"}
+
+
+def test_yesterdays_meals_are_copied_to_today(signed_in):
+    yesterday = (dt.date.today() - dt.timedelta(days=1)).isoformat()
+    for category in ("breakfast", "lunch"):
+        meal = signed_in.post("/api/nutrition/meals", json={"category": category, "date": yesterday}).get_json()
+        signed_in.post("/api/nutrition/items", json={"meal_id": meal["id"], **ITEM})
+    assert signed_in.get("/api/nutrition/day").get_json()["meals"] == []
+
+    copied = signed_in.post("/api/nutrition/copy-yesterday", json={})
+
+    assert copied.status_code == 200
+    assert copied.get_json() == {"status": "ok", "copied": 2}
+    today = signed_in.get("/api/nutrition/day").get_json()
+    assert sorted(m["category"] for m in today["meals"]) == ["breakfast", "lunch"]
+    assert today["kcal"] == pytest.approx(260, abs=1)
