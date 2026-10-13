@@ -24,7 +24,8 @@ from backend.app.models.oauth_account import OAuthAccount
 from backend.app.models.telegram import TelegramIdentity, TelegramLinkToken
 from backend.app.models.user import OAUTH_PASSWORD_MARKER, User
 from backend.app.models.user_profile import UserProfile
-from backend.app.utils.mailer import EmailSendError, send_email
+from backend.app.services.email_outbox import enqueue_notice
+from backend.app.utils.mailer import send_email
 from backend.app.utils.validation import clean_username
 
 logger = logging.getLogger(__name__)
@@ -463,33 +464,33 @@ def send_telegram_existing_account_notice(email: str) -> None:
     )
 
 
+# Security notices: sent in the background with retries (email_outbox), so
+# the page answers at once and an email-service hiccup does not lose them.
+
+
 def notify_telegram_linked(user, username: str | None) -> None:
-    try:
-        send_email(
-            to=user.email,
-            subject="До вашого акаунта NosiFit підключено Telegram",
-            text=(
-                f"До вашого акаунта NosiFit підключено Telegram "
-                f"({_display(username, None)}). Тепер через цього Telegram-бота "
-                "можна входити у ваш акаунт.\n\n"
-                "Якщо це були не ви: увійдіть на сайт, відключіть Telegram у "
-                "Профіль → Підключені акаунти та змініть пароль."
-            ),
-        )
-    except EmailSendError:
-        logger.warning("Could not send the Telegram-linked notice")
+    enqueue_notice(
+        "telegram_linked",
+        to=user.email,
+        subject="До вашого акаунта NosiFit підключено Telegram",
+        text=(
+            f"До вашого акаунта NosiFit підключено Telegram "
+            f"({_display(username, None)}). Тепер через цього Telegram-бота "
+            "можна входити у ваш акаунт.\n\n"
+            "Якщо це були не ви: увійдіть на сайт, відключіть Telegram у "
+            "Профіль → Підключені акаунти та змініть пароль."
+        ),
+    )
 
 
 def notify_telegram_unlinked(user) -> None:
-    try:
-        send_email(
-            to=user.email,
-            subject="Telegram відключено від акаунта NosiFit",
-            text=(
-                "Від вашого акаунта NosiFit відключено Telegram. Вхід через "
-                "Telegram-бота більше не працює.\n\n"
-                "Якщо це були не ви, негайно змініть пароль."
-            ),
-        )
-    except EmailSendError:
-        logger.warning("Could not send the Telegram-unlinked notice")
+    enqueue_notice(
+        "telegram_unlinked",
+        to=user.email,
+        subject="Telegram відключено від акаунта NosiFit",
+        text=(
+            "Від вашого акаунта NosiFit відключено Telegram. Вхід через "
+            "Telegram-бота більше не працює.\n\n"
+            "Якщо це були не ви, негайно змініть пароль."
+        ),
+    )

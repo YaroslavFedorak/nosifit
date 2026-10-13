@@ -69,6 +69,12 @@ def mail(monkeypatch):
         sent.append({"to": to, "subject": subject, "text": text})
 
     monkeypatch.setattr("backend.app.services.telegram_auth.send_email", fake_send)
+    # Notices go through the email outbox; deliver them at once, as the
+    # worker in the web process would.
+    from backend.app.services import email_outbox
+
+    monkeypatch.setattr(email_outbox, "send_email", fake_send)
+    monkeypatch.setattr(email_outbox, "wake_worker", email_outbox.process_due)
     monkeypatch.setattr(
         "web.app.routes.profile.connected_accounts.send_email_code",
         lambda email, code: sent.append({"to": email, "code": code, "text": code}),

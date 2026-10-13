@@ -65,7 +65,12 @@ def sent_mail(monkeypatch):
         sent.append({"to": to, "text": text})
 
     monkeypatch.setattr("backend.app.utils.email_service.send_email", fake_send)
-    monkeypatch.setattr("web.app.routes.profile.email_change.send_email", fake_send)
+    # Notices go through the email outbox; deliver them at once, as the
+    # worker in the web process would.
+    from backend.app.services import email_outbox
+
+    monkeypatch.setattr(email_outbox, "send_email", fake_send)
+    monkeypatch.setattr(email_outbox, "wake_worker", email_outbox.process_due)
     monkeypatch.setattr(
         "web.app.routes.profile.email_change.send_email_code",
         lambda email, code: sent.append({"to": email, "code": code}),

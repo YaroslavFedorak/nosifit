@@ -133,9 +133,7 @@ def test_change_email(client, user, monkeypatch):
         lambda email, code: sent.update(email=email, code=code),
     )
 
-    monkeypatch.setattr(
-        "web.app.routes.profile.email_change.send_email", lambda **kwargs: None
-    )
+    # The old-address notice is queued in the email outbox, not sent here.
 
     response = client.post(
         "/profile/change_email",
