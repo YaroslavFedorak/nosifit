@@ -30,8 +30,8 @@ def landing():
     if current_user.is_authenticated and HOME_PARAM not in request.args:
         return redirect(url_for("dashboard.dashboard"))
 
-    # One load per request: the page reads ~150 keys, and public_t()
-    # re-reads the JSON files for every key.
+    # The page reads ~150 keys; one dict for all of them keeps the
+    # template short.
     copy = load_translation(getattr(g, "locale", DEFAULT_LOCALE), "public")
 
     return render_template(
