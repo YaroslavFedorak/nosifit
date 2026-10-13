@@ -154,3 +154,28 @@ def test_other_users_day_details_are_hidden(signed_in, user):
     response = signed_in.get(f"/api/recovery/day-details/{user.id + 1000}", query_string={"date": "2026-01-01"})
 
     assert response.status_code == 404
+
+
+def test_day_details_list_the_days_workout(signed_in, user):
+    from backend.app.training.exercises.catalog import load_exercise_catalog
+    from backend.app.training.models.exercise import Exercise
+
+    for item in load_exercise_catalog():
+        db.session.add(Exercise(**item))
+    db.session.commit()
+    bench = Exercise.query.filter_by(slug="bench-press").one()
+
+    session = signed_in.post("/api/dashboard/training/session", json={}).get_json()["session"]
+    signed_in.post(f"/api/dashboard/training/session/{session['id']}/exercise", json={"exercise_id": bench.id})
+    signed_in.patch(
+        f"/api/dashboard/training/session/{session['id']}/exercise/{bench.id}",
+        json={"sets_done": 3, "reps_done": 8, "load_done": 60},
+    )
+
+    response = signed_in.get(f"/api/recovery/day-details/{user.id}", query_string={"date": dt.date.today().isoformat()})
+
+    assert response.status_code == 200
+    training = response.get_json()["training"]
+    assert training["sessions"] == 1
+    assert [(e["exercise_id"], e["sets"], e["load"]) for e in training["exercises"]] == [(bench.id, 3, 60.0)]
+    assert {"readiness_score", "readiness_level", "hard_sets", "session_training_stress_proxy"} <= set(training)

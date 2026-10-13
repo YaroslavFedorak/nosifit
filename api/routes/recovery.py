@@ -8,10 +8,6 @@ from flask import (
 )
 from flask_login import current_user
 
-from backend.app.extensions import db
-from backend.app.models.recovery.user_habit import UserRecoveryHabit
-from backend.app.utils.validation import as_db_id
-
 from backend.app.services.recovery import (
     SleepService,
     HabitService,
@@ -19,11 +15,8 @@ from backend.app.services.recovery import (
     StatsService,
     RecommendationService,
 )
-
-from backend.app.models.recovery.habit import RecoveryHabit
-from backend.app.models.user import User
-from backend.app.services.training.model import TrainingModelService
-from backend.app.services.training.model.readiness import readiness_level
+from backend.app.services.recovery.training_summary import training_day_summary
+from backend.app.services.training.session_service import TrainingSessionService
 
 recovery_bp = Blueprint("recovery", __name__, url_prefix="/api/recovery")
 
@@ -50,11 +43,7 @@ def _is_other_user(user_id) -> bool:
 
 
 def _owns_user_habit(user_habit_id) -> bool:
-    user_habit_id = as_db_id(user_habit_id)
-    if user_habit_id is None:
-        return False
-    habit = db.session.get(UserRecoveryHabit, user_habit_id)
-    return habit is not None and habit.user_id == current_user.id
+    return habit_service.user_owns_habit(current_user.id, user_habit_id)
 
 sleep_service = SleepService()
 habit_service = HabitService()
@@ -65,38 +54,6 @@ recommendation_service = RecommendationService()
 
 MAX_SLEEP_DURATION = timedelta(hours=24)
 MIN_YEAR, MAX_YEAR = 2000, 2100
-
-
-def _training_day_summary(user_id, day, readiness_score=None):
-    """Training part of the day details: readiness level (score kept for the
-    bar) and the day's hard sets. The legacy 'load' number is no longer sent."""
-    summary = {
-        "readiness_score": readiness_score,
-        "readiness_level": None,
-        "hard_sets": 0.0,
-        "session_training_stress_proxy": 0.0,
-    }
-    try:
-        if readiness_score is None:
-            user = db.session.get(User, user_id)
-            if user is not None:
-                readiness_score = TrainingModelService.training_readiness_score(user, day)
-        stress = TrainingModelService.day_stress(user_id, day)
-        summary.update(
-            readiness_score=readiness_score,
-            readiness_level=(
-                readiness_level(readiness_score / 100.0)
-                if readiness_score is not None
-                else None
-            ),
-            hard_sets=stress["hard_sets"],
-            session_training_stress_proxy=stress["session_training_stress_proxy"],
-        )
-    except Exception:
-        current_app.logger.exception(
-            "Error while building training summary for user %s date %s", user_id, day
-        )
-    return summary
 
 
 def parse_iso(dt: str) -> datetime:
@@ -161,11 +118,7 @@ def add_sleep():
 
 @recovery_bp.get("/habits/list")
 def get_habits_list():
-    habits = (
-        RecoveryHabit.query.filter_by(is_active=True, is_archived=False)
-        .order_by(RecoveryHabit.sort_order.asc(), RecoveryHabit.id.asc())
-        .all()
-    )
+    habits = habit_service.get_catalog()
 
     return jsonify(
         [
@@ -199,7 +152,7 @@ def get_user_habits(user_id):
 def add_habit(habit_id):
     user_id = current_user.id
 
-    catalog_habit = db.session.get(RecoveryHabit, habit_id)
+    catalog_habit = habit_service.get_catalog_habit(habit_id)
     if (
         catalog_habit is None
         or not catalog_habit.is_active
@@ -493,7 +446,7 @@ def get_day_details(user_id):
                             "wake_time": base.get("sleep_end"),
                         },
                         "training": {
-                            **_training_day_summary(
+                            **training_day_summary(
                                 user_id, dt, base.get("training_score")
                             ),
                             "sessions": base.get("training_sessions", 0),
@@ -556,21 +509,11 @@ def get_day_details(user_id):
             )
             sleep_entry = None
 
-        from backend.app.models.training_session import TrainingSession
-
-        sessions = (
-            TrainingSession.query.filter(
-                TrainingSession.user_id == user_id,
-                TrainingSession.started_at >= datetime.combine(dt, datetime.min.time()),
-                TrainingSession.started_at <= datetime.combine(dt, datetime.max.time()),
-            )
-            .order_by(TrainingSession.started_at.asc())
-            .all()
-        )
+        sessions = TrainingSessionService.sessions_started_on(user_id, dt)
 
         training_exercises = []
 
-        training_summary = _training_day_summary(user_id, dt)
+        training_summary = training_day_summary(user_id, dt)
 
         training_sessions = len(sessions)
 
