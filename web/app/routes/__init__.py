@@ -51,8 +51,6 @@ from .questionnaire.questionnaire import questionnaire_bp
 
 from .tracker.pages import tracker_pages_bp
 
-from .onboarding.api import onboarding_api
-
 from .dashboard import training_dashboard_api_bp
 
 
