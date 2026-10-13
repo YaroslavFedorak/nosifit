@@ -418,7 +418,7 @@ def _ttl(status: str) -> timedelta:
 
 
 def _outbound_allowed() -> bool:
-    from web.app.security import hit_limit
+    from backend.app.utils.rate_limit import hit_limit
 
     per_minute = int(current_app.config.get("OFF_MAX_REQUESTS_PER_MINUTE", 10))
     return not hit_limit("off_outbound", "global", per_minute, 60)

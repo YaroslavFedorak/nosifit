@@ -62,7 +62,7 @@ def verify_session_code(key: str, given, user_id) -> str:
     """
     from flask import session
 
-    from web.app.security import hit_limit, reset_limit
+    from backend.app.utils.rate_limit import hit_limit, reset_limit
 
     entry = load_session_code(key)
     if entry is None:

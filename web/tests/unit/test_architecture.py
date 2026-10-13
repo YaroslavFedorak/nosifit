@@ -32,11 +32,6 @@ KNOWN_API_TO_WEB = {
     ("api/routes/i18n.py", "web.app.i18n.locale"),
 }
 
-# core -> web, to be removed when rate limiting moves into core.
-KNOWN_CORE_TO_WEB = {
-    ("backend/app/services/nutrition/barcode_service.py", "web.app.security"),
-    ("backend/app/utils/codes.py", "web.app.security"),
-}
 
 
 def imports_of(package):
@@ -90,7 +85,7 @@ def test_importing_the_bot_loads_no_backend_or_framework():
 
 def test_core_does_not_depend_on_the_web_layer():
     to_web = {(path, module) for path, module in imports_of("backend") if top(module) == "web"}
-    assert to_web == KNOWN_CORE_TO_WEB
+    assert to_web == set()
 
 
 def test_everything_under_api_is_registered_by_the_api_package(app):

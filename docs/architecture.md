@@ -48,7 +48,6 @@ Known violations are listed in that file and are removed as they are fixed:
 
 | Violation | Plan |
 |---|---|
-| `core` → `web.app.security` (rate limiting) in `barcode_service.py` and `utils/codes.py` | Move the rate limiter into `core`; `web.app.security` re-exports it |
 | `api` → `web.app.i18n.locale` in `api/routes/i18n.py` (translation loading; the page templates use the same loader and files in `web/app/translations/`) | Move the loader and the translation files out of `web` (e.g. into `shared`); `web.app.i18n` re-exports it |
 
 ## Database
