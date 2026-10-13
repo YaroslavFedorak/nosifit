@@ -16,7 +16,7 @@ from backend.app.training.exercises.catalog import (
 )
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
-TRANSLATIONS_DIR = os.path.join(ROOT, "web", "app", "translations")
+TRANSLATIONS_DIR = os.path.join(ROOT, "shared", "translations")
 
 # Slugs that existed before the catalog redesign; sessions and plans in the
 # database reference them, so they must never disappear.

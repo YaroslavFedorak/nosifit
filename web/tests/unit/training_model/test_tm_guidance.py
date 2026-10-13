@@ -30,7 +30,7 @@ from tm_helpers import NOW, balanced_week, context, entry
 
 # Readiness scores inside each level (bounds 0.45 / 0.65 / 0.85).
 LEVEL_SCORE = {"low": 0.30, "moderate": 0.55, "ready": 0.75, "recovered": 0.95}
-TRANSLATIONS = Path(__file__).resolve().parents[3] / "app" / "translations"
+TRANSLATIONS = Path(__file__).resolve().parents[4] / "shared" / "translations"
 LANGUAGES = ("uk", "en", "pl", "ru")
 
 
