@@ -11,7 +11,7 @@ about deployment, URLs or behaviour changes.
 | Component | Responsibility | Lives in today |
 |---|---|---|
 | `core` | Models, business logic, data access, migrations, config | `backend/` |
-| `api` | HTTP endpoints: validate the request, call `core`, shape the response | API blueprints under `web/app/routes/` (moving out step by step) |
+| `api` | HTTP endpoints: validate the request, call `core`, shape the response | `api/` registers every blueprint under `/api/`; the route modules still live in `web/app/routes/` and move out step by step |
 | `web` | Pages, templates, static files, sign-in and OAuth flows | `web/app/` |
 | `bot` | Telegram interface; talks to the backend only through the HTTP API | `telegram_bot/` |
 | `shared` | Pure helpers several components need (bot request signing, barcode normalisation) | `shared/` |
@@ -41,7 +41,9 @@ bot ─────┘        (bot reaches core only over HTTP)
 - `api` and `web` do not import each other's route modules. Logic both need
   belongs in `core`.
 
-`web/tests/unit/test_architecture.py` checks these rules on every test run.
+`web/tests/unit/test_architecture.py` checks these rules on every test run,
+and also that every route under `/api/` is registered by `api.register_api`
+while pages and form posts are registered by `web`.
 Known violations are listed in that file and are removed as they are fixed:
 
 | Violation | Plan |
@@ -59,11 +61,16 @@ a schema built by those migrations, isolated per test run (see
 ## Refactoring plan
 
 Each step is a separate pull request. Behaviour, URLs, response formats,
-authentication and deployment stay the same until stage 3.
+authentication and deployment stay the same until the interim audit.
 
-1. **Boundaries** (this step): this document, the boundary test, `shared/`.
-2. **API registration**: API blueprints are registered by an `api` package,
-   pages by `web`; the URL map stays identical.
+1. **Boundaries**: this document, the boundary test, `shared/`. Done.
+2. **API registration**: `api.register_api` registers the ten API
+   blueprints, `web.app.routes.register_pages` the pages; the URL map is
+   identical. Done.
+   JSON endpoints outside `/api/` (`/profile/*` posts, `/plan/json`,
+   `/questionnaire/` post, `/verify/send_code`, Telegram link confirm) stay
+   in `web` for now: they serve the site's own forms, and whether each one
+   becomes part of the public API is decided in API v1.
 3. **One module at a time**: move a module's API routes into `api/` and the
    database work they still do into `core` services, with tests green after
    each module.

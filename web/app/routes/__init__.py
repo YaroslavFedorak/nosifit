@@ -56,3 +56,47 @@ from .onboarding.api import onboarding_api
 from .injury.api import injury_api
 
 from .dashboard import training_dashboard_api_bp
+
+
+# Registration order matters only for rules registered twice ("/" and
+# "/assessment/"): the first blueprint wins. Keep it as it is.
+PAGE_BLUEPRINTS = (
+    auth_bp,
+    google_bp,
+    github_bp,
+    email_verification_bp,
+    complete_profile_bp,
+    telegram_link_bp,
+    root_bp,
+    public_bp,
+    info_bp,
+    dashboard_bp,
+    training_pages_bp,
+    training_explanation_bp,
+    nutrition_pages_bp,
+    recovery_pages_bp,
+    assessment_pages_bp,
+    assessment_bp,
+    equipment_pages_bp,
+    training_plan_pages_bp,
+    plan_bp,
+    premium_bp,
+    profile_pages_bp,
+    profile_view_bp,
+    profile_update_bp,
+    password_change_bp,
+    email_change_bp,
+    delete_request_bp,
+    delete_confirm_bp,
+    delete_final_bp,
+    oauth_disconnect_bp,
+    connected_accounts_bp,
+    questionnaire_pages_bp,
+    questionnaire_bp,
+    tracker_pages_bp,
+)
+
+
+def register_pages(app):
+    for blueprint in PAGE_BLUEPRINTS:
+        app.register_blueprint(blueprint)
