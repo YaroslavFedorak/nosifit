@@ -129,3 +129,11 @@ def test_read_only_views_answer_for_a_new_user(signed_in, bench_press):
     ):
         assert signed_in.get(path).status_code == 200, path
 
+
+
+@pytest.mark.parametrize("value", ["not-a-date", "2026-13-01", "2026-02-30", "01-01-2026"])
+def test_day_view_rejects_a_bad_date(signed_in, value):
+    response = signed_in.get(f"/api/training/day/{value}")
+
+    assert response.status_code == 400
+    assert response.get_json()["error"] == "invalid_input"
