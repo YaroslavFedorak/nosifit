@@ -14,7 +14,7 @@ import logging
 import re
 import secrets
 
-from flask import Blueprint, current_app, jsonify, request, url_for
+from flask import Blueprint, current_app, jsonify, request
 
 from backend.app.services import telegram_auth as tg
 from backend.app.utils.bot_signature import MAX_SKEW_SECONDS, check_signature
@@ -263,5 +263,5 @@ def link_token(telegram_user_id, data):
         ttl_seconds=ttl,
     )
     via = data.get("via") if data.get("via") in LINK_SIGN_IN_METHODS else None
-    url = base_url + url_for("telegram_link.open_link", token=token, via=via)
+    url = base_url + tg.link_page_path(token, via)
     return jsonify({"url": url, "expires_in": ttl})

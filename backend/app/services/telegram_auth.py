@@ -14,6 +14,7 @@ import logging
 import re
 import secrets
 from datetime import datetime, timedelta, timezone
+from urllib.parse import quote, urlencode
 
 from sqlalchemy import delete, func, select, update
 from sqlalchemy.exc import IntegrityError
@@ -106,6 +107,20 @@ def is_link_token_format(token) -> bool:
 
 def hash_link_token(token: str) -> str:
     return hashlib.sha256(token.encode()).hexdigest()
+
+
+# The page that opens a link token: web.app.routes.auth.telegram_link
+# (/auth/telegram/link/<token>). The bot API builds the link without the web
+# app's URL map, so it works when the API runs on its own; a test keeps the
+# two equal.
+LINK_PAGE_PATH = "/auth/telegram/link/"
+
+
+def link_page_path(token: str, via: str | None = None) -> str:
+    path = LINK_PAGE_PATH + quote(token, safe="")
+    if via:
+        path += "?" + urlencode({"via": via})
+    return path
 
 
 def link_token_ttl(config) -> int:

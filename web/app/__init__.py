@@ -23,7 +23,10 @@ ASSET_VERSION = compute_asset_version()
 compress = Compress()
 
 
-def create_app(config=None):
+def create_app(config=None, *, pages=True):
+    """The NosiFit app. ``pages=False`` builds the JSON API alone: no pages,
+    no sign-in forms. Production runs both together; the API-only app is how
+    the tests check that the API could run as its own service."""
     app = Flask(__name__, static_url_path=f"/static/{ASSET_VERSION}")
     app.config.from_object("backend.config.Config")
     app.config.setdefault(
@@ -125,9 +128,11 @@ def create_app(config=None):
     # Pages and their form posts belong to web; everything under /api/ to
     # the api package (docs/architecture.md).
     from api import register_api
-    from web.app.routes import register_pages
 
-    register_pages(app)
+    if pages:
+        from web.app.routes import register_pages
+
+        register_pages(app)
     register_api(app)
 
     return app
