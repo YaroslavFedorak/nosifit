@@ -16,12 +16,15 @@ import secrets
 from datetime import datetime, timedelta, timezone
 
 from sqlalchemy import delete, func, select, update
+from sqlalchemy.exc import IntegrityError
 
 from backend.app.extensions import db
 from backend.app.models.oauth_account import OAuthAccount
 from backend.app.models.telegram import TelegramIdentity, TelegramLinkToken
-from backend.app.models.user import User
+from backend.app.models.user import OAUTH_PASSWORD_MARKER, User
+from backend.app.models.user_profile import UserProfile
 from backend.app.utils.mailer import EmailSendError, send_email
+from backend.app.utils.validation import clean_username
 
 logger = logging.getLogger(__name__)
 
@@ -329,6 +332,77 @@ def email_in_use(email: str) -> bool:
         db.session.query(User.id).filter(func.lower(User.email) == email.lower()).first()
         is not None
     )
+
+
+# --- Bot sign-in and registration ---------------------------------------------------
+
+
+def _ensure_profile(user) -> None:
+    if not user.profile:
+        db.session.add(
+            UserProfile(user_id=user.id, training_location="home", onboarding_completed=False)
+        )
+
+
+def record_bot_login(identity: TelegramIdentity, username: str | None, *, restore: bool) -> None:
+    """Note a sign-in through the bot.
+
+    A restore carries only the Telegram id, so the stored username is left
+    alone and an earlier /logout is not undone.
+    """
+    if not restore:
+        if username != identity.telegram_username:
+            identity.telegram_username = username
+        identity.bot_logged_out_at = None
+    identity.last_login_at = utcnow()
+    _ensure_profile(identity.user)
+    db.session.commit()
+
+
+def mark_bot_logged_out(identity: TelegramIdentity) -> None:
+    if identity.bot_logged_out_at is None:
+        identity.bot_logged_out_at = utcnow()
+        db.session.commit()
+
+
+def create_account_for_telegram(
+    telegram_user_id: int, email: str, *, name: str | None, username: str | None
+) -> tuple[User, TelegramIdentity] | None:
+    """Create the user, profile and Telegram identity in one transaction.
+
+    None when a unique constraint stops it: the Telegram account or the
+    email was taken by a concurrent request. Nothing is created then.
+    """
+    user = User(
+        username=clean_username(name) or email.split("@")[0][:50],
+        email=email,
+        password=OAUTH_PASSWORD_MARKER,
+        is_premium=False,
+    )
+    try:
+        db.session.add(user)
+        db.session.flush()
+        db.session.add(
+            UserProfile(
+                user_id=user.id,
+                training_location="home",
+                wants_nutrition=True,
+                wants_recovery=False,
+                onboarding_completed=False,
+            )
+        )
+        identity = TelegramIdentity(
+            user_id=user.id,
+            telegram_user_id=telegram_user_id,
+            telegram_username=username,
+            last_login_at=utcnow(),
+        )
+        db.session.add(identity)
+        db.session.commit()
+    except IntegrityError:
+        db.session.rollback()
+        return None
+    return user, identity
 
 
 # --- Emails -------------------------------------------------------------------------

@@ -7,10 +7,12 @@ have stolen a session or a link, but does not know TELEGRAM_BOT_API_SECRET.
 
 import json
 import re
+import sys
 import time
 from datetime import datetime, timedelta, timezone
 
 import pytest
+from sqlalchemy import delete
 from werkzeug.security import generate_password_hash
 
 from backend.app.extensions import db
@@ -20,6 +22,7 @@ from backend.app.models.user import OAUTH_PASSWORD_MARKER, User
 from backend.app.models.verification_code import VerificationCode
 from backend.app.services import telegram_auth as tg
 from backend.app.services.account_service import delete_user_account
+from backend.app.services.verification_codes import active_code, issue_code, spend_code
 from backend.app.utils.bot_signature import (
     HEADER_NONCE,
     HEADER_SIGNATURE,
@@ -382,6 +385,54 @@ def test_linked_telegram_cannot_register_again(client, mail, victim_identity):
     assert start.status_code == 409 and start.json["code"] == "already_linked"
     assert verify.status_code == 409
     assert User.query.filter_by(email="second@example.com").count() == 0
+
+
+def test_a_code_spent_by_a_concurrent_request_creates_nothing(app, client, mail, monkeypatch):
+    bot_post(client, "/api/telegram/register/start", tg_payload(email="new@example.com"))
+    code = VerificationCode.query.one().code
+    routes = sys.modules[app.view_functions["telegram_api.register_verify"].__module__]
+    monkeypatch.setattr(routes, "spend_code", lambda record: False)
+
+    response = bot_post(
+        client, "/api/telegram/register/verify", tg_payload(email="new@example.com", code=code)
+    )
+
+    assert response.status_code == 400 and response.json["code"] == "invalid_code"
+    assert User.query.filter_by(email="new@example.com").count() == 0
+
+
+def test_only_the_first_spend_of_a_code_counts(app):
+    issue_code("new@example.com")
+    record = active_code("new@example.com")
+    # Another request deletes the row between our read and our delete.
+    db.session.execute(delete(VerificationCode).where(VerificationCode.id == record.id))
+
+    assert spend_code(record) is False
+
+
+def test_email_taken_between_the_check_and_the_insert(client, mail, monkeypatch):
+    bot_post(client, "/api/telegram/register/start", tg_payload(email="race@example.com"))
+    code = VerificationCode.query.one().code
+    owner = make_user("race@example.com", username="owner")
+    # The other account commits after the route's email check.
+    monkeypatch.setattr(tg, "email_in_use", lambda email: False)
+
+    response = bot_post(
+        client, "/api/telegram/register/verify", tg_payload(email="race@example.com", code=code)
+    )
+
+    assert response.status_code == 409 and response.json["code"] == "email_unavailable"
+    assert TelegramIdentity.query.count() == 0
+    assert User.query.filter_by(email="race@example.com").one().id == owner.id
+
+
+def test_account_creation_is_all_or_nothing(app, victim_identity):
+    created = tg.create_account_for_telegram(
+        TG_ALICE, "fresh@example.com", name="Fresh", username="fresh_tg"
+    )
+
+    assert created is None
+    assert User.query.filter_by(email="fresh@example.com").count() == 0
 
 
 @pytest.mark.parametrize(

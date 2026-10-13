@@ -15,25 +15,20 @@ import re
 import secrets
 
 from flask import Blueprint, current_app, jsonify, request, url_for
-from sqlalchemy import delete
-from sqlalchemy.exc import IntegrityError
 
-from backend.app.extensions import db
-from backend.app.models.telegram import TelegramIdentity
-from backend.app.models.user import OAUTH_PASSWORD_MARKER, User
-from backend.app.models.user_profile import UserProfile
-from backend.app.models.verification_code import VerificationCode
 from backend.app.services import telegram_auth as tg
 from backend.app.utils.bot_signature import MAX_SKEW_SECONDS, check_signature
 from backend.app.utils.mailer import EmailSendError
-from backend.app.utils.validation import clean_username, normalize_email
+from backend.app.utils.validation import normalize_email
 from backend.app.services.telegram_auth import LINK_SIGN_IN_METHODS
 from backend.app.services.verification_codes import (
     MAX_CODE_ATTEMPTS,
     SEND_LIMIT_PER_EMAIL,
     VERIFY_ATTEMPT_WINDOW,
-    code_is_expired,
+    active_code,
+    clear_codes,
     issue_code,
+    spend_code,
 )
 from backend.app.utils.rate_limit import hit_limit, reset_limit
 from web.app.routes.auth.telegram_session import start_telegram_session
@@ -98,13 +93,6 @@ def bot_signed(view):
     return wrapper
 
 
-def _ensure_profile(user) -> None:
-    if not user.profile:
-        db.session.add(
-            UserProfile(user_id=user.id, training_location="home", onboarding_completed=False)
-        )
-
-
 def _base_url() -> str | None:
     base = (current_app.config.get("PUBLIC_BASE_URL") or "").rstrip("/")
     if base:
@@ -136,14 +124,8 @@ def telegram_login(telegram_user_id, data):
         return _error("logged_out", 401)
 
     user = identity.user
-    if not restore:
-        username = tg.clean_telegram_username(data.get("username"))
-        if username != identity.telegram_username:
-            identity.telegram_username = username
-        identity.bot_logged_out_at = None
-    identity.last_login_at = tg.utcnow()
-    _ensure_profile(user)
-    db.session.commit()
+    username = None if restore else tg.clean_telegram_username(data.get("username"))
+    tg.record_bot_login(identity, username, restore=restore)
 
     start_telegram_session(user, identity)
     return jsonify({"status": "ok", "username": user.username})
@@ -154,9 +136,8 @@ def telegram_login(telegram_user_id, data):
 def telegram_logout(telegram_user_id, data):
     """/logout in the bot: no session restore until the next explicit login."""
     identity = tg.identity_for_telegram(telegram_user_id)
-    if identity is not None and identity.bot_logged_out_at is None:
-        identity.bot_logged_out_at = tg.utcnow()
-        db.session.commit()
+    if identity is not None:
+        tg.mark_bot_logged_out(identity)
     return jsonify({"status": "ok"})
 
 
@@ -217,15 +198,10 @@ def register_verify(telegram_user_id, data):
     # Shared with the web form: wrong codes for one address are counted
     # together, whichever client sends them.
     if hit_limit("verify-attempts", email, MAX_CODE_ATTEMPTS, VERIFY_ATTEMPT_WINDOW):
-        VerificationCode.query.filter_by(email=email).delete()
-        db.session.commit()
+        clear_codes(email)
         return _error("too_many_attempts", 429)
 
-    record = VerificationCode.query.filter_by(email=email).first()
-    if record is not None and code_is_expired(record):
-        db.session.delete(record)
-        db.session.commit()
-        record = None
+    record = active_code(email)
 
     # Missing, expired and wrong codes look the same.
     if (
@@ -236,11 +212,7 @@ def register_verify(telegram_user_id, data):
         return _error("invalid_code", 400)
 
     # Spend the code exactly once even under concurrent requests.
-    spent = db.session.execute(
-        delete(VerificationCode).where(VerificationCode.id == record.id)
-    ).rowcount
-    db.session.commit()
-    if spent != 1:
+    if not spend_code(record):
         return _error("invalid_code", 400)
     reset_limit("verify-attempts", email)
 
@@ -248,38 +220,17 @@ def register_verify(telegram_user_id, data):
         # Registered meanwhile (e.g. on the website). Never attach by email.
         return _error("email_unavailable", 409)
 
-    name = tg.clean_telegram_name(data.get("name"))
-    user = User(
-        username=clean_username(name) or email.split("@")[0][:50],
-        email=email,
-        password=OAUTH_PASSWORD_MARKER,
-        is_premium=False,
+    created = tg.create_account_for_telegram(
+        telegram_user_id,
+        email,
+        name=tg.clean_telegram_name(data.get("name")),
+        username=tg.clean_telegram_username(data.get("username")),
     )
-    try:
-        db.session.add(user)
-        db.session.flush()
-        db.session.add(
-            UserProfile(
-                user_id=user.id,
-                training_location="home",
-                wants_nutrition=True,
-                wants_recovery=False,
-                onboarding_completed=False,
-            )
-        )
-        identity = TelegramIdentity(
-            user_id=user.id,
-            telegram_user_id=telegram_user_id,
-            telegram_username=tg.clean_telegram_username(data.get("username")),
-            last_login_at=tg.utcnow(),
-        )
-        db.session.add(identity)
-        db.session.commit()
-    except IntegrityError:
-        db.session.rollback()
+    if created is None:
         if tg.identity_for_telegram(telegram_user_id) is not None:
             return _error("already_linked", 409)
         return _error("email_unavailable", 409)
+    user, identity = created
 
     start_telegram_session(user, identity)
     response = jsonify({"status": "created", "username": user.username})

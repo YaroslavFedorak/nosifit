@@ -7,6 +7,8 @@ the website registration and the Telegram registration.
 import secrets
 from datetime import datetime, timedelta, timezone
 
+from sqlalchemy import delete
+
 from backend.app.extensions import db
 from backend.app.models.verification_code import VerificationCode
 from backend.app.utils.rate_limit import reset_limit
@@ -41,3 +43,27 @@ def issue_code(email) -> str:
     db.session.commit()
     reset_limit("verify-attempts", email)
     return code
+
+
+def clear_codes(email) -> None:
+    VerificationCode.query.filter_by(email=email).delete()
+    db.session.commit()
+
+
+def active_code(email):
+    """The address's current code, or None. An expired code is deleted."""
+    record = VerificationCode.query.filter_by(email=email).first()
+    if record is not None and code_is_expired(record):
+        db.session.delete(record)
+        db.session.commit()
+        return None
+    return record
+
+
+def spend_code(record) -> bool:
+    """Delete the code; True only for the one request whose delete removed it."""
+    spent = db.session.execute(
+        delete(VerificationCode).where(VerificationCode.id == record.id)
+    ).rowcount
+    db.session.commit()
+    return spent == 1
