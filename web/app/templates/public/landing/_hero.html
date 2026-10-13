@@ -7,10 +7,16 @@
       <p class="lp-hero-lead">{{ L.hero.lead }}</p>
 
       <div class="lp-actions">
+        {% if current_user.is_authenticated %}
+        <a href="{{ url_for('dashboard.dashboard') }}" class="cmp-btn cmp-btn-primary cmp-btn-lg">{{ public_t("nav.dashboard") }}</a>
+        {% else %}
         <a href="{{ url_for('auth.register') }}" class="cmp-btn cmp-btn-primary cmp-btn-lg">{{ L.hero.start }}</a>
+        {% endif %}
         <a href="{{ url_for('public.demo') }}" class="cmp-btn cmp-btn-ghost cmp-btn-lg">{{ L.hero.demo }}</a>
       </div>
+      {% if not current_user.is_authenticated %}
       <p class="lp-note">{{ L.hero.note }}</p>
+      {% endif %}
     </div>
 
     <figure class="lp-day cmp-card" data-reveal aria-label="{{ L.day.aria }}">

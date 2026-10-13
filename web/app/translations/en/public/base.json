@@ -9,7 +9,8 @@
     "contact": "Contact",
     "demo": "Demo",
     "login": "Log in",
-    "register": "Register"
+    "register": "Register",
+    "dashboard": "Open dashboard"
   },
   "landing": {
     "skip": "Skip to content",

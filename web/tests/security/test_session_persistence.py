@@ -135,3 +135,34 @@ def test_signed_out_visitor_sees_landing_and_login_form(app, client, user):
 
     assert client.get("/").status_code == 200
     assert client.get("/auth/login").status_code == 200
+
+
+def test_logo_takes_a_signed_in_user_to_the_landing(app, client, user):
+    """Opening the site goes to the dashboard, but the logo in the app
+    sidebar and the landing's own links show the landing, with a way back
+    to the dashboard instead of the sign-in buttons."""
+    log_in(client)
+
+    dashboard = client.get("/dashboard/").get_data(as_text=True)
+    assert 'href="/?home=1" class="cmp-sidebar-brand"' in dashboard
+
+    response = client.get("/?home=1")
+    assert response.status_code == 200
+    landing = response.get_data(as_text=True)
+    assert 'href="/dashboard/"' in landing
+    assert 'href="/auth/login"' not in landing
+    assert 'href="/auth/register"' not in landing
+    # Its own logo and "Home" links keep the user on the landing.
+    assert 'href="/"' not in landing
+
+    assert client.get("/").location.endswith("/dashboard/")
+
+
+def test_signed_out_visitor_sees_sign_in_buttons_on_the_landing(app, client, user):
+    landing = client.get("/").get_data(as_text=True)
+    assert 'href="/auth/login"' in landing
+    assert 'href="/auth/register"' in landing
+    assert 'href="/dashboard/"' not in landing
+    assert 'href="/?home=1"' not in landing
+    # The marker changes nothing for visitors.
+    assert client.get("/?home=1").status_code == 200

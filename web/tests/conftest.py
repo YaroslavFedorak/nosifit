@@ -1,19 +1,80 @@
+import os
+import secrets
+
 import pytest
-from sqlalchemy import text
-from backend.app.extensions import db
-from web.app import create_app
-from backend.app.models.user import User
+from dotenv import load_dotenv
+from flask_migrate import upgrade
+from sqlalchemy import create_engine, text
+from sqlalchemy.engine import make_url
 from werkzeug.security import generate_password_hash
 
-import os
-from dotenv import load_dotenv
+from backend.app.extensions import db
+from backend.app.models.user import User
+from web.app import create_app
 
 load_dotenv()
 
-TEST_DATABASE_URI = os.getenv("TEST_DATABASE_URL")
+_BASE_DATABASE_URI = os.getenv("TEST_DATABASE_URL")
 
-if not TEST_DATABASE_URI:
+if not _BASE_DATABASE_URI:
     raise RuntimeError("TEST_DATABASE_URL is not configured")
+
+# Same driver rule as backend/config.py: plain postgresql:// means psycopg 3.
+for _prefix in ("postgres://", "postgresql://"):
+    if _BASE_DATABASE_URI.startswith(_prefix):
+        _BASE_DATABASE_URI = "postgresql+psycopg://" + _BASE_DATABASE_URI[len(_prefix):]
+
+# The suite truncates every table: refuse anything that is not a test database.
+if "test" not in (make_url(_BASE_DATABASE_URI).database or ""):
+    raise RuntimeError("TEST_DATABASE_URL must point at a database whose name contains 'test'")
+
+# Each run gets its own schema, so parallel runs never share tables.
+TEST_SCHEMA = f"test_{os.getpid()}_{secrets.token_hex(3)}"
+TEST_DATABASE_URI = (
+    make_url(_BASE_DATABASE_URI)
+    .update_query_dict({"options": f"-csearch_path={TEST_SCHEMA},public"})
+    .render_as_string(hide_password=False)
+)
+
+# Filled once per run by the migrations, not by db.create_all(), so tests use
+# the same schema as production.
+_KEEP_TABLES = {"alembic_version"}
+
+
+@pytest.fixture(scope="session", autouse=True)
+def _test_schema():
+    engine = create_engine(_BASE_DATABASE_URI)
+    with engine.begin() as conn:
+        # In public, so dropping the run's schema never drops the extension
+        # another run is using.
+        conn.execute(text("CREATE EXTENSION IF NOT EXISTS pg_trgm WITH SCHEMA public"))
+        conn.execute(text(f'CREATE SCHEMA "{TEST_SCHEMA}"'))
+
+    migrated = create_app({"TESTING": True, "SQLALCHEMY_DATABASE_URI": TEST_DATABASE_URI})
+    with migrated.app_context():
+        upgrade(directory=os.path.join(os.path.dirname(__file__), "..", "..", "migrations"))
+        db.engine.dispose()
+
+    yield TEST_SCHEMA
+
+    with engine.begin() as conn:
+        conn.execute(text(f'DROP SCHEMA "{TEST_SCHEMA}" CASCADE'))
+    engine.dispose()
+
+
+def _truncate_all():
+    tables = [
+        name
+        for (name,) in db.session.execute(
+            text("SELECT tablename FROM pg_tables WHERE schemaname = :schema"),
+            {"schema": TEST_SCHEMA},
+        )
+        if name not in _KEEP_TABLES
+    ]
+    if tables:
+        names = ", ".join(f'"{TEST_SCHEMA}"."{name}"' for name in tables)
+        db.session.execute(text(f"TRUNCATE {names} RESTART IDENTITY CASCADE"))
+        db.session.commit()
 
 
 @pytest.fixture
@@ -26,12 +87,10 @@ def app():
     )
 
     with app.app_context():
-        db.session.execute(text("CREATE EXTENSION IF NOT EXISTS pg_trgm"))
-        db.session.commit()
-        db.create_all()
+        _truncate_all()
         yield app
         db.session.remove()
-        db.drop_all()
+        db.engine.dispose()
 
 
 @pytest.fixture

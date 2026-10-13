@@ -75,5 +75,9 @@ class MealItem(db.Model):
         back_populates="entries",
     )
 
+    __table_args__ = (
+        db.Index("ix_meal_items_meal_id_id", "meal_id", "id"),
+    )
+
     def __repr__(self):
         return f"<MealItem id={self.id} meal_id={self.meal_id} name={self.name}>"

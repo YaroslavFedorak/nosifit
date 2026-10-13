@@ -11,7 +11,7 @@ class ProductName(db.Model):
 
     product_id = db.Column(
         db.Integer,
-        db.ForeignKey("nutrition_products.id"),
+        db.ForeignKey("nutrition_products.id", ondelete="CASCADE"),
         nullable=False,
         index=True,
     )

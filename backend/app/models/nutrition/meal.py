@@ -54,5 +54,10 @@ class Meal(db.Model):
         cascade="all, delete-orphan",
     )
 
+    __table_args__ = (
+        # A user's day in time order.
+        db.Index("ix_meals_user_date_time_id", "user_id", "date", "time", "id"),
+    )
+
     def __repr__(self):
         return f"<Meal id={self.id} user_id={self.user_id} name={self.name}>"
