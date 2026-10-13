@@ -82,7 +82,7 @@ immediately ends every bot session of that Telegram account.
 
 - **Bot ↔ web trust.** Requests to `/api/telegram/*` are signed with
   `TELEGRAM_BOT_API_SECRET` (HMAC-SHA256 over timestamp, nonce, method, path
-  and body; see `backend/app/utils/bot_signature.py`). Stale timestamps and
+  and body; see `shared/bot_signature.py`). Stale timestamps and
   reused nonces are rejected. Without the secret nobody can claim a Telegram
   id. Treat it like `SECRET_KEY`.
 - **Bot sessions** are normal NosiFit sessions with no "remember me" cookie,

@@ -102,7 +102,7 @@ class Config:
 
     # --- Telegram ------------------------------------------------------------
     # Shared with the bot service; the bot signs its requests with it (see
-    # backend.app.utils.bot_signature). Unset -> Telegram sign-in is disabled.
+    # shared.bot_signature). Unset -> Telegram sign-in is disabled.
     TELEGRAM_BOT_API_SECRET = os.getenv("TELEGRAM_BOT_API_SECRET") or None
     # Bot username without "@", for the "Connect Telegram" button (optional).
     TELEGRAM_BOT_USERNAME = (os.getenv("TELEGRAM_BOT_USERNAME") or "").lstrip("@") or None

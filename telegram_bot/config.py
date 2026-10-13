@@ -3,7 +3,7 @@ from dataclasses import dataclass
 
 from dotenv import load_dotenv
 
-from backend.app.utils.bot_signature import MIN_SECRET_LENGTH
+from shared.bot_signature import MIN_SECRET_LENGTH
 
 load_dotenv()
 

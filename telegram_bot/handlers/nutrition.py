@@ -36,7 +36,7 @@ from telegram_bot.keyboards.nutrition import (
     product_results,
     review_keyboard,
 )
-from backend.app.services.nutrition.barcode import looks_like_barcode
+from shared.barcode import looks_like_barcode
 from telegram_bot.keyboards.nutrition import barcode_result_keyboard, barcode_scan_keyboard
 from telegram_bot.security import barcode_throttle
 from telegram_bot.services.api import NosiFitAPIError

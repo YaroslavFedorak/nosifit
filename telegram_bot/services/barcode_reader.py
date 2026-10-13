@@ -15,7 +15,7 @@ import io
 import logging
 import warnings
 
-from backend.app.services.nutrition.barcode import InvalidBarcode, normalize_barcode
+from shared.barcode import InvalidBarcode, normalize_barcode
 
 logger = logging.getLogger(__name__)
 

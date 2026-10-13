@@ -1,7 +1,7 @@
 """Endpoints only the Telegram bot can call.
 
 Every request is signed with TELEGRAM_BOT_API_SECRET (see
-backend.app.utils.bot_signature). The Telegram user id in the body comes
+shared.bot_signature). The Telegram user id in the body comes
 from the Telegram update the bot received, so the signature is what lets
 the server trust it; without the secret nobody can claim a Telegram id.
 
