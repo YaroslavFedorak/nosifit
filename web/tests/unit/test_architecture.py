@@ -19,7 +19,6 @@ FRAMEWORK = {"flask", "flask_login", "flask_sqlalchemy", "flask_migrate", "flask
 # leaves this list when its module moves into api/routes.
 API_STILL_IN_WEB = {
     "nutrition_api",
-    "recovery",
     "telegram_api",
     "training_api",
 }

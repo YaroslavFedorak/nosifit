@@ -21,7 +21,6 @@ from .nutrition.pages import nutrition_pages_bp
 from .nutrition.nutrition_api import nutrition_api
 
 from .recovery.pages import recovery_pages_bp
-from .recovery.recovery_api import recovery_bp
 
 from .assessment.pages import assessment_pages_bp
 from .assessment.assessment import assessment_bp
