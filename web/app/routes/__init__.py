@@ -8,7 +8,6 @@ from .auth.oauth_google import google_bp
 from .auth.oauth_github import github_bp
 from .auth.email_verification import email_verification_bp
 from .auth.complete_profile import complete_profile_bp
-from .auth.telegram_api import telegram_api_bp
 from .auth.telegram_link import telegram_link_bp
 
 from .dashboard.page import dashboard_bp

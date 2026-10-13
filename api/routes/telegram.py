@@ -27,16 +27,16 @@ from backend.app.services import telegram_auth as tg
 from backend.app.utils.bot_signature import MAX_SKEW_SECONDS, check_signature
 from backend.app.utils.mailer import EmailSendError
 from backend.app.utils.validation import clean_username, normalize_email
-from web.app.routes.auth.email_verification import (
+from backend.app.services.telegram_auth import LINK_SIGN_IN_METHODS
+from backend.app.services.verification_codes import (
     MAX_CODE_ATTEMPTS,
     SEND_LIMIT_PER_EMAIL,
     VERIFY_ATTEMPT_WINDOW,
     code_is_expired,
     issue_code,
 )
-from web.app.routes.auth.telegram_link import LINK_SIGN_IN_METHODS
+from backend.app.utils.rate_limit import hit_limit, reset_limit
 from web.app.routes.auth.telegram_session import start_telegram_session
-from web.app.security import hit_limit, reset_limit
 
 logger = logging.getLogger(__name__)
 

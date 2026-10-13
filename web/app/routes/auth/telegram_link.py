@@ -32,6 +32,7 @@ from flask_login import current_user, login_required
 
 from backend.app.extensions import db
 from backend.app.services import telegram_auth as tg
+from backend.app.services.telegram_auth import LINK_SIGN_IN_METHODS
 from web.app.routes.auth.telegram_session import (
     clear_pending_link,
     get_pending_link,
@@ -47,13 +48,6 @@ telegram_link_bp = Blueprint("telegram_link", __name__, url_prefix="/auth/telegr
 
 OPEN_LIMIT_PER_IP = (30, 15 * 60)
 
-# ?via= on the link: the sign-in the user picked in the bot. Only these
-# fixed endpoints can be targets, so the parameter is no open redirect.
-LINK_SIGN_IN_METHODS = {
-    "google": ("google_oauth.google_login", "GOOGLE_CLIENT_ID"),
-    "github": ("github.github_login", "GITHUB_CLIENT_ID"),
-    "password": ("telegram_link.link_page", None),
-}
 CONFIRM_LIMIT_PER_USER = (10, 15 * 60)
 CONFIRM_LIMIT_PER_IP = (30, 15 * 60)
 
