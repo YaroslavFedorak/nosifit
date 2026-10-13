@@ -1,7 +1,7 @@
 <nav class="nav-root" aria-label="{{ common_t('navigation.menu') }}">
   <div class="nav-left">
     <a
-      href="{{ url_for('root.landing') }}"
+      href="{{ landing_url() }}"
       class="nav-logo-link"
       aria-label="NosiFit"
     >
@@ -13,7 +13,7 @@
     </a>
 
     <div class="nav-links">
-      <a href="{{ url_for('root.landing') }}" class="nav-link">
+      <a href="{{ landing_url() }}" class="nav-link">
         {{ public_t("nav.home") }}
       </a>
       <a href="{{ url_for('public.about') }}" class="nav-link">
@@ -29,6 +29,15 @@
   </div>
 
   <div class="nav-right">
+    {% if current_user.is_authenticated %}
+    <a
+      href="{{ url_for('dashboard.dashboard') }}"
+      class="nav-btn nav-btn-register"
+      data-glow="yellow"
+    >
+      {{ public_t("nav.dashboard") }}
+    </a>
+    {% else %}
     <a
       href="{{ url_for('auth.login') }}"
       class="nav-btn nav-btn-login"
@@ -43,5 +52,6 @@
     >
       {{ public_t("nav.register") }}
     </a>
+    {% endif %}
   </div>
 </nav>
