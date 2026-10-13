@@ -11,7 +11,7 @@ about deployment, URLs or behaviour changes.
 | Component | Responsibility | Lives in today |
 |---|---|---|
 | `core` | Models, business logic, data access, migrations, config | `backend/` |
-| `api` | HTTP endpoints: validate the request, call `core`, shape the response | `api/` registers every blueprint under `/api/`; route modules move from `web/app/routes/` into `api/routes/` one at a time (done: injuries, equipment, onboarding, translations, dashboard, recovery) |
+| `api` | HTTP endpoints: validate the request, call `core`, shape the response | `api/` registers every blueprint under `/api/`; route modules move from `web/app/routes/` into `api/routes/` one at a time (done: injuries, equipment, onboarding, translations, dashboard, recovery, nutrition) |
 | `web` | Pages, templates, static files, sign-in and OAuth flows | `web/app/` |
 | `bot` | Telegram interface; talks to the backend only through the HTTP API | `telegram_bot/` |
 | `shared` | Pure helpers several components need: bot request signing, barcode normalisation, the translation files and their loader | `shared/` |
@@ -70,8 +70,8 @@ authentication and deployment stay the same until the interim audit.
 3. **One module at a time**: move a module's API routes into `api/routes/`
    and the database work they still do into `core` services, with tests
    green after each module. Done: injuries, equipment, onboarding,
-   translations, dashboard, recovery. The test lists the API blueprints
-   still in `web`.
+   translations, dashboard, recovery, nutrition. The test lists the API
+   blueprints still in `web`.
 4. **Interim audit**: what is separated, what remains in routes, test
    coverage.
 

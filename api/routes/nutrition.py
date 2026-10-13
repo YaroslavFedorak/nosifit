@@ -3,6 +3,7 @@ from datetime import date, timedelta
 from flask import Blueprint, jsonify, request
 from flask_login import current_user, login_required
 
+from api.responses import too_many_requests
 from backend.app.models import Meal
 from backend.app.services.nutrition.barcode_service import (
     BarcodeLookupError,
@@ -42,8 +43,8 @@ from backend.app.services.nutrition.recommendation_service import get_nutrition_
 from backend.app.services.nutrition.serializers import serialize_meal
 from backend.app.services.nutrition.stats_service import get_day_details, get_stats, get_year_heatmap
 from backend.app.services.nutrition.water_service import add_water_service, get_water_data
-from web.app.security import hit_limit, too_many_requests
 from backend.app.services.nutrition.weight_service import get_weight_data, update_user_weight
+from backend.app.utils.rate_limit import hit_limit
 
 nutrition_api = Blueprint("nutrition_api", __name__, url_prefix="/api/nutrition")
 
