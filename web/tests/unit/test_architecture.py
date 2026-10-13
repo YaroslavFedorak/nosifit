@@ -15,10 +15,12 @@ ROOT = Path(__file__).resolve().parents[3]
 
 FRAMEWORK = {"flask", "flask_login", "flask_sqlalchemy", "flask_migrate", "flask_mail", "sqlalchemy", "alembic"}
 
-# API blueprints whose route modules still live in web/app/routes; each
-# leaves this list when its module moves into api/routes.
-API_STILL_IN_WEB = {
-    "telegram_api",
+# api -> web imports still tolerated, with the reason.
+KNOWN_API_TO_WEB = {
+    # Starting a Telegram session writes the shared Flask-Login session; the
+    # pages use the same session helpers. Moves with them to a shared auth
+    # module when the API becomes its own service.
+    ("api/routes/telegram.py", "web.app.routes.auth.telegram_session"),
 }
 
 
@@ -95,9 +97,9 @@ def test_api_route_modules_live_in_the_api_package():
     from api import api_blueprints
 
     in_web = {bp.name for bp in api_blueprints() if not bp.import_name.startswith("api.routes.")}
-    assert in_web == API_STILL_IN_WEB
+    assert in_web == set()
 
 
 def test_api_route_modules_do_not_import_the_web_layer():
     to_web = {(path, module) for path, module in imports_of("api/routes") if top(module) == "web"}
-    assert to_web == set()
+    assert to_web == KNOWN_API_TO_WEB

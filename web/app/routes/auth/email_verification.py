@@ -1,7 +1,6 @@
 from flask import Blueprint, request, render_template, redirect, session, flash, url_for
 from backend.app.models.verification_code import VerificationCode
 from backend.app.models.user import User
-from datetime import datetime, timedelta, timezone
 import secrets
 
 from werkzeug.security import generate_password_hash
@@ -11,15 +10,19 @@ from backend.app.utils.mailer import EmailSendError, send_email
 from backend.app.utils.validation import clean_username, normalize_email, password_problem
 from web.app.security import client_ip, hit_limit, reset_limit, too_many_requests
 
-CODE_TTL = timedelta(minutes=10)
-MAX_CODE_ATTEMPTS = 5
+from backend.app.services.verification_codes import (
+    MAX_CODE_ATTEMPTS,
+    SEND_LIMIT_PER_EMAIL,
+    VERIFY_ATTEMPT_WINDOW,
+    code_is_expired,
+    issue_code,
+    new_code,
+)
 
-# Each email costs quota and lands in someone's inbox: limit per address and
-# per client. Wrong codes are counted on the server, not in the (client-side,
-# replayable) session cookie.
-SEND_LIMIT_PER_EMAIL = (5, 60 * 60)
+# The code store, its expiry and the per-address limits are in core
+# (backend/app/services/verification_codes.py), shared with the Telegram
+# registration. The per-client limit needs the request and stays here.
 SEND_LIMIT_PER_IP = (20, 60 * 60)
-VERIFY_ATTEMPT_WINDOW = int(CODE_TTL.total_seconds())
 
 # Registration form fields kept until the email is verified. Anything else in
 # the form (and the plain-text password) never goes into the session.
@@ -38,17 +41,8 @@ REG_PROFILE_FIELDS = (
 email_verification_bp = Blueprint("email_verification", __name__, url_prefix="/verify")
 
 
-def _new_code() -> str:
-    return f"{secrets.randbelow(900000) + 100000}"
-
-
-def _is_expired(record) -> bool:
-    created = record.created_at
-    if created is None:
-        return False
-    if created.tzinfo is None:
-        created = created.replace(tzinfo=timezone.utc)
-    return datetime.now(timezone.utc) - created > CODE_TTL
+_new_code = new_code
+_is_expired = code_is_expired
 
 
 def send_verification_email(email, code):
@@ -106,19 +100,7 @@ def _send_limited(email) -> bool:
     )
 
 
-def _issue_code(email) -> str:
-    code = _new_code()
-    VerificationCode.query.filter_by(email=email).delete()
-    db.session.add(VerificationCode(email=email, code=code))
-    db.session.commit()
-    reset_limit("verify-attempts", email)
-    return code
-
-
-# Shared with the Telegram registration (web/app/routes/auth/telegram_api.py):
-# one code store, one expiry and one attempt counter per address.
-issue_code = _issue_code
-code_is_expired = _is_expired
+_issue_code = issue_code
 
 
 @email_verification_bp.route("/send_code", methods=["POST"])

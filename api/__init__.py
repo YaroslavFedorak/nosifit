@@ -1,8 +1,8 @@
 """The JSON API: every route under /api/.
 
-For now its blueprints are registered on the web app (one process, the same
-URLs) and still live under web/app/routes/. They move into this package one
-module at a time; see docs/architecture.md.
+The route modules live in api/routes/. For now the blueprints are
+registered on the web app (one process, the same URLs); see
+docs/architecture.md.
 """
 
 
@@ -16,8 +16,8 @@ def api_blueprints():
     from api.routes.nutrition import nutrition_api
     from api.routes.onboarding import onboarding_api
     from api.routes.recovery import recovery_bp
+    from api.routes.telegram import telegram_api_bp
     from api.routes.training import training_api_bp
-    from web.app.routes import telegram_api_bp
 
     return (
         telegram_api_bp,

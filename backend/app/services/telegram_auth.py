@@ -39,6 +39,14 @@ LINK_TTL_MAX = 30 * 60
 
 OAUTH_PROVIDERS = ("google", "github")
 
+# ?via= on the link: the sign-in the user picked in the bot. Only these
+# fixed endpoints can be targets, so the parameter is no open redirect.
+LINK_SIGN_IN_METHODS = {
+    "google": ("google_oauth.google_login", "GOOGLE_CLIENT_ID"),
+    "github": ("github.github_login", "GITHUB_CLIENT_ID"),
+    "password": ("telegram_link.link_page", None),
+}
+
 
 def utcnow() -> datetime:
     return datetime.now(timezone.utc)

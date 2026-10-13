@@ -11,7 +11,7 @@ about deployment, URLs or behaviour changes.
 | Component | Responsibility | Lives in today |
 |---|---|---|
 | `core` | Models, business logic, data access, migrations, config | `backend/` |
-| `api` | HTTP endpoints: validate the request, call `core`, shape the response | `api/` registers every blueprint under `/api/`; route modules move from `web/app/routes/` into `api/routes/` one at a time (done: injuries, equipment, onboarding, translations, dashboard, recovery, nutrition, training) |
+| `api` | HTTP endpoints: validate the request, call `core`, shape the response | `api/routes/` (every route under `/api/`), registered by `api.register_api` |
 | `web` | Pages, templates, static files, sign-in and OAuth flows | `web/app/` |
 | `bot` | Telegram interface; talks to the backend only through the HTTP API | `telegram_bot/` |
 | `shared` | Pure helpers several components need: bot request signing, barcode normalisation, the translation files and their loader | `shared/` |
@@ -44,7 +44,11 @@ bot ─────┘        (bot reaches core only over HTTP)
 `web/tests/unit/test_architecture.py` checks these rules on every test run,
 and also that every route under `/api/` is registered by `api.register_api`
 while pages and form posts are registered by `web`.
-There are no known violations; the test lists any it has to tolerate.
+Known violations are listed in that file and are removed as they are fixed:
+
+| Violation | Plan |
+|---|---|
+| `api` → `web.app.routes.auth.telegram_session` in `api/routes/telegram.py` (starting a Telegram session writes the shared Flask-Login session, which the pages use too) | Move the session helpers to a shared auth module when the API becomes its own service |
 
 ## Database
 
@@ -69,9 +73,10 @@ authentication and deployment stay the same until the interim audit.
    becomes part of the public API is decided in API v1.
 3. **One module at a time**: move a module's API routes into `api/routes/`
    and the database work they still do into `core` services, with tests
-   green after each module. Done: injuries, equipment, onboarding,
-   translations, dashboard, recovery, nutrition, training. The test lists
-   the API blueprints still in `web`.
+   green after each module. Route moves done for every module: injuries,
+   equipment, onboarding, translations, dashboard, recovery, nutrition,
+   training, telegram. The verification codes and the Telegram link
+   sign-in methods moved into `core` with the last one.
 4. **Interim audit**: what is separated, what remains in routes, test
    coverage.
 
