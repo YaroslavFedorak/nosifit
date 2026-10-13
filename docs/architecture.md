@@ -82,7 +82,7 @@ authentication and deployment stay the same until the interim audit.
    followed, one pull request per module: no module under `api/` imports
    `db`, a model or SQLAlchemy any more, and the boundary test keeps it so.
 4. **Interim audit**: what is separated, what remains in routes, test
-   coverage.
+   coverage. Done: [interim-audit.md](interim-audit.md).
 
 Later stages (API v1 with one error format and OpenAPI, a separate API
 service, caching and background jobs) start only after the interim audit.
