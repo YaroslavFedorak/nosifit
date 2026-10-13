@@ -11,12 +11,12 @@ about deployment, URLs or behaviour changes.
 | Component | Responsibility | Lives in today |
 |---|---|---|
 | `core` | Models, business logic, data access, migrations, config | `backend/` |
-| `api` | HTTP endpoints: validate the request, call `core`, shape the response | `api/routes/` (every route under `/api/`), registered by `api.register_api` |
+| `api` | HTTP endpoints: validate the request, call `core`, shape the response. Versions, errors and authentication: [api.md](api.md) | `api/routes/` (every route under `/api/` and `/api/v1/`), registered by `api.register_api` |
 | `web` | Pages, templates, static files, sign-in and OAuth flows | `web/app/` |
 | `auth` | Session rules both `web` and `api` apply to the shared Flask-Login session: Telegram sessions and their scope, recent sign-in, the pending Telegram link | `auth/` |
 | `bot` | Telegram interface; talks to the backend only through the HTTP API | `telegram_bot/` |
 | `shared` | Pure helpers several components need: bot request signing, barcode normalisation, the translation files and their loader | `shared/` |
-| `worker` | Background jobs, once there is a practical need | not yet |
+| `worker` | Background jobs. Today one: the email outbox (security notices), a thread in each web worker started by `gunicorn.conf.py` | `backend/app/services/email_outbox.py` |
 
 These are responsibilities, not processes. All of them except `bot` run
 inside the same Flask app today.

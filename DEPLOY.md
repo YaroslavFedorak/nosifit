@@ -92,7 +92,10 @@ The `pg_trgm` extension is created by migration `b4a7d1e8c2f0`.
    (reference to the web service's value), `NOSI_FIT_BASE_URL=https://<web domain>`,
    `NOSI_FIT_TIMEZONE=Europe/Kyiv`. The bot does not start without the secret.
 5. Stop the bot on your computer: Telegram allows only one running poller per token.
-6. Deploy `web` (its pre-deploy migration creates `telegram_identities` and
+6. **Watch Paths** (Settings → Build): `telegram_bot/**`, `shared/**`,
+   `requirements.txt`, `.python-version`. The bot runs code from `shared/`;
+   without that line a change there redeploys `web` but not the bot.
+7. Deploy `web` (its pre-deploy migration creates `telegram_identities` and
    `telegram_link_tokens`) before or together with `bot`.
 
 The bot never handles NosiFit passwords: users sign in with their Telegram
@@ -112,6 +115,15 @@ domains are). The browser decoder is self-hosted in
 The `bot` service decodes photos with `zxing-cpp` + Pillow (both in
 `requirements.txt`, prebuilt wheels, no system packages needed).
 
+### Email outbox
+
+Pre-deploy runs migration `c5e1d7a9b3f2`: a new, empty `email_outbox` table.
+Security notices (Telegram connected/disconnected, email changed) are queued
+there and sent by a thread in each gunicorn worker; `gunicorn.conf.py`
+starts it, and gunicorn reads that file by itself (the start command does not
+change). `python -m web.scripts.email_outbox --failed` lists what could not
+be sent. Details: [docs/api.md](docs/api.md#background-email).
+
 ## Checks after deploy
 
 - `https://<domain>/healthz` → `{"status": "ok"}`
@@ -121,3 +133,6 @@ The `bot` service decodes photos with `zxing-cpp` + Pillow (both in
 - Nutrition → add food → "Scan barcode" on a phone: the camera opens, a scanned product can be added; the bot: a photo of a barcode finds the same product
 - the bot: "Увійти" → "Увійти через Google" → the link opens Google → Connect → "Увійти" in the bot
 - Profile → Connected accounts shows Telegram; Disconnect asks for the password
+- after connecting or disconnecting Telegram the notice email arrives within a minute;
+  `python -m web.scripts.email_outbox` (Railway shell of `web`) shows it as sent
+- `/api/v1/nutrition/day` without signing in answers 401 JSON
