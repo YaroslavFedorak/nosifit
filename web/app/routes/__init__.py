@@ -29,7 +29,6 @@ from .assessment.pages import assessment_pages_bp
 from .assessment.assessment import assessment_bp
 
 from .equipment.pages import equipment_pages_bp
-from .equipment.api import equipment_api
 
 from .training_plan.pages import training_plan_pages_bp
 from .training_plan.plan import plan_bp
