@@ -16,10 +16,8 @@ def api_blueprints():
     from api.routes.nutrition import nutrition_api
     from api.routes.onboarding import onboarding_api
     from api.routes.recovery import recovery_bp
-    from web.app.routes import (
-        telegram_api_bp,
-        training_api_bp,
-    )
+    from api.routes.training import training_api_bp
+    from web.app.routes import telegram_api_bp
 
     return (
         telegram_api_bp,

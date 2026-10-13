@@ -12,7 +12,7 @@ from backend.app.training.plans.plan_generator import PlanGenerator
 from backend.app.training.training_analysis.recommendations_engine import (
     build_recommendations,
 )
-from web.app.routes.training.api_training import _local_today
+from api.routes.training import _local_today
 
 
 def login(client, email="test@example.com", password="password123"):

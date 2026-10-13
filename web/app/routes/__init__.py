@@ -15,7 +15,6 @@ from .dashboard.page import dashboard_bp
 
 from .training.pages import training_pages_bp
 from .training.pages_explanation import training_explanation_bp
-from .training.api_training import training_api_bp
 
 from .nutrition.pages import nutrition_pages_bp
 
