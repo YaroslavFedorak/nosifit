@@ -137,3 +137,38 @@ def test_day_view_rejects_a_bad_date(signed_in, value):
 
     assert response.status_code == 400
     assert response.get_json()["error"] == "invalid_input"
+
+
+def test_exercise_list_filters(signed_in, bench_press):
+    def slugs(**params):
+        body = signed_in.get("/api/training/exercises", query_string=params).get_json()
+        return {item["slug"] for item in body["items"]}, body["total"]
+
+    assert "bench-press" in slugs(q="bench")[0]
+    assert "bench-press" in slugs(muscle=bench_press.muscles_primary[0])[0]
+    assert "bench-press" in slugs(equipment=bench_press.equipment[0])[0]
+    assert slugs(q="no-such-exercise-zzz") == (set(), 0)
+
+
+def test_plan_count_is_capped(signed_in):
+    for i in range(50):
+        assert signed_in.post("/api/training/plans", json={"name": f"P{i}"}).status_code == 200
+
+    response = signed_in.post("/api/training/plans", json={"name": "One too many"})
+
+    assert response.status_code == 400
+    assert response.get_json() == {"error": "too_many_plans"}
+
+
+def test_today_views_follow_the_active_plan(signed_in, bench_press):
+    item = {"exercise": {"id": bench_press.id}, "sets": 3, "reps": 8, "load": 60}
+    days = {day: [item] for day in ("mon", "tue", "wed", "thu", "fri", "sat", "sun")}
+    plan = signed_in.post("/api/training/plans", json={"name": "Push", "is_active": True, "days": days}).get_json()
+
+    today = signed_in.get("/api/training/today").get_json()
+    assert today["plan"] == [{"id": plan["id"], "name": "Push"}]
+    assert [e["exercise"]["id"] for e in today["exercises"]] == [bench_press.id]
+
+    session = signed_in.get("/api/training/today-session").get_json()
+    assert [e["exercise"]["id"] for e in session["exercises"]] == [bench_press.id]
+
