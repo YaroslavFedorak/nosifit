@@ -39,8 +39,8 @@ def signed_in(client, user):
 def test_every_dashboard_route_requires_signing_in(client, method, path):
     response = getattr(client, method)(path, json={})
 
-    assert response.status_code == 302
-    assert "/auth/login" in response.headers["Location"]
+    assert response.status_code == 401
+    assert response.get_json()["code"] == "authentication_required"
 
 
 def test_training_summary_and_session_follow_a_workout(signed_in, catalog):
@@ -83,7 +83,11 @@ def test_adding_an_exercise_needs_an_exercise_id(signed_in, catalog, value):
     response = signed_in.post(f"/api/dashboard/training/session/{session['id']}/exercise", json={"exercise_id": value})
 
     assert response.status_code == 400
-    assert response.get_json() == {"error": "exercise_id_required"}
+    assert response.get_json() == {
+        "error": "exercise_id_required",
+        "code": "exercise_id_required",
+        "message": "Exercise id required",
+    }
 
 
 def test_adding_an_unknown_exercise_or_to_an_unknown_session_is_not_found(signed_in, catalog):
@@ -98,11 +102,19 @@ def test_adding_an_unknown_exercise_or_to_an_unknown_session_is_not_found(signed
 
     for response in (unknown_exercise, unknown_session):
         assert response.status_code == 404
-        assert response.get_json() == {"error": "session_or_exercise_not_found"}
+        assert response.get_json() == {
+            "error": "session_or_exercise_not_found",
+            "code": "session_or_exercise_not_found",
+            "message": "Session or exercise not found",
+        }
 
 
 def test_starting_a_session_validates_fatigue(signed_in):
     response = signed_in.post("/api/dashboard/training/session", json={"fatigue_before": 99})
 
     assert response.status_code == 400
-    assert response.get_json() == {"error": "invalid_fatigue"}
+    assert response.get_json() == {
+        "error": "invalid_fatigue",
+        "code": "invalid_fatigue",
+        "message": "Invalid fatigue",
+    }

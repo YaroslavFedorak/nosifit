@@ -32,6 +32,8 @@ import time
 from flask import jsonify, request, session, url_for
 from flask_login import current_user, login_user, logout_user
 
+from shared.api_paths import unversioned
+
 TELEGRAM_SESSION_KEY = "tg_identity"
 PENDING_LINK_KEY = "tg_link"
 AUTH_AT_KEY = "auth_at"
@@ -69,7 +71,8 @@ def enforce_telegram_session():
     if identity_id is None:
         return None
 
-    path = request.path
+    # /api/v1/x is the same endpoint as /api/x, with the same scope.
+    path = unversioned(request.path)
     if not (path.startswith(TELEGRAM_SESSION_PREFIXES) or path in TELEGRAM_SESSION_PATHS):
         response = jsonify(
             {"error": "Not available in a Telegram session", "code": "telegram_session_scope"}

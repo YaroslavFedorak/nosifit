@@ -84,7 +84,7 @@ def test_logout_still_signs_out_after_a_redeploy(app, client, user):
     browser.get("/auth/logout")
 
     assert browser.get_cookie("remember_token") is None
-    assert browser.get(PROTECTED).status_code in (302, 401)
+    assert browser.get(PROTECTED).status_code == 401
 
 
 def test_password_change_revokes_cookies_across_redeploys(app, client, user):
@@ -97,7 +97,7 @@ def test_password_change_revokes_cookies_across_redeploys(app, client, user):
     for name, value in cookies.items():
         browser = restarted_app(app.config["SECRET_KEY"]).test_client()
         browser.set_cookie(name, value)
-        assert browser.get(PROTECTED).status_code in (302, 401)
+        assert browser.get(PROTECTED).status_code == 401
 
 
 def test_cookies_depend_on_a_stable_secret_key(app, client, user):
@@ -109,7 +109,7 @@ def test_cookies_depend_on_a_stable_secret_key(app, client, user):
     for name, value in cookies.items():
         browser.set_cookie(name, value)
 
-    assert browser.get(PROTECTED).status_code in (302, 401)
+    assert browser.get(PROTECTED).status_code == 401
 
 
 def test_signed_in_user_opens_the_site_straight_into_the_dashboard(app, client, user):

@@ -38,7 +38,8 @@ async function request<T>(url: string, options: RequestInit = {}): Promise<T> {
         throw new NutritionAPIError("Network error", "network", 0);
     }
 
-    // An expired session redirects to the login page (HTML, not JSON).
+    // The API answers an expired session with 401 JSON. Older servers
+    // redirected to the login page (HTML, not JSON) instead.
     if (response.redirected && new URL(response.url).pathname.startsWith("/auth/login")) {
         throw new NutritionAPIError("Session expired", "session_expired", 401);
     }
@@ -47,8 +48,8 @@ async function request<T>(url: string, options: RequestInit = {}): Promise<T> {
 
     if (!response.ok) {
         throw new NutritionAPIError(
-            data.error || "Request failed",
-            data.code || (response.status === 401 ? "session_expired" : "unknown"),
+            data.message || data.error || "Request failed",
+            response.status === 401 ? "session_expired" : data.code || "unknown",
             response.status,
         );
     }

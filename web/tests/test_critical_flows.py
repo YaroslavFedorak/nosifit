@@ -95,8 +95,8 @@ def test_app_pages_send_guests_to_login(client, path):
 )
 def test_dashboard_api_is_private(client, path):
     response = client.get(path)
-    assert response.status_code in (302, 401)
-    assert response.get_json(silent=True) is None or "error" in response.get_json()
+    assert response.status_code == 401
+    assert response.get_json()["code"] == "authentication_required"
 
 
 def test_dashboard_of_an_empty_day(signed_in):
@@ -117,7 +117,11 @@ def test_dashboard_of_an_empty_day(signed_in):
 def test_dashboard_day_rejects_a_bad_date(signed_in):
     response = signed_in.get("/api/dashboard/day/not-a-date")
     assert response.status_code == 404
-    assert response.get_json() == {"error": "invalid_date_or_no_data"}
+    assert response.get_json() == {
+        "error": "invalid_date_or_no_data",
+        "code": "invalid_date_or_no_data",
+        "message": "Invalid date or no data",
+    }
 
 
 # --- Training -------------------------------------------------------------------------
@@ -172,13 +176,21 @@ def test_workout_edits_validate_input(signed_in, bench_press):
         json={"sets_done": 1000},
     )
     assert bad_sets.status_code == 400
-    assert bad_sets.get_json() == {"error": "invalid_exercise_data"}
+    assert bad_sets.get_json() == {
+        "error": "invalid_exercise_data",
+        "code": "invalid_exercise_data",
+        "message": "Invalid exercise data",
+    }
 
     bad_fatigue = signed_in.post(
         f"/api/dashboard/training/session/{session['id']}/finish", json={"fatigue_after": 99}
     )
     assert bad_fatigue.status_code == 400
-    assert bad_fatigue.get_json() == {"error": "invalid_fatigue"}
+    assert bad_fatigue.get_json() == {
+        "error": "invalid_fatigue",
+        "code": "invalid_fatigue",
+        "message": "Invalid fatigue",
+    }
 
 
 def test_workouts_of_other_users_are_not_reachable(signed_in, bench_press, app):

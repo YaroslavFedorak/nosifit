@@ -253,7 +253,7 @@ def api_product(product_id):
         normalize_locale(request.args.get("locale")),
     )
     if product is None:
-        return jsonify({"error": "Product not found"}), 404
+        return _error("Product not found", "product_not_found", 404)
     return jsonify(product)
 
 
@@ -310,7 +310,7 @@ def api_favorite_product(product_id):
         normalize_locale(data.get("locale")),
     )
     if product is None:
-        return jsonify({"error": "Product not found"}), 404
+        return _error("Product not found", "product_not_found", 404)
     return jsonify(product)
 
 
@@ -359,7 +359,7 @@ def api_edit_meal(meal_id):
 @login_required
 def api_delete_meal(meal_id):
     if not delete_meal_service(current_user.id, meal_id):
-        return jsonify({"error": "Meal not found"}), 404
+        return _error("Meal not found", "meal_not_found", 404)
     return jsonify({"status": "ok"})
 
 
@@ -533,7 +533,7 @@ def api_edit_item(item_id):
 
 def _delete_item(item_id):
     if not delete_item_service(current_user.id, item_id):
-        return jsonify({"error": "Entry not found"}), 404
+        return _error("Entry not found", "entry_not_found", 404)
     return jsonify({"status": "ok"})
 
 
