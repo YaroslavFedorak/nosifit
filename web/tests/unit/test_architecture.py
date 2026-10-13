@@ -18,7 +18,6 @@ FRAMEWORK = {"flask", "flask_login", "flask_sqlalchemy", "flask_migrate", "flask
 # API blueprints whose route modules still live in web/app/routes; each
 # leaves this list when its module moves into api/routes.
 API_STILL_IN_WEB = {
-    "nutrition_api",
     "telegram_api",
     "training_api",
 }
