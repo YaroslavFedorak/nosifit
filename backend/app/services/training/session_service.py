@@ -203,3 +203,15 @@ class TrainingSessionService:
 
         return session
 
+    @staticmethod
+    def sessions_started_on(user_id, day):
+        """The user's sessions started on ``day`` (server time), oldest first."""
+        return (
+            TrainingSession.query.filter(
+                TrainingSession.user_id == user_id,
+                TrainingSession.started_at >= datetime.combine(day, datetime.min.time()),
+                TrainingSession.started_at <= datetime.combine(day, datetime.max.time()),
+            )
+            .order_by(TrainingSession.started_at.asc())
+            .all()
+        )

@@ -4,9 +4,28 @@ from backend.app.extensions import db
 from backend.app.models.recovery.habit import RecoveryHabit
 from backend.app.models.recovery.user_habit import UserRecoveryHabit
 from backend.app.models.recovery.habit_log import RecoveryHabitLog
+from backend.app.utils.validation import as_db_id
 
 
 class HabitService:
+    def get_catalog(self):
+        """Habits users can add, in display order."""
+        return (
+            RecoveryHabit.query.filter_by(is_active=True, is_archived=False)
+            .order_by(RecoveryHabit.sort_order.asc(), RecoveryHabit.id.asc())
+            .all()
+        )
+
+    def get_catalog_habit(self, habit_id):
+        return db.session.get(RecoveryHabit, habit_id)
+
+    def user_owns_habit(self, user_id, user_habit_id) -> bool:
+        user_habit_id = as_db_id(user_habit_id)
+        if user_habit_id is None:
+            return False
+        habit = db.session.get(UserRecoveryHabit, user_habit_id)
+        return habit is not None and habit.user_id == user_id
+
     def get_all_habits(self):
         return (
             RecoveryHabit.query.filter_by(is_active=True)
