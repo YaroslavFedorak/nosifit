@@ -1,4 +1,4 @@
-from datetime import date, datetime, time
+from datetime import date, datetime, time, timedelta
 
 from backend.app.extensions import db
 from backend.app.models import Meal, MealItem
@@ -158,3 +158,25 @@ def copy_meal_service(user_id, meal_id):
     db.session.commit()
 
     return new_meal
+
+
+def copy_yesterday_service(user_id):
+    """Copy every meal from yesterday to today.
+
+    Returns None when yesterday had no meals, otherwise how many meals were
+    copied.
+    """
+    yesterday = date.today() - timedelta(days=1)
+    meals = Meal.query.filter_by(
+        user_id=user_id,
+        date=yesterday,
+    ).all()
+
+    if not meals:
+        return None
+
+    copied = 0
+    for meal in meals:
+        if copy_meal_service(user_id, meal.id):
+            copied += 1
+    return copied

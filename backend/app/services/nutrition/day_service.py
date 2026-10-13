@@ -84,6 +84,14 @@ def meal_load_options():
     )
 
 
+def load_meal_for_display(meal_id):
+    """The meal with its entries, products and names in three queries.
+
+    Freshly committed objects would lazy-load each product (N+1).
+    """
+    return Meal.query.options(meal_load_options()).filter_by(id=meal_id).one()
+
+
 def get_daily_nutrition_data(user_id, locale="uk"):
     locale = normalize_locale(locale)
     user = db.session.get(User, user_id)

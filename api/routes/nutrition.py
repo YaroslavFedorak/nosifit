@@ -1,17 +1,16 @@
-from datetime import date, timedelta
+from datetime import date
 
 from flask import Blueprint, jsonify, request
 from flask_login import current_user, login_required
 
 from api.responses import too_many_requests
-from backend.app.models import Meal
 from backend.app.services.nutrition.barcode_service import (
     BarcodeLookupError,
     import_barcode_product,
     lookup_barcode,
 )
 from backend.app.services.nutrition.calculation_service import NutritionValidationError
-from backend.app.services.nutrition.day_service import meal_load_options, get_daily_nutrition_data
+from backend.app.services.nutrition.day_service import get_daily_nutrition_data, load_meal_for_display
 from backend.app.services.nutrition.dish_service import (
     DishServiceError,
     create_dish,
@@ -24,7 +23,12 @@ from backend.app.services.nutrition.dish_service import (
 )
 from backend.app.services.nutrition.meal_categories import normalize_meal_category
 from backend.app.services.nutrition.item_service import add_item_service, add_items_service, delete_item_service, update_item_service
-from backend.app.services.nutrition.meal_service import add_meal_service, copy_meal_service, delete_meal_service, update_meal_service
+from backend.app.services.nutrition.meal_service import (
+    add_meal_service,
+    copy_yesterday_service,
+    delete_meal_service,
+    update_meal_service,
+)
 from backend.app.services.nutrition.product_service import (
     ProductServiceError,
     archive_user_product,
@@ -629,36 +633,19 @@ def api_log_food():
         else:
             payload["day"] = get_day_details(current_user.id, logged.date, locale)
     else:
-        # Reloaded with entries, products and names in three queries; the
-        # committed objects would lazy-load each product (N+1).
-        meal = (
-            Meal.query.options(meal_load_options())
-            .filter_by(id=logged.meal_id)
-            .one()
-        )
-        payload["meal"] = serialize_meal(meal, locale)
+        payload["meal"] = serialize_meal(load_meal_for_display(logged.meal_id), locale)
     return jsonify(payload), 201
 
 
 @nutrition_api.post("/copy-yesterday")
 @login_required
 def api_copy_yesterday():
-    yesterday = date.today() - timedelta(days=1)
-    meals = Meal.query.filter_by(
-        user_id=current_user.id,
-        date=yesterday,
-    ).all()
+    copied = copy_yesterday_service(current_user.id)
 
-    if not meals:
+    if copied is None:
         return _error("No meals found yesterday", "nothing_to_copy")
 
-    copied = []
-    for meal in meals:
-        new_meal = copy_meal_service(current_user.id, meal.id)
-        if new_meal:
-            copied.append(new_meal.id)
-
-    return jsonify({"status": "ok", "copied": len(copied)})
+    return jsonify({"status": "ok", "copied": copied})
 
 
 @nutrition_api.post("/weight")
