@@ -983,7 +983,10 @@ def finish_session(session_id):
 @login_required
 def day_details(date):
     try:
-        target = dt.datetime.strptime(date, "%Y-%m-%d").date()
+        try:
+            target = dt.datetime.strptime(date, "%Y-%m-%d").date()
+        except ValueError:
+            raise ValidationError("date must be YYYY-MM-DD") from None
 
         local_start = dt.datetime.combine(target, dt.time.min, tzinfo=APP_TIMEZONE)
 
