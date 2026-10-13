@@ -13,6 +13,7 @@ about deployment, URLs or behaviour changes.
 | `core` | Models, business logic, data access, migrations, config | `backend/` |
 | `api` | HTTP endpoints: validate the request, call `core`, shape the response | `api/routes/` (every route under `/api/`), registered by `api.register_api` |
 | `web` | Pages, templates, static files, sign-in and OAuth flows | `web/app/` |
+| `auth` | Session rules both `web` and `api` apply to the shared Flask-Login session: Telegram sessions and their scope, recent sign-in, the pending Telegram link | `auth/` |
 | `bot` | Telegram interface; talks to the backend only through the HTTP API | `telegram_bot/` |
 | `shared` | Pure helpers several components need: bot request signing, barcode normalisation, the translation files and their loader | `shared/` |
 | `worker` | Background jobs, once there is a practical need | not yet |
@@ -25,7 +26,9 @@ inside the same Flask app today.
 An arrow means "may import".
 
 ```text
-web ──► core ◄── api
+web ──► auth ◄── api
+ │        │       │
+ ├──────► core ◄──┤
  │        │       │
  └──► shared ◄────┘
          ▲
@@ -34,23 +37,21 @@ bot ─────┘        (bot reaches core only over HTTP)
 
 - `shared` uses the standard library only. Importing it never loads Flask,
   SQLAlchemy or the models.
-- `bot` imports neither `backend`, `web`, Flask nor SQLAlchemy, directly or
-  through a package `__init__`.
+- `bot` imports neither `backend`, `web`, `api`, `auth`, Flask nor
+  SQLAlchemy, directly or through a package `__init__`.
 - `core` does not import `web` (or `api`). It knows nothing about requests,
   templates or sessions.
-- `api` and `web` do not import each other's route modules. Logic both need
-  belongs in `core`. Modules in `api/routes/` do not import `web` at all.
+- `api` does not import `web`. Logic both need belongs in `core`, or in
+  `auth` when it is about the sign-in session.
+- `auth` imports neither `web` nor `api`.
 - `api` does no database work itself: no `db`, no models, no SQLAlchemy.
   Queries and writes are `core` services the routes call.
 
 `web/tests/unit/test_architecture.py` checks these rules on every test run,
 and also that every route under `/api/` is registered by `api.register_api`
-while pages and form posts are registered by `web`.
-Known violations are listed in that file and are removed as they are fixed:
-
-| Violation | Plan |
-|---|---|
-| `api` → `web.app.routes.auth.telegram_session` in `api/routes/telegram.py` (starting a Telegram session writes the shared Flask-Login session, which the pages use too) | Move the session helpers to a shared auth module when the API becomes its own service |
+while pages and form posts are registered by `web`. No known violations
+are left: the last one (`api` starting a Telegram session through a `web`
+module) ended when the session helpers moved to `auth`.
 
 ## Database
 

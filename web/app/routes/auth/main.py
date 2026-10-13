@@ -13,7 +13,7 @@ from backend.app.utils.validation import (
     parse_profile_number,
     password_problem,
 )
-from web.app.routes.auth.telegram_session import (
+from auth.telegram_session import (
     PENDING_LINK_KEY,
     carry_pending_link_over,
     get_pending_link,

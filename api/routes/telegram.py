@@ -31,7 +31,7 @@ from backend.app.services.verification_codes import (
     spend_code,
 )
 from backend.app.utils.rate_limit import hit_limit, reset_limit
-from web.app.routes.auth.telegram_session import start_telegram_session
+from auth.telegram_session import start_telegram_session
 
 logger = logging.getLogger(__name__)
 

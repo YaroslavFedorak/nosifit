@@ -1,8 +1,8 @@
 """Module boundaries (docs/architecture.md), checked on every test run.
 
 Imports are read from the source, so a forbidden dependency fails here even
-when it sits inside a function. Known violations are listed explicitly:
-a new one fails, and fixing a listed one fails until it leaves the list.
+when it sits inside a function. No known violations are left; a new one
+fails.
 """
 
 import ast
@@ -14,15 +14,6 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[3]
 
 FRAMEWORK = {"flask", "flask_login", "flask_sqlalchemy", "flask_migrate", "flask_mail", "sqlalchemy", "alembic"}
-
-# api -> web imports still tolerated, with the reason.
-KNOWN_API_TO_WEB = {
-    # Starting a Telegram session writes the shared Flask-Login session; the
-    # pages use the same session helpers. Moves with them to a shared auth
-    # module when the API becomes its own service.
-    ("api/routes/telegram.py", "web.app.routes.auth.telegram_session"),
-}
-
 
 
 def imports_of(package):
@@ -53,7 +44,7 @@ def test_shared_uses_only_the_standard_library():
 
 
 def test_bot_reaches_the_backend_only_through_the_http_api():
-    forbidden = {"backend", "web"} | FRAMEWORK
+    forbidden = {"backend", "web", "api", "auth"} | FRAMEWORK
     offending = {(path, module) for path, module in imports_of("telegram_bot") if top(module) in forbidden}
     assert offending == set()
 
@@ -64,7 +55,7 @@ def test_importing_the_bot_loads_no_backend_or_framework():
         "import importlib, pkgutil, sys, telegram_bot\n"
         "for m in pkgutil.walk_packages(telegram_bot.__path__, 'telegram_bot.'):\n"
         "    importlib.import_module(m.name)\n"
-        f"heavy = {sorted(FRAMEWORK | {'backend', 'web'})!r}\n"
+        f"heavy = {sorted(FRAMEWORK | {'backend', 'web', 'api', 'auth'})!r}\n"
         "print(sorted({n.split('.')[0] for n in sys.modules} & set(heavy)))\n"
     )
     env = {**os.environ, "PYTHONPATH": str(ROOT)}
@@ -100,9 +91,15 @@ def test_api_route_modules_live_in_the_api_package():
     assert in_web == set()
 
 
-def test_api_route_modules_do_not_import_the_web_layer():
-    to_web = {(path, module) for path, module in imports_of("api/routes") if top(module) == "web"}
-    assert to_web == KNOWN_API_TO_WEB
+def test_api_does_not_import_the_web_layer():
+    to_web = {(path, module) for path, module in imports_of("api") if top(module) == "web"}
+    assert to_web == set()
+
+
+def test_auth_imports_neither_web_nor_api():
+    """The session rules sit below both layers that use them."""
+    upward = {(path, module) for path, module in imports_of("auth") if top(module) in {"web", "api"}}
+    assert upward == set()
 
 
 def test_api_leaves_database_access_to_core_services():
