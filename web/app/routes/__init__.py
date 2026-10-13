@@ -20,7 +20,6 @@ from .nutrition.pages import nutrition_pages_bp
 from .recovery.pages import recovery_pages_bp
 
 from .assessment.pages import assessment_pages_bp
-from .assessment.assessment import assessment_bp
 
 from .equipment.pages import equipment_pages_bp
 
@@ -30,7 +29,6 @@ from .training_plan.plan import plan_bp
 from .premium.premium import premium_bp
 
 from .profile.pages import profile_pages_bp
-from .profile.profile_view import profile_view_bp
 from .profile.profile_update import profile_update_bp
 from .profile.password_change import password_change_bp
 from .profile.email_change import email_change_bp
@@ -65,13 +63,11 @@ PAGE_BLUEPRINTS = (
     nutrition_pages_bp,
     recovery_pages_bp,
     assessment_pages_bp,
-    assessment_bp,
     equipment_pages_bp,
     training_plan_pages_bp,
     plan_bp,
     premium_bp,
     profile_pages_bp,
-    profile_view_bp,
     profile_update_bp,
     password_change_bp,
     email_change_bp,
