@@ -14,7 +14,7 @@ about deployment, URLs or behaviour changes.
 | `api` | HTTP endpoints: validate the request, call `core`, shape the response | `api/` registers every blueprint under `/api/`; route modules move from `web/app/routes/` into `api/routes/` one at a time (done: injuries, equipment, onboarding, translations) |
 | `web` | Pages, templates, static files, sign-in and OAuth flows | `web/app/` |
 | `bot` | Telegram interface; talks to the backend only through the HTTP API | `telegram_bot/` |
-| `shared` | Pure helpers several components need (bot request signing, barcode normalisation) | `shared/` |
+| `shared` | Pure helpers several components need: bot request signing, barcode normalisation, the translation files and their loader | `shared/` |
 | `worker` | Background jobs, once there is a practical need | not yet |
 
 These are responsibilities, not processes. All of them except `bot` run
@@ -44,11 +44,7 @@ bot ─────┘        (bot reaches core only over HTTP)
 `web/tests/unit/test_architecture.py` checks these rules on every test run,
 and also that every route under `/api/` is registered by `api.register_api`
 while pages and form posts are registered by `web`.
-Known violations are listed in that file and are removed as they are fixed:
-
-| Violation | Plan |
-|---|---|
-| `api` → `web.app.i18n.locale` in `api/routes/i18n.py` (translation loading; the page templates use the same loader and files in `web/app/translations/`) | Move the loader and the translation files out of `web` (e.g. into `shared`); `web.app.i18n` re-exports it |
+There are no known violations; the test lists any it has to tolerate.
 
 ## Database
 

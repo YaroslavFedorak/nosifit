@@ -2,7 +2,7 @@ import re
 
 from flask import Blueprint, abort, jsonify
 
-from web.app.i18n.locale import (
+from shared.i18n import (
     DEFAULT_LOCALE,
     SUPPORTED_LOCALES,
     load_translation,

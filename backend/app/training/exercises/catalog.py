@@ -331,7 +331,7 @@ def validate_exercise(
     elif CYRILLIC_RE.search(name):
         errors.append(
             f"{prefix}: name must be the canonical English name; "
-            "localized names belong in web/app/translations/*/exercises.json"
+            "localized names belong in shared/translations/*/exercises.json"
         )
 
     if "difficulty" in item:
