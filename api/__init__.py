@@ -8,17 +8,17 @@ module at a time; see docs/architecture.md.
 
 def api_blueprints():
     # Imported on call, after the app and its extensions exist.
+    from api.routes.dashboard import dashboard_api_bp
+    from api.routes.dashboard_training import training_dashboard_api_bp
     from api.routes.equipment import equipment_api
     from api.routes.i18n import i18n_bp
     from api.routes.injuries import injury_api
     from api.routes.onboarding import onboarding_api
     from web.app.routes import (
-        dashboard_api_bp,
         nutrition_api,
         recovery_bp,
         telegram_api_bp,
         training_api_bp,
-        training_dashboard_api_bp,
     )
 
     return (

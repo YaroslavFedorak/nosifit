@@ -12,7 +12,6 @@ from .auth.telegram_api import telegram_api_bp
 from .auth.telegram_link import telegram_link_bp
 
 from .dashboard.page import dashboard_bp
-from .dashboard.api import dashboard_api_bp
 
 from .training.pages import training_pages_bp
 from .training.pages_explanation import training_explanation_bp
@@ -50,7 +49,6 @@ from .questionnaire.questionnaire import questionnaire_bp
 
 from .tracker.pages import tracker_pages_bp
 
-from .dashboard import training_dashboard_api_bp
 
 
 # Registration order matters only for rules registered twice ("/" and
