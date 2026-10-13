@@ -8,14 +8,14 @@ class ProductFavorite(db.Model):
 
     user_id = db.Column(
         db.Integer,
-        db.ForeignKey("users.id"),
+        db.ForeignKey("users.id", ondelete="CASCADE"),
         nullable=False,
         index=True,
     )
 
     product_id = db.Column(
         db.Integer,
-        db.ForeignKey("nutrition_products.id"),
+        db.ForeignKey("nutrition_products.id", ondelete="CASCADE"),
         nullable=False,
         index=True,
     )
@@ -41,5 +41,12 @@ class ProductFavorite(db.Model):
             "user_id",
             "product_id",
             name="uq_nutrition_product_favorite",
+        ),
+        # Favorites list, newest first.
+        db.Index(
+            "ix_nutrition_product_favorites_user_created_product",
+            "user_id",
+            "created_at",
+            "product_id",
         ),
     )

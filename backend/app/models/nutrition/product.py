@@ -168,6 +168,13 @@ class Product(db.Model):
                 "owner_user_id IS NOT NULL AND is_active"
             ),
         ),
+        # Substring and typo-tolerant search by brand.
+        db.Index(
+            "ix_nutrition_products_brand_trgm",
+            "brand",
+            postgresql_using="gin",
+            postgresql_ops={"brand": "gin_trgm_ops"},
+        ),
     )
 
     def __repr__(self):
