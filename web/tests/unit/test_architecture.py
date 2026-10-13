@@ -15,6 +15,20 @@ ROOT = Path(__file__).resolve().parents[3]
 
 FRAMEWORK = {"flask", "flask_login", "flask_sqlalchemy", "flask_migrate", "flask_mail", "sqlalchemy", "alembic"}
 
+# API blueprints whose route modules still live in web/app/routes; each
+# leaves this list when its module moves into api/routes.
+API_STILL_IN_WEB = {
+    "dashboard_api",
+    "equipment_api",
+    "i18n",
+    "nutrition_api",
+    "onboarding_api",
+    "recovery",
+    "telegram_api",
+    "training_api",
+    "training_dashboard_api",
+}
+
 # core -> web, to be removed when rate limiting moves into core.
 KNOWN_CORE_TO_WEB = {
     ("backend/app/services/nutrition/barcode_service.py", "web.app.security"),
@@ -88,3 +102,15 @@ def test_everything_under_api_is_registered_by_the_api_package(app):
         if rule.rule.startswith("/api/") != (blueprint in api_names):
             misplaced.append((rule.rule, rule.endpoint))
     assert misplaced == []
+
+
+def test_api_route_modules_live_in_the_api_package():
+    from api import api_blueprints
+
+    in_web = {bp.name for bp in api_blueprints() if not bp.import_name.startswith("api.routes.")}
+    assert in_web == API_STILL_IN_WEB
+
+
+def test_api_route_modules_do_not_import_the_web_layer():
+    to_web = {(path, module) for path, module in imports_of("api/routes") if top(module) == "web"}
+    assert to_web == set()
