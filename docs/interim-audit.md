@@ -25,6 +25,10 @@ signing in through the bot writes the same Flask-Login session the pages
 use. It has to move to a shared auth module before the API can run as its
 own service.
 
+*Update:* fixed right after this audit. The helpers now live in the `auth`
+package, which both `web` and `api` import, and no known violation is
+left.
+
 ## What still does database work outside `core`
 
 The sign-in, registration, OAuth and profile forms in `web/app/routes/`

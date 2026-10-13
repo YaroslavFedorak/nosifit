@@ -11,7 +11,7 @@ from backend.app.utils.validation import (
     parse_profile_number,
 )
 from web.app.routes.auth.main import start_user_session
-from web.app.routes.auth.telegram_session import pending_link_redirect
+from auth.telegram_session import pending_link_redirect
 
 complete_profile_bp = Blueprint(
     "complete_profile",

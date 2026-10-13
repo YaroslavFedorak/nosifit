@@ -100,7 +100,7 @@ def create_app(config=None):
         return user
 
     # Telegram sessions: limited to the bot's API, revoked with the identity.
-    from web.app.routes.auth.telegram_session import enforce_telegram_session
+    from auth.telegram_session import enforce_telegram_session
 
     app.before_request(enforce_telegram_session)
 

@@ -4,7 +4,7 @@ import logging
 import secrets
 from urllib.parse import urlencode
 from web.app.routes.auth.main import start_user_session
-from web.app.routes.auth.telegram_session import pending_link_redirect
+from auth.telegram_session import pending_link_redirect
 from backend.app.models.user import User
 from backend.app.models.oauth_account import OAuthAccount
 from backend.app.models.user_profile import UserProfile

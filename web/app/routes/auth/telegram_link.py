@@ -33,7 +33,7 @@ from flask_login import current_user, login_required
 from backend.app.extensions import db
 from backend.app.services import telegram_auth as tg
 from backend.app.services.telegram_auth import LINK_SIGN_IN_METHODS
-from web.app.routes.auth.telegram_session import (
+from auth.telegram_session import (
     clear_pending_link,
     get_pending_link,
     is_recently_authenticated,
