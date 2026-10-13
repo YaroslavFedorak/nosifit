@@ -127,6 +127,16 @@ needs its own decision rather than a fix hidden in a refactoring.
    production first, then cache what is slow. Candidates: the translation
    files, the dashboard (several requests per page) and the training
    model.
+
+   *Measured right after this audit* (Railway, 7 days, about 8,000
+   requests): p50 5–35 ms and p95 30–150 ms overall. One endpoint stood
+   out: `/api/dashboard/heatmap` took 0.7–3.6 s, and some page loads were
+   given up before it answered. It ran about 1,100 queries per call and
+   now runs five. Translations were re-read from disk for every key and
+   are now cached per process. What is left above 500 ms waits on outside
+   services: sending email (sign-up codes, password reset, account
+   deletion) and the barcode lookup. Sending email in the background is
+   the case for the `worker` component.
 4. **Separate API service.** Only after 1–3, and only with the owner's
    decision on cost. It needs a second Railway service, cookie and CORS
    settings for the API domain, and a plan for the shared session.

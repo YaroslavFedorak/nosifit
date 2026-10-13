@@ -1,5 +1,7 @@
 from datetime import date, timedelta
 
+from sqlalchemy.orm import selectinload
+
 from backend.app.models.nutrition.meal import Meal
 from backend.app.models.recovery.daily_recovery_snapshot import (
     DailyRecoverySnapshot,
@@ -38,12 +40,7 @@ def _get_training_session(user_id, target_date):
     )
 
 
-def _get_training_data(user_id, target_date):
-    session = _get_training_session(
-        user_id,
-        target_date,
-    )
-
+def _training_data(session):
     if not session:
         return {
             "score": None,
@@ -77,8 +74,8 @@ def _get_duration(session):
     return int(round(seconds / 60))
 
 
-def _get_nutrition_data(user_id, target_date):
-    meals = (
+def _get_meals(user_id, target_date):
+    return (
         Meal.query.filter(
             Meal.user_id == user_id,
             Meal.date == target_date,
@@ -90,6 +87,8 @@ def _get_nutrition_data(user_id, target_date):
         .all()
     )
 
+
+def _nutrition_data(meals):
     total_calories = 0
     total_protein = 0
     total_fat = 0
@@ -130,12 +129,14 @@ def _get_nutrition_data(user_id, target_date):
     }
 
 
-def _get_recovery_data(user_id, target_date):
-    snapshot = DailyRecoverySnapshot.query.filter_by(
+def _get_snapshot(user_id, target_date):
+    return DailyRecoverySnapshot.query.filter_by(
         user_id=user_id,
         date=target_date,
     ).first()
 
+
+def _recovery_data(snapshot):
     if not snapshot:
         return {
             "score": None,
@@ -161,20 +162,18 @@ def _get_recovery_data(user_id, target_date):
 
 
 def _build_day(user_id, target_date):
-    training = _get_training_data(
-        user_id,
+    return _assemble_day(
         target_date,
+        _get_training_session(user_id, target_date),
+        _get_meals(user_id, target_date),
+        _get_snapshot(user_id, target_date),
     )
 
-    nutrition = _get_nutrition_data(
-        user_id,
-        target_date,
-    )
 
-    recovery = _get_recovery_data(
-        user_id,
-        target_date,
-    )
+def _assemble_day(target_date, session, meals, snapshot):
+    training = _training_data(session)
+    nutrition = _nutrition_data(meals)
+    recovery = _recovery_data(snapshot)
 
     daily_score = calculate_daily_score(
         training.get("score"),
@@ -198,18 +197,86 @@ def get_today_overview(user_id):
     )
 
 
+def _sessions_by_day(user_id, start_date, end_date):
+    """The latest finished session of each day, as _get_training_session
+    picks it, for every day of the range in one query."""
+    start_dt, _ = _day_bounds(start_date)
+    _, end_dt = _day_bounds(end_date)
+
+    sessions = (
+        TrainingSession.query.options(selectinload(TrainingSession.exercises))
+        .filter(
+            TrainingSession.user_id == user_id,
+            TrainingSession.started_at >= start_dt,
+            TrainingSession.started_at <= end_dt,
+            TrainingSession.status == "finished",
+        )
+        .order_by(TrainingSession.started_at.desc())
+        .all()
+    )
+
+    latest = {}
+    for session in sessions:
+        latest.setdefault(session.started_at.date(), session)
+    return latest
+
+
+def _meals_by_day(user_id, start_date, end_date):
+    """Each day's meals in _get_meals order, with their items loaded."""
+    meals = (
+        Meal.query.options(selectinload(Meal.items))
+        .filter(
+            Meal.user_id == user_id,
+            Meal.date >= start_date,
+            Meal.date <= end_date,
+        )
+        .order_by(
+            Meal.date.asc(),
+            Meal.time.asc().nullsfirst(),
+            Meal.id.asc(),
+        )
+        .all()
+    )
+
+    by_day = {}
+    for meal in meals:
+        by_day.setdefault(meal.date, []).append(meal)
+    return by_day
+
+
+def _snapshots_by_day(user_id, start_date, end_date):
+    snapshots = DailyRecoverySnapshot.query.filter(
+        DailyRecoverySnapshot.user_id == user_id,
+        DailyRecoverySnapshot.date >= start_date,
+        DailyRecoverySnapshot.date <= end_date,
+    )
+
+    by_day = {}
+    for snapshot in snapshots:
+        by_day.setdefault(snapshot.date, snapshot)
+    return by_day
+
+
 def get_heatmap(user_id):
     today = date.today()
     start_date = today - timedelta(days=364)
+
+    # Three queries for the whole year instead of several per day: the
+    # day-by-day version ran over a thousand queries per call.
+    sessions = _sessions_by_day(user_id, start_date, today)
+    meals = _meals_by_day(user_id, start_date, today)
+    snapshots = _snapshots_by_day(user_id, start_date, today)
 
     days = []
 
     current_date = start_date
 
     while current_date <= today:
-        data = _build_day(
-            user_id,
+        data = _assemble_day(
             current_date,
+            sessions.get(current_date),
+            meals.get(current_date, []),
+            snapshots.get(current_date),
         )
 
         has_data = (
