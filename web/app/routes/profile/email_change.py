@@ -1,11 +1,12 @@
-from flask import Blueprint, current_app, request, jsonify, session
+from flask import Blueprint, request, jsonify, session
 from flask_login import login_required, current_user
 from sqlalchemy.exc import IntegrityError
 
 from backend.app.extensions import db
 from backend.app.models.user import User
 from backend.app.utils.codes import new_code, store_session_code, verify_session_code
-from backend.app.utils.mailer import EmailSendError, send_email, send_email_code
+from backend.app.services.email_outbox import enqueue_notice
+from backend.app.utils.mailer import EmailSendError, send_email_code
 from backend.app.utils.validation import normalize_email
 from web.app.security import hit_limit, too_many_requests
 
@@ -25,17 +26,16 @@ def _payload():
 
 
 def _notify_old_address(old_email, new_email):
-    try:
-        send_email(
-            to=old_email,
-            subject="Email вашого акаунта NosiFit змінено",
-            text=(
-                f"Email вашого акаунта NosiFit змінено на {new_email}.\n\n"
-                "Якщо це були не ви, негайно зверніться до підтримки."
-            ),
-        )
-    except EmailSendError:
-        current_app.logger.warning("Could not notify the old address about an email change")
+    # In the background with retries (email_outbox): the change is done.
+    enqueue_notice(
+        "email_changed",
+        to=old_email,
+        subject="Email вашого акаунта NosiFit змінено",
+        text=(
+            f"Email вашого акаунта NosiFit змінено на {new_email}.\n\n"
+            "Якщо це були не ви, негайно зверніться до підтримки."
+        ),
+    )
 
 
 def _email_taken(email) -> bool:

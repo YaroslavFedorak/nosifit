@@ -47,8 +47,8 @@ def test_every_training_route_requires_signing_in(app, client):
         path = re.sub(r"<(?:int:)?(\w+)>", lambda m: "2026-01-01" if m.group(1) == "date" else "1", rule)
         for method in methods:
             response = getattr(client, method.lower())(path, json={})
-            assert response.status_code == 302, (method, path)
-            assert "/auth/login" in response.headers["Location"]
+            assert response.status_code == 401, (method, path)
+            assert response.get_json()["code"] == "authentication_required"
 
 
 def test_catalog_lists(signed_in, bench_press):
@@ -159,7 +159,11 @@ def test_plan_count_is_capped(signed_in):
     response = signed_in.post("/api/training/plans", json={"name": "One too many"})
 
     assert response.status_code == 400
-    assert response.get_json() == {"error": "too_many_plans"}
+    assert response.get_json() == {
+        "error": "too_many_plans",
+        "code": "too_many_plans",
+        "message": "Too many plans",
+    }
 
 
 def test_today_views_follow_the_active_plan(signed_in, bench_press):
@@ -216,7 +220,11 @@ def test_other_users_sessions_are_not_reachable(signed_in, bench_press):
         "/api/training/sessions/complete",
         json={"session_id": theirs.id, "strict": True, "exercises": [{"exercise": {"id": bench_press.id}, "sets": 1}]},
     )
-    assert strict.status_code == 404 and strict.get_json() == {"error": "session_not_found"}
+    assert strict.status_code == 404 and strict.get_json() == {
+        "error": "session_not_found",
+        "code": "session_not_found",
+        "message": "Session not found",
+    }
     # Their session is still live; nothing was attached to it.
     assert signed_in.post("/api/training/sessions/start", json={}).get_json()["id"] != theirs.id
 

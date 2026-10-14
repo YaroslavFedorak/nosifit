@@ -1,0 +1,5916 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "NosiFit API",
+    "version": "1",
+    "description": "JSON API of NosiFit (nutrition, training, recovery, the Telegram bot). Paths are relative to /api/v1. The same operations answer under the unversioned /api prefix for existing clients. Errors always have the Error shape. See docs/api.md for versioning, errors and authentication."
+  },
+  "servers": [
+    {
+      "url": "/api/v1"
+    }
+  ],
+  "tags": [
+    {
+      "name": "dashboard"
+    },
+    {
+      "name": "equipment"
+    },
+    {
+      "name": "injuries"
+    },
+    {
+      "name": "nutrition"
+    },
+    {
+      "name": "onboarding"
+    },
+    {
+      "name": "recovery"
+    },
+    {
+      "name": "telegram"
+    },
+    {
+      "name": "training"
+    },
+    {
+      "name": "translations"
+    }
+  ],
+  "paths": {
+    "/dashboard/day/{date_iso}": {
+      "get": {
+        "operationId": "dashboard_api.day",
+        "tags": [
+          "dashboard"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "parameters": [
+          {
+            "name": "date_iso",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success. The body is not described yet.",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/dashboard/heatmap": {
+      "get": {
+        "operationId": "dashboard_api.heatmap",
+        "tags": [
+          "dashboard"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "summary": "The last 365 days that have any data, with a 0-6 level each.",
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "days": {
+                      "type": "array",
+                      "items": {
+                        "allOf": [
+                          {
+                            "$ref": "#/components/schemas/DashboardDay"
+                          },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "level": {
+                                "type": "integer"
+                              }
+                            },
+                            "required": [
+                              "level"
+                            ]
+                          }
+                        ]
+                      }
+                    },
+                    "start_date": {
+                      "type": "string",
+                      "format": "date"
+                    },
+                    "end_date": {
+                      "type": "string",
+                      "format": "date"
+                    }
+                  },
+                  "required": [
+                    "days",
+                    "end_date",
+                    "start_date"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/dashboard/recommendation": {
+      "get": {
+        "operationId": "dashboard_api.recommendation",
+        "tags": [
+          "dashboard"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "responses": {
+          "200": {
+            "description": "Success. The body is not described yet.",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/dashboard/today": {
+      "get": {
+        "operationId": "dashboard_api.today",
+        "tags": [
+          "dashboard"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "summary": "Today's scores for training, nutrition and recovery.",
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DashboardDay"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/dashboard/training": {
+      "get": {
+        "operationId": "training_dashboard_api.today",
+        "tags": [
+          "dashboard"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "responses": {
+          "200": {
+            "description": "Success. The body is not described yet.",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/dashboard/training/exercises": {
+      "get": {
+        "operationId": "training_dashboard_api.exercises",
+        "tags": [
+          "dashboard"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "parameters": [
+          {
+            "name": "difficulty",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "movement_pattern",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success. The body is not described yet.",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/dashboard/training/session": {
+      "post": {
+        "operationId": "training_dashboard_api.start_session",
+        "tags": [
+          "dashboard"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "description": "Not described yet."
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success. The body is not described yet.",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/dashboard/training/session/{session_id}": {
+      "get": {
+        "operationId": "training_dashboard_api.session",
+        "tags": [
+          "dashboard"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 2147483647
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success. The body is not described yet.",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/dashboard/training/session/{session_id}/exercise": {
+      "post": {
+        "operationId": "training_dashboard_api.add_exercise",
+        "tags": [
+          "dashboard"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 2147483647
+            }
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "description": "Not described yet."
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success. The body is not described yet.",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/dashboard/training/session/{session_id}/exercise/{exercise_id}": {
+      "patch": {
+        "operationId": "training_dashboard_api.update_exercise",
+        "tags": [
+          "dashboard"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 2147483647
+            }
+          },
+          {
+            "name": "exercise_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "description": "Not described yet."
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success. The body is not described yet.",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/dashboard/training/session/{session_id}/finish": {
+      "post": {
+        "operationId": "training_dashboard_api.finish_session",
+        "tags": [
+          "dashboard"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 2147483647
+            }
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "description": "Not described yet."
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success. The body is not described yet.",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/i18n/{locale}/{namespace}": {
+      "get": {
+        "operationId": "i18n.get_translation",
+        "tags": [
+          "translations"
+        ],
+        "security": [],
+        "x-auth": "public",
+        "summary": "Translations of one namespace; keys missing in the locale fall back to Ukrainian.",
+        "parameters": [
+          {
+            "name": "locale",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "namespace",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Nested object of translated strings."
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/injuries/": {
+      "get": {
+        "operationId": "injury_api.list_injuries",
+        "tags": [
+          "injuries"
+        ],
+        "security": [],
+        "x-auth": "public",
+        "summary": "The injury catalog.",
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Injury"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/injuries/user": {
+      "post": {
+        "operationId": "injury_api.set_user_injuries",
+        "tags": [
+          "injuries"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "summary": "Replace the user's injuries.",
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "injuries": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    }
+                  }
+                },
+                "required": [
+                  "injuries"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Status"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/nutrition/copy-yesterday": {
+      "post": {
+        "operationId": "nutrition_api.api_copy_yesterday",
+        "tags": [
+          "nutrition"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "description": "Not described yet."
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success. The body is not described yet.",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/nutrition/day": {
+      "get": {
+        "operationId": "nutrition_api.api_day",
+        "tags": [
+          "nutrition"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "summary": "Today's meals, totals and goals.",
+        "parameters": [
+          {
+            "name": "locale",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NutritionDay"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/nutrition/day/{date_string}": {
+      "get": {
+        "operationId": "nutrition_api.api_day_details",
+        "tags": [
+          "nutrition"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "parameters": [
+          {
+            "name": "date_string",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "locale",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success. The body is not described yet.",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/nutrition/dishes": {
+      "get": {
+        "operationId": "nutrition_api.api_dishes",
+        "tags": [
+          "nutrition"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "locale",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success. The body is not described yet.",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      },
+      "post": {
+        "operationId": "nutrition_api.api_create_dish",
+        "tags": [
+          "nutrition"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "description": "Not described yet."
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success. The body is not described yet.",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/nutrition/dishes/{dish_id}": {
+      "delete": {
+        "operationId": "nutrition_api.api_delete_dish",
+        "tags": [
+          "nutrition"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "parameters": [
+          {
+            "name": "dish_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 2147483647
+            }
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "description": "Not described yet."
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success. The body is not described yet.",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      },
+      "get": {
+        "operationId": "nutrition_api.api_dish",
+        "tags": [
+          "nutrition"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "parameters": [
+          {
+            "name": "dish_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 2147483647
+            }
+          },
+          {
+            "name": "locale",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success. The body is not described yet.",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      },
+      "patch": {
+        "operationId": "nutrition_api.api_update_dish",
+        "tags": [
+          "nutrition"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "parameters": [
+          {
+            "name": "dish_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 2147483647
+            }
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "description": "Not described yet."
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success. The body is not described yet.",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/nutrition/entries": {
+      "post": {
+        "operationId": "nutrition_api.api_add_entry",
+        "tags": [
+          "nutrition"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "description": "Not described yet."
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success. The body is not described yet.",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/nutrition/entries/{item_id}": {
+      "delete": {
+        "operationId": "nutrition_api.api_delete_entry",
+        "tags": [
+          "nutrition"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "parameters": [
+          {
+            "name": "item_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 2147483647
+            }
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "description": "Not described yet."
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success. The body is not described yet.",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      },
+      "patch": {
+        "operationId": "nutrition_api.api_update_entry",
+        "tags": [
+          "nutrition"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "parameters": [
+          {
+            "name": "item_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 2147483647
+            }
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "description": "Not described yet."
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success. The body is not described yet.",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/nutrition/entries/bulk": {
+      "post": {
+        "operationId": "nutrition_api.api_add_entries_bulk",
+        "tags": [
+          "nutrition"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "description": "Not described yet."
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success. The body is not described yet.",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/nutrition/heatmap": {
+      "get": {
+        "operationId": "nutrition_api.api_heatmap",
+        "tags": [
+          "nutrition"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "parameters": [
+          {
+            "name": "year",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success. The body is not described yet.",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/nutrition/items": {
+      "post": {
+        "operationId": "nutrition_api.api_add_item",
+        "tags": [
+          "nutrition"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "summary": "Add an entry to a meal (a catalog product or free-form values).",
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "meal_id": {
+                    "type": "integer"
+                  },
+                  "product_id": {
+                    "type": "integer"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "amount": {
+                    "type": "number"
+                  },
+                  "unit": {
+                    "type": "string"
+                  },
+                  "calories": {
+                    "type": "number"
+                  },
+                  "protein": {
+                    "type": "number"
+                  },
+                  "fat": {
+                    "type": "number"
+                  },
+                  "carbs": {
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "meal_id"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer"
+                    },
+                    "status": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "status"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/nutrition/items/{item_id}": {
+      "delete": {
+        "operationId": "nutrition_api.api_delete_item",
+        "tags": [
+          "nutrition"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "parameters": [
+          {
+            "name": "item_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 2147483647
+            }
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "description": "Not described yet."
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success. The body is not described yet.",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      },
+      "put": {
+        "operationId": "nutrition_api.api_edit_item",
+        "tags": [
+          "nutrition"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "parameters": [
+          {
+            "name": "item_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 2147483647
+            }
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "description": "Not described yet."
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success. The body is not described yet.",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/nutrition/log": {
+      "post": {
+        "operationId": "nutrition_api.api_log_food",
+        "tags": [
+          "nutrition"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "summary": "Log products or a dish into a meal in one request.",
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "description": "Not described yet."
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success. The body is not described yet.",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/nutrition/meals": {
+      "post": {
+        "operationId": "nutrition_api.api_add_meal",
+        "tags": [
+          "nutrition"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "summary": "Create a meal.",
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "category": {
+                    "type": "string",
+                    "description": "breakfast, lunch, dinner or snack (aliases accepted)"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "date": {
+                    "type": "string",
+                    "format": "date"
+                  },
+                  "time": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Meal"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/nutrition/meals/{meal_id}": {
+      "delete": {
+        "operationId": "nutrition_api.api_delete_meal",
+        "tags": [
+          "nutrition"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "summary": "Delete a meal and its entries.",
+        "parameters": [
+          {
+            "name": "meal_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 2147483647
+            }
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "description": "Not described yet."
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Status"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      },
+      "put": {
+        "operationId": "nutrition_api.api_edit_meal",
+        "tags": [
+          "nutrition"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "summary": "Change a meal's category.",
+        "parameters": [
+          {
+            "name": "meal_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 2147483647
+            }
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "category": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "category"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Meal"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/nutrition/products": {
+      "get": {
+        "operationId": "nutrition_api.api_products",
+        "tags": [
+          "nutrition"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "summary": "Search the product catalog.",
+        "parameters": [
+          {
+            "name": "category",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "locale",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductList"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      },
+      "post": {
+        "operationId": "nutrition_api.api_create_product",
+        "tags": [
+          "nutrition"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "description": "Not described yet."
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success. The body is not described yet.",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/nutrition/products/{product_id}": {
+      "delete": {
+        "operationId": "nutrition_api.api_delete_product",
+        "tags": [
+          "nutrition"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "parameters": [
+          {
+            "name": "product_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 2147483647
+            }
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "description": "Not described yet."
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success. The body is not described yet.",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      },
+      "get": {
+        "operationId": "nutrition_api.api_product",
+        "tags": [
+          "nutrition"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "parameters": [
+          {
+            "name": "product_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 2147483647
+            }
+          },
+          {
+            "name": "locale",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success. The body is not described yet.",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      },
+      "patch": {
+        "operationId": "nutrition_api.api_update_product",
+        "tags": [
+          "nutrition"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "parameters": [
+          {
+            "name": "product_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 2147483647
+            }
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "description": "Not described yet."
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success. The body is not described yet.",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/nutrition/products/{product_id}/favorite": {
+      "post": {
+        "operationId": "nutrition_api.api_favorite_product",
+        "tags": [
+          "nutrition"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "parameters": [
+          {
+            "name": "product_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 2147483647
+            }
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "description": "Not described yet."
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success. The body is not described yet.",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/nutrition/products/barcode/{code}": {
+      "get": {
+        "operationId": "nutrition_api.api_barcode_lookup",
+        "tags": [
+          "nutrition"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "summary": "Product for a scanned barcode: from the catalog, or a preview from",
+        "parameters": [
+          {
+            "name": "code",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "locale",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success. The body is not described yet.",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error429"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/nutrition/products/barcode/{code}/import": {
+      "post": {
+        "operationId": "nutrition_api.api_barcode_import",
+        "tags": [
+          "nutrition"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "summary": "Adds the scanned product to the shared catalog. Only the barcode is",
+        "parameters": [
+          {
+            "name": "code",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "description": "Not described yet."
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success. The body is not described yet.",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error429"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/nutrition/products/favorites": {
+      "get": {
+        "operationId": "nutrition_api.api_favorite_products",
+        "tags": [
+          "nutrition"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "parameters": [
+          {
+            "name": "locale",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success. The body is not described yet.",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/nutrition/products/mine": {
+      "get": {
+        "operationId": "nutrition_api.api_my_products",
+        "tags": [
+          "nutrition"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "parameters": [
+          {
+            "name": "locale",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success. The body is not described yet.",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/nutrition/products/recent": {
+      "get": {
+        "operationId": "nutrition_api.api_recent_products",
+        "tags": [
+          "nutrition"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "parameters": [
+          {
+            "name": "locale",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success. The body is not described yet.",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/nutrition/recommendations": {
+      "get": {
+        "operationId": "nutrition_api.api_recommendations",
+        "tags": [
+          "nutrition"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "responses": {
+          "200": {
+            "description": "Success. The body is not described yet.",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/nutrition/stats": {
+      "get": {
+        "operationId": "nutrition_api.api_stats",
+        "tags": [
+          "nutrition"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "parameters": [
+          {
+            "name": "days",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success. The body is not described yet.",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/nutrition/today": {
+      "get": {
+        "operationId": "nutrition_api.api_today",
+        "tags": [
+          "nutrition"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "summary": "Same as /nutrition/day.",
+        "parameters": [
+          {
+            "name": "locale",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NutritionDay"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/nutrition/water": {
+      "get": {
+        "operationId": "nutrition_api.api_get_water",
+        "tags": [
+          "nutrition"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "summary": "Water drunk today.",
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Water"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      },
+      "post": {
+        "operationId": "nutrition_api.api_add_water",
+        "tags": [
+          "nutrition"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "summary": "Add water (liters).",
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "amount": {
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "amount"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Water"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/nutrition/weight": {
+      "get": {
+        "operationId": "nutrition_api.api_get_weight",
+        "tags": [
+          "nutrition"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "summary": "Latest body weight and BMI.",
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Weight"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      },
+      "post": {
+        "operationId": "nutrition_api.api_update_weight",
+        "tags": [
+          "nutrition"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "summary": "Record today's body weight (kg).",
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "weight": {
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "weight"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Weight"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/onboarding/complete": {
+      "post": {
+        "operationId": "onboarding_api.complete_onboarding",
+        "tags": [
+          "onboarding"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "description": "Not described yet."
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success. The body is not described yet.",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/onboarding/goals": {
+      "post": {
+        "operationId": "onboarding_api.save_goals",
+        "tags": [
+          "onboarding"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "description": "Not described yet."
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success. The body is not described yet.",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/onboarding/injuries": {
+      "post": {
+        "operationId": "onboarding_api.save_injuries",
+        "tags": [
+          "onboarding"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "description": "Not described yet."
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success. The body is not described yet.",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/onboarding/profile": {
+      "post": {
+        "operationId": "onboarding_api.save_profile",
+        "tags": [
+          "onboarding"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "description": "Not described yet."
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success. The body is not described yet.",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/recovery/day-details/{user_id}": {
+      "get": {
+        "operationId": "recovery.get_day_details",
+        "tags": [
+          "recovery"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "summary": "Sleep, habits and training of one day (the URL id must be the signed-in user).",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 2147483647
+            }
+          },
+          {
+            "name": "date",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success. The body is not described yet.",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/recovery/habits/{user_habit_id}": {
+      "delete": {
+        "operationId": "recovery.remove_habit",
+        "tags": [
+          "recovery"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "parameters": [
+          {
+            "name": "user_habit_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 2147483647
+            }
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "description": "Not described yet."
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success. The body is not described yet.",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/recovery/habits/add/{habit_id}": {
+      "post": {
+        "operationId": "recovery.add_habit",
+        "tags": [
+          "recovery"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "parameters": [
+          {
+            "name": "habit_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 2147483647
+            }
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "description": "Not described yet."
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success. The body is not described yet.",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/recovery/habits/list": {
+      "get": {
+        "operationId": "recovery.get_habits_list",
+        "tags": [
+          "recovery"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "summary": "The habit catalog.",
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RecoveryHabit"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/recovery/habits/logs": {
+      "post": {
+        "operationId": "recovery.log_habit",
+        "tags": [
+          "recovery"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "description": "Not described yet."
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success. The body is not described yet.",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/recovery/habits/logs/{user_habit_id}": {
+      "delete": {
+        "operationId": "recovery.unlog_habit",
+        "tags": [
+          "recovery"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "parameters": [
+          {
+            "name": "user_habit_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 2147483647
+            }
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "description": "Not described yet."
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success. The body is not described yet.",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/recovery/habits/user/{user_id}": {
+      "get": {
+        "operationId": "recovery.get_user_habits",
+        "tags": [
+          "recovery"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 2147483647
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success. The body is not described yet.",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/recovery/heatmap/{user_id}": {
+      "get": {
+        "operationId": "recovery.get_heatmap",
+        "tags": [
+          "recovery"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 2147483647
+            }
+          },
+          {
+            "name": "year",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success. The body is not described yet.",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/recovery/recommendations/{user_id}": {
+      "get": {
+        "operationId": "recovery.get_recommendations",
+        "tags": [
+          "recovery"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 2147483647
+            }
+          },
+          {
+            "name": "date",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success. The body is not described yet.",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/recovery/sleep": {
+      "post": {
+        "operationId": "recovery.add_sleep",
+        "tags": [
+          "recovery"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "description": "Not described yet."
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success. The body is not described yet.",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/recovery/snapshot/{user_id}": {
+      "get": {
+        "operationId": "recovery.get_snapshot",
+        "tags": [
+          "recovery"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "summary": "The user's recovery snapshot of a day (the URL id must be the signed-in user).",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 2147483647
+            }
+          },
+          {
+            "name": "date",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "snapshot": {
+                      "type": [
+                        "object",
+                        "null"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "snapshot"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/telegram/link-token": {
+      "post": {
+        "operationId": "telegram_api.link_token",
+        "tags": [
+          "telegram"
+        ],
+        "security": [
+          {
+            "botSignature": [],
+            "botTimestamp": [],
+            "botNonce": []
+          }
+        ],
+        "x-auth": "bot",
+        "summary": "A one-time link that connects this Telegram account to a signed-in website account.",
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "telegram_user_id": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "description": "Telegram's numeric user id."
+                  },
+                  "username": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "via": {
+                    "type": "string",
+                    "enum": [
+                      "google",
+                      "github",
+                      "password"
+                    ]
+                  }
+                },
+                "required": [
+                  "telegram_user_id"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "url": {
+                      "type": "string"
+                    },
+                    "expires_in": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "expires_in",
+                    "url"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error409"
+          },
+          "413": {
+            "$ref": "#/components/responses/Error413"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error429"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          },
+          "503": {
+            "$ref": "#/components/responses/Error503"
+          }
+        }
+      }
+    },
+    "/telegram/login": {
+      "post": {
+        "operationId": "telegram_api.telegram_login",
+        "tags": [
+          "telegram"
+        ],
+        "security": [
+          {
+            "botSignature": [],
+            "botTimestamp": [],
+            "botNonce": []
+          }
+        ],
+        "x-auth": "bot",
+        "summary": "Sign a linked Telegram user in; the answer sets the session cookie.",
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "telegram_user_id": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "description": "Telegram's numeric user id."
+                  },
+                  "username": {
+                    "type": "string"
+                  },
+                  "restore": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "telegram_user_id"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "username": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "status",
+                    "username"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          },
+          "413": {
+            "$ref": "#/components/responses/Error413"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error429"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/telegram/logout": {
+      "post": {
+        "operationId": "telegram_api.telegram_logout",
+        "tags": [
+          "telegram"
+        ],
+        "security": [
+          {
+            "botSignature": [],
+            "botTimestamp": [],
+            "botNonce": []
+          }
+        ],
+        "x-auth": "bot",
+        "summary": "Stop restoring the bot session until the next explicit login.",
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "telegram_user_id": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "description": "Telegram's numeric user id."
+                  }
+                },
+                "required": [
+                  "telegram_user_id"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Status"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "413": {
+            "$ref": "#/components/responses/Error413"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error429"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/telegram/register/start": {
+      "post": {
+        "operationId": "telegram_api.register_start",
+        "tags": [
+          "telegram"
+        ],
+        "security": [
+          {
+            "botSignature": [],
+            "botTimestamp": [],
+            "botNonce": []
+          }
+        ],
+        "x-auth": "bot",
+        "summary": "Email a registration code (or, for a registered address, a notice). Same answer either way.",
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "telegram_user_id": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "description": "Telegram's numeric user id."
+                  },
+                  "email": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "email",
+                  "telegram_user_id"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "code_sent"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "status"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error409"
+          },
+          "413": {
+            "$ref": "#/components/responses/Error413"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error429"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          },
+          "503": {
+            "$ref": "#/components/responses/Error503"
+          }
+        }
+      }
+    },
+    "/telegram/register/verify": {
+      "post": {
+        "operationId": "telegram_api.register_verify",
+        "tags": [
+          "telegram"
+        ],
+        "security": [
+          {
+            "botSignature": [],
+            "botTimestamp": [],
+            "botNonce": []
+          }
+        ],
+        "x-auth": "bot",
+        "summary": "Create the account with the emailed code and sign in.",
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "telegram_user_id": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "description": "Telegram's numeric user id."
+                  },
+                  "email": {
+                    "type": "string"
+                  },
+                  "code": {
+                    "type": "string",
+                    "pattern": "^[0-9]{6}$"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "username": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "code",
+                  "email",
+                  "telegram_user_id"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "username": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "status",
+                    "username"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error409"
+          },
+          "413": {
+            "$ref": "#/components/responses/Error413"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error429"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/training/analytics": {
+      "get": {
+        "operationId": "training_api.analytics",
+        "tags": [
+          "training"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "responses": {
+          "200": {
+            "description": "Success. The body is not described yet.",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/training/day/{date}": {
+      "get": {
+        "operationId": "training_api.day_details",
+        "tags": [
+          "training"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "parameters": [
+          {
+            "name": "date",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success. The body is not described yet.",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/training/equipment": {
+      "get": {
+        "operationId": "training_api.equipment",
+        "tags": [
+          "training"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "responses": {
+          "200": {
+            "description": "Success. The body is not described yet.",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/training/exercises": {
+      "get": {
+        "operationId": "training_api.exercises",
+        "tags": [
+          "training"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "summary": "The exercise catalog, one page at a time.",
+        "parameters": [
+          {
+            "name": "equipment",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "muscle",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      }
+                    },
+                    "page": {
+                      "type": "integer"
+                    },
+                    "per_page": {
+                      "type": "integer"
+                    },
+                    "total": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "items",
+                    "page",
+                    "per_page",
+                    "total"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/training/exercises/recent": {
+      "get": {
+        "operationId": "training_api.recent_exercises",
+        "tags": [
+          "training"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "summary": "Exercises the user did most recently (before today), newest first.",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "locale",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success. The body is not described yet.",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/training/exercises/search": {
+      "get": {
+        "operationId": "training_api.search_exercise_catalog",
+        "tags": [
+          "training"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "summary": "Exercises matching a name or slug, done-before first.",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "locale",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      }
+                    },
+                    "query": {
+                      "type": "string"
+                    },
+                    "has_more": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "has_more",
+                    "items",
+                    "query"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/training/heatmap": {
+      "get": {
+        "operationId": "training_api.heatmap",
+        "tags": [
+          "training"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "summary": "Training stress per day of a year.",
+        "parameters": [
+          {
+            "name": "year",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "days": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "date": {
+                            "type": "string",
+                            "format": "date"
+                          },
+                          "hard_sets": {
+                            "type": "number"
+                          },
+                          "session_training_stress_proxy": {
+                            "type": "number"
+                          },
+                          "intensity_percent": {
+                            "type": "number"
+                          },
+                          "is_today": {
+                            "type": "boolean"
+                          }
+                        },
+                        "required": [
+                          "date",
+                          "hard_sets",
+                          "intensity_percent",
+                          "is_today",
+                          "session_training_stress_proxy"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "days"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/training/muscles": {
+      "get": {
+        "operationId": "training_api.muscles",
+        "tags": [
+          "training"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "responses": {
+          "200": {
+            "description": "Success. The body is not described yet.",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/training/plans": {
+      "get": {
+        "operationId": "training_api.plans",
+        "tags": [
+          "training"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "summary": "The user's training plans.",
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TrainingPlan"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      },
+      "post": {
+        "operationId": "training_api.create_plan",
+        "tags": [
+          "training"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "summary": "Create a plan; an active plan deactivates the others.",
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "is_active": {
+                    "type": "boolean"
+                  },
+                  "days": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TrainingPlan"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/training/plans/{plan_id}": {
+      "delete": {
+        "operationId": "training_api.delete_plan",
+        "tags": [
+          "training"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "summary": "Delete a plan.",
+        "parameters": [
+          {
+            "name": "plan_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 2147483647
+            }
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "description": "Not described yet."
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Status"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      },
+      "put": {
+        "operationId": "training_api.update_plan",
+        "tags": [
+          "training"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "summary": "Rename, re-plan or (de)activate a plan.",
+        "parameters": [
+          {
+            "name": "plan_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 2147483647
+            }
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "is_active": {
+                    "type": "boolean"
+                  },
+                  "days": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TrainingPlan"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/training/recommendations": {
+      "get": {
+        "operationId": "training_api.recommendations",
+        "tags": [
+          "training"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "responses": {
+          "200": {
+            "description": "Success. The body is not described yet.",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/training/sessions/{session_id}/exercise/{exercise_id}": {
+      "post": {
+        "operationId": "training_api.update_session_exercise",
+        "tags": [
+          "training"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 2147483647
+            }
+          },
+          {
+            "name": "exercise_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "description": "Not described yet."
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success. The body is not described yet.",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/training/sessions/{session_id}/finish": {
+      "post": {
+        "operationId": "training_api.finish_session",
+        "tags": [
+          "training"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 2147483647
+            }
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "description": "Not described yet."
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success. The body is not described yet.",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/training/sessions/complete": {
+      "post": {
+        "operationId": "training_api.complete_session",
+        "tags": [
+          "training"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "description": "Not described yet."
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success. The body is not described yet.",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/training/sessions/start": {
+      "post": {
+        "operationId": "training_api.start_session",
+        "tags": [
+          "training"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "summary": "Start a live session, or return the one in progress.",
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "fatigue_before": {
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "id"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/training/sessions/today": {
+      "get": {
+        "operationId": "training_api.today_logged_session",
+        "tags": [
+          "training"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "summary": "The latest session started today, if any.",
+        "parameters": [
+          {
+            "name": "locale",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "session": {
+                      "type": [
+                        "object",
+                        "null"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "session"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/training/strength-test": {
+      "post": {
+        "operationId": "training_api.strength_test",
+        "tags": [
+          "training"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "summary": "Record a strength test.",
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "pushups": {
+                    "type": "integer"
+                  },
+                  "squats": {
+                    "type": "integer"
+                  },
+                  "situps": {
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "raw_performance": {
+                      "type": "object",
+                      "properties": {
+                        "pushups": {
+                          "type": "integer"
+                        },
+                        "squats": {
+                          "type": "integer"
+                        },
+                        "situps": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "pushups",
+                        "situps",
+                        "squats"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "raw_performance",
+                    "status"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/training/today": {
+      "get": {
+        "operationId": "training_api.today",
+        "tags": [
+          "training"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "responses": {
+          "200": {
+            "description": "Success. The body is not described yet.",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/training/today-session": {
+      "get": {
+        "operationId": "training_api.today_session",
+        "tags": [
+          "training"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "responses": {
+          "200": {
+            "description": "Success. The body is not described yet.",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/user/equipment/": {
+      "get": {
+        "operationId": "equipment_api.get_equipment",
+        "tags": [
+          "equipment"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "summary": "Equipment the user has.",
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/user/equipment/add": {
+      "post": {
+        "operationId": "equipment_api.add_equipment",
+        "tags": [
+          "equipment"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "description": "Not described yet."
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success. The body is not described yet.",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/user/equipment/remove": {
+      "post": {
+        "operationId": "equipment_api.remove_equipment",
+        "tags": [
+          "equipment"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "description": "Not described yet."
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success. The body is not described yet.",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Error": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*$",
+            "description": "Stable, machine-readable."
+          },
+          "message": {
+            "type": "string",
+            "description": "Human-readable; never internals."
+          },
+          "error": {
+            "description": "Kept for older clients: a code or a message, as each endpoint returned before."
+          },
+          "details": {
+            "type": "object",
+            "description": "Extra data, where an endpoint has some."
+          }
+        },
+        "required": [
+          "code",
+          "error",
+          "message"
+        ]
+      },
+      "Status": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "MealItem": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "product_id": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "dish_id": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "dish_name": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "amount": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "unit": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "weight": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "liquid_ml": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "calories": {
+            "type": "number"
+          },
+          "protein": {
+            "type": "number"
+          },
+          "fat": {
+            "type": "number"
+          },
+          "carbs": {
+            "type": "number"
+          },
+          "fiber": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "sugar": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "salt": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "saturated_fat": {
+            "type": [
+              "number",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "calories",
+          "carbs",
+          "fat",
+          "id",
+          "name",
+          "protein"
+        ]
+      },
+      "Meal": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string",
+            "enum": [
+              "breakfast",
+              "lunch",
+              "dinner",
+              "snack"
+            ]
+          },
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "time": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MealItem"
+            }
+          },
+          "total_calories": {
+            "type": "number"
+          },
+          "total_protein": {
+            "type": "number"
+          },
+          "total_fat": {
+            "type": "number"
+          },
+          "total_carbs": {
+            "type": "number"
+          },
+          "total_fiber": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "total_sugar": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "fiber_complete": {
+            "type": "boolean"
+          },
+          "sugar_complete": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "category",
+          "date",
+          "fiber_complete",
+          "id",
+          "items",
+          "name",
+          "sugar_complete",
+          "time",
+          "total_calories",
+          "total_carbs",
+          "total_fat",
+          "total_protein"
+        ]
+      },
+      "NutritionDay": {
+        "type": "object",
+        "properties": {
+          "kcal": {
+            "type": "number"
+          },
+          "kcal_goal": {
+            "type": "number"
+          },
+          "kcal_percent": {
+            "type": "number"
+          },
+          "kcal_balance": {
+            "type": "number"
+          },
+          "carb": {
+            "type": "number"
+          },
+          "fat": {
+            "type": "number"
+          },
+          "fiber": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "current_weight": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "balance_status": {
+            "type": "string"
+          },
+          "goals": {
+            "type": "object",
+            "properties": {
+              "calories": {
+                "type": "number"
+              },
+              "protein": {
+                "type": "number"
+              },
+              "fat": {
+                "type": "number"
+              },
+              "carbs": {
+                "type": "number"
+              },
+              "fiber": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "calories",
+              "carbs",
+              "fat",
+              "protein"
+            ]
+          },
+          "macros_ratio": {
+            "type": "object",
+            "properties": {
+              "protein": {
+                "type": "number"
+              },
+              "fat": {
+                "type": "number"
+              },
+              "carbs": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "carbs",
+              "fat",
+              "protein"
+            ]
+          },
+          "meals": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Meal"
+            }
+          }
+        },
+        "required": [
+          "goals",
+          "kcal",
+          "kcal_goal",
+          "macros_ratio",
+          "meals"
+        ]
+      },
+      "Water": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "number"
+          },
+          "recommended": {
+            "type": "number"
+          },
+          "status": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "amount",
+          "recommended"
+        ]
+      },
+      "Weight": {
+        "type": "object",
+        "properties": {
+          "weight": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "bmi": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "status": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "weight"
+        ]
+      },
+      "Product": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "brand": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "barcode": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "category": {
+            "type": "string"
+          },
+          "kcal_per_100g": {
+            "type": "number"
+          },
+          "protein_per_100g": {
+            "type": "number"
+          },
+          "fat_per_100g": {
+            "type": "number"
+          },
+          "carbs_per_100g": {
+            "type": "number"
+          },
+          "fiber_per_100g": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "sugar_per_100g": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "default_unit": {
+            "type": "string"
+          },
+          "grams_per_unit": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "is_favorite": {
+            "type": "boolean"
+          },
+          "is_own": {
+            "type": "boolean"
+          },
+          "verified": {
+            "type": "boolean"
+          },
+          "source": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "carbs_per_100g",
+          "category",
+          "fat_per_100g",
+          "id",
+          "is_favorite",
+          "is_own",
+          "kcal_per_100g",
+          "name",
+          "protein_per_100g"
+        ]
+      },
+      "ProductList": {
+        "type": "object",
+        "properties": {
+          "products": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Product"
+            }
+          },
+          "has_more": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "has_more",
+          "products"
+        ]
+      },
+      "DashboardDay": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "daily_score": {
+            "type": "number"
+          },
+          "training": {
+            "type": "object",
+            "properties": {
+              "score": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "completed": {
+                "type": "boolean"
+              },
+              "duration": {
+                "type": "integer"
+              },
+              "exercise_count": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "completed",
+              "duration",
+              "exercise_count",
+              "score"
+            ]
+          },
+          "nutrition": {
+            "type": "object",
+            "properties": {
+              "score": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "calories": {
+                "type": "number"
+              },
+              "protein": {
+                "type": "number"
+              },
+              "water": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "calories",
+              "protein",
+              "score",
+              "water"
+            ]
+          },
+          "recovery": {
+            "type": "object",
+            "properties": {
+              "score": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "sleep_hours": {
+                "type": "number"
+              },
+              "habits_completed": {
+                "type": "integer"
+              },
+              "habits_total": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "habits_completed",
+              "habits_total",
+              "score",
+              "sleep_hours"
+            ]
+          }
+        },
+        "required": [
+          "daily_score",
+          "date",
+          "nutrition",
+          "recovery",
+          "training"
+        ]
+      },
+      "TrainingPlan": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "user_id": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "is_active": {
+            "type": "boolean"
+          },
+          "days": {
+            "type": "object"
+          },
+          "created_at": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "updated_at": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "days",
+          "id",
+          "is_active",
+          "name",
+          "user_id"
+        ]
+      },
+      "Injury": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "name"
+        ]
+      },
+      "RecoveryHabit": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "category": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "points": {
+            "type": "integer"
+          },
+          "icon": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "recommended_when": {
+            "type": [
+              "array",
+              "null"
+            ]
+          },
+          "premium_only": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "points",
+          "premium_only",
+          "slug"
+        ]
+      }
+    },
+    "responses": {
+      "Error400": {
+        "description": "Invalid request (code names the problem, message explains it).",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "Error401": {
+        "description": "Not signed in (code: authentication_required), or a bad bot signature.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "Error403": {
+        "description": "Forbidden: cross-site request, premium only, or not open to a Telegram session.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "Error404": {
+        "description": "Not found.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "Error405": {
+        "description": "Method not allowed.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "Error409": {
+        "description": "Conflict.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "Error413": {
+        "description": "Request body too large.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "Error429": {
+        "description": "Too many requests (code: rate_limited).",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "Error500": {
+        "description": "Unexpected server error (code: internal_server_error).",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "Error503": {
+        "description": "A service the operation needs is unavailable.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "session": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "session",
+        "description": "Session cookie from signing in on the website, or from POST /telegram/login for the Telegram bot. Writes from browsers must be same-origin (Origin / Referer are checked)."
+      },
+      "botSignature": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-NosiFit-Bot-Signature",
+        "description": "HMAC-SHA256 over method, path, timestamp, nonce and body with the bot's shared secret (shared/bot_signature.py). Only the NosiFit Telegram bot has the secret."
+      },
+      "botTimestamp": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-NosiFit-Bot-Timestamp"
+      },
+      "botNonce": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-NosiFit-Bot-Nonce"
+      }
+    }
+  }
+}

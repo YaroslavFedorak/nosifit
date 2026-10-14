@@ -17,6 +17,8 @@ from flask.json.provider import DefaultJSONProvider
 from werkzeug.exceptions import HTTPException
 from werkzeug.routing import IntegerConverter
 
+from api.errors import error_response, http_error_response, is_api_request
+
 # The limiter lives in core so services use it without importing the web
 # layer; re-exported here for the routes that already import it from here.
 from backend.app.utils.rate_limit import (  # noqa: F401
@@ -251,7 +253,9 @@ def init_security(app):
 
     @app.errorhandler(HTTPException)
     def _http_error(error):
-        if request.path.startswith("/api/") or request.is_json:
+        if is_api_request():
+            return http_error_response(error)
+        if request.is_json:
             return _json_error(error)
         return error
 
@@ -262,7 +266,9 @@ def init_security(app):
         if isinstance(error, RateLimitUnavailable):
             return _rate_limit_unavailable(error)
         app.logger.exception("Unhandled error on %s %s", request.method, request.path)
-        if request.path.startswith("/api/") or request.is_json:
+        if is_api_request():
+            return error_response(500, "internal_server_error", error="internal_server_error")
+        if request.is_json:
             return jsonify({"error": "internal_server_error"}), 500
         return "Internal Server Error", 500
 

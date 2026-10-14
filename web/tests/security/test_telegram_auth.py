@@ -69,6 +69,12 @@ def mail(monkeypatch):
         sent.append({"to": to, "subject": subject, "text": text})
 
     monkeypatch.setattr("backend.app.services.telegram_auth.send_email", fake_send)
+    # Notices go through the email outbox; deliver them at once, as the
+    # worker in the web process would.
+    from backend.app.services import email_outbox
+
+    monkeypatch.setattr(email_outbox, "send_email", fake_send)
+    monkeypatch.setattr(email_outbox, "wake_worker", email_outbox.process_due)
     monkeypatch.setattr(
         "web.app.routes.profile.connected_accounts.send_email_code",
         lambda email, code: sent.append({"to": email, "code": code, "text": code}),
@@ -478,7 +484,7 @@ def test_unknown_telegram_cannot_log_in(client, user):
     response = bot_post(client, "/api/telegram/login", tg_payload(TG_MALLORY))
 
     assert response.status_code == 404 and response.json["code"] == "not_linked"
-    assert client.get("/api/nutrition/water").status_code in (302, 401)
+    assert client.get("/api/nutrition/water").status_code == 401
 
 
 def test_username_is_not_an_identity(client, victim_identity):
@@ -501,7 +507,7 @@ def test_deleted_account_cannot_log_in_and_its_bot_session_dies(client, app, mai
     delete_user_account(user)
 
     assert TelegramIdentity.query.count() == 0
-    assert client.get("/api/nutrition/water").status_code in (302, 401)
+    assert client.get("/api/nutrition/water").status_code == 401
     assert bot_post(client, "/api/telegram/login", tg_payload()).json["code"] == "not_linked"
 
 
@@ -545,7 +551,7 @@ def test_bot_logout_is_stored_and_blocks_restore_until_the_next_login(app, victi
     after_restart = app.test_client()
     refused = bot_post(after_restart, "/api/telegram/login", restore_payload())
     assert refused.status_code == 401 and refused.json["code"] == "logged_out"
-    assert after_restart.get("/api/nutrition/water").status_code in (302, 401)
+    assert after_restart.get("/api/nutrition/water").status_code == 401
 
     # An explicit "Log in" in the bot works and re-enables restoring.
     assert bot_post(app.test_client(), "/api/telegram/login", tg_payload()).status_code == 200
@@ -651,7 +657,7 @@ def test_disconnecting_telegram_revokes_bot_sessions(client, victim_identity):
     db.session.commit()
 
     assert client.get("/api/nutrition/water").status_code == 401
-    assert client.get("/api/nutrition/water").status_code in (302, 401)
+    assert client.get("/api/nutrition/water").status_code == 401
 
 
 def test_relinking_does_not_revive_old_bot_sessions(client, victim_identity):
@@ -679,7 +685,7 @@ def test_password_change_ends_bot_sessions(client, mail):
     user.set_password("a-new-password-1")
     db.session.commit()
 
-    assert client.get("/api/nutrition/water").status_code in (302, 401)
+    assert client.get("/api/nutrition/water").status_code == 401
 
 
 # --- Linking an existing account -------------------------------------------------------------

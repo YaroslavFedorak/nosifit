@@ -37,8 +37,8 @@ def test_every_nutrition_route_requires_signing_in(app, client):
         path = re.sub(r"<(?:int:)?(\w+)>", lambda m: values.get(m.group(1), "1"), rule)
         for method in methods:
             response = getattr(client, method.lower())(path, json={})
-            assert response.status_code == 302, (method, path)
-            assert "/auth/login" in response.headers["Location"]
+            assert response.status_code == 401, (method, path)
+            assert response.get_json()["code"] == "authentication_required"
 
 
 def test_a_meal_and_its_entries_can_be_edited_and_deleted(signed_in):
@@ -66,7 +66,11 @@ def test_a_meal_and_its_entries_can_be_edited_and_deleted(signed_in):
 
     missing = signed_in.delete(f"/api/nutrition/meals/{meal['id']}")
     assert missing.status_code == 404
-    assert missing.get_json() == {"error": "Meal not found"}
+    assert missing.get_json() == {
+        "error": "Meal not found",
+        "code": "meal_not_found",
+        "message": "Meal not found",
+    }
 
 
 def test_day_views_and_heatmap(signed_in):
@@ -99,7 +103,11 @@ def test_rate_limited_barcode_lookups_answer_429_json(app, signed_in, monkeypatc
         signed_in.post("/api/nutrition/products/barcode/4006381333931/import", json={}),
     ):
         assert response.status_code == 429
-        assert response.get_json() == {"error": "Too many requests. Try again later.", "code": "rate_limited"}
+        assert response.get_json() == {
+            "error": "Too many requests. Try again later.",
+            "code": "rate_limited",
+            "message": "Too many requests. Try again later.",
+        }
 
 
 def test_yesterdays_meals_are_copied_to_today(signed_in):

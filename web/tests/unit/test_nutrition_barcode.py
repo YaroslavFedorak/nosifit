@@ -796,7 +796,7 @@ def test_unknown_optional_values_stay_unknown_in_logged_entries(app, user, off):
 def test_barcode_endpoints_require_login(app, client, off):
     off.found(NUTELLA)
     for response in (lookup(client, NUTELLA), do_import(client, NUTELLA)):
-        assert response.status_code in (302, 401)
+        assert response.status_code == 401
     assert off.count() == 0
     assert Product.query.count() == 0
 

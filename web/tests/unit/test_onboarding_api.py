@@ -45,7 +45,11 @@ def test_profile_rejects_a_malformed_location(client, user):
     response = client.post("/api/onboarding/profile", json={"training_location": "gym; drop", "wants_nutrition": False})
 
     assert response.status_code == 400
-    assert response.get_json() == {"error": "invalid_input"}
+    assert response.get_json() == {
+        "error": "invalid_input",
+        "code": "invalid_input",
+        "message": "Invalid input",
+    }
     profile = profile_of(user)
     assert (profile.training_location, profile.wants_nutrition) == ("gym", True)
 
@@ -84,7 +88,11 @@ def test_invalid_goals_are_rejected(client, user, body):
     response = client.post("/api/onboarding/goals", json=body)
 
     assert response.status_code == 400
-    assert response.get_json() == {"error": "invalid_input"}
+    assert response.get_json() == {
+        "error": "invalid_input",
+        "code": "invalid_input",
+        "message": "Invalid input",
+    }
     assert UserTrainingGoals.query.filter_by(user_id=user.id).count() == 0
 
 
@@ -100,7 +108,11 @@ def test_injuries_replace_the_previous_list(client, user):
 
     invalid = client.post("/api/onboarding/injuries", json={"injuries": [999999]})
     assert invalid.status_code == 400
-    assert invalid.get_json() == {"error": "invalid_input"}
+    assert invalid.get_json() == {
+        "error": "invalid_input",
+        "code": "invalid_input",
+        "message": "Invalid input",
+    }
     assert [row.injury_id for row in UserInjury.query.filter_by(user_id=user.id)] == [back.id]
 
 
@@ -136,9 +148,9 @@ def test_completing_onboarding_without_recovery_adds_no_habits(client, user):
 
 
 @pytest.mark.parametrize("path", ROUTES)
-def test_guests_are_sent_to_login(client, user, path):
+def test_guests_get_401(client, user, path):
     response = client.post(path, json={})
 
-    assert response.status_code == 302
-    assert "/auth/login" in response.headers["Location"]
+    assert response.status_code == 401
+    assert response.get_json()["code"] == "authentication_required"
     assert profile_of(user) is None

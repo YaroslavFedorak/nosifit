@@ -161,7 +161,7 @@ def test_ranking_is_pure_and_normalised():
 
 
 def test_search_requires_login(client, catalog):
-    assert client.get("/api/training/exercises/search?q=жим").status_code in (302, 401)
+    assert client.get("/api/training/exercises/search?q=жим").status_code == 401
 
 
 # --- recent -------------------------------------------------------------------------
@@ -352,7 +352,11 @@ def test_strict_save_with_a_stale_session_id_is_rejected(client, user, catalog):
     response = client.post("/api/training/sessions/complete", json=payload)
 
     assert response.status_code == 404
-    assert response.get_json() == {"error": "session_not_found"}
+    assert response.get_json() == {
+        "error": "session_not_found",
+        "code": "session_not_found",
+        "message": "Session not found",
+    }
     assert TrainingSession.query.count() == 1
     # Without strict (the web page) the old behaviour stays: a new session.
     del payload["strict"]

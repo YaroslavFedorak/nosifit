@@ -58,13 +58,17 @@ def test_invalid_injuries_are_rejected(client, user, injuries, body):
     response = client.post("/api/injuries/user", json=body)
 
     assert response.status_code == 400
-    assert response.get_json() == {"error": "invalid_input"}
+    assert response.get_json() == {
+        "error": "invalid_input",
+        "code": "invalid_input",
+        "message": "Invalid input",
+    }
     assert user_injury_ids(user) == []
 
 
 def test_guests_cannot_save_injuries(client, user, injuries):
     response = client.post("/api/injuries/user", json={"injuries": [injuries[0].id]})
 
-    assert response.status_code == 302
-    assert "/auth/login" in response.headers["Location"]
+    assert response.status_code == 401
+    assert response.get_json()["code"] == "authentication_required"
     assert UserInjury.query.count() == 0

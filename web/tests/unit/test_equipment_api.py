@@ -55,7 +55,11 @@ def test_unknown_or_invalid_equipment_is_not_added(client, user, equipment, valu
     response = client.post("/api/user/equipment/add", json={"equipment_id": value})
 
     assert response.status_code == 404
-    assert response.get_json() == {"error": "Equipment not found"}
+    assert response.get_json() == {
+        "error": "Equipment not found",
+        "code": "not_found",
+        "message": "Equipment not found",
+    }
     assert owned_ids(user) == []
 
 
@@ -66,16 +70,20 @@ def test_invalid_equipment_id_cannot_be_removed(client, user, equipment, value):
     response = client.post("/api/user/equipment/remove", json={"equipment_id": value})
 
     assert response.status_code == 400
-    assert response.get_json() == {"error": "invalid_input"}
+    assert response.get_json() == {
+        "error": "invalid_input",
+        "code": "invalid_input",
+        "message": "Invalid input",
+    }
 
 
 @pytest.mark.parametrize(
     "method, path",
     [("get", "/api/user/equipment/"), ("post", "/api/user/equipment/add"), ("post", "/api/user/equipment/remove")],
 )
-def test_guests_are_sent_to_login(client, user, equipment, method, path):
+def test_guests_get_401(client, user, equipment, method, path):
     response = getattr(client, method)(path, json={"equipment_id": equipment[0].id})
 
-    assert response.status_code == 302
-    assert "/auth/login" in response.headers["Location"]
+    assert response.status_code == 401
+    assert response.get_json()["code"] == "authentication_required"
     assert UserEquipment.query.count() == 0

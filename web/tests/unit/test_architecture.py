@@ -75,7 +75,9 @@ def test_everything_under_api_is_registered_by_the_api_package(app):
     and form posts stay in web."""
     from api import api_blueprints
 
-    api_names = {blueprint.name for blueprint in api_blueprints()}
+    # Registered names: each API blueprint is registered twice (/api, /api/v1).
+    api_bps = set(api_blueprints())
+    api_names = {name for name, blueprint in app.blueprints.items() if blueprint in api_bps}
     misplaced = []
     for rule in app.url_map.iter_rules():
         blueprint = rule.endpoint.rpartition(".")[0]
@@ -111,3 +113,14 @@ def test_api_leaves_database_access_to_core_services():
         if top(module) in database or module in database or ".models." in f".{module}."
     }
     assert offending == set()
+
+
+def test_api_and_core_do_not_depend_on_the_bot():
+    """The bot is a client of the API, never a dependency of it."""
+    to_bot = {
+        (path, module)
+        for package in ("api", "backend", "auth", "shared")
+        for path, module in imports_of(package)
+        if top(module) == "telegram_bot"
+    }
+    assert to_bot == set()

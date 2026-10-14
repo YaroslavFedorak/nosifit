@@ -48,17 +48,25 @@ def test_guests_get_401(client, method, path):
     response = getattr(client, method)(path, json={})
 
     assert response.status_code == 401
-    assert response.get_json() == {"error": "Authentication required"}
+    assert response.get_json() == {
+        "error": "Authentication required",
+        "code": "authentication_required",
+        "message": "Authentication required",
+    }
 
 
 def test_premium_and_archived_habits_cannot_be_added(signed_in, habits):
     premium = signed_in.post(f"/api/recovery/habits/add/{habits['sauna'].id}")
     assert premium.status_code == 403
-    assert premium.get_json() == {"error": "Premium required"}
+    assert premium.get_json() == {
+        "error": "Premium required",
+        "code": "forbidden",
+        "message": "Premium required",
+    }
 
     archived = signed_in.post(f"/api/recovery/habits/add/{habits['old'].id}")
     assert archived.status_code == 404
-    assert archived.get_json() == {"error": "Not found"}
+    assert archived.get_json() == {"error": "Not found", "code": "not_found", "message": "Not found"}
 
     assert UserRecoveryHabit.query.count() == 0
 

@@ -100,6 +100,17 @@ needs its own decision rather than a fix hidden in a refactoring.
 - Error bodies come in four shapes: `{"error": message}`,
   `{"error": code, "code": code}`, `{"error": message, "code": code}` and
   `{"error": "invalid_input", "message": message}`.
+
+  *Update:* both fixed after this audit: every API error now carries
+  `code` and `message` (the old `error` field is kept), and API endpoints
+  answer 401 JSON without a session. See [api.md](api.md).
+- `GET /api/recovery/recommendations` stores the day's recovery snapshot
+  when there is none (a read that writes). Found while adding query
+  budgets; left as it is.
+- `/auth/reset` sends the reset email inside the request only when the
+  address has an account, so its response time shows whether an account
+  exists. Sending it in the background would fix that but also hide a
+  failed send from the user; it needs its own decision.
 - `test_rate_limit_redis` flushes the Redis database that `TEST_REDIS_URL`
   points to, so it must be a disposable one (CI uses database 15).
 
