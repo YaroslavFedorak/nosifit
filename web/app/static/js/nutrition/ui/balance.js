@@ -7,6 +7,10 @@ function formatBalanceStatus(status) {
             return nutrition_t("balance.status.under");
         case "normal":
             return nutrition_t("balance.status.normal");
+        case "unavailable":
+            return nutrition_t("balance.status.unavailable");
+        case "no_data":
+            return nutrition_t("balance.status.no_data");
         default:
             return nutrition_t("balance.noStatus");
     }
@@ -29,12 +33,16 @@ export function renderBalance(data) {
     safeSet("macro-fat-percent", `${data.fat_percent ?? 0}%`);
     safeSet("macro-carb-value", `${data.carb ?? 0} / ${data.carb_goal ?? 0} ${nutrition_t("units.grams")}`);
     safeSet("macro-carb-percent", `${data.carb_percent ?? 0}%`);
-    safeSet("kcal-balance-label", `${data.kcal_balance ?? 0} ${nutrition_t("units.kcal")}`);
+    safeSet("kcal-balance-label", data.kcal_balance === null || data.kcal_balance === undefined
+        ? nutrition_t("balance.noStatus")
+        : `${data.kcal_balance} ${nutrition_t("units.kcal")}`);
     safeSet("kcal-balance-status", formatBalanceStatus(data.balance_status));
     safeSet("kcal-diff", `${data.kcal_diff_label ?? 0} ${nutrition_t("units.kcal")}`);
     safeSet("protein-diff", `${data.protein_diff_label ?? 0} ${nutrition_t("units.proteinShort")}`);
     safeSet("fat-diff", `${data.fat_diff_label ?? 0} ${nutrition_t("units.fatShort")}`);
     safeSet("carb-diff", `${data.carb_diff_label ?? 0} ${nutrition_t("units.carbsShort")}`);
     safeSet("water-today", `${data.water ?? 0} ${nutrition_t("units.liters")}`);
-    safeSet("water-goal", `${data.water_goal ?? 0} ${nutrition_t("units.liters")}`);
+    safeSet("water-goal", data.water_goal === null || data.water_goal === undefined
+        ? nutrition_t("balance.noStatus")
+        : `${data.water_goal} ${nutrition_t("units.liters")}`);
 }

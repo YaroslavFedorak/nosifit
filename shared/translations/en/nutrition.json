@@ -33,7 +33,9 @@
         "status": {
             "over": "above target",
             "under": "below target",
-            "normal": "Within target"
+            "normal": "Within target",
+            "unavailable": "no target",
+            "no_data": "nothing logged"
         }
     },
     "fields": {
@@ -199,6 +201,40 @@
             "empty": {
                 "title": "Start tracking your nutrition",
                 "message": "Add your first meal so NosiFit can evaluate your diet balance and provide personalized nutrition recommendations."
+            },
+            "profile_incomplete": {
+                "title": "Complete your profile",
+                "message": "Add your weight, height and age in your profile so NosiFit can calculate your daily targets and base recommendations on them."
+            },
+            "salt": {
+                "high": {
+                    "title": "Salt above the daily limit",
+                    "message": "You have logged about {value} g of salt today; the WHO recommends less than {limit} g a day. Check processed meats, cheese, sauces and ready meals."
+                }
+            },
+            "fiber": {
+                "low": {
+                    "title": "Fiber is running low",
+                    "message": "About {value} g of fiber remain to reach your daily target. Vegetables, fruit, legumes and whole grains are good sources."
+                }
+            },
+            "sugar": {
+                "high": {
+                    "title": "Sugar-rich day",
+                    "message": "Sugars that are not a natural part of whole foods make up about {value}% of today's energy. The WHO suggests keeping free sugars below 10%."
+                }
+            },
+            "saturated_fat": {
+                "high": {
+                    "title": "A lot of saturated fat",
+                    "message": "Saturated fat makes up about {value}% of today's energy. The WHO recommends less than 10%; swap some fatty meat, butter or pastry for fish, legumes, nuts or vegetable oils."
+                }
+            },
+            "hydration": {
+                "low": {
+                    "title": "Drink a little more",
+                    "message": "You are about {value} L short of your estimated fluid goal today. Needs vary, so go by thirst and the day's heat and activity."
+                }
             }
         }
     },
@@ -255,7 +291,36 @@
         "editHint": "New values apply to what you log from now on; meals already logged keep their values.",
         "deleteProduct": "Delete food",
         "editProductData": "Edit food",
-        "ownBadge": "mine"
+        "ownBadge": "mine",
+        "productCategory": "Food category",
+        "productCategoryHint": "Used to judge how processed the food is in your diet-quality score.",
+        "categories": {
+            "meat": "Meat",
+            "poultry": "Poultry",
+            "fish": "Fish",
+            "seafood": "Seafood",
+            "eggs": "Eggs",
+            "dairy": "Dairy",
+            "cheese": "Cheese",
+            "grains": "Grains & cereals",
+            "pasta": "Pasta",
+            "bread": "Bread & bakery",
+            "legumes": "Legumes",
+            "vegetables": "Vegetables",
+            "fruits": "Fruits",
+            "berries": "Berries",
+            "nuts": "Nuts",
+            "seeds": "Seeds",
+            "oils": "Oils & fats",
+            "sauces": "Sauces & condiments",
+            "prepared": "Prepared dishes",
+            "fast_food": "Fast food",
+            "sweets": "Sweets & desserts",
+            "snacks": "Snacks",
+            "beverages": "Drinks",
+            "ingredients": "Cooking ingredients",
+            "other": "Other"
+        }
     },
     "modals": {
         "eyebrow": {

@@ -4,6 +4,8 @@ export interface Product {
     id: number;
     name: string;
     brand?: string | null;
+    /** NosiFit food category id; "other" when none was chosen. */
+    category?: string;
     source: "system" | "user" | "imported";
     barcode?: string | null;
     kcal_per_100g: number;
@@ -32,6 +34,8 @@ export interface ProductPayload {
     brand?: string | null;
     locale?: string;
     barcode?: string | null;
+    /** One of the backend's product categories (validated server-side). */
+    category?: string;
     kcal_per_100g: number;
     protein_per_100g: number;
     fat_per_100g: number;
@@ -49,6 +53,8 @@ export interface BarcodePreview {
     barcode: string;
     name: string | null;
     brand: string | null;
+    /** NosiFit category when the source's tags point to exactly one; else null. */
+    category?: string | null;
     /** null = missing or invalid, never a stand-in 0. */
     kcal_per_100g: number | null;
     protein_per_100g: number | null;
@@ -141,14 +147,19 @@ export interface NutritionDay {
     fiber_goal?: number;
     sugar?: number | null;
     sugar_complete?: boolean;
-    kcal_balance?: number;
-    balance_status?: string;
+    /** null when there is no calorie target (see goals_available). */
+    kcal_balance?: number | null;
+    kcal_remaining?: number | null;
+    goals_available?: boolean;
+    balance_status?: "unavailable" | "no_data" | "under" | "normal" | "over" | string;
     kcal_diff_label?: number;
     protein_diff_label?: number;
     fat_diff_label?: number;
     carb_diff_label?: number;
     water?: number;
-    water_goal?: number;
+    /** null when the goal cannot be calculated (no usable weight). */
+    water_goal?: number | null;
+    water_percent?: number | null;
     current_weight?: number | null;
     meals: Meal[];
 }
@@ -185,6 +196,9 @@ export interface WeightResponse {
     status?: string;
     weight: number | null;
     bmi: number | null;
+    /** WHO adult class; null = not classified (under 18 or age unknown). */
+    bmi_category?: "underweight" | "normal" | "overweight" | "obese" | null;
+    bmi_classified?: boolean;
 }
 
 export interface WaterPayload {
@@ -193,8 +207,12 @@ export interface WaterPayload {
 
 export interface WaterResponse {
     status?: string;
+    /** Litres of fluid drunk on the day. */
     amount: number;
-    recommended: number;
+    /** Estimated fluid goal in litres; null when it cannot be calculated. */
+    recommended: number | null;
+    recommended_available?: boolean;
+    date?: string;
 }
 
 export interface NutritionHeatmapDay {
@@ -233,7 +251,7 @@ export interface NutritionDayDetails {
     fat_goal: number;
     carbs_goal: number;
     water: number;
-    water_goal: number;
+    water_goal: number | null;
     current_weight: number | null;
     meals: Meal[];
 }
@@ -244,6 +262,11 @@ export type RecommendationType =
     | "fat"
     | "carbs"
     | "fiber"
+    | "sugar"
+    | "saturated_fat"
+    | "salt"
+    | "hydration"
+    | "profile"
     | "quality"
     | "balance"
     | "protein_progress"
@@ -269,9 +292,14 @@ export interface NutritionRecommendationSummary {
     fat_goal: number;
     carbs: number;
     carbs_goal: number;
-    fiber: number;
+    /** null = no fiber value is known for today's entries. */
+    fiber: number | null;
     fiber_goal: number;
-    quality_score: number;
+    water: number;
+    water_goal: number | null;
+    /** null = not enough logged to judge the day's quality. */
+    quality_score: number | null;
+    goals_available: boolean;
     day_progress: NutritionDayProgress;
 }
 

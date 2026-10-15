@@ -4,6 +4,7 @@ from sqlalchemy import delete, select, update
 
 from backend.app.extensions import db
 from backend.app.models.nutrition.category import Category
+from backend.app.models.nutrition.goal_history import NutritionGoalHistory
 from backend.app.models.nutrition.meal_item import MealItem
 from backend.app.models.nutrition.saved_meal import SavedMeal
 from backend.app.models.nutrition.user_goals import UserGoals
@@ -22,6 +23,7 @@ _UNCASCADED = (
     UserWater,
     UserWeight,
     UserGoals,
+    NutritionGoalHistory,
     SavedMeal,
     UserInjury,
     UserTrainingGoals,

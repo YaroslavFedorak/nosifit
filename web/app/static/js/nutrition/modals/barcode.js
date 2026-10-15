@@ -381,6 +381,7 @@ function prefillFrom(result) {
         barcode: result.barcode,
         name: preview.name,
         brand: preview.brand,
+        category: preview.category ?? null,
         unit: preview.default_unit,
         values,
     };

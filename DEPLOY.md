@@ -23,7 +23,7 @@ Redis (rate-limit counters only).
 | `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET` | from a **separate** GitHub OAuth App for production |
 | `BREVO_API_KEY` | brevo.com (free: 300 emails/day) → *SMTP & API* → *API Keys* |
 | `MAIL_FROM` | `NosiFit <you@gmail.com>` — a sender verified in Brevo (*Senders, Domains & Dedicated IPs* → *Senders*); no own domain needed |
-| `TZ` | `Europe/Kyiv` — the server's "today" becomes the users' day |
+| `APP_TIMEZONE` | `Europe/Kyiv` (the default; falls back to `NOSI_FIT_TIMEZONE`) — the zone whose calendar day is "today" for meals, water, weight and goals. The server's own `TZ` no longer decides it |
 | `PUBLIC_BASE_URL` | only with a custom domain, e.g. `https://nosifit.com` — base of password-reset and Telegram link URLs. Defaults to `https://$RAILWAY_PUBLIC_DOMAIN`; reset emails and Telegram links are refused when neither is set |
 | `RATELIMIT_REDIS_URL` | `${{Redis.REDIS_URL}}` — **required**: the private (`redis.railway.internal`) URL, never `REDIS_PUBLIC_URL`. The app does not start in production without it |
 | `TELEGRAM_BOT_API_SECRET` | output of `python -c "import secrets; print(secrets.token_hex(32))"`; the **same value** on the `bot` service. Signs the bot's `/api/telegram/*` requests. Unset → Telegram sign-in is off (404). Shorter than 32 characters → the app refuses to start |

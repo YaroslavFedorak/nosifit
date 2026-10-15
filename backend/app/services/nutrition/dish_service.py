@@ -16,6 +16,7 @@ from datetime import date, datetime, time
 from sqlalchemy.orm import selectinload
 
 from backend.app.extensions import db
+from backend.app.utils import clock
 from backend.app.models import Dish, DishItem, Meal, Product
 from backend.app.services.nutrition.calculation_service import (
     NutritionValidationError,
@@ -304,7 +305,7 @@ def delete_dish(user_id, dish_id):
 
 def _parse_date(value):
     if value in (None, ""):
-        return date.today()
+        return clock.today()
     try:
         return datetime.strptime(str(value), "%Y-%m-%d").date()
     except ValueError:

@@ -9,6 +9,9 @@ SUPPORTED_UNITS = {"g", "ml", "pcs"}
 # Upper bounds for a single entry. Anything above is almost certainly a typo
 # (e.g. 50000 g instead of 500 g) and would wreck the day's totals.
 MAX_AMOUNT_BY_UNIT = {"g": 5000.0, "ml": 5000.0, "pcs": 100.0}
+# The same bound on the resulting mass: 100 pieces of a 500 g product pass the
+# per-unit limit but are 50 kg, which no entry can be.
+MAX_ENTRY_GRAMS = 5000.0
 
 
 class NutritionValidationError(ValueError):
@@ -30,8 +33,10 @@ class CalculatedNutrition:
     salt: float | None = None
 
 
-# Per-100 g fields copied into every logged entry (MealItem.basis).
+# Per-100 g fields copied into every logged entry (MealItem.basis), plus the
+# product's category, which the diet-quality score classifies foods by.
 BASIS_FIELDS = (
+    "category",
     "kcal_per_100g",
     "protein_per_100g",
     "fat_per_100g",
@@ -171,6 +176,10 @@ def calculate_product_nutrition(product, amount, unit=None) -> CalculatedNutriti
         normalized_unit,
         product.grams_per_unit,
     )
+    if grams > MAX_ENTRY_GRAMS:
+        raise NutritionValidationError(
+            f"Amount is too large (max {MAX_ENTRY_GRAMS:g} g in total)"
+        )
 
     factor = grams / 100.0
 

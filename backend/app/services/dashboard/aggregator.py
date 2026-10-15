@@ -1,4 +1,4 @@
-from datetime import date, timedelta
+from datetime import timedelta
 
 from sqlalchemy.orm import selectinload
 
@@ -11,9 +11,21 @@ from backend.app.services.dashboard.score import calculate_daily_score
 from backend.app.dashboard.training.metrics import (
     calculate_training_score,
 )
+from backend.app.services.nutrition.goals_service import (
+    get_goals,
+    goals_for_day,
+    goals_timeline,
+)
 from backend.app.services.nutrition.quality_service import (
     calculate_quality,
+    quality_items,
+    resolve_categories,
 )
+from backend.app.services.nutrition.water_service import (
+    fluids_by_day,
+    get_total_fluid_liters,
+)
+from backend.app.utils import clock
 
 
 def _day_bounds(target_date):
@@ -88,44 +100,37 @@ def _get_meals(user_id, target_date):
     )
 
 
-def _nutrition_data(meals):
+def _nutrition_data(meals, water, goals, categories=None):
+    """The day's nutrition summary.
+
+    ``score`` is the diet-quality score (``None`` when nothing is logged or
+    too little energy to judge), the same one the nutrition page and the
+    recommendations use. ``water`` is the day's fluid intake in litres.
+    """
     total_calories = 0
     total_protein = 0
     total_fat = 0
     total_carbs = 0
 
-    ration_items = []
+    entries = []
 
     for meal in meals:
         total_calories += meal.total_calories or 0
         total_protein += meal.total_protein or 0
         total_fat += meal.total_fat or 0
         total_carbs += meal.total_carbs or 0
-
-        for item in meal.items:
-            ration_items.append(
-                {
-                    "id": item.id,
-                    "name": item.name,
-                    "calories": item.calories or 0,
-                    "protein": item.protein or 0,
-                    "fat": item.fat or 0,
-                    "carbs": item.carbs or 0,
-                    "fiber": item.fiber or 0,
-                }
-            )
+        entries.extend(meal.items)
 
     if not meals:
         score = None
     else:
-        quality = calculate_quality(ration_items)
-        score = quality.get("score")
+        score = calculate_quality(quality_items(entries, categories), goals).get("score")
 
     return {
         "score": score,
         "calories": total_calories,
         "protein": total_protein,
-        "water": 0,
+        "water": water,
     }
 
 
@@ -162,17 +167,24 @@ def _recovery_data(snapshot):
 
 
 def _build_day(user_id, target_date):
+    goals = goals_for_day(
+        goals_timeline(user_id, target_date, target_date),
+        get_goals(user_id),
+        target_date,
+    )
     return _assemble_day(
         target_date,
         _get_training_session(user_id, target_date),
         _get_meals(user_id, target_date),
         _get_snapshot(user_id, target_date),
+        get_total_fluid_liters(user_id, target_date),
+        goals,
     )
 
 
-def _assemble_day(target_date, session, meals, snapshot):
+def _assemble_day(target_date, session, meals, snapshot, water, goals, categories=None):
     training = _training_data(session)
-    nutrition = _nutrition_data(meals)
+    nutrition = _nutrition_data(meals, water, goals, categories)
     recovery = _recovery_data(snapshot)
 
     daily_score = calculate_daily_score(
@@ -193,7 +205,7 @@ def _assemble_day(target_date, session, meals, snapshot):
 def get_today_overview(user_id):
     return _build_day(
         user_id,
-        date.today(),
+        clock.today(),
     )
 
 
@@ -258,7 +270,7 @@ def _snapshots_by_day(user_id, start_date, end_date):
 
 
 def get_heatmap(user_id):
-    today = date.today()
+    today = clock.today()
     start_date = today - timedelta(days=364)
 
     # Three queries for the whole year instead of several per day: the
@@ -266,6 +278,12 @@ def get_heatmap(user_id):
     sessions = _sessions_by_day(user_id, start_date, today)
     meals = _meals_by_day(user_id, start_date, today)
     snapshots = _snapshots_by_day(user_id, start_date, today)
+    water = fluids_by_day(user_id, start_date, today)
+    current_goals = get_goals(user_id)
+    timeline = goals_timeline(user_id, start_date, today)
+    categories = resolve_categories(
+        [item for day_meals in meals.values() for meal in day_meals for item in meal.items]
+    )
 
     days = []
 
@@ -277,11 +295,16 @@ def get_heatmap(user_id):
             sessions.get(current_date),
             meals.get(current_date, []),
             snapshots.get(current_date),
+            water.get(current_date, 0.0),
+            goals_for_day(timeline, current_goals, current_date),
+            categories,
         )
 
         has_data = (
             data["training"]["score"] is not None
             or data["nutrition"]["score"] is not None
+            # Food was logged, even if too little to be scored yet.
+            or data["nutrition"]["calories"] > 0
             or data["recovery"]["score"] is not None
         )
 

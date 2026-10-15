@@ -46,14 +46,21 @@ from backend.app.services.nutrition.product_service import (
 from backend.app.services.nutrition.recommendation_service import get_nutrition_recommendations
 from backend.app.services.nutrition.serializers import serialize_meal
 from backend.app.services.nutrition.stats_service import get_day_details, get_stats, get_year_heatmap
-from backend.app.services.nutrition.water_service import add_water_service, get_water_data
+from backend.app.services.nutrition.water_service import (
+    WaterValidationError,
+    add_water_service,
+    get_water_data,
+    validate_water_date,
+)
 from backend.app.services.nutrition.weight_service import get_weight_data, update_user_weight
+from backend.app.utils import clock
 from backend.app.utils.rate_limit import hit_limit
+from backend.app.utils.validation import PROFILE_RANGES
 
 nutrition_api = Blueprint("nutrition_api", __name__, url_prefix="/api/nutrition")
 
-MIN_WEIGHT_KG = 20.0
-MAX_WEIGHT_KG = 400.0
+# One range for the profile form, the API and the weight input.
+MIN_WEIGHT_KG, MAX_WEIGHT_KG, _ = PROFILE_RANGES["weight"]
 MAX_WATER_LITERS_PER_ENTRY = 5.0
 MAX_BULK_ITEMS = 50
 
@@ -628,7 +635,7 @@ def api_log_food():
         "ids": logged.entry_ids,
     }
     if data.get("return") == "day":
-        if logged.date == date.today():
+        if logged.date == clock.today():
             payload["day"] = get_daily_nutrition_data(current_user.id, locale)
         else:
             payload["day"] = get_day_details(current_user.id, logged.date, locale)
@@ -689,18 +696,33 @@ def api_stats():
 @login_required
 def api_heatmap():
     try:
-        year = int(request.args.get("year", date.today().year))
+        year = int(request.args.get("year", clock.today().year))
     except (TypeError, ValueError):
-        year = date.today().year
+        year = clock.today().year
     if not 2000 <= year <= 2100:
         return _error("Year is out of range", "invalid_year")
     return jsonify(get_year_heatmap(current_user.id, year))
 
 
+def _water_date(raw):
+    """``(date, error_response)`` for an optional ``date`` (YYYY-MM-DD)."""
+    if raw in (None, ""):
+        return clock.today(), None
+    try:
+        target = date.fromisoformat(str(raw))
+        validate_water_date(target)
+    except (ValueError, WaterValidationError):
+        return None, _error("Invalid date", "invalid_date")
+    return target, None
+
+
 @nutrition_api.get("/water")
 @login_required
 def api_get_water():
-    return jsonify(get_water_data(current_user.id))
+    target, error = _water_date(request.args.get("date"))
+    if error:
+        return error
+    return jsonify(get_water_data(current_user.id, target))
 
 
 @nutrition_api.post("/water")
@@ -719,11 +741,17 @@ def api_add_water():
             "invalid_water",
         )
 
-    add_water_service(current_user.id, amount)
-    water_data = get_water_data(current_user.id)
+    target, error = _water_date(data.get("date"))
+    if error:
+        return error
+
+    add_water_service(current_user.id, amount, target)
+    water_data = get_water_data(current_user.id, target)
 
     return jsonify({
         "status": "ok",
         "amount": water_data["amount"],
         "recommended": water_data["recommended"],
+        "recommended_available": water_data["recommended_available"],
+        "date": water_data["date"],
     })

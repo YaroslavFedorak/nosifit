@@ -1,6 +1,7 @@
 from datetime import date, datetime, time, timedelta
 
 from backend.app.extensions import db
+from backend.app.utils import clock
 from backend.app.models import Meal, MealItem
 from backend.app.services.nutrition.calculation_service import sum_known
 from backend.app.services.nutrition.meal_categories import normalize_meal_category
@@ -51,7 +52,7 @@ def add_meal_service(user_id, data):
 
     meal = Meal(
         user_id=user_id,
-        date=_parse_date(data.get("date")) or date.today(),
+        date=_parse_date(data.get("date")) or clock.today(),
         time=_parse_time(data.get("time")),
         name=category,
         category=category,
@@ -120,7 +121,7 @@ def copy_meal_service(user_id, meal_id):
 
     new_meal = Meal(
         user_id=user_id,
-        date=date.today(),
+        date=clock.today(),
         time=source_meal.time,
         name=source_meal.name,
         category=source_meal.category,
@@ -166,7 +167,7 @@ def copy_yesterday_service(user_id):
     Returns None when yesterday had no meals, otherwise how many meals were
     copied.
     """
-    yesterday = date.today() - timedelta(days=1)
+    yesterday = clock.today() - timedelta(days=1)
     meals = Meal.query.filter_by(
         user_id=user_id,
         date=yesterday,

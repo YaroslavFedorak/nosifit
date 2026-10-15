@@ -2518,7 +2518,17 @@
           }
         ],
         "x-auth": "session",
-        "summary": "Water drunk today.",
+        "summary": "Fluid intake and goal for a day (today, or ?date=YYYY-MM-DD).",
+        "parameters": [
+          {
+            "name": "date",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "Success.",
@@ -2529,6 +2539,9 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error400"
           },
           "401": {
             "$ref": "#/components/responses/Error401"
@@ -2549,7 +2562,7 @@
           }
         ],
         "x-auth": "session",
-        "summary": "Add water (liters).",
+        "summary": "Add water (liters) to today or, with date, to a past day.",
         "requestBody": {
           "required": false,
           "content": {
@@ -2559,6 +2572,10 @@
                 "properties": {
                   "amount": {
                     "type": "number"
+                  },
+                  "date": {
+                    "type": "string",
+                    "format": "date"
                   }
                 },
                 "required": [
@@ -5350,10 +5367,43 @@
             "type": "number"
           },
           "kcal_percent": {
-            "type": "number"
+            "type": [
+              "number",
+              "null"
+            ]
           },
           "kcal_balance": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "kcal_remaining": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "goals_available": {
+            "type": "boolean"
+          },
+          "water": {
             "type": "number"
+          },
+          "water_goal": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "water_percent": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "quality": {
+            "type": "object"
           },
           "carb": {
             "type": "number"
@@ -5374,7 +5424,14 @@
             ]
           },
           "balance_status": {
-            "type": "string"
+            "type": "string",
+            "enum": [
+              "unavailable",
+              "no_data",
+              "under",
+              "normal",
+              "over"
+            ]
           },
           "goals": {
             "type": "object",
@@ -5393,9 +5450,16 @@
               },
               "fiber": {
                 "type": "number"
+              },
+              "available": {
+                "type": "boolean"
+              },
+              "source": {
+                "type": "string"
               }
             },
             "required": [
+              "available",
               "calories",
               "carbs",
               "fat",
@@ -5443,7 +5507,20 @@
             "type": "number"
           },
           "recommended": {
-            "type": "number"
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "recommended_available": {
+            "type": "boolean"
+          },
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "kind": {
+            "type": "string"
           },
           "status": {
             "type": "string"
@@ -5468,6 +5545,15 @@
               "number",
               "null"
             ]
+          },
+          "bmi_category": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "bmi_classified": {
+            "type": "boolean"
           },
           "status": {
             "type": "string"

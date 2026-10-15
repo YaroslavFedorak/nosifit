@@ -214,7 +214,7 @@ function renderStats(data) {
             <strong>
                 ${formatNumber(data.water)}
                 <small>
-                    / ${formatNumber(data.water_goal)} ${nutrition_t("units.liters")}
+                    / ${data.water_goal === null ? "—" : formatNumber(data.water_goal)} ${nutrition_t("units.liters")}
                 </small>
             </strong>
 

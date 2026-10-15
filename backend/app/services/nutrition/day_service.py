@@ -1,48 +1,55 @@
-from backend.app.extensions import db
-from datetime import date, timedelta
+from datetime import timedelta
 
 from sqlalchemy.orm import selectinload
 
 from backend.app.models import Meal, MealItem, Product
-from backend.app.models.user import User
 from backend.app.models.user_profile import UserProfile
 
 from backend.app.services.nutrition.calculation_service import partial_totals
 from backend.app.services.nutrition.goals_service import get_goals
-from backend.app.services.nutrition.quality_service import calculate_quality
+from backend.app.services.nutrition.quality_service import (
+    calculate_quality,
+    quality_items,
+)
 from backend.app.services.nutrition.product_service import normalize_locale
 from backend.app.services.nutrition.serializers import serialize_meal
 from backend.app.services.nutrition.water_service import (
-    calculate_water,
     get_total_fluid_liters,
+    water_goal_for_user,
 )
+from backend.app.utils import clock
 
-
-def safe_profile_value(profile, field, default):
-    if profile is None:
-        return default
-
-    value = getattr(profile, field, None)
-    return default if value in (None, "") else value
-
-
-def parse_float(value, default=0.0):
-    try:
-        if value is None:
-            return default
-
-        if isinstance(value, (int, float)):
-            return float(value)
-
-        return float(str(value).replace(",", ".").strip())
-    except (TypeError, ValueError):
-        return default
+# A day is "on target" within this share of the calorie target either way.
+# Product policy: logged intake is never exact (portion sizes, label error),
+# so a few percent either way is not a miss. The recommendations use the same
+# tolerance.
+CALORIE_TOLERANCE = 0.10
 
 
 def calculate_percent(value, goal):
-    if goal <= 0:
-        return 0
+    """Share of the target in percent; ``None`` when there is no target."""
+    if goal is None or goal <= 0:
+        return None
     return round(value / goal * 100, 1)
+
+
+def calorie_status(consumed, goal, has_entries):
+    """Where the day's calories stand against the target.
+
+    ``unavailable`` - no target (profile incomplete): nothing to compare to;
+    ``no_data`` - nothing logged yet; otherwise ``under`` / ``normal`` /
+    ``over`` with :data:`CALORIE_TOLERANCE`.
+    """
+    if goal is None or goal <= 0:
+        return "unavailable"
+    if not has_entries:
+        return "no_data"
+    balance = consumed - goal
+    if balance > goal * CALORIE_TOLERANCE:
+        return "over"
+    if balance < -goal * CALORIE_TOLERANCE:
+        return "under"
+    return "normal"
 
 
 def calculate_difference(current, previous):
@@ -94,10 +101,10 @@ def load_meal_for_display(meal_id):
 
 def get_daily_nutrition_data(user_id, locale="uk"):
     locale = normalize_locale(locale)
-    user = db.session.get(User, user_id)
-    today = date.today()
+    today = clock.today()
     yesterday = today - timedelta(days=1)
     goals = get_goals(user_id)
+    goals_available = goals["available"]
 
     meals = (
         Meal.query
@@ -116,19 +123,24 @@ def get_daily_nutrition_data(user_id, locale="uk"):
     totals.update(get_partial_totals(meals))
     yesterday_totals = get_meal_totals(yesterday_meals)
 
+    percents = {
+        key: calculate_percent(totals[key], goals[key])
+        for key in ("calories", "protein", "fat", "carbs")
+    }
+
     progress = {
         "calories": totals["calories"],
-        "protein": totals["protein"],
-        "fat": totals["fat"],
-        "carbs": totals["carbs"],
+        "protein": round(totals["protein"], 1),
+        "fat": round(totals["fat"], 1),
+        "carbs": round(totals["carbs"], 1),
         "fiber": totals["fiber"],
         "fiber_complete": totals["fiber_complete"],
         "sugar": totals["sugar"],
         "sugar_complete": totals["sugar_complete"],
-        "calories_percent": calculate_percent(totals["calories"], goals["calories"]),
-        "protein_percent": calculate_percent(totals["protein"], goals["protein"]),
-        "fat_percent": calculate_percent(totals["fat"], goals["fat"]),
-        "carbs_percent": calculate_percent(totals["carbs"], goals["carbs"]),
+        "calories_percent": percents["calories"],
+        "protein_percent": percents["protein"],
+        "fat_percent": percents["fat"],
+        "carbs_percent": percents["carbs"],
     }
 
     total_macros = totals["protein"] + totals["fat"] + totals["carbs"]
@@ -141,57 +153,26 @@ def get_daily_nutrition_data(user_id, locale="uk"):
     else:
         macros_ratio = {"protein": 0, "fat": 0, "carbs": 0}
 
-    ration_items = [
-        {
-            "id": item.id,
-            "name": item.name,
-            "calories": item.calories,
-            "protein": item.protein,
-            "fat": item.fat,
-            "carbs": item.carbs,
-            "fiber": item.fiber,
-        }
-        for meal in meals
-        for item in meal.items
-    ]
+    entries = [item for meal in meals for item in meal.items]
+    quality = calculate_quality(quality_items(entries), goals)
 
-    quality = calculate_quality(ration_items)
-    calorie_balance = totals["calories"] - goals["calories"]
+    calorie_balance = (
+        totals["calories"] - goals["calories"] if goals_available else None
+    )
+    balance_status = calorie_status(
+        totals["calories"], goals["calories"], bool(entries)
+    )
 
-    if calorie_balance > 150:
-        balance_status = "over"
-    elif calorie_balance < -150:
-        balance_status = "under"
-    else:
-        balance_status = "normal"
+    water_goal = water_goal_for_user(user_id, today)
+    water_today = get_total_fluid_liters(user_id, today)
+    water_percent = calculate_percent(water_today, water_goal)
 
     profile = UserProfile.query.filter_by(user_id=user_id).first()
-
-    weight = parse_float(safe_profile_value(profile, "weight", 0))
-    height = parse_float(safe_profile_value(profile, "height", 170))
-    age = int(parse_float(safe_profile_value(profile, "age", 25)))
-    gender = safe_profile_value(profile, "gender", "male")
-    activity = safe_profile_value(profile, "activity", "low")
-    goal = safe_profile_value(profile, "goal", "maintain")
-
-    water_goal = calculate_water(
-        weight=weight,
-        height=height,
-        age=age,
-        gender=gender,
-        activity=activity,
-        goal=goal,
-    )
-
-    water_today = get_total_fluid_liters(
-        user_id,
-        today,
-    )
-    water_percent = calculate_percent(water_today, water_goal)
 
     return {
         "meals": [serialize_meal(meal, locale) for meal in meals],
         "goals": goals,
+        "goals_available": goals_available,
         "progress": progress,
         "macros_ratio": macros_ratio,
         "quality": quality,
@@ -204,18 +185,22 @@ def get_daily_nutrition_data(user_id, locale="uk"):
         "kcal_goal": goals["calories"],
         "kcal_percent": progress["calories_percent"],
         "kcal_balance": calorie_balance,
-        "protein": totals["protein"],
+        "kcal_remaining": (
+            max(goals["calories"] - totals["calories"], 0)
+            if goals_available else None
+        ),
+        "protein": progress["protein"],
         "protein_goal": goals["protein"],
         "protein_percent": progress["protein_percent"],
-        "fat": totals["fat"],
+        "fat": progress["fat"],
         "fat_goal": goals["fat"],
         "fat_percent": progress["fat_percent"],
-        "carb": totals["carbs"],
+        "carb": progress["carbs"],
         "carb_goal": goals["carbs"],
         "carb_percent": progress["carbs_percent"],
         "fiber": totals["fiber"],
         "fiber_complete": totals["fiber_complete"],
-        "fiber_goal": goals.get("fiber", 30),
+        "fiber_goal": goals["fiber"],
         "sugar": totals["sugar"],
         "sugar_complete": totals["sugar_complete"],
         "balance_status": balance_status,

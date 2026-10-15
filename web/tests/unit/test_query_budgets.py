@@ -20,7 +20,9 @@ TODAY = dt.date.today()
 
 BUDGETS = {
     "/api/dashboard/today": 15,
-    "/api/dashboard/heatmap": 6,
+    # Sessions (2), meals and items (2), snapshots, then the nutrition part:
+    # water (2), targets (profile, stored, history) and one category lookup.
+    "/api/dashboard/heatmap": 9,
     "/api/dashboard/recommendation": 40,
     "/api/dashboard/training": 10,
     "/api/nutrition/day": 15,

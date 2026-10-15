@@ -152,3 +152,20 @@ def bot_auth(monkeypatch):
     runtime._no_restore.clear()
     yield fake
     runtime._no_restore.clear()
+
+
+@pytest.fixture(autouse=True)
+def local_clock(monkeypatch):
+    """The application's "now" follows the machine's clock during tests.
+
+    Production uses APP_TIMEZONE (see backend/app/utils/clock.py). Most tests
+    build their data with ``date.today()``; they would disagree with the
+    application for a few hours every day if the application used another
+    zone, so tests that are not about time zones use the machine's own. Tests
+    about time zones patch ``clock.now`` themselves.
+    """
+    from datetime import datetime
+
+    from backend.app.utils import clock
+
+    monkeypatch.setattr(clock, "now", lambda: datetime.now().astimezone())
