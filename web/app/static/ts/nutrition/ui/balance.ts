@@ -10,6 +10,10 @@ function formatBalanceStatus(status: string | null | undefined): string {
             return nutrition_t("balance.status.under");
         case "normal":
             return nutrition_t("balance.status.normal");
+        case "unavailable":
+            return nutrition_t("balance.status.unavailable");
+        case "no_data":
+            return nutrition_t("balance.status.no_data");
         default:
             return nutrition_t("balance.noStatus");
     }
@@ -85,7 +89,9 @@ export function renderBalance(
 
     safeSet(
         "kcal-balance-label",
-        `${data.kcal_balance ?? 0} ${nutrition_t("units.kcal")}`,
+        data.kcal_balance === null || data.kcal_balance === undefined
+            ? nutrition_t("balance.noStatus")
+            : `${data.kcal_balance} ${nutrition_t("units.kcal")}`,
     );
 
     safeSet(
@@ -120,7 +126,9 @@ export function renderBalance(
 
     safeSet(
         "water-goal",
-        `${data.water_goal ?? 0} ${nutrition_t("units.liters")}`,
+        data.water_goal === null || data.water_goal === undefined
+            ? nutrition_t("balance.noStatus")
+            : `${data.water_goal} ${nutrition_t("units.liters")}`,
     );
 
 }

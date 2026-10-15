@@ -126,6 +126,16 @@
         <label class="nf-label" for="product-brand">{{ translate("nutrition", "catalog.brand") }}</label>
         <input class="nf-input" type="text" id="product-brand" maxlength="120" autocomplete="off" />
       </div>
+      <div class="nf-field nf-field--wide">
+        <label class="nf-label" for="product-category">{{ translate("nutrition", "catalog.productCategory") }}</label>
+        <select class="nf-input" id="product-category">
+          {# The ids of PRODUCT_CATEGORIES in the backend (a test keeps them equal); the server validates them. #}
+          {% for category in ["other", "meat", "poultry", "fish", "seafood", "eggs", "dairy", "cheese", "grains", "pasta", "bread", "legumes", "vegetables", "fruits", "berries", "nuts", "seeds", "oils", "sauces", "prepared", "fast_food", "sweets", "snacks", "beverages", "ingredients"] %}
+          <option value="{{ category }}">{{ translate("nutrition", "catalog.categories." ~ category) }}</option>
+          {% endfor %}
+        </select>
+        <p class="nf-modal-hint">{{ translate("nutrition", "catalog.productCategoryHint") }}</p>
+      </div>
     </div>
 
     <div class="nf-fieldset">

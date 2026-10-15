@@ -41,6 +41,8 @@ export interface OwnProductPrefill {
     barcode: string;
     name?: string | null;
     brand?: string | null;
+    /** Only when the source's category maps to exactly one of ours. */
+    category?: string | null;
     unit?: NutritionUnit;
     values?: Partial<Record<keyof BarcodePreview, number | null>>;
 }
@@ -463,6 +465,7 @@ function prefillFrom(result: BarcodeLookupResult): OwnProductPrefill {
         barcode: result.barcode,
         name: preview.name,
         brand: preview.brand,
+        category: preview.category ?? null,
         unit: preview.default_unit,
         values,
     };

@@ -761,6 +761,8 @@ export function setupItemModals(onRefresh: RefreshCallback): void {
         const payload = {
             name,
             brand: getValue("product-brand").trim() || null,
+            // The backend validates it against its list and keeps "other" for blank.
+            category: getValue("product-category") || "other",
             // Only when created from a scan: the product is then found by it.
             ...(barcode && !editingProduct ? { barcode } : {}),
             locale: getLocale(),
@@ -837,6 +839,14 @@ export function setupItemModals(onRefresh: RefreshCallback): void {
     });
 }
 
+/** Selects a category in the form; a value the list does not have becomes "other". */
+function setProductCategory(category: string): void {
+    const select = document.getElementById("product-category") as HTMLSelectElement | null;
+    if (!select) return;
+    const known = Array.from(select.options).some((option) => option.value === category);
+    select.value = known ? category : "other";
+}
+
 /**
  * Opens "My product" empty (create), filled with an own product (edit) or
  * prefilled from a barcode scan (create; missing values stay empty).
@@ -861,6 +871,9 @@ export function openProductModal(product: Product | null, prefill?: OwnProductPr
         markInvalid(id, false);
     });
     setValue("product-barcode", product ? "" : (prefill?.barcode ?? ""));
+    // An own product keeps its category (old ones are "other"); a scan brings
+    // one only when the source's category maps to ours.
+    setProductCategory(product?.category ?? prefill?.category ?? "other");
 
     const unit = product?.default_unit ?? prefill?.unit ?? "g";
     setValue("product-unit", unit);

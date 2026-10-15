@@ -33,7 +33,9 @@
         "status": {
             "over": "powyżej celu",
             "under": "poniżej celu",
-            "normal": "w normie"
+            "normal": "w normie",
+            "unavailable": "brak celu",
+            "no_data": "brak wpisów"
         }
     },
     "fields": {
@@ -199,6 +201,40 @@
             "empty": {
                 "title": "Zacznij śledzić swoje odżywianie",
                 "message": "Dodaj pierwszy posiłek, aby NosiFit mógł ocenić bilans Twojej diety i przygotować spersonalizowane rekomendacje."
+            },
+            "profile_incomplete": {
+                "title": "Uzupełnij profil",
+                "message": "Podaj wagę, wzrost i wiek w profilu, aby NosiFit mógł obliczyć dzienne cele i oprzeć na nich rekomendacje."
+            },
+            "salt": {
+                "high": {
+                    "title": "Sól powyżej dziennego limitu",
+                    "message": "Dziś zapisano około {value} g soli, a WHO zaleca mniej niż {limit} g dziennie. Zwróć uwagę na wędliny, sery, sosy i gotowe dania."
+                }
+            },
+            "fiber": {
+                "low": {
+                    "title": "Mało błonnika",
+                    "message": "Do dziennego celu brakuje około {value} g błonnika. Jego źródłem są warzywa, owoce, rośliny strączkowe i produkty pełnoziarniste."
+                }
+            },
+            "sugar": {
+                "high": {
+                    "title": "Dużo cukru",
+                    "message": "Cukry, które nie są naturalnym składnikiem produktów pełnowartościowych, stanowią dziś około {value}% energii. WHO zaleca, by wolne cukry były poniżej 10%."
+                }
+            },
+            "saturated_fat": {
+                "high": {
+                    "title": "Dużo tłuszczów nasyconych",
+                    "message": "Tłuszcze nasycone stanowią dziś około {value}% energii. WHO zaleca mniej niż 10%; część tłustego mięsa, masła lub wypieków zastąp rybą, roślinami strączkowymi, orzechami lub olejami roślinnymi."
+                }
+            },
+            "hydration": {
+                "low": {
+                    "title": "Wypij trochę więcej",
+                    "message": "Do szacunkowego dziennego celu płynów brakuje około {value} l. Zapotrzebowanie bywa różne, więc kieruj się pragnieniem, upałem i aktywnością."
+                }
             }
         }
     },
@@ -255,7 +291,36 @@
         "editHint": "Nowe wartości dotyczą kolejnych wpisów; zapisane już posiłki się nie zmienią.",
         "deleteProduct": "Usuń produkt",
         "editProductData": "Edytuj produkt",
-        "ownBadge": "mój"
+        "ownBadge": "mój",
+        "productCategory": "Kategoria produktu",
+        "productCategoryHint": "Służy do oceny stopnia przetworzenia żywności w ocenie jakości diety.",
+        "categories": {
+            "meat": "Mięso",
+            "poultry": "Drób",
+            "fish": "Ryby",
+            "seafood": "Owoce morza",
+            "eggs": "Jajka",
+            "dairy": "Nabiał",
+            "cheese": "Ser",
+            "grains": "Kasze i zboża",
+            "pasta": "Makaron",
+            "bread": "Pieczywo i wypieki",
+            "legumes": "Rośliny strączkowe",
+            "vegetables": "Warzywa",
+            "fruits": "Owoce",
+            "berries": "Jagody",
+            "nuts": "Orzechy",
+            "seeds": "Nasiona",
+            "oils": "Oleje i tłuszcze",
+            "sauces": "Sosy i przyprawy",
+            "prepared": "Dania gotowe",
+            "fast_food": "Fast food",
+            "sweets": "Słodycze i desery",
+            "snacks": "Przekąski",
+            "beverages": "Napoje",
+            "ingredients": "Składniki do gotowania",
+            "other": "Inne"
+        }
     },
     "modals": {
         "eyebrow": {

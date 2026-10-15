@@ -8,6 +8,12 @@ type RecommendationType =
     | "protein"
     | "fat"
     | "carbs"
+    | "fiber"
+    | "sugar"
+    | "saturated_fat"
+    | "salt"
+    | "hydration"
+    | "profile"
     | "quality"
     | "balance"
     | "protein_progress"
@@ -42,7 +48,7 @@ interface NutritionRecommendationSummary {
     carbs: number;
     carbs_goal: number;
 
-    quality_score: number;
+    quality_score: number | null;
 
     day_progress:
         | "morning"

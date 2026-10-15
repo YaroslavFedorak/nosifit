@@ -23,6 +23,7 @@ from __future__ import annotations
 import json
 import logging
 import math
+import re
 from dataclasses import dataclass
 from urllib.parse import urlsplit
 
@@ -71,8 +72,12 @@ NUTRIENTS = (
     "sodium",
 )
 NUTRIENT_SUFFIXES = ("_100g", "_serving")
-REQUESTED_FIELDS = ",".join(TEXT_FIELDS + NUMBER_FIELDS + ("nutriments",))
+# Lists of taxonomy tags ("en:chocolates"): kept only as well-formed tags.
+LIST_FIELDS = ("categories_tags",)
+REQUESTED_FIELDS = ",".join(TEXT_FIELDS + NUMBER_FIELDS + LIST_FIELDS + ("nutriments",))
 MAX_TEXT_LENGTH = 300
+MAX_TAGS = 60
+_TAG_RE = re.compile(r"^[a-z]{2}:[a-z0-9][a-z0-9-]{0,79}$")
 
 
 class OpenFoodFactsUnavailable(RuntimeError):
@@ -139,6 +144,13 @@ def extract_product(raw: dict) -> dict:
         value = _clean_number(raw.get(key))
         if value is not None:
             product[key] = value
+
+    for key in LIST_FIELDS:
+        values = raw.get(key)
+        if isinstance(values, list):
+            tags = [v for v in values if isinstance(v, str) and _TAG_RE.match(v)]
+            if tags:
+                product[key] = tags[:MAX_TAGS]
 
     nutriments = raw.get("nutriments")
     cleaned = {}

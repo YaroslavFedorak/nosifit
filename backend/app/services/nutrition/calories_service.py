@@ -1,6 +1,13 @@
 from backend.app.extensions import db
 from backend.app.models.nutrition.user_goals import UserGoals
 
+# Two forms store the activity level in two ways. The profile editor saves a
+# label (sedentary, light, moderate, active); the registration and
+# complete-profile forms save the factor itself ("1.2", "1.375", "1.55",
+# "1.725", "1.9"). Both are valid and mean the same: ``activity_level``
+# turns either into one canonical label, and every formula (targets, water)
+# goes through it. ``very_active`` is only ever stored as "1.9": the label
+# itself is 11 characters, and the ``activity`` column holds 10.
 ACTIVITY_FACTORS = {
     "sedentary": 1.20,
     "light": 1.375,
@@ -12,6 +19,9 @@ ACTIVITY_FACTORS = {
 DEFAULT_ACTIVITY_FACTOR = 1.55
 
 GOAL_ALIASES = {
+    # The registration form offers "performance"; such a user is fed at
+    # maintenance (stated here rather than left to the silent default).
+    "performance": "maintenance",
     "lose": "cut",
     "lose_fat": "cut",
     "fat_loss": "cut",
@@ -49,6 +59,12 @@ PROTEIN_FACTORS = {
 }
 
 DEFAULT_PROTEIN_FACTOR = 1.6
+
+# Acceptable Macronutrient Distribution Ranges (US National Academies, 2005):
+# protein 10-35%, fat 20-35% and carbohydrate 45-65% of energy. The g/kg
+# protein factors use total body weight, so for a heavy person they can ask
+# for more than the range allows; protein is then capped at its upper bound.
+MAX_PROTEIN_CALORIE_RATIO = 0.35
 
 MIN_FAT_CALORIE_RATIO = 0.20
 MAX_FAT_CALORIE_RATIO = 0.35
@@ -183,6 +199,27 @@ def validate_profile(user):
         return False
 
     return True
+
+
+def activity_level(activity):
+    """The canonical level of a stored activity value, or ``None``.
+
+    Accepts a label (any case) or a factor between 1.2 and 1.9 (a number or
+    numeric text), which maps to the nearest level.
+    """
+    if activity is None or isinstance(activity, bool):
+        return None
+
+    try:
+        factor = float(activity)
+    except (TypeError, ValueError):
+        label = str(activity).strip().lower()
+        return label if label in ACTIVITY_FACTORS else None
+
+    if not 1.20 <= factor <= 1.90:
+        return None
+
+    return min(ACTIVITY_FACTORS, key=lambda name: abs(ACTIVITY_FACTORS[name] - factor))
 
 
 def get_activity_factor(activity):
@@ -359,6 +396,8 @@ def calculate_macros(user, calories):
     if protein is None:
         return None
 
+    protein = min(protein, calories * MAX_PROTEIN_CALORIE_RATIO / 4)
+
     fat = calculate_fat(
         calories,
         protein,
@@ -380,7 +419,6 @@ def calculate_macros(user, calories):
         return None
 
     carb_ratio = carb_calories / calories
-    fat_ratio = fat_calories / calories
 
     if carb_ratio < MIN_CARB_CALORIE_RATIO:
         required_carb_calories = calories * MIN_CARB_CALORIE_RATIO

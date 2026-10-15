@@ -119,13 +119,19 @@ def _nutrient_text(value, complete: bool = True) -> str:
 def _format_day(day: dict) -> str:
     progress = day.get("progress", {})
     goals = day.get("goals", {})
+    # Without targets (incomplete profile) a "/ 0" would read as a goal of zero.
+    has_goals = goals.get("available", True)
+
+    def goal(key, digits):
+        return f"{goals.get(key, 0):.{digits}f}" if has_goals else "—"
+
     lines = [
         "🍽 <b>Харчування сьогодні</b>",
         "",
-        f"🔥 {progress.get('calories', 0):.0f} / {goals.get('calories', 0):.0f} ккал",
-        f"🥩 {progress.get('protein', 0):.1f} / {goals.get('protein', 0):.1f} г білка",
-        f"🥑 {progress.get('fat', 0):.1f} / {goals.get('fat', 0):.1f} г жирів",
-        f"🍞 {progress.get('carbs', 0):.1f} / {goals.get('carbs', 0):.1f} г вуглеводів",
+        f"🔥 {progress.get('calories', 0):.0f} / {goal('calories', 0)} ккал",
+        f"🥩 {progress.get('protein', 0):.1f} / {goal('protein', 1)} г білка",
+        f"🥑 {progress.get('fat', 0):.1f} / {goal('fat', 1)} г жирів",
+        f"🍞 {progress.get('carbs', 0):.1f} / {goal('carbs', 1)} г вуглеводів",
         f"🌾 Клітковина: {_nutrient_text(progress.get('fiber'), progress.get('fiber_complete', True))}"
         f" · 🍬 Цукор: {_nutrient_text(progress.get('sugar'), progress.get('sugar_complete', True))}",
         "",

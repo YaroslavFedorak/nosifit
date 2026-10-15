@@ -120,8 +120,10 @@ def test_the_year_is_loaded_in_a_handful_of_queries(user, a_year_of_data):
 
     _, queries = count_queries(lambda: aggregator.get_heatmap(user_id))
 
-    # Sessions, their exercises, meals, their items, recovery snapshots.
-    assert queries <= 5
+    # Sessions, their exercises, meals, their items, recovery snapshots, and
+    # for the nutrition part: water (2), targets (3) and one category lookup.
+    # Still a handful for a year, whatever it holds.
+    assert queries <= 11
 
 
 def test_the_api_serves_the_same_heatmap(client, user, a_year_of_data):

@@ -10,6 +10,7 @@ from backend.app.models.nutrition.meal import Meal
 from backend.app.models.nutrition.meal_item import MealItem
 from backend.app.models.nutrition.category import Category
 from backend.app.models.nutrition.user_goals import UserGoals
+from backend.app.models.nutrition.goal_history import NutritionGoalHistory
 from backend.app.models.nutrition.user_weight import UserWeight
 from backend.app.models.nutrition.saved_meal import SavedMeal
 from backend.app.models.nutrition.user_water import UserWater

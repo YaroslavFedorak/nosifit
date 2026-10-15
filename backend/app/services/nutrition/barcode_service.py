@@ -44,6 +44,7 @@ from backend.app.services.nutrition.barcode import (
     barcode_variants,
     normalize_barcode,
 )
+from backend.app.services.nutrition.off_categories import category_from_tags
 from backend.app.services.nutrition.open_food_facts import (
     OpenFoodFactsUnavailable,
 )
@@ -307,11 +308,12 @@ def normalize_external_product(product: dict, locale: str = "uk") -> dict:
         if kcal is not None and not any(f in invalid for f in REQUIRED_FIELDS):
             protein, fat_value, carbs_value = mass
             expected = 4 * protein + 9 * fat_value + 4 * carbs_value + 2 * (known("fiber_per_100g") or 0)
-            # Far less energy than the macros contain cannot be explained
-            # (polyols and alcohol only push the other way or a little).
-            if kcal < 0.5 * expected - 20:
-                invalid["kcal_per_100g"] = "inconsistent_with_macros"
-            elif abs(kcal - expected) > max(50.0, 0.25 * expected):
+            # Labelled energy legitimately differs from 4/9/4 arithmetic:
+            # polyols (2.4 kcal/g), erythritol (0), organic acids, alcohol and
+            # fibre all change it, and labels are rounded. A mismatch is a
+            # warning for the user to look at, never a reason to refuse a
+            # product whose values are otherwise valid.
+            if abs(kcal - expected) > max(50.0, 0.25 * expected):
                 warnings.append("energy_mismatch")
 
     if converted:
@@ -348,6 +350,9 @@ def normalize_external_product(product: dict, locale: str = "uk") -> dict:
         "name": name,
         "names": names,
         "brand": _brand(product),
+        # NosiFit category when the source's tags point to exactly one, else
+        # None (the product is then saved as "other"): never guessed.
+        "category": category_from_tags(product.get("categories_tags")),
         **rounded,
         "default_unit": "ml" if liquid else "g",
         "grams_per_unit": 1.0,
@@ -619,7 +624,7 @@ def import_barcode_product(user_id, raw, locale="uk") -> tuple[dict, bool]:
         barcode=code,
         normalized_name=normalized,
         brand=preview["brand"],
-        category="other",
+        category=preview.get("category") or "other",
         default_unit=preview["default_unit"],
         grams_per_unit=preview["grams_per_unit"],
         # Whether a drink counts towards hydration is not in the data.

@@ -5,6 +5,7 @@ replaced by ``FakeOFF``, which serves canned responses and counts calls.
 """
 
 import json
+import re
 import threading
 import time
 from datetime import date, datetime, timedelta
@@ -445,7 +446,6 @@ def test_missing_mandatory_values_block_import():
         ({"saturated-fat_100g": 40}, "saturated_fat_per_100g", "exceeds_fat"),
         ({"proteins_100g": "abc"}, "protein_per_100g", "not_a_number"),
         ({"salt_100g": 120}, "salt_per_100g", "too_large"),
-        ({"energy-kcal_100g": 10}, "kcal_per_100g", "inconsistent_with_macros"),
         ({"proteins_100g": 40, "fat_100g": 40, "carbohydrates_100g": 40}, "protein_per_100g", "macros_exceed_100g"),
     ],
 )
@@ -889,3 +889,115 @@ def test_numeric_strings_from_open_food_facts_are_parsed(app, client, user, off)
     assert preview["fiber_per_100g"] is None and preview["salt_per_100g"] is None
     assert preview["invalid"] == {}
     assert preview["importable"] is True
+
+
+# --- category of an imported product -------------------------------------------------------
+
+
+def test_imported_product_takes_the_category_only_when_the_tags_point_to_one(app, client, user, off):
+    off.found(NUTELLA, categories_tags=["en:snacks", "en:sweet-snacks", "en:chocolates", "en:spreads"])
+    login(client)
+    preview = lookup(client, NUTELLA).get_json()["preview"]
+    assert preview["category"] == "sweets"
+    product = do_import(client, NUTELLA).get_json()["product"]
+    assert product["category"] == "sweets"
+    assert db.session.get(Product, product["id"]).category == "sweets"
+
+
+@pytest.mark.parametrize(
+    "tags",
+    [
+        None,                                              # the source gave none (also: old cached answers)
+        [],
+        ["en:snacks", "en:plant-based-foods"],             # nothing in the table
+        ["en:chocolates", "en:milks"],                      # two categories: not certain
+        ["en:beverages", "en:dairies"],                     # generic tags are not mapped
+        ["fr:chocolats"],                                   # other languages are not mapped
+    ],
+)
+def test_an_uncertain_source_category_stays_other(app, client, user, off, tags):
+    extra = {} if tags is None else {"categories_tags": tags}
+    off.found(NUTELLA, **extra)
+    login(client)
+    assert lookup(client, NUTELLA).get_json()["preview"]["category"] is None
+    product = do_import(client, NUTELLA).get_json()["product"]
+    assert product["category"] == "other"
+
+
+def test_source_tags_are_sanitised_before_they_are_cached():
+    from backend.app.services.nutrition.open_food_facts import MAX_TAGS, extract_product
+
+    raw = {"categories_tags": ["en:chocolates", "EN:Upper", "en:ok-1", 7, None, "<script>", "en:" + "x" * 90,
+                               "chocolates"] + [f"en:tag-{i}" for i in range(100)]}
+    tags = extract_product(raw)["categories_tags"]
+    assert tags[:2] == ["en:chocolates", "en:ok-1"]
+    assert all(re.match(r"^[a-z]{2}:[a-z0-9-]+$", t) for t in tags) and len(tags) <= MAX_TAGS
+    assert "categories_tags" not in extract_product({"categories_tags": "en:chocolates"})
+    assert "categories_tags" not in extract_product({})
+
+
+def test_the_category_table_only_names_real_categories_and_never_guesses():
+    from backend.app.services.nutrition.off_categories import OFF_CATEGORY_TAGS, category_from_tags
+    from backend.app.services.nutrition.product_service import PRODUCT_CATEGORIES
+
+    assert set(OFF_CATEGORY_TAGS.values()) <= PRODUCT_CATEGORIES
+    assert category_from_tags(["en:sodas", "en:carbonated-drinks", "en:beverages"]) == "beverages"
+    assert category_from_tags(["en:crisps", "en:salty-snacks", "en:snacks"]) == "snacks"
+    assert category_from_tags(["en:sausages", "en:meats"]) == "meat"
+    assert category_from_tags(["en:beverages", "en:milks"]) == "dairy"      # the generic tag adds nothing
+    assert category_from_tags(["en:cheeses", "en:yogurts"]) is None
+    for generic in ("en:beverages", "en:meats", "en:fruits", "en:vegetables", "en:snacks", "en:dairies"):
+        assert category_from_tags([generic]) is None, generic
+    assert category_from_tags("en:chocolates") is None          # not a list
+    assert category_from_tags(["en:chocolates", 3, None]) == "sweets"
+
+
+# --- the tag mapping survives bad input (R3) -----------------------------------------------
+
+
+@pytest.mark.parametrize(
+    "tags, expected",
+    [
+        (["en:chocolates", ["x"], {"a": 1}, None, 3, 2.5, True, b"en:milks", ("en:milks",)], "sweets"),
+        (["en:chocolates", "en:milks", ["x"], None], None),             # two valid categories still conflict
+        ([["en:chocolates"], {"en:chocolates": 1}, None, 5, 1.5, False, b"en:chocolates"], None),
+        ([None, None], None),
+        ([], None),
+        (None, None),
+        (5, None),
+        ({"en:chocolates": "x"}, None),                                 # not a list of tags
+        ({"en:chocolates"}, None),                                      # a set is not a list either
+        ("en:chocolates", None),                                        # a bare string neither
+        (("en:cheeses", None, 7), "cheese"),                            # tuples are accepted
+        (["en:unknown-tag", "x", 4], None),
+        ([" en:chocolates", "EN:CHOCOLATES", "en:chocolates "], None),  # not exact -> not mapped
+    ],
+)
+def test_the_tag_mapping_ignores_what_is_not_a_tag_and_never_raises(tags, expected):
+    from backend.app.services.nutrition.off_categories import category_from_tags
+
+    assert category_from_tags(tags) == expected
+
+
+def test_bad_tags_in_a_cached_answer_do_not_break_lookup_or_import(app, client, user, off):
+    off.found(NUTELLA)
+    login(client)
+    # A damaged cache row: the extract step would have dropped these, a direct write did not.
+    assert lookup(client, NUTELLA).status_code == 200
+    row = db.session.get(BarcodeLookup, NUTELLA)
+    payload = dict(row.payload)
+    payload["categories_tags"] = ["en:chocolates", ["x"], {"a": 1}, None, 3]
+    row.payload = payload
+    db.session.commit()
+    body = lookup(client, NUTELLA).get_json()
+    assert body["preview"]["category"] == "sweets"
+    assert do_import(client, NUTELLA).get_json()["product"]["category"] == "sweets"
+
+    payload["categories_tags"] = [["x"], None, 3]
+    row = db.session.get(BarcodeLookup, NUTELLA)
+    row.payload = payload
+    db.session.commit()
+    db.session.query(Product).filter_by(owner_user_id=user.id).delete()
+    db.session.commit()
+    assert lookup(client, NUTELLA).get_json()["preview"]["category"] is None
+    assert do_import(client, NUTELLA).get_json()["product"]["category"] == "other"

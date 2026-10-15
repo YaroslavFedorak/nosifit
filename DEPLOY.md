@@ -23,7 +23,7 @@ Redis (rate-limit counters only).
 | `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET` | from a **separate** GitHub OAuth App for production |
 | `BREVO_API_KEY` | brevo.com (free: 300 emails/day) → *SMTP & API* → *API Keys* |
 | `MAIL_FROM` | `NosiFit <you@gmail.com>` — a sender verified in Brevo (*Senders, Domains & Dedicated IPs* → *Senders*); no own domain needed |
-| `TZ` | `Europe/Kyiv` — the server's "today" becomes the users' day |
+| `APP_TIMEZONE` | `Europe/Kyiv` (the default; falls back to `NOSI_FIT_TIMEZONE`) — the zone whose calendar day is "today" for meals, water, weight and goals. The server's own `TZ` no longer decides it |
 | `PUBLIC_BASE_URL` | only with a custom domain, e.g. `https://nosifit.com` — base of password-reset and Telegram link URLs. Defaults to `https://$RAILWAY_PUBLIC_DOMAIN`; reset emails and Telegram links are refused when neither is set |
 | `RATELIMIT_REDIS_URL` | `${{Redis.REDIS_URL}}` — **required**: the private (`redis.railway.internal`) URL, never `REDIS_PUBLIC_URL`. The app does not start in production without it |
 | `TELEGRAM_BOT_API_SECRET` | output of `python -c "import secrets; print(secrets.token_hex(32))"`; the **same value** on the `bot` service. Signs the bot's `/api/telegram/*` requests. Unset → Telegram sign-in is off (404). Shorter than 32 characters → the app refuses to start |
@@ -124,6 +124,23 @@ starts it, and gunicorn reads that file by itself (the start command does not
 change). `python -m web.scripts.email_outbox --failed` lists what could not
 be sent. Details: [docs/api.md](docs/api.md#background-email).
 
+### Nutrition model (goal history)
+
+Pre-deploy runs migration `b7d2e4a8c1f6`: a new, empty `nutrition_goal_history`
+table (plus an index on `user_id`). No existing rows are touched; downgrade
+drops the table. The pre-deploy command (`flask --app run db upgrade && ...`)
+must finish before the new version starts, otherwise saving a profile fails
+because the table is missing. If the upgrade fails, the deploy is blocked and
+the old version keeps serving.
+
+- "Today" for nutrition is the day in `APP_TIMEZONE` (default `Europe/Kyiv`);
+  the old `TZ` variable is not used for this.
+- Concurrent profile saves rely on the PostgreSQL default isolation level
+  `READ COMMITTED` (per-user advisory lock + atomic upsert). Check read-only:
+  `SHOW default_transaction_isolation;` and `SHOW transaction_isolation;`
+  must both return `read committed`.
+- API and frontend ship together (same service); no separate step.
+
 ## Checks after deploy
 
 - `https://<domain>/healthz` → `{"status": "ok"}`
@@ -136,3 +153,5 @@ be sent. Details: [docs/api.md](docs/api.md#background-email).
 - after connecting or disconnecting Telegram the notice email arrives within a minute;
   `python -m web.scripts.email_outbox` (Railway shell of `web`) shows it as sent
 - `/api/v1/nutrition/day` without signing in answers 401 JSON
+- `flask --app run db current` (Railway shell of `web`) shows `b7d2e4a8c1f6`;
+  saving a new weight in Profile works and Nutrition → goals still shows targets
