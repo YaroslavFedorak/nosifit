@@ -124,6 +124,23 @@ starts it, and gunicorn reads that file by itself (the start command does not
 change). `python -m web.scripts.email_outbox --failed` lists what could not
 be sent. Details: [docs/api.md](docs/api.md#background-email).
 
+### Nutrition model (goal history)
+
+Pre-deploy runs migration `b7d2e4a8c1f6`: a new, empty `nutrition_goal_history`
+table (plus an index on `user_id`). No existing rows are touched; downgrade
+drops the table. The pre-deploy command (`flask --app run db upgrade && ...`)
+must finish before the new version starts, otherwise saving a profile fails
+because the table is missing. If the upgrade fails, the deploy is blocked and
+the old version keeps serving.
+
+- "Today" for nutrition is the day in `APP_TIMEZONE` (default `Europe/Kyiv`);
+  the old `TZ` variable is not used for this.
+- Concurrent profile saves rely on the PostgreSQL default isolation level
+  `READ COMMITTED` (per-user advisory lock + atomic upsert). Check read-only:
+  `SHOW default_transaction_isolation;` and `SHOW transaction_isolation;`
+  must both return `read committed`.
+- API and frontend ship together (same service); no separate step.
+
 ## Checks after deploy
 
 - `https://<domain>/healthz` → `{"status": "ok"}`
@@ -136,3 +153,5 @@ be sent. Details: [docs/api.md](docs/api.md#background-email).
 - after connecting or disconnecting Telegram the notice email arrives within a minute;
   `python -m web.scripts.email_outbox` (Railway shell of `web`) shows it as sent
 - `/api/v1/nutrition/day` without signing in answers 401 JSON
+- `flask --app run db current` (Railway shell of `web`) shows `b7d2e4a8c1f6`;
+  saving a new weight in Profile works and Nutrition → goals still shows targets
