@@ -258,9 +258,15 @@ def reset_with_token(token):
         user.set_password(password)
         db.session.commit()
 
-        start_user_session(user)
-
-        return redirect(pending_link_redirect(url_for("dashboard.dashboard")))
+        # Recovery proves access to the mailbox, not a fresh sign-in: do not
+        # authenticate. Drop whatever session the browser holds (including a
+        # pending Telegram link, which needs an explicit confirmation after a
+        # real login) and send the user to the login page. Same order as
+        # logout(): clear first, then logout_user().
+        session.clear()
+        logout_user()
+        flash("Пароль змінено. Увійдіть з новим паролем.", "success")
+        return redirect(url_for("auth.login"))
 
     return render_template("auth/new_password.html")
 
