@@ -37,6 +37,7 @@
     "confirmPlaceholder": "Repeat password",
     "privacyPrefix": "I agree to the",
     "privacyLink": "privacy policy",
+    "healthConsent": "I give explicit consent to processing my health data (weight, height, age, nutrition, training, sleep) to run the service and for its aggregated internal statistics",
     "submit": "Create account",
     "already": "Already have an account?"
   },
