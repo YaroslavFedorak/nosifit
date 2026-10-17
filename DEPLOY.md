@@ -24,7 +24,7 @@ Redis (rate-limit counters only).
 | `BREVO_API_KEY` | brevo.com (free: 300 emails/day) → *SMTP & API* → *API Keys* |
 | `MAIL_FROM` | `NosiFit <you@gmail.com>` — a sender verified in Brevo (*Senders, Domains & Dedicated IPs* → *Senders*); no own domain needed |
 | `ADMIN_EMAILS` | Optional. Comma-separated emails allowed into `/admin/analytics` (case and spaces ignored). Unset or empty: nobody has access |
-| `ACTIVITY_TRACKING` | Optional, default `true`. `false` stops writing activity events (the dashboard then shows only data from existing records) |
+| `ACTIVITY_TRACKING` | Optional, default `true`. `false` stops writing activity events (the dashboard then shows only data from existing records). Events are kept 13 months and then deleted automatically |
 | `APP_TIMEZONE` | `Europe/Kyiv` (the default; falls back to `NOSI_FIT_TIMEZONE`) — the zone whose calendar day is "today" for meals, water, weight and goals. The server's own `TZ` no longer decides it |
 | `PUBLIC_BASE_URL` | only with a custom domain, e.g. `https://nosifit.com` — base of password-reset and Telegram link URLs. Defaults to `https://$RAILWAY_PUBLIC_DOMAIN`; reset emails and Telegram links are refused when neither is set |
 | `RATELIMIT_REDIS_URL` | `${{Redis.REDIS_URL}}` — **required**: the private (`redis.railway.internal`) URL, never `REDIS_PUBLIC_URL`. The app does not start in production without it |
