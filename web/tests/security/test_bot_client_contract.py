@@ -148,3 +148,34 @@ def test_an_unlinked_telegram_account_is_told_so(wired):
         TelegramAuthClient(BASE_URL, SECRET).login(TelegramUser(id=999_999))
 
     assert raised.value.code == "not_linked"
+
+
+# --- Consent (auth/consent.py) -------------------------------------------------
+
+
+def test_a_bot_without_consent_is_sent_to_consent_not_to_login(bot_api, user):
+    user.privacy_accepted_at = user.health_data_consent_at = user.consent_version = None
+    db.session.commit()
+
+    with pytest.raises(NosiFitAPIError) as raised:
+        bot_api.get_day()
+
+    assert raised.value.code == "consent_required"
+    assert "/consent" in str(raised.value)
+    assert bot_api.expired is False  # the session is fine: no "log in again" loop
+
+    assert bot_api.give_consent()["status"] == "ok"
+    assert isinstance(bot_api.get_day()["meals"], list)
+
+    db.session.refresh(user)
+    assert user.privacy_accepted_at and user.health_data_consent_at
+
+
+def test_the_bot_can_withdraw_consent_and_is_then_asked_again(bot_api, user):
+    assert bot_api.withdraw_consent()["status"] == "withdrawn"
+
+    with pytest.raises(NosiFitAPIError) as raised:
+        bot_api.get_day()
+
+    assert raised.value.code == "consent_required"
+    assert bot_api.expired is False

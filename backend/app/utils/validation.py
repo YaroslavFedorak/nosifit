@@ -60,6 +60,20 @@ def clean_username(value):
     return username
 
 
+# NosiFit is for people aged 16 and over (privacy policy, section 8). Applies to
+# ages users enter; PROFILE_RANGES["age"] stays the range the calculations
+# accept for data already stored.
+MIN_ACCOUNT_AGE = 16
+
+
+def parse_account_age(value, required=False):
+    """An age a user enters: a whole number from MIN_ACCOUNT_AGE; empty -> None."""
+    age = parse_profile_number("age", value, required=required)
+    if age is not None and age < MIN_ACCOUNT_AGE:
+        raise ValidationError(f"age must be at least {MIN_ACCOUNT_AGE}")
+    return age
+
+
 def parse_profile_number(field, value, required=False):
     """Parse a profile number within PROFILE_RANGES; empty -> None."""
     if value is None or (isinstance(value, str) and not value.strip()):

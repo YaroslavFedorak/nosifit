@@ -187,7 +187,14 @@ def test_brute_force_does_not_get_through_while_redis_is_down(broken_redis_clien
     "path,data",
     [
         ("/auth/reset", {"email": "test@example.com"}),
-        ("/verify/send_code", {"username": "u", "email": "n@example.com", "password": "a-good-password"}),
+        ("/verify/send_code", {
+                "username": "u",
+                "email": "n@example.com",
+                "password": "a-good-password",
+                "privacy_consent": "on",
+                "health_consent": "on",
+                "age": "30",
+            }),
     ],
 )
 def test_other_auth_endpoints_fail_closed(broken_redis_client, user, path, data):

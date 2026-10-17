@@ -149,7 +149,14 @@ def test_complete_profile_links_oauth_account(client):
 
     response = client.post(
         "/auth/complete_profile",
-        data={"age": "25", "height": "180", "weight": "75", "workouts": "3"},
+        data={
+            "age": "25",
+            "height": "180",
+            "weight": "75",
+            "workouts": "3",
+            "privacy_consent": "on",
+            "health_consent": "on",
+        },
     )
 
     assert response.status_code == 302
@@ -278,7 +285,14 @@ def test_complete_profile_then_profile_page_opens(client):
 
     response = client.post(
         "/auth/complete_profile",
-        data={"age": "25", "height": "180", "weight": "75", "workouts": "3"},
+        data={
+            "age": "25",
+            "height": "180",
+            "weight": "75",
+            "workouts": "3",
+            "privacy_consent": "on",
+            "health_consent": "on",
+        },
         follow_redirects=True,
     )
 

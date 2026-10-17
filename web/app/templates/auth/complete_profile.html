@@ -38,7 +38,7 @@
               class="cmp-input"
               type="number"
               name="age"
-              min="10"
+              min="16"
               max="120"
               placeholder="18"
               required
@@ -130,6 +130,15 @@
             required
           />
         </div>
+
+        <label class="check" style="display:flex;gap:8px;align-items:flex-start;margin:12px 0 0;">
+          <input type="checkbox" name="privacy_consent" required style="margin-top:4px;" />
+          <span>{{ auth_t("register.privacyPrefix") }} <a href="/privacy" target="_blank" rel="noopener">{{ auth_t("register.privacyLink") }}</a></span>
+        </label>
+        <label class="check" style="display:flex;gap:8px;align-items:flex-start;margin:8px 0 0;">
+          <input type="checkbox" name="health_consent" required style="margin-top:4px;" />
+          <span>{{ auth_t("register.healthConsent") }}</span>
+        </label>
 
         <div class="auth-actions">
           <a href="{{ url_for('root.landing') }}" class="btn-back">{{ auth_t("common.back") }}</a>

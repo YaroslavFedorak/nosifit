@@ -7,7 +7,7 @@ from aiogram.enums import ParseMode
 from aiogram.fsm.storage.memory import MemoryStorage
 
 from telegram_bot.config import TelegramConfig
-from telegram_bot.handlers import auth, common, nutrition, start, training, water, weight
+from telegram_bot.handlers import auth, common, consent, nutrition, start, training, water, weight
 from telegram_bot.security import is_private_human
 
 logging.basicConfig(
@@ -24,6 +24,7 @@ def create_dispatcher() -> Dispatcher:
     dispatcher.callback_query.filter(is_private_human)
     dispatcher.edited_message.filter(is_private_human)
     dispatcher.include_router(auth.router)
+    dispatcher.include_router(consent.router)
     dispatcher.include_router(start.router)
     # Before nutrition: its search states take any text, the training
     # button included; training text handlers skip menu buttons.

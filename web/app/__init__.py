@@ -108,6 +108,11 @@ def create_app(config=None, *, pages=True):
 
     app.before_request(enforce_telegram_session)
 
+    # After the Telegram scope check: consent to the privacy policy.
+    from auth.consent import enforce_consent
+
+    app.before_request(enforce_consent)
+
     oauth.register(
         name="google",
         client_id=os.getenv("GOOGLE_CLIENT_ID"),
