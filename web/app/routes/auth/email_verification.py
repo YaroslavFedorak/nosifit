@@ -2,10 +2,12 @@ from flask import Blueprint, request, render_template, redirect, session, flash,
 from backend.app.models.verification_code import VerificationCode
 from backend.app.models.user import User
 import secrets
+from datetime import datetime, timezone
 
 from werkzeug.security import generate_password_hash
 
 from backend.app.extensions import db
+from backend.app.services.consent import consent_given
 from backend.app.utils.mailer import EmailSendError, send_email
 from backend.app.utils.validation import clean_username, normalize_email, password_problem
 from web.app.security import client_ip, hit_limit, reset_limit, too_many_requests
@@ -127,6 +129,12 @@ def send_code():
         flash("Паролі не збігаються.", "error")
         return redirect(url_for("auth.register"))
 
+    # The form carries weight, height and age: nothing is kept without both
+    # consents (backend/app/services/consent.py).
+    if not consent_given(request.form):
+        flash("Щоб зареєструватися, прийміть політику конфіденційності та надайте згоду на обробку даних про здоров'я.", "error")
+        return redirect(url_for("auth.register"))
+
     # Limited before anything depends on whether the address is registered.
     if _send_limited(email):
         return too_many_requests("Забагато запитів коду. Спробуйте пізніше.")
@@ -140,6 +148,7 @@ def send_code():
         username=username,
         email=email,
         password_hash=generate_password_hash(password),
+        consent_at=datetime.now(timezone.utc).replace(tzinfo=None).isoformat(),
     )
     session["reg_data"] = reg_data
     session.pop("verified_email", None)

@@ -1,0 +1,13 @@
+{% extends "public/base_public.html" %}
+
+{% block title %}{{ 'Політика конфіденційності' if policy_locale == 'uk' else 'Privacy policy' }} — nosifit{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/pages/legal.css') }}" />
+{% endblock %}
+
+{% block body %}
+<article class="legal-root" lang="{{ policy_locale }}">
+  {% include "legal/privacy_" ~ policy_locale ~ ".html" %}
+</article>
+{% endblock %}

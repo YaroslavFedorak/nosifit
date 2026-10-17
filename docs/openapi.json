@@ -12,6 +12,9 @@
   ],
   "tags": [
     {
+      "name": "consent"
+    },
+    {
       "name": "dashboard"
     },
     {
@@ -40,6 +43,50 @@
     }
   ],
   "paths": {
+    "/consent": {
+      "post": {
+        "operationId": "consent_api.give_consent",
+        "tags": [
+          "consent"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "description": "Not described yet."
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success. The body is not described yet.",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
     "/dashboard/day/{date_iso}": {
       "get": {
         "operationId": "dashboard_api.day",

@@ -37,6 +37,7 @@
     "confirmPlaceholder": "Powtórz hasło",
     "privacyPrefix": "Akceptuję",
     "privacyLink": "politykę prywatności",
+    "healthConsent": "Wyrażam wyraźną zgodę na przetwarzanie moich danych o zdrowiu (waga, wzrost, wiek, odżywianie, treningi, sen) w celu działania serwisu",
     "submit": "Utwórz konto",
     "already": "Masz już konto?"
   },

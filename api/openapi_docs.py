@@ -56,6 +56,7 @@ TAGS = {
     "recovery": "recovery",
     "telegram_api": "telegram",
     "training_api": "training",
+    "consent_api": "consent",
 }
 
 

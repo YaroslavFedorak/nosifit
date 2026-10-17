@@ -23,6 +23,8 @@ Redis (rate-limit counters only).
 | `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET` | from a **separate** GitHub OAuth App for production |
 | `BREVO_API_KEY` | brevo.com (free: 300 emails/day) → *SMTP & API* → *API Keys* |
 | `MAIL_FROM` | `NosiFit <you@gmail.com>` — a sender verified in Brevo (*Senders, Domains & Dedicated IPs* → *Senders*); no own domain needed |
+| `PRIVACY_CONTROLLER_NAME` | Your full name: shown on `/privacy` as the person responsible for the data |
+| `PRIVACY_CONTACT_EMAIL` | The email for data requests, shown on `/privacy` |
 | `APP_TIMEZONE` | `Europe/Kyiv` (the default; falls back to `NOSI_FIT_TIMEZONE`) — the zone whose calendar day is "today" for meals, water, weight and goals. The server's own `TZ` no longer decides it |
 | `PUBLIC_BASE_URL` | only with a custom domain, e.g. `https://nosifit.com` — base of password-reset and Telegram link URLs. Defaults to `https://$RAILWAY_PUBLIC_DOMAIN`; reset emails and Telegram links are refused when neither is set |
 | `RATELIMIT_REDIS_URL` | `${{Redis.REDIS_URL}}` — **required**: the private (`redis.railway.internal`) URL, never `REDIS_PUBLIC_URL`. The app does not start in production without it |
@@ -140,6 +142,21 @@ the old version keeps serving.
   `SHOW default_transaction_isolation;` and `SHOW transaction_isolation;`
   must both return `read committed`.
 - API and frontend ship together (same service); no separate step.
+
+### Privacy policy and consent
+
+Pre-deploy runs migration `e4b8c2d6f1a3`: three nullable columns on `users`
+(`privacy_accepted_at`, `health_data_consent_at`, `consent_version`); no row
+is changed. Set `PRIVACY_CONTROLLER_NAME` and `PRIVACY_CONTACT_EMAIL` before
+deploying: `/privacy` shows a visible "not set" marker without them.
+
+After the deploy every existing user is asked once for both consents (the
+policy and, separately, health data): pages redirect to `/consent`, the API
+answers 403 `consent_required`, and the bot points to its `/consent`
+command. New accounts give both on the registration and Google/GitHub
+profile forms. Signing out, reading the policy and deleting the account
+work without consent. A policy change that needs new consent: bump
+`CONSENT_VERSION` in `backend/app/services/consent.py`.
 
 ## Checks after deploy
 

@@ -1,9 +1,12 @@
+from datetime import datetime
+
 from flask import Blueprint, render_template, request, redirect, flash, session, url_for
 from flask_login import current_user, login_user, logout_user
 from sqlalchemy.exc import IntegrityError
 from backend.app.extensions import db
 from backend.app.models.user import User
 from backend.app.models.user_profile import UserProfile
+from backend.app.services.consent import apply_consent
 from backend.app.utils.email_service import send_password_reset_email
 from backend.app.utils.mailer import EmailSendError
 from backend.app.utils.token import verify_reset_token
@@ -130,6 +133,7 @@ def register_complete():
         or not verified_email
         or reg_data.get("email") != verified_email
         or not reg_data.get("password_hash")
+        or not reg_data.get("consent_at")
     ):
         flash("Спочатку підтвердіть email", "error")
         return redirect(url_for("auth.register"))
@@ -153,6 +157,8 @@ def register_complete():
             # Hashed in /verify/send_code; the plain password never reaches the session.
             password=reg_data["password_hash"],
         )
+        # Both consents were given on the registration form (/verify/send_code).
+        apply_consent(user, datetime.fromisoformat(reg_data["consent_at"]))
 
         db.session.add(user)
         try:
