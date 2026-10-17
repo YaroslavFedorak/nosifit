@@ -194,7 +194,7 @@ def test_reset_link_works_only_once(client, user):
         f"/auth/reset/{token}",
         data={"password": "first-new-password", "confirm": "first-new-password"},
     )
-    assert first.location.endswith("/dashboard/")
+    assert first.location.endswith("/auth/login")
 
     second = client.post(
         f"/auth/reset/{token}",
@@ -204,6 +204,162 @@ def test_reset_link_works_only_once(client, user):
 
     db.session.refresh(user)
     assert user.check_password("first-new-password")
+
+
+def _reset_token(client, user):
+    with client.application.test_request_context():
+        return generate_reset_token(user)
+
+
+def test_reset_redirects_to_login_without_authenticating(client, user):
+    token = _reset_token(client, user)
+
+    response = client.post(
+        f"/auth/reset/{token}",
+        data={"password": "first-new-password", "confirm": "first-new-password"},
+    )
+
+    assert response.status_code == 302
+    assert response.location.endswith("/auth/login")
+    assert not any(
+        c.startswith("remember_token=") and "remember_token=;" not in c
+        for c in response.headers.getlist("Set-Cookie")
+    )
+    with client.session_transaction() as session:
+        assert "_user_id" not in session
+        assert any("Пароль змінено" in m for _, m in session.get("_flashes", []))
+
+    g.pop("_login_user", None)
+    assert client.get("/profile/").status_code == 302
+    g.pop("_login_user", None)
+    assert client.get("/dashboard/").status_code == 302
+
+
+def test_reset_password_works_for_login_and_old_one_does_not(client, user):
+    token = _reset_token(client, user)
+    client.post(
+        f"/auth/reset/{token}",
+        data={"password": "first-new-password", "confirm": "first-new-password"},
+    )
+
+    old = login(client)
+    assert old.location.endswith("/auth/login")
+    g.pop("_login_user", None)
+    assert client.get("/profile/").status_code == 302
+
+    new = login(client, password="first-new-password")
+    assert new.location.endswith("/dashboard/")
+    g.pop("_login_user", None)
+    assert client.get("/profile/").status_code == 200
+
+
+def test_reset_kills_previously_authenticated_session(app, user):
+    attacker = app.test_client()
+    victim = app.test_client()
+    login(attacker)
+    assert attacker.get("/profile/").status_code == 200
+    token = _reset_token(victim, user)
+
+    victim.post(
+        f"/auth/reset/{token}",
+        data={"password": "first-new-password", "confirm": "first-new-password"},
+    )
+
+    g.pop("_login_user", None)
+    assert attacker.get("/profile/").status_code == 302
+    g.pop("_login_user", None)
+    assert attacker.get("/dashboard/").status_code == 302
+
+
+def test_reset_signs_out_the_browser_that_completes_it(client, user):
+    login(client)
+    token = _reset_token(client, user)
+
+    client.post(
+        f"/auth/reset/{token}",
+        data={"password": "first-new-password", "confirm": "first-new-password"},
+    )
+
+    with client.session_transaction() as session:
+        assert "_user_id" not in session
+    g.pop("_login_user", None)
+    assert client.get("/profile/").status_code == 302
+
+
+@pytest.mark.parametrize(
+    "token", ["x", "a.b.c", "%00", "A" * 500, "eyJ1aWQiOjF9.invalid.signature"]
+)
+def test_malformed_reset_tokens_change_nothing(client, user, token):
+    response = client.post(
+        f"/auth/reset/{token}",
+        data={"password": "attacker-password", "confirm": "attacker-password"},
+    )
+
+    assert response.status_code in (302, 404)
+    db.session.refresh(user)
+    assert user.check_password(PASSWORD)
+    with client.session_transaction() as session:
+        assert "_user_id" not in session
+
+
+def test_expired_reset_token_changes_nothing(client, user, monkeypatch):
+    token = _reset_token(client, user)
+    from backend.app.utils import token as token_module
+    from web.app.routes.auth import main as auth_main
+
+    # A token older than max_age is expired; -1 makes every token so.
+    monkeypatch.setattr(
+        auth_main, "verify_reset_token", lambda t: token_module.verify_reset_token(t, max_age=-1)
+    )
+
+    response = client.post(
+        f"/auth/reset/{token}",
+        data={"password": "attacker-password", "confirm": "attacker-password"},
+    )
+
+    assert response.location.endswith("/auth/reset")
+    db.session.refresh(user)
+    assert user.check_password(PASSWORD)
+
+
+def test_oauth_only_account_can_set_first_password_through_recovery(client, app):
+    oauth_user = User(username="g", email="g@example.com", password="oauth")
+    db.session.add(oauth_user)
+    db.session.commit()
+    token = _reset_token(client, oauth_user)
+
+    response = client.post(
+        f"/auth/reset/{token}",
+        data={"password": "first-new-password", "confirm": "first-new-password"},
+    )
+
+    assert response.location.endswith("/auth/login")
+    db.session.refresh(oauth_user)
+    assert oauth_user.check_password("first-new-password")
+    assert login(client, email="g@example.com", password="first-new-password").location.endswith(
+        "/dashboard/"
+    )
+
+
+def test_reset_does_not_complete_a_pending_telegram_link(client, user):
+    import time
+
+    with client.session_transaction() as session:
+        session["tg_link"] = {"h": "x" * 64, "csrf": "c", "exp": int(time.time()) + 600}
+    token = _reset_token(client, user)
+
+    response = client.post(
+        f"/auth/reset/{token}",
+        data={"password": "first-new-password", "confirm": "first-new-password"},
+    )
+
+    assert response.location.endswith("/auth/login")
+    assert "telegram" not in response.location
+    with client.session_transaction() as session:
+        assert "tg_link" not in session
+        assert "_user_id" not in session
+    # The later explicit login finds nothing pending to confirm or complete.
+    assert login(client, password="first-new-password").location.endswith("/dashboard/")
 
 
 def test_invalid_reset_token_is_not_a_server_error(client):
