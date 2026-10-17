@@ -34,6 +34,10 @@ ERROR_MESSAGES = {
     "invalid_product_data": "Дані про цей продукт у базі неправдоподібні. Створіть свій продукт з етикетки.",
     "duplicate_barcode": "У вас уже є продукт з цим штрихкодом.",
     "rate_limited": "Забагато запитів. Спробуйте за хвилину.",
+    "consent_required": (
+        "Щоб продовжити, прийміть політику конфіденційності та надайте згоду "
+        "на обробку даних про здоров'я: /consent"
+    ),
 }
 
 
@@ -69,8 +73,9 @@ class NosiFitAPI:
         # Each API reports its stable code in "code" (nutrition, auth) or
         # "error" (training).
         code = payload.get("code") or payload.get("error")
-        if response.status_code == 403 and code == "telegram_session_scope":
-            # The session is fine, the endpoint is just not open to the bot.
+        if response.status_code == 403 and code in ("telegram_session_scope", "consent_required"):
+            # The session is fine: the endpoint is not open to the bot, or the
+            # account still has to accept the privacy policy (/consent).
             raise NosiFitAPIError(ERROR_MESSAGES[code], code)
         needs_login = response.status_code in (401, 403) or (
             response.is_redirect
@@ -90,6 +95,15 @@ class NosiFitAPI:
     def ensure_authenticated(self) -> None:
         if not self.session.cookies:
             raise NosiFitAPIError("Спочатку увійдіть: /login")
+
+    def give_consent(self) -> dict:
+        """Accept the privacy policy and health-data processing (both, explicitly)."""
+        self.ensure_authenticated()
+        return self._request(
+            "POST",
+            "/api/consent",
+            json={"privacy_consent": True, "health_consent": True},
+        ).json()
 
     def get_day(self, locale: str = "uk") -> dict:
         self.ensure_authenticated()

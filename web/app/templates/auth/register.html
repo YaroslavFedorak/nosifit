@@ -218,8 +218,12 @@
             </div>
 
             <label class="check" data-anim>
-              <input type="checkbox" required />
-              {{ auth_t("register.privacyPrefix") }} <a href="/privacy">{{ auth_t("register.privacyLink") }}</a>
+              <input type="checkbox" name="privacy_consent" required />
+              {{ auth_t("register.privacyPrefix") }} <a href="/privacy" target="_blank" rel="noopener">{{ auth_t("register.privacyLink") }}</a>
+            </label>
+            <label class="check" data-anim>
+              <input type="checkbox" name="health_consent" required />
+              {{ auth_t("register.healthConsent") }}
             </label>
           </form>
         </div>

@@ -242,6 +242,8 @@ def _register(client, **overrides):
         "email": "newbie@example.com",
         "password": "a-good-password",
         "confirm_password": "a-good-password",
+        "privacy_consent": "on",
+        "health_consent": "on",
     }
     form.update(overrides)
     return client.post("/verify/send_code", data=form)

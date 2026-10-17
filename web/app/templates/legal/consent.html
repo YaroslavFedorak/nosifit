@@ -1,0 +1,35 @@
+{% extends "public/base_public.html" %}
+
+{% block title %}Згода на обробку даних — nosifit{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/pages/legal.css') }}" />
+{% endblock %}
+
+{% block body %}
+<section class="legal-root legal-consent">
+  <h1>Згода на обробку даних</h1>
+  <p>
+    Щоб користуватися NosiFit, потрібні дві згоди. Ми оновили
+    <a href="{{ url_for('legal.privacy') }}" target="_blank" rel="noopener">політику конфіденційності</a>
+    (редакція від {{ policy_date }}): прочитайте її перед тим, як погодитися.
+  </p>
+  {% include "auth/_flashes.html" %}
+  <form method="post" action="{{ url_for('legal.consent') }}" class="legal-form">
+    <input type="hidden" name="next" value="{{ next_url }}" />
+    <label class="legal-check">
+      <input type="checkbox" name="privacy_consent" required />
+      <span>Я прочитав(-ла) і приймаю <a href="{{ url_for('legal.privacy') }}" target="_blank" rel="noopener">політику конфіденційності</a>.</span>
+    </label>
+    <label class="legal-check">
+      <input type="checkbox" name="health_consent" required />
+      <span>Я надаю явну згоду на обробку моїх даних про здоров'я (вага, зріст, вік, харчування, тренування, сон, звички) для роботи сервісу. Я можу відкликати згоду, видаливши акаунт.</span>
+    </label>
+    <button type="submit" class="legal-submit">Погоджуюсь і продовжую</button>
+  </form>
+  <p class="legal-meta">
+    Не погоджуєтеся? <a href="{{ url_for('auth.logout') }}">Вийти</a> або видаліть акаунт у профілі —
+    видалення доступне й без згоди.
+  </p>
+</section>
+{% endblock %}

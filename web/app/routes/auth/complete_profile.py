@@ -4,6 +4,7 @@ from backend.app.extensions import db
 from backend.app.models.user import OAUTH_PASSWORD_MARKER, User
 from backend.app.models.oauth_account import OAuthAccount
 from backend.app.models.user_profile import UserProfile
+from backend.app.services.consent import apply_consent, consent_given
 from backend.app.utils.validation import (
     ValidationError,
     clean_choice,
@@ -57,6 +58,12 @@ def complete_profile():
         return redirect(pending_link_redirect("/profile"))
 
     if request.method == "POST":
+        # Age, height and weight are health data: nothing is stored without
+        # both consents (backend/app/services/consent.py).
+        if not consent_given(request.form):
+            flash("Прийміть політику конфіденційності та надайте згоду на обробку даних про здоров'я.", "error")
+            return render_template("auth/complete_profile.html", oauth_user=oauth_user)
+
         try:
             age = parse_profile_number("age", request.form.get("age"), required=True)
             height = parse_profile_number("height", request.form.get("height"), required=True)
@@ -79,6 +86,7 @@ def complete_profile():
             password=OAUTH_PASSWORD_MARKER,
             is_premium=False,
         )
+        apply_consent(user)
 
         db.session.add(user)
         db.session.flush()
