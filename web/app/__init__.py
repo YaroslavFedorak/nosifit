@@ -7,6 +7,7 @@ from flask_compress import Compress
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 from backend.app.extensions import db, login_manager, migrate, mail, oauth
+from web.app.activity import init_activity_tracking
 from web.app.assets import compute_asset_version, init_assets
 from web.app.i18n import init_i18n
 from web.app.security import init_security
@@ -134,5 +135,7 @@ def create_app(config=None, *, pages=True):
 
         register_pages(app)
     register_api(app)
+
+    init_activity_tracking(app)
 
     return app

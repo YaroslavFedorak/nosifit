@@ -3,6 +3,7 @@ from backend.app.models.user_equipment import UserEquipment
 from backend.app.models.oauth_account import OAuthAccount
 from backend.app.models.telegram import TelegramIdentity, TelegramLinkToken
 from backend.app.models.email_outbox import EmailOutbox
+from backend.app.models.activity_event import ActivityEvent
 
 # Nutrition subsystem
 from backend.app.models.nutrition.plan import NutritionPlan
