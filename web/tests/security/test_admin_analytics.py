@@ -23,8 +23,10 @@ END = date(2026, 6, 30)
 @pytest.fixture(autouse=True)
 def _fresh_tracker():
     activity._seen.clear()
+    activity._purged_on["day"] = None
     yield
     activity._seen.clear()
+    activity._purged_on["day"] = None
 
 
 def _login(client, email, password=PASSWORD):
@@ -667,3 +669,34 @@ def test_versioned_and_unversioned_requests_are_tracked(client, user, path, body
 
     assert response.status_code == 200
     assert [(r.event, r.source) for r in _rows()] == [(event, "web")]
+
+
+# --- Retention: 13 months ----------------------------------------------------------
+
+
+def test_events_older_than_13_months_are_deleted_on_the_first_write_of_the_day(client, user):
+    today = datetime.utcnow().date()
+    keep = today - timedelta(days=activity.RETENTION_DAYS)  # exactly at the limit: kept
+    drop = today - timedelta(days=activity.RETENTION_DAYS + 1)
+    _events(user, keep, drop)
+    activity._purged_on["day"] = None
+    _login(client, "test@example.com")
+
+    assert _post_water(client).status_code == 200
+
+    days = sorted(r.day for r in _rows())
+    assert drop not in days
+    assert keep in days and today in days
+    assert activity._purged_on["day"] == today
+
+
+def test_purge_runs_once_per_day_per_process(client, user):
+    today = datetime.utcnow().date()
+    activity._purged_on["day"] = today  # already purged today in this process
+    old = today - timedelta(days=activity.RETENTION_DAYS + 10)
+    _events(user, old)
+    _login(client, "test@example.com")
+
+    assert _post_water(client).status_code == 200
+
+    assert old in {r.day for r in _rows()}  # left for tomorrow's first write

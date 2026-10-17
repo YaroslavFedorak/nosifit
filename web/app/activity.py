@@ -10,9 +10,11 @@ in-memory set plus the table's primary key.
 The write uses its own short connection with a lock timeout, after the
 request has already been answered by the view, and swallows every error: a
 broken or disabled tracker can never fail or slow down a user's request.
+
+Rows are kept RETENTION_DAYS (13 months, as /privacy says) and then deleted.
 """
 
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 from flask import current_app, request
 from flask_login import current_user
@@ -47,6 +49,13 @@ _INSERT = text(
 )
 _SEEN_LIMIT = 50_000
 _seen: set = set()
+
+# Rows older than this are deleted (the privacy policy promises 13 months).
+# Done at most once per UTC day per process, on the first tracked write of
+# the day: a range delete on the (day, user_id) index; no scheduler needed.
+RETENTION_DAYS = 396
+_PURGE = text("DELETE FROM activity_events WHERE day < :cutoff")
+_purged_on: dict = {"day": None}
 
 
 def canonical_endpoint(endpoint: str) -> str:
@@ -89,6 +98,9 @@ def record_activity(response):
                 _INSERT,
                 {"user_id": user_id, "day": day, "event": event, "source": source},
             )
+            if _purged_on["day"] != day:
+                connection.execute(_PURGE, {"cutoff": day - timedelta(days=RETENTION_DAYS)})
+        _purged_on["day"] = day
         if len(_seen) >= _SEEN_LIMIT:
             _seen.clear()
         _seen.add(key)
