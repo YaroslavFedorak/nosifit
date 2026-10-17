@@ -10,26 +10,43 @@
 <section class="legal-root legal-consent">
   <h1>Згода на обробку даних</h1>
   <p>
-    Щоб користуватися NosiFit, потрібні дві згоди. Ми оновили
+    NosiFit зберігає дані про ваше здоров'я та фізичну форму: вагу, харчування, тренування, сон.
+    Для цього потрібна ваша явна згода. Прочитайте
     <a href="{{ url_for('legal.privacy') }}" target="_blank" rel="noopener">політику конфіденційності</a>
-    (редакція від {{ policy_date }}): прочитайте її перед тим, як погодитися.
+    (редакція від {{ policy_date }}), перш ніж погодитися.
   </p>
   {% include "auth/_flashes.html" %}
+
+  {% if under_age %}
+  <p class="legal-warning">
+    У вашому профілі вказано вік менше {{ min_age }} років, а NosiFit доступний з {{ min_age }}.
+    Ви можете завантажити свої дані або видалити акаунт (нижче).
+  </p>
+  {% else %}
   <form method="post" action="{{ url_for('legal.consent') }}" class="legal-form">
     <input type="hidden" name="next" value="{{ next_url }}" />
+    <label class="legal-check">
+      <input type="checkbox" name="age_confirmed" required />
+      <span>Мені виповнилося {{ min_age }} років.</span>
+    </label>
     <label class="legal-check">
       <input type="checkbox" name="privacy_consent" required />
       <span>Я прочитав(-ла) і приймаю <a href="{{ url_for('legal.privacy') }}" target="_blank" rel="noopener">політику конфіденційності</a>.</span>
     </label>
     <label class="legal-check">
       <input type="checkbox" name="health_consent" required />
-      <span>Я надаю явну згоду на обробку моїх даних про здоров'я (вага, зріст, вік, харчування, тренування, сон, звички) для роботи сервісу. Я можу відкликати згоду, видаливши акаунт.</span>
+      <span>Я надаю явну згоду на обробку моїх даних про здоров'я (вага, зріст, вік, харчування, тренування, сон, звички) для роботи сервісу та його агрегованої внутрішньої статистики. Я можу відкликати згоду, видаливши акаунт.</span>
     </label>
     <button type="submit" class="legal-submit">Погоджуюсь і продовжую</button>
   </form>
-  <p class="legal-meta">
-    Не погоджуєтеся? <a href="{{ url_for('auth.logout') }}">Вийти</a> або видаліть акаунт у профілі —
-    видалення доступне й без згоди.
-  </p>
+  {% endif %}
+
+  <h2>Якщо ви не погоджуєтеся</h2>
+  <ul>
+    <li>Ваші дані нікуди не зникають, доки ви не видалите акаунт.</li>
+    <li><a href="{{ url_for('legal.my_data') }}">Завантажити всі свої дані</a> (файл JSON) можна й без згоди.</li>
+    <li>Видалити акаунт і всі дані: <a href="{{ url_for('profile_pages.profile_page') }}">Профіль</a> → Видалити акаунт (доступно й без згоди).</li>
+    <li>Без згоди решта функцій недоступна, бо вони обробляють дані про здоров'я. <a href="{{ url_for('auth.logout') }}">Вийти</a></li>
+  </ul>
 </section>
 {% endblock %}

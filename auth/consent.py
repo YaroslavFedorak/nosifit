@@ -2,8 +2,9 @@
 
 A signed-in user who has not accepted the current privacy policy and given
 explicit consent to processing health data (backend/app/services/consent.py)
-can still sign in and out, read the policy, give consent, use public pages
-and delete the account, but nothing else:
+can still sign in and out, read the policy, give consent, use public pages,
+see their profile, download their data (/privacy/my-data) and delete the
+account, but nothing else:
 
 - pages answer with a redirect to /consent (and back afterwards);
 - the JSON API and form posts answer 403 {"code": "consent_required"}; the
@@ -36,6 +37,7 @@ OPEN_BLUEPRINTS = frozenset(
         "legal",  # /privacy, /consent
         "consent_api",
         "i18n",
+        "profile_pages",  # the profile page: shows own data, holds "delete account"
         "delete_request",  # deleting the account is always possible
         "delete_confirm",
         "delete_final",

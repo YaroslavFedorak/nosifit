@@ -169,3 +169,13 @@ def test_a_bot_without_consent_is_sent_to_consent_not_to_login(bot_api, user):
 
     db.session.refresh(user)
     assert user.privacy_accepted_at and user.health_data_consent_at
+
+
+def test_the_bot_can_withdraw_consent_and_is_then_asked_again(bot_api, user):
+    assert bot_api.withdraw_consent()["status"] == "withdrawn"
+
+    with pytest.raises(NosiFitAPIError) as raised:
+        bot_api.get_day()
+
+    assert raised.value.code == "consent_required"
+    assert bot_api.expired is False

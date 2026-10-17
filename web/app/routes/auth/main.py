@@ -13,6 +13,7 @@ from backend.app.utils.token import verify_reset_token
 from backend.app.utils.validation import (
     ValidationError,
     clean_choice,
+    parse_account_age,
     parse_profile_number,
     password_problem,
 )
@@ -104,7 +105,7 @@ def _profile_from_registration(reg_data):
     return {
         "weight": parse_profile_number("weight", reg_data.get("weight")),
         "height": parse_profile_number("height", reg_data.get("height")),
-        "age": parse_profile_number("age", reg_data.get("age")),
+        "age": parse_account_age(reg_data.get("age"), required=True),
         "workouts_per_week": parse_profile_number(
             "workouts_per_week", reg_data.get("workouts_per_week")
         ),

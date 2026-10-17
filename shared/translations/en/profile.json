@@ -24,7 +24,10 @@
         "editProfile": "Edit profile",
         "changeEmail": "Change email",
         "changePassword": "Change password",
-        "deleteAccount": "Delete account"
+        "deleteAccount": "Delete account",
+        "downloadData": "Download my data",
+        "privacyPolicy": "Privacy policy",
+        "withdrawConsent": "Withdraw consent"
     },
     "activity": {
         "title": "Training activity",
@@ -244,6 +247,8 @@
         "password": "Password",
         "change": "Change",
         "signIn": "Sign-in methods",
+        "data": "Your data",
+        "dataText": "Download everything NosiFit stores about you (a JSON file), or read the privacy policy.",
         "danger": "Delete account",
         "dangerText": "Your account and all your data will be deleted permanently. You will need to confirm with a code sent to your email.",
         "plan": "Plan",

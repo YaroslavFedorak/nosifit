@@ -9,7 +9,14 @@ from werkzeug.security import generate_password_hash
 from backend.app.extensions import db
 from backend.app.services.consent import consent_given
 from backend.app.utils.mailer import EmailSendError, send_email
-from backend.app.utils.validation import clean_username, normalize_email, password_problem
+from backend.app.utils.validation import (
+    MIN_ACCOUNT_AGE,
+    ValidationError,
+    clean_username,
+    normalize_email,
+    parse_account_age,
+    password_problem,
+)
 from web.app.security import client_ip, hit_limit, reset_limit, too_many_requests
 
 from backend.app.services.verification_codes import (
@@ -133,6 +140,12 @@ def send_code():
     # consents (backend/app/services/consent.py).
     if not consent_given(request.form):
         flash("Щоб зареєструватися, прийміть політику конфіденційності та надайте згоду на обробку даних про здоров'я.", "error")
+        return redirect(url_for("auth.register"))
+
+    try:
+        parse_account_age(request.form.get("age"), required=True)
+    except ValidationError:
+        flash(f"NosiFit доступний з {MIN_ACCOUNT_AGE} років. Вкажіть свій вік.", "error")
         return redirect(url_for("auth.register"))
 
     # Limited before anything depends on whether the address is registered.

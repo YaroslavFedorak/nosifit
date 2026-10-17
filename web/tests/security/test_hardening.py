@@ -244,6 +244,7 @@ def _register(client, **overrides):
         "confirm_password": "a-good-password",
         "privacy_consent": "on",
         "health_consent": "on",
+        "age": "30",
     }
     form.update(overrides)
     return client.post("/verify/send_code", data=form)
@@ -300,7 +301,12 @@ def test_full_registration_still_works(client, sent_codes):
 
 
 def test_registration_rejects_impossible_profile_values(client, sent_codes):
+    # An impossible age is refused before any code is sent.
     _register(client, age="-5", weight="nan")
+    assert "newbie@example.com" not in sent_codes
+
+    # Other impossible values are refused when the account would be created.
+    _register(client, weight="nan")
     client.post("/verify/verify_email", data={"code": sent_codes["newbie@example.com"]})
 
     client.post("/auth/register_complete")
