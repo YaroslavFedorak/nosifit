@@ -700,3 +700,33 @@ def test_purge_runs_once_per_day_per_process(client, user):
     assert _post_water(client).status_code == 200
 
     assert old in {r.day for r in _rows()}  # left for tomorrow's first write
+
+
+# --- With the privacy features (PR #65) ---------------------------------------------
+
+
+def test_export_contains_own_activity_events_only(client, user):
+    other = _make_user("o", "o@example.com")
+    _events(user, END)
+    _events(other, END - timedelta(days=1))
+    _login(client, "test@example.com")
+    g.pop("_login_user", None)
+
+    rows = client.get("/privacy/my-data").get_json()["tables"]["activity_events"]
+
+    assert [(r["user_id"], r["day"]) for r in rows] == [(user.id, END.isoformat())]
+
+
+def test_withdrawing_consent_erases_activity_events_and_stops_tracking(client, user):
+    other = _make_user("o", "o@example.com")
+    _events(user, END)
+    _events(other, END)
+    _login(client, "test@example.com")
+    g.pop("_login_user", None)
+
+    assert client.delete("/api/consent", json={"confirm_erase": True}).status_code == 200
+
+    assert [r.user_id for r in _rows()] == [other.id]
+    # Without consent the API refuses, so nothing new is tracked.
+    assert _post_water(client).status_code == 403
+    assert [r.user_id for r in _rows()] == [other.id]
