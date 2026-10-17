@@ -27,6 +27,14 @@ class User(db.Model, UserMixin):
         db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False
     )
 
+    # Consent to the privacy policy and, separately and explicitly, to the
+    # processing of health data (food, weight, sleep, training). UTC; null =
+    # not given. consent_version is the policy version agreed to; a new
+    # version asks again (backend/app/services/consent.py).
+    privacy_accepted_at = db.Column(db.DateTime, nullable=True)
+    health_data_consent_at = db.Column(db.DateTime, nullable=True)
+    consent_version = db.Column(db.String(32), nullable=True)
+
     age = db.Column(db.Integer, nullable=True)
     sex = db.Column(db.String(20), default="unspecified")
     weight = db.Column(db.Float, nullable=True)

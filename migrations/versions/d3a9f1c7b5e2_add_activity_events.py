@@ -1,7 +1,7 @@
 """add activity events
 
 Revision ID: d3a9f1c7b5e2
-Revises: b7d2e4a8c1f6
+Revises: e4b8c2d6f1a3
 Create Date: 2026-10-17 12:00:00.000000
 
 A new table only: no existing row is read, changed or copied. It starts empty
@@ -13,7 +13,7 @@ import sqlalchemy as sa
 
 
 revision = "d3a9f1c7b5e2"
-down_revision = "b7d2e4a8c1f6"
+down_revision = "e4b8c2d6f1a3"
 branch_labels = None
 depends_on = None
 

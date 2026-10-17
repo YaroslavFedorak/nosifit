@@ -49,6 +49,7 @@ TELEGRAM_SESSION_PREFIXES = (
 TELEGRAM_SESSION_PATHS = frozenset(
     {
         "/auth/logout",
+        "/api/consent",
         "/api/training/exercises/search",
         "/api/training/exercises/recent",
     }

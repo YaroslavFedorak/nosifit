@@ -86,6 +86,20 @@
 
 {% include "app/profile/sections/connected_accounts.html" %}
 
+<section class="profile-card">
+
+    <div class="profile-row">
+        <div class="profile-row-text">
+            <span class="profile-row-label">{{ profile_t("settings.data") }}</span>
+            <span class="profile-row-hint">{{ profile_t("settings.dataText") }}</span>
+        </div>
+        <a class="profile-btn" href="{{ url_for('legal.my_data') }}" download>{{ profile_t("actions.downloadData") }}</a>
+        <a class="profile-btn" href="{{ url_for('legal.privacy') }}">{{ profile_t("actions.privacyPolicy") }}</a>
+        <a class="profile-btn" href="{{ url_for('legal.withdraw') }}">{{ profile_t("actions.withdrawConsent") }}</a>
+    </div>
+
+</section>
+
 <section class="profile-card profile-danger">
 
     <div class="profile-row">
