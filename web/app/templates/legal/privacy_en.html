@@ -22,8 +22,8 @@
 <h2>3. Why, and on what legal basis</h2>
 <ul>
   <li><strong>Providing the service</strong> (account, nutrition and training calculations, the bot) — performance of our contract with you (Art. 6(1)(b) GDPR).</li>
-  <li><strong>Health data</strong> — only with your separate, explicit consent (Art. 9(2)(a) GDPR; Art. 7 of the Law of Ukraine "On Personal Data Protection"). You can withdraw it at any time (section 7).</li>
-  <li><strong>Security</strong> (protection against password guessing, notices about email changes or Telegram connections) and <strong>aggregated usage statistics</strong> — our legitimate interest in a secure, working service (Art. 6(1)(f) GDPR). You may object to this processing (section 7).</li>
+  <li><strong>Health data</strong>, and the <strong>aggregated internal statistics</strong> about using the features (the activity events in section 2) — only with your separate, explicit consent (Art. 9(2)(a) GDPR; Art. 7 of the Law of Ukraine "On Personal Data Protection"). You can withdraw it at any time (section 7).</li>
+  <li><strong>Security</strong> (protection against password guessing, notices about email changes or Telegram connections) — our legitimate interest in a secure service (Art. 6(1)(f) GDPR). You may object to this processing (section 7).</li>
 </ul>
 
 <h2>4. Who receives data</h2>
@@ -40,6 +40,7 @@
 <h2>5. How long we keep data</h2>
 <ul>
   <li>Your account and all related records — for as long as the account exists. They are deleted when you delete the account.</li>
+  <li>After you withdraw consent to processing health data, the records based on it are deleted at once; the account and sign-in methods remain until you delete the account.</li>
   <li>Activity events for statistics — 13 months, then deleted automatically.</li>
   <li>Verification codes — 10 minutes; the email queue — 7 days after sending (30 days if sending failed); attempt counters — up to 1 hour.</li>
   <li>Server logs and backups — within the periods set by the hosting provider.</li>
@@ -54,13 +55,15 @@
 <h2>7. Your rights</h2>
 <p>You have the right to access your data and get a copy; to rectify it; to erase it; to restrict processing; to object to processing based on legitimate interest; to data portability; and to withdraw consent.</p>
 <ul>
-  <li><strong>You can delete your account and all data yourself:</strong> Profile → Delete account. Deleting the account is also how you withdraw consent to processing health data — the service cannot work without it.</li>
+  <li><strong>You can download all your data yourself</strong> (a JSON file): Profile → Your data, or <code>/privacy/my-data</code> once signed in. This works without consent too. If you have only used Telegram and have no password, set one with "Forgot password" on the website (the email goes to your account's address); the bot command <code>/mydata</code> explains the steps.</li>
+  <li><strong>You can withdraw consent</strong> to processing health data at any time with a single confirmation: Profile → Withdraw consent, or the bot command <code>/withdraw</code>. Processing based on it (including the internal statistics) stops and those records are deleted; the account and sign-in methods remain. Withdrawal does not affect processing before it.</li>
+  <li><strong>You can delete your account and all data yourself:</strong> Profile → Delete account (also without consent).</li>
   <li>Send any other request to the contact email (section 1). We reply within one month.</li>
   <li>You may lodge a complaint with the Ukrainian Parliament Commissioner for Human Rights or with the data protection authority of your EU country.</li>
 </ul>
 
 <h2>8. Age</h2>
-<p>The service is intended for people aged 16 and over. If you are under 16, do not use NosiFit without your parents' consent.</p>
+<p>The service is only for people aged 16 and over. Registration requires an age of at least 16; existing users and Telegram bot users confirm they are 16 or older together with their consent. If a profile says the user is under 16, consent is not accepted and the user can download their data or delete the account.</p>
 
 <h2>9. Security</h2>
 <p>Connections use HTTPS; passwords are stored only as hashes; sessions are revoked when the password changes; access to data is limited to you and to the service owner as far as needed to run it.</p>

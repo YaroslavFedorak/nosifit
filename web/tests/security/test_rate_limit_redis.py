@@ -193,6 +193,7 @@ def test_brute_force_does_not_get_through_while_redis_is_down(broken_redis_clien
                 "password": "a-good-password",
                 "privacy_consent": "on",
                 "health_consent": "on",
+                "age": "30",
             }),
     ],
 )

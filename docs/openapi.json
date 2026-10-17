@@ -44,6 +44,49 @@
   ],
   "paths": {
     "/consent": {
+      "delete": {
+        "operationId": "consent_api.withdraw",
+        "tags": [
+          "consent"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "x-auth": "session",
+        "summary": "Withdraw the health-data consent: its records are erased, the account",
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "description": "Not described yet."
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success. The body is not described yet.",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      },
       "post": {
         "operationId": "consent_api.give_consent",
         "tags": [

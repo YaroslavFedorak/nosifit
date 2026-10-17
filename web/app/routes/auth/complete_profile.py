@@ -9,6 +9,7 @@ from backend.app.utils.validation import (
     ValidationError,
     clean_choice,
     clean_username,
+    parse_account_age,
     parse_profile_number,
 )
 from web.app.routes.auth.main import start_user_session
@@ -65,7 +66,7 @@ def complete_profile():
             return render_template("auth/complete_profile.html", oauth_user=oauth_user)
 
         try:
-            age = parse_profile_number("age", request.form.get("age"), required=True)
+            age = parse_account_age(request.form.get("age"), required=True)
             height = parse_profile_number("height", request.form.get("height"), required=True)
             weight = parse_profile_number("weight", request.form.get("weight"), required=True)
             workouts = parse_profile_number(
@@ -76,7 +77,7 @@ def complete_profile():
             goal = clean_choice("goal", request.form.get("goal"))
             experience = clean_choice("experience", request.form.get("experience"))
         except ValidationError:
-            flash("Заповніть вік, зріст, вагу та кількість тренувань.", "error")
+            flash("Заповніть вік (від 16 років), зріст, вагу та кількість тренувань.", "error")
             return render_template("auth/complete_profile.html", oauth_user=oauth_user)
 
         user = User(

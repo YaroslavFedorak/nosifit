@@ -22,6 +22,7 @@ def test_registration_send_code(mock_send, client):
             "confirm": "password123",
             "privacy_consent": "on",
             "health_consent": "on",
+            "age": "30",
         },
     )
 
@@ -48,6 +49,7 @@ def test_registration_verify_code(mock_send, client):
             "confirm": "password123",
             "privacy_consent": "on",
             "health_consent": "on",
+            "age": "30",
         },
     )
 
@@ -82,6 +84,7 @@ def test_registration_wrong_code(mock_send, client):
             "confirm": "password123",
             "privacy_consent": "on",
             "health_consent": "on",
+            "age": "30",
         },
     )
 
@@ -109,6 +112,7 @@ def test_registration_complete_creates_user(mock_send, client):
             "training_location": "home",
             "privacy_consent": "on",
             "health_consent": "on",
+            "age": "30",
         },
     )
 
@@ -150,6 +154,7 @@ def _form(email):
         "confirm_password": "password123",
         "privacy_consent": "on",
         "health_consent": "on",
+        "age": "30",
     }
 
 

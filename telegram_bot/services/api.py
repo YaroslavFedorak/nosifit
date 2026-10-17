@@ -34,6 +34,7 @@ ERROR_MESSAGES = {
     "invalid_product_data": "Дані про цей продукт у базі неправдоподібні. Створіть свій продукт з етикетки.",
     "duplicate_barcode": "У вас уже є продукт з цим штрихкодом.",
     "rate_limited": "Забагато запитів. Спробуйте за хвилину.",
+    "under_minimum_age": "NosiFit доступний з 16 років: у вашому профілі вказано менший вік.",
     "consent_required": (
         "Щоб продовжити, прийміть політику конфіденційності та надайте згоду "
         "на обробку даних про здоров'я: /consent"
@@ -73,7 +74,11 @@ class NosiFitAPI:
         # Each API reports its stable code in "code" (nutrition, auth) or
         # "error" (training).
         code = payload.get("code") or payload.get("error")
-        if response.status_code == 403 and code in ("telegram_session_scope", "consent_required"):
+        if response.status_code == 403 and code in (
+            "telegram_session_scope",
+            "consent_required",
+            "under_minimum_age",
+        ):
             # The session is fine: the endpoint is not open to the bot, or the
             # account still has to accept the privacy policy (/consent).
             raise NosiFitAPIError(ERROR_MESSAGES[code], code)
@@ -102,8 +107,13 @@ class NosiFitAPI:
         return self._request(
             "POST",
             "/api/consent",
-            json={"privacy_consent": True, "health_consent": True},
+            json={"privacy_consent": True, "health_consent": True, "age_confirmed": True},
         ).json()
+
+    def withdraw_consent(self) -> dict:
+        """Withdraw the health-data consent: the web app erases those records."""
+        self.ensure_authenticated()
+        return self._request("DELETE", "/api/consent", json={"confirm_erase": True}).json()
 
     def get_day(self, locale: str = "uk") -> dict:
         self.ensure_authenticated()

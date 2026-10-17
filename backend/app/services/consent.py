@@ -39,10 +39,26 @@ def record_consent(user) -> None:
     db.session.commit()
 
 
+def _ticked(data, name) -> bool:
+    value = data.get(name)
+    return value is True or (isinstance(value, str) and value.lower() in {"on", "true", "1", "yes"})
+
+
 def consent_given(form_or_json) -> bool:
     """Both boxes ticked: the policy and, separately, health data."""
-    def ticked(name):
-        value = form_or_json.get(name)
-        return value is True or (isinstance(value, str) and value.lower() in {"on", "true", "1", "yes"})
+    return _ticked(form_or_json, "privacy_consent") and _ticked(form_or_json, "health_consent")
 
-    return ticked("privacy_consent") and ticked("health_consent")
+
+def age_confirmed(form_or_json) -> bool:
+    """"I am 16 or older": asked where no age is entered (/consent, the bot)."""
+    return _ticked(form_or_json, "age_confirmed")
+
+
+def too_young(user) -> bool:
+    """The profile says the user is under the minimum age: no consent then."""
+    from backend.app.utils.validation import MIN_ACCOUNT_AGE
+
+    # The profile holds the age users enter; users.age is an older column.
+    profile = getattr(user, "profile", None)
+    ages = (getattr(profile, "age", None), getattr(user, "age", None))
+    return any(isinstance(age, int) and age < MIN_ACCOUNT_AGE for age in ages)

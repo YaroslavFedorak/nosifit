@@ -33,3 +33,10 @@
   font-weight: 600;
   cursor: pointer;
 }
+.legal-warning {
+  margin: 16px 0;
+  padding: 12px 14px;
+  border-radius: var(--nf-radius-md, 14px);
+  background: var(--nf-red-soft, rgba(240, 111, 122, 0.12));
+  color: var(--nf-red, #f06f7a);
+}
