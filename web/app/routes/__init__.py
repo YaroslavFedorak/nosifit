@@ -43,6 +43,7 @@ from .questionnaire.questionnaire import questionnaire_bp
 
 from .tracker.pages import tracker_pages_bp
 
+from .admin.analytics import admin_analytics_bp
 from .legal.pages import legal_bp
 
 
@@ -81,6 +82,7 @@ PAGE_BLUEPRINTS = (
     questionnaire_pages_bp,
     questionnaire_bp,
     tracker_pages_bp,
+    admin_analytics_bp,
     legal_bp,
 )
 
