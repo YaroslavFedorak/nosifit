@@ -1,0 +1,72 @@
+<h1>NosiFit Privacy Policy</h1>
+<p class="legal-meta">Version of {{ policy_date }} (consent version {{ consent_version }}). The Ukrainian version prevails in case of discrepancy.</p>
+
+<h2>1. Who is responsible for your data</h2>
+<p>
+  The controller of personal data is the individual
+  <strong>{{ controller_name or "[controller name not set]" }}</strong>.
+  Contact for data matters:
+  {% if contact_email %}<a href="mailto:{{ contact_email }}">{{ contact_email }}</a>{% else %}<strong>[email not set]</strong>{% endif %}.
+</p>
+
+<h2>2. What data we process</h2>
+<ul>
+  <li><strong>Account:</strong> username, email, password hash (the password itself is never stored), registration date, Premium flag, dates of your consents.</li>
+  <li><strong>Health and fitness data:</strong> age, sex, height, weight and its history, activity level, goals, experience, injuries, equipment; nutrition records (meals, products, dishes, water, nutrition targets); training (plans, sessions, exercises, sets, strength tests, fatigue); recovery (sleep, habits, daily scores).</li>
+  <li><strong>Sign-in methods:</strong> your Google or GitHub account identifier if you sign in with them; your Telegram user id and username if you connect the bot.</li>
+  <li><strong>Technical data:</strong> session cookies; temporary counters of sign-in attempts and requests (keyed by a hash of the email or IP address, up to 1 hour); the hosting provider's server logs.</li>
+  <li><strong>Aggregated activity events:</strong> a record that "a user performed an action of a type (food, water, weight, workout, sleep, habit) on a given day via the website or Telegram" — without the content of the record, IP addresses or tokens. Used only for internal statistics about the service.</li>
+</ul>
+<p>We do not sell data, show ads, or use advertising or third-party analytics trackers.</p>
+
+<h2>3. Why, and on what legal basis</h2>
+<ul>
+  <li><strong>Providing the service</strong> (account, nutrition and training calculations, the bot) — performance of our contract with you (Art. 6(1)(b) GDPR).</li>
+  <li><strong>Health data</strong>, and the <strong>aggregated internal statistics</strong> about using the features (the activity events in section 2) — only with your separate, explicit consent (Art. 9(2)(a) GDPR; Art. 7 of the Law of Ukraine "On Personal Data Protection"). You can withdraw it at any time (section 7).</li>
+  <li><strong>Security</strong> (protection against password guessing, notices about email changes or Telegram connections) — our legitimate interest in a secure service (Art. 6(1)(f) GDPR). You may object to this processing (section 7).</li>
+</ul>
+
+<h2>4. Who receives data</h2>
+<p>Only providers the service cannot work without, and only what they need:</p>
+<ul>
+  <li><strong>Railway</strong> (USA) — hosting of the application, database and cache; all data is stored on its servers.</li>
+  <li><strong>Brevo</strong> (fallback: <strong>SendGrid</strong>) — sending emails with codes and notices: the email address and the message.</li>
+  <li><strong>Google, GitHub</strong> — only if you choose to sign in with them: they send us your email and identifier.</li>
+  <li><strong>Telegram</strong> — only if you use the bot: messages you send to the bot are processed by Telegram under its own terms.</li>
+  <li><strong>Open Food Facts</strong> — a barcode lookup sends only the barcode, nothing about you.</li>
+</ul>
+<p>Because the servers are in the USA, data is transferred outside Ukraine and the EU. Such transfers rely on the providers' contractual safeguards (EU Standard Contractual Clauses).</p>
+
+<h2>5. How long we keep data</h2>
+<ul>
+  <li>Your account and all related records — for as long as the account exists. They are deleted when you delete the account.</li>
+  <li>After you withdraw consent to processing health data, the records based on it are deleted at once; the account and sign-in methods remain until you delete the account.</li>
+  <li>Activity events for statistics — 13 months, then deleted automatically.</li>
+  <li>Verification codes — 10 minutes; the email queue — 7 days after sending (30 days if sending failed); attempt counters — up to 1 hour.</li>
+  <li>Server logs and backups — within the periods set by the hosting provider.</li>
+</ul>
+
+<h2>6. Cookies</h2>
+<p>
+  We only use necessary cookies: the session (signing in), "remember me" (up to 30 days) and your language choice.
+  There are no advertising or analytics cookies, so no separate cookie consent banner is shown.
+</p>
+
+<h2>7. Your rights</h2>
+<p>You have the right to access your data and get a copy; to rectify it; to erase it; to restrict processing; to object to processing based on legitimate interest; to data portability; and to withdraw consent.</p>
+<ul>
+  <li><strong>You can download all your data yourself</strong> (a JSON file): Profile → Your data, or <code>/privacy/my-data</code> once signed in. This works without consent too. If you have only used Telegram and have no password, set one with "Forgot password" on the website (the email goes to your account's address); the bot command <code>/mydata</code> explains the steps.</li>
+  <li><strong>You can withdraw consent</strong> to processing health data at any time with a single confirmation: Profile → Withdraw consent, or the bot command <code>/withdraw</code>. Processing based on it (including the internal statistics) stops and those records are deleted; the account and sign-in methods remain. Withdrawal does not affect processing before it.</li>
+  <li><strong>You can delete your account and all data yourself:</strong> Profile → Delete account (also without consent).</li>
+  <li>Send any other request to the contact email (section 1). We reply within one month.</li>
+  <li>You may lodge a complaint with the Ukrainian Parliament Commissioner for Human Rights or with the data protection authority of your EU country.</li>
+</ul>
+
+<h2>8. Age</h2>
+<p>The service is only for people aged 16 and over. Registration requires an age of at least 16; existing users and Telegram bot users confirm they are 16 or older together with their consent. If a profile says the user is under 16, consent is not accepted and the user can download their data or delete the account.</p>
+
+<h2>9. Security</h2>
+<p>Connections use HTTPS; passwords are stored only as hashes; sessions are revoked when the password changes; access to data is limited to you and to the service owner as far as needed to run it.</p>
+
+<h2>10. Changes to this policy</h2>
+<p>The version date is shown at the top. If a change affects what you consented to, we will ask you to confirm again before you continue.</p>

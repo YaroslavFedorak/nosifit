@@ -4,10 +4,12 @@ from backend.app.extensions import db
 from backend.app.models.user import OAUTH_PASSWORD_MARKER, User
 from backend.app.models.oauth_account import OAuthAccount
 from backend.app.models.user_profile import UserProfile
+from backend.app.services.consent import apply_consent, consent_given
 from backend.app.utils.validation import (
     ValidationError,
     clean_choice,
     clean_username,
+    parse_account_age,
     parse_profile_number,
 )
 from web.app.routes.auth.main import start_user_session
@@ -57,8 +59,14 @@ def complete_profile():
         return redirect(pending_link_redirect("/profile"))
 
     if request.method == "POST":
+        # Age, height and weight are health data: nothing is stored without
+        # both consents (backend/app/services/consent.py).
+        if not consent_given(request.form):
+            flash("Прийміть політику конфіденційності та надайте згоду на обробку даних про здоров'я.", "error")
+            return render_template("auth/complete_profile.html", oauth_user=oauth_user)
+
         try:
-            age = parse_profile_number("age", request.form.get("age"), required=True)
+            age = parse_account_age(request.form.get("age"), required=True)
             height = parse_profile_number("height", request.form.get("height"), required=True)
             weight = parse_profile_number("weight", request.form.get("weight"), required=True)
             workouts = parse_profile_number(
@@ -69,7 +77,7 @@ def complete_profile():
             goal = clean_choice("goal", request.form.get("goal"))
             experience = clean_choice("experience", request.form.get("experience"))
         except ValidationError:
-            flash("Заповніть вік, зріст, вагу та кількість тренувань.", "error")
+            flash("Заповніть вік (від 16 років), зріст, вагу та кількість тренувань.", "error")
             return render_template("auth/complete_profile.html", oauth_user=oauth_user)
 
         user = User(
@@ -79,6 +87,7 @@ def complete_profile():
             password=OAUTH_PASSWORD_MARKER,
             is_premium=False,
         )
+        apply_consent(user)
 
         db.session.add(user)
         db.session.flush()
