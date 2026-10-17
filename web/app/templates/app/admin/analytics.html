@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="robots" content="noindex,nofollow" />
+    {% include "components/brand_head.html" %}
+    <title>Аналітика · NosiFit</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/core/reset.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/core/variables.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/pages/admin/analytics.css') }}" />
+  </head>
+  <body class="admin-page">
+    <main class="adm" id="adm" data-url="{{ url_for('admin_analytics.analytics_data') }}">
+      <header class="adm-head">
+        <h1 class="adm-title">Аналітика NosiFit</h1>
+        <nav class="adm-ranges" aria-label="Період">
+          {% for key in ranges %}
+          <button type="button" class="adm-range{% if key == '30' %} is-active{% endif %}" data-range="{{ key }}">
+            {{ 'Вся історія' if key == 'all' else key ~ ' днів' }}
+          </button>
+          {% endfor %}
+          <button type="button" class="adm-refresh" id="adm-refresh" aria-label="Оновити">⟳</button>
+        </nav>
+        <p class="adm-sub" id="adm-period"></p>
+      </header>
+
+      <p class="adm-state" id="adm-loading" role="status">Завантаження…</p>
+      <p class="adm-state adm-error" id="adm-error" role="alert" hidden></p>
+
+      <div id="adm-content" hidden>
+        <section class="adm-section">
+          <h2>Користувачі</h2>
+          <div class="adm-grid" id="adm-users"></div>
+          <div class="adm-card"><h3>Реєстрації</h3><div id="chart-registrations"></div></div>
+        </section>
+
+        <section class="adm-section">
+          <h2>Активні користувачі <span class="adm-badge" id="adm-tracked-badge"></span></h2>
+          <p class="adm-note" id="adm-tracked-note"></p>
+          <div id="adm-tracked" hidden>
+            <div class="adm-grid" id="adm-active"></div>
+            <div class="adm-card"><h3 id="adm-active-title">Активні користувачі</h3><div id="chart-active"></div></div>
+            <div class="adm-card">
+              <h3>Утримання (retention)</h3>
+              <div class="adm-grid" id="adm-retention"></div>
+              <p class="adm-note" id="adm-retention-note"></p>
+            </div>
+          </div>
+        </section>
+
+        <section class="adm-section">
+          <h2>Використання функцій <span class="adm-badge">із наявних записів</span></h2>
+          <p class="adm-note">Записи ≠ люди: «охоплення» — частка користувачів, що мали хоч один запис за період, серед усіх, хто користувався будь-якою функцією. Різні функції мають різні типи записів, тож їх кількості напряму не порівнюються.</p>
+          <div id="adm-features"></div>
+        </section>
+
+        <section class="adm-section">
+          <h2>Підсумок</h2>
+          <ul class="adm-list" id="adm-summary"></ul>
+        </section>
+      </div>
+    </main>
+    <script type="module" src="{{ url_for('static', filename='js/admin/analytics.js') }}"></script>
+  </body>
+</html>

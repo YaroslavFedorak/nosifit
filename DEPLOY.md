@@ -23,6 +23,8 @@ Redis (rate-limit counters only).
 | `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET` | from a **separate** GitHub OAuth App for production |
 | `BREVO_API_KEY` | brevo.com (free: 300 emails/day) → *SMTP & API* → *API Keys* |
 | `MAIL_FROM` | `NosiFit <you@gmail.com>` — a sender verified in Brevo (*Senders, Domains & Dedicated IPs* → *Senders*); no own domain needed |
+| `ADMIN_EMAILS` | Optional. Comma-separated emails allowed into `/admin/analytics` (case and spaces ignored). Unset or empty: nobody has access |
+| `ACTIVITY_TRACKING` | Optional, default `true`. `false` stops writing activity events (the dashboard then shows only data from existing records). Events are kept 13 months and then deleted automatically |
 | `PRIVACY_CONTROLLER_NAME` | Your full name: shown on `/privacy` as the person responsible for the data |
 | `PRIVACY_CONTACT_EMAIL` | The email for data requests, shown on `/privacy` |
 | `APP_TIMEZONE` | `Europe/Kyiv` (the default; falls back to `NOSI_FIT_TIMEZONE`) — the zone whose calendar day is "today" for meals, water, weight and goals. The server's own `TZ` no longer decides it |
