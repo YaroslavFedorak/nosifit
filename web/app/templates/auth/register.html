@@ -8,240 +8,56 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/auth/register.css') }}" />
   </head>
 
-  <body>
+  <body class="auth-fit">
     <div class="bg"></div>
     <div class="orb orb-1" aria-hidden="true"></div>
     <div class="orb orb-2" aria-hidden="true"></div>
 
-    <div class="auth-card" role="main" aria-labelledby="page-title">
-      <!-- progress bar with steps -->
-      <div class="progress-wrapper">
-        <div class="progress-line">
-          <!-- 33% because this is step 1 -->
-          <div class="progress-fill" style="width: 33%"></div>
-        </div>
-
-        <div class="progress-steps">
-          <!-- current step -->
-          <div class="step active" data-label="{{ auth_t("steps.account") }}"></div>
-
-          <!-- next steps -->
-          <div class="step" data-label="{{ auth_t("steps.verification") }}"></div>
-          <div class="step" data-label="{{ auth_t("steps.profile") }}"></div>
-        </div>
-      </div>
-
-      <!-- header centered -->
+    <div class="auth-card wizard-card" role="main" aria-labelledby="page-title">
       <div class="top-center" id="page-title">
-        <div class="brand-compact">
-          <h1 class="brand-title">
-            <img src="{{ url_for('static', filename='img/brand/nosifit-lockup-on-dark.svg') }}" class="brand-logo" alt="NosiFit" />
-          </h1>
-        </div>
-        <h2 class="title">{{ auth_t("register.heading") }}</h2>
+        <h1 class="brand-title">
+          <img src="{{ url_for('static', filename='img/brand/nosifit-lockup-on-dark.svg') }}" class="brand-logo" alt="NosiFit" />
+        </h1>
       </div>
 
-      <!-- form centered -->
-      <div class="form-left">
-        <div class="form-inner">
-          {% include "auth/_flashes.html" %}
-          <form
-            id="register-form"
-            method="POST"
-            action="/verify/send_code"
-            {% include "auth/_validate_attrs.html" %}
-          >
-            <div class="field" data-anim>
+      <div class="wizard-progress" aria-hidden="true">
+        <span class="is-current"></span><span></span><span></span><span></span><span></span>
+      </div>
+
+      {% include "auth/_flashes.html" %}
+
+      <form
+        id="register-form"
+        class="wizard"
+        method="POST"
+        action="/verify/send_code"
+        data-wizard
+        data-next-label="{{ auth_t("common.next") }}"
+        data-submit-label="{{ auth_t("register.submit") }}"
+        {% include "auth/_validate_attrs.html" %}
+      >
+        <div class="wizard-stage">
+          <!-- 1: account -->
+          <section class="wizard-step" data-step>
+            <header class="wizard-head">
+              <h2 class="title">{{ auth_t("register.wizard.s1.title") }}</h2>
+              <p class="subtitle">{{ auth_t("register.wizard.s1.hint") }}</p>
+            </header>
+
+            <div class="field">
               <label for="email">Email</label>
-              <input
-                id="email"
-                type="email"
-                name="email"
-                placeholder="example@gmail.com"
-                autocomplete="email"
-                inputmode="email"
-                required
-              />
+              <input id="email" type="email" name="email" placeholder="example@gmail.com" autocomplete="email" inputmode="email" required />
             </div>
 
-            <div class="field" data-anim>
+            <div class="field">
               <label for="username">{{ auth_t("fields.name") }}</label>
-              <input
-                id="username"
-                type="text"
-                name="username"
-                placeholder="{{ auth_t("register.namePlaceholder") }}"
-                autocomplete="nickname"
-                required
-              />
+              <input id="username" type="text" name="username" placeholder="{{ auth_t("register.namePlaceholder") }}" autocomplete="nickname" required />
             </div>
 
-            <div class="row two-cols">
-              <div class="field" data-anim>
-                <label for="p1">{{ auth_t("fields.password") }}</label>
-                <div class="pass-wrap">
-                  <input
-                    id="p1"
-                    type="password"
-                    name="password"
-                    placeholder="{{ auth_t("register.passwordPlaceholder") }}"
-                    autocomplete="new-password"
-                    required
-                  />
-                  <button
-                    type="button"
-                    class="toggle"
-                    data-target="p1"
-                    aria-label="{{ auth_t("common.togglePassword") }}"
-                  >
-                    {{ auth_t("common.show") }}
-                  </button>
-                </div>
-              </div>
+            <div class="divider"><span>{{ auth_t("common.or") }}</span></div>
 
-              <div class="field" data-anim>
-                <label for="p2">{{ auth_t("fields.confirmPassword") }}</label>
-                <div class="pass-wrap">
-                  <input
-                    id="p2"
-                    type="password"
-                    name="confirm_password"
-                    placeholder="{{ auth_t("register.confirmPlaceholder") }}"
-                    autocomplete="new-password"
-                    data-match="p1"
-                    required
-                  />
-                  <button
-                    type="button"
-                    class="toggle"
-                    data-target="p2"
-                    aria-label="{{ auth_t("common.togglePassword") }}"
-                  >
-                    {{ auth_t("common.show") }}
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <div class="row three-cols">
-              <div class="field small" data-anim>
-                <label for="age">{{ auth_t("fields.age") }}</label>
-                <input
-                  id="age"
-                  type="number"
-                  inputmode="numeric"
-                  name="age"
-                  min="16"
-                  max="90"
-                  placeholder="18"
-                  required
-                />
-              </div>
-
-              <div class="field small" data-anim>
-                <label for="height">{{ auth_t("fields.height") }}</label>
-                <input
-                  id="height"
-                  type="number"
-                  inputmode="numeric"
-                  name="height"
-                  min="120"
-                  max="230"
-                  placeholder="180"
-                  required
-                />
-              </div>
-
-              <div class="field small" data-anim>
-                <label for="weight">{{ auth_t("fields.weight") }}</label>
-                <input
-                  id="weight"
-                  type="number"
-                  inputmode="decimal"
-                  name="weight"
-                  min="35"
-                  max="200"
-                  placeholder="75"
-                  required
-                />
-              </div>
-            </div>
-
-            <div class="quad-grid">
-              <div class="field" data-anim>
-                <label for="gender">{{ auth_t("fields.gender") }}</label>
-                <select id="gender" name="gender" required>
-                  <option value="" disabled selected>{{ auth_t("common.select") }}</option>
-                  <option value="male">{{ auth_t("fields.male") }}</option>
-                  <option value="female">{{ auth_t("fields.female") }}</option>
-                </select>
-              </div>
-
-              <div class="field" data-anim>
-                <label for="workouts_per_week">{{ auth_t("fields.workouts") }}</label>
-                <select
-                  id="workouts_per_week"
-                  name="workouts_per_week"
-                  required
-                >
-                  <option value="" disabled selected>{{ auth_t("common.select") }}</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                  <option value="4">4</option>
-                  <option value="5">5</option>
-                  <option value="6">6</option>
-                </select>
-              </div>
-
-              <div class="field" data-anim>
-                <label for="activity">{{ auth_t("fields.activity") }}</label>
-                <select id="activity" name="activity" required>
-                  <option value="" disabled selected>{{ auth_t("common.select") }}</option>
-                  <option value="1.2">{{ auth_t("activity.minimum") }}</option>
-                  <option value="1.375">{{ auth_t("activity.light") }}</option>
-                  <option value="1.55">{{ auth_t("activity.medium") }}</option>
-                  <option value="1.725">{{ auth_t("activity.high") }}</option>
-                  <option value="1.9">{{ auth_t("activity.veryHigh") }}</option>
-                </select>
-              </div>
-
-              <div class="field" data-anim>
-                <label for="goal">{{ auth_t("fields.goal") }}</label>
-                <select id="goal" name="goal" required>
-                  <option value="" disabled selected>{{ auth_t("common.select") }}</option>
-                  <option value="fat_loss">{{ auth_t("goals.lose") }}</option>
-                  <option value="muscle_gain">{{ auth_t("goals.muscleGain") }}</option>
-                  <option value="recomposition">{{ auth_t("goals.recomposition") }}</option>
-                  <option value="performance">{{ auth_t("goals.performance") }}</option>
-                </select>
-              </div>
-            </div>
-
-            <label class="check" data-anim>
-              <input type="checkbox" name="privacy_consent" required />
-              {{ auth_t("register.privacyPrefix") }} <a href="/privacy" target="_blank" rel="noopener">{{ auth_t("register.privacyLink") }}</a>
-            </label>
-            <label class="check" data-anim>
-              <input type="checkbox" name="health_consent" required />
-              {{ auth_t("register.healthConsent") }}
-            </label>
-          </form>
-        </div>
-      </div>
-
-      <footer class="card-footer">
-        <button
-          type="submit"
-          form="register-form"
-          class="action-btn primary"
-        >
-          {{ auth_t("register.submit") }}
-        </button>
-
-        <div class="divider"><span>{{ auth_t("common.or") }}</span></div>
-
-        <div class="oauth-list">
-          <div class="action-card google-card">
+            <div class="oauth-list">
+              <div class="action-card google-card">
             <a
               class="action-btn oauth google"
               href="{{ url_for('google_oauth.google_login') }}"
@@ -260,8 +76,7 @@
               <span>{{ auth_t("login.google") }}</span>
             </a>
           </div>
-
-          <div class="action-card github-card">
+              <div class="action-card github-card">
             <a
               class="action-btn oauth github"
               href="{{ url_for('github.github_login') }}"
@@ -280,18 +95,135 @@
               <span>{{ auth_t("login.github") }}</span>
             </a>
           </div>
+            </div>
+          </section>
 
+          <!-- 2: password -->
+          <section class="wizard-step" data-step hidden>
+            <header class="wizard-head">
+              <h2 class="title">{{ auth_t("register.wizard.s2.title") }}</h2>
+              <p class="subtitle">{{ auth_t("register.wizard.s2.hint") }}</p>
+            </header>
+
+            <div class="field">
+              <label for="p1">{{ auth_t("fields.password") }}</label>
+              <div class="pass-wrap">
+                <input id="p1" type="password" name="password" placeholder="{{ auth_t("register.passwordPlaceholder") }}" autocomplete="new-password" required />
+                <button type="button" class="toggle" data-target="p1" aria-label="{{ auth_t("common.togglePassword") }}">{{ auth_t("common.show") }}</button>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="p2">{{ auth_t("fields.confirmPassword") }}</label>
+              <div class="pass-wrap">
+                <input id="p2" type="password" name="confirm_password" placeholder="{{ auth_t("register.confirmPlaceholder") }}" autocomplete="new-password" data-match="p1" required />
+                <button type="button" class="toggle" data-target="p2" aria-label="{{ auth_t("common.togglePassword") }}">{{ auth_t("common.show") }}</button>
+              </div>
+            </div>
+          </section>
+
+          <!-- 3: body -->
+          <section class="wizard-step" data-step hidden>
+            <header class="wizard-head">
+              <h2 class="title">{{ auth_t("register.wizard.s3.title") }}</h2>
+              <p class="subtitle">{{ auth_t("register.wizard.s3.hint") }}</p>
+            </header>
+
+            <div class="row three-cols">
+              <div class="field">
+                <label for="age">{{ auth_t("fields.age") }}</label>
+                <input id="age" type="number" inputmode="numeric" name="age" min="16" max="90" placeholder="18" required />
+              </div>
+              <div class="field">
+                <label for="height">{{ auth_t("fields.height") }}</label>
+                <input id="height" type="number" inputmode="numeric" name="height" min="120" max="230" placeholder="180" required />
+              </div>
+              <div class="field">
+                <label for="weight">{{ auth_t("fields.weight") }}</label>
+                <input id="weight" type="number" inputmode="decimal" name="weight" min="35" max="200" placeholder="75" required />
+              </div>
+            </div>
+
+            <div class="field">
+              <span class="field-label">{{ auth_t("fields.gender") }}</span>
+              <div class="choices cols-2">
+                <label class="choice"><input type="radio" name="gender" value="male" required /><span>{{ auth_t("fields.male") }}</span></label>
+                <label class="choice"><input type="radio" name="gender" value="female" required /><span>{{ auth_t("fields.female") }}</span></label>
+              </div>
+            </div>
+          </section>
+
+          <!-- 4: training -->
+          <section class="wizard-step" data-step hidden>
+            <header class="wizard-head">
+              <h2 class="title">{{ auth_t("register.wizard.s4.title") }}</h2>
+              <p class="subtitle">{{ auth_t("register.wizard.s4.hint") }}</p>
+            </header>
+
+            <div class="field">
+              <span class="field-label">{{ auth_t("fields.workouts") }}</span>
+              <div class="choices cols-5">
+                {% for n in (2, 3, 4, 5, 6) %}
+                <label class="choice"><input type="radio" name="workouts_per_week" value="{{ n }}" required /><span>{{ n }}</span></label>
+                {% endfor %}
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="activity">{{ auth_t("fields.activity") }}</label>
+              <select id="activity" name="activity" required>
+                <option value="" disabled selected>{{ auth_t("common.select") }}</option>
+                <option value="1.2">{{ auth_t("activity.minimum") }}</option>
+                <option value="1.375">{{ auth_t("activity.light") }}</option>
+                <option value="1.55">{{ auth_t("activity.medium") }}</option>
+                <option value="1.725">{{ auth_t("activity.high") }}</option>
+                <option value="1.9">{{ auth_t("activity.veryHigh") }}</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <span class="field-label">{{ auth_t("fields.goal") }}</span>
+              <div class="choices cols-2">
+                <label class="choice"><input type="radio" name="goal" value="fat_loss" required /><span>{{ auth_t("goals.lose") }}</span></label>
+                <label class="choice"><input type="radio" name="goal" value="muscle_gain" required /><span>{{ auth_t("goals.muscleGain") }}</span></label>
+                <label class="choice"><input type="radio" name="goal" value="recomposition" required /><span>{{ auth_t("goals.recomposition") }}</span></label>
+                <label class="choice"><input type="radio" name="goal" value="performance" required /><span>{{ auth_t("goals.performance") }}</span></label>
+              </div>
+            </div>
+          </section>
+
+          <!-- 5: consents -->
+          <section class="wizard-step" data-step hidden>
+            <header class="wizard-head">
+              <h2 class="title">{{ auth_t("register.wizard.s5.title") }}</h2>
+              <p class="subtitle">{{ auth_t("register.wizard.s5.hint") }}</p>
+            </header>
+
+            <label class="check">
+              <input type="checkbox" name="privacy_consent" required />
+              <span>{{ auth_t("register.privacyPrefix") }} <a href="/privacy" target="_blank" rel="noopener">{{ auth_t("register.privacyLink") }}</a></span>
+            </label>
+            <label class="check">
+              <input type="checkbox" name="health_consent" required />
+              <span>{{ auth_t("register.healthConsent") }}</span>
+            </label>
+          </section>
         </div>
-      </footer>
 
-      <!-- note bottom -->
-      <div class="account-note" aria-hidden="false">
+        <div class="wizard-actions">
+          <button type="button" class="btn-back" data-back hidden>{{ auth_t("common.back") }}</button>
+          <button type="submit" class="action-btn primary" data-next>{{ auth_t("common.next") }}</button>
+        </div>
+      </form>
+
+      <div class="account-note">
         <span>{{ auth_t("register.already") }} <a href="/auth/login">{{ auth_t("common.login") }}</a></span>
       </div>
     </div>
 
     {% include "auth/_lang.html" %}
 
+    <script type="module" src="{{ url_for('static', filename='js/auth/wizard.js') }}"></script>
     <script nonce="{{ csp_nonce() }}">
       // toggle password visibility
       document.addEventListener("DOMContentLoaded", () => {

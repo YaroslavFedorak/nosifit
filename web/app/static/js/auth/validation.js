@@ -59,25 +59,32 @@ const checkPasswordsMatch = (form, messages) => {
     const mismatch = Boolean(original && confirm.value && original.value !== confirm.value);
     confirm.setCustomValidity(mismatch ? messages.mismatch : "");
 };
+// Lets a multi-step form validate one step at a time.
+export const validators = new WeakMap();
 for (const form of document.querySelectorAll("form[data-validate]")) {
     const messages = messagesOf(form);
     const controls = () => Array.from(form.querySelectorAll("input, select")).filter((control) => control.willValidate);
     form.noValidate = true;
-    form.addEventListener("submit", (event) => {
+    // Checks the given controls (all of them by default) and shows what is wrong.
+    const validate = (scope = controls()) => {
         checkPasswordsMatch(form, messages);
-        const invalid = controls().filter((control) => !control.checkValidity());
-        for (const control of controls()) {
+        const invalid = scope.filter((control) => !control.checkValidity());
+        for (const control of scope) {
             clear(control);
         }
-        if (invalid.length === 0) {
-            form.querySelector("[type=submit]")?.setAttribute("aria-busy", "true");
-            return;
-        }
-        event.preventDefault();
         for (const control of invalid) {
             show(control, messageFor(control, messages));
         }
-        invalid[0].focus();
+        invalid[0]?.focus();
+        return invalid.length === 0;
+    };
+    validators.set(form, validate);
+    form.addEventListener("submit", (event) => {
+        if (!validate()) {
+            event.preventDefault();
+            return;
+        }
+        form.querySelector("[type=submit]")?.setAttribute("aria-busy", "true");
     });
     // Re-check a field once the user corrects it.
     form.addEventListener("input", (event) => {
@@ -97,4 +104,3 @@ for (const form of document.querySelectorAll("form[data-validate]")) {
         }
     });
 }
-export {};
