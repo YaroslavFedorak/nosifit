@@ -1,0 +1,14 @@
+{
+  "nu.more_failed": "Nie udało się wczytać kolejnych wyników: {error}",
+  "nu.fav_failed": "Nie udało się zmienić ulubionych: {error}",
+  "nu.product_load_failed": "Nie udało się wczytać produktu: {error}",
+  "nu.enter_amount": "Podaj ilość w <b>{unit}</b>. Domyślnie: <b>{default}</b>.",
+  "nu.added_ask_meal": "Dodano: <b>{name}</b>.\n\nDo którego posiłku go zapisać?",
+  "nu.item_gone": "Ta pozycja została już usunięta.",
+  "nu.edit_item": "✏️ <b>{name}</b>\n\nObecna ilość: <b>{amount} {unit}</b>\nPodaj nową ilość.",
+  "nu.draft_empty": "🍽 <b>{meal}</b>\n\nNa razie nic nie dodano. Dodaj produkt lub anuluj.",
+  "nu.no_new": "W posiłku nie ma jeszcze nowych produktów.",
+  "nu.ask_meal": "Do którego posiłku zapisać produkty?",
+  "nu.meal_save_failed": "Nie udało się zapisać posiłku: {error}\n\nWybrane produkty nie zginęły — spróbuj ponownie.",
+  "nu.meal_saved": "✅ <b>Posiłek zapisany</b>\n\n"
+}

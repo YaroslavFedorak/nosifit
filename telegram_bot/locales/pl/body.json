@@ -1,0 +1,22 @@
+{
+  "unit.l": "l",
+  "unit.ml": "ml",
+  "unit.kg": "kg",
+  "unit.g": "g",
+  "unit.pcs": "szt",
+  "unit.kcal": "kcal",
+  "body.login_first": "Najpierw zaloguj się do NosiFit.",
+  "btn.cancel": "✕ Anuluj",
+  "btn.other_amount": "✏️ Inna ilość",
+  "water.title": "💧 <b>Woda dzisiaj</b>",
+  "water.note": "Napoje z jedzenia (kawa, sok, mleko) są liczone automatycznie.\nWybierz, ile dodać:",
+  "water.custom": "Podaj ilość, na przykład <b>0,4</b> (l) lub <b>300 ml</b>.\nAby odjąć błędny wpis — z minusem: <b>-0,25</b>.",
+  "water.parse_error": "Nie udało się rozpoznać ilości. Podaj od 0,05 do 5 l, na przykład <b>0,5</b> lub <b>250 ml</b>.",
+  "weight.title": "⚖️ <b>Waga</b>",
+  "weight.current": "Teraz: <b>{weight} kg</b>",
+  "weight.bmi": " · BMI {bmi}",
+  "weight.none": "Nie podano jeszcze wagi.",
+  "weight.prompt": "Podaj nową wagę w kg, na przykład <b>74,5</b>.",
+  "weight.invalid": "Podaj wagę od 20 do 400 kg, na przykład <b>74,5</b>.",
+  "weight.updated": "✅ Waga zaktualizowana: <b>{weight} kg</b>"
+}

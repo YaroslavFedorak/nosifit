@@ -14,7 +14,7 @@ def _entry_name(item, locale):
     return item.name
 
 
-def serialize_entry(item, locale="uk"):
+def serialize_entry(item, locale="en"):
     return {
         "id": item.id,
         "product_id": item.product_id,
@@ -36,7 +36,7 @@ def serialize_entry(item, locale="uk"):
     }
 
 
-def serialize_meal(meal, locale="uk"):
+def serialize_meal(meal, locale="en"):
     category = normalize_meal_category(meal.category) or meal.category
     items = list(meal.items)
     fiber, fiber_complete = partial_totals(items, "fiber")

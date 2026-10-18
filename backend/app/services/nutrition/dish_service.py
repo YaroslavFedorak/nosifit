@@ -94,7 +94,7 @@ def _component(item, locale):
     }
 
 
-def serialize_dish(dish, locale="uk"):
+def serialize_dish(dish, locale="en"):
     locale = normalize_locale(locale)
     components = [_component(item, locale) for item in dish.items]
 
@@ -228,7 +228,7 @@ def _replace_items(dish, items):
 
 # --- CRUD ------------------------------------------------------------------
 
-def list_dishes(user_id, locale="uk", query="", sort="recent", limit=20, offset=0):
+def list_dishes(user_id, locale="en", query="", sort="recent", limit=20, offset=0):
     """``(dishes, has_more)``; ``query`` matches the name (prefix or substring)."""
     sort = sort if sort in DISH_SORTS else "recent"
     limit = min(max(int(limit), 1), 50)
@@ -254,7 +254,7 @@ def list_dishes(user_id, locale="uk", query="", sort="recent", limit=20, offset=
     return [serialize_dish(dish, locale) for dish in dishes[:limit]], has_more
 
 
-def create_dish(user_id, data, locale="uk"):
+def create_dish(user_id, data, locale="en"):
     name, normalized = _dish_name(data)
     items = _resolve_items(user_id, _clean_items(data.get("items"), MAX_DISH_ITEMS))
     _ensure_unique_name(user_id, normalized)
@@ -267,7 +267,7 @@ def create_dish(user_id, data, locale="uk"):
     return serialize_dish(dish, locale)
 
 
-def update_dish(user_id, dish_id, data, locale="uk"):
+def update_dish(user_id, dish_id, data, locale="en"):
     """Rename and/or replace the whole component list atomically."""
     dish = get_user_dish(user_id, dish_id)
     if dish is None:

@@ -18,6 +18,7 @@ Callback data (64 bytes at most); <key> is the start of the exercise id:
 
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
+from telegram_bot.i18n import t
 from telegram_bot.services.training import format_entry, format_number, key_of, short_name
 
 SET_CHOICES = (1, 2, 3, 4, 5)
@@ -35,7 +36,7 @@ def _markup(rows) -> InlineKeyboardMarkup | None:
 def exercise_choice(exercises: list[dict], prefix: str, has_more: bool = False):
     rows = [[_b(short_name(ex["name"], 40), f"tr:{prefix}:{i}")] for i, ex in enumerate(exercises)]
     if has_more:
-        rows.append([_b("Ще результати", "tr:more")])
+        rows.append([_b(t("tr.btn.more_results"), "tr:more")])
     return _markup(rows)
 
 
@@ -53,14 +54,14 @@ def count_choice(item: dict, options: list[tuple[str, dict, str]]):
 def weight_choice(load: float | None):
     if not load:
         return None
-    return _markup([[_b(f"{format_number(load)} кг", f"tr:w:{format_number(load).replace(',', '.')}")]])
+    return _markup([[_b(f"{format_number(load)} {t('unit.kg')}", f"tr:w:{format_number(load).replace(',', '.')}")]])
 
 
 def after_sets(item: dict):
     key = key_of(item["id"])
     return _markup([
-        [_b("➕ Ще підхід", f"tr:one:{key}"), _b("✏️ Ввести заново", f"tr:redo:{key}")],
-        [_b("✅ Готово", "tr:done")],
+        [_b(t("tr.btn.another_set"), f"tr:one:{key}"), _b(t("tr.btn.redo"), f"tr:redo:{key}")],
+        [_b(t("tr.btn.done"), "tr:done")],
     ])
 
 
@@ -70,18 +71,18 @@ def workout_list(items: list[dict]):
         for n, item in enumerate(items, start=1)
     ]
     if items:
-        rows.append([_b("✅ Завершити тренування", "tr:finish")])
+        rows.append([_b(t("tr.btn.finish"), "tr:finish")])
     return _markup(rows)
 
 
 def exercise_actions(item: dict):
     key = key_of(item["id"])
     return _markup([
-        [_b("➕ Підхід", f"tr:one:{key}"), _b("➖ Останній підхід", f"tr:dec:{key}:{len(item['entries'])}")],
-        [_b("✏️ Ввести заново", f"tr:redo:{key}"), _b("🗑 Видалити", f"tr:del:{key}")],
-        [_b("← До тренування", "tr:done")],
+        [_b(t("tr.btn.add_set"), f"tr:one:{key}"), _b(t("tr.btn.last_set"), f"tr:dec:{key}:{len(item['entries'])}")],
+        [_b(t("tr.btn.redo"), f"tr:redo:{key}"), _b(t("tr.btn.delete"), f"tr:del:{key}")],
+        [_b(t("tr.btn.to_workout"), "tr:done")],
     ])
 
 
 def confirm(yes_text: str, yes_data: str, back_data: str = "tr:done"):
-    return _markup([[_b(yes_text, yes_data), _b("← Назад", back_data)]])
+    return _markup([[_b(yes_text, yes_data), _b(t("tr.btn.back"), back_data)]])

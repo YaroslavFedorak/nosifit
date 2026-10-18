@@ -3,6 +3,8 @@ from urllib.parse import quote
 
 import requests
 
+from telegram_bot.i18n import Texts, current_language, t
+
 
 class NosiFitAPIError(RuntimeError):
     def __init__(self, message: str, code: str | None = None):
@@ -10,36 +12,51 @@ class NosiFitAPIError(RuntimeError):
         self.code = code
 
 
-# Backend errors come with a stable ``code``; show users Ukrainian text
-# instead of the English ``error`` message.
-ERROR_MESSAGES = {
-    "invalid_category": "Оберіть тип прийому їжі.",
-    "invalid_entry": "Перевірте кількість продукту: до 5000 г / мл або до 100 шт.",
-    "invalid_product": "Перевірте значення продукту: калорії до 950, білки, жири й вуглеводи до 100 г на 100 г.",
-    "invalid_water": "Вкажіть від 0,05 до 5 л.",
-    "invalid_weight": "Вкажіть вагу від 20 до 400 кг.",
-    "meal_not_found": "Цей прийом їжі вже видалено.",
-    "entry_not_found": "Цей продукт уже видалено.",
-    "nothing_to_copy": "Учора не було записів.",
-    "duplicate_product": "У вас уже є продукт з такою назвою.",
-    "duplicate_dish": "У вас уже є страва з такою назвою.",
-    "dish_not_found": "Цю страву вже видалено.",
-    "invalid_dish": "Перевірте назву страви (до 120 символів).",
-    "product_not_found": "Цей продукт уже видалено.",
-    "session_not_found": "Тренування не знайдено — можливо, почався новий день.",
-    "telegram_session_scope": "Це доступно лише на сайті.",
-    "invalid_barcode": "Це не схоже на штрихкод: потрібні 8, 12, 13 або 14 цифр з правильною контрольною цифрою.",
-    "lookup_unavailable": "Пошук за штрихкодом тимчасово недоступний. Спробуйте за хвилину або знайдіть продукт за назвою.",
-    "incomplete_product": "У базі бракує даних про цей продукт. Створіть свій продукт з етикетки.",
-    "invalid_product_data": "Дані про цей продукт у базі неправдоподібні. Створіть свій продукт з етикетки.",
-    "duplicate_barcode": "У вас уже є продукт з цим штрихкодом.",
-    "rate_limited": "Забагато запитів. Спробуйте за хвилину.",
-    "under_minimum_age": "NosiFit доступний з 16 років: у вашому профілі вказано менший вік.",
-    "consent_required": (
-        "Щоб продовжити, прийміть політику конфіденційності та надайте згоду "
-        "на обробку даних про здоров'я: /consent"
+# Backend errors come with a stable ``code``; users see the text of that code
+# in their language (``err.<code>`` in the bot's locales), not the English
+# ``error`` message.
+ERROR_MESSAGES = Texts(
+    "err",
+    (
+        "invalid_category",
+        "invalid_entry",
+        "invalid_product",
+        "invalid_water",
+        "invalid_weight",
+        "meal_not_found",
+        "entry_not_found",
+        "nothing_to_copy",
+        "duplicate_product",
+        "duplicate_dish",
+        "dish_not_found",
+        "invalid_dish",
+        "product_not_found",
+        "session_not_found",
+        "telegram_session_scope",
+        "invalid_barcode",
+        "lookup_unavailable",
+        "incomplete_product",
+        "invalid_product_data",
+        "duplicate_barcode",
+        "rate_limited",
+        "under_minimum_age",
+        "consent_required",
     ),
-}
+)
+
+SHOWN_CODES = (
+    "telegram_session_scope",
+    "consent_required",
+    "under_minimum_age",
+)
+
+
+def error_message(code: str | None) -> str:
+    return ERROR_MESSAGES.get(code) or t("err.generic")
+
+
+# Default of every ``locale`` argument: the language of the update being handled.
+CURRENT_LANGUAGE = "current"
 
 
 def _json_or_empty(response: requests.Response) -> dict:
@@ -60,6 +77,10 @@ class NosiFitAPI:
     expired: bool = False
 
     def _request(self, method: str, path: str, **kwargs) -> requests.Response:
+        for field_name in ("params", "json"):
+            body = kwargs.get(field_name)
+            if isinstance(body, dict) and body.get("locale") == CURRENT_LANGUAGE:
+                kwargs[field_name] = {**body, "locale": current_language()}
         try:
             response = self.session.request(
                 method,
@@ -69,19 +90,15 @@ class NosiFitAPI:
                 **kwargs,
             )
         except requests.RequestException as exc:
-            raise NosiFitAPIError("Не вдалося підключитися до NosiFit.") from exc
+            raise NosiFitAPIError(t("err.connect")) from exc
         payload = _json_or_empty(response) if not response.ok else {}
         # Each API reports its stable code in "code" (nutrition, auth) or
         # "error" (training).
         code = payload.get("code") or payload.get("error")
-        if response.status_code == 403 and code in (
-            "telegram_session_scope",
-            "consent_required",
-            "under_minimum_age",
-        ):
+        if response.status_code == 403 and code in SHOWN_CODES:
             # The session is fine: the endpoint is not open to the bot, or the
             # account still has to accept the privacy policy (/consent).
-            raise NosiFitAPIError(ERROR_MESSAGES[code], code)
+            raise NosiFitAPIError(error_message(code), code)
         needs_login = response.status_code in (401, 403) or (
             response.is_redirect
             and "/auth/login" in response.headers.get("Location", "")
@@ -89,17 +106,17 @@ class NosiFitAPI:
         if needs_login:
             self.expired = True
             raise NosiFitAPIError(
-                "Сесія закінчилась. Увійдіть ще раз: /login",
+                t("err.session_expired"),
                 "session_expired",
             )
         if not response.ok:
-            detail = ERROR_MESSAGES.get(code) or "Щось пішло не так. Спробуйте ще раз."
+            detail = error_message(code)
             raise NosiFitAPIError(detail, code)
         return response
 
     def ensure_authenticated(self) -> None:
         if not self.session.cookies:
-            raise NosiFitAPIError("Спочатку увійдіть: /login")
+            raise NosiFitAPIError(t("err.login_first"))
 
     def give_consent(self) -> dict:
         """Accept the privacy policy and health-data processing (both, explicitly)."""
@@ -115,7 +132,7 @@ class NosiFitAPI:
         self.ensure_authenticated()
         return self._request("DELETE", "/api/consent", json={"confirm_erase": True}).json()
 
-    def get_day(self, locale: str = "uk") -> dict:
+    def get_day(self, locale: str = CURRENT_LANGUAGE) -> dict:
         self.ensure_authenticated()
         return self._request(
             "GET", "/api/nutrition/day", params={"locale": locale}
@@ -124,7 +141,7 @@ class NosiFitAPI:
     def search_products(
         self,
         query: str,
-        locale: str = "uk",
+        locale: str = CURRENT_LANGUAGE,
         limit: int = 8,
         category: str | None = None,
         offset: int = 0,
@@ -134,7 +151,7 @@ class NosiFitAPI:
     def search_products_page(
         self,
         query: str,
-        locale: str = "uk",
+        locale: str = CURRENT_LANGUAGE,
         limit: int = 8,
         category: str | None = None,
         offset: int = 0,
@@ -155,7 +172,7 @@ class NosiFitAPI:
         return payload.get("products", []), bool(payload.get("has_more"))
 
     def get_products(
-        self, locale: str = "uk", limit: int = 50, category: str | None = None
+        self, locale: str = CURRENT_LANGUAGE, limit: int = 50, category: str | None = None
     ) -> list[dict]:
         self.ensure_authenticated()
         payload = self._request(
@@ -170,7 +187,7 @@ class NosiFitAPI:
         ).json()
         return payload.get("products", [])
 
-    def get_favorite_products(self, locale: str = "uk", limit: int = 50) -> list[dict]:
+    def get_favorite_products(self, locale: str = CURRENT_LANGUAGE, limit: int = 50) -> list[dict]:
         self.ensure_authenticated()
         payload = self._request(
             "GET",
@@ -179,7 +196,7 @@ class NosiFitAPI:
         ).json()
         return payload.get("products", [])[:limit]
 
-    def get_recent_products(self, locale: str = "uk", limit: int = 12) -> list[dict]:
+    def get_recent_products(self, locale: str = CURRENT_LANGUAGE, limit: int = 12) -> list[dict]:
         self.ensure_authenticated()
         payload = self._request(
             "GET",
@@ -188,7 +205,7 @@ class NosiFitAPI:
         ).json()
         return payload.get("products", [])[:limit]
 
-    def get_my_products(self, locale: str = "uk", limit: int = 50) -> list[dict]:
+    def get_my_products(self, locale: str = CURRENT_LANGUAGE, limit: int = 50) -> list[dict]:
         self.ensure_authenticated()
         payload = self._request(
             "GET",
@@ -198,7 +215,7 @@ class NosiFitAPI:
         return payload.get("products", [])[:limit]
 
     def set_product_favorite(
-        self, product_id: int, favorite: bool, locale: str = "uk"
+        self, product_id: int, favorite: bool, locale: str = CURRENT_LANGUAGE
     ) -> dict:
         self.ensure_authenticated()
         return self._request(
@@ -207,7 +224,7 @@ class NosiFitAPI:
             json={"favorite": favorite, "locale": locale},
         ).json()
 
-    def create_product(self, data: dict, locale: str = "uk") -> dict:
+    def create_product(self, data: dict, locale: str = CURRENT_LANGUAGE) -> dict:
         self.ensure_authenticated()
         payload = {**data, "locale": locale}
         return self._request(
@@ -216,7 +233,7 @@ class NosiFitAPI:
             json=payload,
         ).json()
 
-    def get_product(self, product_id: int, locale: str = "uk") -> dict:
+    def get_product(self, product_id: int, locale: str = CURRENT_LANGUAGE) -> dict:
         self.ensure_authenticated()
         return self._request(
             "GET",
@@ -224,7 +241,7 @@ class NosiFitAPI:
             params={"locale": locale},
         ).json()
 
-    def lookup_barcode(self, code: str, locale: str = "uk") -> dict:
+    def lookup_barcode(self, code: str, locale: str = CURRENT_LANGUAGE) -> dict:
         """Catalog product or Open Food Facts preview for a barcode
         (``status`` "found" / "not_found"); the same endpoint the website uses."""
         self.ensure_authenticated()
@@ -234,7 +251,7 @@ class NosiFitAPI:
             params={"locale": locale},
         ).json()
 
-    def import_barcode(self, code: str, locale: str = "uk") -> dict:
+    def import_barcode(self, code: str, locale: str = CURRENT_LANGUAGE) -> dict:
         """Adds the scanned product to the catalog (or returns the existing one)."""
         self.ensure_authenticated()
         return self._request(
@@ -248,7 +265,7 @@ class NosiFitAPI:
         name: str,
         category: str,
         time: str | None = None,
-        locale: str = "uk",
+        locale: str = CURRENT_LANGUAGE,
     ) -> dict:
         self.ensure_authenticated()
         return self._request(
@@ -269,7 +286,7 @@ class NosiFitAPI:
         name: str,
         category: str,
         time: str | None = None,
-        locale: str = "uk",
+        locale: str = CURRENT_LANGUAGE,
     ) -> dict:
         self.ensure_authenticated()
         return self._request(
@@ -297,7 +314,7 @@ class NosiFitAPI:
         amount: float,
         unit: str,
         meal_id: int | None = None,
-        locale: str = "uk",
+        locale: str = CURRENT_LANGUAGE,
     ) -> dict:
         self.ensure_authenticated()
         payload = {
@@ -324,7 +341,7 @@ class NosiFitAPI:
         self,
         meal_id: int,
         items: list[dict],
-        locale: str = "uk",
+        locale: str = CURRENT_LANGUAGE,
     ) -> dict:
         self.ensure_authenticated()
         return self._request(
@@ -343,7 +360,7 @@ class NosiFitAPI:
         product_id: int,
         amount: float,
         unit: str,
-        locale: str = "uk",
+        locale: str = CURRENT_LANGUAGE,
     ) -> dict:
         self.ensure_authenticated()
         return self._request(
@@ -365,7 +382,7 @@ class NosiFitAPI:
         *,
         dish_id: int | None = None,
         time: str | None = None,
-        locale: str = "uk",
+        locale: str = CURRENT_LANGUAGE,
     ) -> dict:
         """Log products or a dish in one request; returns the updated day.
 
@@ -385,7 +402,7 @@ class NosiFitAPI:
 
     def list_dishes(
         self,
-        locale: str = "uk",
+        locale: str = CURRENT_LANGUAGE,
         limit: int = 8,
         offset: int = 0,
         sort: str = "recent",
@@ -405,13 +422,13 @@ class NosiFitAPI:
         ).json()
         return payload.get("dishes", []), bool(payload.get("has_more"))
 
-    def get_dish(self, dish_id: int, locale: str = "uk") -> dict:
+    def get_dish(self, dish_id: int, locale: str = CURRENT_LANGUAGE) -> dict:
         self.ensure_authenticated()
         return self._request(
             "GET", f"/api/nutrition/dishes/{dish_id}", params={"locale": locale}
         ).json()
 
-    def create_dish(self, name: str, items: list[dict], locale: str = "uk") -> dict:
+    def create_dish(self, name: str, items: list[dict], locale: str = CURRENT_LANGUAGE) -> dict:
         self.ensure_authenticated()
         return self._request(
             "POST",
@@ -419,7 +436,7 @@ class NosiFitAPI:
             json={"name": name, "items": items, "locale": locale},
         ).json()
 
-    def update_dish(self, dish_id: int, data: dict, locale: str = "uk") -> dict:
+    def update_dish(self, dish_id: int, data: dict, locale: str = CURRENT_LANGUAGE) -> dict:
         self.ensure_authenticated()
         return self._request(
             "PATCH",
@@ -456,7 +473,7 @@ class NosiFitAPI:
             json={"weight": weight},
         ).json()
 
-    def update_product(self, product_id: int, data: dict, locale: str = "uk") -> dict:
+    def update_product(self, product_id: int, data: dict, locale: str = CURRENT_LANGUAGE) -> dict:
         """Edit one of the user's own products. Logged entries are recalculated."""
         self.ensure_authenticated()
         return self._request(
@@ -475,7 +492,7 @@ class NosiFitAPI:
     # --- Training ---------------------------------------------------------
 
     def search_exercises(
-        self, query: str, locale: str = "uk", limit: int = 8, offset: int = 0
+        self, query: str, locale: str = CURRENT_LANGUAGE, limit: int = 8, offset: int = 0
     ) -> dict:
         """{"items": [...], "has_more": bool}; items carry "last" values."""
         self.ensure_authenticated()
@@ -485,7 +502,7 @@ class NosiFitAPI:
             params={"q": query, "locale": locale, "limit": limit, "offset": offset},
         ).json()
 
-    def get_recent_exercises(self, locale: str = "uk", limit: int = 6) -> list[dict]:
+    def get_recent_exercises(self, locale: str = CURRENT_LANGUAGE, limit: int = 6) -> list[dict]:
         self.ensure_authenticated()
         payload = self._request(
             "GET",
@@ -494,7 +511,7 @@ class NosiFitAPI:
         ).json()
         return payload.get("items", [])
 
-    def get_today_session(self, locale: str = "uk") -> dict | None:
+    def get_today_session(self, locale: str = CURRENT_LANGUAGE) -> dict | None:
         """Today's session (server calendar) or None."""
         self.ensure_authenticated()
         return self._request(

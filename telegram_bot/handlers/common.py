@@ -3,6 +3,7 @@ from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
 
+from telegram_bot.i18n import t
 from telegram_bot.keyboards.main import main_menu
 from telegram_bot.runtime import is_authenticated
 
@@ -14,7 +15,7 @@ router = Router()
 async def cancel(message: Message, state: FSMContext) -> None:
     await state.clear()
     await message.answer(
-        "Дію скасовано.",
+        t("common.cancelled"),
         reply_markup=main_menu(authenticated=is_authenticated(message.from_user.id)),
     )
 
@@ -22,6 +23,6 @@ async def cancel(message: Message, state: FSMContext) -> None:
 @router.message()
 async def unknown(message: Message) -> None:
     await message.answer(
-        "Не зрозумів. Скористайтеся кнопками внизу або /help.",
+        t("common.unknown"),
         reply_markup=main_menu(authenticated=is_authenticated(message.from_user.id)),
     )

@@ -28,36 +28,36 @@ async function request(url, options = {}) {
     return data;
 }
 export const NutritionAPI = {
-    getDay(locale = "uk") {
+    getDay(locale = "en") {
         return request(BASE_URL + "/day?locale=" + encodeURIComponent(locale));
     },
-    getDayDetails(date, locale = "uk") {
+    getDayDetails(date, locale = "en") {
         return request(BASE_URL + "/day/" + date + "?locale=" + encodeURIComponent(locale));
     },
     getRecommendations() {
         return request(BASE_URL + "/recommendations");
     },
-    getProducts(query = "", locale = "uk") {
+    getProducts(query = "", locale = "en") {
         return request(BASE_URL + "/products?q=" + encodeURIComponent(query) + "&locale=" + encodeURIComponent(locale));
     },
-    getRecentProducts(locale = "uk") {
+    getRecentProducts(locale = "en") {
         return request(BASE_URL + "/products/recent?locale=" + encodeURIComponent(locale));
     },
-    getFavoriteProducts(locale = "uk") {
+    getFavoriteProducts(locale = "en") {
         return request(BASE_URL + "/products/favorites?locale=" + encodeURIComponent(locale));
     },
-    getMyProducts(locale = "uk") {
+    getMyProducts(locale = "en") {
         return request(BASE_URL + "/products/mine?locale=" + encodeURIComponent(locale));
     },
-    getProduct(id, locale = "uk") {
+    getProduct(id, locale = "en") {
         return request(BASE_URL + "/products/" + id + "?locale=" + encodeURIComponent(locale));
     },
     /** Catalog product or external preview for a barcode (same endpoint as the Telegram bot). */
-    lookupBarcode(code, locale = "uk") {
+    lookupBarcode(code, locale = "en") {
         return request(BASE_URL + "/products/barcode/" + encodeURIComponent(code) + "?locale=" + encodeURIComponent(locale));
     },
     /** Adds a scanned product to the catalog; values are taken from the server's lookup. */
-    importBarcode(code, locale = "uk") {
+    importBarcode(code, locale = "en") {
         return request(BASE_URL + "/products/barcode/" + encodeURIComponent(code) + "/import", {
             method: "POST",
             body: JSON.stringify({ locale }),
@@ -80,7 +80,7 @@ export const NutritionAPI = {
             method: "DELETE",
         });
     },
-    setProductFavorite(id, favorite, locale = "uk") {
+    setProductFavorite(id, favorite, locale = "en") {
         return request(BASE_URL + "/products/" + id + "/favorite", {
             method: "POST",
             body: JSON.stringify({ favorite, locale }),
@@ -103,7 +103,7 @@ export const NutritionAPI = {
             method: "DELETE",
         });
     },
-    createEntries(mealId, items, locale = "uk") {
+    createEntries(mealId, items, locale = "en") {
         return request(BASE_URL + "/entries/bulk", {
             method: "POST",
             body: JSON.stringify({ meal_id: mealId, items, locale }),

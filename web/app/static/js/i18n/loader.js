@@ -1,10 +1,10 @@
 const SUPPORTED_LOCALES = [
-    "uk",
     "en",
+    "uk",
     "pl",
     "ru",
 ];
-const DEFAULT_LOCALE = "uk";
+const DEFAULT_LOCALE = "en";
 const LOCALE_COOKIE = "nosifit_locale";
 let translations = {};
 let currentLocale = DEFAULT_LOCALE;

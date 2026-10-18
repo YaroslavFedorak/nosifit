@@ -55,8 +55,8 @@ def test_files_are_read_once_per_locale_and_namespace(monkeypatch):
 
     monkeypatch.setattr(i18n, "_load_raw_translation", counting)
     for _ in range(3):
-        i18n.get_translation("en", "common", "anything")
-        i18n.load_translation("en", "common")
+        i18n.get_translation("uk", "common", "anything")
+        i18n.load_translation("uk", "common")
 
     assert sorted(reads) == [("en", "common"), ("uk", "common")]
 
@@ -70,9 +70,9 @@ def test_callers_get_their_own_copy():
     assert i18n.get_translation("uk", "common", key) != key
 
 
-def test_an_unsupported_locale_reads_ukrainian():
-    uk = i18n.load_translation("uk", "common")
-    key = a_text_key(uk)
+def test_an_unsupported_locale_reads_english():
+    en = i18n.load_translation("en", "common")
+    key = a_text_key(en)
 
-    assert i18n.get_translation("de", "common", key) == lookup(uk, key)
-    assert i18n.load_translation("de", "common") == uk
+    assert i18n.get_translation("de", "common", key) == lookup(en, key)
+    assert i18n.load_translation("de", "common") == en

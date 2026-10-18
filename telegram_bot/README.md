@@ -117,9 +117,9 @@ The flow is:
 
 System and user-owned products are returned by the existing nutrition API, including localized product names.
 
-Meals are stored with language-independent category keys (`breakfast`, `lunch`, `dinner`, `snack`). The bot shows Ukrainian names and reuses an existing meal of the same type for today instead of creating a duplicate.
+Meals are stored with language-independent category keys (`breakfast`, `lunch`, `dinner`, `snack`). The bot shows the names in the user's language and reuses an existing meal of the same type for today instead of creating a duplicate.
 
-Amounts are validated before they are sent (up to 5000 g / ml or 100 pcs per entry). Backend errors carry a `code` and are shown in Ukrainian.
+Amounts are validated before they are sent (up to 5000 g / ml or 100 pcs per entry). Backend errors carry a `code` and are shown in the user's language (`err.<code>` in the locales).
 
 ### Barcodes
 
@@ -141,6 +141,28 @@ product menu, or type the digits under the barcode into the search).
 - Incomplete or implausible data, or an unknown barcode, leads to "Create my
   own product": the existing step-by-step form, which keeps the barcode, so
   the next scan finds the user's private product.
+
+## Languages
+
+The bot speaks English (the default), Ukrainian, Polish and Russian. Every text
+lives in `telegram_bot/locales/<language>/*.json` (flat keys, `{name}`
+placeholders); code asks for it with `t("key", name=...)` from
+`telegram_bot/i18n.py`. A missing key falls back to English. To add a text, add
+the key to all four languages: `web/tests/unit/test_telegram_i18n.py` fails if
+a language lacks a key, uses other placeholders, or the code uses an unknown key.
+
+Which language a user gets:
+
+1. the one picked with **/language** or the **🌐 Language** button, kept in a
+   JSON file (`telegram_bot/data/languages.json`, or the path in
+   `TELEGRAM_BOT_LANGUAGES_FILE`; keep it on a volume to survive redeploys);
+2. otherwise the language of the Telegram app (`language_code`: `uk`, `pl`,
+   `ru`);
+3. otherwise English.
+
+Reply-keyboard buttons are matched in every language, so a button sent before a
+language change keeps working. Product, exercise and meal names come from the
+web app in the same language.
 
 ## Menu
 

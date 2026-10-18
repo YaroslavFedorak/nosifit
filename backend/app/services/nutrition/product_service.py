@@ -32,12 +32,12 @@ class ProductServiceError(ValueError):
 
 
 def normalize_locale(locale: str | None) -> str:
-    normalized = (locale or "uk").strip().lower().replace("_", "-")
+    normalized = (locale or "en").strip().lower().replace("_", "-")
     normalized = normalized.split("-")[0]
-    return normalized if normalized in SUPPORTED_LOCALES else "uk"
+    return normalized if normalized in SUPPORTED_LOCALES else "en"
 
 
-def get_product_name(product, locale="uk") -> str:
+def get_product_name(product, locale="en") -> str:
     locale = normalize_locale(locale)
     names = {name.locale: name.name for name in product.names}
 
@@ -56,7 +56,7 @@ def _round(value, digits=2):
 def serialize_product(
     product,
     user_id,
-    locale="uk",
+    locale="en",
     favorite_ids: set[int] | None = None,
 ) -> dict:
     if favorite_ids is None:
@@ -119,7 +119,7 @@ def favorite_ids_for(user_id, product_ids) -> set[int]:
     }
 
 
-def serialize_product_list(products, user_id, locale="uk"):
+def serialize_product_list(products, user_id, locale="en"):
     if not products:
         return []
 
@@ -261,7 +261,7 @@ def _fuzzy_match_ids(user_id, normalized, category, limit, offset):
 def search_products_page(
     user_id,
     query="",
-    locale="uk",
+    locale="en",
     limit=20,
     category=None,
     offset=0,
@@ -307,7 +307,7 @@ def search_products_page(
 def search_products(
     user_id,
     query="",
-    locale="uk",
+    locale="en",
     limit=20,
     category=None,
     offset=0,
@@ -316,7 +316,7 @@ def search_products(
     return products
 
 
-def get_product(user_id, product_id, locale="uk"):
+def get_product(user_id, product_id, locale="en"):
     product = get_product_for_user(user_id, product_id)
     if product is None:
         return None
@@ -497,7 +497,7 @@ def _barcode_value(user_id, data):
     return barcode
 
 
-def create_user_product(user_id, data, locale="uk"):
+def create_user_product(user_id, data, locale="en"):
     locale = normalize_locale(locale)
     name, normalized = _product_name_value(data)
 
@@ -550,7 +550,7 @@ def create_user_product(user_id, data, locale="uk"):
     return serialize_product(product, user_id, locale)
 
 
-def update_user_product(user_id, product_id, data, locale="uk"):
+def update_user_product(user_id, product_id, data, locale="en"):
     """Edit the user's own product.
 
     Logged entries keep the values they were logged with (each entry stores
@@ -631,7 +631,7 @@ def archive_user_product(user_id, product_id):
     return True
 
 
-def set_favorite(user_id, product_id, favorite, locale="uk"):
+def set_favorite(user_id, product_id, favorite, locale="en"):
     product = get_product_for_user(user_id, product_id)
     if product is None:
         return None
@@ -655,7 +655,7 @@ def set_favorite(user_id, product_id, favorite, locale="uk"):
     return serialize_product(product, user_id, locale)
 
 
-def get_recent(user_id, locale="uk", limit=12):
+def get_recent(user_id, locale="en", limit=12):
     return serialize_product_list(
         get_recent_products(user_id, limit),
         user_id,
@@ -663,7 +663,7 @@ def get_recent(user_id, locale="uk", limit=12):
     )
 
 
-def get_favorites(user_id, locale="uk", limit=50):
+def get_favorites(user_id, locale="en", limit=50):
     return serialize_product_list(
         get_favorite_products(user_id, limit),
         user_id,
@@ -671,7 +671,7 @@ def get_favorites(user_id, locale="uk", limit=50):
     )
 
 
-def get_user_products(user_id, locale="uk"):
+def get_user_products(user_id, locale="en"):
     products = (
         Product.query
         .options(selectinload(Product.names))

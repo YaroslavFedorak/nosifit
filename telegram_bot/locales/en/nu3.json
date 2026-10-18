@@ -1,0 +1,14 @@
+{
+  "nu.more_failed": "Could not load more results: {error}",
+  "nu.fav_failed": "Could not change the favorite: {error}",
+  "nu.product_load_failed": "Could not load the product: {error}",
+  "nu.enter_amount": "Enter an amount in <b>{unit}</b>. Default: <b>{default}</b>.",
+  "nu.added_ask_meal": "Added: <b>{name}</b>.\n\nWhich meal should it go to?",
+  "nu.item_gone": "This item has already been deleted.",
+  "nu.edit_item": "✏️ <b>{name}</b>\n\nCurrent amount: <b>{amount} {unit}</b>\nEnter a new amount.",
+  "nu.draft_empty": "🍽 <b>{meal}</b>\n\nNothing added yet. Add a product or cancel.",
+  "nu.no_new": "There are no new products in this meal yet.",
+  "nu.ask_meal": "Which meal should the products go to?",
+  "nu.meal_save_failed": "Could not save the meal: {error}\n\nThe selected products are not lost — try again.",
+  "nu.meal_saved": "✅ <b>Meal saved</b>\n\n"
+}

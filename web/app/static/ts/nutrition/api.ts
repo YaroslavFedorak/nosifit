@@ -58,12 +58,12 @@ async function request<T>(url: string, options: RequestInit = {}): Promise<T> {
 }
 
 export const NutritionAPI = {
-    getDay(locale = "uk"): Promise<NutritionDay> {
+    getDay(locale = "en"): Promise<NutritionDay> {
         return request<NutritionDay>(
             BASE_URL + "/day?locale=" + encodeURIComponent(locale),
         );
     },
-    getDayDetails(date: string, locale = "uk"): Promise<NutritionDayDetails> {
+    getDayDetails(date: string, locale = "en"): Promise<NutritionDayDetails> {
         return request<NutritionDayDetails>(
             BASE_URL + "/day/" + date + "?locale=" + encodeURIComponent(locale),
         );
@@ -71,31 +71,31 @@ export const NutritionAPI = {
     getRecommendations(): Promise<NutritionRecommendationResponse> {
         return request<NutritionRecommendationResponse>(BASE_URL + "/recommendations");
     },
-    getProducts(query = "", locale = "uk"): Promise<ProductListResponse> {
+    getProducts(query = "", locale = "en"): Promise<ProductListResponse> {
         return request<ProductListResponse>(
             BASE_URL + "/products?q=" + encodeURIComponent(query) + "&locale=" + encodeURIComponent(locale),
         );
     },
-    getRecentProducts(locale = "uk"): Promise<ProductListResponse> {
+    getRecentProducts(locale = "en"): Promise<ProductListResponse> {
         return request<ProductListResponse>(BASE_URL + "/products/recent?locale=" + encodeURIComponent(locale));
     },
-    getFavoriteProducts(locale = "uk"): Promise<ProductListResponse> {
+    getFavoriteProducts(locale = "en"): Promise<ProductListResponse> {
         return request<ProductListResponse>(BASE_URL + "/products/favorites?locale=" + encodeURIComponent(locale));
     },
-    getMyProducts(locale = "uk"): Promise<ProductListResponse> {
+    getMyProducts(locale = "en"): Promise<ProductListResponse> {
         return request<ProductListResponse>(BASE_URL + "/products/mine?locale=" + encodeURIComponent(locale));
     },
-    getProduct(id: number, locale = "uk"): Promise<Product> {
+    getProduct(id: number, locale = "en"): Promise<Product> {
         return request<Product>(BASE_URL + "/products/" + id + "?locale=" + encodeURIComponent(locale));
     },
     /** Catalog product or external preview for a barcode (same endpoint as the Telegram bot). */
-    lookupBarcode(code: string, locale = "uk"): Promise<BarcodeLookupResult> {
+    lookupBarcode(code: string, locale = "en"): Promise<BarcodeLookupResult> {
         return request<BarcodeLookupResult>(
             BASE_URL + "/products/barcode/" + encodeURIComponent(code) + "?locale=" + encodeURIComponent(locale),
         );
     },
     /** Adds a scanned product to the catalog; values are taken from the server's lookup. */
-    importBarcode(code: string, locale = "uk"): Promise<{ product: Product; created: boolean }> {
+    importBarcode(code: string, locale = "en"): Promise<{ product: Product; created: boolean }> {
         return request(BASE_URL + "/products/barcode/" + encodeURIComponent(code) + "/import", {
             method: "POST",
             body: JSON.stringify({ locale }),
@@ -118,7 +118,7 @@ export const NutritionAPI = {
             method: "DELETE",
         });
     },
-    setProductFavorite(id: number, favorite: boolean, locale = "uk"): Promise<Product> {
+    setProductFavorite(id: number, favorite: boolean, locale = "en"): Promise<Product> {
         return request<Product>(BASE_URL + "/products/" + id + "/favorite", {
             method: "POST",
             body: JSON.stringify({ favorite, locale }),
@@ -144,7 +144,7 @@ export const NutritionAPI = {
     createEntries(
         mealId: number,
         items: Array<{ product_id: number; amount: number; unit: string }>,
-        locale = "uk",
+        locale = "en",
     ): Promise<{ ids: number[]; status: string }> {
         return request(BASE_URL + "/entries/bulk", {
             method: "POST",

@@ -1,0 +1,19 @@
+{
+  "btn.training": "🏋️ Тренування",
+  "btn.nutrition": "🍽 Харчування",
+  "btn.login": "🔐 Увійти",
+  "btn.logout": "🚪 Вийти",
+  "btn.home": "🏠 Головна",
+  "btn.language": "🌐 Мова",
+  "btn.add_exercise": "➕ Додати вправу",
+  "btn.my_workout": "📋 Моє тренування",
+  "btn.food": "🍽 Їжа",
+  "btn.water": "💧 Вода",
+  "btn.weight": "⚖️ Вага",
+  "ph.login": "Увійдіть у NosiFit",
+  "ph.section": "Оберіть розділ",
+  "ph.exercise": "Назва вправи або кнопка",
+  "ph.action": "Оберіть дію",
+  "lang.choose": "🌐 Оберіть мову:",
+  "lang.changed": "✅ Мова: українська."
+}

@@ -12,6 +12,7 @@ from urllib.parse import urlsplit
 import requests
 
 from shared.bot_signature import sign_request
+from telegram_bot.i18n import t
 from telegram_bot.services.api import NosiFitAPI, NosiFitAPIError
 
 
@@ -60,7 +61,7 @@ class TelegramAuthClient:
                 url, data=body, headers=headers, timeout=self.timeout, allow_redirects=False
             )
         except requests.RequestException as exc:
-            raise TelegramAuthError("Не вдалося підключитися до NosiFit.", "unavailable") from exc
+            raise TelegramAuthError(t("err.connect"), "unavailable") from exc
 
         if response.ok:
             return response

@@ -1,0 +1,19 @@
+{
+  "btn.training": "🏋️ Training",
+  "btn.nutrition": "🍽 Nutrition",
+  "btn.login": "🔐 Log in",
+  "btn.logout": "🚪 Log out",
+  "btn.home": "🏠 Home",
+  "btn.language": "🌐 Language",
+  "btn.add_exercise": "➕ Add exercise",
+  "btn.my_workout": "📋 My workout",
+  "btn.food": "🍽 Food",
+  "btn.water": "💧 Water",
+  "btn.weight": "⚖️ Weight",
+  "ph.login": "Log in to NosiFit",
+  "ph.section": "Choose a section",
+  "ph.exercise": "Exercise name or a button",
+  "ph.action": "Choose an action",
+  "lang.choose": "🌐 Choose your language:",
+  "lang.changed": "✅ Language: English."
+}

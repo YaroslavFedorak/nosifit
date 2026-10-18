@@ -6,8 +6,9 @@ from aiogram.exceptions import TelegramBadRequest
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, Message
 
+from telegram_bot.i18n import t
 from telegram_bot.keyboards.body import cancel_keyboard, water_keyboard
-from telegram_bot.keyboards.main import WATER, main_menu
+from telegram_bot.keyboards.main import WATER, button, main_menu
 from telegram_bot.runtime import get_api, is_authenticated
 from telegram_bot.services.api import NosiFitAPIError
 from telegram_bot.states.body import WaterStates
@@ -26,17 +27,13 @@ def _format_liters(value: float) -> str:
 def _water_text(data: dict, prefix: str = "") -> str:
     amount = float(data.get("amount") or 0)
     recommended = float(data.get("recommended") or 0)
-    lines = [prefix + "💧 <b>Вода сьогодні</b>", ""]
+    lines = [prefix + t("water.title"), ""]
     if recommended > 0:
         percent = round(amount / recommended * 100)
-        lines.append(f"{_format_liters(amount)} / {_format_liters(recommended)} л · {percent}%")
+        lines.append(f"{_format_liters(amount)} / {_format_liters(recommended)} {t('unit.l')} · {percent}%")
     else:
-        lines.append(f"{_format_liters(amount)} л")
-    lines.extend([
-        "",
-        "Напої з харчування (кава, сік, молоко) враховуються автоматично.",
-        "Оберіть, скільки додати:",
-    ])
+        lines.append(f"{_format_liters(amount)} {t('unit.l')}")
+    lines.extend(["", t("water.note")])
     return "\n".join(lines)
 
 
@@ -75,12 +72,12 @@ async def _show(message: Message, user_id: int, *, edit: bool = False, prefix: s
     await message.answer(text, reply_markup=water_keyboard())
 
 
-@router.message(F.text == WATER)
+@router.message(button(WATER))
 async def water(message: Message, state: FSMContext) -> None:
     await state.clear()
     if not is_authenticated(message.from_user.id):
         await message.answer(
-            "Спочатку увійдіть у NosiFit.",
+            t("body.login_first"),
             reply_markup=main_menu(authenticated=False),
         )
         return
@@ -101,7 +98,7 @@ async def add_preset(callback: CallbackQuery, state: FSMContext) -> None:
         callback.message,
         callback.from_user.id,
         edit=True,
-        prefix=f"✅ {sign}{_format_liters(abs(liters))} л\n\n",
+        prefix=f"✅ {sign}{_format_liters(abs(liters))} {t('unit.l')}\n\n",
     )
 
 
@@ -110,8 +107,7 @@ async def custom_amount(callback: CallbackQuery, state: FSMContext) -> None:
     await callback.answer()
     await state.set_state(WaterStates.entering_amount)
     await callback.message.answer(
-        "Введіть кількість, наприклад <b>0,4</b> (л) або <b>300 мл</b>.\n"
-        "Щоб відняти помилковий запис — з мінусом: <b>-0,25</b>.",
+        t("water.custom"),
         reply_markup=cancel_keyboard("water"),
     )
 
@@ -121,8 +117,7 @@ async def enter_amount(message: Message, state: FSMContext) -> None:
     liters = _parse_liters(message.text or "")
     if liters is None:
         await message.answer(
-            "Не вдалося розпізнати кількість. Введіть від 0,05 до 5 л, "
-            "наприклад <b>0,5</b> або <b>250 мл</b>.",
+            t("water.parse_error"),
             reply_markup=cancel_keyboard("water"),
         )
         return
@@ -133,7 +128,7 @@ async def enter_amount(message: Message, state: FSMContext) -> None:
         return
     await state.clear()
     sign = "+" if liters > 0 else "−"
-    await _show(message, message.from_user.id, prefix=f"✅ {sign}{_format_liters(abs(liters))} л\n\n")
+    await _show(message, message.from_user.id, prefix=f"✅ {sign}{_format_liters(abs(liters))} {t('unit.l')}\n\n")
 
 
 @router.callback_query(F.data == "water:cancel")
@@ -141,6 +136,6 @@ async def cancel(callback: CallbackQuery, state: FSMContext) -> None:
     await callback.answer()
     await state.clear()
     try:
-        await callback.message.edit_text("Дію скасовано.")
+        await callback.message.edit_text(t("common.cancelled"))
     except TelegramBadRequest:
         pass

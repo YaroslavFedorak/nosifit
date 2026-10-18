@@ -11,6 +11,8 @@ overwritten.
 import html
 import re
 
+from telegram_bot.i18n import current_language, plural, t
+
 MAX_SETS = 30
 MAX_REPS = 100
 MAX_SECONDS = 3600
@@ -50,7 +52,7 @@ def item_from_session(row: dict) -> dict:
     """A logged exercise with its sets. ``rpe`` is kept as stored."""
     return {
         "id": str(row["id"]),
-        "name": row.get("name") or "Вправа",
+        "name": row.get("name") or t("tr.exercise_default"),
         "measurement_type": row.get("measurement_type"),
         "load_type": row.get("load_type"),
         "accepts_load": bool(row.get("accepts_load")),
@@ -95,20 +97,20 @@ def parse_number(text: str) -> float | None:
 
 def check_sets(value: float | None) -> str | None:
     if value is None or value != int(value) or not 1 <= value <= MAX_SETS:
-        return f"Напишіть кількість підходів від 1 до {MAX_SETS}."
+        return t("tr.check_sets", max=MAX_SETS)
     return None
 
 
 def check_load(value: float | None) -> str | None:
     if value is None or not 0 <= value <= MAX_LOAD:
-        return f"Напишіть вагу числом від 0 до {format_number(MAX_LOAD)}, наприклад 60 або 62,5."
+        return t("tr.check_load", max=format_number(MAX_LOAD))
     return None
 
 
 def check_count(value: float | None, duration: bool) -> str | None:
-    limit, what = (MAX_SECONDS, "секунд") if duration else (MAX_REPS, "повторів")
+    limit = MAX_SECONDS if duration else MAX_REPS
     if value is None or value != int(value) or not 1 <= value <= limit:
-        return f"Напишіть ціле число {what} від 1 до {limit}."
+        return t("tr.check_seconds" if duration else "tr.check_reps", limit=limit)
     return None
 
 
@@ -116,23 +118,17 @@ def check_count(value: float | None, duration: bool) -> str | None:
 
 
 def format_number(value: float) -> str:
-    return f"{value:.2f}".rstrip("0").rstrip(".").replace(".", ",")
-
-
-def _plural(count: int, one: str, few: str, many: str) -> str:
-    if count % 10 == 1 and count % 100 != 11:
-        return one
-    if 2 <= count % 10 <= 4 and not 12 <= count % 100 <= 14:
-        return few
-    return many
+    # A comma for the languages that write decimals with one.
+    separator = "." if current_language() == "en" else ","
+    return f"{value:.2f}".rstrip("0").rstrip(".").replace(".", separator)
 
 
 def count_sets(count: int) -> str:
-    return f"{count} {_plural(count, 'підхід', 'підходи', 'підходів')}"
+    return f"{count} {plural(count, 'tr.plural_sets')}"
 
 
 def count_exercises(count: int) -> str:
-    return f"{count} {_plural(count, 'вправа', 'вправи', 'вправ')}"
+    return f"{count} {plural(count, 'tr.plural_exercises')}"
 
 
 def _shows_load(item: dict) -> bool:
@@ -140,37 +136,37 @@ def _shows_load(item: dict) -> bool:
 
 
 def format_entry(item: dict, entry: dict) -> str:
-    """One set: "12 × 60 кг", "12 повт.", "45 с"."""
+    """One set: "12 × 60 kg", "12 reps", "45 s"."""
     if is_duration(item):
-        text = f"{entry.get('duration_sec')} с"
+        text = f"{entry.get('duration_sec')} {t('unit.sec')}"
     else:
-        text = f"{entry.get('reps')} повт."
+        text = f"{entry.get('reps')} {t('unit.reps')}"
     load = _load_of(entry.get("load"))
     if load and item.get("accepts_load"):
         sign = "+" if item.get("load_type") == "bodyweight" else ""
         unit = text.split()[0] if not is_duration(item) else text
-        return f"{unit} × {sign}{format_number(load)} кг"
+        return f"{unit} × {sign}{format_number(load)} {t('unit.kg')}"
     return text
 
 
 def format_sets_inline(item: dict) -> str:
-    """"3 підходи: 12×60 · 11×55 · 8×50 кг"."""
+    """"3 sets: 12×60 · 11×55 · 8×50 kg"."""
     entries = item["entries"]
     if not entries:
-        return "ще немає підходів"
+        return t("tr.no_sets")
     key = count_key(item)
     if _shows_load(item):
         sign = "+" if item.get("load_type") == "bodyweight" else ""
         parts = [f"{e.get(key)}×{sign}{format_number(_load_of(e.get('load')))}" for e in entries]
-        unit = "с · кг" if is_duration(item) else "кг"
+        unit = t("unit.sec_kg") if is_duration(item) else t("unit.kg")
     else:
         parts = [str(e.get(key)) for e in entries]
-        unit = "с" if is_duration(item) else "повт."
+        unit = t("unit.sec") if is_duration(item) else t("unit.reps")
     return f"{count_sets(len(entries))}: {' · '.join(parts)} {unit}"
 
 
 def format_sets_block(item: dict) -> str:
-    """One line per set: "1. 12 × 60 кг"."""
+    """One line per set: "1. 12 × 60 kg"."""
     return "\n".join(f"{n}. {format_entry(item, e)}" for n, e in enumerate(item["entries"], start=1))
 
 

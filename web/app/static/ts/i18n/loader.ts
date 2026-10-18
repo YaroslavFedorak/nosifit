@@ -4,13 +4,13 @@ import type {
 } from "./types.js";
 
 const SUPPORTED_LOCALES: Locale[] = [
-    "uk",
     "en",
+    "uk",
     "pl",
     "ru",
 ];
 
-const DEFAULT_LOCALE: Locale = "uk";
+const DEFAULT_LOCALE: Locale = "en";
 const LOCALE_COOKIE = "nosifit_locale";
 
 

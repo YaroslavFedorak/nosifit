@@ -223,7 +223,7 @@ def _brand(product: dict) -> str | None:
     return first[:MAX_BRAND_LENGTH] or None
 
 
-def normalize_external_product(product: dict, locale: str = "uk") -> dict:
+def normalize_external_product(product: dict, locale: str = "en") -> dict:
     """Preview of an external product in NosiFit's per-100 g convention.
 
     Never invents data: a missing value stays missing (``None``, listed in
@@ -507,7 +507,7 @@ def _unavailable(exc: OpenFoodFactsUnavailable) -> BarcodeLookupError:
     )
 
 
-def lookup_barcode(user_id, raw, locale="uk") -> dict:
+def lookup_barcode(user_id, raw, locale="en") -> dict:
     """What NosiFit knows about a scanned barcode (nothing is stored here
     except the cache of the external answer)."""
     locale = normalize_locale(locale)
@@ -576,7 +576,7 @@ def _own_product_name(user_id, name: str, brand: str | None) -> tuple[str, str]:
     )
 
 
-def import_barcode_product(user_id, raw, locale="uk") -> tuple[dict, bool]:
+def import_barcode_product(user_id, raw, locale="en") -> tuple[dict, bool]:
     """Adds the scanned product to the user's own products ("My products").
 
     The copy is private and editable like any own product, so wrong
