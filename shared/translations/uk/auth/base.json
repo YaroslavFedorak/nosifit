@@ -32,7 +32,6 @@
   },
   "register": {
     "title": "Реєстрація",
-    "heading": "Створити акаунт",
     "namePlaceholder": "Ваше ім’я",
     "passwordPlaceholder": "Мінімум 8 символів",
     "confirmPlaceholder": "Повторіть пароль",
@@ -72,34 +71,10 @@
     "height": "Зріст (см)",
     "weight": "Вага (кг)",
     "gender": "Стать",
-    "male": "Чоловіча",
-    "female": "Жіноча",
-    "other": "Інше",
     "activity": "Активність",
     "goal": "Ціль",
     "experience": "Досвід",
     "workouts": "Тренувань на тиждень"
-  },
-  "activity": {
-    "minimum": "Мінімальна",
-    "light": "Легка",
-    "medium": "Середня",
-    "high": "Висока",
-    "veryHigh": "Дуже висока",
-    "extreme": "Екстремальна"
-  },
-  "goals": {
-    "lose": "Схуднення",
-    "maintain": "Підтримка",
-    "gain": "Набір",
-    "muscleGain": "Набір м’язів",
-    "recomposition": "Рекомпозиція",
-    "performance": "Продуктивність"
-  },
-  "experience": {
-    "beginner": "Початківець",
-    "intermediate": "Середній",
-    "advanced": "Просунутий"
   },
   "reset": {
     "title": "Відновлення паролю",
@@ -137,10 +112,6 @@
   "profile": {
     "title": "Заповнення профілю",
     "heading": "Заповніть профіль"
-  },
-  "profileEdit": {
-    "title": "Редагування профілю",
-    "heading": "Редагування профілю"
   },
   "telegramLink": {
     "title": "Підключення Telegram",

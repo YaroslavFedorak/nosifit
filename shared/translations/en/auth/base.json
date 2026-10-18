@@ -32,7 +32,6 @@
   },
   "register": {
     "title": "Registration",
-    "heading": "Create an account",
     "namePlaceholder": "Your name",
     "passwordPlaceholder": "Minimum 8 characters",
     "confirmPlaceholder": "Repeat password",
@@ -72,34 +71,10 @@
     "height": "Height (cm)",
     "weight": "Weight (kg)",
     "gender": "Gender",
-    "male": "Male",
-    "female": "Female",
-    "other": "Other",
     "activity": "Activity",
     "goal": "Goal",
     "experience": "Experience",
     "workouts": "Workouts per week"
-  },
-  "activity": {
-    "minimum": "Minimal",
-    "light": "Light",
-    "medium": "Moderate",
-    "high": "High",
-    "veryHigh": "Very high",
-    "extreme": "Very high"
-  },
-  "goals": {
-    "lose": "Weight loss",
-    "maintain": "Maintenance",
-    "gain": "Muscle gain",
-    "muscleGain": "Muscle gain",
-    "recomposition": "Recomposition",
-    "performance": "Performance"
-  },
-  "experience": {
-    "beginner": "Beginner",
-    "intermediate": "Intermediate",
-    "advanced": "Advanced"
   },
   "reset": {
     "title": "Password recovery",
@@ -137,10 +112,6 @@
   "profile": {
     "title": "Complete profile",
     "heading": "Complete your profile"
-  },
-  "profileEdit": {
-    "title": "Edit profile",
-    "heading": "Edit profile"
   },
   "telegramLink": {
     "title": "Connect Telegram",

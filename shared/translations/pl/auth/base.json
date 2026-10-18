@@ -32,7 +32,6 @@
   },
   "register": {
     "title": "Rejestracja",
-    "heading": "Utwórz konto",
     "namePlaceholder": "Twoje imię",
     "passwordPlaceholder": "Minimum 8 znaków",
     "confirmPlaceholder": "Powtórz hasło",
@@ -72,34 +71,10 @@
     "height": "Wzrost (cm)",
     "weight": "Waga (kg)",
     "gender": "Płeć",
-    "male": "Mężczyzna",
-    "female": "Kobieta",
-    "other": "Inne",
     "activity": "Aktywność",
     "goal": "Cel",
     "experience": "Doświadczenie",
     "workouts": "Treningów tygodniowo"
-  },
-  "activity": {
-    "minimum": "Minimalna",
-    "light": "Lekka",
-    "medium": "Umiarkowana",
-    "high": "Wysoka",
-    "veryHigh": "Bardzo wysoka",
-    "extreme": "Ekstremalna"
-  },
-  "goals": {
-    "lose": "Redukcja",
-    "maintain": "Utrzymanie",
-    "gain": "Budowanie masy",
-    "muscleGain": "Budowanie masy",
-    "recomposition": "Rekompozycja",
-    "performance": "Wydolność"
-  },
-  "experience": {
-    "beginner": "Początkujący",
-    "intermediate": "Średniozaawansowany",
-    "advanced": "Zaawansowany"
   },
   "reset": {
     "title": "Odzyskiwanie hasła",
@@ -137,10 +112,6 @@
   "profile": {
     "title": "Uzupełnianie profilu",
     "heading": "Uzupełnij profil"
-  },
-  "profileEdit": {
-    "title": "Edycja profilu",
-    "heading": "Edycja profilu"
   },
   "telegramLink": {
     "title": "Połącz Telegram",
