@@ -215,7 +215,7 @@ def _request_locale():
 
 @lru_cache(maxsize=len(SUPPORTED_LOCALES))
 def _exercise_names(locale):
-    """slug -> exercise name in ``locale`` (falls back to Ukrainian)."""
+    """slug -> exercise name in ``locale`` (falls back to English)."""
     return {
         slug: item["name"]
         for slug, item in load_translation(locale, "exercises").items()
