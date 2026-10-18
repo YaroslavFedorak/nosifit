@@ -40,5 +40,21 @@
     "support": "Wsparcie",
     "privacy": "Polityka prywatności",
     "terms": "Warunki korzystania"
+  },
+  "profileOptions": {
+    "goals": {
+      "fat_loss": "Redukcja wagi",
+      "muscle_gain": "Przyrost mięśni",
+      "recomposition": "Rekompozycja",
+      "strength": "Rozwój siły",
+      "maintenance": "Utrzymanie formy"
+    },
+    "activity": {
+      "minimum": "Minimalna",
+      "light": "Lekka",
+      "moderate": "Umiarkowana",
+      "high": "Wysoka",
+      "veryHigh": "Bardzo wysoka"
+    }
   }
 }

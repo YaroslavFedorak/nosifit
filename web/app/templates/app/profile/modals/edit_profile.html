@@ -217,33 +217,14 @@
                                 {{ profile_t("editProfile.notSpecified") }}
                             </option>
 
+                            {% for goal in goal_options %}
                             <option
-                                value="maintenance"
-                                {% if profile.goal == "maintenance" %}selected{% endif %}
+                                value="{{ goal }}"
+                                {% if normalize_goal(profile.goal) == goal %}selected{% endif %}
                             >
-                                {{ profile_t("editProfile.maintenance") }}
+                                {{ common_t("profileOptions.goals." ~ goal) }}
                             </option>
-
-                            <option
-                                value="strength"
-                                {% if profile.goal == "strength" %}selected{% endif %}
-                            >
-                                {{ profile_t("editProfile.strength") }}
-                            </option>
-
-                            <option
-                                value="muscle_gain"
-                                {% if profile.goal == "muscle_gain" %}selected{% endif %}
-                            >
-                                {{ profile_t("editProfile.muscleGain") }}
-                            </option>
-
-                            <option
-                                value="fat_loss"
-                                {% if profile.goal == "fat_loss" %}selected{% endif %}
-                            >
-                                {{ profile_t("editProfile.fatLoss") }}
-                            </option>
+                            {% endfor %}
                         </select>
 
                     </div>
@@ -266,33 +247,14 @@
                                 {{ profile_t("editProfile.notSpecified") }}
                             </option>
 
+                            {% for value, key in activity_options %}
                             <option
-                                value="sedentary"
-                                {% if profile.activity == "sedentary" %}selected{% endif %}
+                                value="{{ value }}"
+                                {% if normalize_activity(profile.activity) == value %}selected{% endif %}
                             >
-                                {{ profile_t("editProfile.sedentary") }}
+                                {{ common_t("profileOptions.activity." ~ key) }}
                             </option>
-
-                            <option
-                                value="light"
-                                {% if profile.activity == "light" %}selected{% endif %}
-                            >
-                                {{ profile_t("editProfile.light") }}
-                            </option>
-
-                            <option
-                                value="moderate"
-                                {% if profile.activity == "moderate" %}selected{% endif %}
-                            >
-                                {{ profile_t("editProfile.moderate") }}
-                            </option>
-
-                            <option
-                                value="active"
-                                {% if profile.activity == "active" %}selected{% endif %}
-                            >
-                                {{ profile_t("editProfile.active") }}
-                            </option>
+                            {% endfor %}
 
                         </select>
 

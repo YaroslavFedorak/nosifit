@@ -40,5 +40,21 @@
     "support": "Підтримка",
     "privacy": "Політика конфіденційності",
     "terms": "Умови користування"
+  },
+  "profileOptions": {
+    "goals": {
+      "fat_loss": "Схуднення",
+      "muscle_gain": "Набір м’язів",
+      "recomposition": "Рекомпозиція",
+      "strength": "Розвиток сили",
+      "maintenance": "Підтримка форми"
+    },
+    "activity": {
+      "minimum": "Мінімальна",
+      "light": "Легка",
+      "moderate": "Помірна",
+      "high": "Висока",
+      "veryHigh": "Дуже висока"
+    }
   }
 }

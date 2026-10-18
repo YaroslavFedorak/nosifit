@@ -162,8 +162,8 @@
 
             <div class="field">
               <span class="field-label">{{ auth_t("fields.workouts") }}</span>
-              <div class="choices cols-5">
-                {% for n in (2, 3, 4, 5, 6) %}
+              <div class="choices cols-8">
+                {% for n in workout_options %}
                 <label class="choice"><input type="radio" name="workouts_per_week" value="{{ n }}" required /><span>{{ n }}</span></label>
                 {% endfor %}
               </div>
@@ -173,21 +173,18 @@
               <label for="activity">{{ auth_t("fields.activity") }}</label>
               <select id="activity" name="activity" required>
                 <option value="" disabled selected>{{ auth_t("common.select") }}</option>
-                <option value="1.2">{{ auth_t("activity.minimum") }}</option>
-                <option value="1.375">{{ auth_t("activity.light") }}</option>
-                <option value="1.55">{{ auth_t("activity.medium") }}</option>
-                <option value="1.725">{{ auth_t("activity.high") }}</option>
-                <option value="1.9">{{ auth_t("activity.veryHigh") }}</option>
+                {% for value, key in activity_options %}
+                <option value="{{ value }}">{{ common_t("profileOptions.activity." ~ key) }}</option>
+                {% endfor %}
               </select>
             </div>
 
             <div class="field">
               <span class="field-label">{{ auth_t("fields.goal") }}</span>
               <div class="choices cols-2">
-                <label class="choice"><input type="radio" name="goal" value="fat_loss" required /><span>{{ auth_t("goals.lose") }}</span></label>
-                <label class="choice"><input type="radio" name="goal" value="muscle_gain" required /><span>{{ auth_t("goals.muscleGain") }}</span></label>
-                <label class="choice"><input type="radio" name="goal" value="recomposition" required /><span>{{ auth_t("goals.recomposition") }}</span></label>
-                <label class="choice"><input type="radio" name="goal" value="performance" required /><span>{{ auth_t("goals.performance") }}</span></label>
+                {% for goal in goal_options %}
+                <label class="choice"><input type="radio" name="goal" value="{{ goal }}" required /><span>{{ common_t("profileOptions.goals." ~ goal) }}</span></label>
+                {% endfor %}
               </div>
             </div>
           </section>

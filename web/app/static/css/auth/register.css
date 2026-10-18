@@ -61,7 +61,9 @@ body.auth-fit {
 /* Radio groups drawn as buttons: gender, workouts per week, goal. */
 .choices { display: grid; gap: var(--nf-space-2); }
 .choices.cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-.choices.cols-5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+.choices.cols-8 { grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 4px; }
+/* An odd last card takes the full row. */
+.choices.cols-2 .choice:last-child:nth-child(odd) { grid-column: 1 / -1; }
 .choice { position: relative; display: block; min-width: 0; }
 .choices .choice input {
   position: absolute;
@@ -73,6 +75,7 @@ body.auth-fit {
   opacity: 0;
   cursor: pointer;
 }
+.choices.cols-8 .choice span { padding: 8px 0; }
 .choice span {
   display: flex;
   align-items: center;
@@ -131,6 +134,7 @@ body.auth-fit .auth-lang { margin-top: var(--nf-space-3); }
   .auth-card.wizard-card { padding-top: var(--nf-space-5); padding-bottom: var(--nf-space-5); }
 }
 @media (max-height: 640px) {
+  .choice span { min-height: 38px; padding: 4px 8px; }
   .wizard-card .brand-logo { height: 22px; }
   .wizard-head .subtitle { display: none; }
   .wizard .divider { margin: 4px 0 var(--nf-space-2); }
@@ -138,6 +142,13 @@ body.auth-fit .auth-lang { margin-top: var(--nf-space-3); }
 }
 @media (max-height: 540px) {
   .wizard-card .top-center { display: none; }
+  .wizard-head { display: none; }
+  .wizard-progress { margin: 0 0 var(--nf-space-3); }
+  .wizard .field { margin-bottom: 6px; gap: 4px; }
+  .choice span, .wizard .field input, .wizard .field select, .wizard .action-btn, .wizard .btn-back { min-height: 34px; }
+  .wizard-actions { margin-top: var(--nf-space-2); }
+  .wizard-card .account-note { display: none; }
+  .auth-card.wizard-card { padding-top: var(--nf-space-3); padding-bottom: var(--nf-space-3); }
 }
 @media (max-width: 559px) {
   /* On phones the form is full-bleed, as on the other auth screens. */

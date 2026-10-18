@@ -1,4 +1,12 @@
 from flask import g
+from backend.app.utils.profile_options import (
+    ACTIVITIES,
+    GOALS,
+    WORKOUTS_PER_WEEK,
+    normalize_activity,
+    normalize_goal,
+)
+
 
 from .locale import (
     DEFAULT_LOCALE,
@@ -133,4 +141,9 @@ def init_i18n(app):
             "nutrition_t": nutrition_t,
             "profile_t": profile_t,
             "dashboard_t": dashboard_t,
+            "goal_options": GOALS,
+            "activity_options": ACTIVITIES,
+            "workout_options": WORKOUTS_PER_WEEK,
+            "normalize_goal": normalize_goal,
+            "normalize_activity": normalize_activity,
         }

@@ -88,11 +88,9 @@
           <label>{{ auth_t("fields.activity") }}</label>
           <select class="cmp-input" name="activity" required>
             <option value="" disabled selected>{{ auth_t("common.select") }}</option>
-            <option value="1.2">{{ auth_t("activity.minimum") }}</option>
-            <option value="1.375">{{ auth_t("activity.light") }}</option>
-            <option value="1.55">{{ auth_t("activity.medium") }}</option>
-            <option value="1.725">{{ auth_t("activity.high") }}</option>
-            <option value="1.9">{{ auth_t("activity.extreme") }}</option>
+            {% for value, key in activity_options %}
+            <option value="{{ value }}">{{ common_t("profileOptions.activity." ~ key) }}</option>
+            {% endfor %}
           </select>
         </div>
 
@@ -101,9 +99,9 @@
             <label>{{ auth_t("fields.goal") }}</label>
             <select class="cmp-input" name="goal" required>
               <option value="" disabled selected>{{ auth_t("common.select") }}</option>
-              <option value="lose">{{ auth_t("goals.lose") }}</option>
-              <option value="maintain">{{ auth_t("goals.maintain") }}</option>
-              <option value="gain">{{ auth_t("goals.gain") }}</option>
+              {% for goal in goal_options %}
+              <option value="{{ goal }}">{{ common_t("profileOptions.goals." ~ goal) }}</option>
+              {% endfor %}
             </select>
           </div>
 
@@ -112,7 +110,7 @@
             <select class="cmp-input" name="experience" required>
               <option value="" disabled selected>{{ auth_t("common.select") }}</option>
               <option value="beginner">{{ auth_t("experience.beginner") }}</option>
-              <option value="intermediate">Середній</option>
+              <option value="intermediate">{{ auth_t("experience.intermediate") }}</option>
               <option value="advanced">{{ auth_t("experience.advanced") }}</option>
             </select>
           </div>
