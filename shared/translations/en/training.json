@@ -16,9 +16,7 @@
         "loadErrorText": "Try refreshing the page a bit later.",
         "ariaRow": "{muscle}: {sets} of {target} sets"
     },
-    "weakPoints": "Weak points",
     "recommendedExercises": "Recommended exercises",
-    "muscleBalance": "Muscle balance",
     "balanced": "Balanced",
     "overloaded": "Overloaded",
     "recommendations": {
@@ -204,8 +202,7 @@
         "legs": "Legs",
         "shoulders": "Shoulders",
         "arms": "Arms",
-        "core": "Core",
-        "empty": "No exercises found"
+        "core": "Core"
     },
     "exercise": {
         "execution": "Exercise details",
@@ -220,24 +217,17 @@
         "fallback": "Exercise"
     },
     "workout": {
-        "add": "Add workout",
-        "setsShort": "sets",
-        "repsShort": "reps",
-        "weightShort": "kg"
+        "add": "Add workout"
     },
     "summary": {
         "exercises": "exercises",
         "sets": "sets"
     },
     "calendar": {
-        "month": "Month",
-        "close": "Close",
-        "previousMonth": "Previous month",
-        "nextMonth": "Next month"
+        "month": "Month"
     },
     "dayDetails": {
-        "day": "Day",
-        "close": "Close"
+        "day": "Day"
     },
     "session": {
         "saved": "Workout saved"
@@ -246,8 +236,6 @@
         "cancel": "Cancel",
         "close": "Close",
         "save": "Save",
-        "error": "Error",
-        "loading": "Loading",
-        "noData": "No data available"
+        "loading": "Loading"
     }
 }

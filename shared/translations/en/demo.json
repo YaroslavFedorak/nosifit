@@ -36,8 +36,6 @@
         "title": "Your rhythm over the last weeks",
         "badge": "Daily balance",
         "description": "Each cell shows the overall balance for a day. In the real dashboard, you can open a day to see training, recovery and nutrition details.",
-        "month1": "Aug",
-        "month2": "Sep",
         "less": "Less",
         "more": "More",
         "months": {
@@ -68,17 +66,8 @@
     "nutrition": {
         "eyebrow": "Nutrition",
         "title": "What you ate today",
-        "meal1": "Breakfast",
-        "meal1Food": "Oatmeal · banana · yogurt",
-        "meal2": "Lunch",
-        "meal2Food": "Rice · chicken · vegetables",
-        "meal3": "Dinner",
-        "meal3Food": "Pasta · tuna · salad",
-        "meal4": "Snack",
-        "meal4Food": "Fruit · nuts",
         "protein": "Protein",
         "carbs": "Carbs",
-        "fats": "Fats",
         "water": "Water",
         "description": "Meals open the same way as the dashboard widget: a compact summary first, then individual foods and macros.",
         "waterGoal": "1 650 of 2 000 ml"

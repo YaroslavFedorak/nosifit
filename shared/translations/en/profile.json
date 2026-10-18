@@ -4,46 +4,19 @@
         "subtitle": "Personal details, parameters and account settings"
     },
     "account": {
-        "title": "Account",
-        "subtitle": "Basic account information",
-        "id": "ID",
-        "username": "Username",
         "email": "Email",
         "notSpecified": "Not specified",
-        "registration": "Registration",
-        "updated": "Updated",
-        "plan": "Plan",
         "premium": "Premium",
-        "standard": "Standard",
-        "security": "Security",
-        "active": "Active"
+        "standard": "Standard"
     },
     "actions": {
         "title": "Actions",
-        "subtitle": "Manage personal data and security",
-        "editProfile": "Edit profile",
-        "changeEmail": "Change email",
-        "changePassword": "Change password",
         "deleteAccount": "Delete account",
         "downloadData": "Download my data",
         "privacyPolicy": "Privacy policy",
         "withdrawConsent": "Withdraw consent"
     },
-    "activity": {
-        "title": "Training activity",
-        "subtitle": "Short overview of your training",
-        "workouts": "Workouts",
-        "completed": "completed",
-        "last": "Last",
-        "workout": "workout",
-        "avgLoad": "Avg. load",
-        "internalLoad": "internal load",
-        "avgRpe": "Avg. RPE",
-        "outOfTen": "out of 10"
-    },
     "body": {
-        "title": "Body parameters",
-        "subtitle": "Data used for personalization",
         "age": "Age",
         "gender": "Gender",
         "height": "Height",
@@ -54,42 +27,26 @@
         "experience": "Experience"
     },
     "goals": {
-        "title": "Goals & focus",
-        "subtitle": "Main parameters of your training program",
         "mainGoal": "Main goal",
-        "experience": "Experience",
-        "experienceBeginner": "Beginner",
-        "experienceIntermediate": "Intermediate",
-        "experienceExperienced": "Experienced",
         "workoutsPerWeek": "Workouts / week",
-        "trainingFocus": "Training focus",
         "upper": "Upper body",
         "lower": "Lower body",
         "core": "Core"
     },
     "progress": {
-        "title": "Profile completion",
-        "subtitle": "How complete your data is",
-        "profile": "profile",
-        "account": "Basic information",
-        "body": "Body parameters",
-        "goalsActivity": "Goals & activity",
-        "training": "Training profile"
+        "title": "Profile completion"
     },
     "training": {
         "title": "Training profile",
-        "subtitle": "Personalization settings and statuses",
         "location": "Location",
         "locationGym": "Gym",
         "locationHome": "Home",
         "locationOutdoor": "Outdoors",
         "nutrition": "Nutrition",
         "recovery": "Recovery",
-        "onboarding": "Onboarding",
         "active": "Active",
         "disabled": "Disabled",
-        "completed": "Completed",
-        "notCompleted": "Not completed"
+        "completed": "Completed"
     },
     "password": {
         "show": "Show",
@@ -174,9 +131,6 @@
         "disabled": "Disabled"
     },
     "connected": {
-        "title": "Connected accounts",
-        "subtitle": "Ways to sign in to NosiFit",
-        "password": "Password",
         "set": "Set",
         "notSet": "Not set",
         "setPassword": "Set it via an email link",
@@ -225,7 +179,6 @@
         "dataText": "Download everything NosiFit stores about you (a JSON file), or read the privacy policy.",
         "danger": "Delete account",
         "dangerText": "Your account and all your data will be deleted permanently. You will need to confirm with a code sent to your email.",
-        "plan": "Plan",
         "memberSince": "Member since"
     }
 }

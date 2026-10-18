@@ -16,9 +16,7 @@
         "loadErrorText": "Оновіть сторінку трохи згодом.",
         "ariaRow": "{muscle}: {sets} з {target} підходів"
     },
-    "weakPoints": "Слабкі місця",
     "recommendedExercises": "Рекомендовані вправи",
-    "muscleBalance": "Баланс м’язів",
     "balanced": "Збалансовані",
     "overloaded": "Перевантажені",
     "recommendations": {
@@ -204,8 +202,7 @@
         "legs": "Ноги",
         "shoulders": "Плечі",
         "arms": "Руки",
-        "core": "Кор",
-        "empty": "Вправ не знайдено"
+        "core": "Кор"
     },
     "exercise": {
         "execution": "Деталі вправи",
@@ -220,24 +217,17 @@
         "fallback": "Вправа"
     },
     "workout": {
-        "add": "Додати тренування",
-        "setsShort": "підх.",
-        "repsShort": "повт.",
-        "weightShort": "кг"
+        "add": "Додати тренування"
     },
     "summary": {
         "exercises": "вправ",
         "sets": "підходів"
     },
     "calendar": {
-        "month": "Місяць",
-        "close": "Закрити",
-        "previousMonth": "Попередній місяць",
-        "nextMonth": "Наступний місяць"
+        "month": "Місяць"
     },
     "dayDetails": {
-        "day": "День",
-        "close": "Закрити"
+        "day": "День"
     },
     "session": {
         "saved": "Тренування збережено"
@@ -246,8 +236,6 @@
         "cancel": "Скасувати",
         "close": "Закрити",
         "save": "Зберегти",
-        "error": "Помилка",
-        "loading": "Завантаження",
-        "noData": "Немає даних"
+        "loading": "Завантаження"
     }
 }

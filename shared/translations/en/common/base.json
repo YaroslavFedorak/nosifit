@@ -4,15 +4,9 @@
     "cancel": "Cancel",
     "close": "Close",
     "back": "Back",
-    "continue": "Continue",
-    "submit": "Submit",
     "delete": "Delete",
     "edit": "Edit",
     "confirm": "Confirm"
-  },
-  "status": {
-    "loading": "Loading...",
-    "error": "Something went wrong"
   },
   "navigation": {
     "home": "Home",

@@ -60,10 +60,8 @@
         "default": "Posiłek"
     },
     "meals": {
-        "todayTitle": "Dzisiejsze posiłki",
         "newMeal": "Nowy posiłek",
         "addTitle": "Nowy posiłek",
-        "addHint": "To tylko nazwa posiłku. Produkty i wartości odżywcze można dodać po jego utworzeniu.",
         "editTitle": "Edytuj posiłek",
         "editHint": "Zmień nazwę, kategorię lub godzinę. Wartości odżywcze są obliczane automatycznie na podstawie produktów.",
         "emptyToday": "Brak zapisanych posiłków na dziś",
@@ -84,7 +82,6 @@
         "update": "Aktualizuj",
         "close": "Zamknij",
         "editMeal": "Edytuj posiłek",
-        "deleteConfirm": "Kliknij dwukrotnie, aby usunąć",
         "editProduct": "Edytuj produkt",
         "saveItems": "Zapisz produkty",
         "remove": "Usuń",

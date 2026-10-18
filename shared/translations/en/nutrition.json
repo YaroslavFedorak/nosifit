@@ -60,10 +60,8 @@
         "default": "Meal"
     },
     "meals": {
-        "todayTitle": "Today's meals",
         "newMeal": "New meal",
         "addTitle": "New meal",
-        "addHint": "Choose a meal category and time, then add food products.",
         "editTitle": "Edit meal",
         "editHint": "Change the meal category or time. Nutrition values are calculated automatically from the food items.",
         "emptyToday": "No meals recorded today",
@@ -84,7 +82,6 @@
         "update": "Update",
         "close": "Close",
         "editMeal": "Edit meal",
-        "deleteConfirm": "Double-click to delete",
         "editProduct": "Edit food",
         "saveItems": "Save products",
         "remove": "Remove",

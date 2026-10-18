@@ -236,11 +236,6 @@
     "instagramAction": "Open profile",
     "telegramAction": "Send a message"
   },
-  "demo": {
-    "title": "Demo",
-    "description": "See how the system works before creating an account.",
-    "openDashboard": "Open demo dashboard"
-  },
   "common": {
     "openNosiFit": "Open NosiFit",
     "createAccount": "Create an account",
@@ -281,18 +276,6 @@
       "training": "Regular training and workload tracking.",
       "recovery": "Sleep and recovery tracking.",
       "data": "A preference for seeing changes over time."
-    },
-    "headline": "Training is only one part of the picture.",
-    "snapshot": {
-      "title": "Example overview",
-      "status": "Tracked",
-      "recovery": "Recovery",
-      "training": "Training load",
-      "sleep": "Sleep"
-    },
-    "footer": {
-      "title": "Start with the data you already have.",
-      "text": "Record a few things, use the dashboard, and build from there."
     }
   },
   "info": {
@@ -345,9 +328,6 @@
       "title": "The idea is simple",
       "text": "NosiFit is built to make your own data easier to read. Instead of keeping training and recovery records in separate places, you can view them together and decide what makes sense for your next day."
     },
-    "aboutNosiFit": "About NosiFit",
-    "footer": {
-      "title": "See it in practice."
-    }
+    "aboutNosiFit": "About NosiFit"
   }
 }

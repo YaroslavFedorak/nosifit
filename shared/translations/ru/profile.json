@@ -4,46 +4,19 @@
         "subtitle": "Личные данные, параметры и настройки аккаунта"
     },
     "account": {
-        "title": "Аккаунт",
-        "subtitle": "Основная информация об аккаунте",
-        "id": "ID",
-        "username": "Имя пользователя",
         "email": "Email",
         "notSpecified": "Не указано",
-        "registration": "Регистрация",
-        "updated": "Обновлено",
-        "plan": "План",
         "premium": "Premium",
-        "standard": "Standard",
-        "security": "Безопасность",
-        "active": "Активна"
+        "standard": "Standard"
     },
     "actions": {
         "title": "Действия",
-        "subtitle": "Управление личными данными и безопасностью",
-        "editProfile": "Редактировать профиль",
-        "changeEmail": "Изменить email",
-        "changePassword": "Изменить пароль",
         "deleteAccount": "Удалить аккаунт",
         "downloadData": "Скачать мои данные",
         "privacyPolicy": "Политика конфиденциальности",
         "withdrawConsent": "Отозвать согласие"
     },
-    "activity": {
-        "title": "Тренировочная активность",
-        "subtitle": "Краткая статистика твоих тренировок",
-        "workouts": "Тренировок",
-        "completed": "завершено",
-        "last": "Последняя",
-        "workout": "тренировка",
-        "avgLoad": "Ср. нагрузка",
-        "internalLoad": "внутренняя нагрузка",
-        "avgRpe": "Ср. RPE",
-        "outOfTen": "из 10"
-    },
     "body": {
-        "title": "Параметры тела",
-        "subtitle": "Данные, используемые для персонализации",
         "age": "Возраст",
         "gender": "Пол",
         "height": "Рост",
@@ -54,42 +27,26 @@
         "experience": "Опыт"
     },
     "goals": {
-        "title": "Цели и фокус",
-        "subtitle": "Основные параметры твоей тренировочной программы",
         "mainGoal": "Основная цель",
-        "experience": "Опыт",
-        "experienceBeginner": "Начинающий",
-        "experienceIntermediate": "Средний",
-        "experienceExperienced": "Опытный",
         "workoutsPerWeek": "Тренировок / неделя",
-        "trainingFocus": "Фокус тренировок",
         "upper": "Верхняя часть тела",
         "lower": "Нижняя часть тела",
         "core": "Кор"
     },
     "progress": {
-        "title": "Заполнение профиля",
-        "subtitle": "Насколько полны твои данные",
-        "profile": "профиль",
-        "account": "Основная информация",
-        "body": "Параметры тела",
-        "goalsActivity": "Цели и активность",
-        "training": "Тренировочный профиль"
+        "title": "Заполнение профиля"
     },
     "training": {
         "title": "Тренировочный профиль",
-        "subtitle": "Настройки и статусы персонализации",
         "location": "Локация",
         "locationGym": "Зал",
         "locationHome": "Дом",
         "locationOutdoor": "На улице",
         "nutrition": "Питание",
         "recovery": "Восстановление",
-        "onboarding": "Онбординг",
         "active": "Активно",
         "disabled": "Отключено",
-        "completed": "Завершено",
-        "notCompleted": "Не завершено"
+        "completed": "Завершено"
     },
     "password": {
         "show": "Показать",
@@ -174,9 +131,6 @@
         "disabled": "Отключено"
     },
     "connected": {
-        "title": "Подключённые аккаунты",
-        "subtitle": "Способы входа в NosiFit",
-        "password": "Пароль",
         "set": "Установлен",
         "notSet": "Не установлен",
         "setPassword": "Установить через письмо на email",
@@ -225,7 +179,6 @@
         "dataText": "Скачайте всё, что NosiFit хранит о вас (файл JSON), или прочитайте политику конфиденциальности.",
         "danger": "Удаление аккаунта",
         "dangerText": "Аккаунт и все ваши данные будут удалены навсегда. Понадобится подтверждение кодом из почты.",
-        "plan": "План",
         "memberSince": "С нами с"
     }
 }
