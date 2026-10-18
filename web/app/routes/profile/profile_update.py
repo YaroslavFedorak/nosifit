@@ -6,6 +6,7 @@ from backend.app.utils.validation import (
     ValidationError,
     clean_choice,
     clean_username,
+    parse_account_age,
     parse_profile_number,
 )
 
@@ -53,7 +54,7 @@ def update_full():
             return redirect(url_for("profile_pages.profile_page"))
 
         values = {
-            "age": parse_profile_number("age", request.form.get("age")),
+            "age": parse_account_age(request.form.get("age")),
             "height": parse_profile_number("height", request.form.get("height")),
             "weight": parse_profile_number("weight", request.form.get("weight")),
             "workouts_per_week": parse_profile_number(

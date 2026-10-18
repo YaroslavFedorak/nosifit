@@ -1,0 +1,33 @@
+{% extends "public/base_public.html" %}
+
+{% block title %}Відкликати згоду — nosifit{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/pages/legal.css') }}" />
+{% endblock %}
+
+{% block body %}
+<section class="legal-root legal-consent">
+  <h1>Відкликати згоду на обробку даних про здоров'я</h1>
+  {% include "auth/_flashes.html" %}
+
+  {% if not consented %}
+  <p>Згоди зараз немає: дані про здоров'я не обробляються. <a href="{{ url_for('legal.consent') }}">Надати згоду</a></p>
+  {% else %}
+  <p>Ці дані NosiFit обробляє лише на підставі вашої згоди. Після відкликання ми не можемо їх зберігати, тому:</p>
+  <ul>
+    <li><strong>Буде видалено одразу:</strong> харчування, вода, вага, тренування, плани, сон, звички, дані профілю (вік, зріст, вага, цілі тощо) і внутрішня статистика про ваші дії.</li>
+    <li><strong>Залишиться:</strong> обліковий запис (ім'я, email, пароль) і способи входу (Google, GitHub, Telegram). Згодом ви зможете знову надати згоду й почати заново або видалити акаунт.</li>
+    <li>Без згоди функції сервісу будуть недоступні.</li>
+  </ul>
+  <p class="legal-warning">Видалення не можна скасувати. Спершу <a href="{{ url_for('legal.my_data') }}">завантажте свої дані</a>, якщо хочете їх зберегти.</p>
+  <form method="post" action="{{ url_for('legal.withdraw') }}" class="legal-form">
+    <label class="legal-check">
+      <input type="checkbox" name="confirm_erase" required />
+      <span>Я розумію, що мої записи про здоров'я буде видалено, а обліковий запис залишиться.</span>
+    </label>
+    <button type="submit" class="legal-submit">Відкликати згоду</button>
+  </form>
+  {% endif %}
+</section>
+{% endblock %}

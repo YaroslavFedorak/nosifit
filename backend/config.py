@@ -36,6 +36,15 @@ IS_PRODUCTION = (
 class Config:
     IS_PRODUCTION = IS_PRODUCTION
 
+    # Comma/space separated emails allowed into /admin/analytics. Unset or
+    # empty: nobody is an administrator.
+    ADMIN_EMAILS = os.getenv("ADMIN_EMAILS", "")
+    # Records "user did X today" rows for the admin analytics. Off: no writes.
+    ACTIVITY_TRACKING = _env_flag("ACTIVITY_TRACKING", True)
+    # Who is responsible for the data, shown on /privacy. Set both on Railway.
+    PRIVACY_CONTROLLER_NAME = os.getenv("PRIVACY_CONTROLLER_NAME", "").strip()
+    PRIVACY_CONTACT_EMAIL = os.getenv("PRIVACY_CONTACT_EMAIL", "").strip()
+
     SECRET_KEY = os.getenv("SECRET_KEY")
 
     SQLALCHEMY_DATABASE_URI = _database_url()

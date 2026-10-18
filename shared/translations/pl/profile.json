@@ -24,7 +24,10 @@
         "editProfile": "Edytuj profil",
         "changeEmail": "Zmień email",
         "changePassword": "Zmień hasło",
-        "deleteAccount": "Usuń konto"
+        "deleteAccount": "Usuń konto",
+        "downloadData": "Pobierz moje dane",
+        "privacyPolicy": "Polityka prywatności",
+        "withdrawConsent": "Wycofaj zgodę"
     },
     "activity": {
         "title": "Aktywność treningowa",
@@ -244,6 +247,8 @@
         "password": "Hasło",
         "change": "Zmień",
         "signIn": "Metody logowania",
+        "data": "Twoje dane",
+        "dataText": "Pobierz wszystko, co NosiFit przechowuje o Tobie (plik JSON), lub przeczytaj politykę prywatności.",
         "danger": "Usuwanie konta",
         "dangerText": "Konto i wszystkie Twoje dane zostaną trwale usunięte. Potrzebne będzie potwierdzenie kodem z e-maila.",
         "plan": "Plan",

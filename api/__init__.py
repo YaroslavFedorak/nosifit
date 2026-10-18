@@ -8,6 +8,7 @@ the versions and the error format, docs/api.md.
 
 def api_blueprints():
     # Imported on call, after the app and its extensions exist.
+    from api.routes.consent import consent_api
     from api.routes.dashboard import dashboard_api_bp
     from api.routes.dashboard_training import training_dashboard_api_bp
     from api.routes.equipment import equipment_api
@@ -30,6 +31,7 @@ def api_blueprints():
         equipment_api,
         onboarding_api,
         injury_api,
+        consent_api,
     )
 
 

@@ -4,12 +4,13 @@ import secrets
 import pytest
 from dotenv import load_dotenv
 from flask_migrate import upgrade
-from sqlalchemy import create_engine, text
+from sqlalchemy import create_engine, event, text
 from sqlalchemy.engine import make_url
 from werkzeug.security import generate_password_hash
 
 from backend.app.extensions import db
 from backend.app.models.user import User
+from backend.app.services import consent as consent_service
 from web.app import create_app
 
 load_dotenv()
@@ -75,6 +76,26 @@ def _truncate_all():
         names = ", ".join(f'"{TEST_SCHEMA}"."{name}"' for name in tables)
         db.session.execute(text(f"TRUNCATE {names} RESTART IDENTITY CASCADE"))
         db.session.commit()
+
+
+# Users created by tests have accepted the current privacy policy, so tests
+# of other features are not stopped by the consent gate (auth/consent.py).
+# Tests of consent itself use the ``no_auto_consent`` fixture: then users
+# start without consent, exactly as in production.
+_auto_consent = {"on": True}
+
+
+@event.listens_for(User, "init")
+def _consented_test_user(target, args, kwargs):
+    if _auto_consent["on"] and "privacy_accepted_at" not in kwargs:
+        consent_service.apply_consent(target)
+
+
+@pytest.fixture
+def no_auto_consent():
+    _auto_consent["on"] = False
+    yield
+    _auto_consent["on"] = True
 
 
 @pytest.fixture
