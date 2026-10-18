@@ -1,4 +1,11 @@
 const BASE = "/api/training";
+export class ApiError extends Error {
+    constructor(message, status, code) {
+        super(message);
+        this.status = status;
+        this.code = code;
+    }
+}
 async function jsonFetch(url, options = {}) {
     const response = await fetch(url, {
         headers: {
@@ -20,7 +27,13 @@ async function jsonFetch(url, options = {}) {
             typeof data.message === "string"
             ? data.message
             : `HTTP ${response.status}`;
-        throw new Error(message);
+        const code = typeof data === "object" &&
+            data !== null &&
+            "code" in data &&
+            typeof data.code === "string"
+            ? data.code
+            : undefined;
+        throw new ApiError(message, response.status, code);
     }
     return data;
 }
@@ -68,6 +81,21 @@ export const TrainingAPI = {
         return jsonFetch(`${BASE}/plans/${id}`, {
             method: "PUT",
             body: JSON.stringify(payload)
+        });
+    },
+    generatePlan(payload) {
+        return jsonFetch(`${BASE}/plans/generate`, {
+            method: "POST",
+            body: JSON.stringify(payload)
+        });
+    },
+    getPlanWeek(id) {
+        return jsonFetch(`${BASE}/plans/${id}/week`);
+    },
+    completePlanDay(id, day) {
+        return jsonFetch(`${BASE}/plans/${id}/days/${day}/complete`, {
+            method: "POST",
+            body: JSON.stringify({})
         });
     },
     deletePlan(id) {

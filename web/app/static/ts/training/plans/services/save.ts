@@ -1,6 +1,8 @@
 import {
     state,
-    normalize
+    normalize,
+    normalizeMeta,
+    serializeDays
 } from "../state.js";
 
 import {
@@ -8,6 +10,7 @@ import {
 } from "../ui/toast.js";
 
 import {
+    ApiError,
     TrainingAPI
 } from "../../api.js";
 
@@ -23,7 +26,21 @@ import {
     t
 } from "../../../i18n/index.js";
 
-export async function savePlan(): Promise<void> {
+type SaveOptions = {
+    // Close the editor after saving (the Save button does; completing a day
+    // saves first and keeps it open).
+    close?: boolean;
+    quiet?: boolean;
+};
+
+export async function savePlan(
+    options: SaveOptions = {}
+): Promise<boolean> {
+    const {
+        close = true,
+        quiet = false
+    } = options;
+
     const button =
         dom.saveBtn;
 
@@ -34,7 +51,7 @@ export async function savePlan(): Promise<void> {
         !button ||
         !titleInput
     ) {
-        return;
+        return false;
     }
 
     const text =
@@ -56,7 +73,7 @@ export async function savePlan(): Promise<void> {
             true,
 
         days:
-            state.days
+            serializeDays()
     };
 
     button.disabled =
@@ -84,30 +101,45 @@ export async function savePlan(): Promise<void> {
         trainingStore.plan =
             saved;
 
-        const normalized =
+        state.days =
             normalize(
                 saved.days ?? {}
             );
 
-        state.days =
-            normalized;
+        state.meta =
+            normalizeMeta(
+                saved.days
+            );
 
+        if (!quiet) {
+            showToast(
+                t("plan.saved")
+            );
+        }
+
+        if (close) {
+            setTimeout(
+                () => {
+                    dom.modal?.classList.remove(
+                        "open"
+                    );
+                },
+                600
+            );
+        }
+
+        return true;
+    } catch (error) {
+        // The server explains a rejected day (for example equipment that
+        // the day does not have); anything else is a generic failure.
         showToast(
-            t("plan.saved")
+            error instanceof ApiError &&
+            error.code === "invalid_input"
+                ? error.message
+                : t("plan.saveError")
         );
 
-        setTimeout(
-            () => {
-                dom.modal?.classList.remove(
-                    "open"
-                );
-            },
-            600
-        );
-    } catch {
-        showToast(
-            t("plan.saveError")
-        );
+        return false;
     } finally {
         button.disabled =
             false;

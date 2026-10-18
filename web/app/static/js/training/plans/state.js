@@ -1,6 +1,16 @@
 import { defaultPrescription, isDurationExercise } from "../measurement.js";
 import { trainingStore } from "../store.js";
 import { DAYS } from "./constants.js";
+function emptyMeta() {
+    const meta = {};
+    DAYS.forEach(day => {
+        meta[day.key] = {
+            location: null,
+            equipment: null
+        };
+    });
+    return meta;
+}
 export const state = {
     days: {
         mon: [],
@@ -11,8 +21,50 @@ export const state = {
         sat: [],
         sun: []
     },
-    currentDay: "mon"
+    meta: emptyMeta(),
+    currentDay: "mon",
+    week: null,
+    generated: null
 };
+function dayExercises(value) {
+    if (Array.isArray(value)) {
+        return value;
+    }
+    return Array.isArray(value?.exercises)
+        ? value.exercises
+        : [];
+}
+export function normalizeMeta(days) {
+    const meta = emptyMeta();
+    DAYS.forEach(day => {
+        const value = days?.[day.key];
+        if (!value ||
+            Array.isArray(value)) {
+            return;
+        }
+        meta[day.key] = {
+            location: value.location ?? null,
+            equipment: Array.isArray(value.equipment)
+                ? [...value.equipment]
+                : null
+        };
+    });
+    return meta;
+}
+// The payload the API stores. location and equipment are always sent, null
+// included: the server keeps what it has for a day that omits them.
+export function serializeDays() {
+    const result = {};
+    DAYS.forEach(day => {
+        const meta = state.meta[day.key];
+        result[day.key] = {
+            exercises: state.days[day.key],
+            location: meta.location,
+            equipment: meta.equipment
+        };
+    });
+    return result;
+}
 export function normalize(days) {
     const normalized = {
         mon: [],
@@ -28,11 +80,7 @@ export function normalize(days) {
         return normalized;
     }
     DAYS.forEach(day => {
-        const value = days[day.key];
-        if (!Array.isArray(value)) {
-            return;
-        }
-        normalized[day.key] = value
+        normalized[day.key] = dayExercises(days[day.key])
             .filter(item => item &&
             typeof item === "object" &&
             "exercise" in item)
@@ -70,6 +118,7 @@ export function initState(reset = false) {
     if (!reset &&
         trainingStore.plan?.days) {
         state.days = normalize(trainingStore.plan.days);
+        state.meta = normalizeMeta(trainingStore.plan.days);
         state.currentDay = "mon";
         return;
     }
@@ -77,6 +126,18 @@ export function initState(reset = false) {
         return;
     }
     state.days = createEmptyDays();
+    state.meta = emptyMeta();
+    state.week = null;
+    state.generated = null;
+    state.currentDay = "mon";
+}
+// Fill the editor from the saved plan (or empty it when there is none).
+export function loadStateFromPlan() {
+    const days = trainingStore.plan?.days;
+    state.days = normalize(days);
+    state.meta = normalizeMeta(days);
+    state.week = null;
+    state.generated = null;
     state.currentDay = "mon";
 }
 export function getCurrentDayExercises() {

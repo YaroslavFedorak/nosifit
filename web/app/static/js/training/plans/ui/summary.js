@@ -26,6 +26,9 @@ export function updateBadges() {
             return;
         }
         const count = state.days[day]?.length || 0;
+        const button = badge.closest(".tr-plan-day");
+        button?.classList.toggle("completed", state.week?.days.some(item => item.key === day &&
+            item.completed) === true);
         if (count > 0) {
             badge.textContent =
                 String(count);

@@ -191,7 +191,79 @@
         "setsCount": "serii",
         "save": "Zapisz plan",
         "saved": "Plan zapisany",
-        "saveError": "Nie udało się zapisać planu"
+        "saveError": "Nie udało się zapisać planu",
+        "location": {
+            "label": "Miejsce",
+            "home": "Dom",
+            "gym": "Siłownia",
+            "outdoors": "Na zewnątrz"
+        },
+        "equipmentLabel": "Dostępny sprzęt",
+        "equipmentAny": "Bez ograniczeń",
+        "equipmentNone": "Tylko masa ciała",
+        "equipmentNames": {
+            "ab-wheel": "Kółko do brzucha",
+            "band": "Guma oporowa",
+            "bar": "Drążek",
+            "barbell": "Sztanga",
+            "battle-rope": "Lina treningowa",
+            "bench": "Ławka",
+            "bodyweight": "Masa ciała",
+            "box": "Skrzynia plyo",
+            "cable": "Wyciąg",
+            "dip-bars": "Poręcze",
+            "dumbbells": "Hantle",
+            "jump-rope": "Skakanka",
+            "kettlebell": "Kettlebell",
+            "landmine": "Landmine",
+            "machine": "Maszyna",
+            "medicine-ball": "Piłka lekarska",
+            "rings": "Kółka gimnastyczne",
+            "sled": "Sanie",
+            "stability-ball": "Piłka fitness",
+            "trap-bar": "Trap bar"
+        },
+        "complete": "Oznacz dzień jako wykonany",
+        "completed": "Wykonano",
+        "completeError": "Nie udało się oznaczyć dnia jako wykonanego",
+        "futureDay": "Ten dzień jeszcze nie nadszedł",
+        "restDay": "Dzień odpoczynku",
+        "completedNote": "Wykonano w tym tygodniu. Edycja planu nie zmienia zapisanego treningu.",
+        "saveFirst": "Najpierw zapisz plan",
+        "needs": "Potrzeba: {equipment}",
+        "unavailable": "Niedostępne ze sprzętem tego dnia",
+        "generate": {
+            "button": "Wygeneruj plan",
+            "premium": "Premium",
+            "premiumRequired": "Generowanie planu jest dostępne w Premium",
+            "title": "Polecany tydzień",
+            "hint": "Wybierz dni treningowe. Pozostałe dni zostaną dniami odpoczynku.",
+            "run": "Wygeneruj",
+            "running": "Generuję…",
+            "replace": "Zastąpić ćwiczenia w tym planie wygenerowanymi?",
+            "error": "Nie udało się wygenerować planu",
+            "done": "Plan wygenerowany. Przejrzyj go i edytuj, potem zapisz."
+        },
+        "explain": {
+            "title": "Dlaczego taki plan",
+            "labels": {
+                "push": "Dzień pchania",
+                "pull": "Dzień ciągnięcia",
+                "legs": "Dzień nóg",
+                "upper": "Góra ciała",
+                "lower": "Dół ciała",
+                "full_body": "Całe ciało"
+            },
+            "notes": {
+                "volume_short": "Za mało ćwiczeń lub sprzętu, by osiągnąć tygodniową objętość dla: {muscles}.",
+                "volume_high": "Tygodniowa objętość jest nieco za duża dla: {muscles}.",
+                "split_skips": "Ten podział nie trenuje: {muscles}.",
+                "no_exercises": "W dniu {day} nic nie trzeba: tygodniowa objętość jest już osiągnięta. Zostaw go jako dzień odpoczynku lub dodaj ćwiczenia sam.",
+                "back_to_back": "{days} następują po sobie i oba trenują: {muscles}. Dzień odpoczynku pomiędzy nimi poprawi regenerację.",
+                "injuries_not_considered": "Generowanie nie uwzględnia Twoich kontuzji. Sprawdź każde ćwiczenie samodzielnie."
+            }
+        },
+        "defaultName": "Mój plan"
     },
     "exercisePicker": {
         "title": "Wybór ćwiczeń",
