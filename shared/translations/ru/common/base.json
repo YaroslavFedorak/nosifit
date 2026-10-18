@@ -40,5 +40,30 @@
     "support": "Поддержка",
     "privacy": "Политика конфиденциальности",
     "terms": "Условия использования"
+  },
+  "profileOptions": {
+    "goals": {
+      "fat_loss": "Похудение",
+      "muscle_gain": "Набор мышц",
+      "recomposition": "Рекомпозиция",
+      "strength": "Развитие силы",
+      "maintenance": "Поддержание формы"
+    },
+    "activity": {
+      "minimum": "Минимальная",
+      "light": "Лёгкая",
+      "moderate": "Умеренная",
+      "high": "Высокая",
+      "veryHigh": "Очень высокая"
+    },
+    "genders": {
+      "male": "Мужской",
+      "female": "Женский"
+    },
+    "experience": {
+      "beginner": "Новичок",
+      "intermediate": "Средний",
+      "advanced": "Продвинутый"
+    }
   }
 }

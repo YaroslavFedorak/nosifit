@@ -9,7 +9,8 @@
     "show": "Show",
     "hide": "Hide",
     "or": "or",
-    "togglePassword": "Toggle password"
+    "togglePassword": "Toggle password",
+    "next": "Next"
   },
   "steps": {
     "account": "Account setup",
@@ -39,7 +40,29 @@
     "privacyLink": "privacy policy",
     "healthConsent": "I give explicit consent to processing my health data (weight, height, age, nutrition, training, sleep) to run the service and for its aggregated internal statistics",
     "submit": "Create account",
-    "already": "Already have an account?"
+    "already": "Already have an account?",
+    "wizard": {
+      "s1": {
+        "title": "About you",
+        "hint": "Where we send your verification code"
+      },
+      "s2": {
+        "title": "Secure your account",
+        "hint": "Choose a strong password"
+      },
+      "s3": {
+        "title": "Your body",
+        "hint": "Used to calculate calories and load"
+      },
+      "s4": {
+        "title": "Your training",
+        "hint": "Activity and goal shape your plan"
+      },
+      "s5": {
+        "title": "Almost there",
+        "hint": "Confirm your consents to get started"
+      }
+    }
   },
   "fields": {
     "name": "Name",

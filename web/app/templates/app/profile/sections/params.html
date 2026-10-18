@@ -1,21 +1,11 @@
-{% set genders = {"male": profile_t("body.genderMale"), "female": profile_t("body.genderFemale")} %}
-{% set activities = {
-    "sedentary": profile_t("body.activitySedentary"),
-    "light": profile_t("body.activityLight"),
-    "moderate": profile_t("body.activityModerate"),
-    "active": profile_t("body.activityActive"),
-} %}
-{% set experiences = {
-    "beginner": profile_t("body.experienceBeginner"),
-    "intermediate": profile_t("body.experienceIntermediate"),
-    "experienced": profile_t("body.experienceExperienced"),
-} %}
-{% set goals = {
-    "maintenance": profile_t("goals.goalMaintenance"),
-    "strength": profile_t("goals.goalStrength"),
-    "muscle_gain": profile_t("goals.goalMuscleGain"),
-    "fat_loss": profile_t("goals.goalFatLoss"),
-} %}
+{% set genders = {} %}
+{% for gender in gender_options %}{% set _ = genders.update({gender: common_t("profileOptions.genders." ~ gender)}) %}{% endfor %}
+{% set activities = {} %}
+{% for value, key in activity_options %}{% set _ = activities.update({value: common_t("profileOptions.activity." ~ key)}) %}{% endfor %}
+{% set experiences = {} %}
+{% for level in experience_options %}{% set _ = experiences.update({level: common_t("profileOptions.experience." ~ level)}) %}{% endfor %}
+{% set goals = {} %}
+{% for goal in goal_options %}{% set _ = goals.update({goal: common_t("profileOptions.goals." ~ goal)}) %}{% endfor %}
 {% set locations = {
     "gym": profile_t("training.locationGym"),
     "home": profile_t("training.locationHome"),
@@ -23,13 +13,13 @@
 } %}
 
 {% set rows = [
-    (profile_t("goals.mainGoal"), goals.get(profile.goal)),
+    (profile_t("goals.mainGoal"), goals.get(normalize_goal(profile.goal))),
     (profile_t("body.age"), profile.age),
     (profile_t("body.gender"), genders.get(profile.gender)),
     (profile_t("body.height"), (profile.height|int ~ " " ~ profile_t("body.heightUnit")) if profile.height is not none else none),
     (profile_t("body.weight"), (profile.weight ~ " " ~ profile_t("body.weightUnit")) if profile.weight is not none else none),
-    (profile_t("body.activity"), activities.get(profile.activity)),
-    (profile_t("body.experience"), experiences.get(profile.experience)),
+    (profile_t("body.activity"), activities.get(normalize_activity(profile.activity))),
+    (profile_t("body.experience"), experiences.get(normalize_experience(profile.experience))),
     (profile_t("goals.workoutsPerWeek"), profile.workouts_per_week),
     (profile_t("training.location"), locations.get(profile.training_location)),
 ] %}

@@ -40,5 +40,30 @@
     "support": "Support",
     "privacy": "Privacy policy",
     "terms": "Terms of use"
+  },
+  "profileOptions": {
+    "goals": {
+      "fat_loss": "Weight loss",
+      "muscle_gain": "Muscle gain",
+      "recomposition": "Recomposition",
+      "strength": "Strength",
+      "maintenance": "Maintenance"
+    },
+    "activity": {
+      "minimum": "Minimal",
+      "light": "Light",
+      "moderate": "Moderate",
+      "high": "High",
+      "veryHigh": "Very high"
+    },
+    "genders": {
+      "male": "Male",
+      "female": "Female"
+    },
+    "experience": {
+      "beginner": "Beginner",
+      "intermediate": "Intermediate",
+      "advanced": "Advanced"
+    }
   }
 }

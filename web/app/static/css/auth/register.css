@@ -1,1 +1,156 @@
 @import url("./auth.css");
+
+/* Step-by-step registration. The page always fits the screen: the card is
+   capped at the viewport height and only the step area flexes, so nothing
+   scrolls on a phone or a desktop. Spacing tightens on short screens. */
+body.auth-fit {
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  padding: var(--nf-space-4);
+  justify-content: center;
+}
+
+.auth-card.wizard-card {
+  width: min(100%, 440px);
+  max-height: 100%;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+.wizard-card .brand-logo { height: 28px; }
+
+.wizard-progress {
+  display: flex;
+  gap: 6px;
+  margin: var(--nf-space-4) 0 var(--nf-space-5);
+}
+.wizard-progress span {
+  flex: 1;
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.07);
+  transition: background 300ms var(--nf-ease);
+}
+.wizard-progress span.is-done { background: var(--nf-violet); }
+.wizard-progress span.is-current { background: var(--nf-yellow); }
+
+.wizard {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  margin: 0;
+}
+.wizard-stage { flex: 1 1 auto; min-height: 0; }
+.wizard-step[hidden] { display: none; }
+.wizard-step { animation: wizard-in 260ms var(--nf-ease); }
+@keyframes wizard-in {
+  from { opacity: 0; transform: translateX(10px); }
+  to { opacity: 1; transform: none; }
+}
+
+.wizard-head { margin-bottom: var(--nf-space-4); text-align: center; }
+.wizard-head .title { margin: 0; }
+.wizard-head .subtitle { margin-top: 6px; }
+
+.wizard .field-label { color: var(--nf-muted); font-size: var(--nf-text-sm); font-weight: 600; }
+.wizard .row.three-cols .field { margin-bottom: 14px; }
+
+/* Radio groups drawn as buttons: gender, workouts per week, goal. */
+.choices { display: grid; gap: var(--nf-space-2); }
+.choices.cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.choices.cols-8 { grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 4px; }
+/* An odd last card takes the full row. */
+.choices.cols-2 .choice:last-child:nth-child(odd) { grid-column: 1 / -1; }
+.choice { position: relative; display: block; min-width: 0; }
+.choices .choice input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+.choices.cols-8 .choice span { padding: 8px 0; }
+.choice span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--nf-tap);
+  padding: 8px 10px;
+  border: 1px solid var(--nf-border-input);
+  border-radius: var(--nf-radius-sm);
+  background: var(--nf-surface-input);
+  color: var(--nf-text);
+  font-size: var(--nf-text-md);
+  font-weight: 600;
+  text-align: center;
+  line-height: 1.25;
+  transition: border-color var(--nf-transition-fast), background var(--nf-transition-fast), color var(--nf-transition-fast);
+}
+.choice:hover span { border-color: var(--nf-border-strong); }
+.choice input:checked + span {
+  border-color: rgba(157,123,234,.8);
+  background: rgba(157,123,234,.16);
+}
+.choice input:focus-visible + span { outline: 2px solid rgba(157,123,234,.75); outline-offset: 2px; }
+.field.is-invalid .choice span { border-color: rgba(240,111,122,.6); }
+
+.wizard .check { margin-top: 0; margin-bottom: var(--nf-space-4); }
+
+.wizard-actions {
+  display: flex;
+  flex-direction: row;
+  gap: var(--nf-space-2);
+  margin-top: var(--nf-space-4);
+}
+.wizard-actions > * { flex: 1 1 0; width: auto; }
+.wizard-actions .btn-back[hidden] { display: none; }
+.wizard-actions .btn-back { flex: 0 0 34%; }
+
+/* Social sign-in is only offered on the first step. */
+.wizard .divider { margin: var(--nf-space-2) 0 var(--nf-space-3); }
+.wizard .oauth-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.wizard .oauth-list .action-btn { padding: 0 8px; }
+
+.wizard-card .account-note { margin-top: var(--nf-space-4); padding-top: var(--nf-space-3); }
+body.auth-fit .auth-lang { margin-top: var(--nf-space-3); }
+
+@media (min-width: 560px) {
+  body.auth-fit { padding: var(--nf-space-5); }
+  .auth-card.wizard-card { padding: var(--nf-space-8); }
+}
+
+/* Short screens: smaller gaps first, then drop what is not essential. */
+@media (max-height: 740px) {
+  .wizard-progress { margin: var(--nf-space-3) 0 var(--nf-space-4); }
+  .wizard-head { margin-bottom: var(--nf-space-3); }
+  .wizard .field { margin-bottom: 10px; }
+  .wizard-card .account-note { margin-top: var(--nf-space-3); }
+  .auth-card.wizard-card { padding-top: var(--nf-space-5); padding-bottom: var(--nf-space-5); }
+}
+@media (max-height: 640px) {
+  .choice span { min-height: 38px; padding: 4px 8px; }
+  .wizard-card .brand-logo { height: 22px; }
+  .wizard-head .subtitle { display: none; }
+  .wizard .divider { margin: 4px 0 var(--nf-space-2); }
+  body.auth-fit .auth-lang { display: none; }
+}
+@media (max-height: 540px) {
+  .wizard-card .top-center { display: none; }
+  .wizard-head { display: none; }
+  .wizard-progress { margin: 0 0 var(--nf-space-3); }
+  .wizard .field { margin-bottom: 6px; gap: 4px; }
+  .choice span, .wizard .field input, .wizard .field select, .wizard .action-btn, .wizard .btn-back { min-height: 34px; }
+  .wizard-actions { margin-top: var(--nf-space-2); }
+  .wizard-card .account-note { display: none; }
+  .auth-card.wizard-card { padding-top: var(--nf-space-3); padding-bottom: var(--nf-space-3); }
+}
+@media (max-width: 559px) {
+  /* On phones the form is full-bleed, as on the other auth screens. */
+  .auth-card.wizard-card { padding: 0 var(--nf-space-1); }
+}

@@ -9,7 +9,8 @@
     "show": "Pokaż",
     "hide": "Ukryj",
     "or": "lub",
-    "togglePassword": "Pokaż/ukryj hasło"
+    "togglePassword": "Pokaż/ukryj hasło",
+    "next": "Dalej"
   },
   "steps": {
     "account": "Konfiguracja konta",
@@ -39,7 +40,29 @@
     "privacyLink": "politykę prywatności",
     "healthConsent": "Wyrażam wyraźną zgodę na przetwarzanie moich danych o zdrowiu (waga, wzrost, wiek, odżywianie, treningi, sen) w celu działania serwisu i jego zagregowanych wewnętrznych statystyk",
     "submit": "Utwórz konto",
-    "already": "Masz już konto?"
+    "already": "Masz już konto?",
+    "wizard": {
+      "s1": {
+        "title": "O Tobie",
+        "hint": "Gdzie wysłać kod weryfikacyjny"
+      },
+      "s2": {
+        "title": "Zabezpiecz konto",
+        "hint": "Wybierz silne hasło"
+      },
+      "s3": {
+        "title": "Twoje ciało",
+        "hint": "Do obliczania kalorii i obciążeń"
+      },
+      "s4": {
+        "title": "Twoje treningi",
+        "hint": "Aktywność i cel ułożą plan"
+      },
+      "s5": {
+        "title": "Prawie gotowe",
+        "hint": "Potwierdź zgody, aby zacząć"
+      }
+    }
   },
   "fields": {
     "name": "Imię",
