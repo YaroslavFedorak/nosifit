@@ -37,6 +37,7 @@ TRACKED_ENDPOINTS = {
     "training_api.start_session": "workout",
     "training_api.complete_session": "workout",
     "training_api.finish_session": "workout",
+    "training_api.complete_plan_day": "workout",
     "training_dashboard_api.start_session": "workout",
     "training_dashboard_api.finish_session": "workout",
     "recovery.add_sleep": "sleep",

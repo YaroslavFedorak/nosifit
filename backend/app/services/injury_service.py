@@ -39,3 +39,7 @@ class InjuryService:
 
         db.session.commit()
 
+
+    @staticmethod
+    def user_has_injuries(user_id):
+        return UserInjury.query.filter_by(user_id=user_id).first() is not None

@@ -15,11 +15,13 @@ import pytest
 
 from api.openapi import SERVER_URL, build_spec
 from api.openapi_docs import OPERATIONS
+from api.routes.training import _local_today
 from backend.app.extensions import db
 from backend.app.models.injury import Injury
 from backend.app.models.recovery.habit import RecoveryHabit
 from backend.app.models.telegram import TelegramIdentity
 from backend.app.models.verification_code import VerificationCode
+from backend.app.services.training import plan_days
 from backend.app.training.exercises.catalog import load_exercise_catalog
 from backend.app.training.models.exercise import Exercise
 from backend.app.utils.bot_signature import sign_request
@@ -250,6 +252,22 @@ def test_documented_responses_match_real_ones(app, client, user, spec, monkeypat
     plan = check.call("training_api.create_plan", body={"name": "Push", "is_active": True})
     check.call("training_api.plans")
     check.call("training_api.update_plan", path=f"{SERVER_URL}/training/plans/{plan['id']}", body={"name": "Pull"})
+    today_key = plan_days.WEEKDAYS[_local_today().weekday()]
+    exercise = Exercise.query.first()
+    check.call(
+        "training_api.update_plan",
+        path=f"{SERVER_URL}/training/plans/{plan['id']}",
+        body={"days": {today_key: {"exercises": [{"exercise": {"id": exercise.id}, "sets": 3}]}}},
+    )
+    check.call("training_api.plan_week", path=f"{SERVER_URL}/training/plans/{plan['id']}/week")
+    check.call(
+        "training_api.complete_plan_day",
+        path=f"{SERVER_URL}/training/plans/{plan['id']}/days/{today_key}/complete",
+        body={},
+    )
+    user.is_premium = True
+    db.session.commit()
+    check.call("training_api.generate_plan", body={"training_days": ["mon", "thu"]})
     check.call("training_api.delete_plan", path=f"{SERVER_URL}/training/plans/{plan['id']}")
     check.call("training_api.start_session", body={})
     check.call("training_api.strength_test", body={"pushups": 10, "squats": 20})

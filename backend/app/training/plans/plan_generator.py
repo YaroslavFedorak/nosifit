@@ -9,6 +9,13 @@ from .plan_validator import PlanValidator
 
 
 class PlanGenerator:
+    """Template-only plan generator (legacy).
+
+    Nothing in the application calls it any more; the weekly plan is built by
+    ``backend.app.services.training.plan_builder``. Kept because it is part of
+    the public ``backend.app.training`` exports and has a test.
+    """
+
     def __init__(self, profile_snapshot):
         self.profile = profile_snapshot
 

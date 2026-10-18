@@ -11,10 +11,19 @@ from backend.app.training.exercises.prescription import (
     performed_values,
     serialize_entry,
 )
-from backend.app.services.training import catalog_service, performance_service, plan_service
+from backend.app.services.training import (
+    catalog_service,
+    performance_service,
+    plan_builder,
+    plan_days,
+    plan_service,
+)
+from backend.app.services.training.model import repository as model_repository
+from backend.app.utils.decorators import api_premium_required
 from backend.app.services.training.exercise_search import search_exercises
 from backend.app.services.training.session_service import TrainingSessionService
 from backend.app.services.training.model import TrainingModelService
+from backend.app.services.injury_service import InjuryService
 from backend.app.training.training_analysis.recommendations_engine import (
     build_recommendations,
 )
@@ -111,7 +120,13 @@ def _session_entry(exercise, session_exercise):
     return entry
 
 
-def _plan_days_struct(raw):
+def _plan_days_struct(raw, existing=None):
+    """Clean the days of a plan request.
+
+    ``existing`` are the days already saved. A client that sends a day
+    without ``location`` or ``equipment`` (an older editor sends bare lists)
+    leaves them as they were; ``null`` clears them.
+    """
     if not isinstance(raw, dict):
         raise ValidationError("days must be an object")
 
@@ -120,8 +135,24 @@ def _plan_days_struct(raw):
         if key not in PLAN_DAY_KEYS:
             raise ValidationError("unknown day")
 
-        if isinstance(items, dict) and "exercises" in items:
-            items = items["exercises"]
+        saved = (existing or {}).get(key)
+        saved = saved if isinstance(saved, dict) else {}
+        sent = items if isinstance(items, dict) else {}
+        location = plan_days.clean_location(
+            sent["location"] if "location" in sent else saved.get("location")
+        )
+        equipment = plan_days.clean_equipment(
+            sent["equipment"] if "equipment" in sent else saved.get("equipment")
+        )
+        if isinstance(items, dict):
+            items = items.get("exercises")
+        # Only a day with an explicit equipment list is checked: nothing else
+        # says what is available that day.
+        available = (
+            plan_days.available_equipment(location, equipment)
+            if equipment is not None
+            else None
+        )
 
         if not isinstance(items, list) or len(items) > MAX_EXERCISES_PER_DAY:
             raise ValidationError("too many exercises in a day")
@@ -135,6 +166,13 @@ def _plan_days_struct(raw):
             obj = catalog_service.exercise_by_id(exercise_id)
             if not obj:
                 continue
+
+            missing = plan_days.missing_equipment(obj.equipment or [], available)
+            if missing:
+                raise ValidationError(
+                    f"{obj.name} needs equipment that is not available that day: "
+                    + ", ".join(missing)
+                )
 
             day_ex.append(
                 serialize_entry(
@@ -156,6 +194,10 @@ def _plan_days_struct(raw):
             )
 
         result[key] = {"exercises": day_ex}
+        if location is not None:
+            result[key]["location"] = location
+        if equipment is not None:
+            result[key]["equipment"] = equipment
 
     return result
 
@@ -627,10 +669,16 @@ def update_plan(plan_id):
             abort(404)
         data = _json_body()
 
+        # Days missing from the request stay as they are; a day is cleared by
+        # sending it with no exercises.
+        days = dict(plan.days or {})
+        if "days" in data:
+            days.update(_plan_days_struct(data["days"], days))
+
         plan_service.save_plan(
             plan,
             name=_clean_plan_name(data.get("name"), plan.name),
-            days=_plan_days_struct(data.get("days", {})),
+            days=days,
             make_active=data.get("is_active", plan.is_active) is True,
         )
         return jsonify(plan.to_dict())
@@ -647,6 +695,97 @@ def delete_plan(plan_id):
             abort(404)
         plan_service.delete_plan(plan)
         return jsonify({"status": "ok"})
+    except Exception as e:
+        return _error(e)
+
+
+def _generation_settings(raw):
+    if raw is None:
+        return {}
+    if not isinstance(raw, dict) or any(not isinstance(v, dict) for v in raw.values()):
+        raise ValidationError("days must map weekdays to {location, equipment}")
+    return raw
+
+
+@training_api_bp.route("/plans/generate", methods=["POST"])
+@api_premium_required
+def generate_plan():
+    """A recommended weekly plan as an unsaved draft (Premium).
+
+    Plain rules of the training model, no AI service. The client edits the
+    draft and saves it through the ordinary plan routes.
+    """
+    try:
+        data = _json_body()
+        context = model_repository.load_context(current_user)
+        week = plan_builder.build_week(
+            context,
+            model_repository.load_catalog(),
+            training_days=data.get("training_days"),
+            day_settings=_generation_settings(data.get("days")),
+            owned_equipment=model_repository.load_equipment_slugs(current_user.id),
+        )
+        draft = week.to_payload()
+        draft["days"] = _plan_days_struct(draft["days"])
+        # Injuries are stored by name only, with nothing that links them to
+        # exercises, so the plan cannot take them into account.
+        draft["injuries_considered"] = False
+        if InjuryService.user_has_injuries(current_user.id):
+            draft["notes"].append({"code": "injuries_not_considered"})
+        return jsonify(draft)
+    except Exception as e:
+        return _error(e)
+
+
+@training_api_bp.route("/plans/<int:plan_id>/week")
+@login_required
+def plan_week(plan_id):
+    try:
+        plan = plan_service.plan_for_user(plan_id, current_user.id)
+        if plan is None:
+            abort(404)
+        return jsonify(plan_service.week_status(plan, _local_today()))
+    except Exception as e:
+        return _error(e)
+
+
+@training_api_bp.route("/plans/<int:plan_id>/days/<day>/complete", methods=["POST"])
+@login_required
+def complete_plan_day(plan_id, day):
+    """Mark the planned workout of a weekday of the current week as done.
+
+    Repeating the request is safe: it returns the session made the first time.
+    """
+    try:
+        plan = plan_service.plan_for_user(plan_id, current_user.id)
+        if plan is None or day not in plan_days.WEEKDAYS:
+            abort(404)
+
+        today = _local_today()
+        day_date = plan_service.week_start(today) + dt.timedelta(
+            days=plan_days.WEEKDAYS.index(day)
+        )
+        if day_date > today:
+            return jsonify({"error": "day_in_future"}), 409
+        if day_date == today:
+            performed_at = dt.datetime.utcnow()
+        else:
+            noon = dt.datetime.combine(day_date, dt.time(12), tzinfo=APP_TIMEZONE)
+            performed_at = noon.astimezone(dt.timezone.utc).replace(tzinfo=None)
+
+        try:
+            session, created = plan_service.complete_day(plan, day, day_date, performed_at)
+        except plan_service.PlanConflict as conflict:
+            return jsonify({"error": conflict.code}), 409
+        return jsonify(
+            {
+                "status": "ok",
+                "completed": True,
+                "already_completed": not created,
+                "session_id": session.id,
+                "date": day_date.isoformat(),
+            }
+        )
     except Exception as e:
         return _error(e)
 

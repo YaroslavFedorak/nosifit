@@ -586,6 +586,7 @@ NOT_TRACKED = {
     "recovery.unlog_habit",
     "training_api.create_plan",
     "training_api.delete_plan",
+    "training_api.generate_plan",
     "training_api.strength_test",
     "training_api.update_plan",
     "training_api.update_session_exercise",

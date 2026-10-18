@@ -86,7 +86,10 @@ def select_exercises(
     context: TrainingContext,
     last_done: Mapping[str, datetime],
     now: datetime,
+    limit: Optional[int] = None,
 ) -> List[ExercisePrescription]:
+    """``limit`` caps the exercises picked (default: the single-session cap)."""
+    max_exercises = limit if limit is not None else P.MAX_RECOMMENDED_EXERCISES
     remaining: Dict[str, float] = {
         p.muscle: float(p.allocated_sets) for p in plans if p.targeted and p.allocated_sets > 0
     }
@@ -104,7 +107,7 @@ def select_exercises(
     chosen_ids = set()
     chosen_families = set()
 
-    while len(chosen) < P.MAX_RECOMMENDED_EXERCISES:
+    while len(chosen) < max_exercises:
         total = sum(remaining.values())
         if total <= 0:
             break
