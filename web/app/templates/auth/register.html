@@ -147,8 +147,9 @@
             <div class="field">
               <span class="field-label">{{ auth_t("fields.gender") }}</span>
               <div class="choices cols-2">
-                <label class="choice"><input type="radio" name="gender" value="male" required /><span>{{ auth_t("fields.male") }}</span></label>
-                <label class="choice"><input type="radio" name="gender" value="female" required /><span>{{ auth_t("fields.female") }}</span></label>
+                {% for gender in gender_options %}
+                <label class="choice"><input type="radio" name="gender" value="{{ gender }}" required /><span>{{ common_t("profileOptions.genders." ~ gender) }}</span></label>
+                {% endfor %}
               </div>
             </div>
           </section>

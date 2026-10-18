@@ -55,6 +55,15 @@
       "moderate": "Помірна",
       "high": "Висока",
       "veryHigh": "Дуже висока"
+    },
+    "genders": {
+      "male": "Чоловіча",
+      "female": "Жіноча"
+    },
+    "experience": {
+      "beginner": "Початківець",
+      "intermediate": "Середній",
+      "advanced": "Просунутий"
     }
   }
 }

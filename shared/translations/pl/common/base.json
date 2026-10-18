@@ -55,6 +55,15 @@
       "moderate": "Umiarkowana",
       "high": "Wysoka",
       "veryHigh": "Bardzo wysoka"
+    },
+    "genders": {
+      "male": "Mężczyzna",
+      "female": "Kobieta"
+    },
+    "experience": {
+      "beginner": "Początkujący",
+      "intermediate": "Średniozaawansowany",
+      "advanced": "Zaawansowany"
     }
   }
 }

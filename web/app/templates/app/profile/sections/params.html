@@ -1,11 +1,9 @@
-{% set genders = {"male": profile_t("body.genderMale"), "female": profile_t("body.genderFemale")} %}
+{% set genders = {} %}
+{% for gender in gender_options %}{% set _ = genders.update({gender: common_t("profileOptions.genders." ~ gender)}) %}{% endfor %}
 {% set activities = {} %}
 {% for value, key in activity_options %}{% set _ = activities.update({value: common_t("profileOptions.activity." ~ key)}) %}{% endfor %}
-{% set experiences = {
-    "beginner": profile_t("body.experienceBeginner"),
-    "intermediate": profile_t("body.experienceIntermediate"),
-    "experienced": profile_t("body.experienceExperienced"),
-} %}
+{% set experiences = {} %}
+{% for level in experience_options %}{% set _ = experiences.update({level: common_t("profileOptions.experience." ~ level)}) %}{% endfor %}
 {% set goals = {} %}
 {% for goal in goal_options %}{% set _ = goals.update({goal: common_t("profileOptions.goals." ~ goal)}) %}{% endfor %}
 {% set locations = {
@@ -21,7 +19,7 @@
     (profile_t("body.height"), (profile.height|int ~ " " ~ profile_t("body.heightUnit")) if profile.height is not none else none),
     (profile_t("body.weight"), (profile.weight ~ " " ~ profile_t("body.weightUnit")) if profile.weight is not none else none),
     (profile_t("body.activity"), activities.get(normalize_activity(profile.activity))),
-    (profile_t("body.experience"), experiences.get(profile.experience)),
+    (profile_t("body.experience"), experiences.get(normalize_experience(profile.experience))),
     (profile_t("goals.workoutsPerWeek"), profile.workouts_per_week),
     (profile_t("training.location"), locations.get(profile.training_location)),
 ] %}

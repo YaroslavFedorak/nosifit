@@ -77,9 +77,9 @@
             <label>{{ auth_t("fields.gender") }}</label>
             <select class="cmp-input" name="gender" required>
               <option value="" disabled selected>{{ auth_t("common.select") }}</option>
-              <option value="male">{{ auth_t("fields.male") }}</option>
-              <option value="female">{{ auth_t("fields.female") }}</option>
-              <option value="other">{{ auth_t("fields.other") }}</option>
+              {% for gender in gender_options %}
+              <option value="{{ gender }}">{{ common_t("profileOptions.genders." ~ gender) }}</option>
+              {% endfor %}
             </select>
           </div>
         </div>
@@ -109,9 +109,9 @@
             <label>{{ auth_t("fields.experience") }}</label>
             <select class="cmp-input" name="experience" required>
               <option value="" disabled selected>{{ auth_t("common.select") }}</option>
-              <option value="beginner">{{ auth_t("experience.beginner") }}</option>
-              <option value="intermediate">{{ auth_t("experience.intermediate") }}</option>
-              <option value="advanced">{{ auth_t("experience.advanced") }}</option>
+              {% for level in experience_options %}
+              <option value="{{ level }}">{{ common_t("profileOptions.experience." ~ level) }}</option>
+              {% endfor %}
             </select>
           </div>
         </div>

@@ -6,7 +6,14 @@ editor render these options, and the profile page shows their labels
 are folded into these values when shown and when saved.
 """
 
-# Stored value -> label key under ``profileOptions.goals``.
+# Stored value -> label key under ``profileOptions.goals`` (likewise
+# ``genders`` and ``experience``). Gender has two values because the calorie
+# formula has two.
+GENDERS = ("male", "female")
+
+EXPERIENCES = ("beginner", "intermediate", "advanced")
+
+
 GOALS = (
     "fat_loss",
     "muscle_gain",
@@ -35,6 +42,12 @@ _GOAL_ALIASES = {
     "performance": "maintenance",
 }
 
+_EXPERIENCE_ALIASES = {
+    "experienced": "advanced",
+    "novice": "beginner",
+    "elite": "advanced",
+}
+
 _ACTIVITY_LABELS = {
     "sedentary": "1.2",
     "light": "1.375",
@@ -50,6 +63,12 @@ def normalize_goal(value):
     """The canonical goal for a stored one; unknown values come back as they are."""
     goal = (value or "").strip().lower() if isinstance(value, str) else value
     return _GOAL_ALIASES.get(goal, goal) or None
+
+
+def normalize_experience(value):
+    """The canonical experience level for a stored one; unknown values stay as they are."""
+    level = (value or "").strip().lower() if isinstance(value, str) else value
+    return _EXPERIENCE_ALIASES.get(level, level) or None
 
 
 def normalize_activity(value):

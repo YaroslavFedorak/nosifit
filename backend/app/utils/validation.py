@@ -6,7 +6,11 @@ Frontend checks are a convenience only; everything stored comes through here.
 import math
 import re
 
-from backend.app.utils.profile_options import normalize_activity, normalize_goal
+from backend.app.utils.profile_options import (
+    normalize_activity,
+    normalize_experience,
+    normalize_goal,
+)
 
 EMAIL_MAX_LENGTH = 120  # users.email is String(120)
 USERNAME_MAX_LENGTH = 50  # users.username is String(50)
@@ -110,6 +114,8 @@ def clean_choice(field, value):
         return normalize_goal(choice)
     if field == "activity":
         return normalize_activity(choice)
+    if field == "experience":
+        return normalize_experience(choice)
     return choice
 
 

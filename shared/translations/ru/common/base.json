@@ -55,6 +55,15 @@
       "moderate": "Умеренная",
       "high": "Высокая",
       "veryHigh": "Очень высокая"
+    },
+    "genders": {
+      "male": "Мужской",
+      "female": "Женский"
+    },
+    "experience": {
+      "beginner": "Новичок",
+      "intermediate": "Средний",
+      "advanced": "Продвинутый"
     }
   }
 }

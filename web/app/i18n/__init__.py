@@ -1,9 +1,12 @@
 from flask import g
 from backend.app.utils.profile_options import (
     ACTIVITIES,
+    EXPERIENCES,
+    GENDERS,
     GOALS,
     WORKOUTS_PER_WEEK,
     normalize_activity,
+    normalize_experience,
     normalize_goal,
 )
 
@@ -143,7 +146,10 @@ def init_i18n(app):
             "dashboard_t": dashboard_t,
             "goal_options": GOALS,
             "activity_options": ACTIVITIES,
+            "gender_options": GENDERS,
+            "experience_options": EXPERIENCES,
             "workout_options": WORKOUTS_PER_WEEK,
             "normalize_goal": normalize_goal,
+            "normalize_experience": normalize_experience,
             "normalize_activity": normalize_activity,
         }
