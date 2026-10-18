@@ -10,13 +10,13 @@ import datetime as dt
 import pytest
 from werkzeug.security import generate_password_hash
 
-from api.routes import training as training_routes
 from backend.app.extensions import db
 from backend.app.models.injury import Injury
 from backend.app.models.training_session import SessionExercise, TrainingSession
 from backend.app.models.user import User
 from backend.app.models.user_injury import UserInjury
-from backend.app.services.training import plan_builder, plan_days
+from backend.app.services.training import plan_builder, plan_days, plan_service
+from backend.app.utils import clock
 from backend.app.services.training.model.context import TrainingContext
 from backend.app.services.training.model.records import ExerciseInfo
 from backend.app.training.exercises.catalog import load_exercise_catalog
@@ -199,7 +199,8 @@ def library(app):
 
 @pytest.fixture
 def today(monkeypatch):
-    monkeypatch.setattr(training_routes, "_local_today", lambda: WEDNESDAY)
+    noon = dt.datetime.combine(WEDNESDAY, dt.time(12), tzinfo=clock.app_timezone())
+    monkeypatch.setattr(clock, "now", lambda: noon)
     return WEDNESDAY
 
 
@@ -457,3 +458,108 @@ def test_completed_session_feeds_the_training_model(signed_in, library, today):
     row = SessionExercise.query.filter_by(session_id=session.id).one()
     assert (row.sets_done, row.reps_done) == (4, "8")
     assert session.muscle_loads  # the model sees the workout like any logged session
+
+
+# --- final checks ---------------------------------------------------------------------
+
+
+@pytest.mark.parametrize("equipment", [None, frozenset({"bodyweight"}), frozenset({"bodyweight", "dumbbells", "bench"})])
+@pytest.mark.parametrize("goal, experience", [("general_fitness", "beginner"), ("hypertrophy", "intermediate"),
+                                              ("strength", "advanced")])
+@pytest.mark.parametrize("days", [2, 3, 4, 5, 6])
+def test_no_planned_day_is_empty_or_a_single_exercise_and_coverage_is_the_final_week(
+    catalog, days, goal, experience, equipment
+):
+    week = build(catalog, available_equipment=equipment, workouts_per_week=days, goal=goal, experience=experience)
+
+    for key, day in week.days.items():
+        assert len(day.exercises) >= plan_builder.MIN_WORKOUT_EXERCISES, key
+    assert set(week.rest_days) == set(plan_days.WEEKDAYS) - set(week.days)
+    dropped = {n["day"] for n in week.notes if n["code"] == "no_exercises"}
+    assert dropped.isdisjoint(week.days) and dropped <= set(week.rest_days)
+
+    planned = {}
+    for day in week.days.values():
+        for item in day.exercises:
+            per_set = plan_builder.set_stimulus(sum(item.target_rir) / 2.0)
+            for muscle, weight in plan_builder.contribution_weights(item.exercise).items():
+                planned[muscle] = planned.get(muscle, 0) + item.sets * per_set * weight
+    assert {m: round(v, 1) for m, v in planned.items() if v > 0 and m in week.coverage} == {
+        m: row["planned"] for m, row in week.coverage.items()
+    }
+
+
+def test_a_home_day_uses_the_equipment_the_context_allows(catalog):
+    week = build(catalog, available_equipment=frozenset({"bodyweight", "dumbbells", "bench"}),
+                 training_days=["mon", "thu"], goal="hypertrophy", experience="intermediate")
+
+    assert all(day.location == "home" and set(day.equipment) == {"bench", "dumbbells"} for day in week.days.values())
+    assert any("dumbbells" in item.exercise.equipment for day in week.days.values() for item in day.exercises)
+
+
+def test_the_dashboard_editor_sends_bare_lists_and_gets_the_same_equipment_rules(signed_in, library):
+    plan = signed_in.post("/api/training/plans", json={
+        "name": "x",
+        "days": {"mon": {"location": "outdoors", "equipment": ["bar"], "exercises": [entry(library["pull-ups"])]}},
+    }).get_json()
+
+    refused = signed_in.put(f"/api/training/plans/{plan['id']}", json={"days": {"mon": [entry(library["bench-press"])]}})
+    accepted = signed_in.put(f"/api/training/plans/{plan['id']}", json={"days": {"mon": [entry(library["chin-up"])]}})
+
+    assert refused.status_code == 400 and "barbell" in refused.get_json()["message"]
+    assert accepted.status_code == 200
+    day = accepted.get_json()["days"]["mon"]
+    assert (day["location"], day["equipment"]) == ("outdoors", ["bar"])  # a bare list leaves them alone
+    cleared = signed_in.put(f"/api/training/plans/{plan['id']}", json={
+        "days": {"mon": {"exercises": [entry(library["bench-press"])], "location": None, "equipment": None}}
+    })
+    assert cleared.status_code == 200 and "equipment" not in cleared.get_json()["days"]["mon"]
+
+
+def test_the_plan_calendar_follows_the_application_clock_not_utc(signed_in, library, monkeypatch):
+    # 00:30 on Wednesday in the application zone is still Tuesday in UTC.
+    moment = dt.datetime.combine(WEDNESDAY, dt.time(0, 30), tzinfo=clock.app_timezone())
+    monkeypatch.setattr(clock, "now", lambda: moment)
+    plan = make_plan(signed_in, [entry(library["push-ups"])])
+
+    week = signed_in.get(f"/api/training/plans/{plan['id']}/week").get_json()
+    done = signed_in.post(f"/api/training/plans/{plan['id']}/days/wed/complete")
+
+    assert week["today"] == WEDNESDAY.isoformat() and week["days"][2]["is_today"] is True
+    assert done.status_code == 200 and done.get_json()["date"] == WEDNESDAY.isoformat()
+
+
+def test_a_lost_race_to_complete_a_day_returns_the_winner_without_a_second_load(signed_in, library, today, monkeypatch):
+    plan = make_plan(signed_in, [entry(library["push-ups"])])
+    first = signed_in.post(f"/api/training/plans/{plan['id']}/days/wed/complete").get_json()
+    load = PerformanceState.query.one().training_load
+
+    real = plan_service.TrainingSession
+
+    class Query:
+        calls = 0
+
+        def filter_by(self, **kwargs):
+            self.kwargs = kwargs
+            return self
+
+        def first(self):
+            Query.calls += 1  # the first look finds nothing: another request is about to insert
+            return None if Query.calls == 1 else real.query.filter_by(**self.kwargs).first()
+
+        def one(self):
+            return real.query.filter_by(**self.kwargs).one()
+
+    class Racing:
+        query = Query()
+
+        def __new__(cls, **kwargs):
+            return real(**kwargs)
+
+    monkeypatch.setattr(plan_service, "TrainingSession", Racing)
+    stored = db.session.get(TrainingPlan, plan["id"])
+    session, created = plan_service.complete_day(stored, "wed", WEDNESDAY, dt.datetime.utcnow())
+
+    assert created is False and session.id == first["session_id"]
+    assert real.query.count() == 1
+    assert PerformanceState.query.one().training_load == pytest.approx(load)

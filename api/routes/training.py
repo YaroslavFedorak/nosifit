@@ -19,6 +19,7 @@ from backend.app.services.training import (
     plan_service,
 )
 from backend.app.services.training.model import repository as model_repository
+from backend.app.utils import clock
 from backend.app.utils.decorators import api_premium_required
 from backend.app.services.training.exercise_search import search_exercises
 from backend.app.services.training.session_service import TrainingSessionService
@@ -744,7 +745,7 @@ def plan_week(plan_id):
         plan = plan_service.plan_for_user(plan_id, current_user.id)
         if plan is None:
             abort(404)
-        return jsonify(plan_service.week_status(plan, _local_today()))
+        return jsonify(plan_service.week_status(plan, clock.today()))
     except Exception as e:
         return _error(e)
 
@@ -761,7 +762,9 @@ def complete_plan_day(plan_id, day):
         if plan is None or day not in plan_days.WEEKDAYS:
             abort(404)
 
-        today = _local_today()
+        # The plan's calendar follows the application clock (APP_TIMEZONE) like
+        # nutrition and the dashboard do.
+        today = clock.today()
         day_date = plan_service.week_start(today) + dt.timedelta(
             days=plan_days.WEEKDAYS.index(day)
         )
@@ -770,7 +773,7 @@ def complete_plan_day(plan_id, day):
         if day_date == today:
             performed_at = dt.datetime.utcnow()
         else:
-            noon = dt.datetime.combine(day_date, dt.time(12), tzinfo=APP_TIMEZONE)
+            noon = dt.datetime.combine(day_date, dt.time(12), tzinfo=clock.app_timezone())
             performed_at = noon.astimezone(dt.timezone.utc).replace(tzinfo=None)
 
         try:

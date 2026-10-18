@@ -258,7 +258,7 @@
                 "volume_short": "Not enough exercises or equipment to reach the weekly volume for: {muscles}.",
                 "volume_high": "Weekly volume is a little high for: {muscles}.",
                 "split_skips": "Not trained by this split: {muscles}.",
-                "no_exercises": "Nothing is needed on {day}: the weekly volume is already covered. Keep it as a rest day or add exercises yourself.",
+                "no_exercises": "Nothing useful could be planned on {day}: the weekly volume is covered or the available equipment allows no more. Keep it as a rest day or add exercises yourself.",
                 "back_to_back": "{days} follow each other and both train: {muscles}. A rest day between them helps recovery.",
                 "injuries_not_considered": "Generation does not take your injuries into account. Check every exercise yourself."
             }

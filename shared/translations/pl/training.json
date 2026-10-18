@@ -258,7 +258,7 @@
                 "volume_short": "Za mało ćwiczeń lub sprzętu, by osiągnąć tygodniową objętość dla: {muscles}.",
                 "volume_high": "Tygodniowa objętość jest nieco za duża dla: {muscles}.",
                 "split_skips": "Ten podział nie trenuje: {muscles}.",
-                "no_exercises": "W dniu {day} nic nie trzeba: tygodniowa objętość jest już osiągnięta. Zostaw go jako dzień odpoczynku lub dodaj ćwiczenia sam.",
+                "no_exercises": "W dniu {day} nie udało się zaplanować nic sensownego: tygodniowa objętość jest już osiągnięta albo sprzęt nie pozwala na więcej. Zostaw go jako dzień odpoczynku lub dodaj ćwiczenia sam.",
                 "back_to_back": "{days} następują po sobie i oba trenują: {muscles}. Dzień odpoczynku pomiędzy nimi poprawi regenerację.",
                 "injuries_not_considered": "Generowanie nie uwzględnia Twoich kontuzji. Sprawdź każde ćwiczenie samodzielnie."
             }

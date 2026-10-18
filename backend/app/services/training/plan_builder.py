@@ -39,7 +39,8 @@ from .model.stimulus import contribution_weights, set_stimulus
 MAX_TRAINING_DAYS = 6  # at least one rest day a week
 MAX_WEEKLY_REPEATS = 2  # one exercise at most twice a week
 DAY_EXERCISE_LIMIT = {"beginner": 5, "intermediate": 6, "advanced": 7}
-MIN_DAY_EXERCISES = 3
+MIN_DAY_EXERCISES = 3  # floor of the per-day cap for the experience level
+MIN_WORKOUT_EXERCISES = 2  # a day with fewer exercises is not a workout
 # Template day (file, key) per training day for each number of days a week.
 SEQUENCES: Dict[int, Tuple[Tuple[str, str], ...]] = {
     1: (("full_body", "day1"),),
@@ -240,6 +241,10 @@ def build_week(
     days = clean_training_days(list(training_days) if training_days else None, context)
     settings = day_settings or {}
     by_slug = {exercise.slug: exercise for exercise in catalog.values()}
+    # Without a list of owned equipment, a home or outdoor day gets what the
+    # context allows (None there means a gym user: nothing owned is known).
+    if not owned_equipment and context.available_equipment is not None:
+        owned_equipment = sorted(context.available_equipment - {plan_days.BODYWEIGHT})
     allowed = load_library() if library is None else frozenset(library)
     variants = load_variant_groups() if library is None else {}
     default_location = "gym" if context.available_equipment is None else "home"
@@ -334,8 +339,20 @@ def build_week(
             muscles=muscles,
             exercises=_order_exercises(picked),
         )
-        if not picked:
-            notes.append({"code": "no_exercises", "day": key})
+
+    # A day the weekly volume does not need (nothing, or a single exercise)
+    # stays a rest day instead of an empty or one-exercise "workout".
+    for key in [k for k, day in planned.items() if len(day.exercises) < MIN_WORKOUT_EXERCISES]:
+        del planned[key]
+        notes.append({"code": "no_exercises", "day": key})
+
+    # The week as it ended up, not as it was planned: dropped days add nothing.
+    exposure = defaultdict(float)
+    for day in planned.values():
+        for item in day.exercises:
+            per_set = set_stimulus(sum(item.target_rir) / 2.0)
+            for muscle, weight in contribution_weights(item.exercise).items():
+                exposure[muscle] += item.sets * per_set * weight
 
     coverage = {
         muscle: {"planned": round(exposure[muscle], 1), "lower": lower, "upper": upper}
@@ -351,7 +368,8 @@ def build_week(
     skipped = [m for m in P.MAJOR_MUSCLES if not exposure[m]]
     if skipped:
         notes.append({"code": "split_skips", "muscles": skipped})
-    for first, second in zip(days, days[1:] + days[:1]):
+    kept = [day for day in days if day in planned]
+    for first, second in zip(kept, kept[1:] + kept[:1]):
         gap = (plan_days.WEEKDAYS.index(second) - plan_days.WEEKDAYS.index(first)) % 7
         shared = sorted(set(planned[first].muscles) & set(planned[second].muscles))
         if gap == 1 and shared and first != second:
