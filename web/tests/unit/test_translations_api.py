@@ -24,8 +24,8 @@ def test_missing_keys_fall_back_to_ukrainian(client):
     assert set(en) >= set(uk)
 
 
-def test_an_unsupported_locale_gets_ukrainian(client):
-    assert client.get("/api/i18n/de/common").get_json() == client.get("/api/i18n/uk/common").get_json()
+def test_an_unsupported_locale_gets_english(client):
+    assert client.get("/api/i18n/de/common").get_json() == client.get("/api/i18n/en/common").get_json()
 
 
 def test_an_unknown_namespace_is_an_empty_object(client):

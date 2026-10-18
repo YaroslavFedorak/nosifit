@@ -100,13 +100,13 @@ def _item_payload(data):
         "product_id": data.get("product_id"),
         "amount": data.get("amount"),
         "unit": data.get("unit"),
-        "locale": data.get("locale", "uk"),
+        "locale": data.get("locale", "en"),
     }
 
 
 def _entry_update_payload(data):
     payload = {
-        "locale": data.get("locale", "uk"),
+        "locale": data.get("locale", "en"),
     }
 
     for key in ("meal_id", "product_id", "amount", "unit"):
@@ -408,7 +408,7 @@ def _legacy_item_to_product(data):
         current_user.id,
         {
             "name": name,
-            "locale": data.get("locale", "uk"),
+            "locale": data.get("locale", "en"),
             "kcal_per_100g": data.get("calories", 0),
             "protein_per_100g": data.get("protein", 0),
             "fat_per_100g": data.get("fat", 0),
@@ -477,7 +477,7 @@ def api_add_entries_bulk():
             "product_id": item.get("product_id"),
             "amount": item.get("amount"),
             "unit": item.get("unit"),
-            "locale": item.get("locale", data.get("locale", "uk")),
+            "locale": item.get("locale", data.get("locale", "en")),
         })
 
     try:

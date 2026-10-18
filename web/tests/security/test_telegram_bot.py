@@ -34,13 +34,14 @@ from aiogram.types import User as TgUser
 
 from telegram_bot import runtime
 from telegram_bot.bot import create_dispatcher
+from telegram_bot.i18n import translate
 from telegram_bot.keyboards.auth import auth_menu
 from telegram_bot.keyboards.main import main_menu
 from telegram_bot.services.api import NosiFitAPI, NosiFitAPIError
 from telegram_bot.services.telegram_auth import TelegramAuthError, TelegramUser
-from telegram_bot.handlers.start import WELCOME_TEXT
 
-ALICE = TgUser(id=111, is_bot=False, first_name="Alice", username="alice_tg")
+# The assertions below read the bot's Ukrainian texts.
+ALICE = TgUser(id=111, is_bot=False, first_name="Alice", username="alice_tg", language_code="uk")
 
 
 class RecordingSession(BaseSession):
@@ -70,9 +71,19 @@ class RecordingSession(BaseSession):
 
 def fresh_dispatcher():
     """Routers are module singletons; detach them from an earlier dispatcher."""
-    from telegram_bot.handlers import auth, common, consent, nutrition, start, training, water, weight
+    from telegram_bot.handlers import (
+        auth,
+        common,
+        consent,
+        language,
+        nutrition,
+        start,
+        training,
+        water,
+        weight,
+    )
 
-    for module in (auth, common, consent, nutrition, start, training, water, weight):
+    for module in (auth, common, consent, language, nutrition, start, training, water, weight):
         module.router._parent_router = None
     return create_dispatcher()
 
@@ -241,7 +252,7 @@ def test_start_offers_login_register_help(bot, backend):
     markup = bot.sent()[-1].reply_markup
     data = [row[0].callback_data for row in markup.inline_keyboard]
     assert data == ["auth:login", "auth:register", "auth:help"]
-    assert bot.texts()[0] == WELCOME_TEXT
+    assert bot.texts()[0] == translate("uk", "start.welcome")
 
 
 def test_start_is_throttled(bot, backend):

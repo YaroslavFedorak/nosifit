@@ -1,12 +1,12 @@
-"""🏋️ Тренування: log today's workout set by set.
+"""🏋️ Training: log today's workout set by set.
 
-    ➕ Додати вправу → name → how many sets → for each set: reps (or
+    ➕ Add exercise → name → how many sets → for each set: reps (or
     seconds), then kg (if the exercise has a weight) → saved
 
 Every set keeps its own reps and kg (12 × 60, 11 × 55, 8 × 50). "↻" fills a
 set like the previous one (or like last time) with one tap.
 
-📋 Моє тренування lists today's exercises; each one can get one more set,
+📋 My workout lists today's exercises; each one can get one more set,
 lose its last set, be entered again or deleted, and the workout can be
 finished.
 
@@ -25,8 +25,17 @@ from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, Message
 
+from telegram_bot import i18n
+from telegram_bot.i18n import t
 from telegram_bot.keyboards import training as kb
-from telegram_bot.keyboards.main import ADD_EXERCISE, MENU_TEXTS, MY_WORKOUT, TRAINING, training_menu
+from telegram_bot.keyboards.main import (
+    ADD_EXERCISE,
+    MENU_TEXTS,
+    MY_WORKOUT,
+    TRAINING,
+    button,
+    training_menu,
+)
 from telegram_bot.services import training as workout
 from telegram_bot.services.api import NosiFitAPIError
 from telegram_bot.states.training import TrainingStates
@@ -36,7 +45,6 @@ router = Router()
 RECENT_LIMIT = 6
 SEARCH_LIMIT = 8
 MAX_QUERY_LENGTH = 64
-GENERIC_ERROR = "Щось пішло не так. Спробуйте ще раз."
 ALREADY_DONE = "already"
 
 _locks: dict[int, asyncio.Lock] = {}
@@ -54,7 +62,7 @@ def _api(user_id: int):
 
 def _human(exc: NosiFitAPIError, fallback: str) -> str:
     text = str(exc)
-    return fallback if not text or text == GENERIC_ERROR else text
+    return fallback if not text or text == t("err.generic") else text
 
 
 async def _edit(message: Message, text: str, markup=None) -> None:
@@ -98,7 +106,7 @@ async def _change(user_id: int, key: str, change, exercise: dict | None = None):
     index = workout.find(items, key)
     if index is None:
         if exercise is None:
-            return "Цієї вправи вже немає в тренуванні.", None, items
+            return t("tr.not_in_workout"), None, items
         items.append(workout.new_item(exercise))
         index = len(items) - 1
     item = items[index]
@@ -115,14 +123,17 @@ async def _change(user_id: int, key: str, change, exercise: dict | None = None):
 
 
 def _summary(items: list[dict]) -> str:
-    lines = ["🏋️ <b>Тренування сьогодні</b>", ""]
+    lines = [t("tr.today"), ""]
     if not items:
-        lines.append("Ще немає вправ. Натисніть «➕ Додати вправу».")
+        lines.append(t("tr.empty"))
         return "\n".join(lines)
     for n, item in enumerate(items, start=1):
         lines.append(f"{n}. <b>{workout.escape(item['name'])}</b> — {workout.format_sets_inline(item)}")
     exercises, sets = workout.totals(items)
-    lines += ["", f"Всього: {workout.count_exercises(exercises)} · {workout.count_sets(sets)}"]
+    lines += [
+        "",
+        t("tr.total", exercises=workout.count_exercises(exercises), sets=workout.count_sets(sets)),
+    ]
     return "\n".join(lines)
 
 
@@ -139,40 +150,40 @@ async def _show_workout(target, user_id: int) -> None:
 # --- Mode, add exercise, search ----------------------------------------------------
 
 
-@router.message(F.text == TRAINING)
+@router.message(button(TRAINING))
 async def training(message: Message, state: FSMContext) -> None:
     await state.clear()
     try:
         _, items = await _today(message.from_user.id)
     except NosiFitAPIError as exc:
-        await message.answer(_human(exc, "Не вдалося завантажити тренування. Спробуйте ще раз."))
+        await message.answer(_human(exc, t("tr.load_failed")))
         return
     await message.answer(_summary(items), reply_markup=training_menu())
 
 
-@router.message(F.text == MY_WORKOUT)
+@router.message(button(MY_WORKOUT))
 async def my_workout(message: Message, state: FSMContext) -> None:
     await state.clear()
     try:
         await _show_workout(message, message.from_user.id)
     except NosiFitAPIError as exc:
-        await message.answer(_human(exc, "Не вдалося завантажити тренування. Спробуйте ще раз."))
+        await message.answer(_human(exc, t("tr.load_failed")))
 
 
-@router.message(F.text == ADD_EXERCISE)
+@router.message(button(ADD_EXERCISE))
 async def add_exercise(message: Message, state: FSMContext) -> None:
     await state.clear()
     await state.set_state(TrainingStates.searching)
     try:
         recent = await asyncio.to_thread(
-            _api(message.from_user.id).get_recent_exercises, "uk", RECENT_LIMIT
+            _api(message.from_user.id).get_recent_exercises, i18n.current_language(), RECENT_LIMIT
         )
     except NosiFitAPIError:
         recent = []
     await state.update_data(tr_recent=recent)
-    text = "🔎 Напишіть назву вправи, наприклад «жим» або «присідання»."
+    text = t("tr.search_prompt")
     if recent:
-        text += "\n\nАбо оберіть одну з нещодавніх:"
+        text += "\n\n" + t("tr.recent_hint")
     await message.answer(text, reply_markup=kb.exercise_choice(recent, "rc"))
 
 
@@ -182,7 +193,7 @@ async def add_exercise(message: Message, state: FSMContext) -> None:
 @router.message(TrainingStates.count, Command("cancel"))
 async def cancel(message: Message, state: FSMContext) -> None:
     await state.clear()
-    await message.answer("Скасовано. Усе записане збережено.", reply_markup=training_menu())
+    await message.answer(t("tr.cancelled"), reply_markup=training_menu())
 
 
 def _typed(message: Message) -> bool:
@@ -198,10 +209,14 @@ async def search(message: Message, state: FSMContext) -> None:
 async def _search(target, state: FSMContext, query: str, offset: int) -> None:
     try:
         found = await asyncio.to_thread(
-            _api(target.from_user.id).search_exercises, query, "uk", SEARCH_LIMIT, offset
+            _api(target.from_user.id).search_exercises,
+            query,
+            i18n.current_language(),
+            SEARCH_LIMIT,
+            offset,
         )
     except NosiFitAPIError as exc:
-        await _fail(target, _human(exc, "Не вдалося виконати пошук. Спробуйте ще раз."))
+        await _fail(target, _human(exc, t("tr.search_failed")))
         return
     data = await state.get_data()
     results = (data.get("tr_results") or []) + found["items"] if offset else found["items"]
@@ -209,13 +224,12 @@ async def _search(target, state: FSMContext, query: str, offset: int) -> None:
     if not results:
         await _reply(
             target,
-            f"🔎 «{workout.escape(query)}» — нічого не знайдено.\n\n"
-            "Спробуйте коротше, наприклад «жим» чи «тяга».",
+            t("tr.nothing_found", query=workout.escape(query)),
         )
         return
     await _reply(
         target,
-        f"🔎 «{workout.escape(query)}»\n\nОберіть вправу:",
+        t("tr.choose_exercise", query=workout.escape(query)),
         kb.exercise_choice(results, "pick", bool(found.get("has_more"))),
     )
 
@@ -231,11 +245,11 @@ async def _search(target, state: FSMContext, query: str, offset: int) -> None:
 async def _begin(target, state: FSMContext, exercise: dict, mode: str, total: int | None, note: str = "") -> None:
     logged = exercise.get("entries") or []
     if mode == "replace":
-        ref, ref_label, prev = logged, "Як було", None
+        ref, ref_label, prev = logged, "tr.as_before", None
     elif logged:  # one more set of a logged exercise
         ref, ref_label, prev = [], "", logged[-1]
     else:
-        ref, ref_label, prev = (exercise.get("last") or {}).get("set_entries") or [], "Як минулого разу", None
+        ref, ref_label, prev = (exercise.get("last") or {}).get("set_entries") or [], "tr.as_last_time", None
     await state.update_data(
         tr_ex=exercise, tr_mode=mode, tr_total=total, tr_entries=[],
         tr_ref=ref, tr_ref_label=ref_label, tr_prev=prev, tr_note=note,
@@ -243,7 +257,7 @@ async def _begin(target, state: FSMContext, exercise: dict, mode: str, total: in
     if total is None:
         await state.set_state(TrainingStates.sets)
         head = _head(exercise, note)
-        await _reply(target, head + "Скільки підходів?", kb.sets_choice(len(ref) or None))
+        await _reply(target, head + t("tr.how_many_sets"), kb.sets_choice(len(ref) or None))
     else:
         await _ask_count(target, state)
 
@@ -257,9 +271,9 @@ async def _ask_count(target, state: FSMContext) -> None:
     data = await state.get_data()
     exercise, entries, total = data["tr_ex"], data["tr_entries"], data["tr_total"]
     number = len(entries) + 1
-    step = f"підхід {number} з {total}" if total > 1 else "підхід"
+    step = t("tr.set_of", number=number, total=total) if total > 1 else t("tr.set_single")
     await state.set_state(TrainingStates.count)
-    question = "Скільки секунд?" if workout.is_duration(exercise) else "Скільки повторів?"
+    question = t("tr.how_many_seconds") if workout.is_duration(exercise) else t("tr.how_many_reps")
     await _reply(
         target,
         _head(exercise, data.get("tr_note", ""), step) + question,
@@ -274,9 +288,9 @@ def _suggestions(data: dict) -> list[tuple[str, dict, str]]:
     options = []
     previous = entries[-1] if entries else data.get("tr_prev")
     if previous:
-        options.append(("Як попередній", previous, "p"))
+        options.append((t("tr.as_previous"), previous, "p"))
     if len(entries) < len(ref) and ref[len(entries)] != previous:
-        options.append((data.get("tr_ref_label") or "Як було", ref[len(entries)], "r"))
+        options.append((t(data.get("tr_ref_label") or "tr.as_before"), ref[len(entries)], "r"))
     return options
 
 
@@ -298,7 +312,7 @@ async def _take_count(target, state: FSMContext, value: float | None) -> None:
     data = await state.get_data()
     exercise = data.get("tr_ex")
     if exercise is None:
-        await _fail(target, "Оберіть вправу ще раз: «➕ Додати вправу».")
+        await _fail(target, t("tr.pick_again"))
         return
     error = workout.check_count(value, workout.is_duration(exercise))
     if error:
@@ -309,10 +323,10 @@ async def _take_count(target, state: FSMContext, value: float | None) -> None:
         return
     await state.update_data(tr_count=int(value))
     await state.set_state(TrainingStates.weight)
-    unit = "с" if workout.is_duration(exercise) else "повт."
+    unit = t("unit.sec") if workout.is_duration(exercise) else t("unit.reps")
     await _reply(
         target,
-        _head(exercise, data.get("tr_note", ""), f"{int(value)} {unit}") + "Яка вага, кг?",
+        _head(exercise, data.get("tr_note", ""), f"{int(value)} {unit}") + t("tr.how_much_weight"),
         kb.weight_choice(_suggested_load(data)),
     )
 
@@ -344,7 +358,7 @@ async def _commit(target, state: FSMContext) -> None:
     def change(item):
         new = (item["entries"] + entries) if mode == "add" else entries
         if len(new) > workout.MAX_SETS:
-            return f"Не більше {workout.MAX_SETS} підходів у вправі."
+            return t("tr.max_sets", max=workout.MAX_SETS)
         item["entries"] = new
         return None
 
@@ -355,13 +369,13 @@ async def _commit(target, state: FSMContext) -> None:
                 user_id, workout.key_of(exercise["id"]), change, exercise
             )
         except NosiFitAPIError as exc:
-            await _fail(target, _human(exc, "Не вдалося зберегти підходи. Спробуйте ще раз."))
+            await _fail(target, _human(exc, t("tr.save_failed")))
             return
     if error:
         await _fail(target, error)
         return
     await state.clear()
-    await _reply(target, _exercise_text(item, "✅ Записано"), kb.after_sets(item))
+    await _reply(target, _exercise_text(item, t("tr.logged")), kb.after_sets(item))
 
 
 @router.message(TrainingStates.sets, F.text, _typed)
@@ -390,7 +404,7 @@ async def on_button(callback: CallbackQuery, state: FSMContext) -> None:
         if handler is not None:
             await handler(callback, state, parts[2:])
     except NosiFitAPIError as exc:
-        await callback.answer(_human(exc, "Не вдалося зберегти. Спробуйте ще раз."), show_alert=True)
+        await callback.answer(_human(exc, t("tr.save_failed_short")), show_alert=True)
         return
     try:
         await callback.answer()
@@ -402,11 +416,11 @@ async def _pick_from(source: str, callback, state, args) -> None:
     options = (await state.get_data()).get(source) or []
     index = int(args[0]) if args and args[0].isdigit() else -1
     if not 0 <= index < len(options):
-        await callback.answer("Цей список застарів. Натисніть «➕ Додати вправу».", show_alert=True)
+        await callback.answer(t("tr.list_stale"), show_alert=True)
         return
     exercise = options[index]
     last = workout.format_last(exercise.get("last"), exercise)
-    await _begin(callback, state, exercise, "add", None, f"Минулого разу: {last}" if last else "")
+    await _begin(callback, state, exercise, "add", None, t("tr.last_time", sets=last) if last else "")
 
 
 async def _recent(callback, state, args) -> None:
@@ -468,7 +482,7 @@ async def _less(callback, state, args) -> None:
     async with _lock(callback.from_user.id):
         error, item, items = await _change(callback.from_user.id, key, change)
     if error == ALREADY_DONE:
-        await callback.answer("Цей підхід уже прибрано.")
+        await callback.answer(t("tr.set_removed"))
     elif error:
         await callback.answer(error, show_alert=True)
         return
@@ -482,7 +496,7 @@ async def _logged_item(callback, key: str) -> dict | None:
     _, items = await _today(callback.from_user.id)
     index = workout.find(items, key)
     if index is None:
-        await callback.answer("Цієї вправи вже немає в тренуванні.", show_alert=True)
+        await callback.answer(t("tr.not_in_workout"), show_alert=True)
         await _edit(callback.message, _summary(items), kb.workout_list(items))
         return None
     return items[index]
@@ -497,7 +511,7 @@ async def _one_more(callback, state, args) -> None:
 async def _redo(callback, state, args) -> None:
     item = await _logged_item(callback, args[0] if args else "")
     if item:
-        await _begin(callback, state, item, "replace", None, f"Зараз: {workout.format_sets_inline(item)}")
+        await _begin(callback, state, item, "replace", None, t("tr.now", sets=workout.format_sets_inline(item)))
 
 
 async def _exercise(callback, state, args) -> None:
@@ -517,8 +531,12 @@ async def _ask_delete(callback, state, args) -> None:
     if item:
         await _edit(
             callback.message,
-            f"Видалити «{workout.escape(item['name'])}» ({workout.count_sets(len(item['entries']))}) з тренування?",
-            kb.confirm("🗑 Видалити", f"tr:delok:{args[0]}", f"tr:ex:{args[0]}"),
+            t(
+                "tr.delete_ask",
+                name=workout.escape(item["name"]),
+                sets=workout.count_sets(len(item["entries"])),
+            ),
+            kb.confirm(t("tr.btn.delete"), f"tr:delok:{args[0]}", f"tr:ex:{args[0]}"),
         )
 
 
@@ -538,12 +556,12 @@ async def _ask_finish(callback, state, args) -> None:
     _, items = await _today(callback.from_user.id)
     exercises, sets = workout.totals(items)
     if not sets:
-        await callback.answer("Ще немає жодного підходу.", show_alert=True)
+        await callback.answer(t("tr.no_sets_yet"), show_alert=True)
         return
     await _edit(
         callback.message,
-        f"Завершити тренування?\n\n{workout.count_exercises(exercises)} · {workout.count_sets(sets)}",
-        kb.confirm("✅ Завершити", "tr:finok"),
+        t("tr.finish_ask", exercises=workout.count_exercises(exercises), sets=workout.count_sets(sets)),
+        kb.confirm(t("tr.btn.finish_ok"), "tr:finok"),
     )
 
 
@@ -553,11 +571,11 @@ async def _finish(callback, state, args) -> None:
     _, items = await _today(callback.from_user.id)
     exercises, sets = workout.totals(items)
     if not sets:
-        await _edit(callback.message, "🏋️ Сьогодні немає записаних вправ.")
+        await _edit(callback.message, t("tr.no_logged"))
         return
     await _edit(
         callback.message,
-        f"✅ <b>Тренування збережено</b>\n\n{workout.count_exercises(exercises)} · {workout.count_sets(sets)}",
+        t("tr.saved", exercises=workout.count_exercises(exercises), sets=workout.count_sets(sets)),
     )
 
 

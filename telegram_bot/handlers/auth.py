@@ -23,10 +23,12 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, LinkPreviewOptions, Message
 
 from telegram_bot import runtime
+from telegram_bot.i18n import t
 from telegram_bot.keyboards.auth import (
     CONNECT_CB,
     CONNECT_VIA,
     CONNECT_VIA_CB,
+    connect_method,
     HELP_CB,
     LOGIN_CB,
     REGISTER_CB,
@@ -37,7 +39,7 @@ from telegram_bot.keyboards.auth import (
     link_menu,
     retry_login_menu,
 )
-from telegram_bot.keyboards.main import LOGIN, LOGOUT, main_menu
+from telegram_bot.keyboards.main import LOGIN, LOGOUT, button, main_menu
 from telegram_bot.security import (
     code_throttle,
     link_throttle,
@@ -54,35 +56,6 @@ EMAIL_MAX_LENGTH = 120
 _EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
 _CODE_RE = re.compile(r"^\d{6}$")
 MAX_CODE_TRIES = 5
-
-GENERIC_ERROR = "❌ Щось пішло не так. Спробуйте ще раз трохи пізніше."
-RATE_LIMITED = "⏳ Забагато спроб. Спробуйте трохи пізніше."
-ALREADY_LINKED = (
-    "Цей Telegram уже підключено до акаунта NosiFit. Натисніть «🔐 Увійти»."
-)
-
-HELP_TEXT = (
-    "<b>NosiFit у Telegram</b>\n\n"
-    "🔐 <b>Увійти</b>. Першого разу бот запитає, як ви входите на сайт "
-    "NosiFit — через Google, GitHub чи email і пароль — і дасть посилання. "
-    "Увійдіть у браузері звичним способом і натисніть «Підключити». Далі "
-    "«Увійти» в боті спрацьовує одним натиском.\n"
-    "✨ <b>Створити новий акаунт</b> — потрібен лише email і код із листа.\n\n"
-    "Бот ніколи не просить пароль: вхід через Google, GitHub чи пароль "
-    "відбувається лише на сайті NosiFit у браузері.\n"
-    "Відключити Telegram: сайт → Профіль → Підключені акаунти.\n\n"
-    "/start — меню\n/login — увійти\n/register — створити акаунт\n"
-    "/consent — згода на обробку даних\n"
-    "/withdraw — відкликати згоду\n/mydata — отримати свої дані\n"
-    "/logout — вийти\n/cancel — скасувати дію"
-)
-
-CHOOSE_METHOD_TEXT = (
-    "Як ви входите на сайт NosiFit?\n\n"
-    "Оберіть свій спосіб: бот дасть посилання, ви увійдете в браузері й "
-    "підтвердите. Це потрібно лише один раз."
-)
-
 
 def _tg_user(event) -> TelegramUser:
     return TelegramUser.from_aiogram(event.from_user)
@@ -107,7 +80,7 @@ async def do_login(event, state: FSMContext) -> None:
     user = _tg_user(event)
 
     if not login_throttle.allow(user.id):
-        await _answer(event, RATE_LIMITED)
+        await _answer(event, t("auth.rate_limited"))
         return
 
     try:
@@ -116,25 +89,24 @@ async def do_login(event, state: FSMContext) -> None:
         if exc.code == "not_linked":
             await _answer(
                 event,
-                "Цей Telegram ще не підключено до акаунта NosiFit.\n\n"
-                + CHOOSE_METHOD_TEXT,
+                t("auth.not_linked") + t("auth.choose_method"),
                 reply_markup=connect_menu(),
             )
         elif exc.code == "rate_limited":
-            await _answer(event, RATE_LIMITED)
+            await _answer(event, t("auth.rate_limited"))
         else:
             logger.warning("Telegram login failed: %s", exc.code)
-            await _answer(event, GENERIC_ERROR, reply_markup=retry_login_menu())
+            await _answer(event, t("auth.generic_error"), reply_markup=retry_login_menu())
         return
     except Exception:
         logger.exception("Telegram login failed")
-        await _answer(event, GENERIC_ERROR, reply_markup=retry_login_menu())
+        await _answer(event, t("auth.generic_error"), reply_markup=retry_login_menu())
         return
 
     login_throttle.reset(user.id)
     await _answer(
         event,
-        "✅ Ви увійшли в NosiFit.",
+        t("auth.logged_in"),
         reply_markup=main_menu(authenticated=True),
     )
 
@@ -144,7 +116,7 @@ async def login_callback(callback: CallbackQuery, state: FSMContext) -> None:
     await do_login(callback, state)
 
 
-@router.message(F.text == LOGIN)
+@router.message(button(LOGIN))
 async def login_button(message: Message, state: FSMContext) -> None:
     await do_login(message, state)
 
@@ -157,7 +129,7 @@ async def login_command(message: Message, state: FSMContext) -> None:
 # --- Log out ----------------------------------------------------------------------------
 
 
-@router.message(F.text == LOGOUT)
+@router.message(button(LOGOUT))
 async def logout_button(message: Message, state: FSMContext) -> None:
     await logout_command(message, state)
 
@@ -167,10 +139,10 @@ async def logout_command(message: Message, state: FSMContext) -> None:
     await asyncio.to_thread(runtime.logout, message.from_user.id)
     await state.clear()
     await message.answer(
-        "Ви вийшли з NosiFit у цьому боті.",
+        t("auth.logged_out"),
         reply_markup=main_menu(authenticated=False),
     )
-    await message.answer("Що далі?", reply_markup=auth_menu())
+    await message.answer(t("auth.what_next"), reply_markup=auth_menu())
 
 
 # --- Help -------------------------------------------------------------------------------
@@ -179,7 +151,7 @@ async def logout_command(message: Message, state: FSMContext) -> None:
 @router.callback_query(F.data == HELP_CB)
 async def help_callback(callback: CallbackQuery) -> None:
     await callback.answer()
-    await callback.message.answer(HELP_TEXT, reply_markup=auth_menu())
+    await callback.message.answer(t("auth.help"), reply_markup=auth_menu())
 
 
 # --- Create an account ------------------------------------------------------------------
@@ -189,14 +161,12 @@ async def start_registration(event, state: FSMContext) -> None:
     await _ack(event)
     await state.clear()
     if runtime.is_authenticated(event.from_user.id):
-        await _answer(event, "Ви вже увійшли в NosiFit.", reply_markup=main_menu(authenticated=True))
+        await _answer(event, t("auth.already_in"), reply_markup=main_menu(authenticated=True))
         return
     await state.set_state(RegisterStates.entering_email)
     await _answer(
         event,
-        "✨ <b>Новий акаунт NosiFit</b>\n\n"
-        "Введіть email. На нього прийде код підтвердження.\n"
-        "Пароль не потрібен. /cancel — скасувати.",
+        t("auth.register_intro"),
     )
 
 
@@ -214,28 +184,28 @@ async def _send_code(event, state: FSMContext, email: str) -> None:
     user = _tg_user(event)
     if not register_throttle.allow(user.id):
         await state.clear()
-        await _answer(event, RATE_LIMITED, reply_markup=auth_menu())
+        await _answer(event, t("auth.rate_limited"), reply_markup=auth_menu())
         return
 
     try:
         await asyncio.to_thread(runtime.register_start, user, email)
     except TelegramAuthError as exc:
         if exc.code == "invalid_email":
-            await _answer(event, "Введіть коректний email.")
+            await _answer(event, t("auth.invalid_email"))
             return
         await state.clear()
         if exc.code == "already_linked":
-            await _answer(event, ALREADY_LINKED, reply_markup=retry_login_menu())
+            await _answer(event, t("auth.already_linked"), reply_markup=retry_login_menu())
         elif exc.code == "rate_limited":
-            await _answer(event, RATE_LIMITED, reply_markup=auth_menu())
+            await _answer(event, t("auth.rate_limited"), reply_markup=auth_menu())
         else:
             logger.warning("Telegram registration start failed: %s", exc.code)
-            await _answer(event, GENERIC_ERROR, reply_markup=auth_menu())
+            await _answer(event, t("auth.generic_error"), reply_markup=auth_menu())
         return
     except Exception:
         logger.exception("Telegram registration start failed")
         await state.clear()
-        await _answer(event, GENERIC_ERROR, reply_markup=auth_menu())
+        await _answer(event, t("auth.generic_error"), reply_markup=auth_menu())
         return
 
     await state.update_data(email=email, tries=0)
@@ -243,11 +213,7 @@ async def _send_code(event, state: FSMContext, email: str) -> None:
     # The same text whether or not the address already has an account.
     await _answer(
         event,
-        "📨 Ми надіслали лист на вказану адресу.\n\n"
-        "• Якщо там 6-значний код — введіть його тут.\n"
-        "• Якщо з цією адресою вже є акаунт NosiFit, код не надсилається: "
-        "лист пояснить, як підключити Telegram до наявного акаунта.\n\n"
-        "Код дійсний 10 хвилин. /cancel — скасувати.",
+        t("auth.code_sent"),
         reply_markup=code_menu(),
     )
 
@@ -260,7 +226,7 @@ def _not_a_command(message: Message) -> bool:
 async def enter_email(message: Message, state: FSMContext) -> None:
     email = (message.text or "").strip().lower()
     if len(email) > EMAIL_MAX_LENGTH or not _EMAIL_RE.match(email):
-        await message.answer("Введіть коректний email або /cancel.")
+        await message.answer(t("auth.invalid_email_cancel"))
         return
     await _send_code(message, state, email)
 
@@ -272,7 +238,7 @@ async def resend_code(callback: CallbackQuery, state: FSMContext) -> None:
     email = data.get("email")
     if await state.get_state() != RegisterStates.entering_code.state or not email:
         await callback.message.answer(
-            "Почніть реєстрацію знову.", reply_markup=auth_menu()
+            t("auth.restart_registration"), reply_markup=auth_menu()
         )
         return
     await _send_code(callback, state, email)
@@ -294,17 +260,17 @@ async def enter_code(message: Message, state: FSMContext) -> None:
 
     if not email:
         await state.clear()
-        await message.answer("Почніть реєстрацію знову.", reply_markup=auth_menu())
+        await message.answer(t("auth.restart_registration"), reply_markup=auth_menu())
         return
 
     if not _CODE_RE.match(code):
-        await message.answer("Код складається з 6 цифр. Спробуйте ще раз або /cancel.")
+        await message.answer(t("auth.code_format"))
         return
 
     if tries > MAX_CODE_TRIES or not code_throttle.allow(user.id):
         await state.clear()
         await message.answer(
-            "Забагато спроб. Почніть реєстрацію знову.", reply_markup=auth_menu()
+            t("auth.too_many_restart"), reply_markup=auth_menu()
         )
         return
     await state.update_data(tries=tries)
@@ -314,40 +280,36 @@ async def enter_code(message: Message, state: FSMContext) -> None:
     except TelegramAuthError as exc:
         if exc.code == "invalid_code":
             await message.answer(
-                "Код невірний або застарів. Спробуйте ще раз, надішліть новий код "
-                "або /cancel.",
+                t("auth.code_invalid"),
                 reply_markup=code_menu(),
             )
             return
         await state.clear()
         if exc.code == "already_linked":
-            await message.answer(ALREADY_LINKED, reply_markup=retry_login_menu())
+            await message.answer(t("auth.already_linked"), reply_markup=retry_login_menu())
         elif exc.code == "email_unavailable":
             await message.answer(
-                "Цю адресу не можна використати для нового акаунта. Якщо у вас "
-                "уже є акаунт NosiFit, натисніть «🔗 Підключити акаунт».",
+                t("auth.email_unavailable"),
                 reply_markup=auth_menu(),
             )
         elif exc.code in ("too_many_attempts", "rate_limited"):
             await message.answer(
-                "Забагато спроб. Почніть реєстрацію знову трохи пізніше.",
+                t("auth.too_many_later"),
                 reply_markup=auth_menu(),
             )
         else:
             logger.warning("Telegram registration verify failed: %s", exc.code)
-            await message.answer(GENERIC_ERROR, reply_markup=auth_menu())
+            await message.answer(t("auth.generic_error"), reply_markup=auth_menu())
         return
     except Exception:
         logger.exception("Telegram registration verify failed")
         await state.clear()
-        await message.answer(GENERIC_ERROR, reply_markup=auth_menu())
+        await message.answer(t("auth.generic_error"), reply_markup=auth_menu())
         return
 
     await state.clear()
     await message.answer(
-        "✅ Ваш акаунт NosiFit створено, ви увійшли.\n\n"
-        "Щоб користуватися сайтом, встановіть пароль через «Забули пароль?» "
-        "на сторінці входу.",
+        t("auth.account_created"),
         reply_markup=main_menu(authenticated=True),
     )
 
@@ -358,7 +320,7 @@ async def enter_code(message: Message, state: FSMContext) -> None:
 async def choose_method(event, state: FSMContext) -> None:
     await _ack(event)
     await state.clear()
-    await _answer(event, CHOOSE_METHOD_TEXT, reply_markup=connect_menu())
+    await _answer(event, t("auth.choose_method"), reply_markup=connect_menu())
 
 
 async def do_connect(event, state: FSMContext, via: str) -> None:
@@ -367,43 +329,42 @@ async def do_connect(event, state: FSMContext, via: str) -> None:
     user = _tg_user(event)
 
     if via not in CONNECT_VIA:
-        await _answer(event, CHOOSE_METHOD_TEXT, reply_markup=connect_menu())
+        await _answer(event, t("auth.choose_method"), reply_markup=connect_menu())
         return
 
     if not link_throttle.allow(user.id):
-        await _answer(event, RATE_LIMITED)
+        await _answer(event, t("auth.rate_limited"))
         return
 
     try:
         url, expires_in = await asyncio.to_thread(runtime.link_url, user, via)
     except TelegramAuthError as exc:
         if exc.code == "already_linked":
-            await _answer(event, ALREADY_LINKED, reply_markup=retry_login_menu())
+            await _answer(event, t("auth.already_linked"), reply_markup=retry_login_menu())
         elif exc.code == "rate_limited":
-            await _answer(event, RATE_LIMITED)
+            await _answer(event, t("auth.rate_limited"))
         else:
             logger.warning("Telegram link request failed: %s", exc.code)
-            await _answer(event, GENERIC_ERROR, reply_markup=auth_menu())
+            await _answer(event, t("auth.generic_error"), reply_markup=auth_menu())
         return
     except Exception:
         logger.exception("Telegram link request failed")
-        await _answer(event, GENERIC_ERROR, reply_markup=auth_menu())
+        await _answer(event, t("auth.generic_error"), reply_markup=auth_menu())
         return
 
     minutes = max(1, expires_in // 60)
-    method = CONNECT_VIA[via][1]
+    method = connect_method(via)
     sign_in_step = (
-        "2. Увійдіть у NosiFit своїм email і паролем (на сайті, не тут).\n"
+        t("auth.connect.step2_password")
         if via == "password"
-        else f"2. Увійдіть через {method} — відкриється сторінка {method}.\n"
+        else t("auth.connect.step2_oauth", method=method)
     )
     text = (
-        f"🔗 <b>Вхід через {method}</b>\n\n"
-        "1. Натисніть кнопку нижче — відкриється браузер.\n"
+        t("auth.connect.title", method=method)
+        + "\n\n"
+        + t("auth.connect.step1")
         + sign_in_step
-        + "3. Перевірте свій акаунт і натисніть «Підключити».\n"
-        "4. Поверніться сюди й натисніть «🔐 Увійти».\n\n"
-        f"Посилання одноразове й діє {minutes} хв. Нікому його не пересилайте."
+        + t("auth.connect.rest", minutes=minutes)
     )
     message = event.message if isinstance(event, CallbackQuery) else event
     # protect_content: the link cannot be forwarded or saved from the chat.

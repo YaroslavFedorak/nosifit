@@ -10,13 +10,13 @@ from functools import lru_cache
 from pathlib import Path
 
 SUPPORTED_LOCALES = (
-    "uk",
     "en",
+    "uk",
     "pl",
     "ru",
 )
 
-DEFAULT_LOCALE = "uk"
+DEFAULT_LOCALE = "en"
 
 TRANSLATIONS_DIR = Path(__file__).resolve().parent / "translations"
 
@@ -112,7 +112,7 @@ def load_translation(
     """Translations for a namespace with per-key fallback.
 
     Keys missing in the requested locale fall back to the default locale,
-    so a forgotten key shows Ukrainian text instead of a raw key such as
+    so a forgotten key shows English text instead of a raw key such as
     ``units.kcal``. The result is the caller's own copy.
     """
     if locale not in SUPPORTED_LOCALES:

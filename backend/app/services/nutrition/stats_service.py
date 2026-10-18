@@ -259,7 +259,7 @@ def get_year_heatmap(user_id, year):
     return {"year": year, "days": days}
 
 
-def get_day_details(user_id, target_date, locale="uk"):
+def get_day_details(user_id, target_date, locale="en"):
     locale = normalize_locale(locale)
     meals = (
         Meal.query

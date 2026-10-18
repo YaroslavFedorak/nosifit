@@ -42,7 +42,7 @@ def _apply_nutrition(item, nutrition):
     item.liquid_ml = nutrition.liquid_ml
 
 
-def build_entry(meal, product, amount, unit=None, locale="uk", dish=None):
+def build_entry(meal, product, amount, unit=None, locale="en", dish=None):
     """A new entry with a snapshot of ``product``'s values at this moment."""
     unit = normalize_unit(unit, product.default_unit)
     nutrition = calculate_product_nutrition(product, amount, unit)
@@ -113,7 +113,7 @@ def add_item_service(user_id, data):
         product,
         data.get("amount"),
         data.get("unit"),
-        data.get("locale", "uk"),
+        data.get("locale", "en"),
     )
 
     db.session.add(item)
@@ -145,7 +145,7 @@ def add_entries(user_id, meal, items, dish=None, products_by_id=None):
             product,
             data.get("amount"),
             data.get("unit"),
-            data.get("locale", "uk"),
+            data.get("locale", "en"),
             dish=dish,
         )
         db.session.add(item)
@@ -206,7 +206,7 @@ def update_item_service(user_id, item_id, data):
         # A different product is a new snapshot.
         item.product_id = product.id
         item.basis = product_basis(product)
-        item.name = get_product_name(product, data.get("locale", "uk"))
+        item.name = get_product_name(product, data.get("locale", "en"))
 
     if "amount" in data or "unit" in data or "product_id" in data:
         # Rescale from the entry's own snapshot, so a product edited since

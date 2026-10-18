@@ -21,19 +21,21 @@ from backend.app.training.exercises.catalog import load_exercise_catalog
 from backend.app.training.models.exercise import Exercise
 from telegram_bot import runtime
 from telegram_bot.handlers import training as training_handlers
-from telegram_bot.keyboards.main import (
-    ADD_EXERCISE,
-    FOOD,
-    HOME,
-    MY_WORKOUT,
-    NUTRITION,
-    TRAINING,
-    WATER,
-    WEIGHT,
-)
+from telegram_bot.i18n import translate
+from telegram_bot.keyboards import main as buttons_of_the_bot
 from telegram_bot.services.api import NosiFitAPI, NosiFitAPIError
 from web.tests.security.test_telegram_auth import SECRET, bot_post, tg_payload
 from web.tests.security.test_telegram_bot import ALICE, Harness
+
+# The buttons as the Ukrainian user reads (and presses) them.
+ADD_EXERCISE = translate("uk", buttons_of_the_bot.ADD_EXERCISE)
+FOOD = translate("uk", buttons_of_the_bot.FOOD)
+HOME = translate("uk", buttons_of_the_bot.HOME)
+MY_WORKOUT = translate("uk", buttons_of_the_bot.MY_WORKOUT)
+NUTRITION = translate("uk", buttons_of_the_bot.NUTRITION)
+TRAINING = translate("uk", buttons_of_the_bot.TRAINING)
+WATER = translate("uk", buttons_of_the_bot.WATER)
+WEIGHT = translate("uk", buttons_of_the_bot.WEIGHT)
 
 
 class FlaskSession(requests.Session):
@@ -353,7 +355,7 @@ def test_modes_and_home(tg, catalog):
     assert reply_keyboard(tg) == [[FOOD, WATER, WEIGHT], [HOME]]
     tg.message(ADD_EXERCISE)
     tg.message(HOME)
-    assert reply_keyboard(tg) == [[TRAINING, NUTRITION], ["🚪 Вийти"]]
+    assert reply_keyboard(tg) == [[TRAINING, NUTRITION], ["🌐 Мова", "🚪 Вийти"]]
     tg.message("жим")
     assert "Оберіть вправу" not in text(tg)
 

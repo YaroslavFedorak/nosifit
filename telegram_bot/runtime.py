@@ -6,6 +6,7 @@ from functools import lru_cache
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 from telegram_bot.config import TelegramConfig
+from telegram_bot.i18n import t
 from telegram_bot.services.api import NosiFitAPI, NosiFitAPIError
 from telegram_bot.services.telegram_auth import TelegramAuthClient, TelegramAuthError, TelegramUser
 
@@ -85,9 +86,7 @@ def restore(user_id: int) -> NosiFitAPI | None:
 def get_api(user_id: int) -> NosiFitAPI:
     api = restore(user_id)
     if api is None:
-        raise NosiFitAPIError(
-            "Спочатку увійдіть: /start → «Увійти»."
-        )
+        raise NosiFitAPIError(t("err.login_start"))
     return api
 
 

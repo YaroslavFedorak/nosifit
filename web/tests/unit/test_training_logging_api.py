@@ -42,7 +42,7 @@ def past_session(user, catalog, days_ago, items):
 
 
 def search(client, q, **params):
-    response = client.get("/api/training/exercises/search", query_string={"q": q, **params})
+    response = client.get("/api/training/exercises/search", query_string={"q": q, "locale": "uk", **params})
     assert response.status_code == 200, response.get_json()
     return response.get_json()
 
@@ -146,7 +146,7 @@ def test_exercises_done_before_rank_first_and_carry_last_values(client, user, ca
 def test_search_uses_the_requested_locale(client, user, catalog):
     login(client)
     assert search(client, "bench press", locale="en")["items"][0]["name"] == "Barbell Bench Press"
-    assert search(client, "bench press", locale="xx")["items"][0]["name"] == "Жим штанги лежачи"
+    assert search(client, "bench press", locale="xx")["items"][0]["name"] == "Barbell Bench Press"
 
 
 def test_ranking_is_pure_and_normalised():
@@ -181,7 +181,7 @@ def test_recent_exercises_newest_first_without_today(client, user, catalog):
     login(client)
     save(client, [item(catalog, "lat-pulldown", sets=3, reps=10, load=50)])
 
-    response = client.get("/api/training/exercises/recent")
+    response = client.get("/api/training/exercises/recent", query_string={"locale": "uk"})
     assert response.status_code == 200
     items = response.get_json()["items"]
     # Same session: the exercise logged later counts as more recent.
@@ -194,7 +194,7 @@ def test_recent_exercises_newest_first_without_today(client, user, catalog):
 
 def test_recent_is_empty_for_a_new_user(client, user, catalog):
     login(client)
-    assert client.get("/api/training/exercises/recent").get_json() == {"items": []}
+    assert client.get("/api/training/exercises/recent", query_string={"locale": "uk"}).get_json() == {"items": []}
 
 
 # --- today's session through /sessions/complete ---------------------------------------

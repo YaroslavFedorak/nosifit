@@ -7,7 +7,18 @@ from aiogram.enums import ParseMode
 from aiogram.fsm.storage.memory import MemoryStorage
 
 from telegram_bot.config import TelegramConfig
-from telegram_bot.handlers import auth, common, consent, nutrition, start, training, water, weight
+from telegram_bot.handlers import (
+    auth,
+    common,
+    consent,
+    language,
+    nutrition,
+    start,
+    training,
+    water,
+    weight,
+)
+from telegram_bot.i18n import LanguageMiddleware
 from telegram_bot.security import is_private_human
 
 logging.basicConfig(
@@ -23,9 +34,14 @@ def create_dispatcher() -> Dispatcher:
     dispatcher.message.filter(is_private_human)
     dispatcher.callback_query.filter(is_private_human)
     dispatcher.edited_message.filter(is_private_human)
+    # The language of the update, set before any filter or handler runs.
+    for observer in (dispatcher.message, dispatcher.callback_query, dispatcher.edited_message):
+        observer.outer_middleware(LanguageMiddleware())
     dispatcher.include_router(auth.router)
     dispatcher.include_router(consent.router)
     dispatcher.include_router(start.router)
+    # Before training/nutrition: their search states take any text.
+    dispatcher.include_router(language.router)
     # Before nutrition: its search states take any text, the training
     # button included; training text handlers skip menu buttons.
     dispatcher.include_router(training.router)

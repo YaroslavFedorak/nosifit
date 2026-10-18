@@ -99,7 +99,7 @@ def load_meal_for_display(meal_id):
     return Meal.query.options(meal_load_options()).filter_by(id=meal_id).one()
 
 
-def get_daily_nutrition_data(user_id, locale="uk"):
+def get_daily_nutrition_data(user_id, locale="en"):
     locale = normalize_locale(locale)
     today = clock.today()
     yesterday = today - timedelta(days=1)

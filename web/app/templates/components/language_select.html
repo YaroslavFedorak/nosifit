@@ -6,7 +6,7 @@
   aria-label="{{ label }}"
   {% if select_id %}id="{{ select_id }}"{% endif %}
 >
-  {% for code, name in (("uk", "Українська"), ("en", "English"), ("pl", "Polski"), ("ru", "Русский")) %}
+  {% for code, name in (("en", "English"), ("uk", "Українська"), ("pl", "Polski"), ("ru", "Русский")) %}
   <option value="{{ code }}" {% if locale == code %}selected{% endif %}>{{ name }}</option>
   {% endfor %}
 </select>

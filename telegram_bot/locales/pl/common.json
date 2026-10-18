@@ -1,0 +1,9 @@
+{
+  "common.cancelled": "Anulowano.",
+  "common.unknown": "Nie rozumiem. Skorzystaj z przycisków poniżej lub /help.",
+  "start.welcome": "<b>NosiFit</b>\n\nTutaj wygodnie zapiszesz treningi, jedzenie, wodę i wagę. Statystyki i analizy są na stronie.",
+  "start.choose_action": "Wybierz działanie:",
+  "start.choose_add": "Wybierz, co chcesz dodać:",
+  "start.home": "🏠 Strona główna",
+  "start.help": "Najważniejsze rzeczy są w przyciskach poniżej. Komendy:\n\n/start — menu główne\n/help — ta podpowiedź\n/language — zmień język\n/logout — wyloguj się\n/cancel — anuluj bieżące działanie\n\nOdłączyć Telegram od konta: strona → Profil → Połączone konta."
+}

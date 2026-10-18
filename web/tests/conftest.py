@@ -190,3 +190,17 @@ def local_clock(monkeypatch):
     from backend.app.utils import clock
 
     monkeypatch.setattr(clock, "now", lambda: datetime.now().astimezone())
+
+
+@pytest.fixture(autouse=True)
+def bot_language():
+    """Bot texts are asserted in Ukrainian; the bot's own default is English.
+
+    Updates fed through the dispatcher take the sender's language_code (the
+    test users have "uk"); this covers direct calls outside an update.
+    """
+    from telegram_bot import i18n
+
+    token = i18n._current.set("uk")
+    yield
+    i18n._current.reset(token)
