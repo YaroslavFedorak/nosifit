@@ -16,9 +16,7 @@
         "loadErrorText": "Обновите страницу чуть позже.",
         "ariaRow": "{muscle}: {sets} из {target} подходов"
     },
-    "weakPoints": "Слабые места",
     "recommendedExercises": "Рекомендованные упражнения",
-    "muscleBalance": "Баланс мышц",
     "balanced": "Сбалансировано",
     "overloaded": "Перегружено",
     "recommendations": {
@@ -204,8 +202,7 @@
         "legs": "Ноги",
         "shoulders": "Плечи",
         "arms": "Руки",
-        "core": "Кор",
-        "empty": "Упражнения не найдены"
+        "core": "Кор"
     },
     "exercise": {
         "execution": "Детали упражнения",
@@ -220,24 +217,17 @@
         "fallback": "Упражнение"
     },
     "workout": {
-        "add": "Добавить тренировку",
-        "setsShort": "подх.",
-        "repsShort": "повт.",
-        "weightShort": "кг"
+        "add": "Добавить тренировку"
     },
     "summary": {
         "exercises": "упражнений",
         "sets": "подходов"
     },
     "calendar": {
-        "month": "Месяц",
-        "close": "Закрыть",
-        "previousMonth": "Предыдущий месяц",
-        "nextMonth": "Следующий месяц"
+        "month": "Месяц"
     },
     "dayDetails": {
-        "day": "День",
-        "close": "Закрыть"
+        "day": "День"
     },
     "session": {
         "saved": "Тренировка сохранена"
@@ -246,8 +236,6 @@
         "cancel": "Отмена",
         "close": "Закрыть",
         "save": "Сохранить",
-        "error": "Ошибка",
-        "loading": "Загрузка",
-        "noData": "Нет данных"
+        "loading": "Загрузка"
     }
 }

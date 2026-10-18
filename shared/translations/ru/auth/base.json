@@ -32,7 +32,6 @@
   },
   "register": {
     "title": "Регистрация",
-    "heading": "Создать аккаунт",
     "namePlaceholder": "Ваше имя",
     "passwordPlaceholder": "Минимум 8 символов",
     "confirmPlaceholder": "Повторите пароль",
@@ -72,34 +71,10 @@
     "height": "Рост (см)",
     "weight": "Вес (кг)",
     "gender": "Пол",
-    "male": "Мужской",
-    "female": "Женский",
-    "other": "Другое",
     "activity": "Активность",
     "goal": "Цель",
     "experience": "Опыт",
     "workouts": "Тренировок в неделю"
-  },
-  "activity": {
-    "minimum": "Минимальная",
-    "light": "Лёгкая",
-    "medium": "Средняя",
-    "high": "Высокая",
-    "veryHigh": "Очень высокая",
-    "extreme": "Экстремальная"
-  },
-  "goals": {
-    "lose": "Снижение веса",
-    "maintain": "Поддержание",
-    "gain": "Набор массы",
-    "muscleGain": "Набор мышц",
-    "recomposition": "Рекомпозиция",
-    "performance": "Производительность"
-  },
-  "experience": {
-    "beginner": "Начинающий",
-    "intermediate": "Средний",
-    "advanced": "Продвинутый"
   },
   "reset": {
     "title": "Восстановление пароля",
@@ -137,10 +112,6 @@
   "profile": {
     "title": "Заполнение профиля",
     "heading": "Заполните профиль"
-  },
-  "profileEdit": {
-    "title": "Редактирование профиля",
-    "heading": "Редактирование профиля"
   },
   "telegramLink": {
     "title": "Подключение Telegram",

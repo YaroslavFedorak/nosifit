@@ -16,9 +16,7 @@
         "loadErrorText": "Odśwież stronę za chwilę.",
         "ariaRow": "{muscle}: {sets} z {target} serii"
     },
-    "weakPoints": "Słabe punkty",
     "recommendedExercises": "Polecane ćwiczenia",
-    "muscleBalance": "Balans mięśni",
     "balanced": "Zrównoważone",
     "overloaded": "Przeciążone",
     "recommendations": {
@@ -204,8 +202,7 @@
         "legs": "Nogi",
         "shoulders": "Barki",
         "arms": "Ramiona",
-        "core": "Core",
-        "empty": "Nie znaleziono ćwiczeń"
+        "core": "Core"
     },
     "exercise": {
         "execution": "Szczegóły ćwiczenia",
@@ -220,24 +217,17 @@
         "fallback": "Ćwiczenie"
     },
     "workout": {
-        "add": "Dodaj trening",
-        "setsShort": "serie",
-        "repsShort": "powt.",
-        "weightShort": "kg"
+        "add": "Dodaj trening"
     },
     "summary": {
         "exercises": "ćwiczeń",
         "sets": "serii"
     },
     "calendar": {
-        "month": "Miesiąc",
-        "close": "Zamknij",
-        "previousMonth": "Poprzedni miesiąc",
-        "nextMonth": "Następny miesiąc"
+        "month": "Miesiąc"
     },
     "dayDetails": {
-        "day": "Dzień",
-        "close": "Zamknij"
+        "day": "Dzień"
     },
     "session": {
         "saved": "Trening zapisany"
@@ -246,8 +236,6 @@
         "cancel": "Anuluj",
         "close": "Zamknij",
         "save": "Zapisz",
-        "error": "Błąd",
-        "loading": "Ładowanie",
-        "noData": "Brak danych"
+        "loading": "Ładowanie"
     }
 }

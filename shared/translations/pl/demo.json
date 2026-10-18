@@ -36,8 +36,6 @@
         "title": "Twój rytm z ostatnich tygodni",
         "badge": "Bilans dnia",
         "description": "Każde pole pokazuje ogólny bilans dnia. W prawdziwym panelu możesz otworzyć dzień i zobaczyć trening, regenerację oraz odżywianie.",
-        "month1": "Sie",
-        "month2": "Wrz",
         "less": "Mniej",
         "more": "Więcej",
         "months": {
@@ -68,17 +66,8 @@
     "nutrition": {
         "eyebrow": "Odżywianie",
         "title": "Co zjedzono dzisiaj",
-        "meal1": "Śniadanie",
-        "meal1Food": "Owsianka · banan · jogurt",
-        "meal2": "Obiad",
-        "meal2Food": "Ryż · kurczak · warzywa",
-        "meal3": "Kolacja",
-        "meal3Food": "Makaron · tuńczyk · sałatka",
-        "meal4": "Przekąska",
-        "meal4Food": "Owoce · orzechy",
         "protein": "Białko",
         "carbs": "Węglowodany",
-        "fats": "Tłuszcze",
         "water": "Woda",
         "description": "Posiłki rozwijają się tak jak w panelu: najpierw podsumowanie, potem produkty i makroskładniki.",
         "waterGoal": "1 650 z 2 000 ml"

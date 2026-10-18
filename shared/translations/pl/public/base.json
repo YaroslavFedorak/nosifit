@@ -236,11 +236,6 @@
     "instagramAction": "Otwórz profil",
     "telegramAction": "Napisz wiadomość"
   },
-  "demo": {
-    "title": "Demo",
-    "description": "Zobacz, jak działa system przed rejestracją.",
-    "openDashboard": "Otwórz demo dashboardu"
-  },
   "common": {
     "openNosiFit": "Otwórz NosiFit",
     "createAccount": "Utwórz konto",
@@ -281,18 +276,6 @@
       "training": "Regularny trening i śledzenie obciążenia.",
       "recovery": "Śledzenie snu i regeneracji.",
       "data": "Chęć obserwowania zmian w czasie."
-    },
-    "headline": "Trening to tylko część całego obrazu.",
-    "snapshot": {
-      "title": "Przykładowy widok",
-      "status": "Śledzone",
-      "recovery": "Regeneracja",
-      "training": "Obciążenie treningowe",
-      "sleep": "Sen"
-    },
-    "footer": {
-      "title": "Zacznij od danych, które już masz.",
-      "text": "Zapisz kilka rzeczy, sprawdź dashboard i rozwijaj go dalej."
     }
   },
   "info": {
@@ -345,9 +328,6 @@
       "title": "Pomysł jest prosty",
       "text": "NosiFit ma ułatwić odczytywanie własnych danych. Zamiast trzymać trening i regenerację w osobnych miejscach, możesz zobaczyć je razem i zdecydować, co ma sens na kolejny dzień."
     },
-    "aboutNosiFit": "O NosiFit",
-    "footer": {
-      "title": "Zobacz to w praktyce."
-    }
+    "aboutNosiFit": "O NosiFit"
   }
 }

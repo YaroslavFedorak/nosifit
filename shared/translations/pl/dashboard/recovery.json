@@ -7,26 +7,6 @@
             "addSleep": "Dodaj sen",
             "addHabit": "Dodaj nawyk"
         },
-        "habitCategories": {
-            "sleep": "Sen",
-            "hydration": "Nawodnienie",
-            "nutrition": "Odżywianie",
-            "activity": "Aktywność",
-            "recovery": "Regeneracja",
-            "stress": "Stres",
-            "massage": "Masaż"
-        },
-        "habitReasons": {
-            "sleep": "Zalecane ze względu na jakość snu",
-            "hydration": "Zalecane ze względu na poziom nawodnienia",
-            "nutrition": "Zalecane w celu wsparcia odżywiania",
-            "activity": "Zalecane po wysiłku fizycznym",
-            "recovery": "Zalecane w celu poprawy regeneracji",
-            "stress": "Zalecane ze względu na poziom stresu",
-            "massage": "Zalecane w celu rozluźnienia mięśni",
-            "default": "Zalecane dla zachowania równowagi regeneracji"
-        },
-        "habitImpact": "Regeneracja +{points}",
         "habits": {
             "title": "Twoje nawyki",
             "empty": "Nie dodano jeszcze żadnych nawyków",

@@ -44,8 +44,7 @@
         "modal": {
             "dayHistory": "Історія дня",
             "dayDetails": "Деталі дня",
-            "close": "Закрити",
-            "balance": "Баланс дня"
+            "close": "Закрити"
         }
     }
 }

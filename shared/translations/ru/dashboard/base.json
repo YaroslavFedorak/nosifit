@@ -2,8 +2,7 @@
     "units": {
         "hours": "ч",
         "calories": "ккал",
-        "grams": "г",
-        "milliliters": "л"
+        "grams": "г"
     },
     "page": {
         "title": "Панель — nosifit",

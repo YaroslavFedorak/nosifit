@@ -7,26 +7,6 @@
             "addSleep": "Add sleep",
             "addHabit": "Add habit"
         },
-        "habitCategories": {
-            "sleep": "Sleep",
-            "hydration": "Hydration",
-            "nutrition": "Nutrition",
-            "activity": "Activity",
-            "recovery": "Recovery",
-            "stress": "Stress",
-            "massage": "Massage"
-        },
-        "habitReasons": {
-            "sleep": "Recommended because of sleep quality",
-            "hydration": "Recommended because of hydration level",
-            "nutrition": "Recommended to support nutrition",
-            "activity": "Recommended after physical load",
-            "recovery": "Recommended to improve recovery",
-            "stress": "Recommended because of stress level",
-            "massage": "Recommended for muscle relaxation",
-            "default": "Recommended for recovery balance"
-        },
-        "habitImpact": "Recovery +{points}",
         "habits": {
             "title": "Your habits",
             "empty": "No habits added yet",

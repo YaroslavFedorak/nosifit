@@ -44,8 +44,7 @@
         "modal": {
             "dayHistory": "Historia dnia",
             "dayDetails": "Szczegóły dnia",
-            "close": "Zamknij",
-            "balance": "Bilans dnia"
+            "close": "Zamknij"
         }
     }
 }

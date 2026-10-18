@@ -5,7 +5,6 @@ a comment) rather than by calling the helpers under test.
 """
 import datetime as dt
 import math
-import re
 import threading
 from pathlib import Path
 from types import SimpleNamespace
@@ -30,7 +29,7 @@ from backend.app.services.nutrition.day_service import get_daily_nutrition_data
 from backend.app.services.nutrition.stats_service import get_day_details
 from backend.app.services.nutrition.weight_service import update_user_weight
 from backend.app.services.dashboard import aggregator
-from backend.app.utils import clock
+from backend.app.utils import clock, profile_options
 
 KYIV = ZoneInfo("Europe/Kyiv")
 
@@ -532,21 +531,18 @@ FORMS = [
 ]
 
 
-def select_values(path, field):
-    """The option values of the <select name="field"> of a template."""
-    source = path.read_text(encoding="utf-8")
-    start = re.search(rf'<select[^>]*name="{field}"', source)
-    if start is None:
-        return None
-    block = source[start.start(): source.index("</select>", start.start())]
-    return [v for v in re.findall(r'value="([^"]*)"', block) if v]
-
-
 @pytest.mark.parametrize("path", FORMS, ids=lambda p: p.name)
-def test_every_activity_value_a_form_stores_is_understood(path):
-    values = select_values(path, "activity")
-    if values is None:
-        pytest.skip("no activity select in this form")
+def test_forms_offer_the_shared_profile_options(path):
+    """Every form renders the one list (utils/profile_options.py), not its own copy."""
+    source = path.read_text(encoding="utf-8")
+    assert "activity_options" in source
+    assert "goal_options" in source
+    assert "gender_options" in source
+    assert 'value="lose"' not in source and 'value="sedentary"' not in source
+
+
+def test_every_activity_value_a_form_stores_is_understood():
+    values = [value for value, _ in profile_options.ACTIVITIES]
     assert len(values) >= 4
     for value in values:
         assert len(value) <= 10                                   # fits the column
@@ -554,17 +550,35 @@ def test_every_activity_value_a_form_stores_is_understood(path):
         assert water_service.activity_factor(value) in water_service.ACTIVITY_FACTORS.values()
         # Water and calories read the value the same way.
         assert water_service.ACTIVITY_FACTORS[cal.activity_level(value)] == water_service.activity_factor(value)
-    # The forms agree with each other on the order of the levels.
+    # The levels are in order.
     levels = [cal.activity_level(v) for v in values]
     assert levels == sorted(levels, key=list(cal.ACTIVITY_FACTORS).index)
 
 
-@pytest.mark.parametrize("path", FORMS, ids=lambda p: p.name)
-def test_every_goal_and_sex_value_a_form_stores_is_understood(path):
-    for value in select_values(path, "goal") or []:
+def test_every_goal_and_sex_value_a_form_stores_is_understood():
+    for value in profile_options.GOALS:
         assert value in cal.GOAL_ALIASES, value               # mapped on purpose, not by the default
-    for value in select_values(path, "gender") or []:
-        assert value in ("male", "female", "other"), value
+    for value in profile_options.GENDERS:
+        assert value in ("male", "female"), value
+
+
+@pytest.mark.parametrize(
+    "stored, canonical",
+    [("sedentary", "1.2"), ("light", "1.375"), ("moderate", "1.55"), ("active", "1.725"), ("very_active", "1.9"),
+     ("1.55", "1.55"), ("1.4", "1.375"), (1.725, "1.725"), (None, None), ("", None)],
+)
+def test_older_activity_spellings_fold_into_the_shared_values(stored, canonical):
+    assert profile_options.normalize_activity(stored) == canonical
+
+
+@pytest.mark.parametrize(
+    "stored, canonical",
+    [("lose", "fat_loss"), ("gain", "muscle_gain"), ("maintain", "maintenance"), ("performance", "maintenance"),
+     ("fat_loss", "fat_loss"), ("strength", "strength"), (None, None), ("", None)],
+)
+def test_older_goal_spellings_fold_into_the_shared_values(stored, canonical):
+    assert profile_options.normalize_goal(stored) == canonical
+    assert profile_options.normalize_experience("experienced") == "advanced"
 
 
 @pytest.mark.parametrize(
