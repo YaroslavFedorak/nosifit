@@ -369,6 +369,57 @@ def test_invalid_reset_token_is_not_a_server_error(client):
     assert response.location.endswith("/auth/reset")
 
 
+def test_reset_queues_a_password_changed_notice(client, user):
+    from backend.app.models.email_outbox import EmailOutbox
+
+    token = _reset_token(client, user)
+    client.post(
+        f"/auth/reset/{token}",
+        data={"password": "first-new-password", "confirm": "first-new-password"},
+    )
+
+    notices = EmailOutbox.query.filter_by(kind="password_changed").all()
+    assert [n.to_address for n in notices] == ["test@example.com"]
+    assert "first-new-password" not in notices[0].body_text
+
+
+def test_failed_reset_queues_no_notice(client, user):
+    from backend.app.models.email_outbox import EmailOutbox
+
+    token = _reset_token(client, user)
+    client.post(f"/auth/reset/{token}", data={"password": "a", "confirm": "b"})
+
+    assert EmailOutbox.query.filter_by(kind="password_changed").count() == 0
+
+
+def test_reset_lifts_the_login_lock_for_the_email(client, user):
+    from web.app.routes.auth.main import LOGIN_LIMIT_PER_EMAIL
+
+    for _ in range(LOGIN_LIMIT_PER_EMAIL[0] + 1):
+        login(client, password="wrong-password")
+    assert login(client, password=PASSWORD).location.endswith("/auth/login")
+
+    token = _reset_token(client, user)
+    client.post(
+        f"/auth/reset/{token}",
+        data={"password": "first-new-password", "confirm": "first-new-password"},
+    )
+
+    response = login(client, password="first-new-password")
+    assert not response.location.endswith("/auth/login")
+
+
+@pytest.mark.parametrize("method", ["get", "post"])
+def test_reset_page_sends_no_referrer(client, user, method):
+    token = _reset_token(client, user)
+
+    response = getattr(client, method)(f"/auth/reset/{token}", data={})
+    assert response.headers["Referrer-Policy"] == "no-referrer"
+
+    invalid = client.get("/auth/reset/not-a-token")
+    assert invalid.headers["Referrer-Policy"] == "no-referrer"
+
+
 def test_reset_rejects_short_password(client, user):
     with client.application.test_request_context():
         token = generate_reset_token(user)

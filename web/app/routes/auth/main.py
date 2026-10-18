@@ -1,12 +1,13 @@
 from datetime import datetime
 
-from flask import Blueprint, render_template, request, redirect, flash, session, url_for
+from flask import Blueprint, flash, make_response, redirect, render_template, request, session, url_for
 from flask_login import current_user, login_user, logout_user
 from sqlalchemy.exc import IntegrityError
 from backend.app.extensions import db
 from backend.app.models.user import User
 from backend.app.models.user_profile import UserProfile
 from backend.app.services.consent import apply_consent
+from backend.app.services.email_outbox import enqueue_notice
 from backend.app.utils.email_service import send_password_reset_email
 from backend.app.utils.mailer import EmailSendError
 from backend.app.utils.token import verify_reset_token
@@ -237,6 +238,29 @@ def reset_password():
     endpoint="reset_with_token",
 )
 def reset_with_token(token):
+    # The token is in this URL; keep it out of Referer headers.
+    response = make_response(_reset_with_token(token))
+    response.headers["Referrer-Policy"] = "no-referrer"
+    return response
+
+
+def _notify_password_changed(user):
+    # In the background with retries (email_outbox): the change is done.
+    enqueue_notice(
+        "password_changed",
+        to=user.email,
+        subject="Пароль вашого акаунта NosiFit змінено",
+        text=(
+            "Пароль вашого акаунта NosiFit щойно змінено через посилання "
+            "для відновлення пароля.\n\n"
+            "Якщо це були не ви, негайно задайте новий пароль через "
+            "«Забули пароль» на сторінці входу і перевірте Профіль → "
+            "Підключені акаунти."
+        ),
+    )
+
+
+def _reset_with_token(token):
     # The token is bound to the current password hash, so it stops working
     # as soon as it has been used once (or the password changed otherwise).
     user = verify_reset_token(token)
@@ -264,6 +288,10 @@ def reset_with_token(token):
 
         user.set_password(password)
         db.session.commit()
+        _notify_password_changed(user)
+        # Failed attempts with the old password must not lock the user out
+        # of signing in with the new one.
+        reset_limit("login-email", user.email.lower())
 
         # Recovery proves access to the mailbox, not a fresh sign-in: do not
         # authenticate. Drop whatever session the browser holds (including a
