@@ -29,12 +29,26 @@ from backend.app.utils import clock
 
 
 def _day_bounds(target_date):
-    from datetime import datetime, time
+    """The calendar day in the application's zone as naive UTC bounds, the way
+    training sessions are stored."""
+    from datetime import datetime, time, timezone
+
+    zone = clock.app_timezone()
+
+    def utc(moment):
+        return moment.astimezone(timezone.utc).replace(tzinfo=None)
 
     return (
-        datetime.combine(target_date, time.min),
-        datetime.combine(target_date, time.max),
+        utc(datetime.combine(target_date, time.min, tzinfo=zone)),
+        utc(datetime.combine(target_date, time.max, tzinfo=zone)),
     )
+
+
+def _session_day(session):
+    """The application-zone calendar day a session started on."""
+    from datetime import timezone
+
+    return session.started_at.replace(tzinfo=timezone.utc).astimezone(clock.app_timezone()).date()
 
 
 def _get_training_session(user_id, target_date):
@@ -229,7 +243,7 @@ def _sessions_by_day(user_id, start_date, end_date):
 
     latest = {}
     for session in sessions:
-        latest.setdefault(session.started_at.date(), session)
+        latest.setdefault(_session_day(session), session)
     return latest
 
 

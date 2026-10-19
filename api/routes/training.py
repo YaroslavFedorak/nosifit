@@ -29,7 +29,6 @@ from backend.app.training.training_analysis.recommendations_engine import (
     build_recommendations,
 )
 import datetime as dt
-from zoneinfo import ZoneInfo
 
 from werkzeug.exceptions import BadRequest, HTTPException
 
@@ -43,20 +42,19 @@ from backend.app.services.training.validation import (
 )
 from shared.i18n import DEFAULT_LOCALE, SUPPORTED_LOCALES, load_translation
 
-APP_TIMEZONE = ZoneInfo("Europe/Warsaw")
-
-
+# The calendar day is the application's (APP_TIMEZONE, see utils/clock.py), the
+# same one nutrition, the dashboard and the weekly plan use.
 def _local_now():
-    return dt.datetime.now(APP_TIMEZONE)
+    return clock.now()
 
 
 def _local_today():
-    return _local_now().date()
+    return clock.today()
 
 
 def _local_date(moment):
     """Local calendar date of a naive UTC datetime."""
-    return moment.replace(tzinfo=dt.timezone.utc).astimezone(APP_TIMEZONE).date()
+    return moment.replace(tzinfo=dt.timezone.utc).astimezone(clock.app_timezone()).date()
 
 
 training_api_bp = Blueprint("training_api", __name__, url_prefix="/api/training")
@@ -322,8 +320,8 @@ def _set_entries(session_exercise, values, duration_sec, reps_count):
 
 def _today_utc_bounds():
     today = _local_today()
-    start = dt.datetime.combine(today, dt.time.min, tzinfo=APP_TIMEZONE)
-    end = dt.datetime.combine(today + dt.timedelta(days=1), dt.time.min, tzinfo=APP_TIMEZONE)
+    start = dt.datetime.combine(today, dt.time.min, tzinfo=clock.app_timezone())
+    end = dt.datetime.combine(today + dt.timedelta(days=1), dt.time.min, tzinfo=clock.app_timezone())
     return (
         start.astimezone(dt.timezone.utc).replace(tzinfo=None),
         end.astimezone(dt.timezone.utc).replace(tzinfo=None),
@@ -590,13 +588,13 @@ def today_session():
 @login_required
 def heatmap():
     try:
-        year = int(request.args.get("year", dt.date.today().year))
+        year = int(request.args.get("year", _local_today().year))
         start = dt.date(year, 1, 1)
         end = dt.date(year, 12, 31)
 
-        local_start = dt.datetime.combine(start, dt.time.min, tzinfo=APP_TIMEZONE)
+        local_start = dt.datetime.combine(start, dt.time.min, tzinfo=clock.app_timezone())
 
-        local_end = dt.datetime.combine(end, dt.time.max, tzinfo=APP_TIMEZONE)
+        local_end = dt.datetime.combine(end, dt.time.max, tzinfo=clock.app_timezone())
 
         utc_start = local_start.astimezone(dt.timezone.utc).replace(tzinfo=None)
 
@@ -771,7 +769,7 @@ def complete_plan_day(plan_id, day):
         if day_date > today:
             return jsonify({"error": "day_in_future"}), 409
         if day_date == today:
-            performed_at = dt.datetime.utcnow()
+            performed_at = clock.now().astimezone(dt.timezone.utc).replace(tzinfo=None)
         else:
             noon = dt.datetime.combine(day_date, dt.time(12), tzinfo=clock.app_timezone())
             performed_at = noon.astimezone(dt.timezone.utc).replace(tzinfo=None)
@@ -1001,9 +999,9 @@ def day_details(date):
         except ValueError:
             raise ValidationError("date must be YYYY-MM-DD") from None
 
-        local_start = dt.datetime.combine(target, dt.time.min, tzinfo=APP_TIMEZONE)
+        local_start = dt.datetime.combine(target, dt.time.min, tzinfo=clock.app_timezone())
 
-        local_end = dt.datetime.combine(target, dt.time.max, tzinfo=APP_TIMEZONE)
+        local_end = dt.datetime.combine(target, dt.time.max, tzinfo=clock.app_timezone())
 
         utc_start = local_start.astimezone(dt.timezone.utc).replace(tzinfo=None)
 
