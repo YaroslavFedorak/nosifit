@@ -34,6 +34,8 @@ NosiFit is currently at **v0.1.0-beta**. The core application modules are connec
 - Equipment management
 - Injury information
 - Training history
+- Weekly training plan: a plan per weekday with a location (home, gym, outdoors) and available equipment for each day, rest days, and marking a day's planned workout as completed
+- Premium: a recommended weekly plan built by the training model's own rules (no AI service), returned as an editable draft
 
 ### Dashboard
 

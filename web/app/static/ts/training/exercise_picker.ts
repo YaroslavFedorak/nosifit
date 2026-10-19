@@ -16,8 +16,17 @@ t
 type PickerCallback =
 (exercise: Exercise) => void;
 
+// allowed: equipment of the day being planned (null = no limit). Exercises
+// that need anything else are shown but cannot be picked.
+export type PickerOptions = {
+    allowed?: Set<string> | null;
+};
+
 let pickerCallback:
 PickerCallback | null = null;
+
+let pickerOptions:
+PickerOptions = {};
 
 function getExerciseName(
 exercise: Exercise
@@ -37,9 +46,12 @@ return translated ===
 }
 
 export function openExercisePicker(
-callback: PickerCallback
+callback: PickerCallback,
+options: PickerOptions = {}
 ): void {
 pickerCallback = callback;
+
+pickerOptions = options;
 
 const modal =
     document.getElementById(
@@ -118,12 +130,78 @@ const renderList =
             row.className =
                 "tr-ex-modal-item";
 
-            row.textContent =
+            const needed =
+                (exercise.equipment ?? []).filter(
+                    slug =>
+                        slug !== "bodyweight"
+                );
+
+            const allowed =
+                pickerOptions.allowed ?? null;
+
+            const unavailable =
+                allowed !== null &&
+                needed.some(
+                    slug =>
+                        !allowed.has(slug)
+                );
+
+            const name =
+                document.createElement("span");
+
+            name.textContent =
                 getExerciseName(
                     exercise
                 );
 
-            row.onclick = () => {
+            row.appendChild(name);
+
+            if (needed.length) {
+                const meta =
+                    document.createElement("small");
+
+                meta.className =
+                    "tr-ex-modal-equipment";
+
+                meta.textContent =
+                    needed
+                        .map(
+                            slug =>
+                                t(
+                                    `plan.equipmentNames.${slug}`
+                                )
+                        )
+                        .join(", ");
+
+                row.appendChild(meta);
+            }
+
+            if (unavailable) {
+                row.classList.add(
+                    "unavailable"
+                );
+
+                row.setAttribute(
+                    "aria-disabled",
+                    "true"
+                );
+
+                row.title =
+                    t("plan.unavailable");
+
+                list.appendChild(row);
+
+                return;
+            }
+
+            row.tabIndex = 0;
+
+            row.setAttribute(
+                "role",
+                "button"
+            );
+
+            const choose = (): void => {
                 pickerCallback?.(
                     exercise
                 );
@@ -131,6 +209,19 @@ const renderList =
                 modal.classList.remove(
                     "open"
                 );
+            };
+
+            row.onclick = choose;
+
+            row.onkeydown = event => {
+                if (
+                    event.key === "Enter" ||
+                    event.key === " "
+                ) {
+                    event.preventDefault();
+
+                    choose();
+                }
             };
 
             list.appendChild(row);

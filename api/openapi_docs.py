@@ -344,6 +344,29 @@ OPERATIONS = {
         "errors": [400, 404],
     },
     "training_api.delete_plan": {"summary": "Delete a plan.", "response": ref("Status"), "errors": [404]},
+    "training_api.generate_plan": {
+        "summary": "Premium: an unsaved recommended weekly plan built by the training model's rules (no AI).",
+        "request": obj([], training_days=arr(STR), days=ANY_OBJECT),
+        "response": ANY_OBJECT,
+        "errors": [400, 403],
+    },
+    "training_api.plan_week": {
+        "summary": "The seven days of a plan for the current week, with location, equipment and completion.",
+        "response": ANY_OBJECT,
+        "errors": [404],
+    },
+    "training_api.complete_plan_day": {
+        "summary": "Mark a weekday's planned workout of the current week as done; repeating it is safe.",
+        "response": obj(
+            ["status", "completed", "already_completed", "session_id", "date"],
+            status=STR,
+            completed=BOOL,
+            already_completed=BOOL,
+            session_id=INT,
+            date=DATE,
+        ),
+        "errors": [404, 409],
+    },
     "training_api.start_session": {
         "summary": "Start a live session, or return the one in progress.",
         "request": obj([], fatigue_before=INT),

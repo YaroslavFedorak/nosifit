@@ -4,8 +4,25 @@ import {
 
 import {
     initState,
+    loadStateFromPlan,
     state
 } from "./state.js";
+
+import {
+    allowedEquipment
+} from "./availability.js";
+
+import {
+    renderDayPanel
+} from "./ui/dayPanel.js";
+
+import {
+    initGenerate
+} from "./ui/generate.js";
+
+import {
+    loadWeek
+} from "./services/week.js";
 
 import {
     dom
@@ -39,6 +56,51 @@ import {
 import {
     renderWorkoutList
 } from "../workout.js";
+
+// The picker for the day being edited: exercises that need equipment the day
+// does not have are shown but cannot be chosen.
+const pickForDay: Parameters<typeof renderExercises>[0] =
+    callback => {
+        openExercisePicker(
+            callback,
+            {
+                allowed:
+                    allowedEquipment(
+                        state.meta[
+                            state.currentDay
+                        ]
+                    )
+            }
+        );
+    };
+
+function refreshDay(): void {
+    dom.dayButtons?.forEach(
+        item => {
+            const current =
+                item.dataset.day ===
+                state.currentDay;
+
+            item.classList.toggle(
+                "active",
+                current
+            );
+
+            item.setAttribute(
+                "aria-pressed",
+                String(current)
+            );
+        }
+    );
+
+    renderExercises(
+        pickForDay
+    );
+
+    renderDayPanel(
+        refreshDay
+    );
+}
 
 function renderDays(): void {
     const container =
@@ -159,6 +221,7 @@ export function initPlanModal(): void {
 
     renderDays();
     initState();
+    initGenerate(refreshDay);
 
     dom.dayButtons?.forEach(
         button => {
@@ -189,16 +252,14 @@ export function initPlanModal(): void {
                     "active"
                 );
 
-                renderExercises(
-                    openExercisePicker
-                );
+                refreshDay();
             };
         }
     );
 
     if (dom.addBtn) {
         dom.addBtn.onclick = () => {
-            openExercisePicker(
+            pickForDay(
                 exercise => {
                     const prescription =
                         defaultPrescription(
@@ -215,9 +276,7 @@ export function initPlanModal(): void {
                         load: 0
                     });
 
-                    renderExercises(
-                        openExercisePicker
-                    );
+                    refreshDay();
                 }
             );
         };
@@ -245,33 +304,38 @@ export function initPlanModal(): void {
     if (dom.saveBtn) {
         dom.saveBtn.onclick =
             async () => {
-                try {
-                    await savePlan();
+                if (await savePlan()) {
                     syncPlanToSession();
-                } catch {
-                    return;
+                    await loadWeek();
+                    refreshDay();
                 }
             };
     }
 
     if (dom.openBtn) {
         dom.openBtn.onclick =
-            () => {
-                initState(true);
+            async () => {
+                loadStateFromPlan();
 
                 if (dom.titleInput) {
                     dom.titleInput.value =
                         trainingStore.plan?.name ||
-                        "Мій план";
+                        t("plan.defaultName");
                 }
 
-                renderExercises(
-                    openExercisePicker
-                );
+                document
+                    .getElementById("tr-plan-explain")
+                    ?.classList.add("hidden");
+
+                refreshDay();
 
                 dom.modal?.classList.add(
                     "open"
                 );
+
+                await loadWeek();
+
+                refreshDay();
             };
     }
 

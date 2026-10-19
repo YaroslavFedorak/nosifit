@@ -11,15 +11,24 @@ from backend.app.training.exercises.prescription import (
     performed_values,
     serialize_entry,
 )
-from backend.app.services.training import catalog_service, performance_service, plan_service
+from backend.app.services.training import (
+    catalog_service,
+    performance_service,
+    plan_builder,
+    plan_days,
+    plan_service,
+)
+from backend.app.services.training.model import repository as model_repository
+from backend.app.utils import clock
+from backend.app.utils.decorators import api_premium_required
 from backend.app.services.training.exercise_search import search_exercises
 from backend.app.services.training.session_service import TrainingSessionService
 from backend.app.services.training.model import TrainingModelService
+from backend.app.services.injury_service import InjuryService
 from backend.app.training.training_analysis.recommendations_engine import (
     build_recommendations,
 )
 import datetime as dt
-from zoneinfo import ZoneInfo
 
 from werkzeug.exceptions import BadRequest, HTTPException
 
@@ -33,20 +42,19 @@ from backend.app.services.training.validation import (
 )
 from shared.i18n import DEFAULT_LOCALE, SUPPORTED_LOCALES, load_translation
 
-APP_TIMEZONE = ZoneInfo("Europe/Warsaw")
-
-
+# The calendar day is the application's (APP_TIMEZONE, see utils/clock.py), the
+# same one nutrition, the dashboard and the weekly plan use.
 def _local_now():
-    return dt.datetime.now(APP_TIMEZONE)
+    return clock.now()
 
 
 def _local_today():
-    return _local_now().date()
+    return clock.today()
 
 
 def _local_date(moment):
     """Local calendar date of a naive UTC datetime."""
-    return moment.replace(tzinfo=dt.timezone.utc).astimezone(APP_TIMEZONE).date()
+    return moment.replace(tzinfo=dt.timezone.utc).astimezone(clock.app_timezone()).date()
 
 
 training_api_bp = Blueprint("training_api", __name__, url_prefix="/api/training")
@@ -111,7 +119,13 @@ def _session_entry(exercise, session_exercise):
     return entry
 
 
-def _plan_days_struct(raw):
+def _plan_days_struct(raw, existing=None):
+    """Clean the days of a plan request.
+
+    ``existing`` are the days already saved. A client that sends a day
+    without ``location`` or ``equipment`` (an older editor sends bare lists)
+    leaves them as they were; ``null`` clears them.
+    """
     if not isinstance(raw, dict):
         raise ValidationError("days must be an object")
 
@@ -120,8 +134,24 @@ def _plan_days_struct(raw):
         if key not in PLAN_DAY_KEYS:
             raise ValidationError("unknown day")
 
-        if isinstance(items, dict) and "exercises" in items:
-            items = items["exercises"]
+        saved = (existing or {}).get(key)
+        saved = saved if isinstance(saved, dict) else {}
+        sent = items if isinstance(items, dict) else {}
+        location = plan_days.clean_location(
+            sent["location"] if "location" in sent else saved.get("location")
+        )
+        equipment = plan_days.clean_equipment(
+            sent["equipment"] if "equipment" in sent else saved.get("equipment")
+        )
+        if isinstance(items, dict):
+            items = items.get("exercises")
+        # Only a day with an explicit equipment list is checked: nothing else
+        # says what is available that day.
+        available = (
+            plan_days.available_equipment(location, equipment)
+            if equipment is not None
+            else None
+        )
 
         if not isinstance(items, list) or len(items) > MAX_EXERCISES_PER_DAY:
             raise ValidationError("too many exercises in a day")
@@ -135,6 +165,13 @@ def _plan_days_struct(raw):
             obj = catalog_service.exercise_by_id(exercise_id)
             if not obj:
                 continue
+
+            missing = plan_days.missing_equipment(obj.equipment or [], available)
+            if missing:
+                raise ValidationError(
+                    f"{obj.name} needs equipment that is not available that day: "
+                    + ", ".join(missing)
+                )
 
             day_ex.append(
                 serialize_entry(
@@ -156,6 +193,10 @@ def _plan_days_struct(raw):
             )
 
         result[key] = {"exercises": day_ex}
+        if location is not None:
+            result[key]["location"] = location
+        if equipment is not None:
+            result[key]["equipment"] = equipment
 
     return result
 
@@ -279,8 +320,8 @@ def _set_entries(session_exercise, values, duration_sec, reps_count):
 
 def _today_utc_bounds():
     today = _local_today()
-    start = dt.datetime.combine(today, dt.time.min, tzinfo=APP_TIMEZONE)
-    end = dt.datetime.combine(today + dt.timedelta(days=1), dt.time.min, tzinfo=APP_TIMEZONE)
+    start = dt.datetime.combine(today, dt.time.min, tzinfo=clock.app_timezone())
+    end = dt.datetime.combine(today + dt.timedelta(days=1), dt.time.min, tzinfo=clock.app_timezone())
     return (
         start.astimezone(dt.timezone.utc).replace(tzinfo=None),
         end.astimezone(dt.timezone.utc).replace(tzinfo=None),
@@ -547,13 +588,13 @@ def today_session():
 @login_required
 def heatmap():
     try:
-        year = int(request.args.get("year", dt.date.today().year))
+        year = int(request.args.get("year", _local_today().year))
         start = dt.date(year, 1, 1)
         end = dt.date(year, 12, 31)
 
-        local_start = dt.datetime.combine(start, dt.time.min, tzinfo=APP_TIMEZONE)
+        local_start = dt.datetime.combine(start, dt.time.min, tzinfo=clock.app_timezone())
 
-        local_end = dt.datetime.combine(end, dt.time.max, tzinfo=APP_TIMEZONE)
+        local_end = dt.datetime.combine(end, dt.time.max, tzinfo=clock.app_timezone())
 
         utc_start = local_start.astimezone(dt.timezone.utc).replace(tzinfo=None)
 
@@ -627,10 +668,16 @@ def update_plan(plan_id):
             abort(404)
         data = _json_body()
 
+        # Days missing from the request stay as they are; a day is cleared by
+        # sending it with no exercises.
+        days = dict(plan.days or {})
+        if "days" in data:
+            days.update(_plan_days_struct(data["days"], days))
+
         plan_service.save_plan(
             plan,
             name=_clean_plan_name(data.get("name"), plan.name),
-            days=_plan_days_struct(data.get("days", {})),
+            days=days,
             make_active=data.get("is_active", plan.is_active) is True,
         )
         return jsonify(plan.to_dict())
@@ -647,6 +694,99 @@ def delete_plan(plan_id):
             abort(404)
         plan_service.delete_plan(plan)
         return jsonify({"status": "ok"})
+    except Exception as e:
+        return _error(e)
+
+
+def _generation_settings(raw):
+    if raw is None:
+        return {}
+    if not isinstance(raw, dict) or any(not isinstance(v, dict) for v in raw.values()):
+        raise ValidationError("days must map weekdays to {location, equipment}")
+    return raw
+
+
+@training_api_bp.route("/plans/generate", methods=["POST"])
+@api_premium_required
+def generate_plan():
+    """A recommended weekly plan as an unsaved draft (Premium).
+
+    Plain rules of the training model, no AI service. The client edits the
+    draft and saves it through the ordinary plan routes.
+    """
+    try:
+        data = _json_body()
+        context = model_repository.load_context(current_user)
+        week = plan_builder.build_week(
+            context,
+            model_repository.load_catalog(),
+            training_days=data.get("training_days"),
+            day_settings=_generation_settings(data.get("days")),
+            owned_equipment=model_repository.load_equipment_slugs(current_user.id),
+        )
+        draft = week.to_payload()
+        draft["days"] = _plan_days_struct(draft["days"])
+        # Injuries are stored by name only, with nothing that links them to
+        # exercises, so the plan cannot take them into account.
+        draft["injuries_considered"] = False
+        if InjuryService.user_has_injuries(current_user.id):
+            draft["notes"].append({"code": "injuries_not_considered"})
+        return jsonify(draft)
+    except Exception as e:
+        return _error(e)
+
+
+@training_api_bp.route("/plans/<int:plan_id>/week")
+@login_required
+def plan_week(plan_id):
+    try:
+        plan = plan_service.plan_for_user(plan_id, current_user.id)
+        if plan is None:
+            abort(404)
+        return jsonify(plan_service.week_status(plan, clock.today()))
+    except Exception as e:
+        return _error(e)
+
+
+@training_api_bp.route("/plans/<int:plan_id>/days/<day>/complete", methods=["POST"])
+@login_required
+def complete_plan_day(plan_id, day):
+    """Mark the planned workout of a weekday of the current week as done.
+
+    Repeating the request is safe: it returns the session made the first time.
+    """
+    try:
+        plan = plan_service.plan_for_user(plan_id, current_user.id)
+        if plan is None or day not in plan_days.WEEKDAYS:
+            abort(404)
+
+        # The plan's calendar follows the application clock (APP_TIMEZONE) like
+        # nutrition and the dashboard do.
+        today = clock.today()
+        day_date = plan_service.week_start(today) + dt.timedelta(
+            days=plan_days.WEEKDAYS.index(day)
+        )
+        if day_date > today:
+            return jsonify({"error": "day_in_future"}), 409
+        if day_date == today:
+            performed_at = clock.now().astimezone(dt.timezone.utc).replace(tzinfo=None)
+        else:
+            noon = dt.datetime.combine(day_date, dt.time(12), tzinfo=clock.app_timezone())
+            performed_at = noon.astimezone(dt.timezone.utc).replace(tzinfo=None)
+
+        try:
+            session, created = plan_service.complete_day(plan, day, day_date, performed_at)
+        except plan_service.PlanConflict as conflict:
+            return jsonify({"error": conflict.code}), 409
+        return jsonify(
+            {
+                "status": "ok",
+                "completed": True,
+                "already_completed": not created,
+                "session_id": session.id,
+                "date": day_date.isoformat(),
+            }
+        )
     except Exception as e:
         return _error(e)
 
@@ -859,9 +999,9 @@ def day_details(date):
         except ValueError:
             raise ValidationError("date must be YYYY-MM-DD") from None
 
-        local_start = dt.datetime.combine(target, dt.time.min, tzinfo=APP_TIMEZONE)
+        local_start = dt.datetime.combine(target, dt.time.min, tzinfo=clock.app_timezone())
 
-        local_end = dt.datetime.combine(target, dt.time.max, tzinfo=APP_TIMEZONE)
+        local_end = dt.datetime.combine(target, dt.time.max, tzinfo=clock.app_timezone())
 
         utc_start = local_start.astimezone(dt.timezone.utc).replace(tzinfo=None)
 

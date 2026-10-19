@@ -3,6 +3,16 @@ from backend.app.extensions import db
 
 class TrainingSession(db.Model):
     __tablename__ = "training_sessions"
+    __table_args__ = (
+        # One session per plan and date: completing a plan day is idempotent.
+        db.Index(
+            "uq_training_sessions_plan_date",
+            "plan_id",
+            "plan_date",
+            unique=True,
+            postgresql_where=db.text("plan_id IS NOT NULL"),
+        ),
+    )
 
     id = db.Column(
         db.Integer,
@@ -25,6 +35,16 @@ class TrainingSession(db.Model):
     status = db.Column(
         db.String(20),
     )
+
+    # Set when the session completes a day of a weekly plan.
+    plan_id = db.Column(
+        db.Integer,
+        db.ForeignKey("te_training_plans.id", ondelete="SET NULL"),
+    )
+
+    plan_day = db.Column(db.String(3))
+
+    plan_date = db.Column(db.Date)
 
     fatigue_before = db.Column(
         db.Integer,

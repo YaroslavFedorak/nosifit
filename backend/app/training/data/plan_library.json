@@ -1,0 +1,189 @@
+{
+    "description": "Conventional, widely recognised exercises the plan builder may recommend. The full catalog stays available for manual plans. Add a catalog slug to a category to make the builder consider it. Slugs in one entry of same_exercise_groups are variants of one movement: the builder uses at most one of them per day.",
+    "categories": {
+        "push": [
+            "push-ups",
+            "knee-push-up",
+            "incline-push-up",
+            "decline-push-up",
+            "pike-push-up",
+            "bench-press",
+            "incline-barbell-bench-press",
+            "dumbbell-bench-press",
+            "incline-dumbbell-press",
+            "machine-chest-press",
+            "dips",
+            "overhead-press",
+            "dumbbell-shoulder-press",
+            "machine-shoulder-press",
+            "cable-fly",
+            "pec-deck"
+        ],
+        "pull": [
+            "pull-ups",
+            "chin-up",
+            "band-assisted-pull-up",
+            "inverted-row",
+            "lat-pulldown",
+            "seated-row",
+            "barbell-row",
+            "dumbbell-row",
+            "chest-supported-row",
+            "machine-row",
+            "band-row",
+            "face-pull",
+            "reverse-fly",
+            "reverse-pec-deck"
+        ],
+        "legs": [
+            "squat",
+            "barbell-back-squat",
+            "goblet-squat",
+            "leg-press",
+            "hack-squat",
+            "split-squat",
+            "bulgarian-split-squat",
+            "lunges",
+            "reverse-lunge",
+            "walking-lunge",
+            "step-ups",
+            "barbell-deadlift",
+            "trap-bar-deadlift",
+            "romanian-deadlift",
+            "rdl-dumbbells",
+            "hip-thrust",
+            "glute-bridge",
+            "single-leg-glute-bridge",
+            "back-extension",
+            "leg-curl",
+            "leg-extension",
+            "calf-raise",
+            "single-leg-calf-raise",
+            "seated-calf-raise"
+        ],
+        "arms_shoulders": [
+            "bicep-curl",
+            "hammer-curl",
+            "barbell-curl",
+            "cable-curl",
+            "band-curl",
+            "tricep-pushdown",
+            "overhead-triceps-extension",
+            "lateral-raises",
+            "cable-lateral-raise",
+            "dumbbell-shrug"
+        ],
+        "core": [
+            "crunches",
+            "reverse-crunch",
+            "bicycle-crunch",
+            "cable-crunch",
+            "plank",
+            "side-plank",
+            "dead-bug",
+            "bird-dog",
+            "hanging-knee-raise",
+            "hanging-leg-raise"
+        ]
+    },
+    "same_exercise_groups": {
+        "deadlift": [
+            "barbell-deadlift",
+            "trap-bar-deadlift",
+            "romanian-deadlift",
+            "rdl-dumbbells"
+        ],
+        "squat": [
+            "barbell-back-squat",
+            "goblet-squat",
+            "squat",
+            "hack-squat"
+        ],
+        "lunge": [
+            "split-squat",
+            "bulgarian-split-squat",
+            "lunges",
+            "reverse-lunge",
+            "walking-lunge",
+            "step-ups"
+        ],
+        "calf_raise": [
+            "calf-raise",
+            "single-leg-calf-raise",
+            "seated-calf-raise"
+        ],
+        "hip_extension": [
+            "hip-thrust",
+            "glute-bridge",
+            "single-leg-glute-bridge"
+        ],
+        "curl": [
+            "bicep-curl",
+            "hammer-curl",
+            "barbell-curl",
+            "cable-curl",
+            "band-curl"
+        ],
+        "triceps_extension": [
+            "tricep-pushdown",
+            "overhead-triceps-extension"
+        ],
+        "flat_press": [
+            "bench-press",
+            "dumbbell-bench-press",
+            "machine-chest-press",
+            "push-ups",
+            "knee-push-up",
+            "decline-push-up",
+            "incline-push-up"
+        ],
+        "incline_press": [
+            "incline-barbell-bench-press",
+            "incline-dumbbell-press"
+        ],
+        "overhead_press": [
+            "overhead-press",
+            "dumbbell-shoulder-press",
+            "machine-shoulder-press",
+            "pike-push-up"
+        ],
+        "chest_fly": [
+            "cable-fly",
+            "pec-deck"
+        ],
+        "vertical_pull": [
+            "pull-ups",
+            "chin-up",
+            "band-assisted-pull-up",
+            "lat-pulldown"
+        ],
+        "row": [
+            "seated-row",
+            "barbell-row",
+            "dumbbell-row",
+            "chest-supported-row",
+            "machine-row",
+            "band-row",
+            "inverted-row"
+        ],
+        "rear_delt": [
+            "face-pull",
+            "reverse-fly",
+            "reverse-pec-deck"
+        ],
+        "lateral_raise": [
+            "lateral-raises",
+            "cable-lateral-raise"
+        ],
+        "crunch": [
+            "crunches",
+            "reverse-crunch",
+            "bicycle-crunch",
+            "cable-crunch"
+        ],
+        "hanging_raise": [
+            "hanging-knee-raise",
+            "hanging-leg-raise"
+        ]
+    }
+}

@@ -16,6 +16,7 @@ export type Exercise = {
     muscles_primary?: string[];
     measurement_type?: "reps" | "duration";
     prescription?: ExercisePrescription | null;
+    equipment?: string[];
     [key: string]: unknown;
 };
 
@@ -146,13 +147,91 @@ export type PlanDays = Record<
     PlanExercise[]
 >;
 
+export type PlanLocation =
+    | "home"
+    | "gym"
+    | "outdoors";
+
+// A saved day is {exercises, location?, equipment?}; plans saved before
+// locations existed may still hold a bare exercise list.
+export type PlanDayPayload = {
+    exercises: PlanExercise[];
+    location?: PlanLocation;
+    equipment?: string[];
+};
+
+export type RawPlanDays = Partial<
+    Record<
+        PlanDayKey,
+        PlanExercise[] | PlanDayPayload
+    >
+>;
+
 export type TrainingPlan = {
     id?: number | string;
     name?: string;
     is_active?: boolean;
-    days?: Partial<PlanDays>;
+    days?: RawPlanDays;
     [key: string]: unknown;
 };
+
+export type PlanWeekDay = {
+    key: PlanDayKey;
+    date: string;
+    location: PlanLocation | null;
+    equipment: string[] | null;
+    exercises: number;
+    rest: boolean;
+    completed: boolean;
+    session_id: number | null;
+    is_today: boolean;
+};
+
+export type PlanWeek = {
+    plan_id: number;
+    week_start: string;
+    today: string;
+    days: PlanWeekDay[];
+};
+
+export type PlanNote = {
+    code: string;
+    muscles?: string[];
+    day?: PlanDayKey;
+    days?: PlanDayKey[];
+};
+
+export type GeneratedPlan = {
+    split: string;
+    rest_days: PlanDayKey[];
+    days: RawPlanDays;
+    explanation: Partial<
+        Record<
+            PlanDayKey,
+            {
+                label: string;
+                muscles: string[];
+            }
+        >
+    >;
+    notes: PlanNote[];
+    injuries_considered: boolean;
+};
+
+export class ApiError extends Error {
+    status: number;
+    code: string | undefined;
+
+    constructor(
+        message: string,
+        status: number,
+        code?: string
+    ) {
+        super(message);
+        this.status = status;
+        this.code = code;
+    }
+}
 
 export type PlansResponse =
     | TrainingPlan[]
@@ -206,7 +285,19 @@ async function jsonFetch<T>(
                 ? data.message
                 : `HTTP ${response.status}`;
 
-        throw new Error(message);
+        const code =
+            typeof data === "object" &&
+            data !== null &&
+            "code" in data &&
+            typeof data.code === "string"
+                ? data.code
+                : undefined;
+
+        throw new ApiError(
+            message,
+            response.status,
+            code
+        );
     }
 
     return data as T;
@@ -305,6 +396,55 @@ export const TrainingAPI = {
             {
                 method: "PUT",
                 body: JSON.stringify(payload)
+            }
+        );
+    },
+
+    generatePlan(
+        payload: {
+            training_days: PlanDayKey[];
+            days?: Partial<
+                Record<
+                    PlanDayKey,
+                    {
+                        location?: PlanLocation;
+                        equipment?: string[];
+                    }
+                >
+            >;
+        }
+    ): Promise<GeneratedPlan> {
+        return jsonFetch<GeneratedPlan>(
+            `${BASE}/plans/generate`,
+            {
+                method: "POST",
+                body: JSON.stringify(payload)
+            }
+        );
+    },
+
+    getPlanWeek(
+        id: number | string
+    ): Promise<PlanWeek> {
+        return jsonFetch<PlanWeek>(
+            `${BASE}/plans/${id}/week`
+        );
+    },
+
+    completePlanDay(
+        id: number | string,
+        day: PlanDayKey
+    ): Promise<{
+        completed: boolean;
+        already_completed: boolean;
+        session_id: number;
+        date: string;
+    }> {
+        return jsonFetch(
+            `${BASE}/plans/${id}/days/${day}/complete`,
+            {
+                method: "POST",
+                body: JSON.stringify({})
             }
         );
     },

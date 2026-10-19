@@ -2,6 +2,7 @@ import { trainingStore } from "./store.js";
 import { MUSCLE_CATEGORIES } from "./measurement.js";
 import { exercise_t, t } from "../i18n/index.js";
 let pickerCallback = null;
+let pickerOptions = {};
 function getExerciseName(exercise) {
     if (!exercise.slug) {
         return exercise.name;
@@ -12,8 +13,9 @@ function getExerciseName(exercise) {
         ? exercise.name
         : translated;
 }
-export function openExercisePicker(callback) {
+export function openExercisePicker(callback, options = {}) {
     pickerCallback = callback;
+    pickerOptions = options;
     const modal = document.getElementById("tr-modal-picker");
     if (!modal) {
         return;
@@ -47,11 +49,45 @@ export function initExercisePicker() {
             const row = document.createElement("div");
             row.className =
                 "tr-ex-modal-item";
-            row.textContent =
+            const needed = (exercise.equipment ?? []).filter(slug => slug !== "bodyweight");
+            const allowed = pickerOptions.allowed ?? null;
+            const unavailable = allowed !== null &&
+                needed.some(slug => !allowed.has(slug));
+            const name = document.createElement("span");
+            name.textContent =
                 getExerciseName(exercise);
-            row.onclick = () => {
+            row.appendChild(name);
+            if (needed.length) {
+                const meta = document.createElement("small");
+                meta.className =
+                    "tr-ex-modal-equipment";
+                meta.textContent =
+                    needed
+                        .map(slug => t(`plan.equipmentNames.${slug}`))
+                        .join(", ");
+                row.appendChild(meta);
+            }
+            if (unavailable) {
+                row.classList.add("unavailable");
+                row.setAttribute("aria-disabled", "true");
+                row.title =
+                    t("plan.unavailable");
+                list.appendChild(row);
+                return;
+            }
+            row.tabIndex = 0;
+            row.setAttribute("role", "button");
+            const choose = () => {
                 pickerCallback?.(exercise);
                 modal.classList.remove("open");
+            };
+            row.onclick = choose;
+            row.onkeydown = event => {
+                if (event.key === "Enter" ||
+                    event.key === " ") {
+                    event.preventDefault();
+                    choose();
+                }
             };
             list.appendChild(row);
         });

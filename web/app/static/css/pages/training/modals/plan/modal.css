@@ -301,3 +301,228 @@
         transform: rotate(360deg);
     }
 }
+/* --- Day settings, completion and generation --------------------------------- */
+
+.tr-plan-day.completed .tr-plan-day-badge::after {
+    content: "\2713";
+    margin-left: 2px;
+}
+
+.tr-plan-day:focus-visible,
+.tr-plan-seg-btn:focus-visible,
+.tr-plan-chip:focus-visible,
+.tr-plan-chip-check:focus-within {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+.tr-plan-day-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 12px 14px;
+    border-radius: var(--radius-md);
+    background: var(--card-soft);
+    border: 1px solid var(--border);
+}
+
+.tr-plan-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.tr-plan-field-label {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.tr-plan-segmented {
+    display: flex;
+    gap: 6px;
+}
+
+.tr-plan-seg-btn {
+    flex: 1;
+    min-height: 40px;
+    padding: 8px 10px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text);
+    font-size: 13px;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.tr-plan-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.tr-plan-chip {
+    min-height: 36px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text);
+    font-size: 13px;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.tr-plan-seg-btn:hover,
+.tr-plan-chip:hover {
+    background: var(--card);
+}
+
+.tr-plan-seg-btn.active,
+.tr-plan-chip.active,
+.tr-plan-chip-check:has(input:checked) {
+    background: var(--accent-soft);
+    border-color: var(--accent);
+    color: #000;
+}
+
+.tr-plan-chip-check {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.tr-plan-chip-check input {
+    accent-color: var(--accent);
+}
+
+.tr-plan-hint {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.tr-plan-complete {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+}
+
+.tr-plan-complete-btn {
+    min-height: 40px;
+}
+
+.tr-plan-complete-btn.done {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+.tr-plan-generate-block {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.tr-plan-generate-btn {
+    align-self: flex-start;
+    min-height: 40px;
+}
+
+.tr-plan-premium-tag {
+    margin-left: 8px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: var(--accent-soft);
+    color: #000;
+    font-size: 11px;
+}
+
+.tr-plan-generate-panel,
+.tr-plan-explain {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 12px 14px;
+    border-radius: var(--radius-md);
+    background: var(--card-soft);
+    border: 1px solid var(--border);
+    font-size: 13px;
+}
+
+.tr-plan-generate-panel.hidden,
+.tr-plan-explain.hidden {
+    display: none;
+}
+
+.tr-plan-explain ul {
+    margin: 0;
+    padding-left: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    color: var(--text-muted);
+}
+
+.tr-plan-explain li.note {
+    color: var(--text);
+}
+
+.tr-plan-card.unavailable {
+    border-color: var(--nf-orange, #f3a45d);
+}
+
+.tr-plan-card-warn {
+    padding: 8px 12px;
+    font-size: 12px;
+    color: var(--nf-orange, #f3a45d);
+}
+
+.tr-ex-modal-item.unavailable,
+.tr-ex-modal-item.unavailable:hover {
+    opacity: 0.45;
+    cursor: not-allowed;
+    background: var(--card-soft);
+    border-color: var(--border-soft);
+    color: var(--text);
+}
+
+.tr-ex-modal-equipment {
+    display: block;
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+@media (max-width: 640px) {
+    #tr-plan-modal .tr-modal-content.tr-plan-modern {
+        padding: 16px 14px;
+    }
+
+    /* Seven days fit one row: name above the badge, no sideways scrolling. */
+    .tr-plan-days {
+        gap: 4px;
+    }
+
+    .tr-plan-day {
+        flex-direction: column;
+        justify-content: center;
+        gap: 4px;
+        min-width: 0;
+        padding: 8px 2px;
+        font-size: 12px;
+    }
+
+    .tr-plan-segmented {
+        flex-wrap: wrap;
+    }
+}
+
+.tr-plan-equipment > summary {
+    cursor: pointer;
+    min-height: 28px;
+    display: flex;
+    align-items: center;
+}
+
+.tr-plan-equipment[open] > summary {
+    margin-bottom: 8px;
+}

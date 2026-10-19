@@ -191,7 +191,79 @@
         "setsCount": "sets",
         "save": "Save plan",
         "saved": "Plan saved",
-        "saveError": "Failed to save the plan"
+        "saveError": "Failed to save the plan",
+        "location": {
+            "label": "Location",
+            "home": "Home",
+            "gym": "Gym",
+            "outdoors": "Outdoors"
+        },
+        "equipmentLabel": "Available equipment",
+        "equipmentAny": "No limit",
+        "equipmentNone": "Bodyweight only",
+        "equipmentNames": {
+            "ab-wheel": "Ab wheel",
+            "band": "Resistance band",
+            "bar": "Pull-up bar",
+            "barbell": "Barbell",
+            "battle-rope": "Battle rope",
+            "bench": "Bench",
+            "bodyweight": "Bodyweight",
+            "box": "Plyo box",
+            "cable": "Cable machine",
+            "dip-bars": "Dip bars",
+            "dumbbells": "Dumbbells",
+            "jump-rope": "Jump rope",
+            "kettlebell": "Kettlebell",
+            "landmine": "Landmine",
+            "machine": "Machine",
+            "medicine-ball": "Medicine ball",
+            "rings": "Rings",
+            "sled": "Sled",
+            "stability-ball": "Stability ball",
+            "trap-bar": "Trap bar"
+        },
+        "complete": "Mark day completed",
+        "completed": "Completed",
+        "completeError": "Could not mark the day as completed",
+        "futureDay": "This day has not come yet",
+        "restDay": "Rest day",
+        "completedNote": "Completed this week. Editing the plan does not change what was recorded.",
+        "saveFirst": "Save the plan first",
+        "needs": "Needs: {equipment}",
+        "unavailable": "Not available with this day's equipment",
+        "generate": {
+            "button": "Generate plan",
+            "premium": "Premium",
+            "premiumRequired": "Plan generation is a Premium feature",
+            "title": "Recommended week",
+            "hint": "Pick your training days. The other days stay rest days.",
+            "run": "Generate",
+            "running": "Generating…",
+            "replace": "Replace the exercises in this plan with a generated one?",
+            "error": "Could not generate the plan",
+            "done": "Plan generated. Review and edit it, then save."
+        },
+        "explain": {
+            "title": "Why this plan",
+            "labels": {
+                "push": "Push day",
+                "pull": "Pull day",
+                "legs": "Leg day",
+                "upper": "Upper body",
+                "lower": "Lower body",
+                "full_body": "Full body"
+            },
+            "notes": {
+                "volume_short": "Not enough exercises or equipment to reach the weekly volume for: {muscles}.",
+                "volume_high": "Weekly volume is a little high for: {muscles}.",
+                "split_skips": "Not trained by this split: {muscles}.",
+                "no_exercises": "Nothing useful could be planned on {day}: the weekly volume is covered or the available equipment allows no more. Keep it as a rest day or add exercises yourself.",
+                "back_to_back": "{days} follow each other and both train: {muscles}. A rest day between them helps recovery.",
+                "injuries_not_considered": "Generation does not take your injuries into account. Check every exercise yourself."
+            }
+        },
+        "defaultName": "My plan"
     },
     "exercisePicker": {
         "title": "Exercise selection",

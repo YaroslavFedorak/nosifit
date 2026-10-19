@@ -1,4 +1,8 @@
-<div id="tr-plan-modal" class="tr-modal">
+<div
+  id="tr-plan-modal"
+  class="tr-modal"
+  data-premium="{{ 'true' if current_user.is_premium else 'false' }}"
+>
   <div class="tr-modal-content tr-plan-modern">
     <header class="tr-plan-header">
       <div class="tr-plan-title-block">
@@ -80,7 +84,41 @@
         />
       </div>
 
-      <div class="tr-plan-days" id="tr-plan-days"></div>
+      <div class="tr-plan-generate-block">
+        <button
+          id="tr-plan-generate"
+          class="tr-btn tr-btn-ghost tr-plan-generate-btn"
+          type="button"
+          aria-expanded="false"
+          aria-controls="tr-plan-generate-panel"
+        >
+          {{ training_t("plan.generate.button") }}
+          {% if not current_user.is_premium %}
+          <span class="tr-plan-premium-tag">
+            {{ training_t("plan.generate.premium") }}
+          </span>
+          {% endif %}
+        </button>
+
+        <div id="tr-plan-generate-panel" class="tr-plan-generate-panel hidden">
+          <strong>{{ training_t("plan.generate.title") }}</strong>
+          <small class="tr-plan-hint">{{ training_t("plan.generate.hint") }}</small>
+          <div id="tr-plan-generate-days" class="tr-plan-chips"></div>
+          <button
+            id="tr-plan-generate-run"
+            class="tr-btn tr-btn-primary"
+            type="button"
+          >
+            {{ training_t("plan.generate.run") }}
+          </button>
+        </div>
+
+        <div id="tr-plan-explain" class="tr-plan-explain hidden" aria-live="polite"></div>
+      </div>
+
+      <div class="tr-plan-days" id="tr-plan-days" role="group"></div>
+
+      <section id="tr-plan-day-panel" class="tr-plan-day-panel"></section>
 
       <section class="tr-plan-column">
         <div class="tr-plan-toolbar">

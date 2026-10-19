@@ -184,9 +184,9 @@ class TrainingSessionService:
         return list(seen.values())
 
     @staticmethod
-    def finish_session(session, fatigue_after=None):
+    def finish_session(session, fatigue_after=None, finished_at=None):
         session.status = "finished"
-        session.finished_at = datetime.utcnow()
+        session.finished_at = finished_at or datetime.utcnow()
         session.fatigue_after = fatigue_after
 
         rpes = [ex.rpe for ex in session.exercises if ex.rpe is not None]

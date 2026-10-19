@@ -41,7 +41,7 @@ def test_every_training_route_requires_signing_in(app, client):
         for rule in app.url_map.iter_rules()
         if rule.rule.startswith("/api/training/")
     )
-    assert len(rules) == 21
+    assert len(rules) == 24
 
     for rule, methods in rules:
         path = re.sub(r"<(?:int:)?(\w+)>", lambda m: "2026-01-01" if m.group(1) == "date" else "1", rule)
