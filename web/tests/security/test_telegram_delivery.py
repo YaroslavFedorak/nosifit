@@ -1,12 +1,16 @@
-"""Webhook mode of the Telegram bot: config and the aiohttp endpoint."""
+"""How updates reach the Telegram bot: webhook mode and the session
+middleware that keeps network calls out of the event loop."""
 
 import asyncio
+import threading
+from types import SimpleNamespace
 
 import pytest
 from aiogram import Bot, Dispatcher
 from aiohttp.test_utils import TestClient, TestServer
 
 from telegram_bot.bot import WEBHOOK_PATH, create_webhook_app
+from telegram_bot import runtime
 from telegram_bot.config import TelegramConfig
 
 
@@ -54,3 +58,33 @@ def test_webhook_rejects_requests_without_the_secret(env):
             assert (await client.post(WEBHOOK_PATH, json={}, headers=wrong)).status == 401
 
     asyncio.run(run())
+
+
+def _event(chat_type="private", is_bot=False):
+    user = SimpleNamespace(id=7, is_bot=is_bot)
+    return SimpleNamespace(chat=SimpleNamespace(type=chat_type), from_user=user), user
+
+
+def _run_middleware(monkeypatch, chat_type="private", is_bot=False):
+    threads = []
+    monkeypatch.setattr(runtime, "restore", lambda uid: threads.append(threading.get_ident()))
+    event, user = _event(chat_type, is_bot)
+
+    async def handler(_event, _data):
+        return "handled"
+
+    async def run():
+        return await runtime.SessionMiddleware()(handler, event, {"event_from_user": user})
+
+    assert asyncio.run(run()) == "handled"
+    return threads
+
+
+def test_session_is_restored_off_the_event_loop(monkeypatch):
+    threads = _run_middleware(monkeypatch)
+    assert len(threads) == 1 and threads[0] != threading.get_ident()
+
+
+@pytest.mark.parametrize("chat_type,is_bot", [("group", False), ("supergroup", False), ("private", True)])
+def test_groups_and_bots_cause_no_restore(monkeypatch, chat_type, is_bot):
+    assert _run_middleware(monkeypatch, chat_type, is_bot) == []

@@ -22,6 +22,7 @@ from telegram_bot.handlers import (
     weight,
 )
 from telegram_bot.i18n import LanguageMiddleware
+from telegram_bot.runtime import SessionMiddleware
 from telegram_bot.security import is_private_human
 
 logging.basicConfig(
@@ -42,6 +43,7 @@ def create_dispatcher() -> Dispatcher:
     # The language of the update, set before any filter or handler runs.
     for observer in (dispatcher.message, dispatcher.callback_query, dispatcher.edited_message):
         observer.outer_middleware(LanguageMiddleware())
+        observer.outer_middleware(SessionMiddleware())
     dispatcher.include_router(auth.router)
     dispatcher.include_router(consent.router)
     dispatcher.include_router(start.router)

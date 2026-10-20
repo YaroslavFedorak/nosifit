@@ -573,6 +573,7 @@ def test_linked_user_stays_signed_in_after_a_restart(bot, backend, bot_auth):
     bot_auth.linked.add(111)
     bot.callback("auth:login")
     restart_bot()
+    bot_auth.restore_calls.clear()
 
     bot.message("/start")
 
