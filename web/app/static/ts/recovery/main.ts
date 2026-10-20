@@ -1,4 +1,5 @@
-import { initRecoveryDashboard } from "./dashboard.js";
+import { initRecoveryDashboard, refreshRecoveryDashboard } from "./dashboard.js";
+import { onReturn } from "../core/live-refresh.js";
 import { initHabitModal } from "./modals/habit_modal.js";
 import { initSleepModal } from "./modals/sleep_modal.js";
 import { initRecoveryHeatmap } from "./heatmap/heatmap.js";
@@ -111,6 +112,8 @@ async function init(): Promise<void> {
     await initRecoveryDashboard(
         userId
     );
+
+    onReturn(() => refreshRecoveryDashboard(userId));
 }
 
 if (

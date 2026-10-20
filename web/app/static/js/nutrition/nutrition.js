@@ -1,4 +1,5 @@
 import { NutritionAPI, } from "./api.js";
+import { onReturn } from "../core/live-refresh.js";
 import { renderBalance, } from "./ui/balance.js";
 import { renderMeals, } from "./ui/meals.js";
 import { setupMealModals, } from "./modals/meals.js";
@@ -61,6 +62,11 @@ function initializeNutritionPage() {
     void loadWater();
     void loadWeight();
     void loadNutritionDay();
+    onReturn(() => Promise.all([
+        loadWater(),
+        loadWeight(),
+        loadNutritionDay(),
+    ]));
 }
 async function startNutritionPage() {
     try {
