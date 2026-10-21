@@ -99,7 +99,15 @@ The `pg_trgm` extension is created by migration `b4a7d1e8c2f0`.
 6. **Watch Paths** (Settings → Build): `telegram_bot/**`, `shared/**`,
    `requirements.txt`, `.python-version`. The bot runs code from `shared/`;
    without that line a change there redeploys `web` but not the bot.
-7. Deploy `web` (its pre-deploy migration creates `telegram_identities` and
+7. Optional, **webhook mode** (Telegram pushes updates instead of the bot asking
+   for them; no extra cost: the bot idles until a message arrives):
+   Settings → Networking → **Generate Domain**, then set `TELEGRAM_WEBHOOK=1`
+   (uses `RAILWAY_PUBLIC_DOMAIN`) or `TELEGRAM_WEBHOOK_URL=https://<bot domain>`.
+   The bot listens on `$PORT` at `/telegram/webhook` (health check: `/health`)
+   and registers the webhook itself on start. Requests without Telegram's
+   secret header (derived from `TELEGRAM_BOT_API_SECRET`) get `401`.
+   Remove the variable to go back to polling.
+8. Deploy `web` (its pre-deploy migration creates `telegram_identities` and
    `telegram_link_tokens`) before or together with `bot`.
 
 The bot never handles NosiFit passwords: users sign in with their Telegram

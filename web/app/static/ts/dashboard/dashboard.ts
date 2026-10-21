@@ -1,5 +1,6 @@
 import * as api from "./api.js";
 import * as state from "./state.js";
+import { onReturn } from "../core/live-refresh.js";
 
 import {
     dashboard_t,
@@ -749,6 +750,10 @@ async function init(): Promise<void> {
     bindWorkoutActions();
 
     await loadAll();
+
+    onReturn(() => {
+        window.dispatchEvent(new Event("dashboard:refresh"));
+    });
 
     window.addEventListener(
         "dashboard:refresh",

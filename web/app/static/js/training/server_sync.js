@@ -2,6 +2,7 @@ import { TrainingAPI } from "./api.js";
 import { trainingStore } from "./store.js";
 import { persistSessionId, persistWorkout } from "./state.js";
 import { renderWorkoutList } from "./workout.js";
+import { onReturn } from "../core/live-refresh.js";
 // Today's workout lives on the server: the Telegram bot logs into the same
 // session. The page takes the server's exercises as the saved truth and
 // keeps only what is local and not on the server yet (planned items, done
@@ -51,9 +52,5 @@ export async function syncWorkoutWithServer() {
 }
 export function initServerSync() {
     void syncWorkoutWithServer();
-    document.addEventListener("visibilitychange", () => {
-        if (document.visibilityState === "visible") {
-            void syncWorkoutWithServer();
-        }
-    });
+    onReturn(syncWorkoutWithServer);
 }

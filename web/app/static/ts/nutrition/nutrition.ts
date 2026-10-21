@@ -2,6 +2,8 @@ import {
     NutritionAPI,
 } from "./api.js";
 
+import { onReturn } from "../core/live-refresh.js";
+
 
 import {
     renderBalance,
@@ -176,6 +178,12 @@ function initializeNutritionPage(): void {
     void loadWater();
     void loadWeight();
     void loadNutritionDay();
+
+    onReturn(() => Promise.all([
+        loadWater(),
+        loadWeight(),
+        loadNutritionDay(),
+    ]));
 }
 
 

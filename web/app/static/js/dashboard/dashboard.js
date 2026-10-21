@@ -1,5 +1,6 @@
 import * as api from "./api.js";
 import * as state from "./state.js";
+import { onReturn } from "../core/live-refresh.js";
 import { dashboard_t, loadTranslations, } from "../i18n/index.js";
 import { renderRecommendations } from "./widgets/recommendations.js";
 import * as trainingEditor from "./widgets/training/index.js";
@@ -363,6 +364,9 @@ async function init() {
     bindNavigation();
     bindWorkoutActions();
     await loadAll();
+    onReturn(() => {
+        window.dispatchEvent(new Event("dashboard:refresh"));
+    });
     window.addEventListener("dashboard:refresh", () => {
         void loadAll();
         void initRecoveryWidget();

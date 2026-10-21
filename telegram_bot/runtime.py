@@ -1,3 +1,4 @@
+import asyncio
 import logging
 import math
 import time
@@ -5,8 +6,11 @@ from datetime import datetime
 from functools import lru_cache
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
+from aiogram import BaseMiddleware
+
 from telegram_bot.config import TelegramConfig
 from telegram_bot.i18n import t
+from telegram_bot.security import is_private_human
 from telegram_bot.services.api import NosiFitAPI, NosiFitAPIError
 from telegram_bot.services.telegram_auth import TelegramAuthClient, TelegramAuthError, TelegramUser
 
@@ -102,6 +106,25 @@ def logout(user_id: int) -> None:
         auth_client().logout(user_id)
     except Exception:
         logger.exception("Telegram logout could not be stored")
+
+
+class SessionMiddleware(BaseMiddleware):
+    """Restores the sender's session in a worker thread before any handler.
+
+    restore() may ask the web app over the network (first update after a
+    restart, an expired session, an unlinked user once per
+    RESTORE_RETRY_SECONDS). Handlers call is_authenticated()/get_api()
+    directly in the event loop; after this they only read the caches above,
+    so one slow request no longer holds up every other chat.
+    """
+
+    async def __call__(self, handler, event, data):
+        # Outer middlewares run before the private-chat filter: groups and
+        # bots must not cause requests to the web app.
+        user = data.get("event_from_user")
+        if user is not None and is_private_human(event):
+            await asyncio.to_thread(restore, user.id)
+        return await handler(event, data)
 
 
 def local_now() -> datetime:

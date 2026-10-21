@@ -1,3 +1,5 @@
+import hashlib
+import hmac
 import os
 from dataclasses import dataclass
 
@@ -15,6 +17,11 @@ class TelegramConfig:
     # Shared with the web service; signs the bot's /api/telegram/* requests.
     api_secret: str
     timezone: str = "Europe/Kyiv"
+    # Public https base of the bot service. Set → webhook mode; unset → polling.
+    webhook_url: str = ""
+    # Telegram repeats it in every webhook request; derived from api_secret.
+    webhook_secret: str = ""
+    port: int = 8080
 
     @classmethod
     def from_env(cls) -> "TelegramConfig":
@@ -36,4 +43,20 @@ class TelegramConfig:
             ).rstrip("/"),
             api_secret=secret,
             timezone=os.getenv("NOSI_FIT_TIMEZONE", "Europe/Kyiv"),
+            webhook_url=_webhook_url(),
+            webhook_secret=hmac.new(
+                secret.encode(), b"telegram-webhook", hashlib.sha256
+            ).hexdigest(),
+            port=int(os.getenv("PORT", "8080")),
         )
+
+
+def _webhook_url() -> str:
+    """TELEGRAM_WEBHOOK_URL, or the Railway domain once TELEGRAM_WEBHOOK=1."""
+    url = os.getenv("TELEGRAM_WEBHOOK_URL", "").strip()
+    if not url and os.getenv("TELEGRAM_WEBHOOK") == "1":
+        domain = os.getenv("RAILWAY_PUBLIC_DOMAIN", "").strip()
+        url = f"https://{domain}" if domain else ""
+    if url and not url.startswith("https://"):
+        raise RuntimeError("TELEGRAM_WEBHOOK_URL must start with https://")
+    return url.rstrip("/")
