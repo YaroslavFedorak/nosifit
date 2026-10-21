@@ -27,13 +27,12 @@
 }
 
 .recovery-right {
-  grid-template-rows: 200px 325px 240px;
+  grid-template-rows: 200px 580px;
 }
 
 .panel-habits,
 .panel-heatmap,
 .panel-sleep,
-.panel-score,
 .panel-recommendations {
   min-width: 0;
   height: 100%;
@@ -53,7 +52,6 @@
   .panel-habits,
   .panel-heatmap,
   .panel-sleep,
-  .panel-score,
   .panel-recommendations {
     height: auto;
   }

@@ -63,50 +63,6 @@ export const RECOVERY_MESSAGES = {
         }
     },
 
-    score: {
-        get empty(): string {
-            return translate(
-                "recovery",
-                "score.empty"
-            );
-        },
-
-        get title(): string {
-            return translate(
-                "recovery",
-                "score.title"
-            );
-        },
-
-        get sleepLabel(): string {
-            return translate(
-                "recovery",
-                "score.labels.sleep"
-            );
-        },
-
-        get habitsLabel(): string {
-            return translate(
-                "recovery",
-                "score.labels.habits"
-            );
-        },
-
-        get trainingLabel(): string {
-            return translate(
-                "recovery",
-                "score.labels.training"
-            );
-        },
-
-        get energyLabel(): string {
-            return translate(
-                "recovery",
-                "score.labels.energy"
-            );
-        }
-    },
-
     heatmap: {
         get empty(): string {
             return translate(

@@ -240,22 +240,6 @@
         "core": "кор",
         "abs": "прес"
     },
-    "score": {
-        "empty": "Оцінки поки немає",
-        "title": "Оцінка відновлення",
-        "labels": {
-            "sleep": "Сон",
-            "training": "Тренування",
-            "energy": "Енергія",
-            "habits": "Звички"
-        },
-        "status": {
-            "attention": "Потребує уваги",
-            "medium": "Помірно",
-            "good": "Добре",
-            "excellent": "Відмінно"
-        }
-    },
     "recommendations": {
         "empty": "Порад поки немає",
         "title": "Рекомендації",
@@ -309,7 +293,6 @@
         "sections": {
             "habits": "Звички",
             "sleep": "Сон",
-            "score": "Показники",
             "recommendations": "Рекомендації"
         },
         "actions": {

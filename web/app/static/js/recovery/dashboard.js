@@ -3,7 +3,6 @@ import { renderSleepWidget } from "./sleep.js";
 import { renderHabitsWidget } from "./habits.js";
 import { renderHeatmapWidget } from "./heatmap/heatmap.js";
 import { renderRecommendationsWidget } from "./recommendations.js";
-import { renderScoreWidget } from "./score.js";
 const state = {
     snapshot: null,
     habits: [],
@@ -29,9 +28,6 @@ function renderLoading() {
     renderHabitsWidget(null, {
         loading: true
     });
-    renderScoreWidget(null, {
-        loading: true
-    });
     renderHeatmapWidget(null, {
         loading: true
     });
@@ -42,7 +38,6 @@ function renderLoading() {
 function renderAll() {
     renderSleepWidget(state.snapshot);
     renderHabitsWidget(state.habits);
-    renderScoreWidget(state.snapshot);
     renderHeatmapWidget(state.heatmap);
     renderRecommendationsWidget(state.recommendations);
 }

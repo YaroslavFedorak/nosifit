@@ -24,7 +24,7 @@ const ICON_MAP = {
     muscle: "exercise",
     training: "exercise"
 };
-const MAX_RECOMMENDATIONS = 4;
+const MAX_RECOMMENDATIONS = 5;
 const MUSCLE_KEYS = {
     chest: "chest",
     back: "back",
