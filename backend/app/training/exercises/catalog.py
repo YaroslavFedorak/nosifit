@@ -14,6 +14,7 @@ import math
 import os
 import re
 from collections import Counter
+from functools import lru_cache
 from typing import Any, Dict, Iterable, List, Optional
 
 DATA_DIR = os.path.abspath(
@@ -426,6 +427,12 @@ def _read_json(path: str) -> Any:
 
 def load_reference_slugs(path: str) -> List[str]:
     return [item["slug"] for item in _read_json(path)]
+
+
+@lru_cache(maxsize=1)
+def known_muscle_slugs() -> frozenset:
+    """Muscle slugs of ``muscles.json``: the only valid keys of muscle_loads."""
+    return frozenset(load_reference_slugs(MUSCLES_PATH))
 
 
 def load_raw_exercises(directory: str = EXERCISES_DIR) -> List[Any]:

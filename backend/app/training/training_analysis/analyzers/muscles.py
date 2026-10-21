@@ -2,6 +2,7 @@ from datetime import date, timedelta
 from typing import Dict, List, Any
 
 from backend.app.services.training.load.service import TrainingLoadService
+from backend.app.training.exercises.catalog import known_muscle_slugs
 from backend.app.training.models.exercise import Exercise
 from backend.app.training.training_analysis.dto import MuscleResult
 
@@ -69,11 +70,13 @@ def _add_stored_muscle_loads(
         return False
 
     added = False
+    known = known_muscle_slugs()
 
     for muscle, value in muscle_loads.items():
         muscle_key = str(muscle).strip().lower()
 
-        if not muscle_key:
+        # Sessions finished before the v2 model stored exercise ids here.
+        if muscle_key not in known:
             continue
 
         try:
