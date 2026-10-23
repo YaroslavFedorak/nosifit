@@ -1,0 +1,430 @@
+{
+    "nav": {
+        "home": "Home",
+        "train": "Training",
+        "food": "Nutrition",
+        "rec": "Recovery",
+        "me": "Profile"
+    },
+    "aria": {
+        "nav": "Sections",
+        "close": "Close",
+        "less": "Decrease",
+        "more": "Increase",
+        "nextMonth": "Next month",
+        "prevMonth": "Previous month",
+        "nextTip": "Next tip",
+        "streak": "Days in a row"
+    },
+    "wd2": [
+        "Mo",
+        "Tu",
+        "We",
+        "Th",
+        "Fr",
+        "Sa",
+        "Su"
+    ],
+    "wd1": [
+        "M",
+        "T",
+        "W",
+        "T",
+        "F",
+        "S",
+        "S"
+    ],
+    "wdl": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+    ],
+    "dayFmt": "{w} {d}",
+    "u": {
+        "kcal": "kcal",
+        "g": "g",
+        "l": "L",
+        "ml": "ml",
+        "kg": "kg",
+        "km": "km",
+        "h": "h",
+        "min": "min",
+        "ex": [
+            "exercise",
+            "exercises"
+        ],
+        "pcs": "pcs",
+        "s": "s"
+    },
+    "common": {
+        "today": "Today",
+        "done": "Done",
+        "edit": "Edit",
+        "save": "Save",
+        "saved": "Saved",
+        "cancel": "Cancel",
+        "back": "Back",
+        "next": "Next",
+        "loading": "Loading…",
+        "noData": "No data",
+        "add": "Add"
+    },
+    "tile": {
+        "kcal": "Calories",
+        "protein": "Protein",
+        "water": "Water",
+        "workout": "Workout",
+        "sleep": "Sleep",
+        "stretch": "Stretching",
+        "weight": "Weight",
+        "steps": "Steps"
+    },
+    "home": {
+        "week": "This week",
+        "of": "of {v}",
+        "goal": "goal {v}",
+        "month": "{v} in 30 days",
+        "forLegs": "for legs",
+        "noPlan": "No plan",
+        "byPlan": "planned",
+        "bandSoon": "from your band, soon"
+    },
+    "tips": {
+        "label": "Tip",
+        "next": "Next",
+        "bedT": "Go to bed at {time} tonight",
+        "bedD": "You are {debt} short on sleep this week. Early nights close the gap in 2–3 days.",
+        "protT": "{g} g of protein to go",
+        "protD": "Salmon with rice or cottage cheese makes a good dinner.",
+        "waterT": "Drink {v} more water",
+        "waterD": "You train today, so top up your water before the evening.",
+        "kcalT": "{v} kcal left for dinner",
+        "kcalD": "Enough for a full dinner with protein.",
+        "stretchT": "{min} min leg stretch",
+        "stretchD": "Calves, thighs and glutes after yesterday's workout.",
+        "goalT": "Time to update your calorie goal",
+        "goalD": "Your weight dropped by {kg} in 30 days. Recalculate for your new weight.",
+        "weighT": "Weigh yourself this morning",
+        "weighD": "Weighing every other day gives an accurate trend.",
+        "planT": "Planned workout today",
+        "planD": [
+            "{n} exercise in the plan. Start when you're ready.",
+            "{n} exercises in the plan. Start when you're ready."
+        ],
+        "noPlanT": "Make a training plan",
+        "noPlanD": "With a plan, this page shows today's workout and the week.",
+        "addT": "Add sets for {m}",
+        "addD": [
+            "The model suggests {n} more set this week.",
+            "The model suggests {n} more sets this week."
+        ],
+        "restT": "{m} need rest",
+        "restD": "Fatigue has built up. Give the muscle a day or two before loading it again.",
+        "logSleepT": "Log how you slept",
+        "logSleepD": "Last night's sleep isn't logged yet.",
+        "goalsT": "Fill in your profile",
+        "goalsD": "Weight, height and age are needed to work out your calorie and water goals.",
+        "streakT": "{n} days in a row with entries",
+        "streakD": "Log today's data to keep the streak going.",
+        "food": {
+            "fiberT": "Add more fibre",
+            "fiberD": "Vegetables, grains and legumes cover the daily goal.",
+            "sugarT": "Too much sugar today",
+            "sugarD": "Swap sweets for fruit or unsweetened yogurt.",
+            "saltT": "Too much salt today",
+            "saltD": "Pick less salty and processed food for the rest of the day.",
+            "satFatT": "A lot of saturated fat",
+            "satFatD": "Swap some animal fat for fish, nuts or oil.",
+            "qualityT": "More whole foods",
+            "qualityD": "Add vegetables, fruit and grains instead of processed food."
+        }
+    },
+    "cta": {
+        "sleep": "Log sleep",
+        "meal": "Add food",
+        "water": "Add water",
+        "workout": "Go to workout",
+        "muscle": "View muscles",
+        "stretch": "Start stretching",
+        "goals": "Change goals",
+        "weight": "Log weight",
+        "plan": "Make a plan",
+        "home": "Go to Home",
+        "params": "Change details"
+    },
+    "heat": {
+        "train": "sets",
+        "food": "calories",
+        "rec": "sleep",
+        "me": "activity",
+        "lg": {
+            "train": [
+                "less",
+                "more"
+            ],
+            "food": [
+                "off",
+                "on target"
+            ],
+            "rec": [
+                "<6 h",
+                "8+ h"
+            ],
+            "me": [
+                "less",
+                "more"
+            ]
+        }
+    },
+    "st": {
+        "workouts": [
+            "workout",
+            "workouts"
+        ],
+        "sets": [
+            "set",
+            "sets"
+        ],
+        "inTarget": [
+            "day on target",
+            "days on target"
+        ],
+        "avgKcal": "kcal a day on average",
+        "avgSleep": "average sleep",
+        "nights7": [
+            "night of 7+ hours",
+            "nights of 7+ hours"
+        ],
+        "activeDays": [
+            "active day",
+            "active days"
+        ],
+        "streak": [
+            "day in a row",
+            "days in a row"
+        ]
+    },
+    "pl": {
+        "ex": [
+            "{n} exercise",
+            "{n} exercises"
+        ],
+        "sets": [
+            "{n} set",
+            "{n} sets"
+        ]
+    },
+    "wo": {
+        "rest": "Rest",
+        "start": "Start workout",
+        "continue": "Continue",
+        "review": "Summary",
+        "week": "This week",
+        "weekDone": "{a} of {b}",
+        "missed": "Missed",
+        "exOf": "Exercise {a} of {b}",
+        "setN": "Set {n}",
+        "weight": "Weight",
+        "reps": "Reps",
+        "bw": "Bodyweight",
+        "logSet": "Set {n} done",
+        "nextEx": "Next exercise",
+        "finish": "Finish",
+        "exDone": "{x}: done",
+        "saved": "Workout saved",
+        "volume": "total volume",
+        "time": "duration",
+        "noPlan": "No plan for today",
+        "noPlanD": "Log a free workout or make a plan.",
+        "noPlanShort": "no plan",
+        "editPlan": "Edit plan",
+        "restDay": "Rest day",
+        "nextOn": "Next workout: {d}",
+        "free": "Free workout",
+        "pickHint": "Add exercises one by one",
+        "search": "Search exercises",
+        "searchHint": "Start typing an exercise name",
+        "none": "Nothing found",
+        "more": [
+            "{n} more exercise. Narrow your search.",
+            "{n} more exercises. Narrow your search."
+        ],
+        "nothing": "Log at least one set",
+        "seconds": "Seconds"
+    },
+    "food": {
+        "left": "left",
+        "over": "over goal",
+        "add": "Add",
+        "addX": "Add {x}",
+        "search": "Search food",
+        "none": "Nothing found",
+        "more": [
+            "{n} more item. Narrow your search.",
+            "{n} more items. Narrow your search."
+        ],
+        "searchHint": "Type a food name",
+        "catalog": "Catalog, barcode, own food"
+    },
+    "mac": {
+        "p": "Protein",
+        "f": "Fat",
+        "c": "Carbs"
+    },
+    "meal": {
+        "breakfast": "Breakfast",
+        "lunch": "Lunch",
+        "snack": "Snack",
+        "dinner": "Dinner"
+    },
+    "water": {
+        "add": "Add 250 ml",
+        "added": "Water today: {v}",
+        "week": "Last 7 days",
+        "noGoal": "The goal appears once you add your weight"
+    },
+    "sleep": {
+        "lastNight": "Last night",
+        "goal": "goal {v}",
+        "tonight": "Bedtime tonight: {time}",
+        "debt": "Sleep debt this week: {v}",
+        "noDebt": "No sleep debt this week",
+        "bed": "Bedtime",
+        "wake": "Wake-up",
+        "dur": "sleep duration",
+        "vsGoal": "vs goal",
+        "week": "Sleep, last 7 nights",
+        "log": "Log",
+        "none": "Last night's sleep isn't logged"
+    },
+    "wt": {
+        "last": "Last weigh-in {d}",
+        "month": "in 30 days",
+        "goal": "goal",
+        "left": "to goal",
+        "chart": "Weight, 30 days",
+        "today": "Today",
+        "weighings": [
+            "weigh-in",
+            "weigh-ins"
+        ]
+    },
+    "body": {
+        "title": "Muscles",
+        "hint": "Tap a muscle",
+        "front": "Front",
+        "back": "Back",
+        "resting": "Resting",
+        "ready": "Ready",
+        "legs": "legs",
+        "upper": "upper body",
+        "nothing": "none",
+        "noData": "No training load yet. Log a few workouts."
+    },
+    "st2": {
+        "title": "Leg stretch",
+        "start": "Stretch {min} min",
+        "again": "Again",
+        "done": "Stretching complete",
+        "play": "Start",
+        "pause": "Pause"
+    },
+    "mus": {
+        "chest": "Chest",
+        "shoulders": "Shoulders",
+        "biceps": "Biceps",
+        "triceps": "Triceps",
+        "forearms": "Forearms",
+        "abs": "Abs",
+        "obliques": "Obliques",
+        "lats": "Lats",
+        "upper-back": "Upper back",
+        "lower-back": "Lower back",
+        "glutes": "Glutes",
+        "quads": "Quads",
+        "hamstrings": "Hamstrings",
+        "adductors": "Adductors",
+        "calves": "Calves",
+        "neck": "Neck",
+        "core": "Core",
+        "traps": "Traps"
+    },
+    "status": {
+        "low": "Very fatigued",
+        "mod": "Recovering",
+        "ready": "Ready to train",
+        "full": "Fully recovered"
+    },
+    "mus2": {
+        "eta": "Ready {v}.",
+        "last": "Last trained {v}",
+        "yesterday": "yesterday",
+        "never": "a while ago",
+        "ago": [
+            "{n} day ago",
+            "{n} days ago"
+        ],
+        "sets": [
+            "{n} set this week",
+            "{n} sets this week"
+        ]
+    },
+    "sx": {
+        "calf": "Wall calf stretch",
+        "calfD": "30 s per leg, heel on the floor",
+        "ham": "Seated forward fold",
+        "hamD": "Keep your back straight, reach with your chest",
+        "pigeon": "Pigeon pose",
+        "pigeonD": "30 s per side, hips square",
+        "quad": "Standing quad stretch",
+        "quadD": "Hold a support, knees together"
+    },
+    "me": {
+        "goal": "Goal: {goal}",
+        "lang": "Language",
+        "goals": "Goals",
+        "noGoal": "No goal set",
+        "getPro": "PRO",
+        "goalsSub": "Worked out from your details",
+        "noGoals": "Add your details",
+        "account": "Account and sign‑in",
+        "accountV": "Email, password, data",
+        "more": "More",
+        "moreV": "Plan, equipment, Premium",
+        "logout": "Log out"
+    },
+    "err": {
+        "load": "Couldn't load the data. Check your connection.",
+        "save": "Couldn't save. Try again."
+    },
+    "mstate": {
+        "appropriate": "Load is on track.",
+        "recovery_available": "Recovered and ready for load.",
+        "underloaded": "Too little work this week.",
+        "accumulated_fatigue": "Fatigue has built up.",
+        "high_fatigue": "Very fatigued, better rest."
+    },
+    "band": {
+        "title": "Steps and heart rate",
+        "soonT": "Coming to the mobile app",
+        "soonD": "Steps, heart rate and burned calories will sync from your band or watch automatically.",
+        "mi": "Xiaomi Mi Band",
+        "miVia": "via Health Connect",
+        "apple": "Apple Watch",
+        "appleVia": "via Apple Health",
+        "samsung": "Samsung Galaxy Watch",
+        "samsungVia": "via Health Connect"
+    },
+    "more": {
+        "plan": "Training plan",
+        "equipment": "Equipment",
+        "tracker": "Tracker",
+        "premium": "Premium",
+        "about": "About the app",
+        "info": "About the site"
+    }
+}

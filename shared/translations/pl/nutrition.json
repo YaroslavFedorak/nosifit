@@ -197,11 +197,11 @@
             },
             "empty": {
                 "title": "Zacznij śledzić swoje odżywianie",
-                "message": "Dodaj pierwszy posiłek, aby NosiFit mógł ocenić bilans Twojej diety i przygotować spersonalizowane rekomendacje."
+                "message": "Dodaj pierwszy posiłek, aby nosifit mógł ocenić bilans Twojej diety i przygotować spersonalizowane rekomendacje."
             },
             "profile_incomplete": {
                 "title": "Uzupełnij profil",
-                "message": "Podaj wagę, wzrost i wiek w profilu, aby NosiFit mógł obliczyć dzienne cele i oprzeć na nich rekomendacje."
+                "message": "Podaj wagę, wzrost i wiek w profilu, aby nosifit mógł obliczyć dzienne cele i oprzeć na nich rekomendacje."
             },
             "salt": {
                 "high": {
@@ -368,10 +368,10 @@
         "manualPlaceholder": "Na przykład 4820045704529",
         "find": "Szukaj",
         "scanAgain": "Skanuj ponownie",
-        "notFound": "Tego produktu nie ma ani w katalogu NosiFit, ani w Open Food Facts. Utwórz własny produkt z etykiety — następnym razem znajdzie się po tym kodzie.",
-        "inCatalog": "Znaleziono w katalogu NosiFit",
+        "notFound": "Tego produktu nie ma ani w katalogu nosifit, ani w Open Food Facts. Utwórz własny produkt z etykiety — następnym razem znajdzie się po tym kodzie.",
+        "inCatalog": "Znaleziono w katalogu nosifit",
         "ownProduct": "Twój produkt",
-        "external": "Open Food Facts — dane społeczności, niezweryfikowane przez NosiFit. Porównaj z etykietą.",
+        "external": "Open Food Facts — dane społeczności, niezweryfikowane przez nosifit. Porównaj z etykietą.",
         "perBasis100g": "Na 100 g",
         "perBasis100ml": "Na 100 ml",
         "missing": "Brakuje: {fields}.",

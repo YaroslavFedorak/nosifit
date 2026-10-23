@@ -1,69 +1,47 @@
 <!doctype html>
-<html lang="{{ locale }}">
+<html lang="{{ locale }}" class="ux-root">
   <head>
     <script nonce="{{ csp_nonce() }}">
-      try {
-        if (localStorage.getItem("nf-nav-collapsed") === "1") {
-          document.documentElement.classList.add("nf-nav-collapsed");
-        }
-      } catch (e) {}
+      // Layout format before the first paint: phone, short phone, tablet, landscape phone, laptop.
+      (function () {
+        var w = innerWidth, h = innerHeight, r = document.documentElement;
+        if (w <= h) { r.classList.add(w >= 600 ? "f-t" : "f-p"); if (w < 600 && h < 700) r.classList.add("f-s"); }
+        else r.classList.add(w >= 900 && h >= 521 ? "f-d" : "f-l");
+      })();
     </script>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
     {% include "components/brand_head.html" %}
     <title>{% block title %}nosifit{% endblock %}</title>
 
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='css/core/reset.css') }}"
-    />
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='css/core/variables.css') }}"
-    />
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='css/core/layout.css') }}"
-    />
-
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='css/components/sidebar.css') }}"
-    />
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='css/components/buttons.css') }}"
-    />
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='css/components/forms.css') }}"
-    />
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='css/components/cards.css') }}"
-    />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/core/reset.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/core/variables.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/core/layout.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/components/buttons.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/components/forms.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/components/cards.css') }}" />
 
     {% block styles %}{% endblock %}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/core/system.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/ui/ui.css') }}" />
   </head>
 
-  <body class="app-page app-layout {% block body_class %}{% endblock %}">
-    <div class="bg-glow-static glow-purple" aria-hidden="true"></div>
-    <div class="bg-glow-static glow-teal" aria-hidden="true"></div>
-    <div class="bg-glow-static glow-yellow" aria-hidden="true"></div>
+  <body class="app-page ux {% block body_class %}{% endblock %}" data-today="{{ ui_today() }}" data-uid="{{ current_user.id if current_user.is_authenticated else "" }}">
+    <div class="ux-app">
+      {% include "components/app_nav.html" %}
 
-    <div class="core-sidebar-shell" id="app-sidebar" role="navigation" aria-label="{{ common_t("navigation.menu") }}">
-      {% include "components/sidebar.html" %}
+      {% block main %}
+      <main class="main-content ux-scroll" role="main">
+        <div class="page-content">{% block body %}{% endblock %}</div>
+      </main>
+      {% endblock %}
     </div>
-    <div class="nf-nav-backdrop" data-nav-close aria-hidden="true"></div>
 
-    <main class="main-content" role="main">
-      <div class="page-content">{% block body %}{% endblock %}</div>
-    </main>
+    <div class="ux-scrim" id="ux-scrim" hidden></div>
+    <section class="ux-sheet" id="ux-sheet" role="dialog" aria-modal="true" aria-labelledby="ux-sheet-title" tabindex="-1" hidden></section>
+    <div class="ux-toast" id="ux-toast" role="status" aria-live="polite"></div>
 
-    {% include "components/tabbar.html" %}
-
-    <script type="module" src="{{ url_for('static', filename='js/core/nav.js') }}"></script>
+    <script type="module" src="{{ url_for('static', filename='js/ui/shell.js') }}"></script>
 
     {% block scripts %}{% endblock %}
   </body>

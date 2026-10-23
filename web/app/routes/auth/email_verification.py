@@ -57,14 +57,14 @@ _is_expired = code_is_expired
 def send_verification_email(email, code):
     send_email(
         to=email,
-        subject="Код для реєстрації в NosiFit",
+        subject="Код для реєстрації в nosifit",
         text=(
             f"Привіт!\n\n"
-            f"Ваш код для реєстрації в NosiFit:\n\n"
+            f"Ваш код для реєстрації в nosifit:\n\n"
             f"{code}\n\n"
             f"Код діє 10 хвилин.\n"
-            f"Якщо ви не реєструвались у NosiFit, просто не зважайте на цей лист.\n\n"
-            f"Команда NosiFit"
+            f"Якщо ви не реєструвались у nosifit, просто не зважайте на цей лист.\n\n"
+            f"Команда nosifit"
         ),
         html=f"""
     <p>Привіт!</p>
@@ -78,9 +78,9 @@ def send_verification_email(email, code):
 def send_existing_account_notice(email):
     send_email(
         to=email,
-        subject="Реєстрація в NosiFit",
+        subject="Реєстрація в nosifit",
         text=(
-            "Хтось (імовірно ви) намагався зареєструвати новий акаунт NosiFit "
+            "Хтось (імовірно ви) намагався зареєструвати новий акаунт nosifit "
             "з цією адресою. Акаунт із нею вже існує, тому код не надсилається.\n\n"
             "Увійдіть у свій акаунт або скористайтеся «Забули пароль?» на "
             "сторінці входу.\n\n"
@@ -145,7 +145,7 @@ def send_code():
     try:
         parse_account_age(request.form.get("age"), required=True)
     except ValidationError:
-        flash(f"NosiFit доступний з {MIN_ACCOUNT_AGE} років. Вкажіть свій вік.", "error")
+        flash(f"nosifit доступний з {MIN_ACCOUNT_AGE} років. Вкажіть свій вік.", "error")
         return redirect(url_for("auth.register"))
 
     # Limited before anything depends on whether the address is registered.

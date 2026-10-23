@@ -1,65 +1,13 @@
-{% extends "app/base_app.html" %}
+{% set ux_script = "profile" %}
+{% set ux_title = translate("ui", "nav.me") %}
+{% extends "app/_ux_tab.html" %}
 
-{% block title %}
-{{ profile_t("page.title") }}
-{% endblock %}
-
-{% block styles %}
-<link
-    rel="stylesheet"
-    href="{{ url_for('static', filename='css/pages/profile/profile.css') }}"
->
-{% endblock %}
-
-{% block body %}
-
-<div class="profile-page">
-
-    <header class="profile-header">
-        <div class="profile-header-icon">
-            <span
-                class="profile-header-icon-content"
-                data-profile-icon="user"
-                aria-hidden="true"
-            ></span>
-        </div>
-
-        <div class="profile-header-text">
-            <h1 class="profile-title">{{ profile_t("page.title") }}</h1>
-            <p class="profile-subtitle">{{ profile_t("page.subtitle") }}</p>
-        </div>
-    </header>
-
-    <div class="profile-layout">
-
-        <div class="profile-column">
-            {% include "app/profile/sections/identity.html" %}
-            {% include "app/profile/sections/params.html" %}
-        </div>
-
-        <div class="profile-column" id="settings">
-            {% include "app/profile/sections/settings.html" %}
-        </div>
-
-    </div>
-
-</div>
-
-{% include "app/profile/modals/change_email.html" %}
-{% include "app/profile/modals/change_password.html" %}
-{% include "app/profile/modals/edit_profile.html" %}
-{% include "app/profile/modals/delete_account.html" %}
-{% include "app/profile/modals/telegram_disconnect.html" %}
-
-{% endblock %}
-
-{% block scripts %}
-<script
-    type="module"
-    src="{{ url_for('static', filename='js/profile/profile.js') }}"
-></script>
-<script
-    type="module"
-    src="{{ url_for('static', filename='js/i18n/switcher.js') }}"
-></script>
+{% block tab_extra %}
+<script type="application/json" id="ux-user">{{ {
+  "name": user.username or "",
+  "goal": common_t("profileOptions.goals." ~ normalize_goal(user.goal)) if user.goal else "",
+  "weight": user.weight,
+  "premium": true if user.is_premium else false,
+  "logout": url_for("auth.logout"),
+} | tojson }}</script>
 {% endblock %}

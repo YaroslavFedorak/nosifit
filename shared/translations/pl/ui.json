@@ -1,0 +1,446 @@
+{
+    "nav": {
+        "home": "Start",
+        "train": "Trening",
+        "food": "Żywienie",
+        "rec": "Regeneracja",
+        "me": "Profil"
+    },
+    "aria": {
+        "nav": "Sekcje",
+        "close": "Zamknij",
+        "less": "Zmniejsz",
+        "more": "Zwiększ",
+        "nextMonth": "Następny miesiąc",
+        "prevMonth": "Poprzedni miesiąc",
+        "nextTip": "Następna porada",
+        "streak": "Dni z rzędu"
+    },
+    "wd2": [
+        "Pn",
+        "Wt",
+        "Śr",
+        "Cz",
+        "Pt",
+        "So",
+        "Nd"
+    ],
+    "wd1": [
+        "P",
+        "W",
+        "Ś",
+        "C",
+        "P",
+        "S",
+        "N"
+    ],
+    "wdl": [
+        "poniedziałek",
+        "wtorek",
+        "środa",
+        "czwartek",
+        "piątek",
+        "sobota",
+        "niedziela"
+    ],
+    "dayFmt": "{w}, {d}",
+    "u": {
+        "kcal": "kcal",
+        "g": "g",
+        "l": "l",
+        "ml": "ml",
+        "kg": "kg",
+        "km": "km",
+        "h": "godz.",
+        "min": "min",
+        "ex": [
+            "ćwiczenie",
+            "ćwiczenia",
+            "ćwiczeń"
+        ],
+        "pcs": "szt.",
+        "s": "s"
+    },
+    "common": {
+        "today": "Dziś",
+        "done": "Gotowe",
+        "edit": "Zmień",
+        "save": "Zapisz",
+        "saved": "Zapisano",
+        "cancel": "Anuluj",
+        "back": "Wstecz",
+        "next": "Dalej",
+        "loading": "Ładowanie…",
+        "noData": "Brak danych",
+        "add": "Dodaj"
+    },
+    "tile": {
+        "kcal": "Kalorie",
+        "protein": "Białko",
+        "water": "Woda",
+        "workout": "Trening",
+        "sleep": "Sen",
+        "stretch": "Rozciąganie",
+        "weight": "Waga",
+        "steps": "Kroki"
+    },
+    "home": {
+        "week": "Ten tydzień",
+        "of": "z {v}",
+        "goal": "cel {v}",
+        "month": "{v} w 30 dni",
+        "forLegs": "na nogi",
+        "noPlan": "Brak planu",
+        "byPlan": "wg planu",
+        "bandSoon": "z opaski, wkrótce"
+    },
+    "tips": {
+        "label": "Porada",
+        "next": "Następna",
+        "bedT": "Połóż się dziś o {time}",
+        "bedD": "W tym tygodniu brakuje Ci {debt} snu. Wcześniejsze zasypianie nadrobi to w 2–3 noce.",
+        "protT": "Jeszcze {g} g białka do celu",
+        "protD": "Na kolację pasuje łosoś z ryżem albo twaróg.",
+        "waterT": "Wypij jeszcze {v} wody",
+        "waterD": "Dziś trening, więc uzupełnij wodę do wieczora.",
+        "kcalT": "Na kolację zostaje {v} kcal",
+        "kcalD": "To wystarczy na pełną kolację z białkiem.",
+        "stretchT": "{min} min rozciągania nóg",
+        "stretchD": "Łydki, uda i pośladki po wczorajszym treningu.",
+        "goalT": "Czas zmienić cel kalorii",
+        "goalD": "W 30 dni waga spadła o {kg}. Przelicz normę pod nową wagę.",
+        "weighT": "Zważ się dziś rano",
+        "weighD": "Ważenie co drugi dzień daje dokładny trend.",
+        "planT": "Dziś trening z planu",
+        "planD": [
+            "W planie jest {n} ćwiczenie. Zacznij, gdy zechcesz.",
+            "W planie są {n} ćwiczenia. Zacznij, gdy zechcesz.",
+            "W planie jest {n} ćwiczeń. Zacznij, gdy zechcesz."
+        ],
+        "noPlanT": "Ułóż plan treningowy",
+        "noPlanD": "Z planem strona pokazuje dzisiejszy trening i cały tydzień.",
+        "addT": "Dodaj serie: {m}",
+        "addD": [
+            "Model radzi jeszcze {n} serię w tym tygodniu.",
+            "Model radzi jeszcze {n} serie w tym tygodniu.",
+            "Model radzi jeszcze {n} serii w tym tygodniu."
+        ],
+        "restT": "{m}: potrzebny odpoczynek",
+        "restD": "Zmęczenie się nawarstwiło. Daj mięśniom dzień lub dwa przed kolejnym obciążeniem.",
+        "logSleepT": "Zapisz swój sen",
+        "logSleepD": "Sen z ostatniej nocy nie jest jeszcze zapisany.",
+        "goalsT": "Uzupełnij profil",
+        "goalsD": "Waga, wzrost i wiek są potrzebne do wyliczenia normy kalorii i wody.",
+        "streakT": "{n} dni z rzędu z wpisami",
+        "streakD": "Zapisz dzisiejsze dane, żeby nie przerwać serii.",
+        "food": {
+            "fiberT": "Dodaj błonnika",
+            "fiberD": "Warzywa, kasze i strączki pokryją dzienną normę.",
+            "sugarT": "Dziś za dużo cukru",
+            "sugarD": "Zamień słodycze na owoce lub jogurt bez cukru.",
+            "saltT": "Dziś za dużo soli",
+            "saltD": "Do końca dnia wybieraj mniej słone i przetworzone produkty.",
+            "satFatT": "Dużo tłuszczów nasyconych",
+            "satFatD": "Zamień część tłuszczów zwierzęcych na ryby, orzechy lub olej.",
+            "qualityT": "Więcej produktów nieprzetworzonych",
+            "qualityD": "Dodaj warzywa, owoce i kasze zamiast przetworzonej żywności."
+        }
+    },
+    "cta": {
+        "sleep": "Zapisz sen",
+        "meal": "Dodaj posiłek",
+        "water": "Dodaj wodę",
+        "workout": "Do treningu",
+        "muscle": "Zobacz mięśnie",
+        "stretch": "Zacznij rozciąganie",
+        "goals": "Zmień cele",
+        "weight": "Wpisz wagę",
+        "plan": "Ułóż plan",
+        "home": "Na start",
+        "params": "Zmień dane"
+    },
+    "heat": {
+        "train": "serie",
+        "food": "kalorie",
+        "rec": "sen",
+        "me": "aktywność",
+        "lg": {
+            "train": [
+                "mniej",
+                "więcej"
+            ],
+            "food": [
+                "daleko",
+                "w normie"
+            ],
+            "rec": [
+                "<6 godz.",
+                "8+ godz."
+            ],
+            "me": [
+                "mniej",
+                "więcej"
+            ]
+        }
+    },
+    "st": {
+        "workouts": [
+            "trening",
+            "treningi",
+            "treningów"
+        ],
+        "sets": [
+            "seria",
+            "serie",
+            "serii"
+        ],
+        "inTarget": [
+            "dzień w normie",
+            "dni w normie",
+            "dni w normie"
+        ],
+        "avgKcal": "kcal dziennie średnio",
+        "avgSleep": "snu średnio",
+        "nights7": [
+            "noc od 7 godzin",
+            "noce od 7 godzin",
+            "nocy od 7 godzin"
+        ],
+        "activeDays": [
+            "aktywny dzień",
+            "aktywne dni",
+            "aktywnych dni"
+        ],
+        "streak": [
+            "dzień z rzędu",
+            "dni z rzędu",
+            "dni z rzędu"
+        ]
+    },
+    "pl": {
+        "ex": [
+            "{n} ćwiczenie",
+            "{n} ćwiczenia",
+            "{n} ćwiczeń"
+        ],
+        "sets": [
+            "{n} seria",
+            "{n} serie",
+            "{n} serii"
+        ]
+    },
+    "wo": {
+        "rest": "Odpoczynek",
+        "start": "Zacznij trening",
+        "continue": "Kontynuuj",
+        "review": "Podsumowanie",
+        "week": "Ten tydzień",
+        "weekDone": "{a} z {b}",
+        "missed": "Pominięty",
+        "exOf": "Ćwiczenie {a} z {b}",
+        "setN": "Seria {n}",
+        "weight": "Ciężar",
+        "reps": "Powtórzenia",
+        "bw": "Masa ciała",
+        "logSet": "Seria {n} zrobiona",
+        "nextEx": "Następne ćwiczenie",
+        "finish": "Zakończ",
+        "exDone": "{x}: gotowe",
+        "saved": "Trening zapisany",
+        "volume": "łączny ciężar",
+        "time": "czas",
+        "noPlan": "Brak planu na dziś",
+        "noPlanD": "Zapisz wolny trening albo ułóż plan.",
+        "noPlanShort": "bez planu",
+        "editPlan": "Zmień plan",
+        "restDay": "Dzień odpoczynku",
+        "nextOn": "Następny trening: {d}",
+        "free": "Wolny trening",
+        "pickHint": "Dodawaj ćwiczenia po kolei",
+        "search": "Szukaj ćwiczenia",
+        "searchHint": "Zacznij wpisywać nazwę ćwiczenia",
+        "none": "Nic nie znaleziono",
+        "more": [
+            "Jeszcze {n} ćwiczenie. Zawęź wyszukiwanie.",
+            "Jeszcze {n} ćwiczenia. Zawęź wyszukiwanie.",
+            "Jeszcze {n} ćwiczeń. Zawęź wyszukiwanie."
+        ],
+        "nothing": "Zapisz co najmniej jedną serię",
+        "seconds": "Sekundy"
+    },
+    "food": {
+        "left": "zostało",
+        "over": "ponad cel",
+        "add": "Dodaj",
+        "addX": "Dodaj: {x}",
+        "search": "Szukaj produktu",
+        "none": "Nic nie znaleziono",
+        "more": [
+            "Jeszcze {n} produkt. Zawęź wyszukiwanie.",
+            "Jeszcze {n} produkty. Zawęź wyszukiwanie.",
+            "Jeszcze {n} produktów. Zawęź wyszukiwanie."
+        ],
+        "searchHint": "Wpisz nazwę produktu",
+        "catalog": "Katalog, kod kreskowy, własny produkt"
+    },
+    "mac": {
+        "p": "Białko",
+        "f": "Tłuszcze",
+        "c": "Węglowodany"
+    },
+    "meal": {
+        "breakfast": "Śniadanie",
+        "lunch": "Obiad",
+        "snack": "Przekąska",
+        "dinner": "Kolacja"
+    },
+    "water": {
+        "add": "Dodaj 250 ml",
+        "added": "Woda dziś: {v}",
+        "week": "Ostatnie 7 dni",
+        "noGoal": "Norma pojawi się po podaniu wagi"
+    },
+    "sleep": {
+        "lastNight": "Ostatnia noc",
+        "goal": "cel {v}",
+        "tonight": "Dziś połóż się o {time}",
+        "debt": "Niedobór snu w tygodniu: {v}",
+        "noDebt": "W tym tygodniu bez niedoboru snu",
+        "bed": "Pora snu",
+        "wake": "Pobudka",
+        "dur": "długość snu",
+        "vsGoal": "względem celu",
+        "week": "Sen z 7 nocy",
+        "log": "Zapisz",
+        "none": "Sen z ostatniej nocy nie jest zapisany"
+    },
+    "wt": {
+        "last": "Ostatnie ważenie {d}",
+        "month": "w 30 dni",
+        "goal": "cel",
+        "left": "do celu",
+        "chart": "Waga z 30 dni",
+        "today": "Dziś",
+        "weighings": [
+            "ważenie",
+            "ważenia",
+            "ważeń"
+        ]
+    },
+    "body": {
+        "title": "Mięśnie",
+        "hint": "Dotknij mięśnia",
+        "front": "Przód",
+        "back": "Tył",
+        "resting": "Odpoczywają",
+        "ready": "Gotowe",
+        "legs": "nogi",
+        "upper": "góra ciała",
+        "nothing": "brak",
+        "noData": "Brak danych o obciążeniu. Zapisz kilka treningów."
+    },
+    "st2": {
+        "title": "Rozciąganie nóg",
+        "start": "Rozciąganie {min} min",
+        "again": "Jeszcze raz",
+        "done": "Rozciąganie zakończone",
+        "play": "Start",
+        "pause": "Pauza"
+    },
+    "mus": {
+        "chest": "Klatka piersiowa",
+        "shoulders": "Barki",
+        "biceps": "Biceps",
+        "triceps": "Triceps",
+        "forearms": "Przedramiona",
+        "abs": "Brzuch",
+        "obliques": "Mięśnie skośne",
+        "lats": "Najszersze grzbietu",
+        "upper-back": "Środek pleców",
+        "lower-back": "Lędźwie",
+        "glutes": "Pośladki",
+        "quads": "Czworogłowe uda",
+        "hamstrings": "Dwugłowe uda",
+        "adductors": "Przywodziciele",
+        "calves": "Łydki",
+        "neck": "Szyja",
+        "core": "Core",
+        "traps": "Czworoboczne"
+    },
+    "status": {
+        "low": "Duże zmęczenie",
+        "mod": "Regeneracja trwa",
+        "ready": "Można trenować",
+        "full": "Pełna regeneracja"
+    },
+    "mus2": {
+        "eta": "Regeneracja: {v}.",
+        "last": "Ostatni trening: {v}",
+        "yesterday": "wczoraj",
+        "never": "dawno",
+        "ago": [
+            "{n} dzień temu",
+            "{n} dni temu",
+            "{n} dni temu"
+        ],
+        "sets": [
+            "{n} seria w tygodniu",
+            "{n} serie w tygodniu",
+            "{n} serii w tygodniu"
+        ]
+    },
+    "sx": {
+        "calf": "Łydki przy ścianie",
+        "calfD": "30 s na każdą nogę, pięta na podłodze",
+        "ham": "Skłon w siadzie",
+        "hamD": "Plecy proste, sięgaj klatką do przodu",
+        "pigeon": "Pozycja gołębia",
+        "pigeonD": "30 s na każdą stronę, biodra prosto",
+        "quad": "Czworogłowe na stojąco",
+        "quadD": "Trzymaj się podpory, kolana razem"
+    },
+    "me": {
+        "goal": "Cel: {goal}",
+        "lang": "Język",
+        "goals": "Cele",
+        "noGoal": "Cel nie jest ustawiony",
+        "getPro": "PRO",
+        "goalsSub": "Wyliczone z Twoich danych",
+        "noGoals": "Podaj swoje dane",
+        "account": "Konto i logowanie",
+        "accountV": "E-mail, hasło, dane",
+        "more": "Więcej",
+        "moreV": "Plan, sprzęt, Premium",
+        "logout": "Wyloguj"
+    },
+    "err": {
+        "load": "Nie udało się wczytać danych. Sprawdź połączenie.",
+        "save": "Nie udało się zapisać. Spróbuj ponownie."
+    },
+    "mstate": {
+        "appropriate": "Obciążenie w normie.",
+        "recovery_available": "Mięsień się zregenerował, można trenować.",
+        "underloaded": "Za mało pracy w tym tygodniu.",
+        "accumulated_fatigue": "Zmęczenie się nawarstwiło.",
+        "high_fatigue": "Duże zmęczenie, lepiej odpocząć."
+    },
+    "band": {
+        "title": "Kroki i tętno",
+        "soonT": "Wkrótce w aplikacji mobilnej",
+        "soonD": "Kroki, tętno i spalone kalorie będą się synchronizować z opaski lub zegarka automatycznie.",
+        "mi": "Xiaomi Mi Band",
+        "miVia": "przez Health Connect",
+        "apple": "Apple Watch",
+        "appleVia": "przez Apple Health",
+        "samsung": "Samsung Galaxy Watch",
+        "samsungVia": "przez Health Connect"
+    },
+    "more": {
+        "plan": "Plan treningowy",
+        "equipment": "Sprzęt",
+        "tracker": "Tracker",
+        "premium": "Premium",
+        "about": "O aplikacji",
+        "info": "O stronie"
+    }
+}

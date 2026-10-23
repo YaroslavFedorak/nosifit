@@ -3,7 +3,6 @@ import { renderSleepWidget } from "./sleep.js";
 import { renderHabitsWidget } from "./habits.js";
 import { renderHeatmapWidget } from "./heatmap/heatmap.js";
 import { renderRecommendationsWidget } from "./recommendations.js";
-import { renderScoreWidget } from "./score.js";
 
 import type {
     RecoveryHeatmapResponse,
@@ -65,13 +64,6 @@ function renderLoading(): void {
         }
     );
 
-    renderScoreWidget(
-        null,
-        {
-            loading: true
-        }
-    );
-
     renderHeatmapWidget(
         null,
         {
@@ -94,10 +86,6 @@ function renderAll(): void {
 
     renderHabitsWidget(
         state.habits
-    );
-
-    renderScoreWidget(
-        state.snapshot
     );
 
     renderHeatmapWidget(

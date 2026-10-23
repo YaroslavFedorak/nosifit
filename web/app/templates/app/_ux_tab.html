@@ -1,0 +1,16 @@
+{# One of the five main tabs: a viewport-sized grid rendered by js/ui/<script>.js.
+   Pages set ux_script and ux_title, and may list extra translation namespaces in ux_ns. #}
+{% extends "app/base_app.html" %}
+
+{% block title %}{{ ux_title }} · nosifit{% endblock %}
+{% block body_class %}ux-fit{% endblock %}
+
+{% block main %}
+<main class="ux-main" id="ux-main" role="main" aria-label="{{ ux_title }}"></main>
+<script type="application/json" id="ux-i18n">{{ ui_strings(*(ux_ns or []))|tojson }}</script>
+{% block tab_extra %}{% endblock %}
+{% endblock %}
+
+{% block scripts %}
+<script type="module" src="{{ url_for('static', filename='js/ui/' ~ ux_script ~ '.js') }}"></script>
+{% endblock %}

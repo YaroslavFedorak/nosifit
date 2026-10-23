@@ -1317,11 +1317,11 @@ def test_account_deletion_frees_the_telegram_account(client, mail):
 def test_profile_shows_connected_accounts(client, user, app):
     app.config["TELEGRAM_BOT_USERNAME"] = "NosiFitBot"
     web_login(client)
-    page = client.get("/profile/").get_data(as_text=True)
+    page = client.get("/profile/account").get_data(as_text=True)
     assert "https://t.me/NosiFitBot?start=connect" in page
 
     link(user, TG_ALICE, "alice_tg")
-    page = client.get("/profile/").get_data(as_text=True)
+    page = client.get("/profile/account").get_data(as_text=True)
     assert "@alice_tg" in page and "modal-telegram-disconnect" in page
 
 

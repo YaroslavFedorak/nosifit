@@ -1,7 +1,7 @@
 {
   "common.cancelled": "Action cancelled.",
   "common.unknown": "I didn't get that. Use the buttons below or /help.",
-  "start.welcome": "<b>NosiFit</b>\n\nHere you can quickly log workouts, food, water and weight. Statistics and analysis are on the website.",
+  "start.welcome": "<b>nosifit</b>\n\nHere you can quickly log workouts, food, water and weight. Statistics and analysis are on the website.",
   "start.choose_action": "Choose an action:",
   "start.choose_add": "Choose what you want to add:",
   "start.home": "🏠 Home",

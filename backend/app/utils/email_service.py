@@ -18,10 +18,10 @@ def send_password_reset_email(user):
 
     send_email(
         to=user.email,
-        subject="Новий пароль для NosiFit",
+        subject="Новий пароль для nosifit",
         text=(
             "Привіт!\n\n"
-            f"Щоб задати новий пароль для NosiFit, відкрийте посилання:\n{reset_url}\n\n"
+            f"Щоб задати новий пароль для nosifit, відкрийте посилання:\n{reset_url}\n\n"
             "Воно діє 1 годину. Якщо ви не просили змінити пароль, просто не зважайте на цей лист."
         ),
     )

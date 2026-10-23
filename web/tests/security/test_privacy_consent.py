@@ -52,7 +52,7 @@ def _post(client, path, **kwargs):
 
 @pytest.mark.parametrize(
     "locale, heading",
-    [("uk", "Політика конфіденційності NosiFit"), ("en", "NosiFit Privacy Policy"), ("pl", "NosiFit Privacy Policy"), ("ru", "NosiFit Privacy Policy")],
+    [("uk", "Політика конфіденційності nosifit"), ("en", "nosifit Privacy Policy"), ("pl", "nosifit Privacy Policy"), ("ru", "nosifit Privacy Policy")],
 )
 def test_privacy_page_is_public_in_every_language(app, client, locale, heading):
     app.config.update(PRIVACY_CONTROLLER_NAME="Jane Owner", PRIVACY_CONTACT_EMAIL="privacy@example.com")

@@ -67,7 +67,7 @@ const ICON_MAP: Record<string, string> = {
     training: "exercise"
 };
 
-const MAX_RECOMMENDATIONS = 4;
+const MAX_RECOMMENDATIONS = 5;
 
 const MUSCLE_KEYS: Record<string, string> = {
     chest: "chest",

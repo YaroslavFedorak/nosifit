@@ -99,7 +99,7 @@ def link_page():
 
     if not current_user.is_authenticated:
         flash(
-            "Увійдіть у свій акаунт NosiFit (паролем, Google чи GitHub), "
+            "Увійдіть у свій акаунт nosifit (паролем, Google чи GitHub), "
             "щоб підключити Telegram.",
             "info",
         )

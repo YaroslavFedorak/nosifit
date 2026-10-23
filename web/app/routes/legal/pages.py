@@ -105,10 +105,10 @@ def consent():
     next_url = _safe_next(request.values.get("next"))
     if request.method == "POST":
         if too_young(current_user):
-            flash(f"NosiFit доступний з {MIN_ACCOUNT_AGE} років: у профілі вказано менший вік.", "error")
+            flash(f"nosifit доступний з {MIN_ACCOUNT_AGE} років: у профілі вказано менший вік.", "error")
             return redirect(url_for("legal.consent", next=next_url))
         if not (consent_given(request.form) and age_confirmed(request.form)):
-            flash("Щоб користуватися NosiFit, потрібні обидві згоди та підтвердження віку.", "error")
+            flash("Щоб користуватися nosifit, потрібні обидві згоди та підтвердження віку.", "error")
             return redirect(url_for("legal.consent", next=next_url))
         record_consent(current_user)
         return redirect(next_url)

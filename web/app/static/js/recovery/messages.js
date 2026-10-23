@@ -28,26 +28,6 @@ export const RECOVERY_MESSAGES = {
             return translate("recovery", "habits.scoreLabel");
         }
     },
-    score: {
-        get empty() {
-            return translate("recovery", "score.empty");
-        },
-        get title() {
-            return translate("recovery", "score.title");
-        },
-        get sleepLabel() {
-            return translate("recovery", "score.labels.sleep");
-        },
-        get habitsLabel() {
-            return translate("recovery", "score.labels.habits");
-        },
-        get trainingLabel() {
-            return translate("recovery", "score.labels.training");
-        },
-        get energyLabel() {
-            return translate("recovery", "score.labels.energy");
-        }
-    },
     heatmap: {
         get empty() {
             return translate("recovery", "heatmap.empty");

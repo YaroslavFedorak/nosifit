@@ -1,4 +1,5 @@
 from flask import g
+from backend.app.utils import clock
 from backend.app.utils.profile_options import (
     ACTIVITIES,
     EXPERIENCES,
@@ -15,6 +16,7 @@ from .locale import (
     DEFAULT_LOCALE,
     SUPPORTED_LOCALES,
     get_translation,
+    load_translation,
     resolve_locale,
 )
 
@@ -131,8 +133,17 @@ def init_i18n(app):
                 **params,
             )
 
+        def ui_strings(*namespaces: str) -> dict:
+            """Strings of the app UI (namespace "ui"), plus any other namespaces a page needs."""
+            strings = load_translation(locale, "ui")
+            for namespace in namespaces:
+                strings[namespace] = load_translation(locale, namespace)
+            return strings
+
         return {
             "locale": locale,
+            "ui_strings": ui_strings,
+            "ui_today": lambda: clock.today().isoformat(),
             "supported_locales": SUPPORTED_LOCALES,
             "t": common_t,
             "translate": translate,

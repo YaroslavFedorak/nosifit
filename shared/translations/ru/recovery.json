@@ -240,22 +240,6 @@
         "core": "core",
         "abs": "mięśnie brzucha"
     },
-    "score": {
-        "empty": "Brak danych o ocenie regeneracji",
-        "title": "Ocena regeneracji",
-        "labels": {
-            "sleep": "Sen",
-            "training": "Trening",
-            "energy": "Energia",
-            "habits": "Nawyki"
-        },
-        "status": {
-            "attention": "Wymaga uwagi",
-            "medium": "Umiarkowanie",
-            "good": "Dobrze",
-            "excellent": "Doskonały"
-        }
-    },
     "recommendations": {
         "empty": "Brak rekomendacji w tej chwili",
         "title": "Rekomendacje",
@@ -309,7 +293,6 @@
         "sections": {
             "habits": "Nawyki",
             "sleep": "Sen",
-            "score": "Metryki",
             "recommendations": "Rekomendacje"
         },
         "actions": {

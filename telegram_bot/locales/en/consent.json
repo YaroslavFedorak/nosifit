@@ -1,9 +1,9 @@
 {
-  "consent.text": "🔒 <b>Consent to data processing</b>\n\nBefore using NosiFit, read the <a href=\"{policy_url}\">privacy policy</a>.\n\nBy pressing the button below you:\n1) confirm that you are at least 16 years old;\n2) accept the privacy policy;\n3) give your <b>explicit consent</b> to the processing of your health data (weight, nutrition, workouts, sleep, habits) for the service to work and for its aggregated internal statistics.\n\nWithdraw consent: /withdraw. Get your data: /mydata.",
+  "consent.text": "🔒 <b>Consent to data processing</b>\n\nBefore using nosifit, read the <a href=\"{policy_url}\">privacy policy</a>.\n\nBy pressing the button below you:\n1) confirm that you are at least 16 years old;\n2) accept the privacy policy;\n3) give your <b>explicit consent</b> to the processing of your health data (weight, nutrition, workouts, sleep, habits) for the service to work and for its aggregated internal statistics.\n\nWithdraw consent: /withdraw. Get your data: /mydata.",
   "consent.btn.accept": "✅ I'm 16+, I accept both consents",
   "consent.saved": "✅ Thank you! Your consent is saved, you can continue.",
   "consent.mydata": "📦 <b>Your data</b>\n\nYou can download a file with all your data on the website: {site}/privacy/my-data\n\nIf you signed in only via Telegram and have no password:\n1) open {site}/auth/reset and enter the email of your account;\n2) set a password with the link from the message;\n3) sign in on the website and open the link above.\n\nThe bot does not send the data file to the chat, so your data does not stay in the Telegram history.",
   "consent.withdraw_prompt": "⚠️ <b>Withdraw consent to the processing of health data?</b>\n\nThe following will be deleted immediately: nutrition, water, weight, workouts, sleep, habits, profile data and the internal statistics about your actions. The account and sign-in methods will stay.\nThis cannot be undone. Save your data first: /mydata",
   "consent.btn.withdraw": "Withdraw and delete records",
-  "consent.withdrawn": "Consent withdrawn, records deleted. The account stays: to use NosiFit again, give your consent: /consent"
+  "consent.withdrawn": "Consent withdrawn, records deleted. The account stays: to use nosifit again, give your consent: /consent"
 }

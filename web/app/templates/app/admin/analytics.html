@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <meta name="robots" content="noindex,nofollow" />
     {% include "components/brand_head.html" %}
-    <title>Аналітика · NosiFit</title>
+    <title>Аналітика · nosifit</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/core/reset.css') }}" />
     <link rel="stylesheet" href="{{ url_for('static', filename='css/core/variables.css') }}" />
     <link rel="stylesheet" href="{{ url_for('static', filename='css/pages/admin/analytics.css') }}" />
@@ -13,7 +13,7 @@
   <body class="admin-page">
     <main class="adm" id="adm" data-url="{{ url_for('admin_analytics.analytics_data') }}">
       <header class="adm-head">
-        <h1 class="adm-title">Аналітика NosiFit</h1>
+        <h1 class="adm-title">Аналітика nosifit</h1>
         <nav class="adm-ranges" aria-label="Період">
           {% for key in ranges %}
           <button type="button" class="adm-range{% if key == '30' %} is-active{% endif %}" data-range="{{ key }}">

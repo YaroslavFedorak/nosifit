@@ -1,0 +1,14 @@
+/* The weekly plan editor and its exercise picker, opened from the Training tab. */
+@import "./base/variables.css";
+@import "./base/buttons.css";
+@import "./modals/modal_base.css";
+@import "./modals/modal_exercise_picker.css";
+@import "./modals/modal_form.css";
+@import "./modals/modal_confirm.css";
+@import "./modals/plan/cards.css";
+@import "./modals/plan/modal.css";
+
+/* The app shell does not scroll the page, so a tall editor scrolls inside its own box. */
+.tr-modal { padding: 12px; }
+.tr-modal .tr-modal-content { max-height: calc(100dvh - 24px); overflow-y: auto; overscroll-behavior: contain; }
+#tr-plan-modal .tr-plan-exercises { max-height: none; overflow: visible; }
