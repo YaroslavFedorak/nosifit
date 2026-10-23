@@ -144,7 +144,7 @@ def test_logo_takes_a_signed_in_user_to_the_landing(app, client, user):
     log_in(client)
 
     dashboard = client.get("/dashboard/").get_data(as_text=True)
-    assert 'href="/?home=1" class="cmp-sidebar-brand"' in dashboard
+    assert 'href="/?home=1" class="ux-brand"' in dashboard
 
     response = client.get("/?home=1")
     assert response.status_code == 200

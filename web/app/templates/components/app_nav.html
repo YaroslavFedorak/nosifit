@@ -1,0 +1,46 @@
+{# App navigation: compact header (phones), pill tab bar, icon rail (landscape phones), sidebar (laptops).
+   The five tabs are the whole app; everything else is reached from the profile. #}
+{% set nav_active = {
+  "dashboard": "home", "training": "train", "training_plan": "train", "training_explanation": "train",
+  "nutrition": "food", "recovery": "rec", "profile": "me",
+}.get(active, "me" if active else "") %}
+{% macro tab_icon(name) -%}
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+  {%- if name == "home" -%}<path d="M4 10.5L12 4l8 6.5V20a1 1 0 0 1-1 1h-4.5v-6h-5v6H5a1 1 0 0 1-1-1z"/>
+  {%- elif name == "train" -%}<path d="M6.5 6.5v11M3.5 9v6M17.5 6.5v11M20.5 9v6M6.5 12h11"/>
+  {%- elif name == "food" -%}<path d="M7 3v7a2 2 0 0 0 2 2v9M11 3v7a2 2 0 0 1-2 2M7 3v4M11 3v4M17 21V3c-2.2 1.2-3.3 3.8-3.3 7.5H17"/>
+  {%- elif name == "rec" -%}<path d="M20.4 6.6a4.9 4.9 0 0 0-7.5-1.1L12 6.4l-.9-.9a4.9 4.9 0 0 0-7 6.9l7.9 8 7.9-8a4.9 4.9 0 0 0 .5-5.8z"/><path d="M3.5 12.5h4l1.6-3 2.8 6 1.6-3h6.9"/>
+  {%- elif name == "me" -%}<circle cx="12" cy="8" r="4"/><path d="M4.5 20.5c1.4-3.6 4.2-5.5 7.5-5.5s6.1 1.9 7.5 5.5"/>
+  {%- elif name == "fire" -%}<path d="M12 21c3.6 0 6-2.5 6-6 0-3.3-2.2-5.6-3.4-8.5-.4 2-1.4 3.2-2.6 3.8.1-2.8-1-5.3-3.5-7.3.2 3.8-4.5 6.6-4.5 12 0 3.5 2.4 6 6 6z" fill="currentColor" stroke="none"/>
+  {%- elif name == "crown" -%}<path d="M3.5 8l4.5 4 4-6 4 6 4.5-4-2 11h-13z"/>
+  {%- endif -%}
+</svg>
+{%- endmacro %}
+{% macro brand() -%}
+<a href="{{ landing_url() }}" class="ux-brand" title="{{ common_t('navigation.home') }}">
+  <img class="ux-lockup" src="{{ url_for('static', filename='img/brand/nosifit-lockup-on-dark.svg') }}" alt="nosifit" width="97" height="22">
+  <img class="ux-mark" src="{{ url_for('static', filename='img/brand/nosifit-mark-on-dark.svg') }}" alt="nosifit" width="30" height="30">
+</a>
+{%- endmacro %}
+{% macro chips() -%}
+<span class="ux-chip streak" data-streak title="{{ translate('ui', 'aria.streak') }}" hidden>{{ tab_icon("fire") }}<b></b></span>
+<a class="ux-chip pro" href="/premium" title="{{ common_t('navigation.premium') }}">{{ tab_icon("crown") }}PRO</a>
+{%- endmacro %}
+
+<header class="ux-top">
+  {{ brand() }}
+  <span class="sp"></span>
+  {{ chips() }}
+</header>
+
+<nav class="ux-nav" aria-label="{{ translate('ui', 'aria.nav') }}">
+  <div class="ux-nav-brand">{{ brand() }}</div>
+  <div class="ux-bar">
+    {% for key, href in (("home", "/dashboard/"), ("train", "/training/"), ("food", "/nutrition/"), ("rec", "/recovery/"), ("me", "/profile/")) %}
+    <a class="ux-tab {% if nav_active == key %}on{% endif %}" href="{{ href }}" {% if nav_active == key %}aria-current="page"{% endif %} aria-label="{{ translate('ui', 'nav.' ~ key) }}">
+      {{ tab_icon(key) }}<span>{{ translate('ui', 'nav.' ~ key) }}</span>
+    </a>
+    {% endfor %}
+  </div>
+  <div class="ux-nav-foot">{{ chips() }}</div>
+</nav>
