@@ -30,9 +30,9 @@ def _notify_old_address(old_email, new_email):
     enqueue_notice(
         "email_changed",
         to=old_email,
-        subject="Email вашого акаунта NosiFit змінено",
+        subject="Email вашого акаунта nosifit змінено",
         text=(
-            f"Email вашого акаунта NosiFit змінено на {new_email}.\n\n"
+            f"Email вашого акаунта nosifit змінено на {new_email}.\n\n"
             "Якщо це були не ви, негайно зверніться до підтримки."
         ),
     )

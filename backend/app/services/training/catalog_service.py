@@ -91,3 +91,11 @@ def catalog_snapshot():
         ]
         _catalog_cache["key"] = key
     return _catalog_cache["rows"]
+
+
+def primary_muscles():
+    """slug -> the exercise's first primary muscle (None when it has none)."""
+    return {
+        slug: (muscles or [None])[0]
+        for slug, muscles in db.session.query(Exercise.slug, Exercise.muscles_primary).all()
+    }

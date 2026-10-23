@@ -387,9 +387,10 @@ def test_username_is_escaped_in_html(client, user):
     login(client)
     client.post("/profile/update_full", data={"username": "<script>alert(1)</script>"})
 
-    page = client.get("/profile/").get_data(as_text=True)
+    for path in ("/profile/", "/profile/account"):
+        page = client.get(path).get_data(as_text=True)
 
-    assert "<script>alert(1)</script>" not in page
+        assert "<script>alert(1)</script>" not in page
 
 
 def test_plan_owner_cannot_be_overposted(client, user, victim):

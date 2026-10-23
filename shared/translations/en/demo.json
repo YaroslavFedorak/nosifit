@@ -1,8 +1,8 @@
 {
     "hero": {
-        "eyebrow": "NosiFit Demo",
-        "title": "See how NosiFit brings training, nutrition and recovery together",
-        "lead": "This is a realistic NosiFit dashboard preview. It shows what you can log every day and how those entries become a clear picture of your current state.",
+        "eyebrow": "nosifit Demo",
+        "title": "See how nosifit brings training, nutrition and recovery together",
+        "lead": "This is a realistic nosifit dashboard preview. It shows what you can log every day and how those entries become a clear picture of your current state.",
         "badge": "Demo data only",
         "cta": "Create account"
     },
@@ -82,7 +82,7 @@
         "stress": "Stress",
         "stressValue": "Low",
         "stressStatus": "no sharp changes",
-        "description": "Recovery is more than one number. NosiFit places sleep, energy and stress next to training load."
+        "description": "Recovery is more than one number. nosifit places sleep, energy and stress next to training load."
     },
     "habits": {
         "eyebrow": "Recovery habits",
@@ -104,13 +104,13 @@
     "register": {
         "eyebrow": "After registration",
         "title": "These data become yours",
-        "text": "You can log your own workouts, meals, water, sleep and recovery habits. NosiFit brings them into one dashboard and shows how they change over time.",
-        "cta": "Start with NosiFit"
+        "text": "You can log your own workouts, meals, water, sleep and recovery habits. nosifit brings them into one dashboard and shows how they change over time.",
+        "cta": "Start with nosifit"
     },
     "guide": {
         "eyebrow": "How it works",
         "title": "One day — one clear picture",
-        "text": "NosiFit is not just a collection of numbers. You log the important parts of your day and the dashboard brings them into one context.",
+        "text": "nosifit is not just a collection of numbers. You log the important parts of your day and the dashboard brings them into one context.",
         "training": {
             "title": "Log your workout",
             "text": "Add exercises, sets and reps. The session shows what you actually did today and the load you received."
@@ -131,7 +131,7 @@
     "explainer": {
         "eyebrow": "What happens inside",
         "title": "Your data does not stay isolated",
-        "text": "As you regularly log training, food and recovery, NosiFit can show more than what happened today. It can make relationships between those inputs visible.",
+        "text": "As you regularly log training, food and recovery, nosifit can show more than what happened today. It can make relationships between those inputs visible.",
         "data": {
             "title": "You log facts",
             "text": "Exercises, meals, water, sleep and habits are simple entries you can add throughout the day."

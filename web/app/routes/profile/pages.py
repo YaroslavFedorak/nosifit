@@ -14,5 +14,17 @@ def profile_page():
         user=current_user,
         profile=current_user.profile,
         active="profile",
+    )
+
+
+@profile_pages_bp.get("/account")
+@login_required
+def account_page():
+    """Personal details, sign-in methods, email, password, data and account deletion."""
+    return render_template(
+        "app/profile/account.html",
+        user=current_user,
+        profile=current_user.profile,
+        active="profile",
         connected=connected_accounts_context(current_user),
     )

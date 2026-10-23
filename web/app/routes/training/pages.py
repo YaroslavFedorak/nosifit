@@ -1,6 +1,8 @@
 from flask import Blueprint, render_template
 from flask_login import login_required, current_user
 
+from backend.app.services.training import catalog_service
+
 training_pages_bp = Blueprint("training_pages", __name__, url_prefix="/training")
 
 
@@ -11,4 +13,5 @@ def training_page():
         "app/training/training.html",
         user=current_user,
         active="training",
+        exercise_muscles=catalog_service.primary_muscles(),
     )

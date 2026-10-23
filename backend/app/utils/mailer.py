@@ -32,7 +32,7 @@ def _sender() -> dict:
     if not from_email:
         logger.error("MAIL_FROM is not set; the email API needs a verified sender")
         raise EmailSendError("Email sender is not configured")
-    return {"email": from_email, "name": from_name or "NosiFit"}
+    return {"email": from_email, "name": from_name or "nosifit"}
 
 
 def _post(service: str, url: str, payload: dict, headers: dict) -> None:
@@ -115,6 +115,6 @@ def send_email(to: str, subject: str, text: str, html: str | None = None) -> Non
 def send_email_code(email, code):
     send_email(
         to=email,
-        subject="Код підтвердження NosiFit",
+        subject="Код підтвердження nosifit",
         text=f"Ваш код підтвердження: {code}",
     )

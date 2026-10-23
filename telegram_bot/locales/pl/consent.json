@@ -5,5 +5,5 @@
   "consent.mydata": "📦 <b>Twoje dane</b>\n\nPlik ze wszystkimi Twoimi danymi możesz pobrać na stronie: {site}/privacy/my-data\n\nJeśli logowałeś się tylko przez Telegram i nie masz hasła:\n1) otwórz {site}/auth/reset i podaj e-mail swojego konta;\n2) ustaw hasło z linku w wiadomości;\n3) zaloguj się na stronie i otwórz link powyżej.\n\nBot nie wysyła pliku z danymi na czat, żeby Twoje dane nie zostały w historii Telegrama.",
   "consent.withdraw_prompt": "⚠️ <b>Wycofać zgodę na przetwarzanie danych o zdrowiu?</b>\n\nNatychmiast zostaną usunięte: odżywianie, woda, waga, treningi, sen, nawyki, dane profilu i wewnętrzne statystyki Twoich działań. Konto i sposoby logowania pozostaną.\nUsunięcia nie można cofnąć. Zapisz dane wcześniej: /mydata",
   "consent.btn.withdraw": "Wycofaj i usuń zapisy",
-  "consent.withdrawn": "Zgoda wycofana, zapisy usunięte. Konto pozostało: aby znów korzystać z NosiFit, wyraź zgodę: /consent"
+  "consent.withdrawn": "Zgoda wycofana, zapisy usunięte. Konto pozostało: aby znów korzystać z nosifit, wyraź zgodę: /consent"
 }

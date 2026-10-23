@@ -433,12 +433,12 @@ def _display(username: str | None, name: str | None) -> str:
 def send_telegram_registration_code(email: str, code: str) -> None:
     send_email(
         to=email,
-        subject="Код підтвердження NosiFit (Telegram)",
+        subject="Код підтвердження nosifit (Telegram)",
         text=(
-            "Хтось (імовірно ви) створює акаунт NosiFit через Telegram-бота "
+            "Хтось (імовірно ви) створює акаунт nosifit через Telegram-бота "
             "з цією адресою.\n\n"
             f"Код підтвердження: {code}\n\n"
-            "Код дійсний 10 хвилин. Введіть його лише в чаті з ботом NosiFit "
+            "Код дійсний 10 хвилин. Введіть його лише в чаті з ботом nosifit "
             "і нікому його не повідомляйте: з ним можна створити акаунт на "
             "вашу пошту.\n\n"
             "Якщо це були не ви — просто проігноруйте цей лист."
@@ -451,12 +451,12 @@ def send_telegram_existing_account_notice(email: str) -> None:
     # the bot answers the same either way and reveals nothing.
     send_email(
         to=email,
-        subject="Вхід у NosiFit через Telegram",
+        subject="Вхід у nosifit через Telegram",
         text=(
-            "Хтось (імовірно ви) намагався створити акаунт NosiFit через "
-            "Telegram-бота з цією адресою. З нею вже пов'язаний акаунт NosiFit, "
+            "Хтось (імовірно ви) намагався створити акаунт nosifit через "
+            "Telegram-бота з цією адресою. З нею вже пов'язаний акаунт nosifit, "
             "тому новий акаунт не створено.\n\n"
-            "Щоб користуватися ботом зі своїм акаунтом: увійдіть на сайт NosiFit, "
+            "Щоб користуватися ботом зі своїм акаунтом: увійдіть на сайт nosifit, "
             "відкрийте Профіль → Підключені акаунти → «Підключити Telegram», "
             "або натисніть у боті «Підключити акаунт».\n\n"
             "Якщо це були не ви — просто проігноруйте цей лист."
@@ -472,9 +472,9 @@ def notify_telegram_linked(user, username: str | None) -> None:
     enqueue_notice(
         "telegram_linked",
         to=user.email,
-        subject="До вашого акаунта NosiFit підключено Telegram",
+        subject="До вашого акаунта nosifit підключено Telegram",
         text=(
-            f"До вашого акаунта NosiFit підключено Telegram "
+            f"До вашого акаунта nosifit підключено Telegram "
             f"({_display(username, None)}). Тепер через цього Telegram-бота "
             "можна входити у ваш акаунт.\n\n"
             "Якщо це були не ви: увійдіть на сайт, відключіть Telegram у "
@@ -487,9 +487,9 @@ def notify_telegram_unlinked(user) -> None:
     enqueue_notice(
         "telegram_unlinked",
         to=user.email,
-        subject="Telegram відключено від акаунта NosiFit",
+        subject="Telegram відключено від акаунта nosifit",
         text=(
-            "Від вашого акаунта NosiFit відключено Telegram. Вхід через "
+            "Від вашого акаунта nosifit відключено Telegram. Вхід через "
             "Telegram-бота більше не працює.\n\n"
             "Якщо це були не ви, негайно змініть пароль."
         ),

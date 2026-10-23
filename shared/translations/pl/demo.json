@@ -1,8 +1,8 @@
 {
     "hero": {
-        "eyebrow": "Demo NosiFit",
-        "title": "Zobacz, jak NosiFit łączy trening, odżywianie i regenerację",
-        "lead": "To realistyczny podgląd panelu NosiFit. Pokazuje, co możesz zapisywać każdego dnia i jak dane tworzą czytelny obraz Twojego stanu.",
+        "eyebrow": "Demo nosifit",
+        "title": "Zobacz, jak nosifit łączy trening, odżywianie i regenerację",
+        "lead": "To realistyczny podgląd panelu nosifit. Pokazuje, co możesz zapisywać każdego dnia i jak dane tworzą czytelny obraz Twojego stanu.",
         "badge": "Tylko dane demo",
         "cta": "Utwórz konto"
     },
@@ -82,7 +82,7 @@
         "stress": "Stres",
         "stressValue": "Niski",
         "stressStatus": "bez nagłych zmian",
-        "description": "Regeneracja to więcej niż jedna liczba. NosiFit pokazuje sen, energię i stres obok obciążenia treningowego."
+        "description": "Regeneracja to więcej niż jedna liczba. nosifit pokazuje sen, energię i stres obok obciążenia treningowego."
     },
     "habits": {
         "eyebrow": "Nawyki regeneracyjne",
@@ -104,13 +104,13 @@
     "register": {
         "eyebrow": "Po rejestracji",
         "title": "Te dane będą Twoje",
-        "text": "Będziesz zapisywać własne treningi, posiłki, wodę, sen i nawyki regeneracyjne. NosiFit połączy je w jednym panelu i pokaże zmiany w czasie.",
-        "cta": "Zacznij z NosiFit"
+        "text": "Będziesz zapisywać własne treningi, posiłki, wodę, sen i nawyki regeneracyjne. nosifit połączy je w jednym panelu i pokaże zmiany w czasie.",
+        "cta": "Zacznij z nosifit"
     },
     "guide": {
         "eyebrow": "Jak to działa",
         "title": "Jeden dzień — jeden czytelny obraz",
-        "text": "NosiFit to nie tylko zbiór liczb. Zapisujesz najważniejsze elementy dnia, a panel łączy je w jeden kontekst.",
+        "text": "nosifit to nie tylko zbiór liczb. Zapisujesz najważniejsze elementy dnia, a panel łączy je w jeden kontekst.",
         "training": {
             "title": "Zapisz trening",
             "text": "Dodawaj ćwiczenia, serie i powtórzenia. Sesja pokazuje, co naprawdę zrobiłeś dzisiaj i jakie obciążenie otrzymałeś."
@@ -131,7 +131,7 @@
     "explainer": {
         "eyebrow": "Co dzieje się wewnątrz",
         "title": "Twoje dane nie pozostają osobnymi wpisami",
-        "text": "Gdy regularnie zapisujesz trening, jedzenie i regenerację, NosiFit może pokazać więcej niż tylko dzisiejszy stan — może ujawnić zależności między danymi.",
+        "text": "Gdy regularnie zapisujesz trening, jedzenie i regenerację, nosifit może pokazać więcej niż tylko dzisiejszy stan — może ujawnić zależności między danymi.",
         "data": {
             "title": "Zapisujesz fakty",
             "text": "Ćwiczenia, posiłki, wodę, sen i nawyki dodajesz jako proste wpisy w ciągu dnia."

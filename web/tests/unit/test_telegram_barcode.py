@@ -195,7 +195,7 @@ def test_not_found_leads_to_an_own_product_with_the_barcode(tg, off, photos):
     off.missing(MISSING)
     start_breakfast(tg)
     tg.message(MISSING)
-    assert "немає ні в каталозі NosiFit, ні в Open Food Facts" in text(tg)
+    assert "немає ні в каталозі nosifit, ні в Open Food Facts" in text(tg)
 
     press(tg, "Створити свій продукт")
     assert MISSING in text(tg)

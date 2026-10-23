@@ -279,7 +279,7 @@ def test_login_uses_the_numeric_telegram_id(bot, backend):
 
     (user,), = calls["login"]
     assert user == TelegramUser(id=111, username="alice_tg", name="Alice")
-    assert "✅ Ви увійшли в NosiFit." in bot.texts()
+    assert "✅ Ви увійшли в nosifit." in bot.texts()
     assert any(isinstance(c, AnswerCallbackQuery) for c in bot.session.calls)
     assert runtime.is_authenticated(111)
 
@@ -348,7 +348,7 @@ def test_registration_flow(bot, backend):
     assert (user.id, email, code) == (111, "new.user@example.com", "123456")
     # The code message is deleted from the chat.
     assert any(isinstance(c, DeleteMessage) for c in bot.session.calls)
-    assert any("акаунт NosiFit створено" in t for t in bot.texts())
+    assert any("акаунт nosifit створено" in t for t in bot.texts())
     assert runtime.is_authenticated(111)
 
 

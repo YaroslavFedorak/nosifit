@@ -372,7 +372,7 @@ def test_network_error_is_human(tg, catalog):
     log_set(tg, "жим штанги лежачи", "Жим штанги лежачи", "1", "10")
     tg.http.down = True
     tg.message("60")
-    assert text(tg) == "Не вдалося підключитися до NosiFit."
+    assert text(tg) == "Не вдалося підключитися до nosifit."
     tg.http.down = False
     assert sessions(tg) == []
 

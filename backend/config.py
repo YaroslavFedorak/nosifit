@@ -73,7 +73,7 @@ class Config:
     MAIL_USE_SSL = False
     MAIL_USERNAME = os.getenv("MAIL_USERNAME")
     MAIL_PASSWORD = os.getenv("MAIL_PASSWORD")
-    MAIL_DEFAULT_SENDER = ("NosiFit", os.getenv("MAIL_USERNAME"))
+    MAIL_DEFAULT_SENDER = ("nosifit", os.getenv("MAIL_USERNAME"))
 
     # --- Cookies -----------------------------------------------------------
     # Secure cookies only travel over HTTPS, so they are on in production and

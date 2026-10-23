@@ -1,5 +1,5 @@
 {
-  "err.connect": "Could not connect to NosiFit.",
+  "err.connect": "Could not connect to nosifit.",
   "err.session_expired": "Your session has expired. Log in again: /login",
   "err.generic": "Something went wrong. Please try again.",
   "err.login_first": "Log in first: /login",
@@ -25,6 +25,6 @@
   "err.invalid_product_data": "The data about this product in the database is implausible. Create your own product from the label.",
   "err.duplicate_barcode": "You already have a product with this barcode.",
   "err.rate_limited": "Too many requests. Try again in a minute.",
-  "err.under_minimum_age": "NosiFit is available from age 16: your profile has a lower age.",
+  "err.under_minimum_age": "nosifit is available from age 16: your profile has a lower age.",
   "err.consent_required": "To continue, accept the privacy policy and give your consent to the processing of health data: /consent"
 }

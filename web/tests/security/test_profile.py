@@ -26,6 +26,7 @@ def test_profile_page(client, user):
     response = client.get("/profile/")
 
     assert response.status_code == 200
+    assert client.get("/profile/account").status_code == 200
 
 
 def test_profile_update_full(client, user):

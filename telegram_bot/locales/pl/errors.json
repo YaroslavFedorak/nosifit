@@ -1,5 +1,5 @@
 {
-  "err.connect": "Nie udało się połączyć z NosiFit.",
+  "err.connect": "Nie udało się połączyć z nosifit.",
   "err.session_expired": "Sesja wygasła. Zaloguj się ponownie: /login",
   "err.generic": "Coś poszło nie tak. Spróbuj ponownie.",
   "err.login_first": "Najpierw się zaloguj: /login",
@@ -25,6 +25,6 @@
   "err.invalid_product_data": "Dane o tym produkcie w bazie są nieprawdopodobne. Utwórz własny produkt na podstawie etykiety.",
   "err.duplicate_barcode": "Masz już produkt z tym kodem kreskowym.",
   "err.rate_limited": "Zbyt wiele żądań. Spróbuj za minutę.",
-  "err.under_minimum_age": "NosiFit jest dostępny od 16 lat: w Twoim profilu podano niższy wiek.",
+  "err.under_minimum_age": "nosifit jest dostępny od 16 lat: w Twoim profilu podano niższy wiek.",
   "err.consent_required": "Aby kontynuować, zaakceptuj politykę prywatności i wyraź zgodę na przetwarzanie danych o zdrowiu: /consent"
 }
