@@ -803,3 +803,15 @@ body.ux:not(.ux-fit) .ux-scroll .page-content {
 
 /* the shell's own background replaces the old glow layers */
 body.ux .bg-glow-static { display: none; }
+
+/* ---------- Phones: the tab scrolls, tiles keep a fixed compact height, the tab bar stays at the bottom ---------- */
+.f-p body.ux-fit, .f-s body.ux-fit { height: auto; min-height: 100dvh; overflow: visible; }
+html.f-p.ux-root:has(body.ux-fit), html.f-s.ux-root:has(body.ux-fit) { height: auto; overflow: visible; }
+html.ux-root:has(.ux-sheet.show) { overflow: hidden; }
+.f-p body.ux-fit .ux-app, .f-s body.ux-fit .ux-app { display: block; height: auto; }
+.f-s body.ux-fit .ux-top { display: flex; }
+.f-p body.ux-fit .ux-nav, .f-s body.ux-fit .ux-nav { position: fixed; left: 0; right: 0; bottom: 0; z-index: 25; }
+.f-p body.ux-fit .ux-main, .f-s body.ux-fit .ux-main { padding-top: 4px; padding-bottom: calc(86px + env(safe-area-inset-bottom, 0px)); }
+.f-p .pg-home, .f-s .pg-home { grid-template-rows: auto repeat(4, 112px) auto; }
+.f-p .pg-mod, .f-s .pg-mod { grid-template-rows: 214px 96px 236px auto; }
+.f-p .pg-me, .f-s .pg-me { grid-template-rows: auto auto 236px auto; }
