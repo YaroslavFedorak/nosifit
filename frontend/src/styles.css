@@ -1,0 +1,201 @@
+@import "tailwindcss";
+
+/* Inter (variable). Only the scripts the app ships in: Latin, Latin Extended
+   (Polish) and Cyrillic (Ukrainian, Russian). */
+@font-face {
+  font-family: "Inter Variable";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url("../node_modules/@fontsource-variable/inter/files/inter-cyrillic-wght-normal.woff2") format("woff2-variations");
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: "Inter Variable";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url("../node_modules/@fontsource-variable/inter/files/inter-latin-ext-wght-normal.woff2") format("woff2-variations");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: "Inter Variable";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url("../node_modules/@fontsource-variable/inter/files/inter-latin-wght-normal.woff2") format("woff2-variations");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@theme {
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
+  /* Three breakpoints, nothing else: mobile is the default (< 768px),
+     `tab:` starts at 768px, `desk:` at 1100px. */
+  --breakpoint-*: initial;
+  --breakpoint-tab: 48rem;
+  --breakpoint-desk: 68.75rem;
+
+  /* Surfaces. */
+  --color-canvas: #07090d;
+  --color-surface: #0e1219;
+  --color-surface-2: #151b26;
+  --color-surface-3: #1c2431;
+  --color-line: rgb(255 255 255 / 0.075);
+  --color-line-strong: rgb(255 255 255 / 0.14);
+
+  /* Text (muted and soft both stay above 4.5:1 on surface). */
+  --color-fg: #f3f5f7;
+  --color-fg-muted: #a6afbc;
+  --color-fg-soft: #8792a2;
+
+  /* One accent colour per module, shared with the classic interface. */
+  --color-training: #f4c84a;
+  --color-nutrition: #a78bf2;
+  --color-recovery: #42c7d8;
+  --color-water: #4aa8ff;
+
+  --color-ok: #65d6a0;
+  --color-warn: #f3a45d;
+  --color-danger: #f06f7a;
+
+  /* Type: 12px (text-xs) is the floor. Badge labels are the only 11px text. */
+  --text-badge: 0.6875rem;
+  --text-badge--line-height: 1rem;
+
+  /* Touch targets: 44px minimum, 52px for the main action. */
+  --spacing-tap: 2.75rem;
+  --spacing-tap-lg: 3.25rem;
+  --spacing-tabbar: 4rem;
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+    -webkit-text-size-adjust: 100%;
+    scrollbar-color: rgb(255 255 255 / 0.18) transparent;
+  }
+  html.scroll-locked {
+    overflow: hidden;
+  }
+  body {
+    background: var(--color-canvas);
+    color: var(--color-fg);
+    font-family: var(--font-sans);
+    font-feature-settings: "cv11", "ss03";
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overscroll-behavior-y: none;
+  }
+  button:not(:disabled),
+  [role="button"],
+  summary {
+    cursor: pointer;
+  }
+  a,
+  button {
+    -webkit-tap-highlight-color: transparent;
+  }
+  :focus-visible {
+    outline: 2px solid color-mix(in oklab, var(--color-fg) 75%, transparent);
+    outline-offset: 2px;
+  }
+  ::selection {
+    background: color-mix(in oklab, var(--color-nutrition) 45%, transparent);
+  }
+  input,
+  select,
+  textarea {
+    font: inherit;
+  }
+}
+
+/* Module accent: components read --accent, never a hard-coded colour. */
+[data-accent="training"] { --accent: var(--color-training); }
+[data-accent="nutrition"] { --accent: var(--color-nutrition); }
+[data-accent="recovery"] { --accent: var(--color-recovery); }
+[data-accent="water"] { --accent: var(--color-water); }
+
+/* Depth is reserved for the hero action and one or two status cards per
+   page. Everything else stays flat. */
+@utility surface-hero {
+  background:
+    radial-gradient(120% 100% at 0% 0%, color-mix(in oklab, var(--accent, var(--color-training)) 20%, transparent), transparent 62%),
+    linear-gradient(160deg, rgb(255 255 255 / 0.07), rgb(255 255 255 / 0.015)),
+    var(--color-surface);
+  border: 1px solid rgb(255 255 255 / 0.11);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.08),
+    0 28px 60px -28px color-mix(in oklab, var(--accent, var(--color-training)) 38%, transparent);
+  backdrop-filter: blur(14px);
+}
+
+@utility surface-glass {
+  background: linear-gradient(160deg, rgb(255 255 255 / 0.06), rgb(255 255 255 / 0.02));
+  border: 1px solid rgb(255 255 255 / 0.09);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.06);
+  backdrop-filter: blur(12px);
+}
+
+@utility accent-strip {
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent, var(--color-training)), transparent 80%);
+  }
+}
+
+@utility btn-hero {
+  background: linear-gradient(180deg, #ffdb6e 0%, var(--color-training) 52%, #e6b52a 100%);
+  color: #17130a;
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.5),
+    0 0 0 1px rgb(244 200 74 / 0.55),
+    0 12px 32px -10px rgb(244 200 74 / 0.55);
+  &:hover { filter: brightness(1.05); }
+  &:active { filter: brightness(0.96); }
+}
+
+/* Module colour helpers: they follow the nearest data-accent. */
+@utility text-accent { color: var(--accent, var(--color-training)); }
+@utility bg-accent { background-color: var(--accent, var(--color-training)); }
+@utility bg-accent-soft { background-color: color-mix(in oklab, var(--accent, var(--color-training)) 14%, transparent); }
+@utility border-accent-soft { border-color: color-mix(in oklab, var(--accent, var(--color-training)) 30%, transparent); }
+@utility chip-accent {
+  color: var(--accent, var(--color-training));
+  background-color: color-mix(in oklab, var(--accent, var(--color-training)) 14%, transparent);
+  border-color: color-mix(in oklab, var(--accent, var(--color-training)) 30%, transparent);
+}
+
+/* Activity levels (0 = nothing, 4 = strongest) in the module's accent. */
+.lv-0 { background: rgb(255 255 255 / 0.07); }
+.lv-1 { background: color-mix(in oklab, var(--accent, var(--color-training)) 28%, transparent); }
+.lv-2 { background: color-mix(in oklab, var(--accent, var(--color-training)) 50%, transparent); }
+.lv-3 { background: color-mix(in oklab, var(--accent, var(--color-training)) 76%, transparent); }
+.lv-4 { background: var(--accent, var(--color-training)); }
+
+@keyframes sheet-up {
+  from { transform: translateY(28px); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+@keyframes fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes rise {
+  from { transform: translateY(8px); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+.anim-sheet { animation: sheet-up 0.24s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.anim-fade { animation: fade 0.18s ease-out both; }
+.anim-rise { animation: rise 0.28s cubic-bezier(0.16, 1, 0.3, 1) both; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-delay: 0ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}

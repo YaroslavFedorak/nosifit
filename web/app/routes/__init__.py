@@ -46,6 +46,8 @@ from .tracker.pages import tracker_pages_bp
 from .admin.analytics import admin_analytics_bp
 from .legal.pages import legal_bp
 
+from .spa.pages import spa_pages_bp
+
 
 
 # Registration order matters only for rules registered twice ("/" and
@@ -84,6 +86,7 @@ PAGE_BLUEPRINTS = (
     tracker_pages_bp,
     admin_analytics_bp,
     legal_bp,
+    spa_pages_bp,
 )
 
 

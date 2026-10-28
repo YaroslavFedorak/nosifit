@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="{{ locale }}">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <meta name="color-scheme" content="dark" />
+    {% include "components/brand_head.html" %}
+    <title>NosiFit</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='app/assets/app.css') }}"
+    />
+  </head>
+  <body>
+    <div id="root"></div>
+    {# Data, not code: the interface reads the language and the user from here. #}
+    <script id="nosi-bootstrap" type="application/json">
+      {{ bootstrap|tojson }}
+    </script>
+    <script
+      type="module"
+      src="{{ url_for('static', filename='app/assets/app.js') }}"
+    ></script>
+  </body>
+</html>
