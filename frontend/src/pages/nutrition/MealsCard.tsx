@@ -87,7 +87,12 @@ function MealRow({ category, meal, onAdd, onEdit }: { category: MealCategory; me
             >
               <span className="min-w-0 text-sm font-medium leading-snug">{item.name}</span>
               <span className="shrink-0 text-right text-xs tabular-nums text-fg-muted">
-                {num(item.amount)} {unitLabel(item.unit, t)} · {num(item.calories, 0)} {t("unit.kcal")}
+                <span className="block">
+                  {num(item.amount)} {unitLabel(item.unit, t)}
+                </span>
+                <span className="block">
+                  {num(item.calories, 0)} {t("unit.kcal")}
+                </span>
               </span>
             </button>
           ))}

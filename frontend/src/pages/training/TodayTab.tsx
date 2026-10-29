@@ -34,7 +34,7 @@ function FocusRail() {
       <h2 id="rail-focus" className="text-base font-semibold">
         {t("tr.tips.focus")}
       </h2>
-      <ul className="mt-3 space-y-2.5">
+      <ul className="mt-3 space-y-3">
         {focus && <GuidanceCard item={focus} tone="accent" />}
         {exercises.map((item) => (
           <ExerciseTip key={item.slug ?? item.exercise} item={item} />
@@ -99,7 +99,7 @@ export function TodayTab() {
     <div className="grid gap-4 desk:grid-cols-[minmax(0,1fr)_22rem] desk:items-start">
       <div className="space-y-4">
         {exercises.length === 0 ? (
-          <Card tone="glass" accent="training">
+          <Card tone="glass" accent="training" strip>
             <EmptyState icon={<Dumbbell size={22} />} title={t("tr.empty.title")} text={t("tr.empty.text")} />
             <div className="space-y-2">
               {addButton}
@@ -112,7 +112,7 @@ export function TodayTab() {
           </Card>
         ) : (
           <>
-            <Card tone="glass" accent="training" className="tab:flex tab:items-center tab:justify-between tab:gap-8">
+            <Card tone="glass" accent="training" strip className="tab:flex tab:items-center tab:justify-between tab:gap-8">
               <div className="grid grid-cols-3 gap-3 tab:max-w-md tab:flex-1">
                 <Stat value={String(exercises.length)} label={t("tr.sum.exercises")} />
                 <Stat value={String(sets)} label={t("tr.sum.sets")} />
@@ -120,8 +120,9 @@ export function TodayTab() {
               </div>
               <div className="mt-4 tab:mt-0 tab:w-64 tab:shrink-0">{addButton}</div>
             </Card>
-            {/* Cards keep a readable width and the grid adds columns as space allows. */}
-            <ul className="grid grid-cols-[repeat(auto-fill,minmax(17rem,1fr))] gap-3">
+            {/* Cards keep a readable width and wrap onto new rows; a card left alone on the
+                last row takes the whole row instead of leaving an empty cell beside it. */}
+            <ul className="flex flex-wrap gap-3">
               {exercises.map((exercise) => (
                 <ExerciseCard
                   key={exercise.id}

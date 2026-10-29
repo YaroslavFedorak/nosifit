@@ -36,6 +36,7 @@ export function VitalsCard({ snapshot }: { snapshot: RecoverySnapshot }) {
     <Card
       tone="hero"
       accent="recovery"
+      strip
       aria-labelledby="vitals-title"
       className="tab:grid tab:grid-cols-[auto_minmax(0,1fr)] tab:items-center tab:gap-x-8"
     >
@@ -45,8 +46,6 @@ export function VitalsCard({ snapshot }: { snapshot: RecoverySnapshot }) {
           size={132}
           stroke={11}
           glow
-          from="var(--color-recovery)"
-          to="var(--color-ok)"
           label={`${t("rc.score")}: ${score ?? "–"}`}
         >
           <div className="text-4xl font-semibold leading-none tracking-tight tabular-nums">{score ?? "–"}</div>
@@ -59,13 +58,13 @@ export function VitalsCard({ snapshot }: { snapshot: RecoverySnapshot }) {
         </div>
       </div>
 
-      <ul className="mt-5 grid grid-cols-2 gap-2.5 tab:mt-0">
+      <ul className="mt-5 grid grid-cols-2 gap-x-5 gap-y-4 border-t border-line pt-4 tab:mt-0 tab:border-t-0 tab:pt-0">
         {vitals.map(({ label, value }) => {
           const level = levelOf(value);
           return (
-            <li key={label} className="space-y-2 rounded-2xl border border-white/8 bg-white/4 p-3">
+            <li key={label} className="min-w-0 space-y-1.5">
               <span className="block text-sm font-medium leading-tight text-fg-muted">{t(label)}</span>
-              <div className="flex items-baseline justify-between gap-2">
+              <div className="flex flex-wrap items-baseline justify-between gap-x-2">
                 <span className="text-2xl font-semibold leading-none tabular-nums">{value == null ? "–" : `${Math.round(value)}%`}</span>
                 <span className="text-xs text-fg-muted">{t(level.label)}</span>
               </div>

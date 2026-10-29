@@ -38,6 +38,7 @@ export function CalorieCard({ day, onAdd }: { day: NutritionDay; onAdd: () => vo
     <Card
       tone="hero"
       accent="nutrition"
+      strip
       aria-label={t("nu.title")}
       className="tab:grid tab:grid-cols-[auto_minmax(0,1fr)] tab:items-center tab:gap-x-10"
     >
@@ -47,8 +48,6 @@ export function CalorieCard({ day, onAdd }: { day: NutritionDay; onAdd: () => vo
           size={148}
           stroke={12}
           glow
-          from="var(--color-nutrition)"
-          to="var(--color-water)"
           label={`${num(hasGoal ? Math.abs(day.kcal_remaining) : day.kcal, 0)} ${over ? t("nu.over") : t("nu.left")}`}
         >
           <div>

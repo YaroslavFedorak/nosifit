@@ -5,7 +5,7 @@ import { en, type TKey } from "./en";
 import { uk } from "./uk";
 
 export type Params = Record<string, string | number>;
-export type PluralBase = "count.exercises" | "count.sets" | "count.days";
+export type PluralBase = "count.exercises" | "count.sets" | "count.hardSets" | "count.days";
 
 export interface I18n {
   locale: Locale;

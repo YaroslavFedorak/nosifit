@@ -148,7 +148,7 @@ export function ProductSheet({ open, onClose, initialCategory }: { open: boolean
                     <span className="min-w-0">
                       <span className="block text-sm font-semibold leading-snug">{product.name}</span>
                       <span className="block text-xs text-fg-muted">
-                        {product.brand ? `${product.brand} · ` : ""}
+                        {product.brand ? `${product.brand}, ` : ""}
                         {num(product.kcal_per_100g, 0)} {t("unit.kcal")} {t("nu.per100")}
                       </span>
                     </span>

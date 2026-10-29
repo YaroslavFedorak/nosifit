@@ -9,7 +9,7 @@ import { Skeleton } from "../../components/ui/States";
 import { useT } from "../../i18n";
 import { useServerText } from "../../i18n/server";
 import { cn } from "../../lib/cn";
-import { num, ratio } from "../../lib/format";
+import { ratio } from "../../lib/format";
 
 const SHOWN = 3;
 const gap = (muscle: WeeklyMuscle): number => (muscle.target_sets - muscle.sets) / (muscle.target_sets || 1);
@@ -18,13 +18,16 @@ function Row({ muscle }: { muscle: WeeklyMuscle }) {
   const { t } = useT();
   const text = useServerText();
   const name = text.muscle(muscle.muscle);
-  const done = muscle.sets >= muscle.target_sets;
+  // Whole sets on screen; "done" follows the same numbers, so the colour never disagrees with the text.
+  const sets = Math.round(muscle.sets);
+  const target = Math.max(1, Math.round(muscle.target_sets));
+  const done = sets >= target;
   return (
     <li className="space-y-1.5">
       <div className="flex items-baseline justify-between gap-3 text-sm">
         <span className="font-medium">{name}</span>
         <span className={cn("tabular-nums", done ? "text-ok" : "text-fg-muted")}>
-          {t("tr.weekly.of", { sets: num(muscle.sets), target: num(muscle.target_sets) })}
+          {t("tr.weekly.of", { sets, target })}
         </span>
       </div>
       <Bar value={ratio(muscle.sets, muscle.target_sets)} tone={done ? "ok" : "accent"} label={name} />

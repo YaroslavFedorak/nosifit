@@ -67,16 +67,16 @@ export function Sheet({
 
   return createPortal(
     <div className="fixed inset-0 z-50 flex items-end justify-center tab:items-center tab:p-6">
-      <div className="anim-fade absolute inset-0 bg-black/65 backdrop-blur-sm" onClick={onClose} aria-hidden="true" />
+      <div className="anim-fade absolute inset-0 bg-scrim" onClick={onClose} aria-hidden="true" />
       <div
         ref={panel}
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
         tabIndex={-1}
-        className="anim-sheet relative flex max-h-[92dvh] w-full flex-col overflow-hidden rounded-t-[1.75rem] border border-b-0 border-line-strong bg-surface shadow-2xl outline-none tab:max-w-lg tab:rounded-[1.75rem] tab:border-b"
+        className="anim-sheet relative flex max-h-[92dvh] w-full flex-col overflow-hidden rounded-t-[1.75rem] border border-b-0 border-line-strong bg-surface outline-none tab:max-w-lg tab:rounded-[1.75rem] tab:border-b"
       >
-        <div className="mx-auto mt-2 h-1 w-10 shrink-0 rounded-full bg-white/15 tab:hidden" aria-hidden="true" />
+        <div className="mx-auto mt-2 h-1 w-10 shrink-0 rounded-full bg-line-strong tab:hidden" aria-hidden="true" />
         <div className="flex shrink-0 items-center justify-between gap-2 pl-5 pr-2 pt-2 pb-1">
           <h2 id={titleId} className="text-lg font-semibold tracking-tight">
             {title}

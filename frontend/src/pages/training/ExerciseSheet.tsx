@@ -53,7 +53,7 @@ export function ExerciseSheet({
             className="min-h-tap-lg w-full rounded-xl border border-line-strong bg-surface-2 pl-10 pr-3 text-base outline-none placeholder:text-fg-soft focus:border-fg/40"
           />
         </label>
-        <p className="mt-3 text-xs font-medium uppercase tracking-wide text-fg-muted">{search ? t("tr.results") : t("tr.recent")}</p>
+        <p className="mt-3 text-xs font-medium text-fg-muted">{search ? t("tr.results") : t("tr.recent")}</p>
       </div>
 
       {options.isPending ? (

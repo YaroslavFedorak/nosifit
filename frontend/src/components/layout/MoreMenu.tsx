@@ -25,13 +25,16 @@ const LANGUAGE_NAMES: Record<Locale, string> = {
 
 const ROW =
   "flex min-h-tap items-center gap-3 px-4 py-2.5 text-sm font-medium text-fg transition hover:bg-white/5 active:bg-white/8";
+/** In the sidebar the links sit under the four modules and must stay quieter than them. */
+const ROW_COMPACT =
+  "flex min-h-tap items-center gap-3 rounded-xl px-3 text-sm font-medium text-fg-muted transition hover:bg-white/5 hover:text-fg";
 
-function Row({ icon: Icon, children }: { icon: LucideIcon; children: string }) {
+function Row({ icon: Icon, compact, children }: { icon: LucideIcon; compact: boolean; children: string }) {
   return (
     <>
       <Icon size={18} className="shrink-0 text-fg-muted" aria-hidden="true" />
       <span className="flex-1">{children}</span>
-      <ChevronRight size={16} className="shrink-0 text-fg-soft" aria-hidden="true" />
+      {!compact && <ChevronRight size={16} className="shrink-0 text-fg-soft" aria-hidden="true" />}
     </>
   );
 }
@@ -43,43 +46,44 @@ function Row({ icon: Icon, children }: { icon: LucideIcon; children: string }) {
  */
 export function MoreMenu({ onNavigate, compact = false }: { onNavigate?: () => void; compact?: boolean }) {
   const { t } = useT();
+  const row = compact ? ROW_COMPACT : ROW;
 
   return (
     <div className="space-y-5 pt-2">
-      <ul className="divide-y divide-line overflow-hidden rounded-2xl border border-line bg-surface-2/50">
+      <ul className={compact ? "space-y-0.5" : "divide-y divide-line overflow-hidden rounded-2xl border border-line bg-surface-2/50"}>
         <li>
-          <a href="/profile/" className={ROW}>
-            <Row icon={User}>{t("more.profile")}</Row>
+          <a href="/profile/" className={row}>
+            <Row icon={User} compact={compact}>{t("more.profile")}</Row>
           </a>
         </li>
         <li>
-          <a href="/training/" className={ROW}>
-            <Row icon={CalendarRange}>{t("more.plan")}</Row>
+          <a href="/training/" className={row}>
+            <Row icon={CalendarRange} compact={compact}>{t("more.plan")}</Row>
           </a>
         </li>
         <li>
-          <a href="/premium" className={ROW}>
-            <Row icon={Crown}>{t("more.premium")}</Row>
+          <a href="/premium" className={row}>
+            <Row icon={Crown} compact={compact}>{t("more.premium")}</Row>
           </a>
         </li>
         <li>
-          <Link to="/how-it-works" className={ROW} onClick={onNavigate}>
-            <Row icon={BookOpen}>{t("more.how")}</Row>
+          <Link to="/how-it-works" className={row} onClick={onNavigate}>
+            <Row icon={BookOpen} compact={compact}>{t("more.how")}</Row>
           </Link>
         </li>
         <li>
-          <a href="/demo" className={ROW}>
-            <Row icon={PlayCircle}>{t("more.demo")}</Row>
+          <a href="/demo" className={row}>
+            <Row icon={PlayCircle} compact={compact}>{t("more.demo")}</Row>
           </a>
         </li>
         <li>
-          <a href="/privacy" className={ROW}>
-            <Row icon={ShieldCheck}>{t("more.privacy")}</Row>
+          <a href="/privacy" className={row}>
+            <Row icon={ShieldCheck} compact={compact}>{t("more.privacy")}</Row>
           </a>
         </li>
         <li>
-          <a href="/dashboard/" className={ROW}>
-            <Row icon={LayoutTemplate}>{t("more.classic")}</Row>
+          <a href="/dashboard/" className={row}>
+            <Row icon={LayoutTemplate} compact={compact}>{t("more.classic")}</Row>
           </a>
         </li>
       </ul>

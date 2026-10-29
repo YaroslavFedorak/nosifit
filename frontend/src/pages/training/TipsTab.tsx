@@ -11,19 +11,23 @@ import { useServerText } from "../../i18n/server";
 import { num } from "../../lib/format";
 
 /** One column on a phone, two or more where the card is wide enough. */
-const TIP_GRID = "mt-3 grid grid-cols-[repeat(auto-fill,minmax(16rem,1fr))] gap-2.5";
+const TIP_GRID = "mt-3 grid grid-cols-[repeat(auto-fill,minmax(16rem,1fr))] gap-x-6 gap-y-4";
 
 export function GuidanceCard({ item, tone }: { item: GuidanceItem; tone: "accent" | "warn" }) {
   const text = useServerText();
   const action = text.text(item.action, item.params);
   const reasons = item.reasons.map((reason) => text.text(reason, item.params)).filter(Boolean).slice(0, 2);
   return (
-    <li className="rounded-xl border border-line bg-surface-2/50 p-3.5">
+    <li className="border-t border-line pt-3">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <h3 className="text-base font-semibold">{text.muscle(item.muscle)}</h3>
         {action && <Chip tone={tone}>{action}</Chip>}
       </div>
-      {reasons.length > 0 && <p className="mt-1.5 text-sm text-fg-muted">{reasons.join(" · ")}</p>}
+      {reasons.map((reason) => (
+        <p key={reason} className="mt-1 text-sm text-fg-muted">
+          {reason}
+        </p>
+      ))}
     </li>
   );
 }
@@ -36,7 +40,7 @@ export function ExerciseTip({ item }: { item: RecommendedExercise }) {
     : t("tr.tips.prescription", { sets: item.sets ?? 3, reps: item.reps ?? "–" });
   const reason = text.text(item.reasons[0]);
   return (
-    <li className="rounded-xl border border-line bg-surface-2/50 p-3.5">
+    <li className="border-t border-line pt-3">
       <div className="flex items-start justify-between gap-3">
         <h3 className="min-w-0 text-base font-semibold leading-snug">{text.exercise(item.slug, item.exercise)}</h3>
         <span className="shrink-0 pt-0.5 text-sm font-semibold tabular-nums text-accent">{prescription}</span>

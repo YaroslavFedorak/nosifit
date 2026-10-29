@@ -41,7 +41,7 @@ export function ExerciseCard({
   const entries = entriesOf(exercise);
 
   return (
-    <Card as="li" className="space-y-3">
+    <Card as="li" className="min-w-0 grow basis-[17rem] space-y-3">
       <div className="flex items-start justify-between gap-2">
         <h3 className="min-w-0 pt-2.5 text-base font-semibold leading-snug">{text.exercise(exercise.slug, exercise.name)}</h3>
         <IconButton label={t("tr.ex.menu")} aria-expanded={confirming} onClick={() => setConfirming((open) => !open)} className="-mr-1 -mt-1">

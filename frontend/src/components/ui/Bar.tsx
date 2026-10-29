@@ -30,9 +30,12 @@ export function Bar({
       aria-valuemin={0}
       aria-valuemax={100}
       aria-valuenow={Math.round(filled * 100)}
-      className={cn("h-1.5 w-full overflow-hidden rounded-full bg-white/8", className)}
+      className={cn("h-1.5 w-full overflow-hidden rounded-full bg-track", className)}
     >
-      <div className={cn("h-full rounded-full transition-[width] duration-500", FILLS[tone])} style={{ width: `${filled * 100}%` }} />
+      <div
+        className={cn("h-full w-full rounded-full transition-transform duration-500", FILLS[tone])}
+        style={{ transform: `translateX(${(filled - 1) * 100}%)` }}
+      />
     </div>
   );
 }

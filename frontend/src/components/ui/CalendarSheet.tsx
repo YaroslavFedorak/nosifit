@@ -2,7 +2,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useT } from "../../i18n";
 import { cn } from "../../lib/cn";
-import { addDays, dateText, isoDay, parseDay } from "../../lib/format";
+import { addDays, capitalize, dateText, isoDay, parseDay } from "../../lib/format";
 import { IconButton } from "./Button";
 import type { Accent } from "./Card";
 import { Sheet } from "./Sheet";
@@ -65,7 +65,7 @@ export function CalendarSheet({
           <IconButton label={t("cal.prev")} disabled={cursor <= earliest} onClick={() => move(-1)}>
             <ChevronLeft size={20} />
           </IconButton>
-          <p className="text-base font-semibold first-letter:uppercase">{dateText(locale, cursor, { month: "long", year: "numeric" })}</p>
+          <p className="text-base font-semibold">{capitalize(dateText(locale, cursor, { month: "long", year: "numeric" }))}</p>
           <IconButton label={t("cal.next")} disabled={cursor >= latest} onClick={() => move(1)}>
             <ChevronRight size={20} />
           </IconButton>
@@ -112,7 +112,7 @@ export function CalendarSheet({
         </div>
 
         <div aria-live="polite" className="rounded-xl border border-line bg-surface-2 p-3 text-sm">
-          <p className="font-semibold">{dateText(locale, parseDay(selected), { weekday: "long", day: "numeric", month: "long" })}</p>
+          <p className="font-semibold">{capitalize(dateText(locale, parseDay(selected), { weekday: "long", day: "numeric", month: "long" }))}</p>
           <p className="mt-0.5 text-fg-muted">{picked?.note ?? t("cal.none")}</p>
         </div>
       </div>

@@ -9,12 +9,15 @@ import { EmptyState, ErrorState, Skeleton } from "../../components/ui/States";
 import { useT } from "../../i18n";
 import { useServerText } from "../../i18n/server";
 import { cn } from "../../lib/cn";
-import { addDays, dateText, isoDay, levelFromScore, num, parseDay } from "../../lib/format";
+import { addDays, capitalize, dateText, isoDay, levelFromScore, num, parseDay } from "../../lib/format";
 
 const PAGE = 5;
 
+/** Hard sets are weighted by effort (14.6); the screen counts them as whole sets. */
+const wholeSets = (value: number): number => Math.max(1, Math.round(value));
+
 function DayRow({ date, hardSets }: { date: string; hardSets: number }) {
-  const { t, locale } = useT();
+  const { t, tn, locale } = useT();
   const text = useServerText();
   const [open, setOpen] = useState(false);
   const day = useTrainingDay(date, open);
@@ -29,10 +32,10 @@ function DayRow({ date, hardSets }: { date: string; hardSets: number }) {
         className="flex min-h-tap-lg w-full items-center justify-between gap-3 py-2 text-left"
       >
         <span>
-          <span className="block text-sm font-semibold first-letter:uppercase">
-            {dateText(locale, parseDay(date), { weekday: "short", day: "numeric", month: "long" })}
+          <span className="block text-sm font-semibold">
+            {capitalize(dateText(locale, parseDay(date), { weekday: "short", day: "numeric", month: "long" }))}
           </span>
-          <span className="block text-xs text-fg-muted">{t("tr.history.hard", { n: num(hardSets) })}</span>
+          <span className="block text-xs text-fg-muted">{tn("count.hardSets", wholeSets(hardSets))}</span>
         </span>
         <ChevronDown size={18} className={cn("shrink-0 text-fg-soft transition-transform", open && "rotate-180")} aria-hidden="true" />
       </button>
@@ -78,10 +81,10 @@ export function HistoryTab() {
       calendarDays: days.map<CalendarDay>((day) => ({
         date: day.date,
         level: levelFromScore(day.intensity_percent),
-        note: day.hard_sets > 0 ? t("tr.history.hard", { n: num(day.hard_sets) }) : undefined,
+        note: day.hard_sets > 0 ? tn("count.hardSets", wholeSets(day.hard_sets)) : undefined,
       })),
     };
-  }, [heatmap.data, t]);
+  }, [heatmap.data, tn]);
 
   if (heatmap.isError) return <ErrorState onRetry={() => void heatmap.refetch()} />;
   if (heatmap.isPending) {

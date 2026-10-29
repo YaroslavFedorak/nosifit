@@ -45,9 +45,9 @@ function Tips() {
       <h2 id="tips-title" className="text-base font-semibold">
         {t("nu.tips")}
       </h2>
-      <ul className="mt-3 grid grid-cols-[repeat(auto-fill,minmax(16rem,1fr))] gap-2.5">
+      <ul className="mt-3 grid grid-cols-[repeat(auto-fill,minmax(16rem,1fr))] gap-x-6 gap-y-4">
         {shown.map(({ tip, title, body }) => (
-          <li key={tip.type + tip.title_key} className="flex gap-3 rounded-xl border border-line bg-surface-2/50 p-3.5">
+          <li key={tip.type + tip.title_key} className="flex gap-3 border-t border-line pt-3">
             <span
               className={cn("w-1 shrink-0 self-stretch rounded-full", TIP_BAR[tip.priority as keyof typeof TIP_BAR] ?? "bg-warn")}
               aria-hidden="true"

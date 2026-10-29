@@ -1,4 +1,4 @@
-import { CircleCheck, Droplets, Dumbbell, Flame, HeartPulse, Moon, Send, UtensilsCrossed, type LucideIcon } from "lucide-react";
+import { CircleCheck, Droplets, Dumbbell, Flame, HeartPulse, Moon, UtensilsCrossed, type LucideIcon } from "lucide-react";
 import { buttonClass } from "../components/ui/Button";
 import { Card, type Accent } from "../components/ui/Card";
 import { Badge } from "../components/ui/Chip";
@@ -8,17 +8,9 @@ import type { TKey } from "../i18n/en";
 import { useTitle } from "../lib/useTitle";
 import { LandingFooter, LandingHeader } from "./landing/Chrome";
 
-function Eyebrow({ children, accent }: { children: string; accent?: Accent }) {
-  return (
-    <p data-accent={accent} className={accent ? "text-xs font-semibold uppercase tracking-widest text-accent" : "text-xs font-semibold uppercase tracking-widest text-fg-muted"}>
-      {children}
-    </p>
-  );
-}
-
 function ExampleRow({ icon: Icon, accent, label, value }: { icon: LucideIcon; accent: Accent; label: string; value: string }) {
   return (
-    <li data-accent={accent} className="flex min-h-12 items-center gap-3 rounded-xl border border-white/8 bg-white/4 px-3.5 py-2">
+    <li data-accent={accent} className="flex min-h-12 items-center gap-3 border-t border-line py-2">
       <Icon size={18} className="shrink-0 text-accent" aria-hidden="true" />
       <span className="flex-1 text-sm text-fg-muted">{label}</span>
       <span className="text-sm font-semibold tabular-nums">{value}</span>
@@ -43,8 +35,7 @@ export default function Landing() {
         {/* 1. Hero: one promise, one example day. */}
         <section className="mx-auto grid max-w-6xl gap-8 px-4 pb-14 pt-10 tab:grid-cols-2 tab:items-center tab:gap-10 tab:px-6 tab:pt-16">
           <div>
-            <Eyebrow>{t("lp.hero.eyebrow")}</Eyebrow>
-            <h1 className="mt-3 text-[2.5rem] font-semibold leading-[1.08] tracking-tight text-balance tab:text-5xl">{t("lp.hero.title")}</h1>
+            <h1 className="text-[2.5rem] font-semibold leading-[1.08] tracking-tight text-balance tab:text-5xl">{t("lp.hero.title")}</h1>
             <p className="mt-4 text-base leading-relaxed text-fg-muted text-pretty">{t("lp.hero.text")}</p>
             <div className="mt-7 space-y-2.5 tab:max-w-xs">
               <a href="/auth/register" className={buttonClass({ variant: "primary", size: "lg", block: true })}>
@@ -70,7 +61,7 @@ export default function Landing() {
                 </div>
               </Ring>
             </div>
-            <ul className="mt-5 space-y-2">
+            <ul className="mt-5">
               <ExampleRow icon={Dumbbell} accent="training" label={t("lp.card.workout")} value={t("lp.card.workoutValue")} />
               <ExampleRow icon={Flame} accent="nutrition" label={t("lp.card.kcal")} value="560" />
               <ExampleRow icon={Moon} accent="recovery" label={t("lp.card.sleep")} value={t("lp.card.sleepValue")} />
@@ -81,16 +72,17 @@ export default function Landing() {
         {/* 2. The three modules. */}
         <section className="border-t border-line">
           <div className="mx-auto max-w-6xl px-4 py-14 tab:px-6">
-            <Eyebrow>{t("lp.mod.eyebrow")}</Eyebrow>
-            <h2 className="mt-3 text-3xl font-semibold leading-tight tracking-tight text-balance">{t("lp.mod.title")}</h2>
+            <h2 className="text-3xl font-semibold leading-tight tracking-tight text-balance">{t("lp.mod.title")}</h2>
             <ul className="mt-7 grid gap-3 tab:grid-cols-3">
               {MODULES.map(({ accent, icon: Icon, title, text }) => (
-                <Card as="li" key={accent} accent={accent}>
-                  <span className="grid size-11 place-items-center rounded-xl border border-accent-soft bg-accent-soft text-accent" aria-hidden="true">
-                    <Icon size={22} />
-                  </span>
-                  <h3 className="mt-4 text-lg font-semibold">{t(title)}</h3>
-                  <p className="mt-1.5 text-sm leading-relaxed text-fg-muted">{t(text)}</p>
+                <Card as="li" key={accent} accent={accent} strip>
+                  <h3 className="flex items-center gap-3 text-lg font-semibold">
+                    <span className="grid size-10 shrink-0 place-items-center rounded-xl border border-accent-soft bg-accent-soft text-accent" aria-hidden="true">
+                      <Icon size={20} />
+                    </span>
+                    {t(title)}
+                  </h3>
+                  <p className="mt-3 text-sm leading-relaxed text-fg-muted">{t(text)}</p>
                 </Card>
               ))}
             </ul>
@@ -101,11 +93,7 @@ export default function Landing() {
         <section className="border-t border-line">
           <div className="mx-auto grid max-w-6xl gap-8 px-4 py-14 tab:grid-cols-2 tab:items-center tab:gap-10 tab:px-6">
             <div>
-              <p className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-widest text-water">
-                <Send size={14} aria-hidden="true" />
-                {t("lp.tg.eyebrow")}
-              </p>
-              <h2 className="mt-3 text-3xl font-semibold leading-tight tracking-tight text-balance">{t("lp.tg.title")}</h2>
+              <h2 className="text-3xl font-semibold leading-tight tracking-tight text-balance">{t("lp.tg.title")}</h2>
               <p className="mt-3 text-base leading-relaxed text-fg-muted text-pretty">{t("lp.tg.text")}</p>
               <ul className="mt-5 space-y-3 text-sm text-fg-muted">
                 {(["lp.tg.b1", "lp.tg.b2"] as const).map((key) => (

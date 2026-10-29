@@ -20,6 +20,9 @@ export function num(value: number | null | undefined, maxDecimals = 1): string {
 
 export const clamp = (value: number, min = 0, max = 1): number => Math.min(max, Math.max(min, value));
 
+/** Sentence case for text that starts lower case, such as a weekday: "Четвер, 29 жовтня". */
+export const capitalize = (text: string): string => text.charAt(0).toLocaleUpperCase() + text.slice(1);
+
 const pad = (n: number): string => String(n).padStart(2, "0");
 
 /** Local calendar day as YYYY-MM-DD. */

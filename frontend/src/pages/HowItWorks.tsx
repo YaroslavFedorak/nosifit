@@ -23,10 +23,6 @@ const STEPS: Array<{ title: TKey; text: TKey }> = [
 /** A decorative month of days; the real calendar lives in each module. */
 const SAMPLE_LEVELS = [0, 2, 3, 0, 4, 1, 0, 3, 4, 2, 0, 0, 3, 1, 4, 3, 0, 2, 4, 0, 1, 0, 3, 4, 2, 0, 3, 3, 0, 4, 1, 2, 0, 3, 4];
 
-function Eyebrow({ children }: { children: string }) {
-  return <p className="text-xs font-semibold uppercase tracking-widest text-fg-muted">{children}</p>;
-}
-
 function Content() {
   const { t } = useT();
   return (
@@ -37,8 +33,7 @@ function Content() {
       </header>
 
       <section aria-labelledby="hw-context">
-        <Eyebrow>{t("hw.context.eyebrow")}</Eyebrow>
-        <h2 id="hw-context" className="mt-3 text-2xl font-semibold tracking-tight text-balance">
+        <h2 id="hw-context" className="text-2xl font-semibold tracking-tight text-balance">
           {t("hw.context.title")}
         </h2>
         <p className="mt-2 max-w-2xl text-base leading-relaxed text-fg-muted text-pretty">{t("hw.context.text")}</p>
@@ -63,8 +58,7 @@ function Content() {
       </section>
 
       <section aria-labelledby="hw-model">
-        <Eyebrow>{t("hw.model.eyebrow")}</Eyebrow>
-        <h2 id="hw-model" className="mt-3 text-2xl font-semibold tracking-tight text-balance">
+        <h2 id="hw-model" className="text-2xl font-semibold tracking-tight text-balance">
           {t("hw.model.title")}
         </h2>
         <p className="mt-2 max-w-2xl text-base leading-relaxed text-fg-muted text-pretty">{t("hw.model.text")}</p>
@@ -86,8 +80,7 @@ function Content() {
 
       <section aria-labelledby="hw-history" className="tab:grid tab:grid-cols-2 tab:items-center tab:gap-10">
         <div>
-          <Eyebrow>{t("hw.history.eyebrow")}</Eyebrow>
-          <h2 id="hw-history" className="mt-3 text-2xl font-semibold tracking-tight text-balance">
+          <h2 id="hw-history" className="text-2xl font-semibold tracking-tight text-balance">
             {t("hw.history.title")}
           </h2>
           <p className="mt-2 max-w-2xl text-base leading-relaxed text-fg-muted text-pretty">{t("hw.history.text")}</p>

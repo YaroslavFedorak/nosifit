@@ -1,4 +1,4 @@
-import { ChevronRight } from "lucide-react";
+import { CalendarDays } from "lucide-react";
 import { useT } from "../../i18n";
 import { cn } from "../../lib/cn";
 import type { Accent } from "./Card";
@@ -37,9 +37,9 @@ export function ActivityStrip({
     >
       <span className="mb-2 flex items-center justify-between gap-3 text-xs font-medium text-fg-muted">
         <span>{label}</span>
-        <span className="inline-flex items-center gap-0.5 text-accent">
+        <span className="inline-flex items-center gap-1.5 text-accent">
+          <CalendarDays size={14} aria-hidden="true" />
           {summary}
-          <ChevronRight size={14} aria-hidden="true" />
         </span>
       </span>
       <span className="flex gap-2.5" aria-hidden="true">

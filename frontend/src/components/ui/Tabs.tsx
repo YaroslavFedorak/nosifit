@@ -56,7 +56,7 @@ export function Tabs<T extends string>({
             onClick={() => onChange(item.id)}
             className={cn(
               "inline-flex min-h-tap items-center justify-center gap-1.5 rounded-xl px-2 py-2 text-center text-sm font-semibold leading-tight transition",
-              selected ? "bg-surface-3 text-fg shadow-[inset_0_1px_0_rgb(255_255_255/0.06)]" : "text-fg-muted hover:text-fg",
+              selected ? "glint bg-surface-3 text-fg" : "text-fg-muted hover:text-fg",
             )}
           >
             {item.icon}

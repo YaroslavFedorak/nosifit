@@ -38,9 +38,9 @@ function Tips({ tips }: { tips: RecoveryTip[] }) {
       <h2 id="rc-tips-title" className="text-base font-semibold">
         {t("rc.tips")}
       </h2>
-      <ul className="mt-3 grid grid-cols-[repeat(auto-fill,minmax(16rem,1fr))] gap-2.5">
+      <ul className="mt-3 grid grid-cols-[repeat(auto-fill,minmax(16rem,1fr))] gap-x-6 gap-y-4">
         {(all ? entries : entries.slice(0, TIP_LIMIT)).map(({ tip, title, body }) => (
-          <li key={tip.id} className="rounded-xl border border-line bg-surface-2/50 p-3.5">
+          <li key={tip.id} className="border-t border-line pt-3">
             <h3 className="text-sm font-semibold leading-snug">{title}</h3>
             {body && <p className="mt-1 text-sm text-fg-muted">{body}</p>}
           </li>

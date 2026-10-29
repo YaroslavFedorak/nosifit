@@ -1,4 +1,4 @@
-import { ArrowRight, ChevronRight, Dumbbell, Flame, HeartPulse, Moon, Sparkles, UtensilsCrossed, type LucideIcon } from "lucide-react";
+import { ChevronRight, Dumbbell, Flame, HeartPulse, Moon, Sparkles, UtensilsCrossed, type LucideIcon } from "lucide-react";
 import { useMemo, useState, type ReactNode } from "react";
 import { Link } from "react-router";
 import {
@@ -22,7 +22,7 @@ import { useT } from "../i18n";
 import { useServerText } from "../i18n/server";
 import { bootstrap } from "../lib/bootstrap";
 import { cn } from "../lib/cn";
-import { addDays, dateText, isoDay, levelFromScore, num, ratio } from "../lib/format";
+import { addDays, capitalize, dateText, isoDay, levelFromScore, num, ratio } from "../lib/format";
 import { describeRecommendation } from "../lib/recommendations";
 import { useTitle } from "../lib/useTitle";
 
@@ -62,13 +62,13 @@ function StatChip({ to, accent, icon: Icon, value, label }: { to: string; accent
     <Link
       to={to}
       data-accent={accent}
-      className="flex min-h-24 flex-col justify-between rounded-2xl border border-white/8 bg-white/4 p-3 transition active:scale-[0.98] hover:bg-white/7"
+      className="flex min-h-tap flex-col gap-1 rounded-xl px-2 py-2 transition hover:bg-white/5 active:scale-[0.98]"
     >
-      <Icon size={18} className="text-accent" aria-hidden="true" />
-      <span>
-        <span className="block text-lg font-semibold leading-tight tabular-nums">{value}</span>
-        <span className="mt-0.5 block text-xs text-fg-muted">{label}</span>
+      <span className="flex items-center gap-1.5">
+        <Icon size={16} className="shrink-0 text-accent" aria-hidden="true" />
+        <span className="text-lg font-semibold leading-tight tabular-nums">{value}</span>
       </span>
+      <span className="text-xs text-fg-muted">{label}</span>
     </Link>
   );
 }
@@ -109,7 +109,7 @@ function ModuleCard({
     <Link
       to={to}
       data-accent={accent}
-      className={cn(cardClass({ accent, padded: false }), "flex flex-col px-4 py-3 transition hover:bg-surface-2 active:scale-[0.99]")}
+      className={cn(cardClass({ accent, padded: false, strip: true }), "flex flex-col px-4 py-3 transition hover:bg-surface-2 active:scale-[0.99]")}
     >
       <div className="flex min-h-12 items-center gap-3">
         <span className="grid size-10 shrink-0 place-items-center rounded-xl border border-accent-soft bg-accent-soft text-accent" aria-hidden="true">
@@ -121,7 +121,7 @@ function ModuleCard({
         </span>
         <ChevronRight size={18} className="shrink-0 text-fg-soft" aria-hidden="true" />
       </div>
-      {preview && <div className="mt-3 hidden flex-1 space-y-2.5 border-t border-line pt-3 tab:block">{preview}</div>}
+      {preview && <div className="mt-3 hidden flex-1 space-y-2 border-t border-line pt-3 tab:block">{preview}</div>}
     </Link>
   );
 }
@@ -170,13 +170,13 @@ export default function Dashboard() {
   const day = nutrition.data;
   const score = Math.round(data.daily_score ?? 0);
   const remaining = day?.goals_available ? day.kcal_remaining : null;
-  const sleepText = data.recovery.sleep_hours > 0 ? `${num(data.recovery.sleep_hours)} ${t("unit.h")}` : t("dash.sleep.none");
+  const sleepText = data.recovery.sleep_hours > 0 ? `${num(data.recovery.sleep_hours)}\u00a0${t("unit.h")}` : t("dash.sleep.none");
   const next = pickNext(data, day, snapshot.data, new Date().getHours());
   const tip = recommendation.data?.daily ? describeRecommendation(recommendation.data.daily, text) : null;
   const activeDays = strip.filter((level) => level > 0).length;
 
   const trainingSummary = session.data
-    ? `${tn("count.exercises", session.data.totals.exercises)} · ${tn("count.sets", session.data.totals.sets)}`
+    ? `${tn("count.exercises", session.data.totals.exercises)}, ${tn("count.sets", session.data.totals.sets)}`
     : data.training.exercise_count > 0
       ? tn("count.exercises", data.training.exercise_count)
       : t("dash.mod.training.empty");
@@ -191,8 +191,9 @@ export default function Dashboard() {
 
   const trainingPreview = session.data?.exercises.length ? (
     <ul className="space-y-1.5 text-sm">
-      {session.data.exercises.slice(0, 4).map((exercise) => (
-        <li key={exercise.id} className="flex items-baseline justify-between gap-3">
+      {/* Four on a monitor; three on a tablet, so the dashboard still fits a landscape screen. */}
+      {session.data.exercises.slice(0, 4).map((exercise, index) => (
+        <li key={exercise.id} className={cn("flex items-baseline justify-between gap-3", index === 3 && "hidden desk:flex")}>
           <span className="min-w-0 truncate">{text.exercise(exercise.slug, exercise.name)}</span>
           <span className="shrink-0 text-xs tabular-nums text-fg-muted">{tn("count.sets", entriesOf(exercise).length)}</span>
         </li>
@@ -228,24 +229,32 @@ export default function Dashboard() {
 
   return (
     <div className="grid gap-4 desk:grid-cols-12">
-      {/* Phone: stacked. Tablet and desktop: the ring on the left, greeting and chips beside it. */}
+      {/* Phone: stacked. Tablet and desktop: the ring on the left, the greeting and the figures beside it as
+          one group, centred against the ring. */}
       <Card
         tone="hero"
         accent="training"
         aria-labelledby="today-title"
-        className="tab:grid tab:grid-cols-[auto_minmax(0,1fr)] tab:grid-rows-[auto_1fr] tab:gap-x-8 desk:col-span-7"
+        className="tab:grid tab:grid-cols-[auto_minmax(0,1fr)] tab:grid-rows-[1fr_auto_auto_1fr] tab:gap-x-8 desk:col-span-7"
       >
-        <div className="tab:col-start-2 tab:row-start-1">
-          <p className="text-xs font-medium uppercase tracking-wide text-fg-muted">
-            {dateText(locale, new Date(), { weekday: "long", day: "numeric", month: "long" })}
+        <div className="tab:col-start-2 tab:row-start-2">
+          <p className="text-sm text-fg-muted">
+            <time dateTime={isoDay()}>{capitalize(dateText(locale, new Date(), { weekday: "long", day: "numeric", month: "long" }))}</time>
           </p>
           <h1 id="today-title" className="mt-1 text-2xl font-semibold tracking-tight">
             {t("dash.greeting", { name: bootstrap.user?.name ?? "" })}
           </h1>
         </div>
 
-        <div className="mt-6 flex justify-center tab:col-start-1 tab:row-span-2 tab:row-start-1 tab:mt-0 tab:items-center">
-          <Ring value={score / 100} size={184} stroke={13} glow label={t("dash.scoreLabel", { n: score })}>
+        <div className="mt-6 flex justify-center tab:col-start-1 tab:row-span-4 tab:row-start-1 tab:mt-0 tab:items-center">
+          <Ring
+            value={score / 100}
+            size={184}
+            stroke={13}
+            glow
+            className="size-[184px] tab:size-40 desk:size-[184px]"
+            label={t("dash.scoreLabel", { n: score })}
+          >
             <div>
               <div className="text-5xl font-semibold leading-none tracking-tight tabular-nums">{score}</div>
               <div className="mt-1.5 text-xs font-medium text-fg-muted">{t("dash.score")}</div>
@@ -253,48 +262,60 @@ export default function Dashboard() {
           </Ring>
         </div>
 
-        <div className="mt-6 grid grid-cols-3 gap-2 tab:col-start-2 tab:row-start-2 tab:mt-5 tab:self-end">
-          <StatChip
-            to="/training"
-            accent="training"
-            icon={Dumbbell}
-            value={data.training.completed ? t("dash.workout.done") : t("dash.workout.todo")}
-            label={t("dash.chip.workout")}
-          />
-          <StatChip
-            to="/nutrition"
-            accent="nutrition"
-            icon={Flame}
-            value={remaining === null ? "–" : num(Math.abs(remaining), 0)}
-            label={remaining !== null && remaining < 0 ? t("dash.chip.kcalOver") : t("dash.chip.kcal")}
-          />
-          <StatChip to="/recovery" accent="recovery" icon={Moon} value={sleepText} label={t("dash.chip.sleep")} />
+        <div className="mt-6 border-t border-line pt-2 tab:col-start-2 tab:row-start-3 tab:mt-5">
+          <div className="-mx-2 grid grid-cols-3 gap-1">
+            <StatChip
+              to="/training"
+              accent="training"
+              icon={Dumbbell}
+              value={data.training.completed ? t("dash.workout.done") : t("dash.workout.todo")}
+              label={t("dash.chip.workout")}
+            />
+            <StatChip
+              to="/nutrition"
+              accent="nutrition"
+              icon={Flame}
+              value={remaining === null ? "–" : num(Math.abs(remaining), 0)}
+              label={remaining !== null && remaining < 0 ? t("dash.chip.kcalOver") : t("dash.chip.kcal")}
+            />
+            <StatChip to="/recovery" accent="recovery" icon={Moon} value={sleepText} label={t("dash.chip.sleep")} />
+          </div>
         </div>
       </Card>
 
-      <Card tone="glass" accent={next.accent} aria-labelledby="next-title" className="flex flex-col desk:col-span-5">
-        <p className="text-xs font-medium uppercase tracking-wide text-accent" data-accent={next.accent}>
-          {t("next.label")}
-        </p>
-        <h2 id="next-title" className="mt-1 text-lg font-semibold leading-snug">
-          {t(`next.${next.key}.title` as "next.ok.title")}
-        </h2>
-        <p className="mt-1 text-sm text-fg-muted">{t(`next.${next.key}.text` as "next.ok.text", next.values)}</p>
-        <div className="mt-auto pt-4">
-          {next.key !== "ok" && (
+      {/* The one thing to do next. On a tablet the action sits beside the text, so the page stays short. */}
+      <Card
+        tone="glass"
+        accent={next.accent}
+        strip
+        aria-labelledby="next-title"
+        className="flex flex-col tab:grid tab:grid-cols-[minmax(0,1fr)_15rem] tab:items-center tab:gap-x-6 desk:col-span-5 desk:flex desk:items-stretch"
+      >
+        <div className={cn(next.key === "ok" && "tab:col-span-2")}>
+          <h2 id="next-title" className="text-lg font-semibold leading-snug">
+            {t(`next.${next.key}.title` as "next.ok.title")}
+          </h2>
+          <p className="mt-1 text-sm text-fg-muted">{t(`next.${next.key}.text` as "next.ok.text", next.values)}</p>
+        </div>
+        {next.key !== "ok" && (
+          <div className="mt-4 tab:mt-0 desk:mt-auto desk:pt-4">
             <ButtonLink to={next.to} variant="primary" size="lg" block icon={<next.icon size={18} aria-hidden="true" />}>
               {t(`next.${next.key}.cta` as "next.sleep.cta")}
-              <ArrowRight size={18} aria-hidden="true" />
             </ButtonLink>
-          )}
-          {tip && tip.title && (
-            <p className="mt-4 border-t border-white/8 pt-3 text-sm text-fg-muted">
-              <span className="font-medium text-fg">{t("next.tip")}: </span>
-              {tip.title}
-              {tip.body && <span> · {tip.body}</span>}
-            </p>
-          )}
-        </div>
+          </div>
+        )}
+        {/* The tip: two lines on a phone, one sentence where the card is wide. */}
+        {tip?.title && (
+          <p className="mt-4 border-t border-line pt-3 text-sm text-fg-muted tab:col-span-2">
+            <span className="font-medium text-fg">{t("next.tip")}:</span> {tip.title}
+            {tip.body && (
+              <span className="mt-0.5 block tab:mt-0 tab:inline">
+                <span className="hidden tab:inline">. </span>
+                {tip.body}
+              </span>
+            )}
+          </p>
+        )}
       </Card>
 
       <section aria-label={t("dash.modules")} className="grid gap-2 tab:grid-cols-3 tab:gap-3 desk:col-span-12 desk:gap-4">

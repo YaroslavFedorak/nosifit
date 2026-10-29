@@ -51,7 +51,7 @@ function WeightSheet({ current, onClose }: { current: number | null; onClose: ()
   );
 }
 
-/** Water and weight as two compact tiles with one-tap actions. */
+/** Water with its one-tap amounts, and the body weight as one row under it. */
 export function QuickRow() {
   const { t } = useT();
   const water = useWater();
@@ -62,19 +62,21 @@ export function QuickRow() {
   const goal = water.data?.recommended ?? null;
 
   return (
-    <div className="grid grid-cols-2 gap-3">
-      <Card data-accent="water" aria-labelledby="water-title" className="space-y-3 p-4">
-        <div>
-          <h2 id="water-title" className="text-sm font-medium text-fg-muted">
-            {t("nu.water")}
-          </h2>
-          <p className="mt-1 text-2xl font-semibold leading-none tabular-nums">
-            {num(liters)} <span className="text-sm font-medium text-fg-muted">{t("unit.l")}</span>
-          </p>
-          {goal ? <p className="mt-1 text-xs text-fg-muted">{t("nu.waterOf", { n: num(goal) })}</p> : null}
+    <div className="space-y-3">
+      <Card data-accent="water" aria-labelledby="water-title" className="space-y-3">
+        <div className="flex items-end justify-between gap-3">
+          <div>
+            <h2 id="water-title" className="text-sm font-medium text-fg-muted">
+              {t("nu.water")}
+            </h2>
+            <p className="mt-1 text-2xl font-semibold leading-none tabular-nums">
+              {num(liters)} <span className="text-sm font-medium text-fg-muted">{t("unit.l")}</span>
+            </p>
+          </div>
+          {goal ? <p className="text-sm text-fg-muted">{t("nu.waterOf", { n: num(goal) })}</p> : null}
         </div>
         {goal ? <Bar value={ratio(liters, goal)} tone="water" label={t("nu.water")} /> : null}
-        <div className="grid grid-cols-2 gap-1.5">
+        <div className="grid grid-cols-4 gap-2">
           {WATER_STEPS.map((step) => (
             <button
               key={step}
@@ -90,7 +92,7 @@ export function QuickRow() {
         </div>
       </Card>
 
-      <Card aria-labelledby="weight-title" className="flex flex-col justify-between gap-3 p-4">
+      <Card aria-labelledby="weight-title" className="flex items-center justify-between gap-3">
         <div>
           <h2 id="weight-title" className="text-sm font-medium text-fg-muted">
             {t("nu.weight")}
@@ -100,7 +102,7 @@ export function QuickRow() {
             <span className="text-sm font-medium text-fg-muted">{t("unit.kg")}</span>
           </p>
         </div>
-        <Button block onClick={() => setWeightOpen(true)}>
+        <Button onClick={() => setWeightOpen(true)}>
           {t("nu.weight.update")}
         </Button>
       </Card>
