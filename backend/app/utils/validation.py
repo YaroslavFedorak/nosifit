@@ -90,7 +90,7 @@ def parse_profile_number(field, value, required=False):
     low, high, kind = PROFILE_RANGES[field]
     try:
         number = float(value)
-    except (TypeError, ValueError) as exc:
+    except (TypeError, ValueError, OverflowError) as exc:
         raise ValidationError(f"{field} must be a number") from exc
 
     if not math.isfinite(number) or not (low <= number <= high):
@@ -129,7 +129,7 @@ def bounded_number(value, low, high, *, integer=False, allow_none=True):
         raise ValidationError("A number is required")
     try:
         number = float(value)
-    except (TypeError, ValueError) as exc:
+    except (TypeError, ValueError, OverflowError) as exc:
         raise ValidationError("A number is required") from exc
     if not math.isfinite(number) or not (low <= number <= high):
         raise ValidationError(f"Value must be between {low} and {high}")
@@ -140,16 +140,40 @@ def bounded_number(value, low, high, *, integer=False, allow_none=True):
     return number
 
 
+def finite_number(value):
+    """``value`` as a finite float; None for anything else.
+
+    float() alone would take the strings "NaN" and "Infinity" and turn true
+    into 1.0, and NaN passes every ``a <= x <= b`` written the other way round.
+    """
+    if value is None or isinstance(value, bool):
+        return None
+    try:
+        number = float(value)
+    except (TypeError, ValueError, OverflowError):
+        return None
+    return number if math.isfinite(number) else None
+
+
 # PostgreSQL INTEGER; larger values make the query itself fail.
 DB_ID_MAX = 2**31 - 1
+_DB_ID_DIGITS = len(str(DB_ID_MAX))
+
+# Pages of a list, so OFFSET cannot grow past what any client asks for (and
+# past BIGINT, where the query itself fails).
+MAX_PAGE_OFFSET = 100_000
 
 
 def as_db_id(value):
     """A positive int that fits an INTEGER id column, else None."""
     if isinstance(value, bool):
         return None
-    if isinstance(value, str) and value.strip().isdigit():
-        value = int(value.strip())
+    if isinstance(value, str):
+        text = value.strip()
+        # isdecimal, not isdigit: int("²") raises.
+        if not (text.isdecimal() and len(text) <= _DB_ID_DIGITS):
+            return None
+        value = int(text)
     if isinstance(value, int) and 0 < value <= DB_ID_MAX:
         return value
     return None

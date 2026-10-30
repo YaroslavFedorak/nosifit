@@ -1,7 +1,7 @@
 from backend.app.extensions import db
 from backend.app.models.injury import Injury
 from backend.app.models.user_injury import UserInjury
-from backend.app.utils.validation import ValidationError
+from backend.app.utils.validation import ValidationError, as_db_id
 
 MAX_USER_INJURIES = 50
 
@@ -12,7 +12,7 @@ def clean_injury_ids(value):
         raise ValidationError("injuries must be a list")
     ids = []
     for item in value:
-        if isinstance(item, bool) or not isinstance(item, int):
+        if as_db_id(item) is None or isinstance(item, str):
             raise ValidationError("injury ids must be integers")
         if item not in ids:
             ids.append(item)

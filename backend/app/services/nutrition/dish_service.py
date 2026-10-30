@@ -24,13 +24,12 @@ from backend.app.services.nutrition.calculation_service import (
     normalize_amount,
     normalize_unit,
     partial_sum,
-    validate_amount_for_unit,
 )
 from backend.app.services.nutrition.item_service import add_entries, load_products_for_user
 from backend.app.services.nutrition.meal_categories import normalize_meal_category
 from backend.app.services.nutrition.product_service import get_product_name, normalize_locale
 from backend.app.utils.name_normalization import normalize_name
-from backend.app.utils.validation import as_db_id
+from backend.app.utils.validation import MAX_PAGE_OFFSET, as_db_id
 
 
 MAX_DISH_NAME_LENGTH = 120
@@ -65,7 +64,7 @@ def get_user_dish(user_id, dish_id):
 
 def _component(item, locale):
     product = item.product
-    nutrition = calculate_product_nutrition(product, item.amount, item.unit)
+    nutrition = calculate_product_nutrition(product, item.amount, item.unit, check_limits=False)
     return {
         "product_id": product.id,
         "name": get_product_name(product, locale),
@@ -187,7 +186,7 @@ def _resolve_items(user_id, items, known=None):
         product = products[item["product_id"]]
         item["unit"] = normalize_unit(item["unit"], product.default_unit)
         try:
-            validate_amount_for_unit(item["amount"], item["unit"])
+            calculate_product_nutrition(product, item["amount"], item["unit"])
         except NutritionValidationError as exc:
             raise DishServiceError(str(exc), "invalid_entry")
         item["product"] = product
@@ -232,7 +231,7 @@ def list_dishes(user_id, locale="en", query="", sort="recent", limit=20, offset=
     """``(dishes, has_more)``; ``query`` matches the name (prefix or substring)."""
     sort = sort if sort in DISH_SORTS else "recent"
     limit = min(max(int(limit), 1), 50)
-    offset = max(int(offset), 0)
+    offset = min(max(int(offset), 0), MAX_PAGE_OFFSET)
 
     dish_query = _dish_query(user_id)
     normalized = normalize_name(query)

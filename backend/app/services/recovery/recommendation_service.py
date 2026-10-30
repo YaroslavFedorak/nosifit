@@ -9,6 +9,7 @@ from backend.app.models.user import User
 from backend.app.services.recovery.constants import MAX_RECOMMENDATIONS
 from backend.app.services.training.model import TrainingModelService
 from backend.app.services.training.model import parameters as training_parameters
+from backend.app.utils import clock
 
 
 class RecommendationService:
@@ -242,7 +243,7 @@ class RecommendationService:
         daily_load: Optional[float] = None,
         target_date: Optional[date] = None,
     ) -> List[Dict[str, Any]]:
-        target_date = target_date or date.today()
+        target_date = target_date or clock.today()
 
         recovery_data = RecommendationService._get_recovery_data(
             user_id=user_id,

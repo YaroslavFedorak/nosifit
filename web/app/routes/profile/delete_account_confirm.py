@@ -22,8 +22,8 @@ def pending_deletion():
 @delete_confirm_bp.route("/profile/delete/confirm", methods=["POST"])
 @login_required
 def confirm_delete():
-    data = request.get_json(silent=True) or {}
-    code = data.get("code")
+    data = request.get_json(silent=True)
+    code = data.get("code") if isinstance(data, dict) else None
 
     entry = pending_deletion()
     if entry is None:

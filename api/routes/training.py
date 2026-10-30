@@ -34,10 +34,12 @@ from werkzeug.exceptions import BadRequest, HTTPException
 
 from backend.app.utils.validation import ValidationError, as_db_id, bounded_number
 from backend.app.services.training.validation import (
+    check_set_entries as _check_set_entries,
     clean_exercise_id as _clean_exercise_id,
     clean_fatigue as _clean_fatigue,
     clean_reps as _clean_reps,
     clean_set_data as _clean_set_data,
+    merge_repeated_exercises,
     rir_from_rpe,
 )
 from shared.i18n import DEFAULT_LOCALE, SUPPORTED_LOCALES, load_translation
@@ -52,9 +54,7 @@ def _local_today():
     return clock.today()
 
 
-def _local_date(moment):
-    """Local calendar date of a naive UTC datetime."""
-    return moment.replace(tzinfo=dt.timezone.utc).astimezone(clock.app_timezone()).date()
+_local_date = clock.local_date
 
 
 training_api_bp = Blueprint("training_api", __name__, url_prefix="/api/training")
@@ -73,7 +73,11 @@ def _error(e):
 MAX_PLANS_PER_USER = 50
 MAX_PLAN_NAME_LENGTH = 100
 MAX_EXERCISES_PER_DAY = 40
+MAX_EXERCISE_PAGE = 1000
+HEATMAP_YEARS = (2000, 2100)
 PLAN_DAY_KEYS = {"mon", "tue", "wed", "thu", "fri", "sat", "sun"}
+
+
 def _clean_plan_name(value, default):
     if value is None:
         return default
@@ -223,8 +227,8 @@ def equipment():
 @login_required
 def exercises():
     try:
-        page = max(1, request.args.get("page", 1, type=int) or 1)
-        per_page = min(max(1, request.args.get("per_page", 50, type=int) or 50), 100)
+        page = _bounded_arg("page", 1, 1, MAX_EXERCISE_PAGE)
+        per_page = _bounded_arg("per_page", 50, 1, 100)
         items = catalog_service.find_exercises(
             muscle=request.args.get("muscle"),
             equipment=request.args.get("equipment"),
@@ -460,6 +464,35 @@ def today_logged_session():
         return _error(e)
 
 
+def _active_session_items(session):
+    catalog = catalog_service.exercises_by_id({row.exercise_id for row in session.exercises})
+    return [
+        {"exercise": catalog[row.exercise_id], "entry": _session_entry(catalog[row.exercise_id], row)}
+        for row in session.exercises
+        if row.exercise_id in catalog
+    ]
+
+
+def _planned_items_today(plan):
+    """Today's exercises of a plan; a plan without today falls back to its first day."""
+    days = plan.days or {}
+    key = _today_key() if days.get(_today_key()) else next(iter(days), None)
+    planned = [
+        item
+        for item in plan_service.day_exercises(plan, key)
+        if isinstance(item, dict) and isinstance(item.get("exercise"), dict)
+    ]
+    catalog = catalog_service.exercises_by_id({item["exercise"].get("id") for item in planned})
+    return [
+        {
+            "exercise": catalog[item["exercise"].get("id")],
+            "entry": _plan_entry(catalog[item["exercise"].get("id")], item),
+        }
+        for item in planned
+        if item["exercise"].get("id") in catalog
+    ]
+
+
 @training_api_bp.route("/today")
 @login_required
 def today():
@@ -490,32 +523,13 @@ def today():
         if active:
             payload["sessionId"] = str(active.id)
             payload["title"] = "Активна сесія"
-            for se in active.exercises:
-                ex_obj = catalog_service.exercise_by_id(se.exercise_id)
-                if not ex_obj:
-                    continue
-                exercises_raw.append(
-                    {
-                        "exercise": ex_obj,
-                        "entry": _session_entry(ex_obj, se),
-                    }
-                )
+            exercises_raw = _active_session_items(active)
         else:
             plan = plan_service.active_plan(current_user.id)
             if not plan or not plan.days:
                 return jsonify(payload)
 
-            day = plan.days.get(_today_key()) or next(iter(plan.days.values()))
-            for ex in day["exercises"]:
-                ex_obj = catalog_service.exercise_by_id(ex["exercise"]["id"])
-                if not ex_obj:
-                    continue
-                exercises_raw.append(
-                    {
-                        "exercise": ex_obj,
-                        "entry": _plan_entry(ex_obj, ex),
-                    }
-                )
+            exercises_raw = _planned_items_today(plan)
             payload["title"] = "Рекомендована сесія"
             payload["plan"] = [{"id": plan.id, "name": plan.name}]
 
@@ -555,31 +569,17 @@ def today_session():
     try:
         active = TrainingSessionService.active_session(current_user.id)
 
-        result = {"exercises": []}
-
+        plan = None if active else plan_service.active_plan(current_user.id)
         if active:
-            for se in active.exercises:
-                ex = catalog_service.exercise_by_id(se.exercise_id)
-                if not ex:
-                    continue
-                result["exercises"].append(
-                    serialize_entry(ex, _session_entry(ex, se))
-                )
-            return jsonify(result)
+            items = _active_session_items(active)
+        elif plan:
+            items = _planned_items_today(plan)
+        else:
+            items = []
 
-        plan = plan_service.active_plan(current_user.id)
-        if not plan:
-            return jsonify({"exercises": []})
-
-        day = plan.days.get(_today_key()) or next(iter(plan.days.values()))
-
-        for item in day["exercises"]:
-            ex = catalog_service.exercise_by_id(item["exercise"]["id"])
-            if not ex:
-                continue
-            result["exercises"].append(serialize_entry(ex, _plan_entry(ex, item)))
-
-        return jsonify(result)
+        return jsonify(
+            {"exercises": [serialize_entry(item["exercise"], item["entry"]) for item in items]}
+        )
     except Exception as e:
         return _error(e)
 
@@ -588,17 +588,14 @@ def today_session():
 @login_required
 def heatmap():
     try:
-        year = int(request.args.get("year", _local_today().year))
+        year = bounded_number(
+            request.args.get("year", _local_today().year), *HEATMAP_YEARS, integer=True, allow_none=False
+        )
         start = dt.date(year, 1, 1)
         end = dt.date(year, 12, 31)
 
-        local_start = dt.datetime.combine(start, dt.time.min, tzinfo=clock.app_timezone())
-
-        local_end = dt.datetime.combine(end, dt.time.max, tzinfo=clock.app_timezone())
-
-        utc_start = local_start.astimezone(dt.timezone.utc).replace(tzinfo=None)
-
-        utc_end = local_end.astimezone(dt.timezone.utc).replace(tzinfo=None)
+        utc_start, _ = clock.day_bounds_utc(start)
+        _, utc_end = clock.day_bounds_utc(end)
 
         today = _local_today()
         calendar = [start + dt.timedelta(days=i) for i in range((end - start).days + 1)]
@@ -808,8 +805,7 @@ def _saved_workout_today(session_id):
     return session
 
 
-def _completed_session_payload(session):
-    summary = TrainingModelService.session_summary(session)
+def _completed_session_payload(session, summary):
     return {
         "id": session.id,
         "rpe_avg": session.rpe_avg,
@@ -820,6 +816,16 @@ def _completed_session_payload(session):
         "volume_load_kg": summary["volume_load_kg"],
         "muscle_sets": summary["muscle_sets"],
     }
+
+
+def _listed_exercise_ids(items):
+    ids = set()
+    for item in items:
+        exercise = item.get("exercise") if isinstance(item, dict) else None
+        exercise_id = exercise.get("id") if isinstance(exercise, dict) else None
+        if isinstance(exercise_id, (str, int)) and not isinstance(exercise_id, bool):
+            ids.add(str(exercise_id).strip())
+    return ids
 
 
 def _empty_session_payload(deleted):
@@ -849,28 +855,36 @@ def complete_session():
         if not isinstance(raw, list) or len(raw) > 100:
             raise ValidationError("exercises must be a list of at most 100 items")
 
+        # Loaded together: the check of each item below finds them in the session.
+        catalog = catalog_service.exercises_by_id(_listed_exercise_ids(raw))  # noqa: F841
+
         exercises = []
         for item in raw:
             exercise_data = item.get("exercise") if isinstance(item, dict) else None
             exercise_id = exercise_data.get("id") if isinstance(exercise_data, dict) else None
             if not exercise_id:
                 continue
+            exercise_id = _clean_exercise_id(exercise_id)
             exercises.append(
                 (
-                    _clean_exercise_id(exercise_id),
-                    _clean_set_data(
-                        {
-                            "sets_done": item.get("sets"),
-                            "reps_done": item.get("reps"),
-                            "duration_sec_done": item.get("duration_sec"),
-                            "load_done": item.get("load"),
-                            "rpe": item.get("rpe"),
-                            **({"rir": item["rir"]} if "rir" in item else {}),
-                            "set_entries": item.get("set_entries"),
-                        }
+                    exercise_id,
+                    _check_set_entries(
+                        exercise_id,
+                        _clean_set_data(
+                            {
+                                "sets_done": item.get("sets"),
+                                "reps_done": item.get("reps"),
+                                "duration_sec_done": item.get("duration_sec"),
+                                "load_done": item.get("load"),
+                                "rpe": item.get("rpe"),
+                                **({"rir": item["rir"]} if "rir" in item else {}),
+                                "set_entries": item.get("set_entries"),
+                            }
+                        ),
                     ),
                 )
             )
+        exercises = merge_repeated_exercises(exercises)
 
         saved = _saved_workout_today(data.get("session_id"))
         if saved is None and data.get("session_id") is not None and data.get("strict") is True:
@@ -885,38 +899,14 @@ def complete_session():
                 TrainingSessionService.delete_session(saved)
             return jsonify(_empty_session_payload(deleted=saved is not None))
 
-        if saved is not None:
-            session = TrainingSessionService.replace_exercises(
-                saved, exercises, fatigue_after
-            )
-            return jsonify(_completed_session_payload(session))
-
-        existing = TrainingSessionService.active_session(current_user.id)
-
-        if existing:
-            TrainingSessionService.finish_session(
-                existing,
-                fatigue_after,
-            )
-
-        session = TrainingSessionService.start_session(
+        session, summary = TrainingSessionService.save_workout(
             current_user,
+            exercises,
+            session=saved,
             fatigue_before=fatigue_before,
+            fatigue_after=fatigue_after,
         )
-
-        for exercise_id, set_data in exercises:
-            TrainingSessionService.update_exercise(
-                session,
-                exercise_id,
-                set_data,
-            )
-
-        TrainingSessionService.finish_session(
-            session,
-            fatigue_after,
-        )
-
-        return jsonify(_completed_session_payload(session))
+        return jsonify(_completed_session_payload(session, summary))
 
     except Exception as e:
         return _error(e)
@@ -928,8 +918,8 @@ def complete_session():
 @login_required
 def update_session_exercise(session_id, exercise_id):
     try:
-        data = _clean_set_data(_json_body())
         exercise_id = _clean_exercise_id(exercise_id)
+        data = _check_set_entries(exercise_id, _clean_set_data(_json_body()))
 
         session = TrainingSessionService.active_session_for_user(session_id, current_user.id)
         if session is None:
@@ -999,23 +989,22 @@ def day_details(date):
         except ValueError:
             raise ValidationError("date must be YYYY-MM-DD") from None
 
-        local_start = dt.datetime.combine(target, dt.time.min, tzinfo=clock.app_timezone())
-
-        local_end = dt.datetime.combine(target, dt.time.max, tzinfo=clock.app_timezone())
-
-        utc_start = local_start.astimezone(dt.timezone.utc).replace(tzinfo=None)
-
-        utc_end = local_end.astimezone(dt.timezone.utc).replace(tzinfo=None)
+        utc_start, utc_end = clock.day_bounds_utc(target)
 
         sessions = TrainingSessionService.sessions_started_within(
             current_user.id, utc_start, utc_end
+        )
+
+        sessions = list(sessions)
+        catalog = catalog_service.exercises_by_id(
+            {ex.exercise_id for s in sessions for ex in s.exercises}
         )
 
         result = []
         for s in sessions:
             exercises = []
             for ex in s.exercises:
-                obj = catalog_service.exercise_by_id(ex.exercise_id)
+                obj = catalog.get(ex.exercise_id)
                 if obj:
                     duration = is_duration_exercise(obj)
                     exercises.append(
@@ -1107,7 +1096,7 @@ def recommendations():
     try:
         result = build_recommendations(
             user=current_user,
-            target_day=dt.date.today(),
+            target_day=_local_today(),
         )
 
         return jsonify(result)

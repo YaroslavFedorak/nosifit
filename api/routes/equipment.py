@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
 from flask_login import login_required, current_user
 from backend.app.services.equipment_service import EquipmentService
+from backend.app.utils.validation import as_db_id
 
 equipment_api = Blueprint("equipment_api", __name__, url_prefix="/api/user/equipment")
 
@@ -14,12 +15,7 @@ def get_equipment():
 
 def _equipment_id():
     data = request.get_json(silent=True)
-    value = data.get("equipment_id") if isinstance(data, dict) else None
-    if isinstance(value, bool):
-        return None
-    if isinstance(value, str) and value.strip().isdigit() and len(value) < 10:
-        value = int(value)
-    return value if isinstance(value, int) and 0 < value < 2**31 else None
+    return as_db_id(data.get("equipment_id")) if isinstance(data, dict) else None
 
 
 @equipment_api.post("/add")

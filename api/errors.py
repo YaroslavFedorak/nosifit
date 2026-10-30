@@ -22,6 +22,8 @@ import re
 from flask import jsonify, request
 from werkzeug.exceptions import HTTPException
 
+from shared.api_paths import unversioned
+
 API_PREFIX = "/api/"
 
 DEFAULT_CODES = {
@@ -133,5 +135,26 @@ def _complete_errors(response):
     return response
 
 
+def _reject_non_object_json():
+    """Every JSON body sent to the API is an object.
+
+    The routes read it with ``.get``: a list or a string would crash them, or
+    count as an empty request and clear a saved value. The Telegram endpoints
+    answer for themselves, after checking the bot's signature.
+    """
+    if (
+        request.method in ("GET", "HEAD", "OPTIONS")
+        or not is_api_request()
+        or not request.is_json
+        or unversioned(request.path).startswith("/api/telegram/")
+    ):
+        return None
+    body = request.get_json(silent=True)
+    if body is None or isinstance(body, dict):
+        return None
+    return error_response(400, "invalid_input", "JSON object expected")
+
+
 def init_api_errors(app) -> None:
+    app.before_request(_reject_non_object_json)
     app.after_request(_complete_errors)

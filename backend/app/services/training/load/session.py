@@ -30,8 +30,15 @@ def calculate_session_load(session, user):
 
     total_load = 0.0
 
+    catalog = {
+        exercise.id: exercise
+        for exercise in Exercise.query.filter(
+            Exercise.id.in_({row.exercise_id for row in exercises})
+        )
+    } if exercises else {}
+
     for session_exercise in exercises:
-        exercise = Exercise.query.get(session_exercise.exercise_id)
+        exercise = catalog.get(session_exercise.exercise_id)
 
         if not exercise:
             continue

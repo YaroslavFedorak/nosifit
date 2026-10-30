@@ -1,5 +1,7 @@
 from datetime import date, datetime, time, timedelta
 
+from sqlalchemy.orm import selectinload
+
 from backend.app.extensions import db
 from backend.app.utils import clock
 from backend.app.models import Meal, MealItem
@@ -110,17 +112,10 @@ def delete_meal_service(user_id, meal_id):
     return True
 
 
-def copy_meal_service(user_id, meal_id):
-    source_meal = Meal.query.filter_by(
-        id=meal_id,
-        user_id=user_id,
-    ).first()
-
-    if source_meal is None:
-        return None
-
+def _copy_meal(source_meal):
+    """Today's copy of a meal, with the entries' snapshots as logged; no commit."""
     new_meal = Meal(
-        user_id=user_id,
+        user_id=source_meal.user_id,
         date=clock.today(),
         time=source_meal.time,
         name=source_meal.name,
@@ -156,28 +151,43 @@ def copy_meal_service(user_id, meal_id):
 
     db.session.flush()
     recalc_meal_totals(new_meal)
+    return new_meal
+
+
+def copy_meal_service(user_id, meal_id):
+    source_meal = Meal.query.filter_by(
+        id=meal_id,
+        user_id=user_id,
+    ).first()
+
+    if source_meal is None:
+        return None
+
+    new_meal = _copy_meal(source_meal)
     db.session.commit()
 
     return new_meal
 
 
 def copy_yesterday_service(user_id):
-    """Copy every meal from yesterday to today.
+    """Copy every meal from yesterday to today, all of them or none.
 
     Returns None when yesterday had no meals, otherwise how many meals were
     copied.
     """
     yesterday = clock.today() - timedelta(days=1)
-    meals = Meal.query.filter_by(
-        user_id=user_id,
-        date=yesterday,
-    ).all()
+    meals = (
+        Meal.query
+        .options(selectinload(Meal.items))
+        .filter_by(user_id=user_id, date=yesterday)
+        .all()
+    )
 
     if not meals:
         return None
 
-    copied = 0
     for meal in meals:
-        if copy_meal_service(user_id, meal.id):
-            copied += 1
-    return copied
+        _copy_meal(meal)
+    db.session.commit()
+
+    return len(meals)

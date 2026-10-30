@@ -55,7 +55,7 @@ from backend.app.services.nutrition.water_service import (
 from backend.app.services.nutrition.weight_service import get_weight_data, update_user_weight
 from backend.app.utils import clock
 from backend.app.utils.rate_limit import hit_limit
-from backend.app.utils.validation import PROFILE_RANGES
+from backend.app.utils.validation import PROFILE_RANGES, finite_number
 
 nutrition_api = Blueprint("nutrition_api", __name__, url_prefix="/api/nutrition")
 
@@ -379,7 +379,8 @@ def _legacy_item_to_product(data):
     a user-owned Product first and let the normal entry service calculate the
     resulting MealItem.
     """
-    name = (data.get("name") or "").strip()
+    name = data.get("name")
+    name = name.strip() if isinstance(name, str) else ""
     if not name:
         raise NutritionValidationError("Product name is required")
 
@@ -393,9 +394,12 @@ def _legacy_item_to_product(data):
     # as long as its values match (product names are unique per user).
     existing = find_own_product_by_name(current_user.id, name)
     if existing is not None:
+        sent = {key: finite_number(value or 0) for key, value in values.items()}
+        if None in sent.values():
+            raise NutritionValidationError("Nutrition values must be numbers")
         same = all(
-            abs(float(getattr(existing, key)) - float(value or 0)) < 1e-6
-            for key, value in values.items()
+            abs(float(getattr(existing, key)) - value) < 1e-6
+            for key, value in sent.items()
         )
         if same:
             return existing.id
@@ -659,9 +663,8 @@ def api_copy_yesterday():
 @login_required
 def api_update_weight():
     data = request.get_json() or {}
-    try:
-        weight = float(data.get("weight"))
-    except (TypeError, ValueError):
+    weight = finite_number(data.get("weight"))
+    if weight is None:
         return _error("Invalid weight", "invalid_weight")
 
     if not (MIN_WEIGHT_KG <= weight <= MAX_WEIGHT_KG):
@@ -729,9 +732,8 @@ def api_get_water():
 @login_required
 def api_add_water():
     data = request.get_json() or {}
-    try:
-        amount = float(data.get("amount"))
-    except (TypeError, ValueError):
+    amount = finite_number(data.get("amount"))
+    if amount is None:
         return _error("Invalid amount", "invalid_water")
 
     # Negative values subtract (fixing a mistaken entry).

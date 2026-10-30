@@ -2,6 +2,7 @@ from datetime import date, timedelta
 from typing import Optional, List, Dict
 
 from backend.app.models.recovery.daily_recovery_snapshot import DailyRecoverySnapshot
+from backend.app.utils import clock
 
 
 class StatsService:
@@ -50,7 +51,7 @@ class StatsService:
         return snapshots
 
     def get_weekly_stats(self, user_id: int) -> Dict:
-        today = date.today()
+        today = clock.today()
         start = today - timedelta(days=6)
 
         snapshots = (

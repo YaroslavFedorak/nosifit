@@ -1,11 +1,10 @@
-from datetime import date, datetime
-
 from backend.app.extensions import db
 from backend.app.models.training_session import TrainingSession
 from backend.app.training.models.exercise import Exercise
 from backend.app.services.training.session_service import (
     TrainingSessionService,
 )
+from backend.app.utils import clock
 
 from .analyzer import TrainingDashboardAnalyzer
 from .dto import (
@@ -19,15 +18,7 @@ class TrainingDashboardService:
 
     @staticmethod
     def get_today(user_id):
-        start = datetime.combine(
-            date.today(),
-            datetime.min.time(),
-        )
-
-        end = datetime.combine(
-            date.today(),
-            datetime.max.time(),
-        )
+        start, end = clock.day_bounds_utc(clock.today())
 
         session = (
             TrainingSession.query.filter(

@@ -1,8 +1,7 @@
-from datetime import date
-
 from backend.app.training.models.fatigue_state import (
     FatigueState,
 )
+from backend.app.utils import clock
 
 from .constants import (
     CHRONIC_WINDOW_DAYS,
@@ -155,7 +154,7 @@ def compute_daily_load_index(
     sessions,
     target_day=None,
 ):
-    target_day = target_day or date.today()
+    target_day = target_day or clock.today()
 
     daily_loads = build_daily_loads(
         sessions,

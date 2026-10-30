@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta, time, date
+from datetime import datetime, timedelta, timezone, date
 from typing import Optional, List
 
 from backend.app.extensions import db
@@ -7,6 +7,7 @@ from backend.app.models.user import User
 from backend.app.services.recovery.constants import (
     SLEEP_DEBT_DAYS,
 )
+from backend.app.utils import clock
 
 
 class SleepService:
@@ -45,8 +46,7 @@ class SleepService:
     def get_sleep_for_date(
         self, user_id: int, target_date: date
     ) -> Optional[SleepEntry]:
-        start = datetime.combine(target_date, time.min)
-        end = datetime.combine(target_date, time.max)
+        start, end = clock.day_bounds(target_date)
         return (
             SleepEntry.query.filter(
                 SleepEntry.user_id == user_id,
@@ -60,7 +60,7 @@ class SleepService:
     def get_last_days(
         self, user_id: int, days: int = SLEEP_DEBT_DAYS
     ) -> List[SleepEntry]:
-        cutoff = datetime.utcnow() - timedelta(days=days)
+        cutoff = datetime.now(timezone.utc) - timedelta(days=days)
         return (
             SleepEntry.query.filter(
                 SleepEntry.user_id == user_id,

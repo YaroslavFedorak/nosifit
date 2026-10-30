@@ -98,6 +98,9 @@ def partial_totals(items, field):
 
 
 def normalize_unit(unit: str | None, default: str = "g") -> str:
+    if unit and not isinstance(unit, str):
+        raise NutritionValidationError("Unit must be text")
+
     normalized = (unit or default or "g").strip().lower()
 
     if normalized not in SUPPORTED_UNITS:
@@ -109,9 +112,12 @@ def normalize_unit(unit: str | None, default: str = "g") -> str:
 
 
 def normalize_amount(amount) -> float:
+    if isinstance(amount, bool):
+        raise NutritionValidationError("Amount must be a number")
+
     try:
         value = float(amount)
-    except (TypeError, ValueError):
+    except (TypeError, ValueError, OverflowError):
         raise NutritionValidationError("Amount must be a number")
 
     if value != value or value <= 0:
@@ -135,7 +141,7 @@ def amount_to_grams(amount, unit: str, grams_per_unit: float) -> float:
 
     try:
         conversion = float(grams_per_unit)
-    except (TypeError, ValueError):
+    except (TypeError, ValueError, OverflowError):
         raise NutritionValidationError("Invalid product unit conversion")
 
     if conversion <= 0:
@@ -167,16 +173,20 @@ def calculate_liquid_ml(
     )
 
 
-def calculate_product_nutrition(product, amount, unit=None) -> CalculatedNutrition:
+def calculate_product_nutrition(product, amount, unit=None, check_limits=True) -> CalculatedNutrition:
+    """``check_limits=False`` is for showing a stored dish component: a later
+    edit of its product may have moved it over a limit, which matters when it
+    is logged, not when it is listed."""
     normalized_unit = normalize_unit(unit, product.default_unit)
     amount_value = normalize_amount(amount)
-    validate_amount_for_unit(amount_value, normalized_unit)
+    if check_limits:
+        validate_amount_for_unit(amount_value, normalized_unit)
     grams = amount_to_grams(
         amount_value,
         normalized_unit,
         product.grams_per_unit,
     )
-    if grams > MAX_ENTRY_GRAMS:
+    if check_limits and grams > MAX_ENTRY_GRAMS:
         raise NutritionValidationError(
             f"Amount is too large (max {MAX_ENTRY_GRAMS:g} g in total)"
         )

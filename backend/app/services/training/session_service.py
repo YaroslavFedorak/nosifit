@@ -1,5 +1,7 @@
 from datetime import datetime
 
+from sqlalchemy.orm import selectinload
+
 from backend.app.extensions import db
 from backend.app.models.training_session import (
     SessionExercise,
@@ -10,12 +12,13 @@ from backend.app.services.training.model import TrainingModelService
 from backend.app.training.exercises.prescription import session_update_fields
 from backend.app.training.models.exercise import Exercise
 from backend.app.training.models.performance_state import PerformanceState
+from backend.app.utils import clock
 
 
 class TrainingSessionService:
 
     @staticmethod
-    def start_session(user, fatigue_before=None):
+    def _new_session(user, fatigue_before=None):
         session = TrainingSession(
             user_id=user.id,
             fatigue_before=fatigue_before,
@@ -24,71 +27,117 @@ class TrainingSessionService:
         )
 
         db.session.add(session)
+        db.session.flush()
+        return session
+
+    @staticmethod
+    def start_session(user, fatigue_before=None):
+        session = TrainingSessionService._new_session(user, fatigue_before)
         db.session.commit()
         return session
 
     @staticmethod
-    def add_exercise(session, exercise_id):
-        existing = SessionExercise.query.filter_by(
+    def _exercise_row(session, exercise_id):
+        row = SessionExercise.query.filter_by(
             session_id=session.id,
             exercise_id=exercise_id,
         ).first()
 
-        if existing:
-            return existing
+        if row is None:
+            row = SessionExercise(
+                session_id=session.id,
+                exercise_id=exercise_id,
+                sets_planned=0,
+                sets_done=0,
+            )
+            db.session.add(row)
+            db.session.flush()
+        return row
 
-        session_exercise = SessionExercise(
-            session_id=session.id,
-            exercise_id=exercise_id,
-            sets_planned=0,
-            sets_done=0,
-        )
-
-        db.session.add(session_exercise)
+    @staticmethod
+    def add_exercise(session, exercise_id):
+        session_exercise = TrainingSessionService._exercise_row(session, exercise_id)
         db.session.commit()
         return session_exercise
 
     @staticmethod
-    def update_exercise(session, exercise_id, data):
-        session_exercise = SessionExercise.query.filter_by(
-            session_id=session.id,
-            exercise_id=exercise_id,
-        ).first()
-
-        if not session_exercise:
-            session_exercise = TrainingSessionService.add_exercise(
-                session,
-                exercise_id,
-            )
-
-        exercise = Exercise.query.get(exercise_id)
+    def _apply_exercise(session, exercise_id, data):
+        session_exercise = TrainingSessionService._exercise_row(session, exercise_id)
+        exercise = db.session.get(Exercise, exercise_id)
 
         for field, value in session_update_fields(exercise, data).items():
             setattr(session_exercise, field, value)
 
+        return session_exercise
+
+    @staticmethod
+    def update_exercise(session, exercise_id, data):
+        session_exercise = TrainingSessionService._apply_exercise(session, exercise_id, data)
         db.session.commit()
         return session_exercise
 
     @staticmethod
-    def _compute_session_load(session, user):
-        # internal_load: legacy multiplier-based number, still read by the
-        # dashboard session score; removed once that consumer moves.
-        internal_load = calculate_session_load(session, user)
-        session.internal_load = internal_load
-        # The muscle_loads column now stores effective sets per muscle (v2
-        # model). It used to hold exercise ids by mistake.
-        session.muscle_loads = TrainingModelService.session_summary(session)["muscle_sets"]
-        return internal_load
+    def _add_exercises(session, exercises):
+        """Rows for ``[(exercise_id, data), ...]`` of a session that has none; no commit."""
+        if not exercises:
+            return
+        catalog = {
+            exercise.id: exercise
+            for exercise in Exercise.query.filter(
+                Exercise.id.in_([exercise_id for exercise_id, _ in exercises])
+            )
+        }
+        db.session.add_all(
+            SessionExercise(
+                session_id=session.id,
+                exercise_id=exercise_id,
+                sets_planned=0,
+                **{"sets_done": 0, **session_update_fields(catalog.get(exercise_id), data)},
+            )
+            for exercise_id, data in exercises
+        )
 
     @staticmethod
-    def update_training_load_from_session(session, user):
-        total_load = TrainingSessionService._compute_session_load(session, user)
+    def _compute_session_load(session, user):
+        """Store the session's figures; returns its summary for the caller."""
+        # internal_load: legacy multiplier-based number, still read by the
+        # dashboard session score; removed once that consumer moves.
+        session.internal_load = calculate_session_load(session, user)
+        # The muscle_loads column now stores effective sets per muscle (v2
+        # model). It used to hold exercise ids by mistake.
+        summary = TrainingModelService.session_summary(session)
+        session.muscle_loads = summary["muscle_sets"]
+        return summary
 
-        performance = (
-            PerformanceState.query.filter_by(user_id=user.id)
+    @staticmethod
+    def _close(session, finished_at=None):
+        """Mark the session finished and store its figures; no commit."""
+        session.status = "finished"
+        session.finished_at = finished_at or datetime.utcnow()
+
+        # Rows added through _apply_exercise are not in the loaded relationship.
+        db.session.flush()
+        db.session.expire(session, ["exercises"])
+
+        rpes = [ex.rpe for ex in session.exercises if ex.rpe is not None]
+        session.rpe_avg = sum(rpes) / len(rpes) if rpes else None
+
+        return TrainingSessionService._compute_session_load(session, session.user)
+
+    @staticmethod
+    def _latest_performance(user_id):
+        return (
+            PerformanceState.query.filter_by(user_id=user_id)
             .order_by(PerformanceState.created_at.desc())
             .first()
         )
+
+    @staticmethod
+    def _add_to_training_load(session):
+        """The legacy cumulative PerformanceState.training_load: the sum over sessions."""
+        user = session.user
+        total_load = session.internal_load or 0
+        performance = TrainingSessionService._latest_performance(user.id)
 
         if not performance:
             performance = PerformanceState(
@@ -100,11 +149,9 @@ class TrainingSessionService:
         else:
             performance.training_load = (performance.training_load or 0) + total_load
 
-        db.session.commit()
-
     @staticmethod
-    def replace_exercises(session, exercises, fatigue_after=None):
-        """Save a workout again: its exercises become ``exercises``.
+    def _replace_exercises(session, exercises, fatigue_after=None):
+        """The session's exercises become ``exercises``; returns its summary.
 
         The workout page sends the whole current workout on every save, so a
         repeated save must update the session instead of creating another
@@ -115,41 +162,55 @@ class TrainingSessionService:
         session.exercises.clear()
         db.session.flush()
 
-        for exercise_id, set_data in exercises:
-            TrainingSessionService.update_exercise(session, exercise_id, set_data)
+        TrainingSessionService._add_exercises(session, exercises)
 
-        db.session.refresh(session)
-        session.status = "finished"
-        session.finished_at = datetime.utcnow()
         if fatigue_after is not None:
             session.fatigue_after = fatigue_after
 
-        rpes = [ex.rpe for ex in session.exercises if ex.rpe is not None]
-        session.rpe_avg = sum(rpes) / len(rpes) if rpes else None
+        summary = TrainingSessionService._close(session)
 
-        TrainingSessionService._compute_session_load(session, session.user)
-
-        performance = (
-            PerformanceState.query.filter_by(user_id=session.user_id)
-            .order_by(PerformanceState.created_at.desc())
-            .first()
-        )
+        performance = TrainingSessionService._latest_performance(session.user_id)
         if performance is not None:
             performance.training_load = (performance.training_load or 0) + (
                 (session.internal_load or 0) - previous_load
             )
 
+        return summary
+
+    @staticmethod
+    def save_workout(user, exercises, session=None, fatigue_before=None, fatigue_after=None):
+        """Store a logged workout in one transaction: all of it or nothing.
+
+        ``session`` is today's session to save over. Without it a new finished
+        session is created, and one left in progress is finished first.
+        Returns ``(session, summary)``.
+        """
+        if session is not None:
+            summary = TrainingSessionService._replace_exercises(session, exercises, fatigue_after)
+        else:
+            existing = TrainingSessionService.active_session(user.id)
+            if existing:
+                existing.fatigue_after = fatigue_after
+                TrainingSessionService._close(existing)
+                TrainingSessionService._add_to_training_load(existing)
+
+            session = TrainingSessionService._new_session(user, fatigue_before)
+            session.fatigue_after = fatigue_after
+            TrainingSessionService._add_exercises(session, exercises)
+            summary = TrainingSessionService._close(session)
+            TrainingSessionService._add_to_training_load(session)
+
         db.session.commit()
-        return session
+        return session, summary
 
     @staticmethod
     def delete_session(session):
         """Remove a session whose last exercise was deleted.
 
-        Clearing it first through replace_exercises takes its share out of
-        the legacy cumulative PerformanceState.training_load.
+        Clearing it first takes its share out of the legacy cumulative
+        PerformanceState.training_load.
         """
-        TrainingSessionService.replace_exercises(session, [])
+        TrainingSessionService._replace_exercises(session, [])
         db.session.delete(session)
         db.session.commit()
 
@@ -185,32 +246,21 @@ class TrainingSessionService:
 
     @staticmethod
     def finish_session(session, fatigue_after=None, finished_at=None):
-        session.status = "finished"
-        session.finished_at = finished_at or datetime.utcnow()
         session.fatigue_after = fatigue_after
-
-        rpes = [ex.rpe for ex in session.exercises if ex.rpe is not None]
-        session.rpe_avg = sum(rpes) / len(rpes) if rpes else None
-
-        TrainingSessionService._compute_session_load(session, session.user)
-
+        TrainingSessionService._close(session, finished_at)
+        TrainingSessionService._add_to_training_load(session)
         db.session.commit()
-
-        TrainingSessionService.update_training_load_from_session(
-            session,
-            session.user,
-        )
-
         return session
 
     @staticmethod
     def sessions_started_on(user_id, day):
-        """The user's sessions started on ``day`` (server time), oldest first."""
+        """The user's sessions started on the calendar day ``day``, oldest first."""
+        start, end = clock.day_bounds_utc(day)
         return (
             TrainingSession.query.filter(
                 TrainingSession.user_id == user_id,
-                TrainingSession.started_at >= datetime.combine(day, datetime.min.time()),
-                TrainingSession.started_at <= datetime.combine(day, datetime.max.time()),
+                TrainingSession.started_at >= start,
+                TrainingSession.started_at <= end,
             )
             .order_by(TrainingSession.started_at.asc())
             .all()
@@ -250,9 +300,13 @@ class TrainingSessionService:
 
     @staticmethod
     def sessions_started_within(user_id, start, end):
-        """Sessions started in [start, end] (naive UTC), in no set order."""
-        return TrainingSession.query.filter(
-            TrainingSession.user_id == user_id,
-            TrainingSession.started_at >= start,
-            TrainingSession.started_at <= end,
+        """Sessions started in [start, end] (naive UTC), oldest first."""
+        return (
+            TrainingSession.query.options(selectinload(TrainingSession.exercises))
+            .filter(
+                TrainingSession.user_id == user_id,
+                TrainingSession.started_at >= start,
+                TrainingSession.started_at <= end,
+            )
+            .order_by(TrainingSession.started_at.asc(), TrainingSession.id.asc())
         )

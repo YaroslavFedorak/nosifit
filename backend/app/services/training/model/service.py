@@ -12,6 +12,8 @@ from dataclasses import dataclass
 from datetime import date, datetime, time, timedelta
 from typing import Callable, Dict, List, Mapping, Optional, Sequence
 
+from backend.app.utils import clock
+
 from . import parameters as P
 from . import repository
 from .context import TrainingContext
@@ -75,9 +77,9 @@ def analyse(
 def moment_for(target_day: Optional[date], now: Optional[datetime] = None) -> datetime:
     """Evaluation time: now for today (or no day), end of day for past days."""
     current = now or datetime.utcnow()
-    if target_day is None or target_day >= current.date():
+    if target_day is None or target_day >= clock.local_date(current):
         return current
-    return datetime.combine(target_day, time.max)
+    return clock.day_bounds_utc(target_day)[1]
 
 
 class TrainingModelService:
@@ -151,14 +153,14 @@ class TrainingModelService:
 
     @staticmethod
     def day_stress(user_id: int, target_day: date) -> Dict:
-        """Stress proxy of one (UTC) day and the user's typical session."""
-        start = datetime.combine(target_day, time.min)
+        """Stress proxy of one calendar day and the user's typical session."""
+        start, end = clock.day_bounds_utc(target_day)
         result = TrainingModelService.stress_days(
             user_id,
             [target_day],
-            lambda moment: moment.date(),
+            clock.local_date,
             start,
-            datetime.combine(target_day, time.max),
+            end,
         )
         return result[target_day]
 

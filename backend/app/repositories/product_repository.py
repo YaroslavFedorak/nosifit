@@ -1,11 +1,10 @@
 from __future__ import annotations
 
-from datetime import date
-
 from sqlalchemy import or_
 from sqlalchemy.orm import selectinload
 
 from backend.app.models import Meal, MealItem, Product, ProductFavorite
+from backend.app.utils import clock
 from backend.app.utils.validation import as_db_id
 
 
@@ -67,7 +66,7 @@ def get_recent_products(user_id, limit=12):
         .filter(
             Meal.user_id == user_id,
             MealItem.product_id.is_not(None),
-            Meal.date <= date.today(),
+            Meal.date <= clock.today(),
         )
         .order_by(
             Meal.date.desc(),
