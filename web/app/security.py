@@ -9,6 +9,7 @@
 
 import ipaddress
 import json
+import math
 import secrets
 from urllib.parse import urlsplit
 
@@ -198,11 +199,19 @@ def _reject_constant(value):
     raise ValueError(f"{value} is not allowed in JSON")
 
 
+def _finite_float(text):
+    value = float(text)
+    if not math.isfinite(value):  # 1e999 parses as Infinity
+        raise ValueError(f"{text} is not allowed in JSON")
+    return value
+
+
 class StrictJSONProvider(DefaultJSONProvider):
     """Python's json accepts NaN/Infinity, which slip through ``a <= x <= b``."""
 
     def loads(self, s, **kwargs):
         kwargs.setdefault("parse_constant", _reject_constant)
+        kwargs.setdefault("parse_float", _finite_float)
         return json.loads(s, **kwargs)
 
 

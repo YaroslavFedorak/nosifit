@@ -12,7 +12,8 @@ delete_final_bp = Blueprint("delete_final", __name__)
 @delete_final_bp.route("/profile/delete/final", methods=["POST"])
 @login_required
 def delete_final():
-    data = request.get_json(silent=True) or {}
+    data = request.get_json(silent=True)
+    data = data if isinstance(data, dict) else {}
 
     email = data.get("email") if isinstance(data.get("email"), str) else ""
     password = data.get("password") if isinstance(data.get("password"), str) else ""

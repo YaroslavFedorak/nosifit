@@ -138,10 +138,18 @@ def test_recommendations_guidance_without_training(client, user, catalog):
 
 
 def test_recommendation_queries_do_not_grow_with_history(app, user, catalog):
-    add_session(user, catalog, 1, [("bench-press", {"sets_done": 4, "reps_done": "8"})])
+    workout = [
+        ("bench-press", {"sets_done": 4, "reps_done": "8"}),
+        ("barbell-back-squat", {"sets_done": 4, "reps_done": "6"}),
+        ("barbell-row", {"sets_done": 3, "reps_done": "10"}),
+    ]
+    add_session(user, catalog, 1, workout)
+    # A first call fills the exercise catalog cache and reloads the rows the
+    # commits expired; only warm calls are measured.
+    build_recommendations(user, target_day=dt.date.today())
     small = count_queries(app, lambda: build_recommendations(user, target_day=dt.date.today()))
 
-    for days in range(2, 40, 2):
+    for days in range(2, 80, 2):
         add_session(
             user,
             catalog,
@@ -152,6 +160,8 @@ def test_recommendation_queries_do_not_grow_with_history(app, user, catalog):
                 ("barbell-row", {"sets_done": 3, "reps_done": "10"}),
             ],
         )
+    # Reload what the commits above expired, as before the small measurement.
+    build_recommendations(user, target_day=dt.date.today())
     large = count_queries(app, lambda: build_recommendations(user, target_day=dt.date.today()))
 
     assert large == small

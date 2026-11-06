@@ -28,31 +28,8 @@ from backend.app.services.nutrition.water_service import (
 from backend.app.utils import clock
 
 
-def _day_bounds(target_date):
-    """The calendar day in the application's zone as naive UTC bounds, the way
-    training sessions are stored."""
-    from datetime import datetime, time, timezone
-
-    zone = clock.app_timezone()
-
-    def utc(moment):
-        return moment.astimezone(timezone.utc).replace(tzinfo=None)
-
-    return (
-        utc(datetime.combine(target_date, time.min, tzinfo=zone)),
-        utc(datetime.combine(target_date, time.max, tzinfo=zone)),
-    )
-
-
-def _session_day(session):
-    """The application-zone calendar day a session started on."""
-    from datetime import timezone
-
-    return session.started_at.replace(tzinfo=timezone.utc).astimezone(clock.app_timezone()).date()
-
-
 def _get_training_session(user_id, target_date):
-    start_dt, end_dt = _day_bounds(target_date)
+    start_dt, end_dt = clock.day_bounds_utc(target_date)
 
     return (
         TrainingSession.query.filter(
@@ -226,8 +203,8 @@ def get_today_overview(user_id):
 def _sessions_by_day(user_id, start_date, end_date):
     """The latest finished session of each day, as _get_training_session
     picks it, for every day of the range in one query."""
-    start_dt, _ = _day_bounds(start_date)
-    _, end_dt = _day_bounds(end_date)
+    start_dt, _ = clock.day_bounds_utc(start_date)
+    _, end_dt = clock.day_bounds_utc(end_date)
 
     sessions = (
         TrainingSession.query.options(selectinload(TrainingSession.exercises))
@@ -243,7 +220,7 @@ def _sessions_by_day(user_id, start_date, end_date):
 
     latest = {}
     for session in sessions:
-        latest.setdefault(_session_day(session), session)
+        latest.setdefault(clock.local_date(session.started_at), session)
     return latest
 
 

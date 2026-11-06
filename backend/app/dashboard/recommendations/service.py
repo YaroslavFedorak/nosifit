@@ -12,6 +12,7 @@ from backend.app.services.nutrition.recommendation_service import (
 from backend.app.services.recovery.recommendation_service import (
     RecommendationService,
 )
+from backend.app.utils import clock
 from backend.app.training.training_analysis.recommendations_engine import (
     build_recommendations as build_training_recommendations,
 )
@@ -341,7 +342,7 @@ class DashboardRecommendationService:
         sessions: Optional[list] = None,
     ) -> dict[str, Any]:
         if target_day is None:
-            target_day = date.today()
+            target_day = clock.today()
 
         if user is None:
             from backend.app.models.user import User

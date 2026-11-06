@@ -1,8 +1,7 @@
-from datetime import date
-
 from backend.app.services.training.load.index import (
     compute_daily_load_index as _compute_daily_load_index,
 )
+from backend.app.utils import clock
 
 
 class TrainingLoadIndexService:
@@ -15,7 +14,7 @@ class TrainingLoadIndexService:
         return _compute_daily_load_index(
             user,
             sessions,
-            target_day or date.today(),
+            target_day or clock.today(),
         )
 
     @staticmethod
@@ -27,7 +26,7 @@ class TrainingLoadIndexService:
         return _compute_daily_load_index(
             user,
             sessions,
-            target_day or date.today(),
+            target_day or clock.today(),
         )
 
 
@@ -39,7 +38,7 @@ def compute_daily_load_index(
     return _compute_daily_load_index(
         user,
         sessions,
-        target_day or date.today(),
+        target_day or clock.today(),
     )
 
 

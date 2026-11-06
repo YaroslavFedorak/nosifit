@@ -12,6 +12,7 @@ from backend.app.repositories.product_repository import (
     get_user_product,
 )
 from backend.app.utils.name_normalization import normalize_name
+from backend.app.utils.validation import MAX_PAGE_OFFSET
 
 
 SUPPORTED_LOCALES = {"uk", "en", "pl", "ru"}
@@ -32,6 +33,8 @@ class ProductServiceError(ValueError):
 
 
 def normalize_locale(locale: str | None) -> str:
+    if not isinstance(locale, str):
+        return "en"
     normalized = (locale or "en").strip().lower().replace("_", "-")
     normalized = normalized.split("-")[0]
     return normalized if normalized in SUPPORTED_LOCALES else "en"
@@ -272,7 +275,7 @@ def search_products_page(
     normalized = normalize_name(raw_query)
     category = (category or "").strip().lower() or None
     limit = min(max(int(limit), 1), 50)
-    offset = max(int(offset), 0)
+    offset = min(max(int(offset), 0), MAX_PAGE_OFFSET)
 
     if category and category not in PRODUCT_CATEGORIES:
         return [], False
@@ -362,7 +365,7 @@ MAX_GRAMS_PER_UNIT = 5000.0
 def _number(raw, key):
     try:
         value = float(raw)
-    except (TypeError, ValueError):
+    except (TypeError, ValueError, OverflowError):
         raise ProductServiceError(f"Invalid {key}")
 
     if value != value or value < 0:
@@ -404,7 +407,7 @@ def _check_consistency(product):
 def _grams_per_unit(value):
     try:
         grams_per_unit = float(value)
-    except (TypeError, ValueError):
+    except (TypeError, ValueError, OverflowError):
         raise ProductServiceError("Invalid grams_per_unit")
 
     if grams_per_unit != grams_per_unit or grams_per_unit <= 0:

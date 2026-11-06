@@ -2,7 +2,9 @@
 
 import re
 
+from backend.app.extensions import db
 from backend.app.services.training.model import parameters as P
+from backend.app.training.exercises.prescription import is_duration_exercise
 from backend.app.training.models.exercise import Exercise
 from backend.app.utils.validation import ValidationError, bounded_number
 
@@ -43,7 +45,10 @@ def clean_set_data(data):
     if "rpe" in data:
         cleaned["rpe"] = bounded_number(data["rpe"], 0, 10)
     if "rir" in data:
-        cleaned["rpe"] = rpe_from_rir(bounded_number(data["rir"], 0, MAX_LOGGED_RIR))
+        rir = bounded_number(data["rir"], 0, MAX_LOGGED_RIR)
+        # A client echoing a rated row back sends "rir": null next to its rpe.
+        if rir is not None or "rpe" not in data:
+            cleaned["rpe"] = rpe_from_rir(rir)
     if data.get("set_entries") is not None:
         cleaned["set_entries"] = clean_set_entries(data["set_entries"])
     return cleaned
@@ -94,8 +99,47 @@ def clean_exercise_id(value):
     if isinstance(value, bool) or not isinstance(value, (str, int)):
         raise ValidationError("exercise id is invalid")
     exercise_id = str(value).strip()
-    if not exercise_id or len(exercise_id) > 64 or not Exercise.query.get(exercise_id):
+    if not exercise_id or len(exercise_id) > 64 or not db.session.get(Exercise, exercise_id):
         raise ValidationError("exercise not found")
     return exercise_id
+
+
+def check_set_entries(exercise_id, data):
+    """Logged sets must be measured the way the exercise is.
+
+    A timed set on a repetition exercise would be stored as 0 reps.
+    """
+    entries = data.get("set_entries")
+    if not entries:
+        return data
+    key = "duration_sec" if is_duration_exercise(db.session.get(Exercise, exercise_id)) else "reps"
+    if any(key not in entry for entry in entries):
+        raise ValidationError(f"each set of this exercise needs {key}")
+    return data
+
+
+def merge_repeated_exercises(items):
+    """One row per exercise for ``[(exercise_id, set_data), ...]``.
+
+    A session has one row per exercise, so an exercise listed twice in one
+    save would overwrite its own earlier sets. Its sets are added up instead.
+    """
+    merged = {}
+    for exercise_id, data in items:
+        first = merged.get(exercise_id)
+        if first is None:
+            merged[exercise_id] = dict(data)
+            continue
+        if first.get("set_entries") and data.get("set_entries"):
+            first["set_entries"] = first["set_entries"] + data["set_entries"]
+            if len(first["set_entries"]) > MAX_SET_ENTRIES:
+                raise ValidationError(f"at most {MAX_SET_ENTRIES} sets per exercise")
+        else:
+            first.pop("set_entries", None)
+            data = {key: value for key, value in data.items() if key != "set_entries"}
+            first["sets_done"] = (first.get("sets_done") or 0) + (data.get("sets_done") or 0)
+        if data.get("rpe") is not None:
+            first["rpe"] = data["rpe"]
+    return list(merged.items())
 
 

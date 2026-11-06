@@ -40,7 +40,8 @@ from __future__ import annotations
 
 from datetime import date, timedelta
 
-from sqlalchemy import func
+from sqlalchemy import Float, Numeric, cast, func
+from sqlalchemy.dialects.postgresql import insert as pg_insert
 
 from backend.app.extensions import db
 from backend.app.models import Meal, MealItem, User
@@ -283,24 +284,26 @@ def add_water_service(user_id, amount, target_date=None):
     target_date = target_date or clock.today()
     validate_water_date(target_date)
 
-    entry = UserWater.query.filter_by(
-        user_id=user_id,
-        date=target_date,
-    ).first()
-
-    if entry is None:
-        entry = UserWater(
-            user_id=user_id,
-            date=target_date,
-            amount=0,
-        )
-
-        db.session.add(entry)
-
+    # One statement: quick taps on "+250 ml" arrive together and must neither
+    # collide on the unique key nor overwrite each other's total.
     # Negative amounts are corrections ("I logged too much"). The manual
     # total never goes below zero.
-    entry.amount = max(0.0, round(float(entry.amount or 0) + amount, 3))
+    table = UserWater.__table__
+    entry_id = db.session.execute(
+        pg_insert(table)
+        .values(user_id=user_id, date=target_date, amount=max(0.0, round(amount, 3)))
+        .on_conflict_do_update(
+            index_elements=["user_id", "date"],
+            set_={
+                "amount": cast(
+                    func.greatest(0, func.round(cast(table.c.amount + amount, Numeric), 3)),
+                    Float,
+                )
+            },
+        )
+        .returning(table.c.id)
+    ).scalar_one()
 
     db.session.commit()
 
-    return entry
+    return db.session.get(UserWater, entry_id)

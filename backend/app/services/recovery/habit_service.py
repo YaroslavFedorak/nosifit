@@ -4,6 +4,7 @@ from backend.app.extensions import db
 from backend.app.models.recovery.habit import RecoveryHabit
 from backend.app.models.recovery.user_habit import UserRecoveryHabit
 from backend.app.models.recovery.habit_log import RecoveryHabitLog
+from backend.app.utils import clock
 from backend.app.utils.validation import as_db_id
 
 
@@ -64,7 +65,7 @@ class HabitService:
         ]
 
     def get_user_habits_with_status(self, user_id, target_date: date = None):
-        target_date = target_date or date.today()
+        target_date = target_date or clock.today()
 
         user_habits = self.get_user_habits(user_id)
 
@@ -168,7 +169,7 @@ class HabitService:
         if not habit or not habit.is_active:
             return None
 
-        today = date.today()
+        today = clock.today()
 
         log = RecoveryHabitLog.query.filter_by(
             user_habit_id=user_habit_id, date=today
@@ -198,7 +199,7 @@ class HabitService:
         if not habit:
             return None
 
-        today = date.today()
+        today = clock.today()
 
         log = RecoveryHabitLog.query.filter_by(
             user_habit_id=user_habit_id, date=today
@@ -213,7 +214,7 @@ class HabitService:
         return True
 
     def get_today_logs(self, user_id, target_date: date = None):
-        target_date = target_date or date.today()
+        target_date = target_date or clock.today()
 
         habits = self.get_user_habits(user_id)
 

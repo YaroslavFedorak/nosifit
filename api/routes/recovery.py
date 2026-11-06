@@ -1,4 +1,4 @@
-from datetime import datetime, date, timedelta
+from datetime import datetime, timedelta
 
 from flask import (
     Blueprint,
@@ -17,6 +17,8 @@ from backend.app.services.recovery import (
 )
 from backend.app.services.recovery.training_summary import training_day_summary
 from backend.app.services.training.session_service import TrainingSessionService
+from backend.app.utils import clock
+from backend.app.utils.validation import as_db_id
 
 recovery_bp = Blueprint("recovery", __name__, url_prefix="/api/recovery")
 
@@ -53,6 +55,8 @@ recommendation_service = RecommendationService()
 
 
 MAX_SLEEP_DURATION = timedelta(hours=24)
+# recovery_sleep_entries.duration_minutes is at least 1 (check constraint).
+MIN_SLEEP_DURATION = timedelta(minutes=1)
 MIN_YEAR, MAX_YEAR = 2000, 2100
 
 
@@ -90,19 +94,28 @@ def add_sleep():
     if (start_dt.tzinfo is None) != (end_dt.tzinfo is None):
         return jsonify({"error": "Invalid datetime format"}), 400
 
+    # A time without an offset is local to the app, not to the database.
+    if start_dt.tzinfo is None:
+        start_dt = start_dt.replace(tzinfo=clock.app_timezone())
+        end_dt = end_dt.replace(tzinfo=clock.app_timezone())
+
     if end_dt <= start_dt:
         return jsonify({"error": ("sleep_end must be " "after sleep_start")}), 400
 
     if end_dt - start_dt > MAX_SLEEP_DURATION:
         return jsonify({"error": "sleep cannot be longer than 24 hours"}), 400
 
-    now = datetime.now(end_dt.tzinfo)
-    if end_dt > now + timedelta(days=1) or end_dt.year < 2000:
+    if end_dt - start_dt < MIN_SLEEP_DURATION:
+        return jsonify({"error": "sleep must last at least a minute"}), 400
+
+    if end_dt > clock.now() + timedelta(days=1) or end_dt.year < MIN_YEAR:
         return jsonify({"error": "sleep date is out of range"}), 400
 
     entry = sleep_service.add_sleep(user_id, start_dt, end_dt)
 
-    snapshot = snapshot_service.generate_snapshot(user_id, target_date=end_dt.date())
+    snapshot = snapshot_service.generate_snapshot(
+        user_id, target_date=clock.to_local_date(end_dt)
+    )
 
     return (
         jsonify(
@@ -143,7 +156,7 @@ def get_user_habits(user_id):
     if _is_other_user(user_id):
         return _not_found()
 
-    habits = habit_service.get_user_habits_with_status(user_id, date.today())
+    habits = habit_service.get_user_habits_with_status(user_id, clock.today())
 
     return jsonify(habits)
 
@@ -167,7 +180,7 @@ def add_habit(habit_id):
     habit, created = habit_service.add_user_habit(user_id, habit_id)
 
     if created:
-        snapshot_service.generate_snapshot(user_id, target_date=date.today())
+        snapshot_service.generate_snapshot(user_id, target_date=clock.today())
 
     return jsonify({"created": created, "user_habit_id": habit.id})
 
@@ -182,7 +195,7 @@ def remove_habit(user_habit_id):
     if habit is None:
         return jsonify({"error": "habit not found"}), 404
 
-    snapshot_service.generate_snapshot(habit.user_id, target_date=date.today())
+    snapshot_service.generate_snapshot(habit.user_id, target_date=clock.today())
 
     return jsonify({"removed": user_habit_id}), 200
 
@@ -196,9 +209,8 @@ def log_habit():
     if user_habit_id is None:
         return jsonify({"error": ("user_habit_id is required")}), 400
 
-    try:
-        user_habit_id = int(user_habit_id)
-    except (TypeError, ValueError):
+    user_habit_id = as_db_id(user_habit_id)
+    if user_habit_id is None:
         return jsonify({"error": ("user_habit_id " "must be integer")}), 400
 
     if not _owns_user_habit(user_habit_id):
@@ -211,7 +223,7 @@ def log_habit():
 
     user_id = log.user_id
 
-    snapshot = snapshot_service.generate_snapshot(user_id, target_date=date.today())
+    snapshot = snapshot_service.generate_snapshot(user_id, target_date=clock.today())
 
     return (
         jsonify(
@@ -234,6 +246,9 @@ def unlog_habit(user_habit_id):
 
     if result is None:
         return jsonify({"error": ("user_habit not found")}), 404
+
+    # The day's scores counted this habit; the heatmap and dashboard read them.
+    snapshot_service.generate_snapshot(current_user.id, target_date=clock.today())
 
     return jsonify({"removed": user_habit_id, "completed": False}), 200
 
@@ -297,7 +312,7 @@ def get_heatmap(user_id):
     raw_year = request.args.get("year")
 
     try:
-        year = int(raw_year) if raw_year is not None else date.today().year
+        year = int(raw_year) if raw_year is not None else clock.today().year
     except ValueError:
         return jsonify({"error": ("year must be integer")}), 400
 
@@ -336,7 +351,7 @@ def get_recommendations(user_id):
         except ValueError:
             return jsonify({"error": ("Invalid date format")}), 400
     else:
-        target_date = date.today()
+        target_date = clock.today()
 
     snapshot = stats_service.get_daily_snapshot(user_id, target_date)
 
@@ -497,10 +512,7 @@ def get_day_details(user_id):
         sleep_entry = None
 
         try:
-            if hasattr(sleep_service, "get_sleep_for_date"):
-                sleep_entry = sleep_service.get_sleep_for_date(user_id, dt)
-            elif hasattr(sleep_service, "get_sleep_by_date"):
-                sleep_entry = sleep_service.get_sleep_by_date(user_id, dt)
+            sleep_entry = sleep_service.get_sleep_for_date(user_id, dt)
         except Exception:
             current_app.logger.exception(
                 "Error while fetching sleep entry for user %s date %s",

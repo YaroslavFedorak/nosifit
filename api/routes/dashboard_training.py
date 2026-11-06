@@ -3,6 +3,7 @@ from flask_login import current_user, login_required
 
 from backend.app.dashboard.training.service import TrainingDashboardService
 from backend.app.services.training.validation import (
+    check_set_entries,
     clean_exercise_id,
     clean_fatigue,
     clean_set_data,
@@ -150,7 +151,7 @@ def update_exercise(session_id, exercise_id):
 
     try:
         exercise_id = clean_exercise_id(exercise_id)
-        set_data = clean_set_data(payload)
+        set_data = check_set_entries(exercise_id, clean_set_data(payload))
     except ValidationError:
         return jsonify({"error": "invalid_exercise_data"}), 400
 

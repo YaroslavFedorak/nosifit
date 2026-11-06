@@ -1,3 +1,5 @@
+from sqlalchemy.dialects.postgresql import insert as pg_insert
+
 from backend.app.extensions import db
 from backend.app.models.nutrition.user_weight import UserWeight
 from backend.app.models.user_profile import UserProfile
@@ -84,24 +86,14 @@ def get_weight_data(user_id):
 
 
 def update_user_weight(user, weight):
-    today = clock.today()
-
-    entry = UserWeight.query.filter_by(
-        user_id=user.id,
-        date=today,
-    ).first()
-
-    if entry is None:
-        entry = UserWeight(
-            user_id=user.id,
-            date=today,
-            weight=weight,
-        )
-
-        db.session.add(entry)
-
-    else:
-        entry.weight = weight
+    # One statement, so a repeated request cannot collide on the unique key.
+    table = UserWeight.__table__
+    entry_id = db.session.execute(
+        pg_insert(table)
+        .values(user_id=user.id, date=clock.today(), weight=weight)
+        .on_conflict_do_update(index_elements=["user_id", "date"], set_={"weight": weight})
+        .returning(table.c.id)
+    ).scalar_one()
 
     profile = user.profile
 
@@ -117,5 +109,5 @@ def update_user_weight(user, weight):
 
     db.session.commit()
 
-    return entry
+    return db.session.get(UserWeight, entry_id)
 

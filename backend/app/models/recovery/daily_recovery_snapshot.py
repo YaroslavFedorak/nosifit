@@ -34,8 +34,9 @@ class DailyRecoverySnapshot(db.Model):
             "date": self.date.isoformat(),
             "sleep_score": self.sleep_score,
             "sleep_duration_minutes": self.sleep_duration_minutes,
-            "sleep_start": self.sleep_start.isoformat() if self.sleep_start else None,
-            "sleep_end": self.sleep_end.isoformat() if self.sleep_end else None,
+            # Stored as naive UTC: "Z" tells clients which zone it is in.
+            "sleep_start": self.sleep_start.isoformat() + "Z" if self.sleep_start else None,
+            "sleep_end": self.sleep_end.isoformat() + "Z" if self.sleep_end else None,
             "habit_score": self.habit_score,
             "training_score": self.training_score,
             "energy_score": self.energy_score,

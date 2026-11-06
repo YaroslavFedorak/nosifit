@@ -5,6 +5,13 @@ from backend.app.extensions import db
 from backend.app.models.recovery.daily_recovery_snapshot import DailyRecoverySnapshot
 from backend.app.services.recovery.recovery_score_service import RecoveryScoreService
 from backend.app.services.recovery.habit_service import HabitService
+from backend.app.utils import clock
+
+
+def _naive_utc(moment):
+    # The snapshot columns have no zone: without this PostgreSQL would store
+    # the wall clock of its own session zone, which clients cannot tell apart.
+    return clock.to_naive_utc(moment) if moment is not None else None
 
 
 class SnapshotService:
@@ -24,17 +31,12 @@ class SnapshotService:
     ) -> None:
         snapshot.sleep_score = sleep_score
         snapshot.sleep_duration_minutes = sleep_entry_data["duration"]
-        snapshot.sleep_start = sleep_entry_data["start"]
-        snapshot.sleep_end = sleep_entry_data["end"]
+        snapshot.sleep_start = _naive_utc(sleep_entry_data["start"])
+        snapshot.sleep_end = _naive_utc(sleep_entry_data["end"])
         snapshot.habit_score = habit_score
         snapshot.training_score = training_score
         snapshot.energy_score = energy_score
         snapshot.recovery_score = recovery_score
-
-    def _get_sleep_for_date(self, user_id: int, target_date: date):
-        if hasattr(self.scores.sleep_service, "get_sleep_for_date"):
-            return self.scores.sleep_service.get_sleep_for_date(user_id, target_date)
-        return self.scores.sleep_service.get_last_sleep(user_id)
 
     def generate_snapshot(
         self,
@@ -42,9 +44,9 @@ class SnapshotService:
         target_date: Optional[date] = None,
         last_training_days: int = 0,
     ) -> DailyRecoverySnapshot:
-        today = target_date or date.today()
+        today = target_date or clock.today()
 
-        sleep_entry = self._get_sleep_for_date(user_id, today)
+        sleep_entry = self.scores.sleep_service.get_sleep_for_date(user_id, today)
 
         if sleep_entry:
             sleep_data = {
@@ -119,8 +121,8 @@ class SnapshotService:
                     else 0
                 ),
                 sleep_duration_minutes=sleep_data["duration"],
-                sleep_start=sleep_data["start"],
-                sleep_end=sleep_data["end"],
+                sleep_start=_naive_utc(sleep_data["start"]),
+                sleep_end=_naive_utc(sleep_data["end"]),
                 habit_score=habit_score,
                 training_score=training_score,
                 energy_score=energy_score if energy_score is not None else 0,
