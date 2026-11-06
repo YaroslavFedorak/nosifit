@@ -221,7 +221,10 @@ def _crashes(app, client, rows):
         # The tests keep one app context, so a failed flush would otherwise
         # leak into the next request; production gets a new session per request.
         db.session.rollback()
-        if response.status_code >= 500:
+        # 503 "lookup_unavailable" is the deliberate answer while the external
+        # product lookup is off, not a crash.
+        deliberate = response.status_code == 503 and (response.get_json(silent=True) or {}).get("code") == "lookup_unavailable"
+        if response.status_code >= 500 and not deliberate:
             crashes.append(f"{method} {path} {what!r} -> {response.status_code}")
 
     # Deleting comes last: the other requests need the rows.
