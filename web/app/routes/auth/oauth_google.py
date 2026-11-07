@@ -64,7 +64,7 @@ def google_callback():
         return redirect(pending_link_redirect("/profile"))
 
     if email:
-        user = User.query.filter_by(email=email).first()
+        user = User.query.filter(db.func.lower(User.email) == email).first()
         if user:
 
             if not user.profile:
