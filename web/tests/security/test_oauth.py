@@ -61,6 +61,30 @@ def test_github_existing_user(mock_get, mock_post, client, user):
 
 @patch("web.app.routes.auth.oauth_github.requests.post")
 @patch("web.app.routes.auth.oauth_github.requests.get")
+def test_github_matches_mixed_case_email(mock_get, mock_post, client, user):
+    user.email = "Test@Example.com"
+    db.session.commit()
+
+    mock_post.return_value.json.return_value = {"access_token": "TOKEN"}
+    user_response = MagicMock()
+    user_response.json.return_value = {"id": 124, "login": "testuser"}
+    email_response = MagicMock()
+    email_response.json.return_value = [
+        {"email": "test@example.com", "primary": True, "verified": True}
+    ]
+    mock_get.side_effect = [user_response, email_response]
+
+    response = github_callback(client, "124")
+
+    assert response.status_code == 302
+    assert response.location.endswith("/profile")
+    account = OAuthAccount.query.filter_by(provider="github", provider_user_id="124").first()
+    assert account is not None
+    assert account.user_id == user.id
+
+
+@patch("web.app.routes.auth.oauth_github.requests.post")
+@patch("web.app.routes.auth.oauth_github.requests.get")
 def test_github_new_user(mock_get, mock_post, client):
     mock_post.return_value.json.return_value = {
         "access_token": "TOKEN",
@@ -225,6 +249,35 @@ def test_google_callback_existing_user(client, user):
         provider_user_id="GOOGLE123",
     ).first()
 
+    assert account is not None
+    assert account.user_id == user.id
+
+
+def test_google_callback_matches_mixed_case_email(client, user):
+    user.email = "Test@Example.com"
+    db.session.commit()
+
+    google = MagicMock()
+    google.authorize_access_token.return_value = {"id_token": "TOKEN"}
+    google.server_metadata = {"userinfo_endpoint": "https://example.com/userinfo"}
+    google.get.return_value.json.return_value = {
+        "sub": "GOOGLE_CASE",
+        "email": "test@example.com",
+        "email_verified": True,
+        "name": "Test User",
+    }
+
+    with patch(
+        "web.app.routes.auth.oauth_google.oauth.create_client",
+        return_value=google,
+    ):
+        response = client.get("/auth/google/callback")
+
+    assert response.status_code == 302
+    assert response.location.endswith("/profile")
+    account = OAuthAccount.query.filter_by(
+        provider="google", provider_user_id="GOOGLE_CASE"
+    ).first()
     assert account is not None
     assert account.user_id == user.id
 
