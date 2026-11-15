@@ -58,3 +58,26 @@ def test_shell_loads_the_versioned_bundle(app, client):
     html = client.get("/app/welcome").get_data(as_text=True)
     assert f"/static/{version}/app/assets/app.js" in html
     assert f"/static/{version}/app/assets/app.css" in html
+
+
+def test_profile_and_settings_are_user_pages(client, user):
+    for path in ("/app/profile", "/app/settings"):
+        assert client.get(path).status_code == 302, path
+    _login(client, user)
+    for path in ("/app/profile", "/app/settings"):
+        assert client.get(path).status_code == 200, path
+
+
+def test_shell_tells_the_interface_what_the_account_may_use(client, user):
+    assert _bootstrap(client.get("/app/welcome"))["features"] == {}
+    _login(client, user)
+    assert _bootstrap(client.get("/app/dashboard"))["features"] == {"plan_generation": bool(user.is_premium)}
+
+
+def test_signed_in_pages_allow_the_barcode_scanner(client, user):
+    """The food picker opens from every signed-in page; public pages keep the camera off."""
+    assert "camera=()" in client.get("/app/welcome").headers["Permissions-Policy"]
+    _login(client, user)
+    response = client.get("/app/recovery")
+    assert "camera=(self)" in response.headers["Permissions-Policy"]
+    assert "'wasm-unsafe-eval'" in response.headers["Content-Security-Policy"]

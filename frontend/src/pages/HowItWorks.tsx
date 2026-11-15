@@ -1,16 +1,13 @@
-import { buttonClass } from "../components/ui/Button";
-import { Card } from "../components/ui/Card";
-import { Chip, type Tone } from "../components/ui/Chip";
 import { useT } from "../i18n";
 import type { TKey } from "../i18n/en";
 import { bootstrap } from "../lib/bootstrap";
-import { cn } from "../lib/cn";
 import { useTitle } from "../lib/useTitle";
+import { buttonClass } from "../ui/Button";
 import { LandingFooter, LandingHeader } from "./landing/Chrome";
 
-const DAYS: Array<{ day: TKey; chips: TKey[]; result: TKey; tone: Tone }> = [
-  { day: "hw.context.a.day", chips: ["hw.context.a.sleep", "hw.context.a.kcal", "hw.context.a.ready"], result: "hw.context.a.result", tone: "ok" },
-  { day: "hw.context.b.day", chips: ["hw.context.b.sleep", "hw.context.b.kcal", "hw.context.b.ready"], result: "hw.context.b.result", tone: "warn" },
+const DAYS: Array<{ day: TKey; sleep: TKey; kcal: TKey; ready: TKey; result: TKey }> = [
+  { day: "hw.context.a.day", sleep: "hw.context.a.sleep", kcal: "hw.context.a.kcal", ready: "hw.context.a.ready", result: "hw.context.a.result" },
+  { day: "hw.context.b.day", sleep: "hw.context.b.sleep", kcal: "hw.context.b.kcal", ready: "hw.context.b.ready", result: "hw.context.b.result" },
 ];
 
 const STEPS: Array<{ title: TKey; text: TKey }> = [
@@ -20,84 +17,86 @@ const STEPS: Array<{ title: TKey; text: TKey }> = [
   { title: "hw.model.s4.t", text: "hw.model.s4.d" },
 ];
 
-/** A decorative month of days; the real calendar lives in each module. */
-const SAMPLE_LEVELS = [0, 2, 3, 0, 4, 1, 0, 3, 4, 2, 0, 0, 3, 1, 4, 3, 0, 2, 4, 0, 1, 0, 3, 4, 2, 0, 3, 3, 0, 4, 1, 2, 0, 3, 4];
-
 function Content() {
   const { t } = useT();
   return (
-    <div className="mx-auto max-w-5xl space-y-14 px-4 py-8 tab:px-6 tab:py-12">
+    <div className="max-w-3xl space-y-12 pb-8">
       <header>
-        <h1 className="text-4xl font-semibold leading-tight tracking-tight text-balance">{t("hw.title")}</h1>
-        <p className="mt-3 max-w-2xl text-base leading-relaxed text-fg-muted text-pretty">{t("hw.lead")}</p>
+        <h1 className="text-2xl desk:text-3xl">{t("hw.title")}</h1>
+        <p className="mt-3 max-w-[56ch] text-lg text-ink-2">{t("hw.lead")}</p>
       </header>
 
       <section aria-labelledby="hw-context">
-        <h2 id="hw-context" className="text-2xl font-semibold tracking-tight text-balance">
+        <h2 id="hw-context" className="text-xl">
           {t("hw.context.title")}
         </h2>
-        <p className="mt-2 max-w-2xl text-base leading-relaxed text-fg-muted text-pretty">{t("hw.context.text")}</p>
-        <ul className="mt-6 grid gap-3 tab:grid-cols-2">
-          {DAYS.map(({ day, chips, result, tone }) => (
-            <Card as="li" key={day} accent="training" className="space-y-3">
-              <div className="flex items-baseline justify-between gap-3">
-                <span className="text-sm font-semibold text-fg-muted">{t(day)}</span>
-                <span className="text-sm font-medium">{t("hw.context.lift")}</span>
-              </div>
-              <div className="flex flex-wrap gap-1.5">
-                {chips.map((chip) => (
-                  <Chip key={chip}>{t(chip)}</Chip>
-                ))}
-              </div>
-              <Chip tone={tone} className="text-sm">
-                {t(result)}
-              </Chip>
-            </Card>
-          ))}
-        </ul>
+        <p className="mb-5 mt-2 max-w-[60ch] text-ink-2">{t("hw.context.text")}</p>
+        <table className="w-full border-collapse text-left text-sm">
+          <caption className="mb-2 text-left text-muted">{t("hw.context.lift")}</caption>
+          <thead>
+            <tr className="border-b border-rule text-muted">
+              <th scope="col" className="py-2 pr-3 font-normal">
+                {t("hw.context.col.day")}
+              </th>
+              <th scope="col" className="hidden py-2 pr-3 font-normal tab:table-cell">
+                {t("hw.context.col.sleep")}
+              </th>
+              <th scope="col" className="hidden py-2 pr-3 font-normal tab:table-cell">
+                {t("hw.context.col.food")}
+              </th>
+              <th scope="col" className="py-2 pr-3 font-normal">
+                {t("hw.context.col.ready")}
+              </th>
+              <th scope="col" className="py-2 font-normal">
+                {t("hw.context.col.result")}
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {DAYS.map((row) => (
+              <tr key={row.day} className="border-b border-rule align-baseline">
+                <th scope="row" className="py-3 pr-3 font-medium">
+                  {t(row.day)}
+                </th>
+                <td className="hidden py-3 pr-3 text-ink-2 tab:table-cell">{t(row.sleep)}</td>
+                <td className="hidden py-3 pr-3 text-ink-2 tab:table-cell">{t(row.kcal)}</td>
+                <td className="py-3 pr-3 text-ink-2">{t(row.ready)}</td>
+                <td className="py-3 font-medium">{t(row.result)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </section>
 
       <section aria-labelledby="hw-model">
-        <h2 id="hw-model" className="text-2xl font-semibold tracking-tight text-balance">
+        <h2 id="hw-model" className="text-xl">
           {t("hw.model.title")}
         </h2>
-        <p className="mt-2 max-w-2xl text-base leading-relaxed text-fg-muted text-pretty">{t("hw.model.text")}</p>
-        <ol className="mt-6 grid gap-2.5 tab:grid-cols-2">
-          {STEPS.map((step, index) => (
-            <li key={step.title} className="flex items-center gap-4 rounded-2xl border border-line bg-surface p-4">
-              <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-surface-3 text-sm font-semibold tabular-nums text-fg-muted">
-                {index + 1}
-              </span>
-              <span>
-                <span className="block text-base font-semibold">{t(step.title)}</span>
-                <span className="block text-sm text-fg-muted">{t(step.text)}</span>
-              </span>
+        <p className="mb-5 mt-2 max-w-[60ch] text-ink-2">{t("hw.model.text")}</p>
+        <ol className="divide-y divide-rule border-y border-rule [counter-reset:step]">
+          {STEPS.map((step) => (
+            <li key={step.title} className="flex items-baseline gap-4 py-3 [counter-increment:step] before:w-5 before:shrink-0 before:text-sm before:text-muted before:content-[counter(step)]">
+              <span className="min-w-0 flex-1 font-medium">{t(step.title)}</span>
+              <span className="text-right text-sm text-ink-2">{t(step.text)}</span>
             </li>
           ))}
         </ol>
-        <p className="mt-4 max-w-2xl text-sm leading-relaxed text-fg-muted text-pretty">{t("hw.model.note")}</p>
+        <p className="mt-4 max-w-[60ch] text-sm text-muted">{t("hw.model.note")}</p>
       </section>
 
-      <section aria-labelledby="hw-history" className="tab:grid tab:grid-cols-2 tab:items-center tab:gap-10">
-        <div>
-          <h2 id="hw-history" className="text-2xl font-semibold tracking-tight text-balance">
-            {t("hw.history.title")}
-          </h2>
-          <p className="mt-2 max-w-2xl text-base leading-relaxed text-fg-muted text-pretty">{t("hw.history.text")}</p>
-        </div>
-        <div data-accent="training" className="mt-6 grid max-w-sm grid-cols-7 gap-1.5 tab:mt-0 tab:justify-self-end" aria-hidden="true">
-          {SAMPLE_LEVELS.map((level, index) => (
-            <span key={index} className={cn("aspect-square rounded-lg", `lv-${level}`)} />
-          ))}
-        </div>
+      <section aria-labelledby="hw-history">
+        <h2 id="hw-history" className="text-xl">
+          {t("hw.history.title")}
+        </h2>
+        <p className="mt-2 max-w-[60ch] text-ink-2">{t("hw.history.text")}</p>
       </section>
 
-      <div className="flex flex-col gap-2.5 tab:flex-row">
-        <a href="/demo" className={cn(buttonClass({ variant: "primary", size: "lg" }), "tab:min-w-52")}>
+      <div className="flex flex-wrap gap-2">
+        <a href="/demo" className={buttonClass({ variant: bootstrap.user ? "secondary" : "primary", size: "lg" })}>
           {t("hw.cta.demo")}
         </a>
         {!bootstrap.user && (
-          <a href="/auth/register" className={cn(buttonClass({ size: "lg" }), "tab:min-w-52")}>
+          <a href="/auth/register" className={buttonClass({ size: "lg" })}>
             {t("hw.cta.signup")}
           </a>
         )}
@@ -112,9 +111,9 @@ export default function HowItWorks() {
   useTitle(t("hw.title"));
   if (bootstrap.user) return <Content />;
   return (
-    <div className="min-h-dvh">
+    <div className="flex min-h-dvh flex-col">
       <LandingHeader />
-      <main>
+      <main className="page flex-1 py-10 desk:py-16">
         <Content />
       </main>
       <LandingFooter />

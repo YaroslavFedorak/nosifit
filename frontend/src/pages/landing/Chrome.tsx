@@ -1,22 +1,21 @@
 import { Link } from "react-router";
-import { buttonClass } from "../../components/ui/Button";
 import { useT } from "../../i18n";
-import { cn } from "../../lib/cn";
+import { buttonClass } from "../../ui/Button";
 
-/** Header of the public pages: logo on the left, sign-in and sign-up on the right. */
+/** Header of the public pages: the logo, then sign-in and sign-up. */
 export function LandingHeader() {
   const { t } = useT();
   return (
-    <header className="sticky top-0 z-30 border-b border-line bg-canvas/80 pt-[env(safe-area-inset-top)] backdrop-blur-xl">
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-3 px-4 tab:px-6">
+    <header className="sticky top-0 z-[300] border-b border-rule bg-paper pt-[env(safe-area-inset-top)]">
+      <div className="page flex h-16 items-center justify-between gap-3">
         <Link to="/welcome" aria-label={t("app.name")} className="inline-flex min-h-tap items-center">
-          <img src="/static/img/brand/nosifit-lockup-on-dark.svg" alt={t("app.name")} className="h-8 w-auto" />
+          <img src="/static/img/brand/nosifit-lockup-on-dark.svg" alt="" className="h-7 w-auto" />
         </Link>
-        <nav className="flex items-center gap-2">
-          <a href="/auth/login" className={cn(buttonClass({ variant: "ghost" }), "px-3")}>
+        <nav aria-label={t("lp.nav.label")} className="flex items-center gap-1">
+          <a href="/auth/login" className={buttonClass({ variant: "quiet" })}>
             {t("lp.nav.login")}
           </a>
-          <a href="/auth/register" className={buttonClass({ variant: "secondary" })}>
+          <a href="/auth/register" className={buttonClass()}>
             {t("lp.nav.signup")}
           </a>
         </nav>
@@ -25,14 +24,14 @@ export function LandingHeader() {
   );
 }
 
-const FOOTER_LINK = "inline-flex min-h-tap min-w-tap items-center text-sm text-fg-muted transition hover:text-fg";
+const FOOTER_LINK = "inline-flex min-h-tap items-center text-sm text-ink-2 transition-colors duration-150 hover:text-ink";
 
 export function LandingFooter() {
   const { t } = useT();
   return (
-    <footer className="border-t border-line pb-[max(1.5rem,env(safe-area-inset-bottom))]">
-      <div className="mx-auto flex max-w-6xl flex-col gap-2 px-4 py-6 tab:flex-row tab:items-center tab:justify-between tab:px-6">
-        <nav className="-mx-1 flex flex-wrap gap-x-5">
+    <footer className="border-t border-rule pb-[max(1.5rem,env(safe-area-inset-bottom))]">
+      <div className="page flex flex-col gap-2 py-6 tab:flex-row tab:items-center tab:justify-between">
+        <nav aria-label={t("lp.footer.label")} className="flex flex-wrap gap-x-6">
           <Link to="/how-it-works" className={FOOTER_LINK}>
             {t("lp.footer.how")}
           </Link>
@@ -46,7 +45,7 @@ export function LandingFooter() {
             {t("lp.footer.contact")}
           </a>
         </nav>
-        <p className="text-sm text-fg-soft">{t("lp.footer.rights", { year: new Date().getFullYear() })}</p>
+        <p className="text-sm text-muted">{t("lp.footer.rights", { year: new Date().getFullYear() })}</p>
       </div>
     </footer>
   );

@@ -2,21 +2,34 @@ export type Locale = "en" | "uk" | "pl" | "ru";
 
 export const LOCALES: Locale[] = ["en", "uk", "pl", "ru"];
 
+export const LANGUAGE_NAMES: Record<Locale, string> = {
+  en: "English",
+  uk: "Українська",
+  pl: "Polski",
+  ru: "Русский",
+};
+
 export interface Bootstrap {
   locale: Locale;
   user: { id: number; name: string } | null;
+  /** What this account may use; the server enforces each one as well. */
+  features: { planGeneration: boolean };
 }
 
-const FALLBACK: Bootstrap = { locale: "en", user: null };
+const FALLBACK: Bootstrap = { locale: "en", user: null, features: { planGeneration: false } };
 
-/** The page the server rendered: language and the signed-in user (if any). */
+/** The page the server rendered: language, the signed-in user (if any) and their features. */
 function read(): Bootstrap {
   const node = document.getElementById("nosi-bootstrap");
   if (!node?.textContent) return FALLBACK;
   try {
-    const raw = JSON.parse(node.textContent) as Partial<Bootstrap>;
+    const raw = JSON.parse(node.textContent) as {
+      locale?: string;
+      user?: Bootstrap["user"];
+      features?: { plan_generation?: boolean };
+    };
     const locale = LOCALES.includes(raw.locale as Locale) ? (raw.locale as Locale) : "en";
-    return { locale, user: raw.user ?? null };
+    return { locale, user: raw.user ?? null, features: { planGeneration: raw.features?.plan_generation === true } };
   } catch {
     return FALLBACK;
   }
