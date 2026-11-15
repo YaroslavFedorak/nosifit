@@ -1,0 +1,130 @@
+/* The design tokens. `design/tokens.ts` mirrors the values a native client needs. */
+@theme static {
+  /* Inter with its optical-size axis: text cuts at reading sizes, display cuts on large figures. */
+  --font-body: "Inter Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-display: var(--font-body);
+  --font-outlier: var(--font-body);
+  --font-sans: var(--font-body);
+
+  /* Phone is the default. `tab:` 768px, `desk:` 1100px, `wide:` 1500px. */
+  --breakpoint-*: initial;
+  --breakpoint-tab: 48rem;
+  --breakpoint-desk: 68.75rem;
+  --breakpoint-wide: 93.75rem;
+
+  /* Paper: a blue-charcoal ladder. Each step up is a surface closer to the hand. */
+  --color-paper: oklch(16.5% 0.012 260);
+  --color-paper-2: oklch(20.5% 0.014 260);
+  --color-paper-3: oklch(24.5% 0.016 260);
+  --color-paper-4: oklch(29.5% 0.018 260);
+  --color-rule: oklch(29% 0.014 260);
+  --color-edge: oklch(52% 0.016 260);
+  --color-scrim: oklch(10% 0.012 260 / 0.7);
+
+  --color-ink: oklch(95% 0.006 260);
+  --color-ink-2: oklch(83% 0.012 260);
+  --color-muted: oklch(69% 0.016 260);
+
+  /* The brand yellow, taken off neon. The only colour an action wears. */
+  --color-accent: oklch(83% 0.13 88);
+  --color-accent-2: oklch(87% 0.12 90);
+  --color-accent-ink: oklch(22% 0.035 88);
+  --color-focus: oklch(86% 0.15 90);
+
+  /* One quiet hue per module, for its data marks only. */
+  --color-training: oklch(83% 0.13 88);
+  --color-nutrition: oklch(73% 0.115 298);
+  --color-recovery: oklch(77% 0.085 200);
+  --color-water: oklch(72% 0.1 245);
+
+  --color-success: oklch(77% 0.11 158);
+  --color-warn: oklch(79% 0.11 65);
+  --color-error: oklch(71% 0.14 22);
+
+  /* A fixed scale at 1.2 from a 16px body. */
+  --text-xs: 0.75rem;
+  --text-xs--line-height: 1.35;
+  --text-sm: 0.875rem;
+  --text-sm--line-height: 1.45;
+  --text-md: 1rem;
+  --text-md--line-height: 1.5;
+  --text-lg: 1.2rem;
+  --text-lg--line-height: 1.3;
+  --text-xl: 1.44rem;
+  --text-xl--line-height: 1.2;
+  --text-2xl: 1.728rem;
+  --text-2xl--line-height: 1.15;
+  --text-3xl: 2.074rem;
+  --text-3xl--line-height: 1.1;
+  --text-figure: 2.488rem;
+  --text-figure--line-height: 1;
+  --text-display-s: 1.44rem;
+  --text-display: 1.728rem;
+  --text-section: 1.2rem;
+  --text-title: 1rem;
+  --text-lead: 1rem;
+  --tracking-display: -0.02em;
+
+  --radius-card: 12px;
+  --radius-control: 8px;
+  --radius-pill: 999px;
+  --shadow-card: none;
+  --shadow-overlay: 0 18px 48px -12px oklch(8% 0.012 260 / 0.7);
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in: cubic-bezier(0.7, 0, 0.84, 0);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+:root {
+  --space-3xs: 2px;
+  --space-2xs: 4px;
+  --space-xs: 8px;
+  --space-sm: 12px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 40px;
+  --space-2xl: 64px;
+  --space-3xl: 96px;
+  --space-4xl: 144px;
+
+  --dur-micro: 120ms;
+  --dur-short: 220ms;
+  --dur-long: 420ms;
+
+  --rule-hair: 1px;
+  --container: 82rem;
+  --gutter: 16px;
+  --gap-columns: 16px;
+
+  /* Controls: 40px to the eye, 44px to the finger (48px on a coarse pointer). */
+  --control: 2.5rem;
+  --control-lg: 3rem;
+  --tap: 2.75rem;
+  --tabbar: 3.75rem;
+  --rail: 6.5rem;
+  --sidebar: 15rem;
+
+  --z-base: 1;
+  --z-raised: 10;
+  --z-dropdown: 100;
+  --z-sticky: 200;
+  --z-sticky-nav: 300;
+  --z-modal: 400;
+  --z-toast: 500;
+  --z-tooltip: 600;
+}
+
+@media (min-width: 48rem) {
+  :root {
+    --gutter: 24px;
+    --gap-columns: 24px;
+  }
+}
+
+@media (min-width: 68.75rem) {
+  :root {
+    --gutter: 40px;
+    --gap-columns: 32px;
+  }
+}

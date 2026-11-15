@@ -18,6 +18,14 @@ export function num(value: number | null | undefined, maxDecimals = 1): string {
   return format.format(value);
 }
 
+/** Accepts "7.5" and "7,5"; null when the text is not a number. */
+export function parseDecimal(text: string): number | null {
+  const trimmed = text.trim();
+  if (trimmed === "") return null;
+  const value = Number(trimmed.replace(",", "."));
+  return Number.isFinite(value) ? value : null;
+}
+
 export const clamp = (value: number, min = 0, max = 1): number => Math.min(max, Math.max(min, value));
 
 /** Sentence case for text that starts lower case, such as a weekday: "Четвер, 29 жовтня". */
@@ -45,6 +53,17 @@ export function dateText(locale: Locale, date: Date, options: Intl.DateTimeForma
   return new Intl.DateTimeFormat(TAGS[locale], options).format(date);
 }
 
+/** "Четвер, 12 листопада" */
+export const longDay = (locale: Locale, date: Date): string =>
+  capitalize(dateText(locale, date, { weekday: "long", day: "numeric", month: "long" }));
+
+/** "Чт, 12 лист." */
+export const shortDay = (locale: Locale, date: Date): string =>
+  capitalize(dateText(locale, date, { weekday: "short", day: "numeric", month: "short" }));
+
+/** One or two letters of a weekday, for chart axes. */
+export const weekdayLetter = (locale: Locale, date: Date): string => capitalize(dateText(locale, date, { weekday: "short" })).slice(0, 2);
+
 export function splitMinutes(total: number): { h: number; m: number } {
   const rounded = Math.max(0, Math.round(total));
   return { h: Math.floor(rounded / 60), m: rounded % 60 };
@@ -55,13 +74,22 @@ export function timeOfDay(iso: string): string {
   return `${pad(date.getHours())}:${pad(date.getMinutes())}`;
 }
 
-/** Percent of a goal, 0 when there is no goal. */
+/** "23:10 – 06:30" */
+export const timeRange = (startIso: string, endIso: string): string => `${timeOfDay(startIso)} – ${timeOfDay(endIso)}`;
+
+/** "1:05" for a countdown of seconds. */
+export function clock(seconds: number): string {
+  const whole = Math.max(0, Math.round(seconds));
+  return `${Math.floor(whole / 60)}:${pad(whole % 60)}`;
+}
+
+/** Share of a goal, 0 when there is no goal. */
 export function ratio(value: number | null | undefined, goal: number | null | undefined): number {
   if (!goal || !value) return 0;
   return value / goal;
 }
 
-/** Maps a 0-100 score onto the 0-4 activity levels used by the strips. */
+/** Maps a 0-100 score onto the 0-4 activity levels used by the calendar. */
 export function levelFromScore(score: number | null | undefined): number {
   if (!score || score <= 0) return 0;
   if (score <= 25) return 1;

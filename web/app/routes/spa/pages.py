@@ -10,11 +10,13 @@ import os
 from flask import Blueprint, abort, current_app, g, redirect, render_template, url_for
 from flask_login import current_user
 
+from web.app.security import allow_barcode_scanner
+
 spa_pages_bp = Blueprint("spa_pages", __name__, url_prefix="/app")
 
 # Pages anyone may open; the others need a signed-in user.
 PUBLIC_PAGES = frozenset({"welcome", "how-it-works"})
-USER_PAGES = frozenset({"dashboard", "training", "nutrition", "recovery"})
+USER_PAGES = frozenset({"dashboard", "training", "nutrition", "recovery", "profile", "settings"})
 
 BUNDLE = os.path.join("app", "assets", "app.js")
 
@@ -42,11 +44,20 @@ def shell(page):
         abort(503, description="The interface is not built: run `npm --prefix frontend run build`.")
 
     user = None
+    features = {}
     if current_user.is_authenticated:
         user = {"id": current_user.id, "name": current_user.username}
+        # What the account may use. The API checks each one itself; this only
+        # keeps the interface from offering what would be refused.
+        features = {"plan_generation": bool(current_user.is_premium)}
+
+    if name in USER_PAGES:
+        # The food picker, with its barcode scanner, opens from every signed-in
+        # page, and moving between them never reloads the document.
+        allow_barcode_scanner()
 
     return render_template(
         "app/spa.html",
         locale=g.locale,
-        bootstrap={"locale": g.locale, "user": user},
+        bootstrap={"locale": g.locale, "user": user, "features": features},
     )

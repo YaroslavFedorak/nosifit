@@ -13,5 +13,6 @@ export function useMediaQuery(query: string): boolean {
   );
 }
 
-/** Matches the `desk:` breakpoint in styles.css. */
+/** Match the `tab:` and `desk:` breakpoints in tokens.css. */
+export const TABLET = "(min-width: 48rem)";
 export const DESKTOP = "(min-width: 68.75rem)";

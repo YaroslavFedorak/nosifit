@@ -1,43 +1,32 @@
-import { Dumbbell } from "lucide-react";
 import { useSearchParams } from "react-router";
-import { PageHeader } from "../components/ui/PageHeader";
-import { Tabs, type TabItem } from "../components/ui/Tabs";
+import { Page } from "../app/Page";
+import { HistoryTab } from "../features/training/HistoryTab";
+import { PlanTab } from "../features/training/PlanTab";
+import { TodayTab } from "../features/training/TodayTab";
 import { useT } from "../i18n";
-import { useTitle } from "../lib/useTitle";
-import { HistoryTab } from "./training/HistoryTab";
-import { TipsTab } from "./training/TipsTab";
-import { TodayTab } from "./training/TodayTab";
+import { Tabs, type Option } from "../ui/Choice";
 
-type TabId = "today" | "history" | "tips";
-const TAB_IDS: TabId[] = ["today", "history", "tips"];
+type TabId = "today" | "plan" | "history";
+const TAB_IDS: TabId[] = ["today", "plan", "history"];
 
 export default function Training() {
   const { t } = useT();
-  useTitle(t("nav.training"));
   const [params, setParams] = useSearchParams();
   const requested = params.get("tab");
   const tab: TabId = TAB_IDS.find((id) => id === requested) ?? "today";
 
-  const items: TabItem<TabId>[] = [
-    { id: "today", label: t("tr.tab.today") },
-    { id: "history", label: t("tr.tab.history") },
-    { id: "tips", label: t("tr.tab.tips") },
+  const options: Option<TabId>[] = [
+    { id: "today", label: t("training.tab.today") },
+    { id: "plan", label: t("training.tab.plan") },
+    { id: "history", label: t("training.tab.history") },
   ];
 
   return (
-    <div data-accent="training">
-      <PageHeader title={t("tr.title")} subtitle={t("tr.subtitle")} icon={Dumbbell} accent="training" />
-      <div className="tab:max-w-md">
-        <Tabs
-          items={items}
-          value={tab}
-          label={t("tr.tabs")}
-          onChange={(id) => setParams(id === "today" ? {} : { tab: id }, { replace: true })}
-        />
+    <Page title={t("nav.training")} tone="training">
+      <Tabs options={options} value={tab} label={t("training.tabs")} onChange={(id) => setParams(id === "today" ? {} : { tab: id }, { replace: true })} className="mb-6" />
+      <div role="tabpanel">
+        {tab === "today" ? <TodayTab openPicker={params.get("sheet") === "exercise"} /> : tab === "plan" ? <PlanTab /> : <HistoryTab />}
       </div>
-      <div className="mt-4" role="tabpanel">
-        {tab === "today" ? <TodayTab /> : tab === "history" ? <HistoryTab /> : <TipsTab />}
-      </div>
-    </div>
+    </Page>
   );
 }

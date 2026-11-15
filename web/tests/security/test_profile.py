@@ -277,3 +277,39 @@ def test_delete_final(client, user, monkeypatch):
     assert response.json["status"] == "deleted"
 
     assert User.query.filter_by(email="test@example.com").first() is None
+
+
+def test_profile_summary_requires_login(client):
+    assert client.get("/profile/summary").status_code == 302
+
+
+def test_profile_summary_describes_the_account(client, user):
+    login(client)
+
+    data = client.get("/profile/summary").get_json()
+
+    assert data["user"]["email"] == "test@example.com"
+    assert set(data["profile"]) >= {"age", "gender", "height", "weight", "activity", "goal", "training_location"}
+    assert "fat_loss" in data["options"]["goals"]
+    assert data["sign_in"]["has_password"] is True
+    assert "password" not in str(data).lower().replace("has_password", "")
+
+
+def test_profile_update_answers_json_when_asked(client, user):
+    login(client)
+    fields = {"username": "updated", "age": "30", "height": "175", "weight": "70", "gender": "female",
+              "activity": "1.55", "goal": "fat_loss", "experience": "beginner", "workouts_per_week": "3",
+              "training_location": "home"}
+
+    response = client.post("/profile/update_full", data=fields, headers={"Accept": "application/json"})
+
+    assert response.status_code == 200
+    body = response.get_json()
+    assert body["status"] == "ok"
+    assert body["account"]["profile"]["age"] == 30
+    assert body["account"]["user"]["name"] == "updated"
+
+    bad = client.post("/profile/update_full", data={**fields, "age": "5"}, headers={"Accept": "application/json"})
+    assert bad.status_code == 400
+    assert bad.get_json() == {"status": "error", "message": "invalid_profile"}
+
