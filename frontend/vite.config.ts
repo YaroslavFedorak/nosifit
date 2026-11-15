@@ -15,6 +15,10 @@ export default defineConfig({
     cssCodeSplit: false,
     sourcemap: false,
     target: "es2022",
+    // Browsers that read oklch() themselves, the same floor Tailwind 4 has. Converting the
+    // colours for older ones rounds differently on Windows and Linux, and the committed
+    // build must come out byte for byte the same in CI.
+    cssTarget: ["chrome111", "safari16.4", "firefox128"],
     rollupOptions: {
       input: fileURLToPath(new URL("./src/main.tsx", import.meta.url)),
       output: {
