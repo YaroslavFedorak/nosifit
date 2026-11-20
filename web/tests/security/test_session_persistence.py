@@ -42,7 +42,7 @@ def log_in(client):
     response = client.post(
         "/auth/login", data={"email": "test@example.com", "password": "password123"}
     )
-    assert response.status_code == 302 and response.location.endswith("/dashboard/")
+    assert response.status_code == 302 and response.location.endswith("/app/dashboard")
 
 
 def cookies_after_login(client, *names):
@@ -123,7 +123,7 @@ def test_signed_in_user_opens_the_site_straight_into_the_dashboard(app, client, 
 
     for path in ("/", "/auth/login"):
         response = browser.get(path)
-        assert response.status_code == 302 and response.location.endswith("/dashboard/")
+        assert response.status_code == 302 and response.location.endswith("/app/dashboard")
 
 
 def test_signed_out_visitor_sees_landing_and_login_form(app, client, user):
@@ -149,20 +149,20 @@ def test_logo_takes_a_signed_in_user_to_the_landing(app, client, user):
     response = client.get("/?home=1")
     assert response.status_code == 200
     landing = response.get_data(as_text=True)
-    assert 'href="/dashboard/"' in landing
+    assert 'href="/app/dashboard"' in landing
     assert 'href="/auth/login"' not in landing
     assert 'href="/auth/register"' not in landing
     # Its own logo and "Home" links keep the user on the landing.
     assert 'href="/"' not in landing
 
-    assert client.get("/").location.endswith("/dashboard/")
+    assert client.get("/").location.endswith("/app/dashboard")
 
 
 def test_signed_out_visitor_sees_sign_in_buttons_on_the_landing(app, client, user):
     landing = client.get("/").get_data(as_text=True)
     assert 'href="/auth/login"' in landing
     assert 'href="/auth/register"' in landing
-    assert 'href="/dashboard/"' not in landing
+    assert 'href="/app/dashboard"' not in landing
     assert 'href="/?home=1"' not in landing
     # The marker changes nothing for visitors.
     assert client.get("/?home=1").status_code == 200

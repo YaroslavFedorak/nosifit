@@ -133,7 +133,7 @@ def test_registration_complete_creates_user(mock_send, client):
     )
 
     assert response.status_code == 302
-    assert response.location.endswith("/dashboard/")
+    assert response.location.endswith("/app/dashboard")
 
     user = User.query.filter_by(email="new@example.com").first()
 

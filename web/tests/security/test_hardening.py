@@ -147,7 +147,7 @@ def test_login_brute_force_is_rate_limited(client, user):
 
     # The 11th attempt is refused even with the right password.
     response = login(client)
-    assert not response.location.endswith("/dashboard/")
+    assert not response.location.endswith("/app/dashboard")
 
 
 def test_password_change_logs_out_other_sessions(app, user):
@@ -248,7 +248,7 @@ def test_reset_password_works_for_login_and_old_one_does_not(client, user):
     assert client.get("/profile/").status_code == 302
 
     new = login(client, password="first-new-password")
-    assert new.location.endswith("/dashboard/")
+    assert new.location.endswith("/app/dashboard")
     g.pop("_login_user", None)
     assert client.get("/profile/").status_code == 200
 
@@ -337,7 +337,7 @@ def test_oauth_only_account_can_set_first_password_through_recovery(client, app)
     db.session.refresh(oauth_user)
     assert oauth_user.check_password("first-new-password")
     assert login(client, email="g@example.com", password="first-new-password").location.endswith(
-        "/dashboard/"
+        "/app/dashboard"
     )
 
 
@@ -359,7 +359,7 @@ def test_reset_does_not_complete_a_pending_telegram_link(client, user):
         assert "tg_link" not in session
         assert "_user_id" not in session
     # The later explicit login finds nothing pending to confirm or complete.
-    assert login(client, password="first-new-password").location.endswith("/dashboard/")
+    assert login(client, password="first-new-password").location.endswith("/app/dashboard")
 
 
 def test_invalid_reset_token_is_not_a_server_error(client):
@@ -501,7 +501,7 @@ def test_full_registration_still_works(client, sent_codes):
     client.post("/verify/verify_email", data={"code": code})
     response = client.post("/auth/register_complete")
 
-    assert response.location.endswith("/dashboard/")
+    assert response.location.endswith("/app/dashboard")
     created = User.query.filter_by(email="newbie@example.com").one()
     assert created.check_password("a-good-password")
     assert created.profile.age == 30

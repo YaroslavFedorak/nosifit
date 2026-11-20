@@ -10,7 +10,7 @@
         <li><a href="{{ url_for('public.demo') }}">{{ L.footer.demo }}</a></li>
         <li><a href="{{ url_for('public.contact') }}">{{ L.footer.contact }}</a></li>
         {% if current_user.is_authenticated %}
-        <li><a href="{{ url_for('dashboard.dashboard') }}">{{ public_t("nav.dashboard") }}</a></li>
+        <li><a href="{{ url_for('spa_pages.shell', page='dashboard') }}">{{ public_t("nav.dashboard") }}</a></li>
         {% else %}
         <li><a href="{{ url_for('auth.login') }}">{{ L.footer.login }}</a></li>
         {% endif %}

@@ -177,7 +177,7 @@ def test_consent_never_redirects_off_site(client, plain_user, target):
 
     response = _post(client, "/consent", data={**BOTH, "next": target})
 
-    assert response.location == "/dashboard/"
+    assert response.location == "/app/dashboard"
 
 
 def test_a_new_policy_version_asks_again(client, plain_user):
@@ -268,7 +268,7 @@ def test_registration_records_consent(client, no_auto_consent, sent_codes):
     client.post("/verify/verify_email", data={"code": sent_codes[0][1]})
     response = client.post("/auth/register_complete", data={})
 
-    assert response.location.endswith("/dashboard/")
+    assert response.location.endswith("/app/dashboard")
     user = User.query.filter_by(email="newbie@example.com").one()
     assert has_current_consent(user)
     g.pop("_login_user", None)

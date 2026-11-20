@@ -5,6 +5,7 @@ from flask_login import current_user
 
 from backend.app.services.telegram_auth import clean_bot_username
 from web.app.i18n.locale import DEFAULT_LOCALE, load_translation
+from web.app.routes.spa.pages import app_home
 
 root_bp = Blueprint("root", __name__, url_prefix="")
 
@@ -28,7 +29,7 @@ def landing():
     # Opening the site while signed in (also from a "remember me" cookie):
     # straight to the app. The logo and "Home" links still show the landing.
     if current_user.is_authenticated and HOME_PARAM not in request.args:
-        return redirect(url_for("dashboard.dashboard"))
+        return redirect(app_home())
 
     # The page reads ~150 keys; one dict for all of them keeps the
     # template short.
