@@ -17,7 +17,7 @@ def test_login_success(client, user):
         },
     )
     assert response.status_code == 302
-    assert response.location.endswith("/dashboard/")
+    assert response.location.endswith("/app/dashboard")
 
 
 def test_login_wrong_password(client, user):

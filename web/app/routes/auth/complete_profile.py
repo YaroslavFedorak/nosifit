@@ -56,7 +56,7 @@ def complete_profile():
         _link_oauth_account(existing_user, oauth_user)
         db.session.commit()
         start_user_session(existing_user)
-        return redirect(pending_link_redirect("/profile"))
+        return redirect(pending_link_redirect("/app/profile"))
 
     if request.method == "POST":
         # Age, height and weight are health data: nothing is stored without
@@ -113,7 +113,7 @@ def complete_profile():
 
         start_user_session(user)
 
-        return redirect(pending_link_redirect("/profile"))
+        return redirect(pending_link_redirect("/app/profile"))
 
     return render_template(
         "auth/complete_profile.html",

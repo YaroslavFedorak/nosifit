@@ -8,5 +8,6 @@
   ],
   "theme_color": "#0b0e13",
   "background_color": "#0b0e13",
-  "display": "standalone"
+  "display": "standalone",
+  "start_url": "/app/dashboard"
 }

@@ -30,6 +30,7 @@ from backend.app.services.consent import (
 from backend.app.services.account_service import withdraw_consent
 from backend.app.services.data_export import export_user_data
 from backend.app.utils.validation import MIN_ACCOUNT_AGE
+from web.app.routes.spa.pages import app_home
 
 legal_bp = Blueprint("legal", __name__)
 
@@ -53,7 +54,7 @@ def _safe_next(value) -> str:
     # Only paths on this site: "/x", never "//host" or "/\\host".
     if isinstance(value, str) and value.startswith("/") and not value.startswith(("//", "/\\")):
         return value
-    return url_for("dashboard.dashboard")
+    return app_home()
 
 
 @legal_bp.get("/privacy")

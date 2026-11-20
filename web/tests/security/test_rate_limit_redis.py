@@ -91,8 +91,8 @@ def test_two_instances_share_one_login_counter(app, user, redis_client):
         wrong_login(worker_2)
 
     # In-process counters would allow 10 more per worker; Redis does not.
-    assert not good_login(worker_1).location.endswith("/dashboard/")
-    assert not good_login(worker_2).location.endswith("/dashboard/")
+    assert not good_login(worker_1).location.endswith("/app/dashboard")
+    assert not good_login(worker_2).location.endswith("/app/dashboard")
 
 
 @needs_redis
@@ -157,7 +157,7 @@ def test_redis_restart_does_not_break_requests(app, user, redis_client):
     # Drop every client connection, as a Redis restart would.
     redis_client.client_kill_filter(_type="normal", skipme=True)
 
-    assert good_login(client).location.endswith("/dashboard/")
+    assert good_login(client).location.endswith("/app/dashboard")
 
 
 # --- Failure: fail closed ------------------------------------------------------------------

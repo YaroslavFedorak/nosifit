@@ -61,7 +61,7 @@ def google_callback():
             db.session.commit()
 
         start_user_session(user)
-        return redirect(pending_link_redirect("/profile"))
+        return redirect(pending_link_redirect("/app/profile"))
 
     if email:
         user = User.query.filter(db.func.lower(User.email) == email).first()
@@ -83,7 +83,7 @@ def google_callback():
             db.session.commit()
 
             start_user_session(user)
-            return redirect(pending_link_redirect("/profile"))
+            return redirect(pending_link_redirect("/app/profile"))
 
     if not email:
         return redirect("/auth/login")

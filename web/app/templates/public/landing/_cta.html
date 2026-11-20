@@ -7,7 +7,7 @@
     </div>
     <div class="lp-actions">
       {% if current_user.is_authenticated %}
-      <a href="{{ url_for('dashboard.dashboard') }}" class="cmp-btn cmp-btn-primary cmp-btn-lg">{{ public_t("nav.dashboard") }}</a>
+      <a href="{{ url_for('spa_pages.shell', page='dashboard') }}" class="cmp-btn cmp-btn-primary cmp-btn-lg">{{ public_t("nav.dashboard") }}</a>
       {% else %}
       <a href="{{ url_for('auth.register') }}" class="cmp-btn cmp-btn-primary cmp-btn-lg">{{ L.cta.start }}</a>
       {% endif %}

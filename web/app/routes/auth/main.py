@@ -26,6 +26,7 @@ from auth.telegram_session import (
     pending_link_redirect,
 )
 from web.app.security import client_ip, hit_limit, reset_limit, too_many_requests
+from web.app.routes.spa.pages import app_home
 
 auth_bp = Blueprint("auth", __name__, url_prefix="/auth")
 
@@ -86,12 +87,12 @@ def login():
             db.session.commit()
 
         start_user_session(user)
-        return redirect(pending_link_redirect(url_for("dashboard.dashboard")))
+        return redirect(pending_link_redirect(app_home()))
 
     # Already signed in: no second login. Except when connecting Telegram
     # asks to sign in again (recent sign-in required).
     if current_user.is_authenticated and get_pending_link() is None:
-        return redirect(url_for("dashboard.dashboard"))
+        return redirect(app_home())
 
     return render_template("auth/login.html")
 
@@ -183,7 +184,7 @@ def register_complete():
 
         start_user_session(user)
 
-        return redirect(pending_link_redirect(url_for("dashboard.dashboard")))
+        return redirect(pending_link_redirect(app_home()))
 
     return render_template("auth/register_complete.html")
 

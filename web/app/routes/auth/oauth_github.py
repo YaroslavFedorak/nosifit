@@ -127,7 +127,7 @@ def github_callback():
             db.session.commit()
 
         start_user_session(user)
-        return redirect(pending_link_redirect("/profile"))
+        return redirect(pending_link_redirect("/app/profile"))
 
     if email:
         user = User.query.filter(db.func.lower(User.email) == email).first()
@@ -148,7 +148,7 @@ def github_callback():
             )
             db.session.commit()
             start_user_session(user)
-            return redirect(pending_link_redirect("/profile"))
+            return redirect(pending_link_redirect("/app/profile"))
 
     # No usable email: GitHub's own noreply address is unique per account.
     noreply_email = f"{github_id}+{username or 'user'}@users.noreply.github.com".lower()

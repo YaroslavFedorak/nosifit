@@ -21,6 +21,11 @@ USER_PAGES = frozenset({"dashboard", "training", "nutrition", "recovery", "profi
 BUNDLE = os.path.join("app", "assets", "app.js")
 
 
+def app_home() -> str:
+    """Where a signed-in user starts: Today in this interface."""
+    return url_for("spa_pages.shell", page="dashboard")
+
+
 def _bundle_is_built() -> bool:
     return os.path.isfile(os.path.join(current_app.static_folder, BUNDLE))
 
