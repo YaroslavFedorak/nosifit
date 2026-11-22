@@ -35,7 +35,7 @@ function SaveDishSheet({ meal, mealName, onClose }: { meal: Meal; mealName: stri
   };
 
   return (
-    <Sheet open onClose={onClose} title={t("dish.save")}>
+    <Sheet open tone="nutrition" onClose={onClose} title={t("dish.save")}>
       <form onSubmit={submit} className="space-y-4">
         <TextField
           label={t("dish.name")}

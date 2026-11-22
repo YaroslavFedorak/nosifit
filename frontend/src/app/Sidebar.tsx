@@ -49,9 +49,13 @@ export function Sidebar() {
         <ul className="space-y-1">
           {MAIN_NAV.map((item) => (
             <li key={item.to}>
-              <NavLink to={item.to} className={({ isActive }) => cn(ITEM, itemState(isActive))}>
-                <item.icon size={20} aria-hidden="true" />
-                <span className="max-w-full truncate">{t(item.label)}</span>
+              <NavLink to={item.to} data-tone={item.tone} className={({ isActive }) => cn(ITEM, itemState(isActive))}>
+                {({ isActive }) => (
+                  <>
+                    <item.icon size={20} className={cn(isActive && "text-accent")} aria-hidden="true" />
+                    <span className="max-w-full truncate">{t(item.label)}</span>
+                  </>
+                )}
               </NavLink>
             </li>
           ))}

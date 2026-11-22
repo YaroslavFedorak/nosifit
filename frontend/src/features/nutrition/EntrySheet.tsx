@@ -24,6 +24,7 @@ export function EntrySheet({ item, onClose }: { item: MealItem; onClose: () => v
   return (
     <Sheet
       open
+      tone="nutrition"
       onClose={onClose}
       title={item.name}
       footer={

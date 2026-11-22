@@ -53,8 +53,12 @@ client unchanged.
 - **Tokens only.** Every colour, size and radius comes from `tokens.css`. A
   block's module colour is set with `data-tone` and read through `text-tone`,
   `bg-tone`, `bg-tone-soft`. No gradients, no glow.
-- **The accent is for actions.** The brand yellow marks the primary button and
-  the current selection. The module hues colour data marks only.
+- **Each module has its colour, and its actions wear it.** Training is yellow,
+  nutrition violet, recovery teal: inside a module (`data-tone`, `ToneScope`)
+  the primary button, switches, the selected tab and the focus ring take its
+  colour. Places that belong to no module (Today's chrome, profile, settings,
+  the "+" button) use a quiet light. Sheets take the colour of the screen that
+  opened them, or a `tone` of their own.
 - **Nothing recorded is never a zero.** A part of the day with no entry is
   offered as an action, not shown as `0` or an empty chart.
 - **Recording is one sheet per kind.** Screens ask `useLog()` for the food

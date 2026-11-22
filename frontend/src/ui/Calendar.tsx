@@ -31,7 +31,7 @@ export function CalendarSheet({
   open: boolean;
   onClose: () => void;
   title: string;
-  tone: Tone;
+  tone?: Tone;
   days: CalendarDay[];
   detail?: (date: string) => ReactNode;
 }) {
@@ -61,7 +61,7 @@ export function CalendarSheet({
   const picked = byDate.get(selected);
 
   return (
-    <Sheet open={open} onClose={onClose} title={title}>
+    <Sheet open={open} tone={tone} onClose={onClose} title={title}>
       <div data-tone={tone} className="space-y-4">
         <div className="flex items-center justify-between">
           <IconButton label={t("cal.prev")} disabled={cursor <= earliest} onClick={() => move(-1)}>

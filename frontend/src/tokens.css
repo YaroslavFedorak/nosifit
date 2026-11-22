@@ -25,17 +25,28 @@
   --color-ink-2: oklch(83% 0.012 260);
   --color-muted: oklch(69% 0.016 260);
 
-  /* The brand yellow, taken off neon. The only colour an action wears. */
-  --color-accent: oklch(83% 0.13 88);
-  --color-accent-2: oklch(87% 0.12 90);
-  --color-accent-ink: oklch(22% 0.035 88);
-  --color-focus: oklch(86% 0.15 90);
+  /* What an action wears. Outside a module it is a quiet light; inside one it takes the module's
+     colour (styles.css, [data-tone]). */
+  --color-accent: oklch(92% 0.008 260);
+  --color-accent-2: oklch(97% 0.005 260);
+  --color-accent-ink: oklch(17% 0.012 260);
+  --color-focus: oklch(92% 0.008 260);
 
-  /* One quiet hue per module, for its data marks only. */
+  /* One hue per module: training yellow, nutrition violet, recovery teal. */
   --color-training: oklch(83% 0.13 88);
   --color-nutrition: oklch(73% 0.115 298);
   --color-recovery: oklch(77% 0.085 200);
   --color-water: oklch(72% 0.1 245);
+  /* The same hues as actions: hover, the ink on a filled button, the focus ring. */
+  --color-training-hover: oklch(87% 0.12 90);
+  --color-training-ink: oklch(22% 0.035 88);
+  --color-training-focus: oklch(86% 0.15 90);
+  --color-nutrition-hover: oklch(78% 0.105 298);
+  --color-nutrition-ink: oklch(20% 0.04 298);
+  --color-nutrition-focus: oklch(78% 0.13 298);
+  --color-recovery-hover: oklch(82% 0.08 200);
+  --color-recovery-ink: oklch(20% 0.035 200);
+  --color-recovery-focus: oklch(82% 0.1 200);
 
   --color-success: oklch(77% 0.11 158);
   --color-warn: oklch(79% 0.11 65);
