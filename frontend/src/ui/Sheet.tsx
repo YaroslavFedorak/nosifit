@@ -3,7 +3,9 @@ import { useEffect, useId, useRef, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { useT } from "../i18n";
 import { cn } from "../lib/cn";
+import type { Tone } from "../design/tokens";
 import { IconButton } from "./Button";
+import { useTone } from "./Tone";
 
 const FOCUSABLE =
   'a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
@@ -21,6 +23,7 @@ export function Sheet({
   onBack,
   title,
   size = "md",
+  tone,
   children,
   footer,
 }: {
@@ -30,10 +33,13 @@ export function Sheet({
   onBack?: () => void;
   title: string;
   size?: SheetSize;
+  /** The module whose colour the sheet wears; by default the one of the screen that opened it. */
+  tone?: Tone;
   children: ReactNode;
   footer?: ReactNode;
 }) {
   const { t } = useT();
+  const screenTone = useTone();
   const titleId = useId();
   const panel = useRef<HTMLDivElement>(null);
   const close = useRef(onClose);
@@ -78,7 +84,7 @@ export function Sheet({
   if (!open) return null;
 
   return createPortal(
-    <div data-sheet className="fixed inset-0 z-[400] flex items-end justify-center tab:items-center tab:p-6">
+    <div data-sheet data-tone={tone ?? screenTone} className="fixed inset-0 z-[400] flex items-end justify-center tab:items-center tab:p-6">
       <div className="anim-fade absolute inset-0 bg-scrim" onClick={onClose} aria-hidden="true" />
       <div
         ref={panel}

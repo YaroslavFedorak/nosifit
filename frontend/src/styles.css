@@ -1,5 +1,5 @@
 /* Hallmark · shape: app screen · genre: atmospheric · theme: brand · redesign: full
- * paper: oklch(16.5% 0.012 260) · accent: oklch(83% 0.13 88) · display: Inter Variable · body: Inter Variable
+ * paper: oklch(16.5% 0.012 260) · accent: the module's own colour (training oklch(83% 0.13 88), nutrition oklch(73% 0.115 298), recovery oklch(77% 0.085 200)), a quiet light outside the modules · display: Inter Variable · body: Inter Variable
  * nav: a sidebar on wide screens, a rail on tablets, a tab bar with a centre "add" on phones · signature: the "+" quick log and the food diary · states: loading, empty, error, full
  * axes: dark/grotesk-sans/warm · posture: Full palette (signal yellow; nutrition violet, recovery teal and water blue as data hues) · contrast: pass · v2.0.0 */
 /* Hallmark · pre-emit critique: P4 H4 E4 S4 R4 V4 · weakest: S, a diary of rows could be any tracker; led with the day's own next step and the one-tap "+" instead of a score dial */
@@ -60,6 +60,26 @@
 [data-tone="training"] { --tone: var(--color-training); }
 [data-tone="nutrition"] { --tone: var(--color-nutrition); }
 [data-tone="recovery"] { --tone: var(--color-recovery); }
+
+/* Inside a module its colour is the action colour too: buttons, switches, the selected tab, the focus ring. */
+[data-tone="training"] {
+  --color-accent: var(--color-training);
+  --color-accent-2: var(--color-training-hover);
+  --color-accent-ink: var(--color-training-ink);
+  --color-focus: var(--color-training-focus);
+}
+[data-tone="nutrition"] {
+  --color-accent: var(--color-nutrition);
+  --color-accent-2: var(--color-nutrition-hover);
+  --color-accent-ink: var(--color-nutrition-ink);
+  --color-focus: var(--color-nutrition-focus);
+}
+[data-tone="recovery"] {
+  --color-accent: var(--color-recovery);
+  --color-accent-2: var(--color-recovery-hover);
+  --color-accent-ink: var(--color-recovery-ink);
+  --color-focus: var(--color-recovery-focus);
+}
 [data-tone="water"] { --tone: var(--color-water); }
 [data-tone="success"] { --tone: var(--color-success); }
 [data-tone="warn"] { --tone: var(--color-warn); }

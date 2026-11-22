@@ -39,6 +39,7 @@ export function SleepSheet({ onClose }: { onClose: () => void }) {
   return (
     <Sheet
       open
+      tone="recovery"
       onClose={onClose}
       title={t("sleep.title")}
       footer={

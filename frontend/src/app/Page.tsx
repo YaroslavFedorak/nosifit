@@ -5,6 +5,7 @@ import { useT } from "../i18n";
 import { bootstrap } from "../lib/bootstrap";
 import { useTitle } from "../lib/useTitle";
 import { PageHeader } from "../ui/Layout";
+import { ToneScope } from "../ui/Tone";
 import { Avatar } from "./Sidebar";
 
 /**
@@ -28,7 +29,7 @@ export function Page({
   useTitle(title);
   const name = bootstrap.user?.name ?? "";
   return (
-    <div data-tone={tone}>
+    <ToneScope tone={tone}>
       <PageHeader
         title={title}
         subtitle={subtitle}
@@ -42,6 +43,6 @@ export function Page({
         }
       />
       {children}
-    </div>
+    </ToneScope>
   );
 }

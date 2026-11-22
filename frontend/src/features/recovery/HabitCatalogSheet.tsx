@@ -43,7 +43,7 @@ export function HabitCatalogSheet({ mine, onClose }: { mine: Habit[]; onClose: (
   };
 
   return (
-    <Sheet open size="tall" onClose={onClose} title={t("habits.catalog")}>
+    <Sheet open size="tall" tone="recovery" onClose={onClose} title={t("habits.catalog")}>
       {catalog.isPending ? (
         <SkeletonRows rows={6} />
       ) : (

@@ -22,6 +22,7 @@ export function WeightSheet({ onClose }: { onClose: () => void }) {
   return (
     <Sheet
       open
+      tone="nutrition"
       onClose={onClose}
       title={t("weight.title")}
       footer={

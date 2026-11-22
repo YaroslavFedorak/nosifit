@@ -10,6 +10,7 @@ function Tab({ item }: { item: NavItem }) {
   return (
     <NavLink
       to={item.to}
+      data-tone={item.tone}
       className={({ isActive }) =>
         cn(
           "relative flex h-tabbar min-w-0 flex-1 flex-col items-center justify-center gap-1 text-xs font-medium transition-colors duration-150 tracking-[-0.01em]",
@@ -20,7 +21,7 @@ function Tab({ item }: { item: NavItem }) {
       {({ isActive }) => (
         <>
           <span className={cn("absolute top-0 h-0.5 w-8 rounded-pill bg-accent transition-opacity duration-150", isActive ? "opacity-100" : "opacity-0")} aria-hidden="true" />
-          <item.icon size={22} aria-hidden="true" />
+          <item.icon size={22} className={cn(isActive && "text-accent")} aria-hidden="true" />
           <span className="max-w-full truncate">{t(item.label)}</span>
         </>
       )}

@@ -295,6 +295,7 @@ export function FoodPicker({
     <Sheet
       open
       size="tall"
+      tone="nutrition"
       onClose={onClose}
       onBack={view.name === "list" ? undefined : toList}
       title={title}

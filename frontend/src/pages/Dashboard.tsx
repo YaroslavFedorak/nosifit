@@ -44,6 +44,8 @@ function Glyph({ icon: Icon, tone }: { icon: LucideIcon; tone: Tone }) {
 }
 
 /** The one thing worth doing now, said as a person would ask it. */
+const STEP_TONE: Partial<Record<NextStep["kind"], Tone>> = { sleep: "recovery", meal: "nutrition", workout: "training", habits: "recovery" };
+
 function NextStepBlock({ step, fresh }: { step: NextStep; fresh: boolean }) {
   const { t } = useT();
   const log = useLog();
@@ -99,7 +101,7 @@ function NextStepBlock({ step, fresh }: { step: NextStep; fresh: boolean }) {
   }
 
   return (
-    <section aria-labelledby="next-title" className="flex flex-wrap items-end justify-between gap-x-8 gap-y-4">
+    <section aria-labelledby="next-title" data-tone={STEP_TONE[step.kind]} className="flex flex-wrap items-end justify-between gap-x-8 gap-y-4">
       <div className="min-w-0">
         <h2 id="next-title" className="text-xl desk:text-2xl">
           {title}
@@ -327,7 +329,6 @@ export default function Dashboard() {
             {week.active > 0 && (
               <Section
                 title={t("week.title")}
-                tone="training"
                 action={
                   <Button variant="quiet" icon={<CalendarDays size={16} aria-hidden="true" />} onClick={() => setCalendar(true)}>
                     {t("week.calendar")}
@@ -335,7 +336,7 @@ export default function Dashboard() {
                 }
               >
                 <div className="rounded-card bg-paper-2 p-4">
-                  <Bars data={week.bars} label={t("week.title")} tone="training" />
+                  <Bars data={week.bars} label={t("week.title")} />
                   <dl className="mt-4 grid grid-cols-2 gap-4 border-t border-rule pt-4">
                     <div>
                       <dd className="figure text-lg">{tn("count.days", week.active)}</dd>
@@ -369,7 +370,7 @@ export default function Dashboard() {
         </div>
       )}
 
-      <CalendarSheet open={calendar} onClose={() => setCalendar(false)} title={t("cal.title")} tone="training" days={calendarDays} />
+      <CalendarSheet open={calendar} onClose={() => setCalendar(false)} title={t("cal.title")} days={calendarDays} />
     </Page>
   );
 }
