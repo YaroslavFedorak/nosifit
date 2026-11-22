@@ -12,7 +12,7 @@ function Tab({ item }: { item: NavItem }) {
       to={item.to}
       className={({ isActive }) =>
         cn(
-          "relative flex h-tabbar min-w-0 flex-1 flex-col items-center justify-center gap-1 text-xs font-medium transition-colors duration-150 tracking-[-0.01em] max-[23rem]:text-[0.6875rem]",
+          "relative flex h-tabbar min-w-0 flex-1 flex-col items-center justify-center gap-1 text-xs font-medium transition-colors duration-150 tracking-[-0.01em]",
           isActive ? "text-ink" : "text-muted",
         )
       }
@@ -41,7 +41,7 @@ export function TabBar() {
       <div className="mx-auto flex max-w-xl items-stretch">
         {today && <Tab item={today} />}
         {nutrition && <Tab item={nutrition} />}
-        <div className="flex w-14 shrink-0 items-center justify-center">
+        <div className="flex w-[3.25rem] shrink-0 items-center justify-center">
           <button
             type="button"
             onClick={() => log.open({ kind: "menu" })}
