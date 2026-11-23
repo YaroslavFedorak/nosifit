@@ -10,6 +10,7 @@ from aiogram.types import KeyboardButton, ReplyKeyboardMarkup
 from telegram_bot.i18n import t, variants
 
 # Home
+TODAY = "btn.today"
 TRAINING = "btn.training"
 NUTRITION = "btn.nutrition"
 LOGIN = "btn.login"
@@ -27,6 +28,7 @@ WATER = "btn.water"
 WEIGHT = "btn.weight"
 
 _BUTTONS = (
+    TODAY,
     TRAINING, NUTRITION, LOGIN, LOGOUT, HOME, LANGUAGE, ADD_EXERCISE, MY_WORKOUT, FOOD, WATER, WEIGHT
 )
 MENU_TEXTS = frozenset(text for key in _BUTTONS for text in variants(key))
@@ -50,7 +52,7 @@ def main_menu(*, authenticated: bool = False) -> ReplyKeyboardMarkup:
     """Home: one button per mode."""
     if not authenticated:
         return _keyboard([[LOGIN, LANGUAGE]], "ph.login")
-    return _keyboard([[TRAINING, NUTRITION], [LANGUAGE, LOGOUT]], "ph.section")
+    return _keyboard([[TODAY], [TRAINING, NUTRITION], [LANGUAGE, LOGOUT]], "ph.section")
 
 
 def training_menu() -> ReplyKeyboardMarkup:

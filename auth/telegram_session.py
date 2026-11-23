@@ -11,7 +11,8 @@ Telegram sessions
       browser sessions, so a lost Telegram account exposes nutrition and
       workout logs, not control over the NosiFit account. Of the training
       API only workout logging is open (sessions and exercise search);
-      plans, tests and analytics stay with the website.
+      plans, tests and analytics stay with the website. Of the recovery API
+      only reading today's habits and sleep and ticking habits are open.
 
 Pending link
     /auth/telegram/link/<token> keeps the token's hash in the session while
@@ -45,6 +46,11 @@ TELEGRAM_SESSION_PREFIXES = (
     "/api/nutrition/",
     "/api/telegram/",
     "/api/training/sessions/",
+    # Today's habits and sleep for the bot's Today card. The id in the path is
+    # checked against the signed-in user by the recovery API itself.
+    "/api/recovery/habits/user/",
+    "/api/recovery/habits/logs",
+    "/api/recovery/snapshot/",
 )
 TELEGRAM_SESSION_PATHS = frozenset(
     {

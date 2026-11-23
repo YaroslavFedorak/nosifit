@@ -173,6 +173,29 @@ own buttons with **🏠 Головна** to go back:
 - 🏋️ Тренування: ➕ Додати вправу · 📋 Моє тренування
 - 🍽 Харчування: 🍽 Їжа · 💧 Вода · ⚖️ Вага
 
+## Today card
+
+`/start`, **🏠 Головна**, **📅 Сьогодні** and `/today` send one message with an
+HTML widget (Bot API 10.4, `telegram_bot/widgets/`). It is the website's Today
+screen in small: the next step, food, water, sleep and workout as recorded
+(nothing recorded is left out, never shown as zero), up to six habits and the
+calories of the last 7 days. Water (+250 / +500 ml) and habit ticks are one tap
+inside the card; buttons under it start adding food, an exercise or the weight.
+
+- Telegram allows 32 KB of HTML and 4 KB after zlib. `render.py` strips
+  comments and indentation and refuses a card over the limit; a test checks
+  every language.
+- The day travels as the message's chat state (at most 1024 bytes, built by
+  `state.py`), never inside the HTML. Each time the card comes on screen it
+  asks for fresh state, so entries made on the website show up without
+  resending it.
+- Taps arrive as `widget_query` updates, which aiogram 3.31 does not route:
+  `handlers/today.py` answers them in an outer middleware, and
+  `services/widget_api.py` adds the three methods aiogram lacks.
+- Bot sessions may read today's habits and sleep and tick habits
+  (`/api/recovery/habits/user/`, `/habits/logs`, `/snapshot/`); the rest of
+  the recovery API stays with the website.
+
 ## Training
 
 Each exercise is a list of sets, every set with its own reps (or seconds)

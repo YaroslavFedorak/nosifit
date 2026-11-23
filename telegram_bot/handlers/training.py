@@ -172,11 +172,16 @@ async def my_workout(message: Message, state: FSMContext) -> None:
 
 @router.message(button(ADD_EXERCISE))
 async def add_exercise(message: Message, state: FSMContext) -> None:
+    await start_add_exercise(message, state, message.from_user.id)
+
+
+async def start_add_exercise(message: Message, state: FSMContext, user_id: int) -> None:
+    """Ask for an exercise. ``message`` is where to answer: a callback passes the bot's own."""
     await state.clear()
     await state.set_state(TrainingStates.searching)
     try:
         recent = await asyncio.to_thread(
-            _api(message.from_user.id).get_recent_exercises, i18n.current_language(), RECENT_LIMIT
+            _api(user_id).get_recent_exercises, i18n.current_language(), RECENT_LIMIT
         )
     except NosiFitAPIError:
         recent = []

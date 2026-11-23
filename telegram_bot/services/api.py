@@ -71,6 +71,8 @@ def _json_or_empty(response: requests.Response) -> dict:
 class NosiFitAPI:
     base_url: str
     session: requests.Session = field(default_factory=requests.Session)
+    # The NosiFit account id, from the sign-in answer: the recovery API has it in its paths.
+    user_id: int | None = None
 
     # Set once the web app says the session is gone (expired, revoked by
     # disconnecting Telegram, password changed, account deleted).
@@ -533,3 +535,33 @@ class NosiFitAPI:
             "/api/training/sessions/complete",
             json={"session_id": session_id, "strict": True, "exercises": exercises},
         ).json()
+
+    def get_stats(self, days: int = 7) -> dict:
+        """Calories by day for the last ``days`` days (None where nothing was logged)."""
+        self.ensure_authenticated()
+        return self._request("GET", "/api/nutrition/stats", params={"days": days}).json()
+
+    def _recovery_path(self, path: str) -> str:
+        if self.user_id is None:
+            raise NosiFitAPIError(t("err.generic"))
+        return f"/api/recovery/{path}/{self.user_id}"
+
+    def get_habits(self) -> list[dict]:
+        """The user's habits with today's ticks."""
+        self.ensure_authenticated()
+        payload = self._request("GET", self._recovery_path("habits/user")).json()
+        return payload if isinstance(payload, list) else []
+
+    def get_snapshot(self) -> dict | None:
+        """The newest recovery snapshot (it may describe an earlier day)."""
+        self.ensure_authenticated()
+        payload = self._request("GET", self._recovery_path("snapshot")).json()
+        return payload if payload.get("date") else None
+
+    def set_habit(self, user_habit_id: int, done: bool) -> dict:
+        self.ensure_authenticated()
+        if done:
+            return self._request(
+                "POST", "/api/recovery/habits/logs", json={"user_habit_id": user_habit_id}
+            ).json()
+        return self._request("DELETE", f"/api/recovery/habits/logs/{user_habit_id}").json()
