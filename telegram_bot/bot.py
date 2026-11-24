@@ -16,6 +16,7 @@ from telegram_bot.handlers import (
     consent,
     language,
     nutrition,
+    quick,
     start,
     today,
     training,
@@ -51,6 +52,8 @@ def create_dispatcher() -> Dispatcher:
     dispatcher.include_router(consent.router)
     dispatcher.include_router(start.router)
     dispatcher.include_router(today.router)
+    # Before nutrition and training: its search and time states take typed text.
+    dispatcher.include_router(quick.router)
     # Before training/nutrition: their search states take any text.
     dispatcher.include_router(language.router)
     # Before nutrition: its search states take any text, the training

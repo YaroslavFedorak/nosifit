@@ -565,3 +565,10 @@ class NosiFitAPI:
                 "POST", "/api/recovery/habits/logs", json={"user_habit_id": user_habit_id}
             ).json()
         return self._request("DELETE", f"/api/recovery/habits/logs/{user_habit_id}").json()
+
+    def add_sleep(self, start: str, end: str) -> dict:
+        """Log a night: ISO datetimes with their offset."""
+        self.ensure_authenticated()
+        return self._request(
+            "POST", "/api/recovery/sleep", json={"sleep_start": start, "sleep_end": end}
+        ).json()

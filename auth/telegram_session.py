@@ -12,7 +12,7 @@ Telegram sessions
       workout logs, not control over the NosiFit account. Of the training
       API only workout logging is open (sessions and exercise search);
       plans, tests and analytics stay with the website. Of the recovery API
-      only reading today's habits and sleep and ticking habits are open.
+      only today's habits and sleep (reading, ticking habits, logging a night) are open.
 
 Pending link
     /auth/telegram/link/<token> keeps the token's hash in the session while
@@ -58,6 +58,7 @@ TELEGRAM_SESSION_PATHS = frozenset(
         "/api/consent",
         "/api/training/exercises/search",
         "/api/training/exercises/recent",
+        "/api/recovery/sleep",
     }
 )
 

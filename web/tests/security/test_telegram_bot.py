@@ -77,6 +77,7 @@ def fresh_dispatcher():
         consent,
         language,
         nutrition,
+        quick,
         start,
         today,
         training,
@@ -84,7 +85,7 @@ def fresh_dispatcher():
         weight,
     )
 
-    for module in (auth, common, consent, language, nutrition, start, today, training, water, weight):
+    for module in (auth, common, consent, language, nutrition, quick, start, today, training, water, weight):
         module.router._parent_router = None
     return create_dispatcher()
 

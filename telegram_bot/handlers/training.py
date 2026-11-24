@@ -152,9 +152,14 @@ async def _show_workout(target, user_id: int) -> None:
 
 @router.message(button(TRAINING))
 async def training(message: Message, state: FSMContext) -> None:
+    await show_training(message, state, message.from_user.id)
+
+
+async def show_training(message: Message, state: FSMContext, user_id: int) -> None:
+    """The training mode with today's workout. ``message`` is where to answer."""
     await state.clear()
     try:
-        _, items = await _today(message.from_user.id)
+        _, items = await _today(user_id)
     except NosiFitAPIError as exc:
         await message.answer(_human(exc, t("tr.load_failed")))
         return

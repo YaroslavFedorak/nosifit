@@ -24,11 +24,9 @@ from telegram_bot.handlers.training import start_add_exercise
 from telegram_bot.handlers.weight import ask_weight
 from telegram_bot.i18n import t
 from telegram_bot.keyboards.main import TODAY, button, main_menu
-from telegram_bot.keyboards.nutrition import meal_categories
 from telegram_bot.runtime import get_api, is_authenticated, local_now, restore
 from telegram_bot.services.api import NosiFitAPI, NosiFitAPIError
 from telegram_bot.services.widget_api import AnswerWidgetQuery, EditMessageWidgetData, SendWidget
-from telegram_bot.states.nutrition import NutritionStates
 from telegram_bot.widgets.render import today_html
 from telegram_bot.widgets.state import build_state, day_caption
 
@@ -84,16 +82,33 @@ def day_state(api: NosiFitAPI) -> str:
     )
 
 
-def card_keyboard() -> InlineKeyboardMarkup:
-    return InlineKeyboardMarkup(
-        inline_keyboard=[
-            [InlineKeyboardButton(text=t("w.btn.food"), callback_data="today:food")],
-            [
-                InlineKeyboardButton(text=t("w.btn.workout"), callback_data="today:workout"),
-                InlineKeyboardButton(text=t("w.btn.weight"), callback_data="today:weight"),
-            ],
-        ]
-    )
+def _step(state: str) -> str | None:
+    try:
+        return json.loads(state).get("a")
+    except ValueError:
+        return None
+
+
+def card_keyboard(step: str | None = None) -> InlineKeyboardMarkup:
+    """The step's own action first (log sleep in the morning, add the meal of the hour), then the rest."""
+    def button_(key: str, data: str) -> InlineKeyboardButton:
+        return InlineKeyboardButton(text=t(key), callback_data=data)
+
+    if step == "sleep":
+        first = button_("w.btn.sleep", "sl:s")
+    elif step in ("breakfast", "lunch", "dinner"):
+        first = button_(f"w.btn.{step}", f"qf:m:{step}")
+    else:
+        first = button_("w.btn.food", "qf:m:auto")
+    rest = [button_("w.btn.workout", "today:workout"), button_("w.btn.weight", "today:weight")]
+    if step == "sleep":
+        rest.insert(0, button_("w.btn.food", "qf:m:auto"))
+    return InlineKeyboardMarkup(inline_keyboard=[[first], rest])
+
+
+# The newest card of each chat and the step its buttons were made for. Only
+# that card is kept: a new one replaces it, so the chat holds one live card.
+_cards: dict[int, tuple[int, str | None]] = {}
 
 
 async def send_today(bot: Bot, chat_id: int, user_id: int) -> None:
@@ -110,15 +125,54 @@ async def send_today(bot: Bot, chat_id: int, user_id: int) -> None:
                 chat_data=state,
                 caption=day_caption(local_now().date()),
                 allow_queries=True,
-                reply_markup=card_keyboard(),
+                reply_markup=card_keyboard(_step(state)),
             )
         )
     except TelegramAPIError as exc:
         # The rest of the bot works without the card.
         logger.warning("Today card was not sent: %s", exc)
         return
-    if isinstance(sent, Message):
-        _remember((chat_id, sent.message_id), state)
+    if not isinstance(sent, Message):
+        return
+    _remember((chat_id, sent.message_id), state)
+    previous = _cards.get(chat_id)
+    _cards[chat_id] = (sent.message_id, _step(state))
+    if previous and previous[0] != sent.message_id:
+        try:
+            await bot.delete_message(chat_id, previous[0])
+        except TelegramAPIError:
+            # Older than 48 hours or already deleted: Telegram keeps it.
+            pass
+
+
+async def _update_card(bot: Bot, chat_id: int, message_id: int, state: str) -> None:
+    """Redraw a card from new state; its buttons follow when the step changed."""
+    if _remember((chat_id, message_id), state):
+        try:
+            await bot(EditMessageWidgetData(chat_id=chat_id, message_id=message_id, chat_data=state))
+        except TelegramBadRequest as exc:
+            if "not modified" not in str(exc).lower():
+                logger.warning("Today card edit failed: %s", exc)
+    card = _cards.get(chat_id)
+    step = _step(state)
+    if card and card[0] == message_id and card[1] != step:
+        _cards[chat_id] = (message_id, step)
+        try:
+            await bot.edit_message_reply_markup(chat_id=chat_id, message_id=message_id, reply_markup=card_keyboard(step))
+        except TelegramAPIError as exc:
+            logger.warning("Today card buttons were not updated: %s", exc)
+
+
+async def refresh_card(bot: Bot, chat_id: int, user_id: int) -> None:
+    """After an entry made outside the card: show it in the chat's card at once."""
+    card = _cards.get(chat_id)
+    if card is None:
+        return
+    try:
+        state = await asyncio.to_thread(day_state, get_api(user_id))
+    except NosiFitAPIError:
+        return
+    await _update_card(bot, chat_id, card[0], state)
 
 
 @router.message(button(TODAY))
@@ -129,15 +183,6 @@ async def today(message: Message, state: FSMContext) -> None:
         await message.answer(t("err.login_start"), reply_markup=main_menu(authenticated=False))
         return
     await send_today(message.bot, message.chat.id, message.from_user.id)
-
-
-@router.callback_query(F.data == "today:food")
-async def card_food(callback: CallbackQuery, state: FSMContext) -> None:
-    await callback.answer()
-    await state.clear()
-    await state.set_state(NutritionStates.choosing_meal)
-    # A new message: the flow edits it, and the card must stay as it is.
-    await callback.message.answer(t("nu.add_food_title"), reply_markup=meal_categories())
 
 
 @router.callback_query(F.data == "today:workout")
@@ -195,12 +240,8 @@ async def answer_widget_query(bot: Bot, query: dict) -> None:
                 state = None
         # A tap that failed gets no state: the card shows its error line.
         await bot(AnswerWidgetQuery(widget_query_id=str(query["id"]), data=state))
-        if state and _remember((chat_id, message_id), state):
-            try:
-                await bot(EditMessageWidgetData(chat_id=chat_id, message_id=message_id, chat_data=state))
-            except TelegramBadRequest as exc:
-                if "not modified" not in str(exc).lower():
-                    logger.warning("Today card edit failed: %s", exc)
+        if state:
+            await _update_card(bot, chat_id, message_id, state)
     finally:
         i18n.reset_language(token)
 

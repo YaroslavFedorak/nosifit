@@ -169,3 +169,11 @@ def test_cards_outside_the_private_chat_change_nothing(api):
 
     assert api.water == []
     assert [(type(call), call.data) for call in bot.calls] == [(AnswerWidgetQuery, None)]
+
+
+@pytest.mark.parametrize(
+    "step, first",
+    [("sleep", "sl:s"), ("lunch", "qf:m:lunch"), ("done", "qf:m:auto"), (None, "qf:m:auto")],
+)
+def test_the_first_button_under_the_card_is_the_steps_own(uk, step, first):
+    assert today.card_keyboard(step).inline_keyboard[0][0].callback_data == first

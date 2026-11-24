@@ -649,13 +649,15 @@ def test_telegram_session_cannot_reach_the_rest_of_the_training_api(client, vict
     assert response.get_json()["code"] == "telegram_session_scope"
 
 
-def test_telegram_session_reads_todays_habits_and_sleep_of_its_own_account(client, victim_identity):
+def test_telegram_session_reads_and_logs_todays_habits_and_sleep(client, victim_identity):
     login = bot_post(client, "/api/telegram/login", tg_payload())
     user_id = login.get_json()["user_id"]
     assert user_id == victim_identity.user_id
 
     assert client.get(f"/api/recovery/habits/user/{user_id}").status_code == 200
     assert client.get(f"/api/recovery/snapshot/{user_id}").status_code == 200
+    night = {"sleep_start": "2026-11-23T23:30:00+02:00", "sleep_end": "2026-11-24T07:00:00+02:00"}
+    assert client.post("/api/recovery/sleep", json=night).status_code == 201
     # Another account's id is not found, as for a browser session.
     assert client.get(f"/api/recovery/habits/user/{user_id + 1000}").status_code == 404
 
@@ -663,7 +665,6 @@ def test_telegram_session_reads_todays_habits_and_sleep_of_its_own_account(clien
 @pytest.mark.parametrize(
     "method, path",
     [
-        ("post", "/api/recovery/sleep"),
         ("get", "/api/recovery/habits/list"),
         ("post", "/api/recovery/habits/add/1"),
         ("get", "/api/recovery/recommendations/1"),

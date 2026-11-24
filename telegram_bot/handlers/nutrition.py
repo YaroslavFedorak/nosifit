@@ -738,13 +738,15 @@ async def nutrition(message: Message, state: FSMContext) -> None:
     if message.text in variants(NUTRITION):
         # Entering the mode: its own buttons (food, water, weight, home).
         await message.answer(t("nu.mode_title"), reply_markup=nutrition_mode_menu())
+    await show_day(message, message.from_user.id)
+
+
+async def show_day(message: Message, user_id: int) -> None:
+    """Today's meals with the nutrition actions. ``message`` is where to answer."""
     try:
-        day = await asyncio.to_thread(_api(message.from_user.id).get_day)
+        day = await asyncio.to_thread(_api(user_id).get_day)
     except NosiFitAPIError as exc:
-        await message.answer(
-            t("nu.connect_failed", error=exc),
-            reply_markup=nutrition_mode_menu(),
-        )
+        await message.answer(t("nu.connect_failed", error=exc))
         return
     await message.answer(_format_day(day), reply_markup=nutrition_menu())
 

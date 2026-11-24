@@ -20,6 +20,7 @@ MAX_STATE = 1024
 HABITS_SHOWN = 6
 HABIT_NAME = 28
 WEEK = 7
+NOON = 12
 EVENING = 18
 
 TRANSLATIONS = Path(__file__).resolve().parents[2] / "shared" / "translations"
@@ -134,16 +135,21 @@ def _week(stats: dict | None, today: date) -> tuple[list | None, str]:
     return week, t("w.avg", n=number(float(average))) if average else ""
 
 
-def next_step(*, meals: set, recorded: bool, habits_done: int, habits_total: int, hour: int, fresh: bool) -> str:
+def next_step(
+    *, meals: set, slept: bool, recorded: bool, habits_done: int, habits_total: int, hour: int, fresh: bool
+) -> str:
+    """The kind of the one thing worth doing now: sleep, a meal, habits, start, open or done."""
     nothing = not recorded and habits_done == 0
     if fresh and nothing:
-        return t("w.next.start")
+        return "start"
+    if not slept and hour < NOON:
+        return "sleep"
     meal = meal_for_hour(hour)
     if meal != "snack" and meal not in meals:
-        return t(f"w.next.{meal}")
+        return meal
     if habits_total > habits_done and hour >= EVENING:
-        return t("w.next.habits")
-    return t("w.next.open") if nothing else t("w.next.done")
+        return "habits"
+    return "open" if nothing else "done"
 
 
 def build_state(
@@ -165,17 +171,21 @@ def build_state(
     week, average = _week(stats, today)
     done = sum(1 for habit in habits if habit.get("completed"))
 
+    step = next_step(
+        meals={meal.get("category") for meal in (day or {}).get("meals", []) if meal.get("items")},
+        slept=sleep is not None,
+        recorded=bool(food or water or sleep or workout),
+        habits_done=done,
+        habits_total=len(habits),
+        hour=now.hour,
+        fresh=week is None and not habits,
+    )
     state: dict = {
         # Newer state wins in the card: an answer and an edit may arrive in either order.
         "r": int(time.time() * 1000),
-        "n": next_step(
-            meals={meal.get("category") for meal in (day or {}).get("meals", []) if meal.get("items")},
-            recorded=bool(food or water or sleep or workout),
-            habits_done=done,
-            habits_total=len(habits),
-            hour=now.hour,
-            fresh=week is None and not habits,
-        ),
+        "n": t(f"w.next.{step}"),
+        # Not drawn: the bot reads it to put the step's own button under the card.
+        "a": step,
     }
     if food:
         state["f"] = food

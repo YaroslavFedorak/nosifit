@@ -136,7 +136,11 @@ async def logout_button(message: Message, state: FSMContext) -> None:
 
 @router.message(Command("logout"))
 async def logout_command(message: Message, state: FSMContext) -> None:
-    await asyncio.to_thread(runtime.logout, message.from_user.id)
+    await log_out(message, state, message.from_user.id)
+
+
+async def log_out(message: Message, state: FSMContext, user_id: int) -> None:
+    await asyncio.to_thread(runtime.logout, user_id)
     await state.clear()
     await message.answer(
         t("auth.logged_out"),
