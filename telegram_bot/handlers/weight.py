@@ -32,15 +32,20 @@ def _parse_weight(text: str) -> float | None:
 
 @router.message(button(WEIGHT))
 async def weight(message: Message, state: FSMContext) -> None:
+    await ask_weight(message, state, message.from_user.id)
+
+
+async def ask_weight(message: Message, state: FSMContext, user_id: int) -> None:
+    """Ask for today's weight. ``message`` is where to answer: a callback passes the bot's own."""
     await state.clear()
-    if not is_authenticated(message.from_user.id):
+    if not is_authenticated(user_id):
         await message.answer(
             t("body.login_first"),
             reply_markup=main_menu(authenticated=False),
         )
         return
     try:
-        data = await asyncio.to_thread(get_api(message.from_user.id).get_weight)
+        data = await asyncio.to_thread(get_api(user_id).get_weight)
     except NosiFitAPIError as exc:
         await message.answer(str(exc))
         return

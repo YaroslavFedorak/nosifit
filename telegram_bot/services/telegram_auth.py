@@ -43,6 +43,18 @@ class TelegramUser:
         }
 
 
+def _signed_in(base_url: str, session: requests.Session, response: requests.Response) -> NosiFitAPI:
+    try:
+        user_id = response.json().get("user_id")
+    except (ValueError, AttributeError):
+        user_id = None
+    return NosiFitAPI(
+        base_url=base_url,
+        session=session,
+        user_id=user_id if isinstance(user_id, int) and not isinstance(user_id, bool) else None,
+    )
+
+
 class TelegramAuthClient:
     def __init__(self, base_url: str, secret: str, timeout: float = 15):
         self.base_url = base_url.rstrip("/")
@@ -77,8 +89,8 @@ class TelegramAuthClient:
     def login(self, user: TelegramUser) -> NosiFitAPI:
         """A NosiFit session for this Telegram user (TelegramAuthError not_linked)."""
         session = requests.Session()
-        self._post(session, "/api/telegram/login", user.payload())
-        return NosiFitAPI(base_url=self.base_url, session=session)
+        response = self._post(session, "/api/telegram/login", user.payload())
+        return _signed_in(self.base_url, session, response)
 
     def restore(self, telegram_user_id: int) -> NosiFitAPI:
         """Reopen the session of a linked user after the bot lost it (restart).
@@ -86,12 +98,12 @@ class TelegramAuthClient:
         TelegramAuthError not_linked / logged_out when there is none to restore.
         """
         session = requests.Session()
-        self._post(
+        response = self._post(
             session,
             "/api/telegram/login",
             {"telegram_user_id": telegram_user_id, "restore": True},
         )
-        return NosiFitAPI(base_url=self.base_url, session=session)
+        return _signed_in(self.base_url, session, response)
 
     def logout(self, telegram_user_id: int) -> None:
         self._post(
@@ -105,12 +117,12 @@ class TelegramAuthClient:
 
     def register_verify(self, user: TelegramUser, email: str, code: str) -> NosiFitAPI:
         session = requests.Session()
-        self._post(
+        response = self._post(
             session,
             "/api/telegram/register/verify",
             {**user.payload(), "email": email, "code": code},
         )
-        return NosiFitAPI(base_url=self.base_url, session=session)
+        return _signed_in(self.base_url, session, response)
 
     def link_url(self, user: TelegramUser, via: str = "password") -> tuple[str, int]:
         """One-time link; ``via`` (google / github / password) picks the

@@ -128,7 +128,8 @@ def telegram_login(telegram_user_id, data):
     tg.record_bot_login(identity, username, restore=restore)
 
     start_telegram_session(user, identity)
-    return jsonify({"status": "ok", "username": user.username})
+    # The bot needs the id for the recovery API, whose paths carry it.
+    return jsonify({"status": "ok", "username": user.username, "user_id": user.id})
 
 
 @telegram_api_bp.post("/logout")
@@ -233,7 +234,7 @@ def register_verify(telegram_user_id, data):
     user, identity = created
 
     start_telegram_session(user, identity)
-    response = jsonify({"status": "created", "username": user.username})
+    response = jsonify({"status": "created", "username": user.username, "user_id": user.id})
     response.status_code = 201
     return response
 

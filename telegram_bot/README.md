@@ -166,12 +166,54 @@ web app in the same language.
 
 ## Menu
 
-The home keyboard has one button per mode: **🏋️ Тренування**,
-**🍽 Харчування** and **🚪 Вийти**. Each mode switches the keyboard to its
-own buttons with **🏠 Головна** to go back:
+The home keyboard has three buttons:
 
-- 🏋️ Тренування: ➕ Додати вправу · 📋 Моє тренування
-- 🍽 Харчування: 🍽 Їжа · 💧 Вода · ⚖️ Вага
+- **📅 Сьогодні**: the Today card (below).
+- **➕ Записати**: what to log now: food, sleep, water, weight, an exercise.
+- **⋯ Ще**: the full nutrition section (meals, own products, dishes), today's
+  workout, language and log out.
+
+The older mode keyboards (🏋️ Тренування, 🍽 Харчування with 🏠 Головна) still
+answer, so buttons left in a chat from before keep working.
+
+## Quick entries
+
+`handlers/quick.py`.
+
+- **Food in three taps.** The meal comes from the time of day (or from the
+  card's button), recent and favourite foods are buttons, an amount is a
+  button, and the entry is saved at once with **Скасувати** instead of a
+  review step. Typing a name searches; a photo of a barcode goes to the
+  barcode flow.
+- **Sleep in two taps.** A bedtime, then a wake time; any other time can be
+  typed. The night is the one that ended most recently at the wake time.
+
+After an entry the chat's card is redrawn at once.
+
+## Today card
+
+`/start`, **🏠 Головна**, **📅 Сьогодні** and `/today` send one message with an
+HTML widget (Bot API 10.4, `telegram_bot/widgets/`). It is the website's Today
+screen in small: the next step, food, water, sleep and workout as recorded
+(nothing recorded is left out, never shown as zero), up to six habits and the
+calories of the last 7 days. Water (+250 / +500 ml) and habit ticks are one tap
+inside the card. The first button under it is the step's own (log sleep in the
+morning, add the meal of the hour); the others add an exercise or the weight.
+A new card replaces the chat's previous one, so one live card stays.
+
+- Telegram allows 32 KB of HTML and 4 KB after zlib. `render.py` strips
+  comments and indentation and refuses a card over the limit; a test checks
+  every language.
+- The day travels as the message's chat state (at most 1024 bytes, built by
+  `state.py`), never inside the HTML. Each time the card comes on screen it
+  asks for fresh state, so entries made on the website show up without
+  resending it.
+- Taps arrive as `widget_query` updates, which aiogram 3.31 does not route:
+  `handlers/today.py` answers them in an outer middleware, and
+  `services/widget_api.py` adds the three methods aiogram lacks.
+- Bot sessions may read today's habits and sleep, tick habits and log a night
+  (`/api/recovery/habits/user/`, `/habits/logs`, `/snapshot/`, `/sleep`);
+  the rest of the recovery API stays with the website.
 
 ## Training
 

@@ -4,6 +4,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import ChatMemberUpdated, Message
 
 from telegram_bot.handlers.auth import choose_method
+from telegram_bot.handlers.today import send_today
 from telegram_bot.i18n import t
 from telegram_bot.keyboards.auth import auth_menu
 from telegram_bot.keyboards.main import HOME, button, main_menu
@@ -34,6 +35,7 @@ async def start(message: Message, state: FSMContext, command: CommandObject) -> 
         t("start.welcome") + "\n\n" + t("start.choose_add"),
         reply_markup=main_menu(authenticated=True),
     )
+    await send_today(message.bot, message.chat.id, message.from_user.id)
 
 
 @router.message(button(HOME))
@@ -45,6 +47,8 @@ async def home(message: Message, state: FSMContext) -> None:
         t("start.home") if authenticated else t("start.welcome"),
         reply_markup=main_menu(authenticated=authenticated),
     )
+    if authenticated:
+        await send_today(message.bot, message.chat.id, message.from_user.id)
 
 
 @router.message(Command("help"))

@@ -1,0 +1,149 @@
+<!--
+The Today widget of the bot (Telegram Bot API widgets). Telegram allows 32 KB of
+HTML and 4 KB after zlib, so render.py strips these comments and the
+indentation before sending. {{key}} marks are the user's language, filled in by
+render.py. The day itself arrives as chat state (state.py), never in the HTML.
+-->
+<style>
+/* Hallmark · shape: app screen · genre: atmospheric · theme: brand (NosiFit tokens) · scope: app · v2.0.0 */
+/* Hallmark · pre-emit critique: P4 H4 E4 S4 R4 V4 · weakest: S, a list of rows could be any tracker; the next step leads and every quick action is one tap inside the card */
+/* Hallmark · answered fonts · telegram widget sandbox · widgets render generic families only, so the site's Inter becomes system-ui */
+:root {
+  --paper: #0b0e14;
+  --paper-2: #13171e;
+  --paper-3: #1c2128;
+  --paper-4: #272d36;
+  --rule: #272c32;
+  --edge: #646972;
+  --ink: #eceff3;
+  --ink-2: #c3c8cf;
+  --muted: #969ca6;
+  --nutrition: #b098e7;
+  --recovery: #6dc5ca;
+  --recovery-ink: #001b1c;
+  --training: #eac25a;
+  --water: #6dabdf;
+  --error: #f0857a;
+  --font: system-ui, sans-serif;
+  --sm: 14px;
+  --xs: 12px;
+  --r-card: 12px;
+  --r-ctl: 8px;
+  --dur: 120ms;
+}
+* { box-sizing: border-box; margin: 0; }
+html, body { overflow-x: clip; }
+body { background: var(--paper); color: var(--ink); font: 15px/1.45 var(--font); }
+#a { padding: 16px 16px 12px; }
+h2 { font-size: 19px; line-height: 1.25; font-weight: 600; text-wrap: balance; overflow-wrap: break-word; min-width: 0; }
+.g { margin-top: 12px; background: var(--paper-2); border-radius: var(--r-card); }
+.r { display: flex; align-items: center; gap: 12px; min-height: 48px; padding: 8px 12px; }
+.r + .r { border-top: 1px solid var(--rule); }
+.k { flex: 1; min-width: 0; font-weight: 500; }
+.v { color: var(--ink-2); font-size: var(--sm); font-variant-numeric: tabular-nums; text-align: right; }
+.v small { display: block; color: var(--muted); font-size: var(--sm); }
+.k i { display: block; height: 4px; margin-top: 8px; border-radius: 2px; background: var(--paper-4); overflow: hidden; }
+.k i b { display: block; height: 4px; background: var(--c); transform-origin: left; }
+[data-t=n] { --c: var(--nutrition); }
+[data-t=w] { --c: var(--water); }
+[data-t=s], [data-t=h] { --c: var(--recovery); }
+[data-t=t] { --c: var(--training); }
+button { font: 500 var(--sm)/1 var(--font); color: var(--ink); background: var(--paper-3); border: 1px solid var(--paper-4); border-radius: var(--r-ctl); min-height: 40px; padding: 0 12px; cursor: pointer; transition: transform var(--dur), opacity var(--dur), background-color var(--dur); }
+button:hover { background: var(--paper-4); }
+button:active { transform: scale(.97); }
+button:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+button:disabled { opacity: .5; }
+.p { opacity: .6; }
+.hd { display: flex; justify-content: space-between; align-items: baseline; margin-top: 16px; font-weight: 600; }
+.hd span { color: var(--muted); font-weight: 400; font-size: var(--sm); }
+.hs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-top: 8px; }
+.hs button { display: flex; align-items: center; gap: 8px; min-height: 44px; padding: 4px 12px; text-align: left; font-size: 13px; line-height: 1.25; }
+.hs button span { flex: 1; min-width: 0; max-height: 2.5em; overflow: hidden; overflow-wrap: break-word; }
+.hs button u { flex: none; width: 18px; height: 18px; border: 1.5px solid var(--edge); border-radius: 5px; text-decoration: none; }
+.hs .d { color: var(--muted); }
+.hs .d u { background: var(--c); border-color: var(--c); }
+.hs .d u::after { content: ""; display: block; width: 5px; height: 9px; margin: 0 auto; border: solid var(--recovery-ink); border-width: 0 2px 2px 0; transform: translateY(1px) rotate(45deg); }
+.m { margin-top: 8px; color: var(--muted); font-size: var(--sm); }
+.wk { display: flex; gap: 8px; align-items: flex-end; margin-top: 12px; }
+.wk div { flex: 1; text-align: center; color: var(--muted); font-size: var(--xs); }
+.wk i { display: block; width: 100%; max-width: 22px; height: 40px; margin: 0 auto 4px; border-radius: 4px; background: var(--paper-4); transform-origin: bottom; }
+.wk .o i { background: none; border-bottom: 2px solid var(--rule); border-radius: 0; }
+.wk .c { color: var(--ink); }
+.wk .c i { background: var(--nutrition); }
+#e { margin-top: 12px; color: var(--error); font-size: var(--sm); }
+@media (prefers-reduced-motion: reduce) { button { transition: none; } button:active { transform: none; } }
+</style>
+<div id="a">
+  <h2 id="n">{{title}}</h2>
+  <div id="b"></div>
+  <p id="e" hidden>{{error}}</p>
+</div>
+<script>
+const W = window.TelegramWidget, L = {{labels}};
+let S = null, busy = 0;
+const $ = (i) => document.getElementById(i);
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => "&#" + c.charCodeAt(0) + ";");
+const bar = (x) => x == null ? "" : `<i><b style="transform:scaleX(${Math.min(1, Math.max(0, x))})"></b></i>`;
+const row = (t, k, v, x, tail = "") => `<div class="r" data-t="${t}"><div class="k">${esc(k)}${bar(x)}</div>${v}${tail}</div>`;
+
+// Telegram clips a widget at 600px. Shorten the habit list until the card fits.
+function draw() {
+  if (!S) return;
+  const all = S.h || [];
+  let n = all.length;
+  do {
+    const more = (S.hn || 0) - n;
+    paint(Object.assign({}, S, { h: all.slice(0, n), hm: more > 0 ? L.m.replace("{n}", more) : "" }));
+  } while (document.body.scrollHeight > 590 && n-- > 2);
+}
+
+function paint(s) {
+  $("n").textContent = s.n;
+  let h = "";
+  if (s.f) h += row("n", L.f, `<span class="v">${esc(s.f[0])}</span>`, s.f[1]);
+  const w = s.w || ["", null];
+  h += row("w", L.w, w[0] ? `<span class="v">${esc(w[0])}</span>` : "", w[1],
+    `<button onclick="ask('w250',this)">+250</button><button onclick="ask('w500',this)">+500</button>`);
+  if (s.s) h += row("s", L.s, `<span class="v">${esc(s.s[0])}${s.s[1] ? `<small>${esc(s.s[1])}</small>` : ""}</span>`);
+  if (s.t) h += row("t", L.t, `<span class="v">${esc(s.t)}</span>`);
+  h = `<div class="g">${h}</div>`;
+  if (s.h && s.h.length) {
+    h += `<p class="hd" data-t="h">${esc(L.h)}<span>${esc(s.hc)}</span></p><div class="hs" data-t="h">` +
+      s.h.map((x) => `<button class="${x[2] ? "d" : ""}" onclick="ask('h${x[0]}',this)"><u></u><span>${esc(x[1])}</span></button>`).join("") +
+      "</div>" + (s.hm ? `<p class="m">${esc(s.hm)}</p>` : "");
+  }
+  if (s.k) {
+    h += `<p class="hd">${esc(L.k)}<span>${esc(s.ka || "")}</span></p><div class="wk">` +
+      s.k.map((x, i) => `<div class="${x[1] == null ? "o" : ""}${i == 6 ? " c" : ""}"><i${x[1] == null ? "" : ` style="transform:scaleY(${Math.max(0.06, x[1])})"`}></i>${esc(x[0])}</div>`).join("") +
+      "</div>";
+  }
+  $("b").innerHTML = h;
+}
+
+function take(d) {
+  try {
+    const s = typeof d == "string" ? JSON.parse(d) : null;
+    if (s && (!S || s.r >= S.r)) { S = s; draw(); }
+  } catch (e) {}
+}
+
+function ask(q, el) {
+  if (!W || busy) return;
+  busy = 1;
+  if (el) { el.classList.add("p"); W.HapticFeedback && W.HapticFeedback.selectionChanged(); }
+  W.request(q).then((a) => {
+    busy = 0; el && el.classList.remove("p");
+    $("e").hidden = !el || !!a.result;
+    take(a.result);
+  }, () => {
+    busy = 0; if (el) { el.classList.remove("p"); $("e").hidden = false; }
+  });
+}
+
+if (W) {
+  W.onEvent("chatDataChanged", () => take(W.chatData));
+  W.onEvent("activated", () => ask("r"));
+  take(W.chatData);
+  ask("r");
+}
+</script>

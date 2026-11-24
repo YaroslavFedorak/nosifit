@@ -355,7 +355,7 @@ def test_modes_and_home(tg, catalog):
     assert reply_keyboard(tg) == [[FOOD, WATER, WEIGHT], [HOME]]
     tg.message(ADD_EXERCISE)
     tg.message(HOME)
-    assert reply_keyboard(tg) == [[TRAINING, NUTRITION], ["🌐 Мова", "🚪 Вийти"]]
+    assert reply_keyboard(tg) == [["📅 Сьогодні", "➕ Записати", "⋯ Ще"]]
     tg.message("жим")
     assert "Оберіть вправу" not in text(tg)
 

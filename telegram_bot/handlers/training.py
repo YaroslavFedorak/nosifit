@@ -152,9 +152,14 @@ async def _show_workout(target, user_id: int) -> None:
 
 @router.message(button(TRAINING))
 async def training(message: Message, state: FSMContext) -> None:
+    await show_training(message, state, message.from_user.id)
+
+
+async def show_training(message: Message, state: FSMContext, user_id: int) -> None:
+    """The training mode with today's workout. ``message`` is where to answer."""
     await state.clear()
     try:
-        _, items = await _today(message.from_user.id)
+        _, items = await _today(user_id)
     except NosiFitAPIError as exc:
         await message.answer(_human(exc, t("tr.load_failed")))
         return
@@ -172,11 +177,16 @@ async def my_workout(message: Message, state: FSMContext) -> None:
 
 @router.message(button(ADD_EXERCISE))
 async def add_exercise(message: Message, state: FSMContext) -> None:
+    await start_add_exercise(message, state, message.from_user.id)
+
+
+async def start_add_exercise(message: Message, state: FSMContext, user_id: int) -> None:
+    """Ask for an exercise. ``message`` is where to answer: a callback passes the bot's own."""
     await state.clear()
     await state.set_state(TrainingStates.searching)
     try:
         recent = await asyncio.to_thread(
-            _api(message.from_user.id).get_recent_exercises, i18n.current_language(), RECENT_LIMIT
+            _api(user_id).get_recent_exercises, i18n.current_language(), RECENT_LIMIT
         )
     except NosiFitAPIError:
         recent = []

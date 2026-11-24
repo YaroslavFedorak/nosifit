@@ -77,13 +77,15 @@ def fresh_dispatcher():
         consent,
         language,
         nutrition,
+        quick,
         start,
+        today,
         training,
         water,
         weight,
     )
 
-    for module in (auth, common, consent, language, nutrition, start, training, water, weight):
+    for module in (auth, common, consent, language, nutrition, quick, start, today, training, water, weight):
         module.router._parent_router = None
     return create_dispatcher()
 
@@ -642,3 +644,37 @@ def test_failed_logout_call_still_logs_out_locally(bot, backend, bot_auth, monke
 
     assert not runtime.is_authenticated(111)
     assert "Ви вийшли" in " ".join(bot.texts())
+
+
+# --- The Today card ----------------------------------------------------------------------
+
+
+def test_start_sends_the_today_card_after_the_menu(bot, backend, monkeypatch):
+    from telegram_bot.handlers import today
+    from telegram_bot.services.widget_api import SendWidget
+
+    monkeypatch.setattr(today, "day_state", lambda api: '{"r":1,"n":"x"}')
+    bot.callback("auth:login")
+
+    bot.message("/start")
+
+    card = [c for c in bot.session.calls if isinstance(c, SendWidget)][-1]
+    assert card.chat_id == ALICE.id and card.allow_queries and card.chat_data == '{"r":1,"n":"x"}'
+    assert bot.sent()[-1].reply_markup == main_menu(authenticated=True)
+
+
+def test_widget_queries_reach_the_card_through_the_dispatcher(bot, monkeypatch):
+    from telegram_bot.handlers import today
+
+    seen = []
+
+    async def fake_answer(bot_, query):
+        seen.append(query["data"])
+
+    monkeypatch.setattr(today, "answer_widget_query", fake_answer)
+    query = {"id": "q", "from": {"id": ALICE.id, "is_bot": False, "first_name": "A"},
+             "chat": {"id": ALICE.id, "type": "private"}, "message_id": 5, "chat_instance": "c", "data": "w250"}
+
+    bot.feed(Update(update_id=999, widget_query=query))
+
+    assert seen == ["w250"]

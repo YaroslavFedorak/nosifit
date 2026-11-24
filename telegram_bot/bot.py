@@ -16,7 +16,9 @@ from telegram_bot.handlers import (
     consent,
     language,
     nutrition,
+    quick,
     start,
+    today,
     training,
     water,
     weight,
@@ -36,6 +38,8 @@ WEBHOOK_PATH = "/telegram/webhook"
 
 def create_dispatcher() -> Dispatcher:
     dispatcher = Dispatcher(storage=MemoryStorage())
+    # Taps in the Today card: an update type aiogram does not route yet.
+    dispatcher.update.outer_middleware(today.WidgetQueryMiddleware())
     # Groups, channels and bots are ignored entirely (see telegram_bot.security).
     dispatcher.message.filter(is_private_human)
     dispatcher.callback_query.filter(is_private_human)
@@ -47,6 +51,9 @@ def create_dispatcher() -> Dispatcher:
     dispatcher.include_router(auth.router)
     dispatcher.include_router(consent.router)
     dispatcher.include_router(start.router)
+    dispatcher.include_router(today.router)
+    # Before nutrition and training: its search and time states take typed text.
+    dispatcher.include_router(quick.router)
     # Before training/nutrition: their search states take any text.
     dispatcher.include_router(language.router)
     # Before nutrition: its search states take any text, the training
@@ -57,6 +64,10 @@ def create_dispatcher() -> Dispatcher:
     dispatcher.include_router(weight.router)
     dispatcher.include_router(common.router)
     return dispatcher
+
+
+def allowed_updates(dispatcher: Dispatcher) -> list[str]:
+    return [*dispatcher.resolve_used_update_types(), "widget_query"]
 
 
 def create_webhook_app(bot: Bot, dispatcher: Dispatcher, config: TelegramConfig) -> web.Application:
@@ -78,7 +89,7 @@ async def run_webhook(bot: Bot, dispatcher: Dispatcher, config: TelegramConfig) 
     await bot.set_webhook(
         f"{config.webhook_url}{WEBHOOK_PATH}",
         secret_token=config.webhook_secret,
-        allowed_updates=dispatcher.resolve_used_update_types(),
+        allowed_updates=allowed_updates(dispatcher),
         drop_pending_updates=True,
     )
     runner = web.AppRunner(create_webhook_app(bot, dispatcher, config))
@@ -103,7 +114,7 @@ async def main() -> None:
             await run_webhook(bot, dispatcher, config)
         else:
             await bot.delete_webhook(drop_pending_updates=True)
-            await dispatcher.start_polling(bot)
+            await dispatcher.start_polling(bot, allowed_updates=allowed_updates(dispatcher))
     finally:
         await bot.session.close()
 

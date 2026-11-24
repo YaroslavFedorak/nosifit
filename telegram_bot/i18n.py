@@ -156,6 +156,16 @@ def set_language(user_id: int, language: str) -> None:
     _current.set(language)
 
 
+def use_language(user_id: int, telegram_code: str | None = None):
+    """Set the language for an update aiogram does not route (a widget query).
+    Returns the token for ``reset_language``."""
+    return _current.set(language_of(user_id, telegram_code))
+
+
+def reset_language(token) -> None:
+    _current.reset(token)
+
+
 class LanguageMiddleware(BaseMiddleware):
     """Sets the language of the update before any handler or filter runs."""
 
