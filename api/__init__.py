@@ -14,6 +14,7 @@ def api_blueprints():
     from api.routes.equipment import equipment_api
     from api.routes.i18n import i18n_bp
     from api.routes.injuries import injury_api
+    from api.routes.mobile import mobile_auth_api
     from api.routes.nutrition import nutrition_api
     from api.routes.onboarding import onboarding_api
     from api.routes.recovery import recovery_bp
@@ -22,6 +23,7 @@ def api_blueprints():
 
     return (
         telegram_api_bp,
+        mobile_auth_api,
         i18n_bp,
         dashboard_api_bp,
         training_dashboard_api_bp,

@@ -55,6 +55,7 @@ TAGS = {
     "onboarding_api": "onboarding",
     "recovery": "recovery",
     "telegram_api": "telegram",
+    "mobile_auth_api": "mobile",
     "training_api": "training",
     "consent_api": "consent",
 }
@@ -73,6 +74,7 @@ SCHEMAS = {
         details={"type": "object", "description": "Extra data, where an endpoint has some."},
     ),
     "Status": STATUS,
+    "MobileUser": obj(["id", "name", "email"], id=INT, name=STR, email=STR),
     "MealItem": obj(
         ["id", "name", "calories", "protein", "fat", "carbs"],
         id=INT,
@@ -423,6 +425,41 @@ OPERATIONS = {
         "summary": "The user's recovery snapshot of a day (the URL id must be the signed-in user).",
         "response": obj(["snapshot"], snapshot=nullable(ANY_OBJECT)),
         "errors": [400, 404],
+    },
+    # Mobile apps
+    "mobile_auth_api.login": {
+        "summary": "Sign the Android or iOS app in with email and password; answers with a bearer token.",
+        "auth": "public",
+        "request": obj(
+            ["email", "password", "platform"],
+            email=STR,
+            password=STR,
+            platform={"type": "string", "enum": ["android", "ios"]},
+            device_name=STR,
+        ),
+        "response": obj(
+            ["token", "token_type", "expires_at", "user", "consent_required", "features"],
+            token=STR,
+            token_type={"type": "string", "enum": ["Bearer"]},
+            expires_at=STR,
+            user=ref("MobileUser"),
+            consent_required=BOOL,
+            features=obj(["plan_generation"], plan_generation=BOOL),
+        ),
+        "errors": [400, 401, 429],
+    },
+    "mobile_auth_api.session_info": {
+        "summary": "The account the token (or session) belongs to, and whether consent is still needed.",
+        "response": obj(
+            ["user", "consent_required", "features"],
+            user=ref("MobileUser"),
+            consent_required=BOOL,
+            features=obj(["plan_generation"], plan_generation=BOOL),
+        ),
+    },
+    "mobile_auth_api.logout": {
+        "summary": "Revoke the bearer token this request was made with.",
+        "response": ref("Status"),
     },
     # Telegram bot
     "telegram_api.telegram_login": {

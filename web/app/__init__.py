@@ -86,6 +86,7 @@ def create_app(config=None, *, pages=True):
     from backend.app.models.verification_code import VerificationCode
     from backend.app.models.oauth_account import OAuthAccount
     from backend.app.models.telegram import TelegramIdentity, TelegramLinkToken
+    from backend.app.models.mobile_token import MobileToken
     from backend.app.models.recovery.habit import RecoveryHabit
     from backend.app.models.recovery.user_habit import UserRecoveryHabit
     from backend.app.models.recovery.habit_log import RecoveryHabitLog
@@ -102,6 +103,11 @@ def create_app(config=None, *, pages=True):
         if user is None or not fingerprint_matches(user, fingerprint):
             return None
         return user
+
+    # The mobile apps send a bearer token instead of a session cookie.
+    from auth.mobile_token import load_user_from_request
+
+    login_manager.request_loader(load_user_from_request)
 
     # Telegram sessions: limited to the bot's API, revoked with the identity.
     from auth.telegram_session import enforce_telegram_session

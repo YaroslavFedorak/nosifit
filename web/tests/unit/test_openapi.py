@@ -294,5 +294,12 @@ def test_documented_responses_match_real_ones(app, client, user, spec, monkeypat
     bot_call(check, "telegram_api.telegram_login", {"telegram_user_id": 503, "username": "alice_tg"})
     bot_call(check, "telegram_api.telegram_logout", {"telegram_user_id": 503})
 
+    client.post("/auth/logout")
+    signed_in = check.call("mobile_auth_api.login", body={"email": user.email, "password": "password123",
+                                                          "platform": "android", "device_name": "Pixel"})
+    bearer = {"Authorization": f"Bearer {signed_in['token']}"}
+    check.call("mobile_auth_api.session_info", headers=bearer)
+    check.call("mobile_auth_api.logout", headers=bearer)
+
     documented = {op for op, doc in OPERATIONS.items() if "response" in doc}
     assert check.checked == documented

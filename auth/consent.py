@@ -31,6 +31,7 @@ OPEN_BLUEPRINTS = frozenset(
         "complete_profile",
         "telegram_link",
         "telegram_api",  # bot-signed sign-in endpoints
+        "mobile_auth_api",  # mobile sign-in, sign-out, session (says consent_required)
         "root",
         "public",
         "info",

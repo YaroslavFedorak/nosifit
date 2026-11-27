@@ -70,8 +70,8 @@ def delete_user_account(user) -> None:
 # Kept when consent is withdrawn: the account itself (contract) and the ways
 # to sign in, so the user can come back or delete the account. Everything
 # else exists only because of the consent and is erased.
-_KEPT_RELATIONSHIPS = {"oauth_accounts", "telegram_identity"}
-_KEPT_TABLES = {"users", "oauth_accounts", "telegram_identities", "user_profiles"}
+_KEPT_RELATIONSHIPS = {"oauth_accounts", "telegram_identity", "mobile_tokens"}
+_KEPT_TABLES = {"users", "oauth_accounts", "telegram_identities", "mobile_tokens", "user_profiles"}
 _USER_HEALTH_COLUMNS = (
     "age",
     "sex",

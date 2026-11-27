@@ -7,7 +7,6 @@
 - JSON bodies with NaN / Infinity are rejected (they pass float range checks).
 """
 
-import ipaddress
 import json
 import math
 import secrets
@@ -22,6 +21,7 @@ from api.errors import error_response, http_error_response, is_api_request
 
 # The limiter lives in core so services use it without importing the web
 # layer; re-exported here for the routes that already import it from here.
+from backend.app.utils.client_ip import client_ip  # noqa: F401
 from backend.app.utils.rate_limit import (  # noqa: F401
     KEY_PREFIX,
     RateLimitUnavailable,
@@ -49,25 +49,6 @@ def check_telegram_config(config) -> None:
             f"TELEGRAM_BOT_API_SECRET must be at least {MIN_SECRET_LENGTH} characters "
             "(python -c \"import secrets; print(secrets.token_hex(32))\")"
         )
-
-
-def client_ip() -> str:
-    """Rate-limit identity of the client.
-
-    ProxyFix already replaced remote_addr with the proxy-reported client.
-    IPv6 is grouped by /64: one customer usually gets a whole /64, so
-    counting single addresses would let them rotate through 2**64 of them.
-    """
-    raw = request.remote_addr or "unknown"
-    try:
-        address = ipaddress.ip_address(raw)
-    except ValueError:
-        return raw
-    if isinstance(address, ipaddress.IPv6Address):
-        if address.ipv4_mapped:
-            return str(address.ipv4_mapped)
-        return str(ipaddress.ip_network(f"{address}/64", strict=False))
-    return str(address)
 
 
 def too_many_requests(message="Too many requests. Try again later."):
