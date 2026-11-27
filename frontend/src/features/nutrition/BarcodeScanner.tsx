@@ -11,6 +11,7 @@ import { Button } from "../../ui/Button";
 import { Spinner } from "../../ui/Feedback";
 import { TextField } from "../../ui/Field";
 import { getDetector } from "./barcodeDetector";
+import { brand } from "../../brand";
 
 const SCAN_INTERVAL_MS = 200;
 
@@ -133,7 +134,7 @@ export function BarcodeScanner({ onProduct, onCreate }: { onProduct: (product: P
     <div className="space-y-4">
       {camera !== "off" && (
         <div className="relative aspect-[4/3] overflow-hidden rounded-card bg-paper">
-          <video ref={video} muted playsInline poster="/static/img/brand/nosifit-mark-on-dark.svg" className="h-full w-full object-cover" aria-label={t("scan.camera")} />
+          <video ref={video} muted playsInline poster={brand.mark} className="h-full w-full object-cover" aria-label={t("scan.camera")} />
           {camera === "scanning" ? (
             <span className="pointer-events-none absolute inset-x-8 top-1/2 h-px bg-accent" aria-hidden="true" />
           ) : (

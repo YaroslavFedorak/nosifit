@@ -47,6 +47,8 @@ build/
 node_modules/
 *.js.map
 *.d.ts
+# Hand-written type declarations of the React interface are sources.
+!frontend/src/**/*.d.ts
 tsconfig.tsbuildinfo
 
 # --- REDIS ---

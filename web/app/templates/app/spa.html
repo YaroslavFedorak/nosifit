@@ -13,6 +13,17 @@
       rel="stylesheet"
       href="{{ url_for('static', filename='app/assets/app.css') }}"
     />
+    {# A module script runs only after the document is parsed (it reads the
+       bootstrap data below), so it can be requested first, from the head. #}
+    <script
+      type="module"
+      src="{{ url_for('static', filename='app/assets/app.js') }}"
+    ></script>
+    {# The rest of the code this page runs, requested now together with
+       app.js instead of one file after another (web/app/routes/spa/bundle.py). #}
+    {% for file in chunks %}
+    <link rel="modulepreload" href="{{ url_for('static', filename='app/' ~ file) }}" />
+    {% endfor %}
   </head>
   <body>
     <div id="root"></div>
@@ -20,9 +31,5 @@
     <script id="nosi-bootstrap" type="application/json">
       {{ bootstrap|tojson }}
     </script>
-    <script
-      type="module"
-      src="{{ url_for('static', filename='app/assets/app.js') }}"
-    ></script>
   </body>
 </html>

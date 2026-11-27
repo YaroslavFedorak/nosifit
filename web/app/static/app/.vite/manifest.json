@@ -1,0 +1,262 @@
+{
+  "_Calendar.js": {
+    "file": "assets/Calendar.js",
+    "name": "Calendar",
+    "imports": [
+      "_brand.js",
+      "src/main.tsx"
+    ]
+  },
+  "_Choice.js": {
+    "file": "assets/Choice.js",
+    "name": "Choice",
+    "imports": [
+      "_brand.js"
+    ]
+  },
+  "_Chrome.js": {
+    "file": "assets/Chrome.js",
+    "name": "Chrome",
+    "imports": [
+      "_brand.js"
+    ]
+  },
+  "_HabitList.js": {
+    "file": "assets/HabitList.js",
+    "name": "HabitList",
+    "imports": [
+      "_brand.js",
+      "_Choice.js",
+      "src/main.tsx"
+    ]
+  },
+  "_Page.js": {
+    "file": "assets/Page.js",
+    "name": "Page",
+    "imports": [
+      "_brand.js",
+      "src/main.tsx",
+      "_useTitle.js"
+    ]
+  },
+  "_brand.js": {
+    "file": "assets/brand.js",
+    "name": "brand",
+    "dynamicImports": [
+      "src/i18n/en.ts",
+      "src/i18n/uk.ts",
+      "src/i18n/pl.ts",
+      "src/i18n/ru.ts"
+    ]
+  },
+  "_search.js": {
+    "file": "assets/search.js",
+    "name": "search",
+    "imports": [
+      "_brand.js"
+    ]
+  },
+  "_units.js": {
+    "file": "assets/units.js",
+    "name": "units",
+    "imports": [
+      "_brand.js"
+    ]
+  },
+  "_useDebounced.js": {
+    "file": "assets/useDebounced.js",
+    "name": "useDebounced",
+    "imports": [
+      "_brand.js"
+    ]
+  },
+  "_useTitle.js": {
+    "file": "assets/useTitle.js",
+    "name": "useTitle",
+    "imports": [
+      "_brand.js"
+    ]
+  },
+  "node_modules/@fontsource-variable/inter/files/inter-cyrillic-opsz-normal.woff2": {
+    "file": "assets/inter-cyrillic-opsz-normal.woff2",
+    "src": "node_modules/@fontsource-variable/inter/files/inter-cyrillic-opsz-normal.woff2"
+  },
+  "node_modules/@fontsource-variable/inter/files/inter-latin-ext-opsz-normal.woff2": {
+    "file": "assets/inter-latin-ext-opsz-normal.woff2",
+    "src": "node_modules/@fontsource-variable/inter/files/inter-latin-ext-opsz-normal.woff2"
+  },
+  "node_modules/@fontsource-variable/inter/files/inter-latin-opsz-normal.woff2": {
+    "file": "assets/inter-latin-opsz-normal.woff2",
+    "src": "node_modules/@fontsource-variable/inter/files/inter-latin-opsz-normal.woff2"
+  },
+  "src/features/nutrition/FoodPicker.tsx": {
+    "file": "assets/FoodPicker.js",
+    "name": "FoodPicker",
+    "src": "src/features/nutrition/FoodPicker.tsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "_brand.js",
+      "_Choice.js",
+      "_units.js",
+      "_search.js",
+      "src/main.tsx",
+      "_useDebounced.js"
+    ]
+  },
+  "src/i18n/en.ts": {
+    "file": "assets/en.js",
+    "name": "en",
+    "src": "src/i18n/en.ts",
+    "isDynamicEntry": true
+  },
+  "src/i18n/pl.ts": {
+    "file": "assets/pl.js",
+    "name": "pl",
+    "src": "src/i18n/pl.ts",
+    "isDynamicEntry": true
+  },
+  "src/i18n/ru.ts": {
+    "file": "assets/ru.js",
+    "name": "ru",
+    "src": "src/i18n/ru.ts",
+    "isDynamicEntry": true
+  },
+  "src/i18n/uk.ts": {
+    "file": "assets/uk.js",
+    "name": "uk",
+    "src": "src/i18n/uk.ts",
+    "isDynamicEntry": true
+  },
+  "src/main.tsx": {
+    "file": "assets/app.js",
+    "name": "main",
+    "src": "src/main.tsx",
+    "isEntry": true,
+    "imports": [
+      "_brand.js"
+    ],
+    "dynamicImports": [
+      "src/features/nutrition/FoodPicker.tsx",
+      "src/pages/Dashboard.tsx",
+      "src/pages/Nutrition.tsx",
+      "src/pages/Training.tsx",
+      "src/pages/Recovery.tsx",
+      "src/pages/Profile.tsx",
+      "src/pages/Settings.tsx",
+      "src/pages/Landing.tsx",
+      "src/pages/HowItWorks.tsx"
+    ],
+    "assets": [
+      "assets/inter-cyrillic-opsz-normal.woff2",
+      "assets/inter-latin-ext-opsz-normal.woff2",
+      "assets/inter-latin-opsz-normal.woff2"
+    ]
+  },
+  "src/pages/Dashboard.tsx": {
+    "file": "assets/Dashboard.js",
+    "name": "Dashboard",
+    "src": "src/pages/Dashboard.tsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "_brand.js",
+      "_Calendar.js",
+      "src/main.tsx",
+      "_Page.js",
+      "_HabitList.js"
+    ]
+  },
+  "src/pages/HowItWorks.tsx": {
+    "file": "assets/HowItWorks.js",
+    "name": "HowItWorks",
+    "src": "src/pages/HowItWorks.tsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "_brand.js",
+      "_useTitle.js",
+      "_Chrome.js"
+    ]
+  },
+  "src/pages/Landing.tsx": {
+    "file": "assets/Landing.js",
+    "name": "Landing",
+    "src": "src/pages/Landing.tsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "_brand.js",
+      "src/main.tsx",
+      "_useTitle.js",
+      "_Chrome.js"
+    ]
+  },
+  "src/pages/Nutrition.tsx": {
+    "file": "assets/Nutrition.js",
+    "name": "Nutrition",
+    "src": "src/pages/Nutrition.tsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "_brand.js",
+      "_Calendar.js",
+      "_units.js",
+      "_search.js",
+      "src/main.tsx",
+      "_Page.js"
+    ]
+  },
+  "src/pages/Profile.tsx": {
+    "file": "assets/Profile.js",
+    "name": "Profile",
+    "src": "src/pages/Profile.tsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "_brand.js",
+      "_Choice.js",
+      "src/main.tsx",
+      "_Page.js"
+    ]
+  },
+  "src/pages/Recovery.tsx": {
+    "file": "assets/Recovery.js",
+    "name": "Recovery",
+    "src": "src/pages/Recovery.tsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "_brand.js",
+      "_Calendar.js",
+      "_Choice.js",
+      "src/main.tsx",
+      "_Page.js",
+      "_HabitList.js"
+    ]
+  },
+  "src/pages/Settings.tsx": {
+    "file": "assets/Settings.js",
+    "name": "Settings",
+    "src": "src/pages/Settings.tsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "_brand.js",
+      "_Choice.js",
+      "src/main.tsx",
+      "_Page.js"
+    ]
+  },
+  "src/pages/Training.tsx": {
+    "file": "assets/Training.js",
+    "name": "Training",
+    "src": "src/pages/Training.tsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "_brand.js",
+      "_Calendar.js",
+      "_Choice.js",
+      "_search.js",
+      "src/main.tsx",
+      "_useDebounced.js",
+      "_Page.js"
+    ]
+  },
+  "style.css": {
+    "file": "assets/app.css",
+    "src": "style.css"
+  }
+}

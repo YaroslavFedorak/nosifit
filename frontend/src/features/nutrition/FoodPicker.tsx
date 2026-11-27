@@ -4,7 +4,7 @@ import { useDeleteDish, useDeleteProduct, useFavorite, useLogFood } from "../../
 import { useDishes, useProducts, type ProductSource } from "../../api/queries";
 import { MEAL_CATEGORIES, type Dish, type FoodUnit, type MealCategory, type Product } from "../../api/types";
 import { MAX_AMOUNT, amountStep, defaultAmount, mealForNow, portionOf } from "../../domain/nutrition";
-import { useT, type I18n } from "../../i18n";
+import { useT } from "../../i18n";
 import { cn } from "../../lib/cn";
 import { clamp, num, parseDecimal } from "../../lib/format";
 import { useDebounced } from "../../lib/useDebounced";
@@ -15,10 +15,7 @@ import { Stepper, controlClass } from "../../ui/Field";
 import { Sheet } from "../../ui/Sheet";
 import { BarcodeScanner } from "./BarcodeScanner";
 import { ProductForm } from "./ProductForm";
-
-export function unitLabel(unit: string, t: I18n["t"]): string {
-  return unit === "g" ? t("unit.g") : unit === "ml" ? t("unit.ml") : unit === "pcs" ? t("unit.pcs") : unit;
-}
+import { unitLabel } from "./units";
 
 type Shelf = Exclude<ProductSource, "search"> | "dishes";
 
