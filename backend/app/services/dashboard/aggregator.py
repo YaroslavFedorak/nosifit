@@ -32,7 +32,9 @@ def _get_training_session(user_id, target_date):
     start_dt, end_dt = clock.day_bounds_utc(target_date)
 
     return (
-        TrainingSession.query.filter(
+        # The exercises are read for the score and the count: load them with it.
+        TrainingSession.query.options(selectinload(TrainingSession.exercises))
+        .filter(
             TrainingSession.user_id == user_id,
             TrainingSession.started_at >= start_dt,
             TrainingSession.started_at <= end_dt,
@@ -78,8 +80,10 @@ def _get_duration(session):
 
 
 def _get_meals(user_id, target_date):
+    # Every meal's items are summed below: one query for all of them, not one per meal.
     return (
-        Meal.query.filter(
+        Meal.query.options(selectinload(Meal.items))
+        .filter(
             Meal.user_id == user_id,
             Meal.date == target_date,
         )

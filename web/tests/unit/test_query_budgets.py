@@ -19,7 +19,9 @@ from backend.app.training.models.exercise import Exercise
 TODAY = dt.date.today()
 
 BUDGETS = {
-    "/api/dashboard/today": 15,
+    # Meals with their items and the session with its exercises: one query
+    # each, however many meals the day has.
+    "/api/dashboard/today": 10,
     # Sessions (2), meals and items (2), snapshots, then the nutrition part:
     # water (2), targets (profile, stored, history) and one category lookup.
     "/api/dashboard/heatmap": 9,
