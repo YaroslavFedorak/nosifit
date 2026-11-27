@@ -4,7 +4,7 @@ NosiFit is a full-stack web application for managing training, nutrition and rec
 
 I started the project as a way to build something more than a simple workout tracker. The application combines workout planning, training load analysis, recovery data, nutrition tracking and daily dashboard analytics.
 
-NosiFit is currently at **v0.1.0-beta**. The core application modules are connected and working together, while the project continues to evolve toward a stable release.
+NosiFit is in beta: the version starts with 0 until the public launch at 1.0.0. The current version is in [VERSION](VERSION), what changed in each one in [CHANGELOG.md](CHANGELOG.md), and how versions are chosen and released in [docs/versioning.md](docs/versioning.md). The core application modules are connected and working together, while the project continues to evolve toward a stable release.
 
 ## Features
 
@@ -116,6 +116,12 @@ Translations are separated by application module and are used across the fronten
 - TypeScript
 - Jinja templates
 
+### Mobile apps (`mobile/`)
+
+- Android: Kotlin, Jetpack Compose, Material 3, OkHttp, kotlinx.serialization
+- iOS: Swift, SwiftUI, URLSession, Keychain (project generated with XcodeGen)
+- Both sign in with a bearer token from `POST /api/v1/mobile/auth/login` (see [mobile/README.md](mobile/README.md))
+
 ### Development
 
 - Git
@@ -154,6 +160,9 @@ NosiFit/
 │       └── ...
 │
 ├── migrations/
+├── mobile/
+│   ├── android/   (Kotlin + Jetpack Compose)
+│   └── ios/       (Swift + SwiftUI)
 ├── telegram_bot/
 ├── requirements.txt
 ├── run.py
@@ -301,7 +310,7 @@ Current development is focused on improving the existing modules, refining the d
 - More detailed training and recovery analytics
 - More personalized recommendations
 - Further nutrition improvements
-- Better mobile and responsive support
+- Native Android and iOS apps (started in `mobile/`: sign-in and the Today screen) up to Google Play and the App Store
 - Performance improvements
 - More integrations and client interfaces
 

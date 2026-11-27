@@ -1,9 +1,23 @@
-import { createContext, use, useCallback, useMemo, useState, type ReactNode } from "react";
+import { createContext, lazy, Suspense, use, useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
 import type { MealCategory } from "../../api/types";
-import { FoodPicker } from "../nutrition/FoodPicker";
 import { WeightSheet } from "../nutrition/WeightSheet";
 import { SleepSheet } from "../recovery/SleepSheet";
 import { QuickLogSheet } from "./QuickLogSheet";
+
+// The food picker, with the barcode scanner and the product form, is the
+// largest piece of the interface and opens only on demand: it is loaded on
+// its own, after the page itself, while the browser is idle.
+const loadFoodPicker = () => import("../nutrition/FoodPicker");
+const FoodPicker = lazy(() => loadFoodPicker().then((module) => ({ default: module.FoodPicker })));
+
+function whenIdle(task: () => void): () => void {
+  if (typeof window.requestIdleCallback === "function") {
+    const id = window.requestIdleCallback(task, { timeout: 5000 });
+    return () => window.cancelIdleCallback(id);
+  }
+  const id = window.setTimeout(task, 2000);
+  return () => window.clearTimeout(id);
+}
 
 /** What the user is about to record. One sheet per kind, shared by every screen. */
 export type LogRequest =
@@ -29,11 +43,18 @@ export function LogProvider({ children }: { children: ReactNode }) {
   const close = useCallback(() => setRequest(null), []);
   const api = useMemo<LogApi>(() => ({ open: setRequest, close }), [close]);
 
+  // Ready before the first tap, without delaying the page.
+  useEffect(() => whenIdle(() => void loadFoodPicker().catch(() => undefined)), []);
+
   return (
     <LogContext value={api}>
       {children}
       {request?.kind === "menu" && <QuickLogSheet onClose={close} onPick={setRequest} />}
-      {request?.kind === "food" && <FoodPicker initialCategory={request.category} date={request.date} startWithScan={request.scan} onClose={close} />}
+      {request?.kind === "food" && (
+        <Suspense fallback={null}>
+          <FoodPicker initialCategory={request.category} date={request.date} startWithScan={request.scan} onClose={close} />
+        </Suspense>
+      )}
       {request?.kind === "sleep" && <SleepSheet onClose={close} />}
       {request?.kind === "weight" && <WeightSheet onClose={close} />}
     </LogContext>

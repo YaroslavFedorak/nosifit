@@ -76,3 +76,35 @@ def test_an_unsupported_locale_reads_english():
 
     assert i18n.get_translation("de", "common", key) == lookup(en, key)
     assert i18n.load_translation("de", "common") == en
+
+
+def test_the_version_changes_with_any_text(tmp_path, monkeypatch):
+    from shared import i18n
+
+    (tmp_path / "en").mkdir()
+    (tmp_path / "en" / "common.json").write_text('{"a": "one"}', encoding="utf-8")
+    monkeypatch.setattr(i18n, "TRANSLATIONS_DIR", tmp_path)
+    i18n.translations_version.cache_clear()
+    try:
+        first = i18n.translations_version()
+        (tmp_path / "en" / "common.json").write_text('{"a": "two"}', encoding="utf-8")
+        i18n.translations_version.cache_clear()
+        assert i18n.translations_version() != first
+    finally:
+        i18n.translations_version.cache_clear()
+
+
+def test_versioned_texts_may_be_cached_for_good(client):
+    from api.routes.i18n import VERSIONED_CACHE
+    from shared.i18n import translations_version
+
+    current = client.get(f"/api/v1/i18n/uk/common?v={translations_version()}")
+    assert current.status_code == 200
+    assert current.headers["Cache-Control"] == VERSIONED_CACHE
+
+    # No version, or one from an older deploy: the texts may have changed.
+    for url in ("/api/v1/i18n/uk/common", "/api/i18n/uk/common?v=0123456789ab"):
+        response = client.get(url)
+        assert response.status_code == 200
+        assert response.headers["Cache-Control"] == "no-store", url
+        assert response.get_json() == current.get_json()

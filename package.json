@@ -1,6 +1,6 @@
 {
   "name": "nosi_website",
-  "version": "0.1.0-beta",
+  "version": "0.2.0",
   "description": "NosiFit is a web application for tracking workouts, nutrition, recovery and personal fitness progress.",
   "main": "index.js",
   "scripts": {

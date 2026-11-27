@@ -1,0 +1,42 @@
+name: Release
+
+# Every merge into main is deployed by Railway and is a release: tag it
+# vX.Y.Z and publish its CHANGELOG section on GitHub (docs/versioning.md).
+# A push that does not raise VERSION (it is already tagged) does nothing.
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version-file: .python-version
+      - name: Tag and publish the version if it is new
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          version="$(python -m web.scripts.version)"
+          tag="v$version"
+          if git rev-parse -q --verify "refs/tags/$tag" >/dev/null; then
+            echo "$tag is already released"
+            exit 0
+          fi
+          python -m web.scripts.version notes "$version" > release-notes.md
+          # Versions before 1.0.0 are the beta.
+          stage=""
+          case "$version" in 0.*) stage="--prerelease" ;; esac
+          gh release create "$tag" --target "$GITHUB_SHA" --title "NosiFit $version" --notes-file release-notes.md $stage

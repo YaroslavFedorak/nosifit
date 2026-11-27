@@ -11,7 +11,7 @@ import { Button, IconButton } from "../../ui/Button";
 import { TextField } from "../../ui/Field";
 import { Sheet } from "../../ui/Sheet";
 import { EntrySheet } from "./EntrySheet";
-import { unitLabel } from "./FoodPicker";
+import { unitLabel } from "./units";
 
 /** Saves a meal's foods as a dish, to add them together next time. */
 function SaveDishSheet({ meal, mealName, onClose }: { meal: Meal; mealName: string; onClose: () => void }) {

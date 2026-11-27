@@ -72,7 +72,8 @@ No endpoint answers 422 today; validation errors are 400.
 
 | Who | How | Endpoints |
 |---|---|---|
-| Website | Flask-Login session cookie from signing in on the site | everything except the two rows below |
+| Website | Flask-Login session cookie from signing in on the site | everything except the rows below |
+| Android and iOS apps | `POST /mobile/auth/login` with email and password returns a token; every later request sends `Authorization: Bearer <token>`. Accepted wherever a session cookie is, on `/api/` paths only. Only its SHA-256 is stored; it dies on sign-out (`POST /mobile/auth/logout`), after 90 days, on a password change or with the account | everything a website session may call, plus `/mobile/auth/*` |
 | Telegram bot | Requests signed with the bot secret (headers `X-NosiFit-Bot-*`); `POST /telegram/login` then gives it an ordinary session cookie, limited to the endpoints the bot needs | `/telegram/*` |
 | Anyone | none | `GET /i18n/{locale}/{namespace}`, `GET /injuries/` |
 
@@ -85,6 +86,25 @@ No endpoint answers 422 today; validation errors are 400.
 - A Telegram session may only use nutrition, the workout logging endpoints
   and exercise search (`auth/telegram_session.py`); the same list applies to
   the v1 paths.
+
+## Caching
+
+Answers that carry personal data are sent with `Cache-Control: no-store`.
+The one exception is `GET /i18n/{locale}/{namespace}`: the texts are the same
+for everyone and change only with a deploy. With `?v=` set to the current
+version of the translation files (`shared.i18n.translations_version()`, which
+the React pages receive in their bootstrap data) the answer is
+`public, max-age=31536000, immutable`, so a browser asks for it once per
+deploy. Without `v`, or with an older value, it is not cached.
+
+Every response is compressed when the client accepts it: brotli first, then
+zstd, gzip and deflate (`web/app/__init__.py`).
+
+## Version
+
+Every response under `/api/` carries `NosiFit-Version: X.Y.Z`, the version
+of the release that answered ([versioning.md](versioning.md)); `GET /healthz`
+reports it too.
 
 ## Background email
 

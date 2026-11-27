@@ -5,6 +5,7 @@ import { useT } from "../i18n";
 import { bootstrap } from "../lib/bootstrap";
 import { cn } from "../lib/cn";
 import { MAIN_NAV } from "./nav";
+import { brand } from "../brand";
 
 const ITEM =
   "press flex min-h-tap items-center rounded-control font-medium flex-col justify-center gap-1 py-2 text-xs desk:flex-row desk:justify-start desk:gap-3 desk:px-3 desk:py-0 desk:text-sm";
@@ -31,8 +32,8 @@ export function Sidebar() {
   return (
     <aside className="fixed inset-y-0 left-0 z-[300] hidden w-rail flex-col gap-4 border-r border-rule bg-paper px-2 py-4 tab:flex desk:w-sidebar desk:px-4 desk:py-6">
       <Link to="/dashboard" aria-label={t("app.name")} className="flex h-10 items-center justify-center desk:justify-start desk:px-2">
-        <img src="/static/img/brand/nosifit-mark-on-dark.svg" alt="" className="h-8 w-auto desk:hidden" />
-        <img src="/static/img/brand/nosifit-lockup-on-dark.svg" alt="" className="hidden h-7 w-auto desk:block" />
+        <img src={brand.mark} alt="" className="h-8 w-auto desk:hidden" />
+        <img src={brand.lockup} alt="" className="hidden h-7 w-auto desk:block" />
       </Link>
 
       <button

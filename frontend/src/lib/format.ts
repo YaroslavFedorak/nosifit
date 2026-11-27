@@ -49,8 +49,21 @@ export function addDays(date: Date, days: number): Date {
   return copy;
 }
 
+const dateFormats = new Map<string, Intl.DateTimeFormat>();
+
+/**
+ * A date in the page's language. Building an Intl.DateTimeFormat costs far
+ * more than using one, and a calendar formats hundreds of days, so each
+ * language and set of options is built once and kept.
+ */
 export function dateText(locale: Locale, date: Date, options: Intl.DateTimeFormatOptions): string {
-  return new Intl.DateTimeFormat(TAGS[locale], options).format(date);
+  const key = `${locale}|${JSON.stringify(options)}`;
+  let format = dateFormats.get(key);
+  if (!format) {
+    format = new Intl.DateTimeFormat(TAGS[locale], options);
+    dateFormats.set(key, format);
+  }
+  return format.format(date);
 }
 
 /** "Четвер, 12 листопада" */

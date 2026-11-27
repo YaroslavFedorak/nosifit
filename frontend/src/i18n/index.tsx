@@ -1,10 +1,7 @@
 import { createContext, use, useMemo, type ReactNode } from "react";
 import { bootstrap, type Locale } from "../lib/bootstrap";
 import { num } from "../lib/format";
-import { en, type TKey } from "./en";
-import { pl } from "./pl";
-import { ru } from "./ru";
-import { uk } from "./uk";
+import type { TKey } from "./en";
 
 export type Params = Record<string, string | number>;
 
@@ -19,8 +16,21 @@ export interface I18n {
   tn: (base: PluralBase, n: number) => string;
 }
 
-// A language without its own dictionary falls back to English, key by key.
-const dictionaries: Partial<Record<Locale, Record<string, string>>> = { en, uk, pl, ru };
+export type Dictionary = Record<string, string>;
+
+// One file per language, and a page loads only its own (the server preloads
+// it next to the bundle). Every dictionary has every key: the types of uk,
+// pl and ru require each key of en, so no page needs a second language.
+const loaders: Record<Locale, () => Promise<Dictionary>> = {
+  en: () => import("./en").then((module) => module.en),
+  uk: () => import("./uk").then((module) => module.uk),
+  pl: () => import("./pl").then((module) => module.pl),
+  ru: () => import("./ru").then((module) => module.ru),
+};
+
+export function loadDictionary(locale: Locale): Promise<Dictionary> {
+  return (loaders[locale] ?? loaders.en)();
+}
 
 export function interpolate(text: string, params?: Params): string {
   if (!params) return text;
@@ -29,13 +39,11 @@ export function interpolate(text: string, params?: Params): string {
 
 const I18nContext = createContext<I18n | null>(null);
 
-export function I18nProvider({ children }: { children: ReactNode }) {
+export function I18nProvider({ dictionary, children }: { dictionary: Dictionary; children: ReactNode }) {
   const value = useMemo<I18n>(() => {
-    const dictionary: Record<string, string> = dictionaries[bootstrap.locale] ?? en;
-    const own = bootstrap.locale in dictionaries;
     // The plural rules must belong to the language whose words are used.
-    const rules = new Intl.PluralRules(own ? bootstrap.locale : "en");
-    const lookup = (key: string): string => dictionary[key] ?? (en as Record<string, string>)[key] ?? key;
+    const rules = new Intl.PluralRules(bootstrap.locale);
+    const lookup = (key: string): string => dictionary[key] ?? key;
     return {
       locale: bootstrap.locale,
       t: (key, params) => interpolate(lookup(key), params),
@@ -45,7 +53,7 @@ export function I18nProvider({ children }: { children: ReactNode }) {
         return interpolate(text, { n: num(n, 0) });
       },
     };
-  }, []);
+  }, [dictionary]);
   return <I18nContext value={value}>{children}</I18nContext>;
 }
 

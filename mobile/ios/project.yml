@@ -1,0 +1,53 @@
+# Xcode project description for XcodeGen (https://github.com/yonaskolb/XcodeGen).
+# Generate NosiFit.xcodeproj with:  brew install xcodegen && xcodegen
+name: NosiFit
+options:
+  bundleIdPrefix: com.nosifit
+  deploymentTarget:
+    iOS: "16.0"
+  developmentLanguage: en
+  createIntermediateGroups: true
+settings:
+  base:
+    MARKETING_VERSION: "0.2.0"
+    CURRENT_PROJECT_VERSION: "2000"
+    SWIFT_VERSION: "5.9"
+    DEVELOPMENT_TEAM: ""
+targets:
+  NosiFit:
+    type: application
+    platform: iOS
+    sources:
+      - path: NosiFit
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.nosifit.app
+        INFOPLIST_FILE: NosiFit/Info.plist
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        TARGETED_DEVICE_FAMILY: "1,2"
+      configs:
+        # The simulator reaches the Mac's localhost directly (flask run on port 5000).
+        Debug:
+          NOSIFIT_API_URL: "http://localhost:5000/"
+        Release:
+          NOSIFIT_API_URL: "https://nosifit-production.up.railway.app/"
+  NosiFitTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: NosiFitTests
+    dependencies:
+      - target: NosiFit
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.nosifit.app.tests
+        GENERATE_INFOPLIST_FILE: YES
+schemes:
+  NosiFit:
+    build:
+      targets:
+        NosiFit: all
+        NosiFitTests: [test]
+    test:
+      targets:
+        - NosiFitTests

@@ -3,6 +3,7 @@ import type { TKey } from "./en";
 /** Russian. Extra keys (plural forms) are allowed; a missing one is a type error. */
 export const ru: Record<TKey, string> & Record<string, string> = {
   "app.name": "NosiFit",
+  "app.stage.beta": "бета",
 
   "nav.today": "Сегодня",
   "nav.nutrition": "Питание",

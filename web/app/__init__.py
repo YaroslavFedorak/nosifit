@@ -7,6 +7,7 @@ from flask_compress import Compress
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 from backend.app.extensions import db, login_manager, migrate, mail, oauth
+from shared.version import app_version, deployed_commit
 from web.app.activity import init_activity_tracking
 from web.app.assets import compute_asset_version, init_assets
 from web.app.i18n import init_i18n
@@ -46,6 +47,14 @@ def create_app(config=None, *, pages=True):
     app.config.setdefault(
         "COMPRESS_STREAMING_ENDPOINT_CONDITIONAL", ["static", "static_unversioned"]
     )
+    # Brotli first: every current browser accepts it over HTTPS, and at level 5
+    # it is 8-11% smaller than zstd (the library's first choice) for the
+    # bundle, the stylesheets and the API's JSON, for a few ms of CPU. Files
+    # are sent as streams, where the library leaves gzip out by default, so
+    # a gzip-only client got them uncompressed (294 KB for 90 KB of app.js).
+    app.config.setdefault("COMPRESS_ALGORITHM", ["br", "zstd", "gzip", "deflate"])
+    app.config.setdefault("COMPRESS_ALGORITHM_STREAMING", ["br", "zstd", "gzip", "deflate"])
+    app.config.setdefault("COMPRESS_BR_LEVEL", 5)
 
     init_i18n(app)
 
@@ -72,7 +81,11 @@ def create_app(config=None, *, pages=True):
 
     @app.get("/healthz")
     def healthz():
-        return jsonify({"status": "ok"})
+        # Which release is running (and, on Railway, which commit).
+        body = {"status": "ok", "version": app_version()}
+        if deployed_commit():
+            body["commit"] = deployed_commit()
+        return jsonify(body)
 
     db.init_app(app)
     login_manager.init_app(app)
@@ -86,6 +99,7 @@ def create_app(config=None, *, pages=True):
     from backend.app.models.verification_code import VerificationCode
     from backend.app.models.oauth_account import OAuthAccount
     from backend.app.models.telegram import TelegramIdentity, TelegramLinkToken
+    from backend.app.models.mobile_token import MobileToken
     from backend.app.models.recovery.habit import RecoveryHabit
     from backend.app.models.recovery.user_habit import UserRecoveryHabit
     from backend.app.models.recovery.habit_log import RecoveryHabitLog
@@ -102,6 +116,11 @@ def create_app(config=None, *, pages=True):
         if user is None or not fingerprint_matches(user, fingerprint):
             return None
         return user
+
+    # The mobile apps send a bearer token instead of a session cookie.
+    from auth.mobile_token import load_user_from_request
+
+    login_manager.request_loader(load_user_from_request)
 
     # Telegram sessions: limited to the bot's API, revoked with the identity.
     from auth.telegram_session import enforce_telegram_session

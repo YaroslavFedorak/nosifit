@@ -6,6 +6,8 @@ import { defineConfig } from "vite";
 // The Flask app serves the build under /static/<asset-version>/app/ (see
 // web/app/assets.py), so every URL inside the bundle has to be relative.
 // File names carry no hash: the asset version already changes with the files.
+// The manifest (.vite/manifest.json) tells Flask which chunks a page needs,
+// so the HTML can ask for all of them at once (web/app/routes/spa/bundle.py).
 export default defineConfig({
   base: "./",
   plugins: [react(), tailwindcss()],
@@ -14,6 +16,7 @@ export default defineConfig({
     emptyOutDir: true,
     cssCodeSplit: false,
     sourcemap: false,
+    manifest: true,
     target: "es2022",
     // Browsers that read oklch() themselves, the same floor Tailwind 4 has. Converting the
     // colours for older ones rounds differently on Windows and Linux, and the committed

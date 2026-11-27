@@ -14,6 +14,7 @@ def api_blueprints():
     from api.routes.equipment import equipment_api
     from api.routes.i18n import i18n_bp
     from api.routes.injuries import injury_api
+    from api.routes.mobile import mobile_auth_api
     from api.routes.nutrition import nutrition_api
     from api.routes.onboarding import onboarding_api
     from api.routes.recovery import recovery_bp
@@ -22,6 +23,7 @@ def api_blueprints():
 
     return (
         telegram_api_bp,
+        mobile_auth_api,
         i18n_bp,
         dashboard_api_bp,
         training_dashboard_api_bp,
@@ -44,8 +46,10 @@ def register_api(app):
     Both registrations share the views, hooks and services, so the two
     prefixes cannot drift apart (docs/api.md, versioning policy).
     """
+    from flask import request
+
     from api.errors import init_api_errors
-    from shared.api_paths import v1_url_prefix
+    from shared.api_paths import API_PREFIX, v1_url_prefix
 
     # Set by LoginManager.init_app; the app factory runs it first.
     login_manager = app.login_manager
@@ -64,3 +68,12 @@ def register_api(app):
         login_manager.blueprint_login_views[blueprint.name + V1_SUFFIX] = None
 
     init_api_errors(app)
+
+    from shared.version import app_version
+
+    @app.after_request
+    def _version_header(response):
+        # Clients (the mobile apps) can tell which release answered.
+        if request.path.startswith(API_PREFIX):
+            response.headers["NosiFit-Version"] = app_version()
+        return response

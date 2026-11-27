@@ -1,6 +1,7 @@
 import { Link } from "react-router";
 import { useT } from "../../i18n";
 import { buttonClass } from "../../ui/Button";
+import { brand } from "../../brand";
 
 /** Header of the public pages: the logo, then sign-in and sign-up. */
 export function LandingHeader() {
@@ -9,7 +10,7 @@ export function LandingHeader() {
     <header className="sticky top-0 z-[300] border-b border-rule bg-paper pt-[env(safe-area-inset-top)]">
       <div className="page flex h-16 items-center justify-between gap-3">
         <Link to="/welcome" aria-label={t("app.name")} className="inline-flex min-h-tap items-center">
-          <img src="/static/img/brand/nosifit-lockup-on-dark.svg" alt="" className="h-7 w-auto" />
+          <img src={brand.lockup} alt="" className="h-7 w-auto" />
         </Link>
         <nav aria-label={t("lp.nav.label")} className="flex items-center gap-1">
           <a href="/auth/login" className={buttonClass({ variant: "quiet" })}>

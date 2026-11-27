@@ -1,6 +1,8 @@
 import os
 from datetime import timedelta
 
+from shared.version import app_version
+
 
 def _env_flag(name: str, default: bool = False) -> bool:
     value = os.getenv(name)
@@ -137,7 +139,7 @@ class Config:
     OFF_BASE_URL = (os.getenv("OFF_BASE_URL") or "https://world.openfoodfacts.org").rstrip("/")
     # Open Food Facts asks every app to identify itself: "AppName/Version (contact)".
     OFF_USER_AGENT = os.getenv("OFF_USER_AGENT") or (
-        "NosiFit/0.1 (+https://github.com/YaroslavFedorak/NosiFit)"
+        f"NosiFit/{app_version()} (+https://github.com/YaroslavFedorak/NosiFit)"
     )
     OFF_TIMEOUT_SECONDS = float(os.getenv("OFF_TIMEOUT_SECONDS", "5"))
     # Outbound budget for the whole app (all workers share it through the

@@ -7,7 +7,7 @@ import { clamp, num, parseDecimal } from "../../lib/format";
 import { Button } from "../../ui/Button";
 import { Stepper } from "../../ui/Field";
 import { Sheet } from "../../ui/Sheet";
-import { unitLabel } from "./FoodPicker";
+import { unitLabel } from "./units";
 
 /** Changes the amount of a logged food, or removes it. */
 export function EntrySheet({ item, onClose }: { item: MealItem; onClose: () => void }) {

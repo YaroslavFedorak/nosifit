@@ -40,7 +40,10 @@ def _error_response(description):
 
 ERROR_RESPONSES = {
     400: _error_response("Invalid request (code names the problem, message explains it)."),
-    401: _error_response("Not signed in (code: authentication_required), or a bad bot signature."),
+    401: _error_response(
+        "Not signed in (code: authentication_required), a bad bot signature, "
+        "or wrong mobile sign-in credentials (code: invalid_credentials)."
+    ),
     403: _error_response("Forbidden: cross-site request, premium only, or not open to a Telegram session."),
     404: _error_response("Not found."),
     405: _error_response("Method not allowed."),
@@ -161,7 +164,7 @@ def _parse_rule(rule):
 
 def _security(auth):
     if auth == "session":
-        return [{"session": []}]
+        return [{"session": []}, {"mobileToken": []}]
     if auth == "bot":
         return [{"botSignature": [], "botTimestamp": [], "botNonce": []}]
     return []
@@ -237,7 +240,7 @@ def _info():
         "title": "NosiFit API",
         "version": "1",
         "description": (
-            "JSON API of NosiFit (nutrition, training, recovery, the Telegram bot). "
+            "JSON API of NosiFit (nutrition, training, recovery, the Telegram bot, the mobile apps). "
             f"Paths are relative to {SERVER_URL}. The same operations answer under the "
             "unversioned /api prefix for existing clients. Errors always have the Error "
             "shape. See docs/api.md for versioning, errors and authentication."
@@ -272,6 +275,15 @@ def build_spec(app):
                         "Session cookie from signing in on the website, or from "
                         "POST /telegram/login for the Telegram bot. Writes from browsers "
                         "must be same-origin (Origin / Referer are checked)."
+                    ),
+                },
+                "mobileToken": {
+                    "type": "http",
+                    "scheme": "bearer",
+                    "description": (
+                        "Token of the NosiFit Android and iOS apps from POST "
+                        "/mobile/auth/login, sent as Authorization: Bearer <token>. "
+                        "Accepted on every endpoint a session cookie is."
                     ),
                 },
                 "botSignature": {

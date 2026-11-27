@@ -1,6 +1,7 @@
 /** English: the source of truth for the keys. Every other language is checked against it. */
 export const en = {
   "app.name": "NosiFit",
+  "app.stage.beta": "beta",
 
   "nav.today": "Today",
   "nav.nutrition": "Nutrition",

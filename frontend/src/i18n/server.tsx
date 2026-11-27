@@ -1,6 +1,6 @@
 import { useQueries } from "@tanstack/react-query";
 import { createContext, use, useMemo, type ReactNode } from "react";
-import { api } from "../lib/api";
+import { ApiError } from "../lib/api";
 import { bootstrap } from "../lib/bootstrap";
 import { interpolate, type Params } from "./index";
 
@@ -82,11 +82,28 @@ function build(trees: Array<Tree | undefined>): ServerText {
 
 const ServerTextContext = createContext<ServerText | null>(null);
 
+/**
+ * With the texts' version in the URL (from the page, web/app/routes/spa/pages.py)
+ * the server lets the browser keep the answer until a deploy changes the
+ * texts, so after the first visit they come from the cache without a request.
+ * That is why, unlike other API reads, this one is not sent with cache: "no-store".
+ */
+export function serverTextUrl(namespace: string): string {
+  const path = `/api/i18n/${bootstrap.locale}/${namespace}`;
+  return bootstrap.textVersion ? `${path}?v=${encodeURIComponent(bootstrap.textVersion)}` : path;
+}
+
+async function fetchTree(namespace: string): Promise<Tree> {
+  const response = await fetch(serverTextUrl(namespace), { credentials: "same-origin" });
+  if (!response.ok) throw new ApiError(`HTTP ${response.status}`, response.status);
+  return (await response.json()) as Tree;
+}
+
 export function ServerTextProvider({ children }: { children: ReactNode }) {
   const results = useQueries({
     queries: NAMESPACES.map((name) => ({
       queryKey: ["i18n", bootstrap.locale, name],
-      queryFn: () => api.get<Tree>(`/api/i18n/${bootstrap.locale}/${name}`),
+      queryFn: () => fetchTree(name),
       staleTime: Infinity,
       gcTime: Infinity,
     })),

@@ -1,7 +1,7 @@
 {
   "name": "nosifit-frontend",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "NosiFit mobile-first interface (React, Tailwind CSS, Lucide). Built into web/app/static/app and served by Flask under /app.",
   "type": "module",
   "scripts": {

@@ -10,6 +10,9 @@ import os
 from flask import Blueprint, abort, current_app, g, redirect, render_template, url_for
 from flask_login import current_user
 
+from shared.i18n import translations_version
+from shared.version import app_version, release_stage
+from web.app.routes.spa.bundle import page_chunks
 from web.app.security import allow_barcode_scanner
 
 spa_pages_bp = Blueprint("spa_pages", __name__, url_prefix="/app")
@@ -64,5 +67,16 @@ def shell(page):
     return render_template(
         "app/spa.html",
         locale=g.locale,
-        bootstrap={"locale": g.locale, "user": user, "features": features},
+        bootstrap={
+            "locale": g.locale,
+            "user": user,
+            "features": features,
+            # Part of the server texts' URL, so the browser may keep them
+            # until a deploy changes them (frontend/src/i18n/server.tsx).
+            "text_version": translations_version(),
+            # Shown in the settings (docs/versioning.md).
+            "version": app_version(),
+            "stage": release_stage(),
+        },
+        chunks=page_chunks(current_app.static_folder, current_app.config["ASSET_VERSION"], name, g.locale),
     )

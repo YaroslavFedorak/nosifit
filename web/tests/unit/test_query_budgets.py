@@ -19,11 +19,15 @@ from backend.app.training.models.exercise import Exercise
 TODAY = dt.date.today()
 
 BUDGETS = {
-    "/api/dashboard/today": 15,
+    # Meals with their items and the session with its exercises: one query
+    # each, however many meals the day has.
+    "/api/dashboard/today": 10,
     # Sessions (2), meals and items (2), snapshots, then the nutrition part:
     # water (2), targets (profile, stored, history) and one category lookup.
     "/api/dashboard/heatmap": 9,
-    "/api/dashboard/recommendation": 40,
+    # The training, recovery and nutrition parts share one analysis of the
+    # training history per request (services/training/model/request_memo.py).
+    "/api/dashboard/recommendation": 17,
     "/api/dashboard/training": 10,
     "/api/nutrition/day": 15,
     "/api/nutrition/stats": 6,
@@ -37,6 +41,8 @@ BUDGETS = {
     "/api/recovery/snapshot/{user}?date={today}": 20,
     "/api/recovery/heatmap/{user}": 4,
     "/api/recovery/recommendations/{user}?date={today}": 40,
+    # The day's training stress is computed once for the summary and the notes.
+    "/api/recovery/day-details/{user}?date={today}": 13,
 }
 
 

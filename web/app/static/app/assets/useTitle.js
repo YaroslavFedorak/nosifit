@@ -1,1 +1,1 @@
-import{Y as e,Z as t}from"./Button.js";var n=t(e(),1);function r(e){(0,n.useEffect)(()=>{document.title=`${e} · NosiFit`},[e])}export{r as t};
+import{Q as e,et as t}from"./brand.js";var n=t(e(),1);function r(e){(0,n.useEffect)(()=>{document.title=`${e} · NosiFit`},[e])}export{r as t};

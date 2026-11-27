@@ -1,4 +1,4 @@
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { keepPreviousData, queryOptions, useQuery } from "@tanstack/react-query";
 import { diaryFromPast, diaryFromToday, type DiaryDay } from "../domain/nutrition";
 import { api } from "../lib/api";
 import { bootstrap } from "../lib/bootstrap";
@@ -52,30 +52,42 @@ async function recentYears<T>(path: (year: number) => string): Promise<T[]> {
 export const useDashboardToday = () =>
   useQuery({ queryKey: ["dashboard", "today"], queryFn: () => api.get<DashboardToday>("/api/dashboard/today") });
 
-export const useDashboardHeatmap = () =>
-  useQuery({
+/*
+ * A query that a page reads as soon as it opens is described once, as
+ * options: the hook uses them, and api/prefetch.ts starts the same request
+ * before the page has rendered. One description, so the two always share
+ * the key and the answer is fetched once.
+ */
+
+export const dashboardHeatmapQuery = () =>
+  queryOptions({
     queryKey: ["dashboard", "heatmap"],
     queryFn: async () => (await api.get<{ days: DashboardDay[] }>("/api/dashboard/heatmap")).days,
   });
+export const useDashboardHeatmap = () => useQuery(dashboardHeatmapQuery());
 
-export const useDashboardRecommendation = () =>
-  useQuery({
+export const dashboardRecommendationQuery = () =>
+  queryOptions({
     queryKey: ["dashboard", "recommendation"],
     queryFn: () => api.get<DashboardRecommendation>("/api/dashboard/recommendation"),
   });
+export const useDashboardRecommendation = () => useQuery(dashboardRecommendationQuery());
 
 /* Training */
 
-export const useTrainingSession = () =>
-  useQuery({
+export const trainingSessionQuery = () =>
+  queryOptions({
     queryKey: ["training", "session"],
     queryFn: async () => (await api.get<{ session: TrainingSession | null }>(`/api/training/sessions/today?locale=${locale()}`)).session,
   });
+export const useTrainingSession = () => useQuery(trainingSessionQuery());
 
-export const useTrainingToday = () =>
-  useQuery({ queryKey: ["training", "today"], queryFn: () => api.get<TrainingToday>("/api/training/today") });
+export const trainingTodayQuery = () =>
+  queryOptions({ queryKey: ["training", "today"], queryFn: () => api.get<TrainingToday>("/api/training/today") });
+export const useTrainingToday = () => useQuery(trainingTodayQuery());
 
-export const usePlans = () => useQuery({ queryKey: ["training", "plans"], queryFn: () => api.get<Plan[]>("/api/training/plans") });
+export const plansQuery = () => queryOptions({ queryKey: ["training", "plans"], queryFn: () => api.get<Plan[]>("/api/training/plans") });
+export const usePlans = () => useQuery(plansQuery());
 
 export const usePlanWeek = (planId: number | null | undefined) =>
   useQuery({
@@ -92,18 +104,19 @@ export const useWeeklySets = (enabled = true) =>
     enabled,
   });
 
-export const useTrainingRecommendations = (enabled = true) =>
-  useQuery({
+export const trainingRecommendationsQuery = () =>
+  queryOptions({
     queryKey: ["training", "recommendations"],
     queryFn: () => api.get<TrainingRecommendations>("/api/training/recommendations"),
-    enabled,
   });
+export const useTrainingRecommendations = (enabled = true) => useQuery({ ...trainingRecommendationsQuery(), enabled });
 
-export const useTrainingHeatmap = () =>
-  useQuery({
+export const trainingHeatmapQuery = () =>
+  queryOptions({
     queryKey: ["training", "heatmap"],
     queryFn: () => recentYears<TrainingHeatmapDay>((year) => `/api/training/heatmap?year=${year}`),
   });
+export const useTrainingHeatmap = () => useQuery(trainingHeatmapQuery());
 
 export const useExerciseOptions = (query: string, enabled: boolean) =>
   useQuery({
@@ -131,37 +144,40 @@ export const useTrainingDay = (date: string, enabled: boolean) =>
 /* Nutrition */
 
 /** One day of the diary. Today and past days come from two endpoints with one shape here. */
-export const useDiaryDay = (date: string = isoDay()) =>
-  useQuery<DiaryDay>({
+export const diaryDayQuery = (date: string = isoDay()) =>
+  queryOptions<DiaryDay>({
     queryKey: ["nutrition", "day", date],
     queryFn: async () =>
       date === isoDay()
         ? diaryFromToday(await api.get<NutritionToday>(`/api/nutrition/day?locale=${locale()}`))
         : diaryFromPast(await api.get<NutritionPastDay>(`/api/nutrition/day/${date}?locale=${locale()}`)),
-    placeholderData: keepPreviousData,
   });
+export const useDiaryDay = (date: string = isoDay()) => useQuery({ ...diaryDayQuery(date), placeholderData: keepPreviousData });
 
-export const useNutritionTips = (enabled = true) =>
-  useQuery({
+export const nutritionTipsQuery = () =>
+  queryOptions({
     queryKey: ["nutrition", "tips"],
     queryFn: async () =>
       (await api.get<{ recommendations: NutritionTip[] }>(`/api/nutrition/recommendations?locale=${locale()}`)).recommendations,
-    enabled,
   });
+export const useNutritionTips = (enabled = true) => useQuery({ ...nutritionTipsQuery(), enabled });
 
-export const useWater = (date: string = isoDay()) =>
-  useQuery({
+export const waterQuery = (date: string = isoDay()) =>
+  queryOptions({
     queryKey: ["nutrition", "water", date],
     queryFn: () => api.get<WaterDay>(`/api/nutrition/water?date=${date}`),
   });
+export const useWater = (date: string = isoDay()) => useQuery(waterQuery(date));
 
-export const useWeight = () => useQuery({ queryKey: ["nutrition", "weight"], queryFn: () => api.get<WeightInfo>("/api/nutrition/weight") });
+export const weightQuery = () => queryOptions({ queryKey: ["nutrition", "weight"], queryFn: () => api.get<WeightInfo>("/api/nutrition/weight") });
+export const useWeight = () => useQuery(weightQuery());
 
-export const useNutritionStats = (days = 7) =>
-  useQuery({
+export const nutritionStatsQuery = (days = 7) =>
+  queryOptions({
     queryKey: ["nutrition", "stats", days],
     queryFn: () => api.get<NutritionStats>(`/api/nutrition/stats?days=${days}`),
   });
+export const useNutritionStats = (days = 7) => useQuery(nutritionStatsQuery(days));
 
 export const useNutritionHeatmap = (enabled = true) =>
   useQuery({
@@ -198,8 +214,8 @@ export const useDishes = (enabled: boolean) =>
 /* Recovery */
 
 /** null when nothing has been recorded yet: the server has no snapshot to send. */
-export const useRecoverySnapshot = () =>
-  useQuery({
+export const recoverySnapshotQuery = () =>
+  queryOptions({
     queryKey: ["recovery", "snapshot"],
     queryFn: async () => {
       const data = await api.get<RecoverySnapshot | { snapshot: null }>(`/api/recovery/snapshot/${userId()}`);
@@ -207,13 +223,15 @@ export const useRecoverySnapshot = () =>
     },
     retry: false,
   });
+export const useRecoverySnapshot = () => useQuery(recoverySnapshotQuery());
 
 /** The user's habits with today's ticks. Works before the first snapshot exists. */
-export const useHabits = () =>
-  useQuery({
+export const habitsQuery = () =>
+  queryOptions({
     queryKey: ["recovery", "habits"],
     queryFn: () => api.get<Habit[]>(`/api/recovery/habits/user/${userId()}`),
   });
+export const useHabits = () => useQuery(habitsQuery());
 
 export const useRecoveryHeatmap = (enabled = true) =>
   useQuery({
