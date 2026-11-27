@@ -46,6 +46,14 @@ def create_app(config=None, *, pages=True):
     app.config.setdefault(
         "COMPRESS_STREAMING_ENDPOINT_CONDITIONAL", ["static", "static_unversioned"]
     )
+    # Brotli first: every current browser accepts it over HTTPS, and at level 5
+    # it is 8-11% smaller than zstd (the library's first choice) for the
+    # bundle, the stylesheets and the API's JSON, for a few ms of CPU. Files
+    # are sent as streams, where the library leaves gzip out by default, so
+    # a gzip-only client got them uncompressed (294 KB for 90 KB of app.js).
+    app.config.setdefault("COMPRESS_ALGORITHM", ["br", "zstd", "gzip", "deflate"])
+    app.config.setdefault("COMPRESS_ALGORITHM_STREAMING", ["br", "zstd", "gzip", "deflate"])
+    app.config.setdefault("COMPRESS_BR_LEVEL", 5)
 
     init_i18n(app)
 

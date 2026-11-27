@@ -1,3 +1,4 @@
+import gzip
 from pathlib import Path
 
 import brotli
@@ -58,6 +59,28 @@ def test_text_assets_are_compressed(app, client):
     assert brotli.decompress(response.get_data()) == original
     assert len(response.get_data()) < len(original)
     assert "Accept-Encoding" in response.headers["Vary"]
+
+
+def test_every_current_browser_gets_brotli(app, client):
+    # Chrome and Firefox also accept zstd; brotli is the smaller of the two.
+    version = app.config["ASSET_VERSION"]
+    response = client.get(
+        f"/static/{version}/app/assets/app.js",
+        headers={"Accept-Encoding": "gzip, deflate, br, zstd"},
+    )
+    assert response.headers["Content-Encoding"] == "br"
+    original = (STATIC_DIR / "app" / "assets" / "app.js").read_bytes()
+    assert brotli.decompress(response.get_data()) == original
+
+
+def test_a_gzip_only_client_still_gets_compressed_files(app, client):
+    version = app.config["ASSET_VERSION"]
+    response = client.get(f"/static/{version}/app/assets/app.js", headers={"Accept-Encoding": "gzip"})
+    assert response.status_code == 200
+    assert response.headers["Content-Encoding"] == "gzip"
+    original = (STATIC_DIR / "app" / "assets" / "app.js").read_bytes()
+    assert gzip.decompress(response.get_data()) == original
+    assert len(response.get_data()) < len(original) / 2
 
 
 def test_pages_reference_versioned_assets(app, client):

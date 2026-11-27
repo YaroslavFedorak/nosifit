@@ -97,6 +97,9 @@ the React pages receive in their bootstrap data) the answer is
 `public, max-age=31536000, immutable`, so a browser asks for it once per
 deploy. Without `v`, or with an older value, it is not cached.
 
+Every response is compressed when the client accepts it: brotli first, then
+zstd, gzip and deflate (`web/app/__init__.py`).
+
 ## Background email
 
 Security notices whose failure the user never saw anyway (Telegram
