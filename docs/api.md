@@ -87,6 +87,16 @@ No endpoint answers 422 today; validation errors are 400.
   and exercise search (`auth/telegram_session.py`); the same list applies to
   the v1 paths.
 
+## Caching
+
+Answers that carry personal data are sent with `Cache-Control: no-store`.
+The one exception is `GET /i18n/{locale}/{namespace}`: the texts are the same
+for everyone and change only with a deploy. With `?v=` set to the current
+version of the translation files (`shared.i18n.translations_version()`, which
+the React pages receive in their bootstrap data) the answer is
+`public, max-age=31536000, immutable`, so a browser asks for it once per
+deploy. Without `v`, or with an older value, it is not cached.
+
 ## Background email
 
 Security notices whose failure the user never saw anyway (Telegram

@@ -5,6 +5,7 @@ locale) is in web.app.i18n.
 """
 
 import copy
+import hashlib
 import json
 from functools import lru_cache
 from pathlib import Path
@@ -145,3 +146,20 @@ def get_translation(
         return value
 
     return key
+
+
+@lru_cache(maxsize=1)
+def translations_version() -> str:
+    """A short hash of every translation file.
+
+    The texts are read once per process (``load_translation`` is cached), so
+    this stays the same until the next deploy changes a file. Clients put it
+    in the URL of /api/i18n/... and may then keep the answer for good.
+    """
+    digest = hashlib.sha256()
+    for path in sorted(TRANSLATIONS_DIR.rglob("*.json")):
+        digest.update(path.relative_to(TRANSLATIONS_DIR).as_posix().encode())
+        digest.update(b"\0")
+        digest.update(path.read_bytes())
+        digest.update(b"\0")
+    return digest.hexdigest()[:12]
