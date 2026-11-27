@@ -1,3 +1,6 @@
+// Inside android { } the name "java" is the Java extension, not the package.
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -28,7 +31,7 @@ android {
     // Release signing comes from keystore.properties (never committed), see mobile/README.md.
     val keystoreFile = rootProject.file("keystore.properties")
     if (keystoreFile.exists()) {
-        val props = java.util.Properties().apply { keystoreFile.inputStream().use { load(it) } }
+        val props = Properties().apply { keystoreFile.inputStream().use { load(it) } }
         signingConfigs {
             create("release") {
                 storeFile = rootProject.file(props.getProperty("storeFile"))
