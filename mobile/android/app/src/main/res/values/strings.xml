@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name" translatable="false">NosiFit</string>
+
+    <string name="login_title">Sign in</string>
+    <string name="login_subtitle">Training, nutrition and recovery in one place</string>
+    <string name="login_email">Email</string>
+    <string name="login_password">Password</string>
+    <string name="login_submit">Sign in</string>
+    <string name="login_server">Server</string>
+    <string name="login_server_hint">Change only if you run your own NosiFit server</string>
+    <string name="login_no_account">No account yet? Register on the website, then sign in here.</string>
+    <string name="error_invalid_credentials">Wrong email or password</string>
+    <string name="error_rate_limited">Too many attempts. Try again later.</string>
+    <string name="error_network">No connection to the server</string>
+    <string name="error_generic">Something went wrong. Try again.</string>
+    <string name="error_invalid_input">Enter your email and password</string>
+
+    <string name="consent_title">Before you start</string>
+    <string name="consent_body">NosiFit stores your workouts, meals, weight and sleep. To use the app, accept the privacy policy and allow processing of this health data.</string>
+    <string name="consent_privacy">I accept the privacy policy</string>
+    <string name="consent_health">I allow processing of my health data</string>
+    <string name="consent_age">I am 16 or older</string>
+    <string name="consent_submit">Continue</string>
+    <string name="consent_policy_link">Read the privacy policy</string>
+
+    <string name="tab_today">Today</string>
+    <string name="tab_nutrition">Nutrition</string>
+    <string name="tab_training">Training</string>
+    <string name="tab_recovery">Recovery</string>
+    <string name="tab_profile">Profile</string>
+
+    <string name="today_title">Today</string>
+    <string name="today_score">Day score</string>
+    <string name="today_no_score">No data yet today</string>
+    <string name="today_training">Training</string>
+    <string name="today_training_done">Workout done · %1$d min · %2$d exercises</string>
+    <string name="today_training_none">No workout yet</string>
+    <string name="today_nutrition">Nutrition</string>
+    <string name="today_nutrition_value">%1$d kcal · %2$d g protein · %3$.1f l water</string>
+    <string name="today_recovery">Recovery</string>
+    <string name="today_recovery_value">Habits %1$d/%2$d · sleep %3$.1f h</string>
+    <string name="retry">Try again</string>
+
+    <string name="coming_soon">This section is coming to the app soon. For now it is available on the website.</string>
+    <string name="open_website">Open the website</string>
+
+    <string name="profile_signed_in_as">Signed in as</string>
+    <string name="profile_logout">Sign out</string>
+</resources>
