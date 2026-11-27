@@ -8,6 +8,7 @@ and, as a separate tree, doses -> session stress proxy -> dashboard/heatmap.
 ``analyse`` is pure; ``TrainingModelService`` adds the batched DB loading.
 """
 
+import copy
 from dataclasses import dataclass
 from datetime import date, datetime, time, timedelta
 from typing import Callable, Dict, List, Mapping, Optional, Sequence
@@ -22,6 +23,7 @@ from .priority import MusclePlan, plan_muscles
 from .progression import analyse_progression
 from .readiness import readiness_from_fatigue
 from .records import ExerciseInfo, LoggedEntry, SleepNight
+from .request_memo import remembered
 from .selection import ExercisePrescription, select_exercises
 from .session_stress import daily_stress, day_levels, summarize
 from .status import MuscleStatus, compute_statuses
@@ -90,6 +92,25 @@ class TrainingModelService:
         sessions: Optional[Sequence] = None,
         now: Optional[datetime] = None,
     ) -> TrainingAnalysis:
+        user_id = getattr(user, "id", None)
+        if sessions is None and now is None and user_id is not None:
+            # Today (or no day, or a future day) is analysed at "now", a past
+            # day at its end: one entry for "now", one per past day.
+            current = datetime.utcnow()
+            past_day = target_day if target_day is not None and target_day < clock.local_date(current) else None
+            return remembered(
+                ("analysis", user_id, past_day),
+                lambda: TrainingModelService._analyse_user(user, target_day, None, current),
+            )
+        return TrainingModelService._analyse_user(user, target_day, sessions, now)
+
+    @staticmethod
+    def _analyse_user(
+        user,
+        target_day: Optional[date],
+        sessions: Optional[Sequence],
+        now: Optional[datetime],
+    ) -> TrainingAnalysis:
         moment = moment_for(target_day, now)
         since = moment - timedelta(days=P.HISTORY_DAYS)
         catalog = repository.load_catalog()
@@ -154,15 +175,20 @@ class TrainingModelService:
     @staticmethod
     def day_stress(user_id: int, target_day: date) -> Dict:
         """Stress proxy of one calendar day and the user's typical session."""
-        start, end = clock.day_bounds_utc(target_day)
-        result = TrainingModelService.stress_days(
-            user_id,
-            [target_day],
-            clock.local_date,
-            start,
-            end,
-        )
-        return result[target_day]
+
+        def compute():
+            start, end = clock.day_bounds_utc(target_day)
+            result = TrainingModelService.stress_days(
+                user_id,
+                [target_day],
+                clock.local_date,
+                start,
+                end,
+            )
+            return result[target_day]
+
+        # A copy each time: callers may add their own keys to it.
+        return copy.deepcopy(remembered(("day_stress", user_id, target_day), compute))
 
     @staticmethod
     def weekly_sets(
