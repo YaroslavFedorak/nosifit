@@ -46,8 +46,10 @@ def register_api(app):
     Both registrations share the views, hooks and services, so the two
     prefixes cannot drift apart (docs/api.md, versioning policy).
     """
+    from flask import request
+
     from api.errors import init_api_errors
-    from shared.api_paths import v1_url_prefix
+    from shared.api_paths import API_PREFIX, v1_url_prefix
 
     # Set by LoginManager.init_app; the app factory runs it first.
     login_manager = app.login_manager
@@ -66,3 +68,12 @@ def register_api(app):
         login_manager.blueprint_login_views[blueprint.name + V1_SUFFIX] = None
 
     init_api_errors(app)
+
+    from shared.version import app_version
+
+    @app.after_request
+    def _version_header(response):
+        # Clients (the mobile apps) can tell which release answered.
+        if request.path.startswith(API_PREFIX):
+            response.headers["NosiFit-Version"] = app_version()
+        return response

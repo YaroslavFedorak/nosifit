@@ -16,9 +16,12 @@ export interface Bootstrap {
   features: { planGeneration: boolean };
   /** Version of the server texts: part of their URL, so the browser can keep them. */
   textVersion: string;
+  /** The app's version ("0.2.0") and its stage ("beta" before 1.0.0). */
+  version: string;
+  stage: "beta" | null;
 }
 
-const FALLBACK: Bootstrap = { locale: "en", user: null, features: { planGeneration: false }, textVersion: "" };
+const FALLBACK: Bootstrap = { locale: "en", user: null, features: { planGeneration: false }, textVersion: "", version: "", stage: null };
 
 /** The page the server rendered: language, the signed-in user (if any) and their features. */
 function read(): Bootstrap {
@@ -30,6 +33,8 @@ function read(): Bootstrap {
       user?: Bootstrap["user"];
       features?: { plan_generation?: boolean };
       text_version?: string;
+      version?: string;
+      stage?: string | null;
     };
     const locale = LOCALES.includes(raw.locale as Locale) ? (raw.locale as Locale) : "en";
     return {
@@ -37,6 +42,8 @@ function read(): Bootstrap {
       user: raw.user ?? null,
       features: { planGeneration: raw.features?.plan_generation === true },
       textVersion: typeof raw.text_version === "string" ? raw.text_version : "",
+      version: typeof raw.version === "string" ? raw.version : "",
+      stage: raw.stage === "beta" ? "beta" : null,
     };
   } catch {
     return FALLBACK;

@@ -7,6 +7,7 @@ from flask_compress import Compress
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 from backend.app.extensions import db, login_manager, migrate, mail, oauth
+from shared.version import app_version, deployed_commit
 from web.app.activity import init_activity_tracking
 from web.app.assets import compute_asset_version, init_assets
 from web.app.i18n import init_i18n
@@ -80,7 +81,11 @@ def create_app(config=None, *, pages=True):
 
     @app.get("/healthz")
     def healthz():
-        return jsonify({"status": "ok"})
+        # Which release is running (and, on Railway, which commit).
+        body = {"status": "ok", "version": app_version()}
+        if deployed_commit():
+            body["commit"] = deployed_commit()
+        return jsonify(body)
 
     db.init_app(app)
     login_manager.init_app(app)

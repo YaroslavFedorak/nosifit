@@ -142,6 +142,13 @@ export default function Settings() {
               )}
             </div>
           </Section>
+
+          {bootstrap.version && (
+            <p className="text-sm text-muted">
+              NosiFit {bootstrap.version}
+              {bootstrap.stage && ` · ${t("app.stage.beta")}`}
+            </p>
+          )}
         </div>
       </div>
 

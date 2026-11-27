@@ -9,6 +9,26 @@ permissions:
   contents: read
 
 jobs:
+  # Every merge into main is a release: the version must be in order, and a
+  # pull request must raise it (docs/versioning.md).
+  version:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version-file: .python-version
+      - run: python -m web.scripts.version check
+      - name: The pull request raises the version
+        if: github.event_name == 'pull_request'
+        env:
+          BASE_REF: ${{ github.base_ref }}
+        run: |
+          base="$(git show "origin/$BASE_REF:VERSION" 2>/dev/null || echo 0.1.0)"
+          python -m web.scripts.version check --base "$base"
+
   tests:
     runs-on: ubuntu-latest
     services:

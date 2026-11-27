@@ -8,6 +8,14 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
 }
 
+// The app's version is the product's: VERSION at the root of the repository
+// (docs/versioning.md). Google Play also needs an always-growing integer;
+// MAJOR.MINOR.PATCH packs into one (0.2.0 -> 2000, 1.4.12 -> 1004012).
+val appVersion = rootProject.file("../../VERSION").readText().trim()
+val appVersionCode = appVersion.split(".").map { it.toInt() }.let { (major, minor, patch) ->
+    major * 1_000_000 + minor * 1_000 + patch
+}
+
 // The server the app talks to unless the user changes it on the sign-in
 // screen. Override per build: ./gradlew assembleRelease -Pnosifit.apiUrl=https://your.domain/
 val releaseApiUrl = (findProperty("nosifit.apiUrl") as String?) ?: "https://nosifit-production.up.railway.app/"
@@ -22,8 +30,8 @@ android {
         applicationId = "com.nosifit.app"
         minSdk = 26
         targetSdk = 35
-        versionCode = 1
-        versionName = "0.1.0"
+        versionCode = appVersionCode
+        versionName = appVersion
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

@@ -30,6 +30,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.nosifit.app.BuildConfig
 import com.nosifit.app.NosiFitApplication
 import com.nosifit.app.R
 import com.nosifit.app.data.MobileUser
@@ -110,5 +111,10 @@ private fun ProfileScreen(app: NosiFitApplication, user: MobileUser) {
         OutlinedButton(onClick = { scope.launch { app.session.signOut() } }) {
             Text(stringResource(R.string.profile_logout))
         }
+        Text(
+            stringResource(R.string.profile_version, BuildConfig.VERSION_NAME),
+            style = MaterialTheme.typography.bodyMedium,
+            color = NosiColors.muted,
+        )
     }
 }

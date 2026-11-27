@@ -142,3 +142,11 @@ def test_every_page_has_its_module_listed():
     for module in PAGE_MODULES.values():
         assert (frontend / module).is_file(), module
         assert f'import("./{module.removeprefix("src/").removesuffix(".tsx")}")' in app_routes, module
+
+
+def test_shell_hands_the_interface_the_app_version(client):
+    from shared.version import app_version, release_stage
+
+    data = _bootstrap(client.get("/app/welcome"))
+    assert data["version"] == app_version()
+    assert data["stage"] == release_stage()

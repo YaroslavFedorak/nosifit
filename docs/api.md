@@ -100,6 +100,12 @@ deploy. Without `v`, or with an older value, it is not cached.
 Every response is compressed when the client accepts it: brotli first, then
 zstd, gzip and deflate (`web/app/__init__.py`).
 
+## Version
+
+Every response under `/api/` carries `NosiFit-Version: X.Y.Z`, the version
+of the release that answered ([versioning.md](versioning.md)); `GET /healthz`
+reports it too.
+
 ## Background email
 
 Security notices whose failure the user never saw anyway (Telegram

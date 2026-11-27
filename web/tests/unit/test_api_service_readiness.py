@@ -77,7 +77,7 @@ def test_health_check(api_client):
     response = api_client.get("/healthz")
 
     assert response.status_code == 200
-    assert response.get_json() == {"status": "ok"}
+    assert response.get_json()["status"] == "ok"
 
 
 def test_a_session_from_the_web_service_works_on_the_api(client, user, api_client):
