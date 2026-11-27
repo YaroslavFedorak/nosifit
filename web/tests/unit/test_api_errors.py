@@ -58,7 +58,8 @@ def concrete(path):
 
 # Open without a session: the bot-signed Telegram API, translations and the
 # injury catalog.
-PUBLIC = {("/api/injuries/", "GET")}
+# The mobile sign-in itself is how a token is obtained.
+PUBLIC = {("/api/injuries/", "GET"), ("/api/mobile/auth/login", "POST")}
 
 
 def needs_session(rule, method):
