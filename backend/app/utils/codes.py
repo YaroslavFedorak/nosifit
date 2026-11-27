@@ -36,7 +36,13 @@ MAX_CODE_ATTEMPTS = 5
 def store_session_code(key: str, code: str, **extra) -> None:
     from flask import session
 
-    session[key] = {"hash": hash_code(code), "issued": int(time.time()), **extra}
+    session[key] = {
+        "hash": hash_code(code),
+        "issued": int(time.time()),
+        # Wrong attempts are counted per issued code (verify_session_code).
+        "attempt_id": secrets.token_hex(16),
+        **extra,
+    }
 
 
 def load_session_code(key: str):
@@ -56,9 +62,12 @@ def load_session_code(key: str):
 def verify_session_code(key: str, given, user_id) -> str:
     """Check a code typed by ``user_id``: "ok", "expired" or "wrong".
 
-    Wrong attempts are counted on the server; the session cookie is
-    client-side and could be replayed to reset a counter kept inside it.
-    After MAX_CODE_ATTEMPTS wrong attempts the code is discarded.
+    Wrong attempts are counted on the server, per issued code (the entry's
+    random ``attempt_id``). The session cookie is client-side: whoever holds
+    it can send the copy that still contains the code again and again. So
+    the count is never reset when the limit is hit (a reset would give every
+    replay MAX_CODE_ATTEMPTS new guesses); it ends with its window, and a
+    newly issued code gets a new id and so a fresh count.
     """
     from flask import session
 
@@ -69,13 +78,14 @@ def verify_session_code(key: str, given, user_id) -> str:
         return "expired"
 
     scope = f"code-{key}"
-    if hit_limit(scope, user_id, MAX_CODE_ATTEMPTS, CODE_TTL_SECONDS):
+    # Entries issued before attempt ids existed share one count per user.
+    counter = f"{user_id}:{entry.get('attempt_id') or 'legacy'}"
+    if hit_limit(scope, counter, MAX_CODE_ATTEMPTS, CODE_TTL_SECONDS):
         session.pop(key, None)
-        reset_limit(scope, user_id)
         return "expired"
 
     if given is None or not check_code(entry.get("hash"), given):
         return "wrong"
 
-    reset_limit(scope, user_id)
+    reset_limit(scope, counter)
     return "ok"

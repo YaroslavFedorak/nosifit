@@ -1,8 +1,11 @@
+import functools
+import secrets
 from datetime import datetime
 
 from flask import Blueprint, flash, make_response, redirect, render_template, request, session, url_for
 from flask_login import current_user, login_user, logout_user
 from sqlalchemy.exc import IntegrityError
+from werkzeug.security import check_password_hash, generate_password_hash
 from backend.app.extensions import db
 from backend.app.models.user import User
 from backend.app.models.user_profile import UserProfile
@@ -42,6 +45,24 @@ RESET_LIMIT_PER_IP = (10, 60 * 60)
 LOGIN_FAILED_MESSAGE = "Невірна електронна пошта або пароль"
 
 
+@functools.lru_cache(maxsize=1)
+def _dummy_password_hash() -> str:
+    return generate_password_hash(secrets.token_hex(16))
+
+
+def _password_matches(user, password) -> bool:
+    """``user.check_password``, at the same cost when there is no account.
+
+    Without a hash check a missing account (or one without a password)
+    answers several times faster than a wrong password, and the timing alone
+    tells which emails are registered.
+    """
+    if user is not None and user.has_password and password:
+        return user.check_password(password)
+    check_password_hash(_dummy_password_hash(), password or "")
+    return False
+
+
 def start_user_session(user):
     """Log ``user`` in on a fresh session.
 
@@ -69,9 +90,9 @@ def login():
 
         user = User.query.filter(db.func.lower(User.email) == email).first()
 
-        # Same answer for "no such user" and "wrong password": the login form
-        # must not tell an attacker which emails are registered.
-        if not user or not user.check_password(password):
+        # Same answer, after the same work, for "no such user" and "wrong
+        # password": the login form must not tell which emails are registered.
+        if not _password_matches(user, password):
             flash(LOGIN_FAILED_MESSAGE, "error")
             return redirect(url_for("auth.login"))
 

@@ -5,6 +5,8 @@ English; other interface languages show the English text. Who is responsible
 for the data comes from PRIVACY_CONTROLLER_NAME / PRIVACY_CONTACT_EMAIL.
 """
 
+from urllib.parse import urlsplit
+
 from flask import (
     Blueprint,
     current_app,
@@ -51,9 +53,18 @@ def _policy_context():
 
 
 def _safe_next(value) -> str:
-    # Only paths on this site: "/x", never "//host" or "/\\host".
-    if isinstance(value, str) and value.startswith("/") and not value.startswith(("//", "/\\")):
-        return value
+    # Only paths on this site: "/x", never "//host" or "/\\host". Browsers
+    # and urllib drop tabs and newlines inside URLs ("/\t/host" becomes
+    # "//host"), so a control character or a backslash anywhere is refused.
+    if (
+        isinstance(value, str)
+        and value.startswith("/")
+        and not value.startswith("//")
+        and not any(char < " " or char in "\\\x7f" for char in value)
+    ):
+        parts = urlsplit(value)
+        if not parts.scheme and not parts.netloc:
+            return value
     return app_home()
 
 
